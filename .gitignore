@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+progress.json
+xiaohong_journal.json
+sounds/
+backgrounds/
