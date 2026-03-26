@@ -84,6 +84,52 @@ export interface Seal {
   vow: string;
 }
 
+export type TripStatus =
+  | 'DRAFT'
+  | 'PLANNING'
+  | 'SUBMITTED'
+  | 'CONFIRMED'
+  | 'PAID'
+  | 'PREPARING'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'REVIEWING'
+  | 'CANCELLED'
+  | 'REFUNDING'
+  | 'REFUNDED';
+
+export interface TripSiteItem {
+  id: string;
+  order: number;
+  visitDate: string | null;
+  site: HolySite;
+}
+
+export interface Trip {
+  id: string;
+  userId: string;
+  title: string;
+  startDate: string | null;
+  endDate: string | null;
+  status: TripStatus;
+  totalBudget: number | null;
+  persons: number;
+  contactName: string | null;
+  contactPhone: string | null;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+  sites: TripSiteItem[];
+  _count: { orders: number; journals: number };
+}
+
+export interface PaginatedTrips {
+  data: Trip[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export const api = {
   getReligions: (slug?: string) =>
     request<Religion[]>('/religions', slug ? { slug } : undefined),
@@ -102,4 +148,31 @@ export const api = {
 
   getSeals: (series?: string) =>
     request<Seal[]>('/seals', series ? { series } : undefined),
+
+  getTrips: (params?: { userId?: string; status?: string; page?: string; limit?: string }) =>
+    request<PaginatedTrips>('/trips', params),
+
+  getJournals: (params?: { page?: string; limit?: string; isPublic?: string }) =>
+    request<PaginatedJournals>('/journals', params),
 };
+
+export interface Journal {
+  id: string;
+  title: string;
+  content: string;
+  mood: string | null;
+  isPublic: boolean;
+  images: string[];
+  siteId: string | null;
+  tripId: string | null;
+  user?: { id: string; nickname: string; avatar: string | null };
+  trip?: { id: string; title: string } | null;
+  createdAt: string;
+}
+
+export interface PaginatedJournals {
+  data: Journal[];
+  total: number;
+  page: number;
+  limit: number;
+}

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   StyleSheet,
@@ -8,70 +9,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useFocusEffect } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
-
-interface JournalEntry {
-  id: string;
-  title: string;
-  excerpt: string;
-  mood: string;
-  moodEmoji: string;
-  date: string;
-  siteName?: string;
-  wordCount: number;
-}
-
-const MOCK_JOURNALS: JournalEntry[] = [
-  {
-    id: '1',
-    title: '白马寺的晨钟暮鼓',
-    excerpt: '清晨五点，寺院的钟声悠远地响起。站在这座中国第一古刹前，感受到千年佛法东传的庄严与感动。白马寺始建于东汉，是佛教传入中国后兴建的第一座官办寺院...',
-    mood: '平静',
-    moodEmoji: '🧘',
-    date: '2026-04-02',
-    siteName: '白马寺',
-    wordCount: 856,
-  },
-  {
-    id: '2',
-    title: '少林寺：武与禅的交融',
-    excerpt: '在少林寺的练功房里，看到僧人们的晨练。拳法之中蕴含着禅意，每一个动作都是身心合一的修行。达摩面壁九年的故事在这里变得真实可触...',
-    mood: '感动',
-    moodEmoji: '🥋',
-    date: '2026-04-05',
-    siteName: '少林寺',
-    wordCount: 1243,
-  },
-  {
-    id: '3',
-    title: '修行日记：初印系体悟',
-    excerpt: '今天修习了初印系的第一印。在安静的禅房中，按照修行法门一步步观照内心。才发现，原来修行不是追求什么，而是放下什么...',
-    mood: '感悟',
-    moodEmoji: '🪷',
-    date: '2026-03-20',
-    wordCount: 678,
-  },
-  {
-    id: '4',
-    title: '菩提伽耶：在佛陀成道处打坐',
-    excerpt: '坐在菩提树下，闭上眼睛。两千五百年前，悉达多太子就在这样一棵菩提树下证悟成佛。时间仿佛静止了，所有的喧嚣都远去...',
-    mood: '宁静',
-    moodEmoji: '🌳',
-    date: '2026-01-12',
-    siteName: '菩提伽耶',
-    wordCount: 1567,
-  },
-  {
-    id: '5',
-    title: '恒河日出：生与死的河流',
-    excerpt: '天还没亮就来到恒河边。晨曦中，信徒们在河中沐浴祈祷。同一条河流，承载着生的祝福与死的超度，印度教的生死观在这里一览无余...',
-    mood: '震撼',
-    moodEmoji: '🌅',
-    date: '2026-01-15',
-    siteName: '瓦拉纳西',
-    wordCount: 923,
-  },
-];
+import { api, Journal } from '../../src/lib/api';
 
 const MOOD_COLORS: Record<string, string> = {
   '平静': '#6366F1',
@@ -82,10 +22,74 @@ const MOOD_COLORS: Record<string, string> = {
 };
 
 export default function JournalsScreen() {
+  const [journals, setJournals] = useState<Journal[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+      setLoading(true);
+      setError(null);
+      api.getJournals({ limit: '50' })
+        .then((res) => {
+          if (!cancelled) {
+            setJournals(Array.isArray(res.data) ? res.data : []);
+            setTotal(res.total ?? 0);
+          }
+        })
+        .catch((err: Error) => {
+          if (!cancelled) setError(err.message);
+        })
+        .finally(() => {
+          if (!cancelled) setLoading(false);
+        });
+      return () => { cancelled = true; };
+    }, [])
+  );
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color={colors.gold} />
+        <Text style={styles.loadingText}>加载日志中...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Ionicons name="cloud-offline-outline" size={48} color={colors.textMuted} />
+        <Text style={styles.errorText}>加载失败</Text>
+        <Text style={styles.errorDetail}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (journals.length === 0) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.emptyEmoji}>📖</Text>
+        <Text style={styles.emptyTitle}>还没有朝圣日志</Text>
+        <Text style={styles.emptySubtitle}>去创建第一篇吧</Text>
+        <Pressable
+          style={({ pressed }) => [styles.fab, styles.fabInline, pressed && styles.fabPressed]}
+        >
+          <Ionicons name="create" size={24} color={colors.backgroundDark} />
+          <Text style={styles.fabText}>写日记</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  const totalWords = journals.reduce((sum, j) => sum + (j.content?.length ?? 0), 0);
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={MOCK_JOURNALS}
+        data={journals}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
@@ -97,13 +101,13 @@ export default function JournalsScreen() {
             </Text>
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
-                <Text style={styles.statValue}>{MOCK_JOURNALS.length}</Text>
+                <Text style={styles.statValue}>{total}</Text>
                 <Text style={styles.statLabel}>篇日记</Text>
               </View>
               <View style={styles.statDivider} />
               <View style={styles.statItem}>
                 <Text style={styles.statValue}>
-                  {MOCK_JOURNALS.reduce((sum, j) => sum + j.wordCount, 0).toLocaleString()}
+                  {totalWords.toLocaleString()}
                 </Text>
                 <Text style={styles.statLabel}>总字数</Text>
               </View>
@@ -111,7 +115,9 @@ export default function JournalsScreen() {
           </View>
         }
         renderItem={({ item, index }) => {
-          const moodColor = MOOD_COLORS[item.mood] || colors.gold;
+          const moodColor = (item.mood && MOOD_COLORS[item.mood]) || colors.gold;
+          const excerpt = item.content?.slice(0, 120) ?? '';
+          const dateStr = item.createdAt ? item.createdAt.slice(0, 10) : '';
           return (
             <Animated.View entering={FadeInDown.duration(300).delay(index * 80)}>
               <Pressable
@@ -121,33 +127,35 @@ export default function JournalsScreen() {
                 ]}
               >
                 <View style={styles.cardHeader}>
-                  <Text style={styles.cardEmoji}>{item.moodEmoji}</Text>
+                  <Text style={styles.cardEmoji}>📝</Text>
                   <View style={styles.cardHeaderText}>
                     <Text style={styles.cardTitle} numberOfLines={1}>
                       {item.title}
                     </Text>
                     <View style={styles.cardMeta}>
-                      <Text style={styles.cardDate}>{item.date}</Text>
-                      {item.siteName && (
+                      <Text style={styles.cardDate}>{dateStr}</Text>
+                      {item.trip && (
                         <>
                           <Text style={styles.cardMetaDot}>·</Text>
                           <Ionicons name="location-outline" size={12} color={colors.textMuted} />
-                          <Text style={styles.cardSite}>{item.siteName}</Text>
+                          <Text style={styles.cardSite}>{item.trip.title}</Text>
                         </>
                       )}
                     </View>
                   </View>
-                  <View style={[styles.moodTag, { backgroundColor: `${moodColor}20` }]}>
-                    <Text style={[styles.moodText, { color: moodColor }]}>{item.mood}</Text>
-                  </View>
+                  {item.mood && (
+                    <View style={[styles.moodTag, { backgroundColor: `${moodColor}20` }]}>
+                      <Text style={[styles.moodText, { color: moodColor }]}>{item.mood}</Text>
+                    </View>
+                  )}
                 </View>
 
                 <Text style={styles.cardExcerpt} numberOfLines={3}>
-                  {item.excerpt}
+                  {excerpt}{excerpt.length >= 120 ? '...' : ''}
                 </Text>
 
                 <View style={styles.cardFooter}>
-                  <Text style={styles.cardWordCount}>{item.wordCount} 字</Text>
+                  <Text style={styles.cardWordCount}>{item.content?.length ?? 0} 字</Text>
                   <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
                 </View>
               </Pressable>
@@ -171,6 +179,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  centerContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+  },
+  loadingText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.md,
+    marginTop: spacing.md,
+  },
+  errorText: {
+    color: colors.textPrimary,
+    fontSize: fontSize.xl,
+    fontWeight: '700',
+    marginTop: spacing.md,
+  },
+  errorDetail: {
+    color: colors.textMuted,
+    fontSize: fontSize.md,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
+  emptyEmoji: {
+    fontSize: 64,
+    marginBottom: spacing.md,
+  },
+  emptyTitle: {
+    color: colors.textPrimary,
+    fontSize: fontSize.xl,
+    fontWeight: '700',
+  },
+  emptySubtitle: {
+    color: colors.textSecondary,
+    fontSize: fontSize.md,
+    marginTop: spacing.sm,
+    marginBottom: spacing.xl,
+  },
+  fabInline: {
+    position: 'relative',
+    bottom: undefined,
+    right: undefined,
   },
   list: {
     paddingBottom: 100,
