@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\progress.json', [System.Text.Encoding]::UTF8\\)\")",
+      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\heartbeat-state.json', [System.Text.Encoding]::UTF8\\)\")",
+      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\completed-history.json', [System.Text.Encoding]::UTF8\\)\")",
+      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\failed-tasks.json', [System.Text.Encoding]::UTF8\\)\")"
+    ]
+  }
+}
