@@ -3,6 +3,7 @@
 # ============================================================================
 # 核心机制: SCAN -> BUILD(并行) -> VERIFY -> PUSH -> 循环
 # v4.0: 自愈状态/质量门禁/配额守卫/价值评分/失败模式/App归属commit/丰富Dashboard
+# v4.1: 经验沉淀/BLG三问硬门禁/BUILD构建硬条件
 # 使用: powershell -File scripts\heartbeat-daemon.ps1
 # 停止: Ctrl+C
 # ============================================================================
@@ -148,9 +149,26 @@ $IronRulesInjection = @'
 [SELF-CHECK IRON RULES]
 A. 先读取 CLAUDE.md 了解项目铁律 (R系列, HH系列, BLG系列)
 B. 遵守所有适用的铁律编号
-C. 执行完毕后运行验证(构建命令由daemon根据app类型注入，见下方)
-D. 如果构建失败, 修复错误直到通过
-E. 不要执行 git add 或 git commit (daemon自动处理)
+C. 执行完毕后必须运行验证(构建命令由daemon根据app类型注入，见下方)
+   - 带着编译错误结束任务 = 任务失败。必须修复到0 errors
+D. 不要执行 git add 或 git commit (daemon自动处理)
+
+[BLG BUSINESS LOGIC GUARD — 页面任务必答三问]
+在向页面添加数据或组件之前，必须回答:
+  Q1: 目标用户是谁? (游客/朝圣者/管理员/CEO)
+  Q2: 这个数据帮用户做什么决策?
+  Q3: 去掉这个数据，页面会变差吗?
+任一答不上 = 不属于该页面，禁止添加。(BLG-01~BLG-03)
+
+[EXPERIENCE SEDIMENTATION]
+如果你在执行过程中发现了非显而易见的坑或技巧，在任务末尾用以下格式输出:
+```experience
+文件: xxx
+发现: 一句话描述踩坑或技巧
+原因: 为什么会这样
+解法: 怎么解决的
+```
+daemon会自动提取并注入到后续任务的prompt中，帮助后续Agent避坑。
 '@
 
 # --- Init ---
@@ -755,6 +773,33 @@ function Parse-TasksFromOutput {
     return @()
 }
 
+# --- Experience Sedimentation (v4.1: learn from past fixes) ---
+
+function Get-ExperienceContext {
+    $expFile = Join-Path $Config.LogDir "experience.md"
+    if (-not (Test-Path $expFile)) { return "" }
+    $content = [System.IO.File]::ReadAllText($expFile, [System.Text.Encoding]::UTF8)
+    if ($content.Length -lt 10) { return "" }
+    # Limit to last 2000 chars to avoid prompt bloat
+    if ($content.Length -gt 2000) { $content = $content.Substring($content.Length - 2000) }
+    return "`n[PAST EXPERIENCE — avoid these pitfalls]`n$content`n"
+}
+
+function Save-ExperienceFromOutput {
+    param([string]$Output, [string]$TaskId)
+    if (-not $Output) { return }
+    if ($Output -match '```experience\s*\n([\s\S]*?)\n```') {
+        $exp = $Matches[1].Trim()
+        if ($exp.Length -gt 10) {
+            $expFile = Join-Path $Config.LogDir "experience.md"
+            $ts = Get-Date -Format "yyyy-MM-dd HH:mm"
+            $entry = "`n---`n[$ts] Task: $TaskId`n$exp`n"
+            [System.IO.File]::AppendAllText($expFile, $entry, [System.Text.UTF8Encoding]::new($true))
+            Write-Log "Experience captured from $TaskId" "OK"
+        }
+    }
+}
+
 # --- Temp Cleanup ---
 
 function Remove-TempArtifacts {
@@ -1024,6 +1069,9 @@ function Start-HeartbeatLoop {
                         else {
                             Write-Log "Task $id COMPLETED" "OK"
 
+                            # v4.1: Extract experience from output
+                            Save-ExperienceFromOutput -Output $output -TaskId $id
+
                             # Selective commit with app scope
                             $taskApp = ($id -split '-')[0]
                             $commitOk = Invoke-SelectiveCommit -PreSnapshot $jobInfo.PreSnapshot -TaskId $id -TaskName $jobInfo.Name -AppScope $taskApp
@@ -1078,11 +1126,12 @@ function Start-HeartbeatLoop {
                     continue
                 }
 
-                # Build prompt with human edit protection + deterministic build suffix
+                # Build prompt: human edit protection + experience + BLG + hard build gate
                 $verifySuffix = if ($BuildVerifySuffix.ContainsKey($task.app)) {
-                    "`nC. 执行完毕后运行验证: $($BuildVerifySuffix[$task.app])"
+                    "`n[HARD BUILD GATE] 任务完成后必须执行: $($BuildVerifySuffix[$task.app])`n如果构建失败，必须修复到0 errors后才算完成。带着编译错误结束 = 任务失败。"
                 } else { "" }
-                $buildPrompt = "你是ZUTING平台的D1建设Agent。请执行以下任务，遵守CLAUDE.md铁律。" + "`n" + $humanContext + "`n任务: $($task.name)`n`n$($task.description)" + "`n" + $IronRulesInjection + $verifySuffix
+                $expContext = Get-ExperienceContext
+                $buildPrompt = "你是ZUTING平台的D1建设Agent。请执行以下任务，遵守CLAUDE.md铁律。" + "`n" + $humanContext + $expContext + "`n任务: $($task.name)`n`n$($task.description)" + "`n" + $IronRulesInjection + $verifySuffix
 
                 Write-Log "Dispatching: $($task.id) — $($task.name)"
 
