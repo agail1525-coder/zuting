@@ -20,6 +20,7 @@ import {
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -69,8 +70,7 @@ export class PaymentController {
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
   @ApiResponse({ status: 502, description: 'Payment gateway error. / 支付网关错误。' })
   @ApiResponse({ status: 504, description: 'Payment gateway timeout. / 支付网关超时。' })
-  create(@Body() dto: CreatePaymentDto) {
-    const userId = 'current-user'; // TODO: replace with @CurrentUser() once auth is wired
+  create(@Body() dto: CreatePaymentDto, @CurrentUser('id') userId: string) {
     return this.paymentService.createPayment(dto.orderId, dto.gateway, userId);
   }
 

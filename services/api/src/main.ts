@@ -20,14 +20,21 @@ async function bootstrap() {
   // Security
   app.use(helmet());
   app.use(compression());
+  // Parse CORS_ORIGINS (comma-separated) with localhost defaults for dev
+  const corsOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3003',
+    'http://localhost:8081',
+  ];
+  const allOrigins = [
+    ...new Set([...defaultOrigins, ...corsOrigins]),
+  ];
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3003',
-      'http://localhost:8081',
-      process.env.WEB_URL,
-      process.env.ADMIN_URL,
-    ].filter(Boolean) as string[],
+    origin: allOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   });

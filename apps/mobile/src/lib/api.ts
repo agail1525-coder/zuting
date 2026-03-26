@@ -1,6 +1,6 @@
 const BASE_URL = __DEV__
   ? 'http://localhost:3002/api'
-  : 'https://api.zuting.com/api';
+  : 'https://zuting.fszyl.top/api';
 
 async function request<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
   const url = new URL(`${BASE_URL}${endpoint}`);

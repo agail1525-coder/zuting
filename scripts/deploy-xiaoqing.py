@@ -5,6 +5,9 @@ ZUTING 部署脚本 — 小轻服务器 (120.24.31.151)
 
 import paramiko
 import time
+import tempfile
+import subprocess
+import os
 from pathlib import Path
 
 SERVER = "120.24.31.151"
@@ -17,6 +20,7 @@ ADMIN_PORT = 3004
 DB_NAME = "zuting"
 PG_CONTAINER = "zuoyelang-postgres"
 PG_USER = "zuoyelang"
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def run(ssh, cmd, show=True):
@@ -30,10 +34,50 @@ def run(ssh, cmd, show=True):
     return out
 
 
+def pack_local():
+    """本地打包 API / Web / Admin 构建产物"""
+    tmp = tempfile.gettempdir()
+
+    # API: dist/ + prisma/
+    print("  打包 API...")
+    api_dir = PROJECT_ROOT / "services" / "api"
+    subprocess.run([
+        "tar", "czf", f"{tmp}/zuting-api.tar.gz",
+        "-C", str(api_dir),
+        "dist", "prisma", "package.json",
+    ], check=True)
+
+    # Web: .next/standalone + .next/static
+    print("  打包 Web...")
+    web_dir = PROJECT_ROOT / "apps" / "web"
+    next_dir = web_dir / ".next"
+    subprocess.run([
+        "tar", "czf", f"{tmp}/zuting-web.tar.gz",
+        "-C", str(next_dir),
+        "standalone", "static",
+    ], check=True)
+
+    # Admin: dist/
+    print("  打包 Admin...")
+    admin_dir = PROJECT_ROOT / "apps" / "admin"
+    subprocess.run([
+        "tar", "czf", f"{tmp}/zuting-admin.tar.gz",
+        "-C", str(admin_dir),
+        "dist",
+    ], check=True)
+
+    return tmp
+
+
 def main():
     print("=" * 60)
     print("  ZUTING → 小轻部署")
     print("=" * 60)
+
+    # ── 0. 本地打包 ──
+    print("\n[0/7] 本地打包构建产物...")
+    tmp = pack_local()
+    print("  ✓ 打包完成")
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -53,7 +97,6 @@ def main():
 
     # ── 2. 上传 tar 包 ──
     print("\n[2/7] 上传构建包...")
-    import tempfile; tmp = tempfile.gettempdir()
     sftp.put(f"{tmp}/zuting-api.tar.gz", f"{REMOTE_BASE}/api.tar.gz")
     print("  ✓ API (38KB)")
     sftp.put(f"{tmp}/zuting-web.tar.gz", f"{REMOTE_BASE}/web.tar.gz")
@@ -65,7 +108,7 @@ def main():
     print("\n[3/7] 解压 + 配置...")
     run(ssh, f"cd {REMOTE_BASE}/api && tar xzf ../api.tar.gz", show=False)
     run(ssh, f"cd {REMOTE_BASE}/web && tar xzf ../web.tar.gz", show=False)
-    run(ssh, f"cd {REMOTE_BASE}/admin && tar xzf ../admin.tar.gz", show=False)
+    run(ssh, f"cd {REMOTE_BASE}/admin && tar xzf ../admin.tar.gz && mv dist/* . 2>/dev/null; rmdir dist 2>/dev/null", show=False)
 
     # Move standalone contents to web root for cleaner structure
     run(ssh, f"""
@@ -80,7 +123,7 @@ rm -rf standalone
 """, show=False)
 
     # Create API .env
-    db_url = f"postgresql://{PG_USER}:zuoyelang2024@localhost:5434/{DB_NAME}?schema=public"
+    db_url = f"postgresql://{PG_USER}:uoUSiW6cmCxrtKTY21bp@localhost:5434/{DB_NAME}?schema=public"
     env = f'DATABASE_URL="{db_url}"\nREDIS_URL="redis://localhost:6379/2"\nPORT={API_PORT}\nNODE_ENV=production\n'
     with sftp.open(f"{REMOTE_BASE}/api/.env", "w") as f:
         f.write(env)
@@ -88,12 +131,7 @@ rm -rf standalone
 
     # ── 4. 安装依赖 ──
     print("\n[4/7] 安装 API 依赖...")
-    run(ssh, f"""cd {REMOTE_BASE}/api && npm install --omit=dev \
-        @nestjs/core@11 @nestjs/common@11 @nestjs/platform-express@11 @nestjs/swagger@11 \
-        @prisma/client@7 prisma@7 \
-        rxjs reflect-metadata class-transformer class-validator \
-        @nestjs/config ioredis @nestjs-modules/ioredis \
-        swagger-ui-express 2>&1 | tail -5""")
+    run(ssh, f"""cd {REMOTE_BASE}/api && npm install --legacy-peer-deps 2>&1 | tail -5""")
 
     # Generate Prisma + push schema
     print("\n  Prisma generate + db push...")
@@ -102,7 +140,6 @@ rm -rf standalone
 
     # Seed data
     print("  Seeding...")
-    run(ssh, f"cd {REMOTE_BASE}/api && npm install tsx 2>&1 | tail -1", show=False)
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed.ts 2>&1 | tail -5")
 
     # Fix web node_modules — create symlinks for pnpm flat structure
@@ -203,42 +240,10 @@ echo "Admin container: zuting-admin-nginx on port {ADMIN_PORT}"
         run(ssh, f"docker logs --tail 15 zuting-admin-nginx 2>&1")
 
     # ── 6. Nginx ──
-    print("\n[6/7] 配置 Nginx...")
-    nginx_conf = f"""
-server {{
-    listen 3080;
-    server_name _;
-    location / {{
-        proxy_pass http://127.0.0.1:{WEB_PORT};
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_cache_bypass $http_upgrade;
-    }}
-    location /api/ {{
-        proxy_pass http://127.0.0.1:{API_PORT}/api/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }}
-}}
-
-server {{
-    listen 3083;
-    server_name _;
-    location / {{
-        proxy_pass http://127.0.0.1:{ADMIN_PORT};
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }}
-}}
-"""
-    with sftp.open(f"{REMOTE_BASE}/nginx-zuting.conf", "w") as f:
-        f.write(nginx_conf)
-    run(ssh, f"docker cp {REMOTE_BASE}/nginx-zuting.conf zuoyelang-nginx:/etc/nginx/conf.d/zuting.conf && docker exec zuoyelang-nginx nginx -s reload 2>&1 | grep -v warn", show=False)
+    # Domain routing (zuting.fszyl.top) is configured in the main nginx-standalone.conf
+    # on the server. No need to inject conf.d files — ports 3080/3083 are not exposed
+    # by the Docker nginx container. Access via domain or direct ports (3002/3003/3004).
+    print("\n[6/7] Nginx域名路由已配置 (zuting.fszyl.top)")
 
     # ── 7. 上传 Admin nginx SPA 配置 ──
     print("\n[7/7] 配置 Admin SPA路由...")
@@ -283,10 +288,10 @@ server {{
         print("  ✅ 部署成功!")
     else:
         print("  ⚠️  部分服务未就绪，请检查日志")
-    print(f"  Web:     http://120.24.31.151:3080")
-    print(f"  Admin:   http://120.24.31.151:3083")
-    print(f"  API:     http://120.24.31.151:{API_PORT}/api/religions")
-    print(f"  Swagger: http://120.24.31.151:{API_PORT}/docs")
+    print(f"  Web:     http://zuting.fszyl.top")
+    print(f"  API:     http://zuting.fszyl.top/api/religions")
+    print(f"  Swagger: http://zuting.fszyl.top/docs")
+    print(f"  Admin:   http://120.24.31.151:{ADMIN_PORT}")
     print("=" * 60)
 
     sftp.close()
