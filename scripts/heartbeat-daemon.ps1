@@ -291,36 +291,69 @@ function Start-HeartbeatLoop {
         "[]" | Set-Content -Path $Config.HistoryFile -Encoding UTF8
     }
 
+    # ─── 断点恢复: 检查上次未完成的任务 ───
+    $resumedTasks = $null
+    if (Test-Path $Config.TaskFile) {
+        try {
+            $pendingRaw = Get-Content $Config.TaskFile -Raw | ConvertFrom-Json
+            $history = Get-CompletedHistory
+            $completedIds = @($history | ForEach-Object { $_.id })
+            $remaining = @($pendingRaw | Where-Object { $_.id -notin $completedIds })
+            if ($remaining.Count -gt 0) {
+                Write-Log "Resuming $($remaining.Count) tasks from previous session" "OK"
+                foreach ($t in $remaining) {
+                    Write-Log "  [resume] $($t.app)/$($t.id): $($t.name)"
+                }
+                $resumedTasks = $remaining
+            }
+        } catch {
+            Write-Log "Could not parse pending-tasks.json, starting fresh" "WARN"
+        }
+    }
+
     while ($true) {
         $script:CycleCount++
-        Write-Host ""
-        Write-Host "  ┌──────────────────────────────────────────┐" -ForegroundColor Cyan
-        Write-Host "  │  Cycle #$CycleCount — SCAN Phase               │" -ForegroundColor Cyan
-        Write-Host "  └──────────────────────────────────────────┘" -ForegroundColor Cyan
-        Save-Progress -Phase "scanning"
+        $tasks = $null
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 1: SCAN — 让Claude扫描项目, 发现缺口, 输出任务JSON
-        # ═══════════════════════════════════════════════════════════════
-        Write-Log "Scanning project for gaps and improvements..."
-        $scanOutput = Invoke-Claude -Prompt $ScanPrompt -Label "scan-cycle$CycleCount"
+        # ─── 如果有恢复的任务, 跳过扫描直接执行 ───
+        if ($resumedTasks) {
+            Write-Host ""
+            Write-Host "  ┌──────────────────────────────────────────┐" -ForegroundColor Yellow
+            Write-Host "  │  Cycle #$CycleCount — RESUME Phase             │" -ForegroundColor Yellow
+            Write-Host "  └──────────────────────────────────────────┘" -ForegroundColor Yellow
+            $tasks = $resumedTasks
+            $resumedTasks = $null
+            Write-Log "Resumed $($tasks.Count) pending tasks from last session"
+        } else {
+            Write-Host ""
+            Write-Host "  ┌──────────────────────────────────────────┐" -ForegroundColor Cyan
+            Write-Host "  │  Cycle #$CycleCount — SCAN Phase               │" -ForegroundColor Cyan
+            Write-Host "  └──────────────────────────────────────────┘" -ForegroundColor Cyan
+            Save-Progress -Phase "scanning"
 
-        if (-not $scanOutput) {
-            Write-Log "Scan failed or rate limited, retrying next cycle" "WARN"
-            Start-Sleep -Seconds $Config.CycleCooldown
-            continue
-        }
+            # ═══════════════════════════════════════════════════════════════
+            # STEP 1: SCAN — 让Claude扫描项目, 发现缺口, 输出任务JSON
+            # ═══════════════════════════════════════════════════════════════
+            Write-Log "Scanning project for gaps and improvements..."
+            $scanOutput = Invoke-Claude -Prompt $ScanPrompt -Label "scan-cycle$CycleCount"
 
-        $tasks = Parse-TasksFromOutput $scanOutput
-        if ($tasks.Count -eq 0) {
-            Write-Log "No tasks discovered. Project may be fully built! Cooling down..." "OK"
-            Start-Sleep -Seconds ($Config.CycleCooldown * 2)
-            continue
-        }
+            if (-not $scanOutput) {
+                Write-Log "Scan failed or rate limited, retrying next cycle" "WARN"
+                Start-Sleep -Seconds $Config.CycleCooldown
+                continue
+            }
 
-        Write-Log "Discovered $($tasks.Count) tasks to execute"
-        foreach ($t in $tasks) {
-            Write-Log "  [$($t.priority)] $($t.app)/$($t.id): $($t.name)"
+            $tasks = Parse-TasksFromOutput $scanOutput
+            if ($tasks.Count -eq 0) {
+                Write-Log "No tasks discovered. Project may be fully built! Cooling down..." "OK"
+                Start-Sleep -Seconds ($Config.CycleCooldown * 2)
+                continue
+            }
+
+            Write-Log "Discovered $($tasks.Count) tasks to execute"
+            foreach ($t in $tasks) {
+                Write-Log "  [$($t.priority)] $($t.app)/$($t.id): $($t.name)"
+            }
         }
 
         # 保存任务清单
