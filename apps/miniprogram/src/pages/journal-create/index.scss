@@ -1,0 +1,123 @@
+.create-page {
+  min-height: 100vh;
+  background-color: #020617;
+  padding: 32rpx;
+}
+
+.form {
+  &__group {
+    margin-bottom: 40rpx;
+  }
+
+  &__label {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 16rpx;
+  }
+
+  &__input {
+    width: 100%;
+    height: 88rpx;
+    background: #1e293b;
+    border: 1rpx solid rgba(212, 168, 85, 0.15);
+    border-radius: 16rpx;
+    padding: 0 24rpx;
+    font-size: 30rpx;
+    color: #f1f5f9;
+    box-sizing: border-box;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 320rpx;
+    background: #1e293b;
+    border: 1rpx solid rgba(212, 168, 85, 0.15);
+    border-radius: 16rpx;
+    padding: 24rpx;
+    font-size: 28rpx;
+    color: #f1f5f9;
+    line-height: 1.8;
+    box-sizing: border-box;
+  }
+
+  &__placeholder {
+    color: #475569;
+  }
+
+  &__count {
+    display: block;
+    text-align: right;
+    font-size: 22rpx;
+    color: #475569;
+    margin-top: 8rpx;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Mood Grid */
+.mood-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.mood-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(33.33% - 12rpx);
+  height: 120rpx;
+  background: #1e293b;
+  border: 1rpx solid rgba(212, 168, 85, 0.12);
+  border-radius: 16rpx;
+  transition: all 0.2s;
+  box-sizing: border-box;
+
+  &--active {
+    background: rgba(212, 168, 85, 0.15);
+    border-color: #D4A855;
+  }
+
+  &__emoji {
+    font-size: 40rpx;
+    margin-bottom: 4rpx;
+  }
+
+  &__label {
+    font-size: 22rpx;
+    color: #94a3b8;
+  }
+
+  &--active &__label {
+    color: #D4A855;
+  }
+}
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 48rpx;
+  height: 96rpx;
+  background: linear-gradient(135deg, #D4A855, #b8922e);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--disabled {
+    opacity: 0.4;
+  }
+
+  &__text {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
