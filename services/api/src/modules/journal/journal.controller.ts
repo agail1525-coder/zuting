@@ -8,6 +8,7 @@ import {
   Query,
   Body,
 } from '@nestjs/common';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import {
   ApiTags,
   ApiOperation,
@@ -177,8 +178,8 @@ export class JournalController {
   @ApiResponse({ status: 400, description: 'Validation failed. / 数据校验失败。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Journal entry not found. / 日志不存在。' })
-  update(@Param('id') id: string, @Body() dto: UpdateJournalDto) {
-    return this.journalService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateJournalDto, @CurrentUser('id') userId: string) {
+    return this.journalService.update(id, userId, dto);
   }
 
   @Delete(':id')
@@ -194,7 +195,7 @@ export class JournalController {
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 403, description: 'Forbidden — not the author. / 权限不足——非日志作者。' })
   @ApiResponse({ status: 404, description: 'Journal entry not found. / 日志不存在。' })
-  remove(@Param('id') id: string) {
-    return this.journalService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.journalService.remove(id, userId);
   }
 }

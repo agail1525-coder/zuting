@@ -205,7 +205,7 @@ function Invoke-Claude {
     # 清除无效 API key, 强制 OAuth (Max套餐)
     $env:ANTHROPIC_API_KEY = $null
 
-    $result = & $Config.ClaudeCLI -p $Prompt --permission-mode acceptEdits 2>&1
+    $result = & $Config.ClaudeCLI -p $Prompt --dangerously-skip-permissions 2>&1
     $output = $result -join "`n"
     $output | Out-File -FilePath $logFile -Encoding UTF8
 
@@ -232,7 +232,7 @@ function Invoke-ClaudeAsync {
         # 清除无效 API key, 强制 OAuth (Max套餐)
         $env:ANTHROPIC_API_KEY = $null
         Set-Location $ProjectRoot
-        $result = & $ClaudeCLI -p $Prompt --permission-mode acceptEdits 2>&1
+        $result = & $ClaudeCLI -p $Prompt --dangerously-skip-permissions 2>&1
         $output = $result -join "`n"
         [System.IO.File]::WriteAllText($LogFile, $output, [System.Text.UTF8Encoding]::new($true))
         return $output

@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 
-// Configure for dev/prod environments
-const BASE_URL = 'https://your-api-domain.com/api' // Will be configured for dev/prod
+const BASE_URL = process.env.TARO_APP_API_URL
+  || (process.env.NODE_ENV === 'development' ? 'http://localhost:3002/api' : 'https://zuting.fszyl.top/api')
 
 export interface Religion {
   id: string

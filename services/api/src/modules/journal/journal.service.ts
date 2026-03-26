@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
@@ -68,9 +68,10 @@ export class JournalService {
     return entry;
   }
 
-  async update(id: string, dto: UpdateJournalDto) {
+  async update(id: string, userId: string, dto: UpdateJournalDto) {
     const entry = await this.prisma.journalEntry.findUnique({ where: { id } });
     if (!entry) throw new NotFoundException(`Journal entry ${id} not found`);
+    if (entry.userId !== userId) throw new ForbiddenException('You can only edit your own journal entries');
 
     return this.prisma.journalEntry.update({
       where: { id },
@@ -82,9 +83,10 @@ export class JournalService {
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
     const entry = await this.prisma.journalEntry.findUnique({ where: { id } });
     if (!entry) throw new NotFoundException(`Journal entry ${id} not found`);
+    if (entry.userId !== userId) throw new ForbiddenException('You can only delete your own journal entries');
 
     return this.prisma.journalEntry.delete({ where: { id } });
   }

@@ -13,7 +13,9 @@ export default defineConfig({
   sourceRoot: 'src',
   outputRoot: 'dist',
   plugins: ['@tarojs/plugin-framework-react'],
-  defineConstants: {},
+  defineConstants: {
+    'process.env.TARO_APP_API_URL': JSON.stringify(process.env.TARO_APP_API_URL || ''),
+  },
   copy: { patterns: [], options: {} },
   framework: 'react',
   compiler: 'webpack5',
