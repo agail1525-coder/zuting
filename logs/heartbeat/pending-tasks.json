@@ -1,0 +1,58 @@
+﻿[
+    {
+        "id":  "api-fix-order-idor",
+        "name":  "修复订单接口IDOR漏洞 — 增加所有权验证",
+        "app":  "api",
+        "priority":  0,
+        "description":  "【安全P0】OrderController存在严重IDOR漏洞。\n\n问题:\n1. findAll() 接受 userId query参数但不验证当前用户身份，任何人可查看他人订单\n2. findOne() 不验证订单归属，任何人可通过ID查看他人订单详情\n3. pay/cancel/refund 操作同样缺少所有权验证\n\n修复文件:\n- services/api/src/modules/order/order.controller.ts: 所有需要认证的方法注入 @CurrentUser()，传递 userId 给 service\n- services/api/src/modules/order/order.service.ts: findAll() 强制过滤 userId；findOne() 增加 userId 匹配校验，不匹配抛 ForbiddenException\n\n参考已修复的 journal.controller.ts 实现模式（使用 @CurrentUser() decorator）。\n\n铁律: R-68(IDOR防护), R-63(JwtAuthGuard)\n验证: pnpm --filter @zuting/api build"
+    },
+    {
+        "id":  "api-fix-trip-idor",
+        "name":  "修复行程接口IDOR漏洞 — 增加所有权验证",
+        "app":  "api",
+        "priority":  0,
+        "description":  "【安全P0】TripController存在IDOR漏洞，与订单模块相同模式。\n\n问题:\n1. findAll() 接受 userId query参数但不验证当前用户身份\n2. findOne() 不验证行程归属\n3. update/transition/addSite/removeSite 操作缺少所有权验证\n\n修复文件:\n- services/api/src/modules/trip/trip.controller.ts: 写操作注入 @CurrentUser()，传递 userId 给 service；GET列表如果有userId参数需验证匹配\n- services/api/src/modules/trip/trip.service.ts: 写操作方法增加 userId 参数，校验行程归属\n\n注意: GET单个行程详情如果是@Public()的（展示型），可以保持公开；但写操作必须验证。\n\n铁律: R-68(IDOR防护), R-63(JwtAuthGuard), R-07(状态变更校验)\n验证: pnpm --filter @zuting/api build"
+    },
+    {
+        "id":  "api-fix-xiaohong-unbounded-queries",
+        "name":  "修复小鸿AI服务无限查询 — 6处findMany缺少take",
+        "app":  "api",
+        "priority":  0,
+        "description":  "【安全P0/性能】XiaohongService中有6处findMany()调用没有take参数限制，可导致OOM。\n\n问题文件: services/api/src/modules/xiaohong/xiaohong.service.ts\n约在91-183行区间，以下findMany缺少take:\n1. religion.findMany() ~line 91\n2. holySite.findMany() ~line 112\n3. temple.findMany() ~line 126\n4. patriarch.findMany() ~line 140\n5. teaching.findMany() ~line 154\n6. seal.findMany() ~line 166\n\n修复: 每个findMany()添加 take: 100 参数。这些是为AI上下文加载的数据，100条足够。\n\n铁律: R-64(findMany必须有take参数，列表@Max(100)，防OOM)\n验证: pnpm --filter @zuting/api build"
+    },
+    {
+        "id":  "web-fix-trips-mock-data",
+        "name":  "Web行程页接入真实API — 替换MOCK_TRIPS",
+        "app":  "web",
+        "priority":  1,
+        "description":  "【功能P1】Web端行程列表页和详情页使用硬编码MOCK_TRIPS，未连接后端API。\n\n问题文件:\n1. apps/web/src/app/trips/page.tsx: 约44-81行使用MOCK_TRIPS常量\n2. apps/web/src/app/trips/[id]/page.tsx: 约49-239行从MOCK_TRIPS查找数据\n\n修复:\n1. trips/page.tsx: 使用fetch调用 GET /api/trips 获取真实数据，实现loading/error/empty三态\n2. trips/[id]/page.tsx: 使用fetch调用 GET /api/trips/{id} 获取详情，处理404\n3. 删除所有MOCK_TRIPS相关代码\n4. 确保状态筛选Tab使用API的status查询参数\n\n参考已有的 journals/page.tsx 或 orders/page.tsx 的API调用模式。\n\n铁律: HH-V01(垂直切片), HH-V02(空壳零容忍), HH-V03(必须有真实API调用)\n验证: pnpm --filter @zuting/web build"
+    },
+    {
+        "id":  "mobile-fix-trip-detail-mock",
+        "name":  "Mobile行程详情页接入真实API — 替换MOCK_TRIP_DETAILS",
+        "app":  "mobile",
+        "priority":  1,
+        "description":  "【功能P1】Mobile端行程详情页使用硬编码MOCK_TRIP_DETAILS。\n\n问题文件: apps/mobile/app/trips/[id].tsx\n约59-122行定义了MOCK_TRIP_DETAILS对象，127行左右使用mock数据渲染。\n\n修复:\n1. 删除MOCK_TRIP_DETAILS常量\n2. 使用api.getTrips()或新增api.getTripDetail(id)获取真实数据\n3. 添加loading状态(ActivityIndicator)、error状态(重试按钮)、404状态\n4. 渲染真实的行程站点列表、状态历史\n\n铁律: HH-V01(垂直切片), HH-V02(空壳零容忍), HH-V03(真实API+真实数据)\n验证: npx tsc --noEmit (在apps/mobile目录)"
+    },
+    {
+        "id":  "mobile-fix-detail-pages-fetch-all",
+        "name":  "Mobile详情页优化 — 改用单条API替代全量获取",
+        "app":  "mobile",
+        "priority":  1,
+        "description":  "【性能P1】Mobile的4个详情页都是先获取全部数据再find，浪费带宽和内存。\n\n问题文件:\n1. apps/mobile/app/holy-sites/[id].tsx ~line 18: api.getHolySites() 获取全部再find\n2. apps/mobile/app/temples/[id].tsx ~line 18: 同上\n3. apps/mobile/app/patriarchs/[id].tsx ~line 18: 同上\n4. apps/mobile/app/seals/[id].tsx ~line 20: 同上\n\n修复:\n1. 检查 apps/mobile/src/lib/api.ts 是否有 getHolySiteById(id) 等单条获取方法\n2. 如没有则添加: getHolySiteById, getTempleById, getPatriarchById, getSealById\n3. 各详情页改用单条API: const site = await api.getHolySiteById(id)\n4. 添加proper error state（当前只有LoadingView没有error state）\n\n铁律: R-64(性能), HH-V03(交互可用)\n验证: npx tsc --noEmit (在apps/mobile目录)"
+    },
+    {
+        "id":  "api-fix-service-any-types",
+        "name":  "API Service层any类型修复 — 替换where/data的any",
+        "app":  "api",
+        "priority":  2,
+        "description":  "【代码质量P2】API多个service文件使用 where: any = {} 构建动态查询条件，违反R-01。\n\n问题文件(每个约1处any):\n1. services/api/src/modules/journal/journal.service.ts ~line 38: where: any = {}\n2. services/api/src/modules/coupon/coupon.service.ts ~line 68,182: data: any, where: any\n3. services/api/src/modules/order/order.service.ts ~line 66: where: any = {}\n4. services/api/src/modules/notification/notification.service.ts ~line 42: where: any\n5. services/api/src/modules/review/review.service.ts ~line 66: where: any = {}\n6. services/api/src/modules/trip/trip.service.ts ~line 67,125: where: any, data: any\n7. services/api/src/modules/moderation/moderation.service.ts ~line 45: where: any = {}\n\n修复: 将 where: any 改为 Prisma.XxxWhereInput 类型（从 @prisma/client 导入），如:\nimport { Prisma } from \u0027@prisma/client\u0027;\nconst where: Prisma.OrderWhereInput = {};\n\n铁律: R-01(严禁any类型，必须定义Interface/DTO)\n验证: pnpm --filter @zuting/api build"
+    },
+    {
+        "id":  "admin-fix-silent-error-handling",
+        "name":  "Admin CRUD页面错误处理修复 — 消除静默失败",
+        "app":  "admin",
+        "priority":  2,
+        "description":  "【体验P2】Admin多个页面的API调用在catch中静默吞掉错误，用户看不到失败原因。\n\n问题文件:\n1. apps/admin/src/pages/OrdersPage.tsx ~line 28-30: .catch(() =\u003e setData([])) 无提示\n2. apps/admin/src/pages/TripsPage.tsx ~line 57-61: 同上\n3. apps/admin/src/pages/JournalsPage.tsx ~line 14-18: 同上\n\n修复: 在catch中添加 antd message.error() 提示:\n.catch((err) =\u003e { message.error(\u0027加载数据失败: \u0027 + (err.message || \u0027网络错误\u0027)); setData([]); })\n\n同时检查这些页面是否有empty state提示(表格为空时显示\u0027暂无数据\u0027)。\n\n铁律: HH-V03(交付≠编译通过), B7(安全访问)\n验证: pnpm --filter @zuting/admin build"
+    }
+]

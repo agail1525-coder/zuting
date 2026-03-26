@@ -1,0 +1,34 @@
+﻿[
+    {
+        "value":  [
+                      {
+                          "value":  [
+                                        {
+                                            "value":  [
+                                                          "@{value=System.Object[]; Count=2}",
+                                                          "@{completedAt=2026-03-27 03:16:40; name=Admin CRUD页面错误处理修复 — 消除静默失败; id=admin-fix-silent-error-handling}"
+                                                      ],
+                                            "Count":  2
+                                        },
+                                        {
+                                            "completedAt":  "2026-03-27 03:17:26",
+                                            "name":  "Mobile行程详情页接入真实API — 替换MOCK_TRIP_DETAILS",
+                                            "id":  "mobile-fix-trip-detail-mock"
+                                        }
+                                    ],
+                          "Count":  2
+                      },
+                      {
+                          "completedAt":  "2026-03-27 03:17:56",
+                          "name":  "Web行程页接入真实API — 替换MOCK_TRIPS",
+                          "id":  "web-fix-trips-mock-data"
+                      }
+                  ],
+        "Count":  2
+    },
+    {
+        "completedAt":  "2026-03-27 03:18:27",
+        "name":  "API Service层any类型修复 — 替换where/data的any",
+        "id":  "api-fix-service-any-types"
+    }
+]
