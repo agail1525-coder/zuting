@@ -39,7 +39,7 @@ export default async function TempleDetailPage({ params }: Props) {
   if (!temple) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl text-gold">Temple not found</h1>
+        <h1 className="text-2xl text-gold">祖庭未找到</h1>
       </div>
     );
   }

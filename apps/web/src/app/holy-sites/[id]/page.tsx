@@ -39,7 +39,7 @@ export default async function HolySiteDetailPage({ params }: Props) {
   if (!site) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl text-gold">Holy site not found</h1>
+        <h1 className="text-2xl text-gold">圣地未找到</h1>
       </div>
     );
   }

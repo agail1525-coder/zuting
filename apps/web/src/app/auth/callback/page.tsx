@@ -17,7 +17,7 @@ export default function OAuthCallbackPage() {
     const errorParam = searchParams.get('error');
 
     if (errorParam) {
-      const message = searchParams.get('message') || 'Authentication failed';
+      const message = searchParams.get('message') || '认证失败';
       setError(message);
       // Redirect to login after showing error
       setTimeout(() => router.push('/login'), 3000);
@@ -30,7 +30,7 @@ export default function OAuthCallbackPage() {
         router.push('/profile');
       });
     } else {
-      setError('Missing authentication tokens');
+      setError('缺少认证令牌');
       setTimeout(() => router.push('/login'), 3000);
     }
   }, [searchParams, router, refreshUser]);
@@ -41,9 +41,9 @@ export default function OAuthCallbackPage() {
         <div className="w-full max-w-md text-center">
           <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
             <div className="text-4xl mb-4">&#x26A0;&#xFE0F;</div>
-            <h1 className="text-xl font-serif text-red-400 mb-2">Login Failed</h1>
+            <h1 className="text-xl font-serif text-red-400 mb-2">登录失败</h1>
             <p className="text-temple-400 text-sm">{error}</p>
-            <p className="text-temple-500 text-xs mt-4">Redirecting to login page...</p>
+            <p className="text-temple-500 text-xs mt-4">正在跳转到登录页...</p>
           </div>
         </div>
       </div>
@@ -55,8 +55,8 @@ export default function OAuthCallbackPage() {
       <div className="w-full max-w-md text-center">
         <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
           <div className="text-4xl mb-4 animate-pulse">&#x1F3DB;</div>
-          <h1 className="text-xl font-serif text-gradient-gold mb-2">Logging in...</h1>
-          <p className="text-temple-400 text-sm">Processing authentication</p>
+          <h1 className="text-xl font-serif text-gradient-gold mb-2">正在登录...</h1>
+          <p className="text-temple-400 text-sm">正在处理认证</p>
         </div>
       </div>
     </div>

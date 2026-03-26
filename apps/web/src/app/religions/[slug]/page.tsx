@@ -61,7 +61,7 @@ export default async function ReligionDetailPage({ params }: Props) {
   if (!religion) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl text-gold">Religion not found</h1>
+        <h1 className="text-2xl text-gold">信仰未找到</h1>
       </div>
     );
   }

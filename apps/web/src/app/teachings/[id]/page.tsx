@@ -41,7 +41,7 @@ export default async function TeachingDetailPage({ params }: Props) {
   if (!teaching) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl text-gold">Teaching not found</h1>
+        <h1 className="text-2xl text-gold">祖训未找到</h1>
       </div>
     );
   }
