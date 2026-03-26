@@ -3,16 +3,17 @@ import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getTemples, getReligions, createTemple, updateTemple, deleteTemple } from '../lib/api';
+import type { Temple, Religion } from '../types';
 
 const { Title } = Typography;
 
 export default function TemplesPage() {
-  const [data, setData] = useState<any[]>([]);
-  const [religions, setReligions] = useState<any[]>([]);
+  const [data, setData] = useState<Temple[]>([]);
+  const [religions, setReligions] = useState<Religion[]>([]);
   const [loading, setLoading] = useState(true);
   const [religionFilter, setReligionFilter] = useState<string | undefined>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<any | null>(null);
+  const [editing, setEditing] = useState<Temple | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
@@ -35,10 +36,10 @@ export default function TemplesPage() {
     setModalOpen(true);
   };
 
-  const openEdit = (record: any) => {
+  const openEdit = (record: Temple) => {
     setEditing(record);
     form.setFieldsValue({
-      name: record.nameZh || record.name,
+      name: record.name,
       nameEn: record.nameEn || record.name,
       country: record.country,
       address: record.address,
@@ -63,8 +64,8 @@ export default function TemplesPage() {
       }
       setModalOpen(false);
       load();
-    } catch (err: any) {
-      if (err?.errorFields) return;
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'errorFields' in err) return;
       message.error(editing ? '更新失败' : '创建失败');
     } finally {
       setSubmitting(false);
@@ -81,20 +82,20 @@ export default function TemplesPage() {
     }
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Temple> = [
     {
       title: '祖庭名称',
       dataIndex: 'name',
       key: 'name',
-      render: (_: any, r: any) => (
-        <span style={{ fontWeight: 600 }}>{r.nameZh || r.name || '-'}</span>
+      render: (_: string, r: Temple) => (
+        <span style={{ fontWeight: 600 }}>{r.name || '-'}</span>
       ),
     },
     {
       title: '英文名',
       dataIndex: 'nameEn',
       key: 'nameEn',
-      render: (_: any, r: any) => r.nameEn || r.name || '-',
+      render: (_: string | undefined, r: Temple) => r.nameEn || r.name || '-',
     },
     {
       title: '地址',
@@ -114,7 +115,7 @@ export default function TemplesPage() {
       render: (id: string) => {
         const r = religionMap[id];
         return r ? (
-          <Tag color={r.color || 'gold'}>{r.nameZh || r.name || r.slug}</Tag>
+          <Tag color={r.color || 'gold'}>{r.name || r.slug}</Tag>
         ) : '-';
       },
     },
@@ -129,7 +130,7 @@ export default function TemplesPage() {
       title: '操作',
       key: 'actions',
       width: 160,
-      render: (_: any, record: any) => (
+      render: (_: unknown, record: Temple) => (
         <Space>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
             编辑
@@ -159,7 +160,7 @@ export default function TemplesPage() {
             onChange={(v) => setReligionFilter(v)}
             options={religions.map((r) => ({
               value: r.id,
-              label: r.nameZh || r.name || r.slug,
+              label: r.name || r.slug,
             }))}
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
@@ -216,7 +217,7 @@ export default function TemplesPage() {
               placeholder="选择信仰"
               options={religions.map((r) => ({
                 value: r.id,
-                label: r.nameZh || r.name || r.slug,
+                label: r.name || r.slug,
               }))}
             />
           </Form.Item>

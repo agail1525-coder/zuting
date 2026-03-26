@@ -3,15 +3,16 @@ import { Table, Card, Typography, Tag, Modal, Descriptions, Button, Space, Form,
 import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getReligions, createReligion, updateReligion, deleteReligion } from '../lib/api';
+import type { Religion } from '../types';
 
 const { Title } = Typography;
 
 export default function ReligionsPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Religion[]>([]);
   const [loading, setLoading] = useState(true);
-  const [detail, setDetail] = useState<any | null>(null);
+  const [detail, setDetail] = useState<Religion | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<any | null>(null);
+  const [editing, setEditing] = useState<Religion | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
@@ -28,10 +29,10 @@ export default function ReligionsPage() {
     setModalOpen(true);
   };
 
-  const openEdit = (record: any) => {
+  const openEdit = (record: Religion) => {
     setEditing(record);
     form.setFieldsValue({
-      name: record.nameZh || record.name,
+      name: record.name,
       nameEn: record.nameEn || record.name,
       slug: record.slug,
       symbol: record.symbol,
@@ -53,8 +54,8 @@ export default function ReligionsPage() {
       }
       setModalOpen(false);
       load();
-    } catch (err: any) {
-      if (err?.errorFields) return; // validation error
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'errorFields' in err) return;
       message.error(editing ? '更新失败' : '创建失败');
     } finally {
       setSubmitting(false);
@@ -71,20 +72,20 @@ export default function ReligionsPage() {
     }
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Religion> = [
     {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      render: (text: string, record: any) => (
-        <span style={{ fontWeight: 600 }}>{record.nameZh || record.name || record.slug}</span>
+      render: (_: string, record: Religion) => (
+        <span style={{ fontWeight: 600 }}>{record.name || record.slug}</span>
       ),
     },
     {
       title: '英文名',
       dataIndex: 'nameEn',
       key: 'nameEn',
-      render: (_: any, r: any) => r.nameEn || r.name || '-',
+      render: (_: string, r: Religion) => r.nameEn || r.name || '-',
     },
     { title: 'Slug', dataIndex: 'slug', key: 'slug' },
     {
@@ -110,7 +111,7 @@ export default function ReligionsPage() {
       title: '操作',
       key: 'actions',
       width: 200,
-      render: (_: any, record: any) => (
+      render: (_: unknown, record: Religion) => (
         <Space>
           <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => setDetail(record)}>
             查看
@@ -160,7 +161,7 @@ export default function ReligionsPage() {
         {detail && (
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="ID">{detail.id}</Descriptions.Item>
-            <Descriptions.Item label="名称">{detail.nameZh || detail.name}</Descriptions.Item>
+            <Descriptions.Item label="名称">{detail.name}</Descriptions.Item>
             <Descriptions.Item label="英文名">{detail.nameEn || detail.name}</Descriptions.Item>
             <Descriptions.Item label="Slug">{detail.slug}</Descriptions.Item>
             <Descriptions.Item label="符号">{detail.symbol || '-'}</Descriptions.Item>

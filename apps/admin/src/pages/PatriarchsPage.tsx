@@ -3,16 +3,17 @@ import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getPatriarchs, getReligions, createPatriarch, updatePatriarch, deletePatriarch } from '../lib/api';
+import type { Patriarch, Religion } from '../types';
 
 const { Title } = Typography;
 
 export default function PatriarchsPage() {
-  const [data, setData] = useState<any[]>([]);
-  const [religions, setReligions] = useState<any[]>([]);
+  const [data, setData] = useState<Patriarch[]>([]);
+  const [religions, setReligions] = useState<Religion[]>([]);
   const [loading, setLoading] = useState(true);
   const [religionFilter, setReligionFilter] = useState<string | undefined>();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<any | null>(null);
+  const [editing, setEditing] = useState<Patriarch | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
@@ -35,14 +36,14 @@ export default function PatriarchsPage() {
     setModalOpen(true);
   };
 
-  const openEdit = (record: any) => {
+  const openEdit = (record: Patriarch) => {
     setEditing(record);
     form.setFieldsValue({
-      name: record.nameZh || record.name,
+      name: record.name,
       nameEn: record.nameEn || record.name,
-      dates: record.dates || record.era,
+      dates: record.dates,
       title: record.title,
-      biography: record.biography || record.description,
+      biography: record.biography,
       coreTeaching: record.coreTeaching,
       imageUrl: record.imageUrl,
       religionId: record.religionId,
@@ -63,8 +64,8 @@ export default function PatriarchsPage() {
       }
       setModalOpen(false);
       load();
-    } catch (err: any) {
-      if (err?.errorFields) return;
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'errorFields' in err) return;
       message.error(editing ? '更新失败' : '创建失败');
     } finally {
       setSubmitting(false);
@@ -81,25 +82,25 @@ export default function PatriarchsPage() {
     }
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Patriarch> = [
     {
       title: '祖师名称',
       dataIndex: 'name',
       key: 'name',
-      render: (_: any, r: any) => (
-        <span style={{ fontWeight: 600 }}>{r.nameZh || r.name || '-'}</span>
+      render: (_: string, r: Patriarch) => (
+        <span style={{ fontWeight: 600 }}>{r.name || '-'}</span>
       ),
     },
     {
       title: '英文名',
       dataIndex: 'nameEn',
       key: 'nameEn',
-      render: (_: any, r: any) => r.nameEn || r.name || '-',
+      render: (_: string | undefined, r: Patriarch) => r.nameEn || r.name || '-',
     },
     {
       title: '生卒年',
       key: 'era',
-      render: (_: any, r: any) => r.dates || r.era || (r.birthYear ? `${r.birthYear || '?'} - ${r.deathYear || '?'}` : '-'),
+      render: (_: unknown, r: Patriarch) => r.dates || '-',
     },
     {
       title: '称号',
@@ -114,14 +115,14 @@ export default function PatriarchsPage() {
       render: (id: string) => {
         const r = religionMap[id];
         return r ? (
-          <Tag color={r.color || 'gold'}>{r.nameZh || r.name || r.slug}</Tag>
+          <Tag color={r.color || 'gold'}>{r.name || r.slug}</Tag>
         ) : '-';
       },
     },
     {
       title: '简介',
-      dataIndex: 'description',
-      key: 'description',
+      dataIndex: 'biography',
+      key: 'biography',
       ellipsis: true,
       width: 200,
     },
@@ -129,7 +130,7 @@ export default function PatriarchsPage() {
       title: '操作',
       key: 'actions',
       width: 160,
-      render: (_: any, record: any) => (
+      render: (_: unknown, record: Patriarch) => (
         <Space>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
             编辑
@@ -159,7 +160,7 @@ export default function PatriarchsPage() {
             onChange={(v) => setReligionFilter(v)}
             options={religions.map((r) => ({
               value: r.id,
-              label: r.nameZh || r.name || r.slug,
+              label: r.name || r.slug,
             }))}
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
@@ -216,7 +217,7 @@ export default function PatriarchsPage() {
               placeholder="选择信仰"
               options={religions.map((r) => ({
                 value: r.id,
-                label: r.nameZh || r.name || r.slug,
+                label: r.name || r.slug,
               }))}
             />
           </Form.Item>

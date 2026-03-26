@@ -3,13 +3,14 @@ import { Table, Card, Typography, Select, Space, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { getSeals } from '../lib/api';
 import { SERIES_COLORS } from '../lib/theme';
+import type { Seal } from '../types';
 
 const { Title } = Typography;
 
 const SERIES_OPTIONS = ['初印系', '中印系', '印果印', '成道印', '归源印'];
 
 export default function SealsPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Seal[]>([]);
   const [loading, setLoading] = useState(true);
   const [seriesFilter, setSeriesFilter] = useState<string | undefined>();
 
@@ -18,27 +19,27 @@ export default function SealsPage() {
     getSeals(seriesFilter).then(setData).finally(() => setLoading(false));
   }, [seriesFilter]);
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Seal> = [
     {
       title: '序号',
       dataIndex: 'order',
       key: 'order',
       width: 70,
-      sorter: (a: any, b: any) => (a.order || 0) - (b.order || 0),
+      sorter: (a: Seal, b: Seal) => (a.order || 0) - (b.order || 0),
     },
     {
       title: '印名',
       dataIndex: 'name',
       key: 'name',
-      render: (_: any, r: any) => (
-        <span style={{ fontWeight: 600, color: '#D4A855' }}>{r.nameZh || r.name || '-'}</span>
+      render: (_: string, r: Seal) => (
+        <span style={{ fontWeight: 600, color: '#D4A855' }}>{r.name || '-'}</span>
       ),
     },
     {
       title: '英文名',
       dataIndex: 'nameEn',
       key: 'nameEn',
-      render: (_: any, r: any) => r.nameEn || r.name || '-',
+      render: (_: string | undefined, r: Seal) => r.nameEn || r.name || '-',
     },
     {
       title: '系列',
