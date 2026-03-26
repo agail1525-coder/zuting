@@ -22,6 +22,11 @@ echo.
 :: 检查 claude CLI 是否可用
 where claude >nul 2>&1
 if %errorlevel% neq 0 (
+    if exist "%USERPROFILE%\.local\bin\claude.exe" (
+        set "PATH=%USERPROFILE%\.local\bin;%PATH%"
+        echo   [OK] Claude CLI found via .local/bin
+        goto :claude_ok
+    )
     if exist "%APPDATA%\npm\claude.cmd" (
         set "PATH=%APPDATA%\npm;%PATH%"
         echo   [OK] Claude CLI found via npm global
@@ -34,6 +39,7 @@ if %errorlevel% neq 0 (
     )
     echo.
     echo   [ERROR] claude CLI not found in PATH!
+    echo   Searched: %%USERPROFILE%%\.local\bin, %%APPDATA%%\npm, %%LOCALAPPDATA%%\Programs\claude
     echo   Please install Claude Code first.
     echo.
     echo   Press any key to exit...
