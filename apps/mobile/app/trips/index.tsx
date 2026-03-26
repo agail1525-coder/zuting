@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Pressable,
   ScrollView,
@@ -11,77 +12,87 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
-
-type TripStatus = 'planning' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-
-interface Trip {
-  id: string;
-  title: string;
-  description: string;
-  status: TripStatus;
-  startDate: string;
-  endDate: string;
-  sitesCount: number;
-  coverEmoji: string;
-}
+import { api, type Trip, type TripStatus } from '../../src/lib/api';
+import { useAuth } from '../../src/lib/auth-context';
 
 const STATUS_CONFIG: Record<TripStatus, { label: string; color: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  planning: { label: '计划中', color: '#6366F1', icon: 'create' },
-  confirmed: { label: '已确认', color: '#22C55E', icon: 'checkmark-circle' },
-  in_progress: { label: '进行中', color: '#F59E0B', icon: 'walk' },
-  completed: { label: '已完成', color: '#D4A855', icon: 'trophy' },
-  cancelled: { label: '已取消', color: '#64748B', icon: 'close-circle' },
+  DRAFT: { label: '草稿', color: '#6B7280', icon: 'document-text' },
+  PLANNING: { label: '计划中', color: '#6366F1', icon: 'create' },
+  SUBMITTED: { label: '已提交', color: '#8B5CF6', icon: 'send' },
+  CONFIRMED: { label: '已确认', color: '#22C55E', icon: 'checkmark-circle' },
+  PAID: { label: '已付款', color: '#10B981', icon: 'card' },
+  PREPARING: { label: '准备中', color: '#F97316', icon: 'construct' },
+  IN_PROGRESS: { label: '进行中', color: '#F59E0B', icon: 'walk' },
+  COMPLETED: { label: '已完成', color: '#D4A855', icon: 'trophy' },
+  REVIEWING: { label: '评价中', color: '#EC4899', icon: 'star' },
+  CANCELLED: { label: '已取消', color: '#64748B', icon: 'close-circle' },
+  REFUNDING: { label: '退款中', color: '#EF4444', icon: 'time' },
+  REFUNDED: { label: '已退款', color: '#94A3B8', icon: 'return-down-back' },
 };
 
 const FILTER_OPTIONS: { key: TripStatus | 'all'; label: string }[] = [
   { key: 'all', label: '全部' },
-  { key: 'planning', label: '计划中' },
-  { key: 'confirmed', label: '已确认' },
-  { key: 'in_progress', label: '进行中' },
-  { key: 'completed', label: '已完成' },
-];
-
-const MOCK_TRIPS: Trip[] = [
-  {
-    id: '1',
-    title: '东亚佛教朝圣之旅',
-    description: '从洛阳白马寺出发，途经少林寺，最终到达日本奈良东大寺',
-    status: 'in_progress',
-    startDate: '2026-04-01',
-    endDate: '2026-04-14',
-    sitesCount: 5,
-    coverEmoji: '☸️',
-  },
-  {
-    id: '2',
-    title: '中东三教圣地巡礼',
-    description: '探访耶路撒冷、伯利恒和伊斯坦布尔的宗教圣地',
-    status: 'planning',
-    startDate: '2026-06-15',
-    endDate: '2026-06-25',
-    sitesCount: 4,
-    coverEmoji: '🕌',
-  },
-  {
-    id: '3',
-    title: '印度灵性觉醒之旅',
-    description: '菩提伽耶禅修、瓦拉纳西恒河朝圣、阿姆利则金庙参访',
-    status: 'completed',
-    startDate: '2026-01-10',
-    endDate: '2026-01-22',
-    sitesCount: 6,
-    coverEmoji: '🕉️',
-  },
+  { key: 'DRAFT', label: '草稿' },
+  { key: 'PLANNING', label: '计划中' },
+  { key: 'CONFIRMED', label: '已确认' },
+  { key: 'IN_PROGRESS', label: '进行中' },
+  { key: 'COMPLETED', label: '已完成' },
 ];
 
 export default function TripsScreen() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [filter, setFilter] = useState<TripStatus | 'all'>('all');
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredTrips =
-    filter === 'all'
-      ? MOCK_TRIPS
-      : MOCK_TRIPS.filter((t) => t.status === filter);
+  const fetchTrips = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const params: Record<string, string> = {
+        userId: user.id,
+        limit: '50',
+      };
+      if (filter !== 'all') {
+        params.status = filter;
+      }
+      const result = await api.getTrips(params);
+      setTrips(result.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '加载行程失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [user, filter]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetchTrips();
+    } else if (!authLoading && !user) {
+      setLoading(false);
+    }
+  }, [authLoading, user, fetchTrips]);
+
+  if (authLoading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color={colors.gold} />
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View style={styles.centerContainer}>
+        <Ionicons name="lock-closed-outline" size={48} color={colors.textMuted} />
+        <Text style={styles.emptyText}>请先登录</Text>
+        <Text style={styles.emptySubtext}>登录后即可查看和管理您的朝圣行程</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -113,63 +124,91 @@ export default function TripsScreen() {
         ))}
       </ScrollView>
 
-      {/* Trip list */}
-      <FlatList
-        data={filteredTrips}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
-        renderItem={({ item, index }) => {
-          const statusCfg = STATUS_CONFIG[item.status];
-          return (
-            <Animated.View entering={FadeInDown.duration(300).delay(index * 100)}>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.tripCard,
-                  pressed && styles.tripCardPressed,
-                ]}
-                onPress={() => router.push(`/trips/${item.id}`)}
-              >
-                <View style={styles.tripHeader}>
-                  <Text style={styles.tripEmoji}>{item.coverEmoji}</Text>
-                  <View style={styles.tripHeaderText}>
-                    <Text style={styles.tripTitle}>{item.title}</Text>
-                    <View style={[styles.statusBadge, { backgroundColor: `${statusCfg.color}20` }]}>
-                      <Ionicons name={statusCfg.icon} size={12} color={statusCfg.color} />
-                      <Text style={[styles.statusText, { color: statusCfg.color }]}>
-                        {statusCfg.label}
-                      </Text>
+      {/* Loading state */}
+      {loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={colors.gold} />
+          <Text style={[styles.emptySubtext, { marginTop: spacing.md }]}>加载行程中...</Text>
+        </View>
+      ) : error ? (
+        /* Error state */
+        <View style={styles.centerContainer}>
+          <Ionicons name="cloud-offline-outline" size={48} color={colors.textMuted} />
+          <Text style={styles.emptyText}>加载失败</Text>
+          <Text style={styles.emptySubtext}>{error}</Text>
+          <Pressable style={styles.retryButton} onPress={fetchTrips}>
+            <Ionicons name="refresh" size={16} color={colors.gold} />
+            <Text style={styles.retryText}>重试</Text>
+          </Pressable>
+        </View>
+      ) : (
+        /* Trip list */
+        <FlatList
+          data={trips}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.list}
+          renderItem={({ item, index }) => {
+            const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG.DRAFT;
+            const sitesCount = item.sites.length;
+            return (
+              <Animated.View entering={FadeInDown.duration(300).delay(index * 100)}>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.tripCard,
+                    pressed && styles.tripCardPressed,
+                  ]}
+                  onPress={() => router.push(`/trips/${item.id}`)}
+                >
+                  <View style={styles.tripHeader}>
+                    <View style={styles.tripHeaderText}>
+                      <Text style={styles.tripTitle}>{item.title}</Text>
+                      <View style={[styles.statusBadge, { backgroundColor: `${statusCfg.color}20` }]}>
+                        <Ionicons name={statusCfg.icon} size={12} color={statusCfg.color} />
+                        <Text style={[styles.statusText, { color: statusCfg.color }]}>
+                          {statusCfg.label}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
 
-                <Text style={styles.tripDescription} numberOfLines={2}>
-                  {item.description}
-                </Text>
-
-                <View style={styles.tripFooter}>
-                  <View style={styles.tripMeta}>
-                    <Ionicons name="calendar-outline" size={14} color={colors.textMuted} />
-                    <Text style={styles.tripMetaText}>
-                      {item.startDate} ~ {item.endDate}
+                  {item.note ? (
+                    <Text style={styles.tripDescription} numberOfLines={2}>
+                      {item.note}
                     </Text>
+                  ) : null}
+
+                  <View style={styles.tripFooter}>
+                    {item.startDate ? (
+                      <View style={styles.tripMeta}>
+                        <Ionicons name="calendar-outline" size={14} color={colors.textMuted} />
+                        <Text style={styles.tripMetaText}>
+                          {item.startDate.slice(0, 10)}
+                          {item.endDate ? ` ~ ${item.endDate.slice(0, 10)}` : ''}
+                        </Text>
+                      </View>
+                    ) : null}
+                    <View style={styles.tripMeta}>
+                      <Ionicons name="location-outline" size={14} color={colors.textMuted} />
+                      <Text style={styles.tripMetaText}>{sitesCount} 个圣地</Text>
+                    </View>
+                    <View style={styles.tripMeta}>
+                      <Ionicons name="people-outline" size={14} color={colors.textMuted} />
+                      <Text style={styles.tripMetaText}>{item.persons} 人</Text>
+                    </View>
                   </View>
-                  <View style={styles.tripMeta}>
-                    <Ionicons name="location-outline" size={14} color={colors.textMuted} />
-                    <Text style={styles.tripMetaText}>{item.sitesCount} 个圣地</Text>
-                  </View>
-                </View>
-              </Pressable>
-            </Animated.View>
-          );
-        }}
-        ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyEmoji}>🗺️</Text>
-            <Text style={styles.emptyText}>暂无行程</Text>
-            <Text style={styles.emptySubtext}>点击右下角按钮开始规划您的朝圣之旅</Text>
-          </View>
-        }
-      />
+                </Pressable>
+              </Animated.View>
+            );
+          }}
+          ListEmptyComponent={
+            <View style={styles.centerContainer}>
+              <Text style={styles.emptyEmoji}>🗺️</Text>
+              <Text style={styles.emptyText}>还没有行程</Text>
+              <Text style={styles.emptySubtext}>开始规划你的朝圣之旅</Text>
+            </View>
+          }
+        />
+      )}
 
       {/* Floating add button */}
       <Pressable
@@ -188,6 +227,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    paddingHorizontal: spacing.lg,
   },
   filterBar: {
     maxHeight: 56,
@@ -241,9 +287,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     marginBottom: spacing.sm,
   },
-  tripEmoji: {
-    fontSize: 36,
-  },
   tripHeaderText: {
     flex: 1,
     gap: spacing.xs,
@@ -288,10 +331,6 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: fontSize.sm,
   },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxl * 2,
-  },
   emptyEmoji: {
     fontSize: 64,
     marginBottom: spacing.md,
@@ -305,6 +344,23 @@ const styles = StyleSheet.create({
   emptySubtext: {
     color: colors.textMuted,
     fontSize: fontSize.md,
+    textAlign: 'center',
+  },
+  retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.gold,
+  },
+  retryText: {
+    color: colors.gold,
+    fontSize: fontSize.md,
+    fontWeight: '600',
   },
   fab: {
     position: 'absolute',
