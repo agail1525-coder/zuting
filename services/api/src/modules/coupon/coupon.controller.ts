@@ -11,13 +11,13 @@ import {
 import {
   ApiTags,
   ApiOperation,
-  ApiQuery,
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CouponService } from './coupon.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { VerifyCouponDto } from './dto/verify-coupon.dto';
@@ -40,16 +40,8 @@ export class CouponController {
   @Roles('ADMIN')
   @ApiBearerAuth()
   @ApiOperation({ summary: '优惠券列表 / Admin list all coupons' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.couponService.findAll(
-      page ? parseInt(page, 10) : undefined,
-      limit ? parseInt(limit, 10) : undefined,
-    );
+  findAll(@Query() pagination: PaginationQueryDto) {
+    return this.couponService.findAll(pagination.page, pagination.limit);
   }
 
   @Patch(':id')

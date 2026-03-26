@@ -38,6 +38,7 @@ export class NotificationService {
     limit = 20,
     unreadOnly?: boolean,
   ) {
+    const take = Math.min(limit, 100);
     const where: any = { userId };
     if (unreadOnly) {
       where.isRead = false;
@@ -47,8 +48,8 @@ export class NotificationService {
       this.prisma.notification.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
       }),
       this.prisma.notification.count({ where }),
     ]);

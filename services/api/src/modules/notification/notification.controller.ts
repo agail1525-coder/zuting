@@ -20,6 +20,7 @@ import { NotificationService } from './notification.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('notifications')
 @ApiBearerAuth()
@@ -34,21 +35,18 @@ export class NotificationController {
       '获取当前用户的通知列表，支持分页和仅显示未读过滤。\n\n' +
       'List notifications for the authenticated user with pagination and optional unread-only filter.',
   })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'unreadOnly', required: false, type: Boolean })
   @ApiResponse({ status: 200, description: 'Paginated list of notifications / 通知列表（分页）' })
   @ApiResponse({ status: 401, description: 'Unauthorized — valid JWT required / 未授权' })
   findAll(
     @CurrentUser('id') userId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query() pagination: PaginationQueryDto,
     @Query('unreadOnly') unreadOnly?: string,
   ) {
     return this.notificationService.findAll(
       userId,
-      page ? parseInt(page, 10) : undefined,
-      limit ? parseInt(limit, 10) : undefined,
+      pagination.page,
+      pagination.limit,
       unreadOnly === 'true',
     );
   }

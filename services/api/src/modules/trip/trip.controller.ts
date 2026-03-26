@@ -20,6 +20,7 @@ import {
 import type { TripStatus } from '@prisma/client';
 import { TripService } from './trip.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TransitionTripDto } from './dto/transition-trip.dto';
@@ -85,20 +86,6 @@ export class TripController {
     description: 'Filter by trip status. / 按行程状态筛选',
     enum: TRIP_STATUS_ENUM,
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Page number (1-based). Default: 1. / 页码（从1开始），默认1',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Items per page. Default: 20, max: 100. / 每页数量，默认20，最大100',
-    example: 20,
-  })
   @ApiResponse({
     status: 200,
     description: 'Paginated trip list. / 分页行程列表。',
@@ -127,16 +114,15 @@ export class TripController {
     },
   })
   findAll(
+    @Query() pagination: PaginationQueryDto,
     @Query('userId') userId?: string,
     @Query('status') status?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
   ) {
     return this.tripService.findAll({
       userId,
       status: status as TripStatus,
-      page: page ? parseInt(page, 10) : undefined,
-      limit: limit ? parseInt(limit, 10) : undefined,
+      page: pagination.page,
+      limit: pagination.limit,
     });
   }
 

@@ -42,11 +42,12 @@ export class CouponService {
 
   /** Admin: list all coupons */
   async findAll(page = 1, limit = 20) {
+    const take = Math.min(limit, 100);
     const [data, total] = await Promise.all([
       this.prisma.coupon.findMany({
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
         include: { _count: { select: { usages: true } } },
       }),
       this.prisma.coupon.count(),

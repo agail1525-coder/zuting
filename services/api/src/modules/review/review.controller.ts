@@ -18,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { ReviewService } from './review.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -55,20 +56,17 @@ export class ReviewController {
   })
   @ApiQuery({ name: 'targetType', required: true, enum: ['TRIP', 'GUIDE', 'SITE'] })
   @ApiQuery({ name: 'targetId', required: true })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({ status: 200, description: 'Paginated list of reviews / 评价列表（分页）' })
   findAll(
     @Query('targetType') targetType: string,
     @Query('targetId') targetId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query() pagination: PaginationQueryDto,
   ) {
     return this.reviewService.findAll({
       targetType,
       targetId,
-      page: page ? parseInt(page, 10) : undefined,
-      limit: limit ? parseInt(limit, 10) : undefined,
+      page: pagination.page,
+      limit: pagination.limit,
     });
   }
 
@@ -80,19 +78,16 @@ export class ReviewController {
       '获取当前登录用户的所有评价，支持分页。\n\n' +
       'Get all reviews created by the currently authenticated user, with pagination.',
   })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({ status: 200, description: 'Paginated list of user reviews / 用户评价列表' })
   @ApiResponse({ status: 401, description: 'Unauthorized — valid JWT required / 未授权' })
   findMyReviews(
     @CurrentUser('id') userId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query() pagination: PaginationQueryDto,
   ) {
     return this.reviewService.findMyReviews(
       userId,
-      page ? parseInt(page, 10) : undefined,
-      limit ? parseInt(limit, 10) : undefined,
+      pagination.page,
+      pagination.limit,
     );
   }
 

@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { JournalService } from './journal.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
 
@@ -88,20 +89,6 @@ export class JournalController {
     description: 'Filter by public/private visibility. true = public only. / 按公开/私密筛选',
     example: true,
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Page number (1-based). Default: 1. / 页码，默认1',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Items per page. Default: 20. / 每页数量，默认20',
-    example: 20,
-  })
   @ApiResponse({
     status: 200,
     description: 'Paginated journal list. / 分页日志列表。',
@@ -130,18 +117,17 @@ export class JournalController {
     },
   })
   findAll(
+    @Query() pagination: PaginationQueryDto,
     @Query('userId') userId?: string,
     @Query('tripId') tripId?: string,
     @Query('isPublic') isPublic?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
   ) {
     return this.journalService.findAll({
       userId,
       tripId,
       isPublic: isPublic !== undefined ? isPublic === 'true' : undefined,
-      page: page ? parseInt(page, 10) : undefined,
-      limit: limit ? parseInt(limit, 10) : undefined,
+      page: pagination.page,
+      limit: pagination.limit,
     });
   }
 

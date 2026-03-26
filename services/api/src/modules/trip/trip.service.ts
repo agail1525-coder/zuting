@@ -63,6 +63,7 @@ export class TripService {
     limit?: number;
   }) {
     const { userId, status, page = 1, limit = 20 } = params;
+    const take = Math.min(limit, 100);
     const where: any = {};
     if (userId) where.userId = userId;
     if (status) where.status = status;
@@ -75,8 +76,8 @@ export class TripService {
           _count: { select: { orders: true, journals: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
       }),
       this.prisma.trip.count({ where }),
     ]);

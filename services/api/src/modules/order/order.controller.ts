@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import type { OrderStatus } from '@prisma/client';
 import { OrderService } from './order.service';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
 
@@ -82,20 +83,6 @@ export class OrderController {
     description: 'Filter by order status. / 按订单状态筛选',
     enum: ['PENDING', 'PAID', 'CANCELLED', 'REFUNDING', 'REFUNDED'],
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Page number (1-based). Default: 1. / 页码，默认1',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Items per page. Default: 20. / 每页数量，默认20',
-    example: 20,
-  })
   @ApiResponse({
     status: 200,
     description: 'Paginated order list. / 分页订单列表。',
@@ -124,18 +111,17 @@ export class OrderController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   findAll(
+    @Query() pagination: PaginationQueryDto,
     @Query('userId') userId?: string,
     @Query('tripId') tripId?: string,
     @Query('status') status?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
   ) {
     return this.orderService.findAll({
       userId,
       tripId,
       status: status as OrderStatus,
-      page: page ? parseInt(page, 10) : undefined,
-      limit: limit ? parseInt(limit, 10) : undefined,
+      page: pagination.page,
+      limit: pagination.limit,
     });
   }
 

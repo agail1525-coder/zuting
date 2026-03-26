@@ -62,6 +62,7 @@ export class ReviewService {
     limit?: number;
   }) {
     const { targetType, targetId, page = 1, limit = 20 } = params;
+    const take = Math.min(limit, 100);
     const where: any = {};
     if (targetType) where.targetType = targetType;
     if (targetId) where.targetId = targetId;
@@ -73,8 +74,8 @@ export class ReviewService {
           user: { select: { id: true, nickname: true, avatar: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
       }),
       this.prisma.review.count({ where }),
     ]);
@@ -84,14 +85,15 @@ export class ReviewService {
 
   /** Get current user's reviews */
   async findMyReviews(userId: string, page = 1, limit = 20) {
+    const take = Math.min(limit, 100);
     const where = { userId };
 
     const [data, total] = await Promise.all([
       this.prisma.review.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
       }),
       this.prisma.review.count({ where }),
     ]);

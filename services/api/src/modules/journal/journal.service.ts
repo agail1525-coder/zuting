@@ -34,6 +34,7 @@ export class JournalService {
     limit?: number;
   }) {
     const { userId, tripId, isPublic, page = 1, limit = 20 } = params;
+    const take = Math.min(limit, 100);
     const where: any = {};
     if (userId) where.userId = userId;
     if (tripId) where.tripId = tripId;
@@ -47,8 +48,8 @@ export class JournalService {
           trip: { select: { id: true, title: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
+        skip: (page - 1) * take,
+        take,
       }),
       this.prisma.journalEntry.count({ where }),
     ]);
