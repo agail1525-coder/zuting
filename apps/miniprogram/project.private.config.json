@@ -1,0 +1,28 @@
+{
+  "description": "此文件包含项目私有配置，请勿提交至公共仓库。",
+  "setting": {
+    "compileHotReLoad": true,
+    "urlCheck": false
+  },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": ""
+        },
+        {
+          "name": "圣地详情",
+          "pathName": "pages/holy-site-detail/index",
+          "query": "id=test-id"
+        },
+        {
+          "name": "个人中心",
+          "pathName": "pages/profile/index",
+          "query": ""
+        }
+      ]
+    }
+  }
+}

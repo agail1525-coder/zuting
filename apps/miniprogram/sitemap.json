@@ -1,0 +1,49 @@
+{
+  "desc": "关于本文件的更多信息，请参考文档 https://developers.weixin.qq.com/miniprogram/dev/framework/sitemap.html",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/index/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/holy-sites/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/holy-site-detail/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/temple-detail/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/seal-detail/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/seals/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/religion-detail/index"
+    },
+    {
+      "action": "disallow",
+      "page": "pages/profile/index"
+    },
+    {
+      "action": "disallow",
+      "page": "pages/chat/index"
+    },
+    {
+      "action": "disallow",
+      "page": "pages/trips/index"
+    },
+    {
+      "action": "disallow",
+      "page": "pages/trip-detail/index"
+    }
+  ]
+}
