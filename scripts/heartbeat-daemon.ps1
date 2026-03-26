@@ -202,7 +202,10 @@ function Invoke-Claude {
     $logFile = Join-Path $Config.LogDir "$Label-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
     Write-Log "Invoking Claude: $Label"
 
-    $result = & $Config.ClaudeCLI --dangerously-skip-permissions -p $Prompt 2>&1
+    # 清除无效 API key, 强制 OAuth (Max套餐)
+    $env:ANTHROPIC_API_KEY = $null
+
+    $result = & $Config.ClaudeCLI -p $Prompt --permission-mode acceptEdits 2>&1
     $output = $result -join "`n"
     $output | Out-File -FilePath $logFile -Encoding UTF8
 
@@ -226,10 +229,12 @@ function Invoke-ClaudeAsync {
 
     $job = Start-Job -ScriptBlock {
         param($ProjectRoot, $Prompt, $LogFile, $ClaudeCLI)
+        # 清除无效 API key, 强制 OAuth (Max套餐)
+        $env:ANTHROPIC_API_KEY = $null
         Set-Location $ProjectRoot
-        $result = & $ClaudeCLI --dangerously-skip-permissions -p $Prompt 2>&1
+        $result = & $ClaudeCLI -p $Prompt --permission-mode acceptEdits 2>&1
         $output = $result -join "`n"
-        $output | Out-File -FilePath $LogFile -Encoding UTF8
+        [System.IO.File]::WriteAllText($LogFile, $output, [System.Text.UTF8Encoding]::new($true))
         return $output
     } -ArgumentList $Config.ProjectRoot, $Prompt, $logFile, $Config.ClaudeCLI
 
