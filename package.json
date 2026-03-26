@@ -1,0 +1,38 @@
+{
+  "name": "zuting-global",
+  "version": "0.1.0",
+  "private": true,
+  "description": "全球祖庭旅行平台 — Global Ancestral Temple Travel Platform",
+  "scripts": {
+    "dev:api": "pnpm --filter @zuting/api dev",
+    "dev:web": "pnpm --filter @zuting/web dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "db:push": "pnpm --filter @zuting/api db:push",
+    "db:seed": "pnpm --filter @zuting/api db:seed",
+    "db:studio": "pnpm --filter @zuting/api db:studio",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "pnpm@10.28.1",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "@nestjs/core",
+      "@swc/core"
+    ]
+  }
+}

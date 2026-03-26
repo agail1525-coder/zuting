@@ -1,0 +1,103 @@
+/* Global Styles - Dark Temple Theme */
+
+page {
+  background-color: #020617;
+  color: #e2e8f0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/* Scrollbar hidden */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Common utility classes */
+.container {
+  padding: 24rpx 32rpx;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 24rpx;
+  padding-left: 8rpx;
+  border-left: 6rpx solid #D4A855;
+  padding-left: 20rpx;
+}
+
+.golden-text {
+  color: #D4A855;
+}
+
+.card {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid rgba(212, 168, 85, 0.12);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+}
+
+.card-hover {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+.divider {
+  height: 1rpx;
+  background: linear-gradient(90deg, transparent, rgba(212, 168, 85, 0.3), transparent);
+  margin: 32rpx 0;
+}
+
+.loading-text {
+  text-align: center;
+  color: #64748b;
+  padding: 60rpx 0;
+  font-size: 26rpx;
+}
+
+.empty-text {
+  text-align: center;
+  color: #475569;
+  padding: 120rpx 40rpx;
+  font-size: 28rpx;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  background: rgba(212, 168, 85, 0.15);
+  color: #D4A855;
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(212, 168, 85, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+  background: linear-gradient(135deg, #D4A855, #b8922e);
+  color: #0f172a;
+  font-weight: 600;
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #D4A855;
+  border: 1rpx solid rgba(212, 168, 85, 0.4);
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 28rpx;
+}

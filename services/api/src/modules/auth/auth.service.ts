@@ -1,0 +1,394 @@
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
+import { PrismaService } from '../../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
+import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { WechatOAuthStrategy } from './strategies/wechat.strategy';
+import { GoogleOAuthStrategy } from './strategies/google.strategy';
+
+/** Redis key prefixes */
+const REFRESH_TOKEN_PREFIX = 'auth:refresh:';       // auth:refresh:{userId}
+const LOGIN_RATE_PREFIX = 'auth:rate:login:';        // auth:rate:login:{identifier}
+const VERIFY_CODE_PREFIX = 'auth:code:';             // auth:code:{type}:{target}
+
+const REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60; // 7 days in seconds
+const LOGIN_RATE_WINDOW = 60;                // 1 minute
+const LOGIN_RATE_MAX = 5;                    // max attempts per window
+const VERIFY_CODE_TTL = 5 * 60;             // 5 minutes
+
+@Injectable()
+export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService,
+    private readonly redis: RedisService,
+    private readonly wechatOAuth: WechatOAuthStrategy,
+    private readonly googleOAuth: GoogleOAuthStrategy,
+  ) {}
+
+  /** Register a new user with phone/email + password */
+  async register(dto: RegisterDto) {
+    if (!dto.phone && !dto.email) {
+      throw new BadRequestException('Phone or email is required');
+    }
+
+    // Check duplicates
+    if (dto.phone) {
+      const exists = await this.prisma.user.findUnique({ where: { phone: dto.phone } });
+      if (exists) throw new ConflictException('Phone number already registered');
+    }
+    if (dto.email) {
+      const exists = await this.prisma.user.findUnique({ where: { email: dto.email } });
+      if (exists) throw new ConflictException('Email already registered');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        phone: dto.phone,
+        email: dto.email,
+        nickname: dto.nickname,
+        passwordHash,
+      },
+    });
+
+    return this.generateTokens(user.id, user.role);
+  }
+
+  /** Login with phone/email + password, with Redis rate limiting */
+  async login(dto: LoginDto, clientIp?: string) {
+    // Rate limit by identifier (phone/email) and optionally IP
+    const identifier = dto.phone || dto.email || 'unknown';
+    await this.checkLoginRateLimit(identifier);
+    if (clientIp) {
+      await this.checkLoginRateLimit(clientIp);
+    }
+
+    const user = dto.phone
+      ? await this.prisma.user.findUnique({ where: { phone: dto.phone } })
+      : dto.email
+        ? await this.prisma.user.findUnique({ where: { email: dto.email } })
+        : null;
+
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user.isActive) throw new UnauthorizedException('Account is disabled');
+    if (!user.passwordHash) throw new UnauthorizedException('Password not set, use social login');
+
+    const valid = await bcrypt.compare(dto.password, user.passwordHash);
+    if (!valid) throw new UnauthorizedException('Invalid credentials');
+
+    // Update last login
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    return this.generateTokens(user.id, user.role);
+  }
+
+  /** Refresh access token using refresh token (validated against Redis) */
+  async refresh(refreshToken: string) {
+    try {
+      const payload = this.jwt.verify(refreshToken, {
+        secret: this.config.get('JWT_SECRET'),
+      });
+
+      const userId: string = payload.sub;
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true, isActive: true },
+      });
+
+      if (!user || !user.isActive) {
+        throw new UnauthorizedException('User not found or inactive');
+      }
+
+      // Validate refresh token against Redis (primary) then DB (fallback)
+      const storedToken = await this.redis.get(
+        `${REFRESH_TOKEN_PREFIX}${userId}`,
+      );
+
+      if (storedToken) {
+        // Redis has the token — validate it
+        if (storedToken !== refreshToken) {
+          throw new UnauthorizedException('Refresh token revoked');
+        }
+      } else {
+        // Redis miss — fall back to DB for backward compatibility
+        const dbUser = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { refreshToken: true },
+        });
+        if (dbUser?.refreshToken !== refreshToken) {
+          throw new UnauthorizedException('Refresh token revoked');
+        }
+      }
+
+      return this.generateTokens(user.id, user.role);
+    } catch (err) {
+      if (err instanceof UnauthorizedException) throw err;
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  /** Logout - clear refresh token from Redis + DB */
+  async logout(userId: string) {
+    await Promise.all([
+      this.redis.del(`${REFRESH_TOKEN_PREFIX}${userId}`),
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: null },
+      }),
+    ]);
+    return { message: 'Logged out successfully' };
+  }
+
+  /** Get current user profile */
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        phone: true,
+        email: true,
+        nickname: true,
+        avatar: true,
+        role: true,
+        language: true,
+        emailVerified: true,
+        phoneVerified: true,
+        createdAt: true,
+        lastLoginAt: true,
+        _count: {
+          select: { trips: true, orders: true, journals: true, practices: true },
+        },
+      },
+    });
+    if (!user) throw new UnauthorizedException('User not found');
+    return user;
+  }
+
+  /** Reset password for a user identified by phone or email */
+  async resetPassword(target: string, newPassword: string): Promise<void> {
+    // Find user by phone or email
+    const isEmail = target.includes('@');
+    const user = isEmail
+      ? await this.prisma.user.findUnique({ where: { email: target } })
+      : await this.prisma.user.findUnique({ where: { phone: target } });
+
+    if (!user) {
+      throw new BadRequestException('User not found / 用户不存在');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
+
+    this.logger.log(`Password reset for user: ${user.id}`);
+  }
+
+  // ─── OAuth login ─────────────────────────────────────────
+
+  /** Check if WeChat OAuth is configured */
+  isWechatConfigured(): boolean {
+    return this.wechatOAuth.isConfigured();
+  }
+
+  /** Check if Google OAuth is configured */
+  isGoogleConfigured(): boolean {
+    return this.googleOAuth.isConfigured();
+  }
+
+  /** Get WeChat authorize URL */
+  getWechatAuthorizeUrl(state: string): string {
+    return this.wechatOAuth.getAuthorizeUrl(state);
+  }
+
+  /** Get Google authorize URL */
+  getGoogleAuthorizeUrl(state: string): string {
+    return this.googleOAuth.getAuthorizeUrl(state);
+  }
+
+  /** Handle WeChat OAuth callback: exchange code, find or create user */
+  async wechatCallback(code: string) {
+    // 1. Exchange code for token
+    const tokenRes = await this.wechatOAuth.getAccessToken(code);
+    const { openid, unionid } = tokenRes;
+
+    // 2. Try to find existing user by openid
+    let user = await this.prisma.user.findUnique({
+      where: { wechatOpenId: openid },
+    });
+
+    if (!user) {
+      // 3. Fetch user profile from WeChat
+      const userInfo = await this.wechatOAuth.getUserInfo(
+        tokenRes.access_token,
+        openid,
+      );
+
+      // 4. Create new user
+      user = await this.prisma.user.create({
+        data: {
+          wechatOpenId: openid,
+          wechatUnionId: unionid || userInfo.unionid || null,
+          nickname: userInfo.nickname || '微信用户',
+          avatar: userInfo.headimgurl || null,
+        },
+      });
+      this.logger.log(`New user created via WeChat OAuth: ${user.id}`);
+    } else {
+      // Update last login
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+    }
+
+    return this.generateTokens(user.id, user.role);
+  }
+
+  /** Handle Google OAuth callback: exchange code, find or create user */
+  async googleCallback(code: string) {
+    // 1. Exchange code for tokens
+    const tokenRes = await this.googleOAuth.getTokens(code);
+
+    // 2. Get user info
+    const userInfo = await this.googleOAuth.getUserInfo(tokenRes.access_token);
+    const googleId = userInfo.sub;
+
+    // 3. Try to find existing user by googleId
+    let user = await this.prisma.user.findUnique({
+      where: { googleId },
+    });
+
+    if (!user) {
+      // 4. Check if email already exists (link accounts)
+      if (userInfo.email) {
+        user = await this.prisma.user.findUnique({
+          where: { email: userInfo.email },
+        });
+        if (user) {
+          // Link Google account to existing user
+          user = await this.prisma.user.update({
+            where: { id: user.id },
+            data: {
+              googleId,
+              avatar: user.avatar || userInfo.picture || null,
+              lastLoginAt: new Date(),
+            },
+          });
+          this.logger.log(`Linked Google account to existing user: ${user.id}`);
+          return this.generateTokens(user.id, user.role);
+        }
+      }
+
+      // 5. Create new user
+      user = await this.prisma.user.create({
+        data: {
+          googleId,
+          email: userInfo.email || null,
+          emailVerified: userInfo.email_verified || false,
+          nickname: userInfo.name || 'Google User',
+          avatar: userInfo.picture || null,
+        },
+      });
+      this.logger.log(`New user created via Google OAuth: ${user.id}`);
+    } else {
+      // Update last login
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+    }
+
+    return this.generateTokens(user.id, user.role);
+  }
+
+  // ─── Verification codes ───────────────────────────────────
+
+  /** Store a verification code in Redis with 5-minute TTL */
+  async storeVerificationCode(
+    type: string,
+    target: string,
+    code: string,
+  ): Promise<void> {
+    const key = `${VERIFY_CODE_PREFIX}${type}:${target}`;
+    await this.redis.setex(key, VERIFY_CODE_TTL, code);
+  }
+
+  /** Verify a code and delete it if valid */
+  async verifyCode(
+    type: string,
+    target: string,
+    code: string,
+  ): Promise<boolean> {
+    const key = `${VERIFY_CODE_PREFIX}${type}:${target}`;
+    const stored = await this.redis.get(key);
+    if (!stored || stored !== code) return false;
+    await this.redis.del(key);
+    return true;
+  }
+
+  // ─── Private helpers ──────────────────────────────────────
+
+  /** Generate access + refresh token pair, store refresh token in Redis + DB */
+  private async generateTokens(userId: string, role: string) {
+    const payload = { sub: userId, role };
+
+    const accessToken = this.jwt.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwt.sign(payload, { expiresIn: '7d' });
+
+    // Store refresh token in Redis (primary) and DB (fallback)
+    await Promise.all([
+      this.redis.setex(
+        `${REFRESH_TOKEN_PREFIX}${userId}`,
+        REFRESH_TOKEN_TTL,
+        refreshToken,
+      ),
+      this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken },
+      }),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+      expiresIn: 900, // 15 minutes in seconds
+    };
+  }
+
+  /** Rate limit login attempts: max 5 per minute per identifier */
+  private async checkLoginRateLimit(identifier: string): Promise<void> {
+    const key = `${LOGIN_RATE_PREFIX}${identifier}`;
+    const current = await this.redis.incr(key);
+
+    // Set expiry on first attempt
+    if (current === 1) {
+      await this.redis.expire(key, LOGIN_RATE_WINDOW);
+    }
+
+    if (current > LOGIN_RATE_MAX) {
+      throw new ForbiddenException(
+        'Too many login attempts. Please try again in a minute.',
+      );
+    }
+  }
+}

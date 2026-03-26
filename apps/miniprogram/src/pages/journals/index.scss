@@ -1,0 +1,123 @@
+.journals-page {
+  min-height: 100vh;
+  background-color: #020617;
+  position: relative;
+}
+
+.journal-list {
+  padding: 24rpx 32rpx;
+  height: 100vh;
+}
+
+/* Journal Card */
+.journal-card {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-radius: 20rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid rgba(212, 168, 85, 0.12);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+
+  &--hover {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+
+  &__image {
+    height: 200rpx;
+    background: linear-gradient(135deg, rgba(212, 168, 85, 0.1), rgba(15, 23, 42, 0.8));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__image-emoji {
+    font-size: 80rpx;
+  }
+
+  &__body {
+    padding: 24rpx 28rpx;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12rpx;
+  }
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #f1f5f9;
+    flex: 1;
+    margin-right: 12rpx;
+  }
+
+  &__mood {
+    flex-shrink: 0;
+    background: rgba(212, 168, 85, 0.12);
+    border: 1rpx solid rgba(212, 168, 85, 0.25);
+    border-radius: 20rpx;
+    padding: 4rpx 16rpx;
+  }
+
+  &__mood-text {
+    font-size: 22rpx;
+    color: #D4A855;
+    white-space: nowrap;
+  }
+
+  &__excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 26rpx;
+    color: #94a3b8;
+    line-height: 1.7;
+    margin-bottom: 16rpx;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__site {
+    font-size: 24rpx;
+    color: #64748b;
+  }
+
+  &__date {
+    font-size: 22rpx;
+    color: #475569;
+  }
+}
+
+/* Floating Action Button */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #D4A855, #b8922e);
+  border-radius: 48rpx;
+  padding: 20rpx 36rpx;
+  box-shadow: 0 8rpx 32rpx rgba(212, 168, 85, 0.3);
+
+  &__icon {
+    font-size: 28rpx;
+    margin-right: 8rpx;
+    color: #0f172a;
+  }
+
+  &__text {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+  }
+}

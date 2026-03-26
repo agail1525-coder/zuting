@@ -1,0 +1,483 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== 用户体系 ==========
+
+model User {
+  id           String    @id @default(cuid())
+  phone        String?   @unique
+  email        String?   @unique
+  wechatOpenId  String?   @unique
+  wechatUnionId String?   @unique
+  googleId      String?   @unique
+  nickname     String
+  avatar       String?
+  role         UserRole  @default(PILGRIM)
+  language     String    @default("zh-CN")
+  passwordHash    String?
+  refreshToken    String?
+  emailVerified   Boolean   @default(false)
+  phoneVerified   Boolean   @default(false)
+  lastLoginAt     DateTime?
+  isActive        Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  practices     Practice[]
+  trips         Trip[]
+  posts         Post[]
+  orders        Order[]
+  journals      JournalEntry[]
+  sessions      Session[]
+  guideProfile  GuideProfile?
+  reviews       Review[]
+  notifications Notification[]
+  uploads       Upload[]
+  reportsMade     ContentReport[] @relation("ReportsMade")
+  reportsReviewed ContentReport[] @relation("ReportsReviewed")
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String   @unique
+  deviceInfo String?
+  ipAddress  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model VerificationCode {
+  id        String   @id @default(cuid())
+  target    String
+  code      String
+  type      String   // REGISTER, LOGIN, RESET_PASSWORD
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([target, type])
+}
+
+enum UserRole {
+  PILGRIM
+  GUIDE
+  AMBASSADOR
+  ADMIN
+}
+
+// ========== 宗教数据 ==========
+
+model Religion {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  nameEn String
+  slug   String  @unique
+  symbol String?
+  color  String?
+
+  holySites  HolySite[]
+  temples    Temple[]
+  patriarchs Patriarch[]
+  teachings  Teaching[]
+}
+
+model HolySite {
+  id          String  @id @default(cuid())
+  name        String
+  nameEn      String
+  country     String
+  latitude    Float
+  longitude   Float
+  utcOffset   Float
+  description String  @db.Text
+  imageUrl    String?
+  soundEffect String?
+
+  religionId String
+  religion   Religion   @relation(fields: [religionId], references: [id])
+  tripSites  TripSite[]
+
+  @@index([religionId])
+}
+
+model Temple {
+  id           String  @id @default(cuid())
+  name         String
+  nameEn       String?
+  country      String
+  foundingDate String?
+  description  String  @db.Text
+  imageUrl     String?
+  latitude     Float?
+  longitude    Float?
+
+  religionId String
+  religion   Religion @relation(fields: [religionId], references: [id])
+
+  @@index([religionId])
+}
+
+model Patriarch {
+  id           String  @id @default(cuid())
+  name         String
+  nameEn       String?
+  dates        String?
+  title        String?
+  biography    String  @db.Text
+  coreTeaching String  @db.Text
+  imageUrl     String?
+
+  religionId String
+  religion   Religion @relation(fields: [religionId], references: [id])
+
+  @@index([religionId])
+}
+
+model Teaching {
+  id            String  @id @default(cuid())
+  name          String
+  originalText  String  @db.Text
+  sourceText    String?
+  translationCn String? @db.Text
+
+  religionId String
+  religion   Religion @relation(fields: [religionId], references: [id])
+
+  @@index([religionId])
+}
+
+// ========== 曹溪三十印 ==========
+
+model Seal {
+  id       Int        @id
+  name     String
+  series   SealSeries
+  poem     String     @db.Text
+  essence  String     @db.Text
+  practice String     @db.Text
+  vow      String     @db.Text
+  color    String?
+}
+
+enum SealSeries {
+  CHUYIN
+  ZHONGYIN
+  YINGUOYIN
+  CHENGDAOYIN
+  GUIYUANYIN
+}
+
+// ========== 修行记录 ==========
+
+model Practice {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  sealId   Int
+  date     DateTime @default(now())
+  duration Int?
+  note     String?  @db.Text
+
+  @@index([userId])
+  @@index([date])
+}
+
+// ========== 旅行规划 ==========
+
+model Trip {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  title        String
+  startDate    DateTime?
+  endDate      DateTime?
+  status       TripStatus @default(DRAFT)
+  totalBudget  Int?       // in cents (分)
+  persons      Int        @default(1)
+  contactName  String?
+  contactPhone String?
+  note         String?    @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  guideId       String?
+  guide         GuideProfile? @relation("TripGuide", fields: [guideId], references: [id])
+  sites         TripSite[]
+  statusHistory TripStatusHistory[]
+  orders        Order[]
+  journals      JournalEntry[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([guideId])
+}
+
+// Enhanced Trip Status - 12 state lifecycle
+enum TripStatus {
+  DRAFT           // 草稿
+  PLANNING        // 规划中
+  SUBMITTED       // 已提交
+  CONFIRMED       // 已确认
+  PAID            // 已支付
+  PREPARING       // 准备中
+  IN_PROGRESS     // 朝圣中
+  COMPLETED       // 已完成
+  REVIEWING       // 评价中
+  CANCELLED       // 已取消
+  REFUNDING       // 退款中
+  REFUNDED        // 已退款
+}
+
+// Trip Status History - audit trail
+model TripStatusHistory {
+  id         String     @id @default(cuid())
+  tripId     String
+  trip       Trip       @relation(fields: [tripId], references: [id])
+  fromStatus TripStatus
+  toStatus   TripStatus
+  event      String     // e.g. "user_submit", "admin_confirm", "payment_success"
+  operator   String?    // who triggered: userId or "system"
+  reason     String?    // optional reason for cancellation/refund
+  createdAt  DateTime   @default(now())
+
+  @@index([tripId])
+}
+
+// Order for trip payment
+model Order {
+  id            String      @id @default(cuid())
+  orderNo       String      @unique  // OD + timestamp + random
+  tripId        String
+  trip          Trip        @relation(fields: [tripId], references: [id])
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  totalAmount   Int         // in cents (分)
+  paidAmount    Int?        // actual paid amount
+  paymentMethod String?     // wechat/alipay/stripe
+  paymentId     String?     // external payment ID
+  status        OrderStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  paidAt        DateTime?
+  cancelledAt   DateTime?
+  refundedAt    DateTime?
+
+  transactions PaymentTransaction[]
+
+  @@index([userId])
+  @@index([tripId])
+  @@index([orderNo])
+}
+
+enum OrderStatus {
+  PENDING     // 待支付
+  PAID        // 已支付
+  CANCELLED   // 已取消
+  REFUNDING   // 退款中
+  REFUNDED    // 已退款
+}
+
+// Journal entry for pilgrimage diary
+model JournalEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tripId    String?
+  trip      Trip?    @relation(fields: [tripId], references: [id])
+  siteId    String?
+  title     String
+  content   String   @db.Text
+  images    String[]
+  mood      String?  // 感悟/喜悦/平静/震撼
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([tripId])
+}
+
+model TripSite {
+  id        String    @id @default(cuid())
+  tripId    String
+  trip      Trip      @relation(fields: [tripId], references: [id])
+  siteId    String
+  site      HolySite  @relation(fields: [siteId], references: [id])
+  order     Int
+  visitDate DateTime?
+  notes     String?   @db.Text
+
+  @@index([tripId])
+}
+
+// ========== 社区 ==========
+
+model Post {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String   @db.Text
+  images    String[]
+  siteTag   String?
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ========== P1: 支付交易 ==========
+
+model PaymentTransaction {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id])
+  gateway         String   // wechat / alipay / stripe
+  transactionId   String?  @unique // 外部交易号
+  amount          Int      // in cents (分)
+  currency        String   @default("CNY")
+  status          String   @default("PENDING") // PENDING / SUCCESS / FAILED / REFUNDED
+  callbackPayload Json?    // 回调原始数据
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([transactionId])
+}
+
+// ========== P1: 导游 ==========
+
+model GuideProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+  realName        String
+  idNumber        String?
+  certifications  String[] // 导游证号
+  languages       String[] // 服务语言
+  specialties     String[] // 擅长信仰体系
+  bio             String?  @db.Text
+  avatarUrl       String?
+  rating          Float    @default(0)
+  totalTrips      Int      @default(0)
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  trips Trip[] @relation("TripGuide")
+}
+
+// ========== P1: 评价 ==========
+
+model Review {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  targetType String   // TRIP / GUIDE / SITE
+  targetId   String
+  rating     Int      // 1-5
+  content    String?  @db.Text
+  images     String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, targetType, targetId])
+  @@index([targetType, targetId])
+}
+
+// ========== P2: 通知 ==========
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // TRIP_STATUS / PAYMENT / SYSTEM / REVIEW / PROMOTION
+  title     String
+  content   String   @db.Text
+  link      String?  // 跳转路径 e.g. /trips/xxx
+  isRead    Boolean  @default(false)
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+// ========== P2: 文件上传 ==========
+
+model Upload {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  filename   String
+  mimetype   String
+  size       Int      // bytes
+  url        String   // CDN URL
+  provider   String   @default("local") // local / oss / s3
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ========== P4: 合规 ==========
+
+model ContentReport {
+  id          String   @id @default(cuid())
+  reporterId  String
+  reporter    User     @relation("ReportsMade", fields: [reporterId], references: [id])
+  targetType  String   // JOURNAL / POST / REVIEW
+  targetId    String
+  reason      String   // INAPPROPRIATE / OFFENSIVE / SPAM / RELIGIOUS_SENSITIVE
+  description String?  @db.Text
+  status      String   @default("PENDING") // PENDING / REVIEWED / DISMISSED
+  reviewedBy  String?
+  reviewer    User?    @relation("ReportsReviewed", fields: [reviewedBy], references: [id])
+  reviewedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+  @@index([targetType, targetId])
+}
+
+// ========== P4: 优惠券 ==========
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  name        String
+  type        String    // FIXED / PERCENT
+  value       Int       // 固定金额(分) 或 百分比(1-100)
+  minAmount   Int?      // 最低消费(分)
+  maxDiscount Int?      // 最大折扣(分)，百分比券用
+  totalCount  Int       @default(0) // 0=无限
+  usedCount   Int       @default(0)
+  startAt     DateTime
+  endAt       DateTime
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  usages CouponUsage[]
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  userId    String
+  orderId   String?
+  discount  Int      // 实际抵扣金额(分)
+  createdAt DateTime @default(now())
+
+  @@unique([couponId, userId, orderId])
+  @@index([userId])
+}

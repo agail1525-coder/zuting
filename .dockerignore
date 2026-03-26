@@ -1,0 +1,11 @@
+node_modules
+.next
+dist
+.git
+.github
+*.md
+desktop
+docker
+.env
+.env.*
+!.env.example

@@ -1,7 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (desktop app)
 __pycache__/
 *.pyc
 *.pyo
-progress.json
-xiaohong_journal.json
-sounds/
-backgrounds/
+
+# Desktop app data
+desktop/progress.json
+desktop/xiaohong_journal.json
+desktop/sounds/
+desktop/backgrounds/
+
+# Docker volumes
+docker/data/
+
+# Logs
+*.log
+npm-debug.log*

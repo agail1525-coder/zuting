@@ -1,0 +1,144 @@
+.religion-detail {
+  min-height: 100vh;
+  background-color: #020617;
+  padding: 0 32rpx;
+}
+
+.detail-header {
+  text-align: center;
+  padding: 48rpx 16rpx 32rpx;
+
+  &__emoji {
+    display: block;
+    font-size: 80rpx;
+    margin-bottom: 16rpx;
+  }
+
+  &__name {
+    display: block;
+    font-size: 44rpx;
+    font-weight: 800;
+    color: #f1f5f9;
+    margin-bottom: 8rpx;
+  }
+
+  &__name-en {
+    display: block;
+    font-size: 26rpx;
+    color: #94a3b8;
+    margin-bottom: 20rpx;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 26rpx;
+    color: #cbd5e1;
+    line-height: 1.7;
+    margin-bottom: 20rpx;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16rpx;
+    flex-wrap: wrap;
+  }
+
+  &__tag {
+    background: rgba(212, 168, 85, 0.1);
+    border: 1rpx solid rgba(212, 168, 85, 0.2);
+    border-radius: 20rpx;
+    padding: 8rpx 20rpx;
+  }
+
+  &__tag-text {
+    font-size: 22rpx;
+    color: #D4A855;
+  }
+}
+
+.detail-section {
+  margin-bottom: 36rpx;
+}
+
+.card {
+  &__name {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 4rpx;
+  }
+
+  &__name-en {
+    display: block;
+    font-size: 22rpx;
+    color: #94a3b8;
+    margin-bottom: 12rpx;
+  }
+
+  &__subtitle {
+    display: block;
+    font-size: 24rpx;
+    color: #D4A855;
+    margin-bottom: 8rpx;
+  }
+
+  &__era {
+    display: block;
+    font-size: 22rpx;
+    color: #64748b;
+  }
+
+  &__location {
+    margin-bottom: 8rpx;
+  }
+
+  &__location-text {
+    font-size: 24rpx;
+    color: #cbd5e1;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 24rpx;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+}
+
+.teaching-card {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid rgba(212, 168, 85, 0.08);
+  position: relative;
+
+  &__quote {
+    position: absolute;
+    top: 12rpx;
+    left: 20rpx;
+    font-size: 64rpx;
+    color: rgba(212, 168, 85, 0.15);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+
+  &__content {
+    display: block;
+    font-size: 26rpx;
+    color: #e2e8f0;
+    line-height: 1.8;
+    padding-left: 8rpx;
+    margin-bottom: 12rpx;
+  }
+
+  &__source {
+    display: block;
+    font-size: 22rpx;
+    color: #D4A855;
+    text-align: right;
+  }
+}
