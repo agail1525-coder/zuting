@@ -154,24 +154,52 @@ export function fetchSealById(id: string) {
   return request<Seal>(`/seals/${id}`)
 }
 
+// Paginated response wrapper
+export interface PaginatedResponse<T> {
+  data: T[]
+  total: number
+  page: number
+  limit: number
+}
+
 // Trip interfaces and endpoints
 export interface Trip {
   id: string
   title: string
   status: string
-  startDate: string
-  endDate: string
-  sitesCount: number
-  description: string
+  startDate: string | null
+  endDate: string | null
+  note: string | null
+  sites: { id: string; site: { id: string; name: string; nameEn: string; city: string; country: string } }[]
+  _count: { orders: number; journals: number }
+  createdAt: string
+}
+
+export interface TripSiteDetail {
+  id: string
+  site: { id: string; name: string; nameEn: string; city: string; country: string }
+  order: number
+}
+
+export interface TripStatusHistoryItem {
+  id: string
+  status: string
+  note: string | null
+  createdAt: string
 }
 
 export interface TripDetail extends Trip {
-  sites: { id: string; name: string; city: string; country: string }[]
-  history: { status: string; date: string; note: string }[]
+  user: { id: string; nickname: string; avatar: string | null }
+  statusHistory: TripStatusHistoryItem[]
+  orders: { id: string; status: string; amount: number; createdAt: string }[]
+  journals: { id: string; title: string; createdAt: string }[]
+  availableActions: { action: string; targetStatus: string; label: string }[]
+  statusLabel: string
+  statusColor: string
 }
 
 export function fetchTrips(status?: string) {
-  return request<Trip[]>('/trips', status ? { status } : undefined)
+  return request<PaginatedResponse<Trip>>('/trips', status ? { status } : undefined)
 }
 
 export function fetchTrip(id: string) {
@@ -196,14 +224,18 @@ export interface Journal {
   id: string
   title: string
   content: string
-  mood: string
-  siteId?: string
-  siteName?: string
+  mood: string | null
+  isPublic: boolean
+  images: string[]
+  siteId: string | null
+  tripId: string | null
+  user?: { id: string; nickname: string; avatar: string | null }
+  trip?: { id: string; title: string } | null
   createdAt: string
 }
 
-export function fetchJournals() {
-  return request<Journal[]>('/journals')
+export function fetchJournals(params?: { page?: string; limit?: string; isPublic?: string }) {
+  return request<PaginatedResponse<Journal>>('/journals', params)
 }
 
 // AI Chat endpoints
