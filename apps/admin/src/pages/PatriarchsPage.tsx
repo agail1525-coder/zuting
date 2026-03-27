@@ -209,7 +209,7 @@ export default function PatriarchsPage() {
           <Form.Item name="coreTeaching" label="核心教义">
             <Input.TextArea rows={2} placeholder="核心教义概述" />
           </Form.Item>
-          <Form.Item name="imageUrl" label="图片URL">
+          <Form.Item name="imageUrl" label="图片URL" rules={[{ type: 'url', message: '请输入有效的URL' }]}>
             <Input placeholder="https://..." />
           </Form.Item>
           <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>

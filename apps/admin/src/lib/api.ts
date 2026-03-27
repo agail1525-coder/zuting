@@ -1,6 +1,77 @@
 import { getToken, logout } from './auth';
+import type {
+  Religion, HolySite, Temple, Patriarch, Teaching, Seal,
+  Trip, Order, Journal, Review, Coupon, CreateCouponDto,
+  Report, ReportStats, Upload, DeleteResponse,
+  XiaohongChatResponse, NotificationSendResponse,
+} from '../types';
 
-const BASE = '/api';
+// ---- DTO Interfaces (R-01: 严禁any) ----
+
+export interface CreateReligionDto {
+  name: string;
+  nameEn: string;
+  slug: string;
+  symbol?: string;
+  color?: string;
+}
+
+export interface CreateHolySiteDto {
+  name: string;
+  nameEn: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  utcOffset: number;
+  description: string;
+  imageUrl?: string;
+  soundEffect?: string;
+  religionId: string;
+}
+
+export interface CreateTempleDto {
+  name: string;
+  nameEn?: string;
+  country: string;
+  foundingDate?: string;
+  description: string;
+  imageUrl?: string;
+  latitude?: number;
+  longitude?: number;
+  religionId: string;
+}
+
+export interface CreatePatriarchDto {
+  name: string;
+  nameEn?: string;
+  dates?: string;
+  title?: string;
+  biography: string;
+  coreTeaching: string;
+  imageUrl?: string;
+  religionId: string;
+}
+
+export interface CreateTeachingDto {
+  name: string;
+  originalText: string;
+  sourceText?: string;
+  translationCn?: string;
+  religionId: string;
+}
+
+export interface CreateSealDto {
+  id: number;
+  name: string;
+  series: string;
+  poem: string;
+  essence: string;
+  practice: string;
+  vow: string;
+  color?: string;
+}
+
+const BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const token = getToken();
@@ -27,77 +98,83 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 // ---- Religions ----
 export const getReligions = (slug?: string) =>
-  fetchJson<any[]>(slug ? `/religions?slug=${slug}` : '/religions');
-export const createReligion = (data: any) =>
-  fetchJson<any>('/religions', { method: 'POST', body: JSON.stringify(data) });
-export const updateReligion = (id: string, data: any) =>
-  fetchJson<any>(`/religions/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  fetchJson<Religion[]>(slug ? `/religions?slug=${slug}` : '/religions');
+export const createReligion = (data: CreateReligionDto) =>
+  fetchJson<CreateReligionDto & { id: string }>('/religions', { method: 'POST', body: JSON.stringify(data) });
+export const updateReligion = (id: string, data: Partial<CreateReligionDto>) =>
+  fetchJson<CreateReligionDto & { id: string }>(`/religions/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deleteReligion = (id: string) =>
-  fetchJson<any>(`/religions/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/religions/${id}`, { method: 'DELETE' });
 
 // ---- Holy Sites ----
 export const getHolySites = (religionId?: string) =>
-  fetchJson<any[]>(religionId ? `/holy-sites?religionId=${religionId}` : '/holy-sites');
-export const createHolySite = (data: any) =>
-  fetchJson<any>('/holy-sites', { method: 'POST', body: JSON.stringify(data) });
-export const updateHolySite = (id: string, data: any) =>
-  fetchJson<any>(`/holy-sites/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  fetchJson<HolySite[]>(religionId ? `/holy-sites?religionId=${religionId}` : '/holy-sites');
+export const createHolySite = (data: CreateHolySiteDto) =>
+  fetchJson<CreateHolySiteDto & { id: string }>('/holy-sites', { method: 'POST', body: JSON.stringify(data) });
+export const updateHolySite = (id: string, data: Partial<CreateHolySiteDto>) =>
+  fetchJson<CreateHolySiteDto & { id: string }>(`/holy-sites/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deleteHolySite = (id: string) =>
-  fetchJson<any>(`/holy-sites/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/holy-sites/${id}`, { method: 'DELETE' });
 
 // ---- Temples ----
 export const getTemples = (religionId?: string) =>
-  fetchJson<any[]>(religionId ? `/temples?religionId=${religionId}` : '/temples');
-export const createTemple = (data: any) =>
-  fetchJson<any>('/temples', { method: 'POST', body: JSON.stringify(data) });
-export const updateTemple = (id: string, data: any) =>
-  fetchJson<any>(`/temples/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  fetchJson<Temple[]>(religionId ? `/temples?religionId=${religionId}` : '/temples');
+export const createTemple = (data: CreateTempleDto) =>
+  fetchJson<CreateTempleDto & { id: string }>('/temples', { method: 'POST', body: JSON.stringify(data) });
+export const updateTemple = (id: string, data: Partial<CreateTempleDto>) =>
+  fetchJson<CreateTempleDto & { id: string }>(`/temples/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deleteTemple = (id: string) =>
-  fetchJson<any>(`/temples/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/temples/${id}`, { method: 'DELETE' });
 
 // ---- Patriarchs ----
 export const getPatriarchs = (religionId?: string) =>
-  fetchJson<any[]>(religionId ? `/patriarchs?religionId=${religionId}` : '/patriarchs');
-export const createPatriarch = (data: any) =>
-  fetchJson<any>('/patriarchs', { method: 'POST', body: JSON.stringify(data) });
-export const updatePatriarch = (id: string, data: any) =>
-  fetchJson<any>(`/patriarchs/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  fetchJson<Patriarch[]>(religionId ? `/patriarchs?religionId=${religionId}` : '/patriarchs');
+export const createPatriarch = (data: CreatePatriarchDto) =>
+  fetchJson<CreatePatriarchDto & { id: string }>('/patriarchs', { method: 'POST', body: JSON.stringify(data) });
+export const updatePatriarch = (id: string, data: Partial<CreatePatriarchDto>) =>
+  fetchJson<CreatePatriarchDto & { id: string }>(`/patriarchs/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deletePatriarch = (id: string) =>
-  fetchJson<any>(`/patriarchs/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/patriarchs/${id}`, { method: 'DELETE' });
 
 // ---- Teachings ----
 export const getTeachings = (religionId?: string) =>
-  fetchJson<any[]>(religionId ? `/teachings?religionId=${religionId}` : '/teachings');
-export const createTeaching = (data: any) =>
-  fetchJson<any>('/teachings', { method: 'POST', body: JSON.stringify(data) });
-export const updateTeaching = (id: string, data: any) =>
-  fetchJson<any>(`/teachings/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  fetchJson<Teaching[]>(religionId ? `/teachings?religionId=${religionId}` : '/teachings');
+export const createTeaching = (data: CreateTeachingDto) =>
+  fetchJson<CreateTeachingDto & { id: string }>('/teachings', { method: 'POST', body: JSON.stringify(data) });
+export const updateTeaching = (id: string, data: Partial<CreateTeachingDto>) =>
+  fetchJson<CreateTeachingDto & { id: string }>(`/teachings/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deleteTeaching = (id: string) =>
-  fetchJson<any>(`/teachings/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/teachings/${id}`, { method: 'DELETE' });
 
 // ---- Seals ----
 export const getSeals = (series?: string) =>
-  fetchJson<any[]>(series ? `/seals?series=${series}` : '/seals');
+  fetchJson<Seal[]>(series ? `/seals?series=${series}` : '/seals');
+export const createSeal = (data: CreateSealDto) =>
+  fetchJson<Seal>('/seals', { method: 'POST', body: JSON.stringify(data) });
+export const updateSeal = (id: number, data: Partial<CreateSealDto>) =>
+  fetchJson<Seal>(`/seals/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+export const deleteSeal = (id: number) =>
+  fetchJson<Seal>(`/seals/${id}`, { method: 'DELETE' });
 
 // ---- Trips ----
-export const getTrips = () => fetchJson<any[]>('/trips');
-export const getTrip = (id: string) => fetchJson<any>(`/trips/${id}`);
+export const getTrips = () => fetchJson<Trip[]>('/trips');
+export const getTrip = (id: string) => fetchJson<Trip>(`/trips/${id}`);
 export const updateTripStatus = (id: string, status: string) =>
-  fetchJson<any>(`/trips/${id}`, {
+  fetchJson<Trip>(`/trips/${id}`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
 export const transitionTrip = (id: string, action: string, reason?: string) =>
-  fetchJson<any>(`/trips/${id}/transition`, {
+  fetchJson<Trip>(`/trips/${id}/transition`, {
     method: 'POST',
     body: JSON.stringify({ action, ...(reason ? { reason } : {}) }),
   });
 
 // ---- Orders ----
-export const getOrders = () => fetchJson<any[]>('/orders');
-export const getOrder = (id: string) => fetchJson<any>(`/orders/${id}`);
+export const getOrders = () => fetchJson<Order[]>('/orders');
+export const getOrder = (id: string) => fetchJson<Order>(`/orders/${id}`);
 export const refundOrder = (id: string) =>
-  fetchJson<any>(`/orders/${id}/refund`, { method: 'POST' });
+  fetchJson<Order>(`/orders/${id}/refund`, { method: 'POST' });
 
 // ---- Reviews ----
 export const getReviews = (targetType?: string, targetId?: string) => {
@@ -105,42 +182,75 @@ export const getReviews = (targetType?: string, targetId?: string) => {
   if (targetType) params.set('targetType', targetType);
   if (targetId) params.set('targetId', targetId);
   const qs = params.toString();
-  return fetchJson<any[]>(qs ? `/reviews?${qs}` : '/reviews');
+  return fetchJson<Review[]>(qs ? `/reviews?${qs}` : '/reviews');
 };
 export const deleteReview = (id: string) =>
-  fetchJson<any>(`/reviews/${id}`, { method: 'DELETE' });
+  fetchJson<DeleteResponse>(`/reviews/${id}`, { method: 'DELETE' });
 
 // ---- Notifications ----
 export const sendNotification = (userIds: string[], title: string, content: string) =>
-  fetchJson<any>('/notifications/send', {
+  fetchJson<NotificationSendResponse>('/notifications/send', {
     method: 'POST',
     body: JSON.stringify({ userIds, title, content }),
   });
 
 // ---- Uploads ----
-export const getUploads = () => fetchJson<any[]>('/uploads').catch(() => []);
+export const getUploads = () => fetchJson<Upload[]>('/uploads').catch((): Upload[] => []);
 
 // ---- Journals ----
-export const getJournals = () => fetchJson<any[]>('/journals');
+export const getJournals = () => fetchJson<Journal[]>('/journals');
+export const updateJournal = (id: string, data: { isPublic?: boolean }) =>
+  fetchJson<{ id: string }>(`/journals/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
 // ---- Xiaohong (AI) ----
-export const getXiaohongSuggestions = () => fetchJson<any[]>('/xiaohong/suggestions').catch(() => []);
+export const getXiaohongSuggestions = () => fetchJson<string[]>('/xiaohong/suggestions').catch((): string[] => []);
 export const chatWithXiaohong = (message: string) =>
-  fetchJson<any>('/xiaohong/chat', {
+  fetchJson<XiaohongChatResponse>('/xiaohong/chat', {
     method: 'POST',
     body: JSON.stringify({ message }),
   });
 
+// ---- Reports (Moderation) ----
+export const getReports = (page = 1, limit = 20, status?: string) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  if (status) params.set('status', status);
+  return fetchJson<{ data: Report[]; total: number; page: number; limit: number }>(
+    `/reports?${params.toString()}`,
+  );
+};
+export const getReportStats = () =>
+  fetchJson<ReportStats>('/reports/stats');
+export const getReport = (id: string) =>
+  fetchJson<Report>(`/reports/${id}`);
+export const reviewReport = (id: string, action: 'approve' | 'dismiss') =>
+  fetchJson<Report>(`/reports/${id}/review`, {
+    method: 'PATCH',
+    body: JSON.stringify({ action }),
+  });
+
+// ---- Coupons ----
+export const getCoupons = (page = 1, limit = 20) =>
+  fetchJson<{ data: Coupon[]; total: number; page: number; limit: number }>(
+    `/coupons?page=${page}&limit=${limit}`,
+  );
+export const createCoupon = (data: CreateCouponDto) =>
+  fetchJson<Coupon>('/coupons', { method: 'POST', body: JSON.stringify(data) });
+export const updateCoupon = (id: string, data: Partial<CreateCouponDto>) =>
+  fetchJson<Coupon>(`/coupons/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+export const deactivateCoupon = (id: string) =>
+  fetchJson<Coupon>(`/coupons/${id}`, { method: 'DELETE' });
+
 // ---- Dashboard stats helper ----
+// [R-64] Explicit take limits to prevent OOM as data grows
 export async function getDashboardStats() {
   const [religions, holySites, temples, patriarchs, teachings, seals] =
     await Promise.all([
-      getReligions().catch(() => []),
-      getHolySites().catch(() => []),
-      getTemples().catch(() => []),
-      getPatriarchs().catch(() => []),
-      getTeachings().catch(() => []),
-      getSeals().catch(() => []),
+      fetchJson<Religion[]>('/religions?take=100').catch(() => [] as Religion[]),
+      fetchJson<HolySite[]>('/holy-sites?take=100').catch(() => [] as HolySite[]),
+      fetchJson<Temple[]>('/temples?take=100').catch(() => [] as Temple[]),
+      fetchJson<Patriarch[]>('/patriarchs?take=100').catch(() => [] as Patriarch[]),
+      fetchJson<Teaching[]>('/teachings?take=100').catch(() => [] as Teaching[]),
+      fetchJson<Seal[]>('/seals?take=100').catch(() => [] as Seal[]),
     ]);
   return { religions, holySites, temples, patriarchs, teachings, seals };
 }

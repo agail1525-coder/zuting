@@ -13,8 +13,8 @@ export default function LoginPage() {
     try {
       await login(values.email, values.password);
       window.location.href = '/';
-    } catch (err: any) {
-      message.error(err.message || '登录失败');
+    } catch (err: unknown) {
+      message.error(err instanceof Error ? err.message : '登录失败');
     } finally {
       setLoading(false);
     }

@@ -196,27 +196,27 @@ export default function HolySitesPage() {
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
             <Input placeholder="例: 菩提伽耶" />
           </Form.Item>
-          <Form.Item name="nameEn" label="英文名">
+          <Form.Item name="nameEn" label="英文名" rules={[{ required: true, message: '请输入英文名' }]}>
             <Input placeholder="例: Bodh Gaya" />
           </Form.Item>
-          <Form.Item name="country" label="国家">
+          <Form.Item name="country" label="国家" rules={[{ required: true, message: '请输入国家' }]}>
             <Input placeholder="例: India" />
           </Form.Item>
           <Space style={{ width: '100%' }} size="middle">
-            <Form.Item name="latitude" label="纬度">
+            <Form.Item name="latitude" label="纬度" rules={[{ required: true, message: '请输入纬度' }, { type: 'number', min: -90, max: 90, message: '纬度范围: -90 ~ 90' }]}>
               <InputNumber style={{ width: 180 }} placeholder="例: 24.6952" step={0.0001} />
             </Form.Item>
-            <Form.Item name="longitude" label="经度">
+            <Form.Item name="longitude" label="经度" rules={[{ required: true, message: '请输入经度' }, { type: 'number', min: -180, max: 180, message: '经度范围: -180 ~ 180' }]}>
               <InputNumber style={{ width: 180 }} placeholder="例: 84.9914" step={0.0001} />
             </Form.Item>
-            <Form.Item name="utcOffset" label="UTC偏移">
+            <Form.Item name="utcOffset" label="UTC偏移" rules={[{ required: true, message: '请输入UTC偏移' }, { type: 'number', min: -12, max: 14, message: 'UTC偏移范围: -12 ~ 14' }]}>
               <InputNumber style={{ width: 120 }} placeholder="例: 5.5" step={0.5} />
             </Form.Item>
           </Space>
-          <Form.Item name="description" label="描述">
+          <Form.Item name="description" label="描述" rules={[{ required: true, message: '请输入描述' }]}>
             <Input.TextArea rows={3} placeholder="圣地描述" />
           </Form.Item>
-          <Form.Item name="imageUrl" label="图片URL">
+          <Form.Item name="imageUrl" label="图片URL" rules={[{ type: 'url', message: '请输入有效的URL' }]}>
             <Input placeholder="https://..." />
           </Form.Item>
           <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>

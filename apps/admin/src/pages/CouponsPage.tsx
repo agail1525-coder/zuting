@@ -1,9 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   Table, Card, Typography, Tag, Button, Space, Modal, Form,
-  Input, InputNumber, Select, DatePicker, Popconfirm, message, Switch,
+  Input, InputNumber, Select, DatePicker, Popconfirm, message, Switch, Row, Col,
 } from 'antd';
-import { PlusOutlined, EditOutlined, StopOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getCoupons, createCoupon, updateCoupon, deactivateCoupon } from '../lib/api';
 import type { Coupon, CreateCouponDto } from '../types';
@@ -11,6 +11,9 @@ import dayjs from 'dayjs';
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
+
+type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE' | 'EXPIRED';
+type TypeFilter = 'ALL' | 'FIXED' | 'PERCENT';
 
 export default function CouponsPage() {
   const [data, setData] = useState<Coupon[]>([]);
@@ -22,9 +25,25 @@ export default function CouponsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
+  // Search & filter state
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const handleSearchChange = (value: string) => {
+    setSearchText(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(value);
+      setPage(1);
+    }, 300);
+  };
+
   const load = useCallback((p = page) => {
     setLoading(true);
-    getCoupons(p)
+    getCoupons(p, 100) // fetch larger batch for client-side filtering
       .then((res) => {
         setData(Array.isArray(res.data) ? res.data : []);
         setTotal(res.total ?? 0);
@@ -37,6 +56,27 @@ export default function CouponsPage() {
   }, [page]);
 
   useEffect(() => { load(page); }, [page, load]);
+
+  // Client-side filtering (backend doesn't support search/filter params)
+  const filteredData = useMemo(() => {
+    const now = dayjs();
+    return data.filter((item) => {
+      // Text search: code or name
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase();
+        if (!item.code.toLowerCase().includes(q) && !item.name.toLowerCase().includes(q)) {
+          return false;
+        }
+      }
+      // Status filter
+      if (statusFilter === 'ACTIVE' && !item.isActive) return false;
+      if (statusFilter === 'INACTIVE' && item.isActive) return false;
+      if (statusFilter === 'EXPIRED' && (item.isActive || now.isBefore(dayjs(item.endAt)))) return false;
+      // Type filter
+      if (typeFilter !== 'ALL' && item.type !== typeFilter) return false;
+      return true;
+    });
+  }, [data, debouncedSearch, statusFilter, typeFilter]);
 
   const openCreate = () => {
     setEditing(null);
@@ -135,6 +175,7 @@ export default function CouponsPage() {
       dataIndex: 'value',
       key: 'value',
       width: 100,
+      sorter: (a: Coupon, b: Coupon) => a.value - b.value,
       render: (v: number, r: Coupon) =>
         r.type === 'PERCENT'
           ? <span style={{ color: '#D4A855', fontWeight: 600 }}>{v}%</span>
@@ -151,6 +192,11 @@ export default function CouponsPage() {
       title: '使用量/上限',
       key: 'usage',
       width: 110,
+      sorter: (a: Coupon, b: Coupon) => {
+        const usedA = a._count?.usages ?? a.usedCount ?? 0;
+        const usedB = b._count?.usages ?? b.usedCount ?? 0;
+        return usedA - usedB;
+      },
       render: (_: unknown, r: Coupon) => {
         const used = r._count?.usages ?? r.usedCount ?? 0;
         const limit = r.totalCount || '∞';
@@ -165,13 +211,25 @@ export default function CouponsPage() {
         `${dayjs(r.startAt).format('MM-DD')} ~ ${dayjs(r.endAt).format('MM-DD')}`,
     },
     {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 140,
+      sorter: (a: Coupon, b: Coupon) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
+      defaultSortOrder: 'descend',
+      render: (v: string) => v ? dayjs(v).format('YYYY-MM-DD HH:mm') : '-',
+    },
+    {
       title: '状态',
       dataIndex: 'isActive',
       key: 'isActive',
       width: 80,
-      render: (v: boolean) => (
-        <Tag color={v ? 'success' : 'default'}>{v ? '启用' : '停用'}</Tag>
-      ),
+      render: (v: boolean, r: Coupon) => {
+        const expired = dayjs().isAfter(dayjs(r.endAt));
+        if (expired && !v) return <Tag color="default">已过期</Tag>;
+        if (expired && v) return <Tag color="warning">已过期</Tag>;
+        return <Tag color={v ? 'success' : 'default'}>{v ? '启用' : '停用'}</Tag>;
+      },
     },
     {
       title: '操作',
@@ -214,19 +272,58 @@ export default function CouponsPage() {
         </Button>
       </div>
 
+      <Card style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 12]} align="middle">
+          <Col flex="auto">
+            <Input
+              prefix={<SearchOutlined />}
+              placeholder="搜索优惠码或名称..."
+              value={searchText}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              allowClear
+              style={{ maxWidth: 320 }}
+            />
+          </Col>
+          <Col>
+            <Space size="middle">
+              <Select
+                value={statusFilter}
+                onChange={(v) => { setStatusFilter(v); setPage(1); }}
+                style={{ width: 120 }}
+              >
+                <Select.Option value="ALL">全部状态</Select.Option>
+                <Select.Option value="ACTIVE">启用</Select.Option>
+                <Select.Option value="INACTIVE">停用</Select.Option>
+                <Select.Option value="EXPIRED">已过期</Select.Option>
+              </Select>
+              <Select
+                value={typeFilter}
+                onChange={(v) => { setTypeFilter(v); setPage(1); }}
+                style={{ width: 120 }}
+              >
+                <Select.Option value="ALL">全部类型</Select.Option>
+                <Select.Option value="FIXED">固定金额</Select.Option>
+                <Select.Option value="PERCENT">百分比</Select.Option>
+              </Select>
+            </Space>
+          </Col>
+        </Row>
+      </Card>
+
       <Card>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
-          locale={{ emptyText: '暂无优惠券' }}
+          locale={{ emptyText: debouncedSearch || statusFilter !== 'ALL' || typeFilter !== 'ALL' ? '无匹配结果' : '暂无优惠券' }}
           pagination={{
             current: page,
-            total,
+            total: filteredData.length,
             pageSize: 20,
-            showTotal: (t) => `共 ${t} 条`,
+            showTotal: (t) => `共 ${t} 条${t !== data.length ? ` (总 ${data.length} 条)` : ''}`,
             onChange: (p) => setPage(p),
+            showSizeChanger: true,
           }}
           size="middle"
         />

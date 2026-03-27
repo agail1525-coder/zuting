@@ -4,7 +4,17 @@
  * Zero build-time dependency — loads at runtime via globalThis.
  */
 
-let SentryModule: any = null;
+interface SentryScope {
+  setExtras(extras: Record<string, unknown>): void;
+}
+
+interface SentryLike {
+  init(options: Record<string, unknown>): void;
+  captureException(error: Error): void;
+  withScope(callback: (scope: SentryScope) => void): void;
+}
+
+let SentryModule: SentryLike | null = null;
 
 export function initSentry() {
   const dsn = import.meta.env.VITE_SENTRY_DSN;
@@ -16,7 +26,7 @@ export function initSentry() {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const loader = new Function('m', 'return import(m)');
     loader(pkg)
-      .then((Sentry: any) => {
+      .then((Sentry: SentryLike) => {
         SentryModule = Sentry;
         Sentry.init({
           dsn,
@@ -35,14 +45,14 @@ export function initSentry() {
 
 export function captureException(
   error: Error,
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
 ) {
   if (!SentryModule) return;
   try {
     if (context) {
-      SentryModule.withScope((scope: any) => {
+      SentryModule.withScope((scope: SentryScope) => {
         scope.setExtras(context);
-        SentryModule.captureException(error);
+        SentryModule!.captureException(error);
       });
     } else {
       SentryModule.captureException(error);

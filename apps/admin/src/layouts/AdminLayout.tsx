@@ -9,9 +9,11 @@ import {
   UserOutlined,
   BookOutlined,
   SafetyCertificateOutlined,
+  GiftOutlined,
   CarOutlined,
   ShoppingCartOutlined,
   FileTextOutlined,
+  StarOutlined,
   RobotOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -33,7 +35,10 @@ const menuItems = [
   { type: 'divider' as const },
   { key: '/trips', icon: <CarOutlined />, label: '行程管理' },
   { key: '/orders', icon: <ShoppingCartOutlined />, label: '订单管理' },
+  { key: '/coupons', icon: <GiftOutlined />, label: '优惠券管理' },
   { key: '/journals', icon: <FileTextOutlined />, label: '朝圣日记' },
+  { key: '/reviews', icon: <StarOutlined />, label: '评价管理' },
+  { key: '/moderation', icon: <SafetyCertificateOutlined />, label: '内容审核' },
   { type: 'divider' as const },
   { key: '/ai-config', icon: <RobotOutlined />, label: 'AI助手配置' },
 ];
@@ -48,7 +53,10 @@ const breadcrumbMap: Record<string, string> = {
   '/seals': '三十印',
   '/trips': '行程管理',
   '/orders': '订单管理',
+  '/coupons': '优惠券管理',
   '/journals': '朝圣日记',
+  '/reviews': '评价管理',
+  '/moderation': '内容审核',
   '/ai-config': 'AI助手配置',
 };
 

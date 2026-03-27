@@ -3,6 +3,7 @@ import { Table, Card, Typography, Tag, Button, Space, Tabs, Drawer, Descriptions
 import { EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, PlayCircleOutlined, StopOutlined, DollarOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getTrips, transitionTrip } from '../lib/api';
+import type { Trip } from '../types';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -46,9 +47,9 @@ const ADMIN_ACTIONS: Record<string, { action: string; label: string; icon: React
 };
 
 export default function TripsPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
-  const [detail, setDetail] = useState<any | null>(null);
+  const [detail, setDetail] = useState<Trip | null>(null);
   const [activeTab, setActiveTab] = useState('all');
   const [rejectModal, setRejectModal] = useState<{ id: string; action: string } | null>(null);
   const [reason, setReason] = useState('');
@@ -57,7 +58,7 @@ export default function TripsPage() {
     setLoading(true);
     getTrips()
       .then(setData)
-      .catch(() => setData([]))
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
       .finally(() => setLoading(false));
   };
 
@@ -85,7 +86,7 @@ export default function TripsPage() {
     }
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Trip> = [
     {
       title: '行程名称',
       dataIndex: 'title',
@@ -128,7 +129,7 @@ export default function TripsPage() {
       title: '操作',
       key: 'actions',
       width: 280,
-      render: (_: any, record: any) => {
+      render: (_: unknown, record: Trip) => {
         const actions = ADMIN_ACTIONS[record.status] || [];
         return (
           <Space wrap>
@@ -179,7 +180,7 @@ export default function TripsPage() {
     ...Object.entries(STATUS_MAP).map(([key, val]) => {
       const count = data.filter((t) => t.status === key).length;
       return count > 0 ? { key, label: `${val.label} (${count})` } : null;
-    }).filter(Boolean) as any[],
+    }).filter((item): item is { key: string; label: string } => item !== null),
   ];
 
   return (
@@ -194,6 +195,7 @@ export default function TripsPage() {
           dataSource={filteredData}
           rowKey="id"
           loading={loading}
+          locale={{ emptyText: '暂无数据' }}
           pagination={{ pageSize: 10, showTotal: (t) => `共 ${t} 条` }}
           size="middle"
         />

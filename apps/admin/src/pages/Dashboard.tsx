@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, Typography, List, Tag, Spin } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Spin, Result } from 'antd';
 import {
   GlobalOutlined,
   EnvironmentOutlined,
@@ -14,34 +14,29 @@ import {
 } from 'recharts';
 import { getDashboardStats } from '../lib/api';
 import { CHART_COLORS, SERIES_COLORS } from '../lib/theme';
+import type { Religion, HolySite, Temple, Patriarch, Teaching, Seal } from '../types';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface Stats {
-  religions: any[];
-  holySites: any[];
-  temples: any[];
-  patriarchs: any[];
-  teachings: any[];
-  seals: any[];
+  religions: Religion[];
+  holySites: HolySite[];
+  temples: Temple[];
+  patriarchs: Patriarch[];
+  teachings: Teaching[];
+  seals: Seal[];
 }
 
-const mockActivities = [
-  { time: '10 分钟前', text: '新朝圣行程已创建 — 菩提伽耶', color: 'gold' },
-  { time: '30 分钟前', text: '用户发布朝圣日记 — 耶路撒冷之旅', color: 'green' },
-  { time: '1 小时前', text: '新订单支付成功 #ORD-20260325', color: 'blue' },
-  { time: '2 小时前', text: '小鸿AI回答了 15 个用户问题', color: 'purple' },
-  { time: '3 小时前', text: '祖训数据更新 — 新增《论语》选段', color: 'orange' },
-  { time: '昨天', text: '系统备份完成', color: 'default' },
-];
 
 export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getDashboardStats()
       .then(setStats)
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : '加载失败'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -53,7 +48,15 @@ export default function Dashboard() {
     );
   }
 
-  const s = stats!;
+  if (error) {
+    return <Result status="error" title="数据加载失败" subTitle={error} />;
+  }
+
+  if (!stats) {
+    return null;
+  }
+
+  const s = stats;
 
   // Overview bar chart data
   const overviewData = [
@@ -67,7 +70,7 @@ export default function Dashboard() {
 
   // Seal series pie chart
   const seriesCounts: Record<string, number> = {};
-  s.seals.forEach((seal: any) => {
+  s.seals.forEach((seal) => {
     const series = seal.series || '未知';
     seriesCounts[series] = (seriesCounts[series] || 0) + 1;
   });
@@ -75,15 +78,15 @@ export default function Dashboard() {
 
   // Religion distribution - sites per religion
   const religionSiteMap: Record<string, { name: string; sites: number; temples: number }> = {};
-  s.religions.forEach((r: any) => {
-    religionSiteMap[r.id] = { name: r.name || r.nameZh || r.slug, sites: 0, temples: 0 };
+  s.religions.forEach((r) => {
+    religionSiteMap[r.id] = { name: r.name || r.slug, sites: 0, temples: 0 };
   });
-  s.holySites.forEach((site: any) => {
+  s.holySites.forEach((site) => {
     if (site.religionId && religionSiteMap[site.religionId]) {
       religionSiteMap[site.religionId].sites++;
     }
   });
-  s.temples.forEach((t: any) => {
+  s.temples.forEach((t) => {
     if (t.religionId && religionSiteMap[t.religionId]) {
       religionSiteMap[t.religionId].temples++;
     }
@@ -220,29 +223,7 @@ export default function Dashboard() {
           </Card>
         </Col>
         <Col xs={24} lg={10}>
-          <Card
-            title="最近动态"
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
-          >
-            <List
-              dataSource={mockActivities}
-              renderItem={(item) => (
-                <List.Item style={{ borderBottom: '1px solid #1f1f1f', padding: '12px 0' }}>
-                  <List.Item.Meta
-                    description={
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ color: '#ccc' }}>{item.text}</Text>
-                        <Tag color={item.color}>{item.time}</Tag>
-                      </div>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-
-          {/* Extra stats row */}
-          <Card style={{ marginTop: 16 }}>
+          <Card title="更多统计" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
             <Row gutter={16}>
               <Col span={12}>
                 <Statistic

@@ -14,6 +14,9 @@ const SealsPage = lazy(() => import('./pages/SealsPage'));
 const TripsPage = lazy(() => import('./pages/TripsPage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const JournalsPage = lazy(() => import('./pages/JournalsPage'));
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
+const ModerationPage = lazy(() => import('./pages/ModerationPage'));
+const CouponsPage = lazy(() => import('./pages/CouponsPage'));
 const AIConfigPage = lazy(() => import('./pages/AIConfigPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
@@ -46,7 +49,10 @@ export default function App() {
           <Route path="seals" element={<SealsPage />} />
           <Route path="trips" element={<TripsPage />} />
           <Route path="orders" element={<OrdersPage />} />
+          <Route path="coupons" element={<CouponsPage />} />
           <Route path="journals" element={<JournalsPage />} />
+          <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="moderation" element={<ModerationPage />} />
           <Route path="ai-config" element={<AIConfigPage />} />
         </Route>
       </Routes>

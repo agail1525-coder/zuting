@@ -1,6 +1,6 @@
 const TOKEN_KEY = 'zuting_admin_token';
 const REFRESH_KEY = 'zuting_admin_refresh';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);

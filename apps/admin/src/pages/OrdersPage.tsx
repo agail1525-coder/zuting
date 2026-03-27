@@ -3,6 +3,7 @@ import { Table, Card, Typography, Tag, Button, Space, Popconfirm, Drawer, Descri
 import { EyeOutlined, RollbackOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getOrders, getOrder, refundOrder } from '../lib/api';
+import type { Order } from '../types';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -17,16 +18,16 @@ const STATUS_MAP: Record<string, { color: string; label: string }> = {
 };
 
 export default function OrdersPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [detail, setDetail] = useState<any | null>(null);
+  const [detail, setDetail] = useState<Order | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
   const load = () => {
     setLoading(true);
     getOrders()
       .then(setData)
-      .catch(() => setData([]))
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
       .finally(() => setLoading(false));
   };
 
@@ -42,7 +43,7 @@ export default function OrdersPage() {
     }
   };
 
-  const showDetail = async (record: any) => {
+  const showDetail = async (record: Order) => {
     setDetail(record);
     setDetailLoading(true);
     try {
@@ -55,24 +56,24 @@ export default function OrdersPage() {
     }
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<Order> = [
     {
       title: '订单号',
       dataIndex: 'orderNo',
       key: 'orderNo',
-      render: (v: string, r: any) => <span style={{ fontWeight: 600 }}>{v || r.id?.slice(0, 8) || '-'}</span>,
+      render: (v: string, r: Order) => <span style={{ fontWeight: 600 }}>{v || r.id?.slice(0, 8) || '-'}</span>,
     },
     {
       title: '行程',
       dataIndex: 'tripTitle',
       key: 'tripTitle',
-      render: (_: any, r: any) => r.trip?.title || r.tripTitle || '-',
+      render: (_: unknown, r: Order) => r.trip?.title || r.tripTitle || '-',
     },
     {
       title: '用户',
       dataIndex: 'userName',
       key: 'userName',
-      render: (_: any, r: any) => r.user?.name || r.userName || '-',
+      render: (_: unknown, r: Order) => r.user?.name || r.userName || '-',
     },
     {
       title: '金额',
@@ -106,7 +107,7 @@ export default function OrdersPage() {
       title: '操作',
       key: 'actions',
       width: 180,
-      render: (_: any, record: any) => (
+      render: (_: unknown, record: Order) => (
         <Space>
           <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => showDetail(record)}>
             查看
@@ -134,6 +135,7 @@ export default function OrdersPage() {
           dataSource={data}
           rowKey="id"
           loading={loading}
+          locale={{ emptyText: '暂无数据' }}
           pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `共 ${t} 条` }}
           size="middle"
         />

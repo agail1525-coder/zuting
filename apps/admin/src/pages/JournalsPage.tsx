@@ -1,23 +1,37 @@
 import { useEffect, useState } from 'react';
 import { Table, Card, Typography, Tag, Switch, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { getJournals } from '../lib/api';
+import { getJournals, updateJournal } from '../lib/api';
+import type { Journal } from '../types';
 import dayjs from 'dayjs';
 
 const { Title, Paragraph } = Typography;
 
 export default function JournalsPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Journal[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchJournals = () => {
+    setLoading(true);
     getJournals()
       .then(setData)
-      .catch(() => setData([]))
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const columns: ColumnsType<any> = [
+  useEffect(() => { fetchJournals(); }, []);
+
+  const handleTogglePublic = async (id: string, currentValue: boolean) => {
+    try {
+      await updateJournal(id, { isPublic: !currentValue });
+      message.success(currentValue ? '已设为私密' : '已设为公开');
+      fetchJournals();
+    } catch {
+      message.error('操作失败');
+    }
+  };
+
+  const columns: ColumnsType<Journal> = [
     {
       title: '标题',
       dataIndex: 'title',
@@ -28,7 +42,7 @@ export default function JournalsPage() {
       title: '作者',
       dataIndex: 'author',
       key: 'author',
-      render: (_: any, r: any) => r.user?.name || r.author || '-',
+      render: (_: unknown, r: Journal) => r.user?.name || r.author || '-',
     },
     {
       title: '内容预览',
@@ -51,11 +65,11 @@ export default function JournalsPage() {
       dataIndex: 'isPublic',
       key: 'isPublic',
       width: 80,
-      render: (v: boolean, record: any) => (
+      render: (v: boolean, record: Journal) => (
         <Switch
           checked={v}
           size="small"
-          onChange={() => message.info('功能开发中')}
+          onChange={() => handleTogglePublic(record.id, v)}
         />
       ),
     },
@@ -88,6 +102,7 @@ export default function JournalsPage() {
           dataSource={data}
           rowKey="id"
           loading={loading}
+          locale={{ emptyText: '暂无数据' }}
           pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `共 ${t} 条` }}
           size="middle"
         />

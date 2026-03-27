@@ -197,7 +197,7 @@ export default function TemplesPage() {
           <Form.Item name="nameEn" label="英文名">
             <Input placeholder="例: Shaolin Temple" />
           </Form.Item>
-          <Form.Item name="country" label="国家">
+          <Form.Item name="country" label="国家" rules={[{ required: true, message: '请输入国家' }]}>
             <Input placeholder="例: China" />
           </Form.Item>
           <Form.Item name="address" label="地址">
@@ -206,10 +206,10 @@ export default function TemplesPage() {
           <Form.Item name="foundingDate" label="创建年代">
             <Input placeholder="例: 495 AD" />
           </Form.Item>
-          <Form.Item name="description" label="描述">
+          <Form.Item name="description" label="描述" rules={[{ required: true, message: '请输入描述' }]}>
             <Input.TextArea rows={3} placeholder="祖庭描述" />
           </Form.Item>
-          <Form.Item name="imageUrl" label="图片URL">
+          <Form.Item name="imageUrl" label="图片URL" rules={[{ type: 'url', message: '请输入有效的URL' }]}>
             <Input placeholder="https://..." />
           </Form.Item>
           <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>
