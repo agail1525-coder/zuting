@@ -1,7 +1,7 @@
 ﻿{
-    "id":  "api-fix-order-dto-idor",
-    "name":  "Order创建DTO接受客户端userId — IDOR漏洞允许伪造下单身份",
-    "app":  "api",
-    "priority":  0,
-    "description":  "严重安全漏洞(R-68违反): services/api/src/modules/order/dto/create-order.dto.ts:12-17 的CreateOrderDto包含userId字段，允许客户端指定任意用户ID下单。虽然controller(line 58)同时获取了@CurrentUser(\u0027id\u0027) userId，但DTO中的userId仍然存在且service层可能使用它。\n\n修复方法:\n1. 修改 services/api/src/modules/order/dto/create-order.dto.ts:\n   - 移除userId字段(不应从客户端接收)\n   - 只保留tripId, totalAmount, paymentMethod, currency, note\n2. 修改 services/api/src/modules/order/order.service.ts:\n   - create方法确认使用controller传入的userId参数而非dto.userId\n   - 检查所有引用dto.userId的地方，替换为函数参数userId\n3. 修改 services/api/src/modules/order/order.service.spec.ts:\n   - 更新测试用例，从DTO中移除userId\n4. 检查前端调用:\n   - apps/web/src/lib/api.ts 的createOrder\n   - apps/mobile/src/lib/api.ts 的createOrder\n   - apps/miniprogram/src/lib/api.ts 的createOrder\n   - 移除请求体中的userId字段\n\n遵守铁律: R-68(IDOR防护), R-03(DTO校验), HH-S02\n验证: cd services/api \u0026\u0026 npx tsc --noEmit \u0026\u0026 pnpm test"
+    "id":  "web-fix-trip-detail-unknown-types",
+    "name":  "Web api.ts TripDetail接口使用unknown[]类型 — 类型安全缺失",
+    "app":  "web",
+    "priority":  2,
+    "description":  "apps/web/src/lib/api.ts 约263-265行，TripDetail接口的 orders、journals、availableActions 字段使用 unknown[] 类型，违反 [R-01]。\n\n修改:\n1. orders: Order[] (复用已有Order接口)\n2. journals: Journal[] (复用已有Journal接口)\n3. availableActions: string[] (行程可用操作列表)\n\n先用 Grep 确认 Order 和 Journal 接口已在 api.ts 中定义，若无则需添加。确保 trips/[id]/page.tsx 中的使用处也正确类型化。\n\n验证: pnpm --filter @zuting/web exec tsc --noEmit"
 }

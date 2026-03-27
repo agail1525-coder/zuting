@@ -1,34 +1,172 @@
 ﻿[
     {
-        "value":  [
-                      {
-                          "value":  [
-                                        {
-                                            "value":  [
-                                                          "@{value=System.Object[]; Count=2}",
-                                                          "@{completedAt=2026-03-27 03:16:40; name=Admin CRUD页面错误处理修复 — 消除静默失败; id=admin-fix-silent-error-handling}"
-                                                      ],
-                                            "Count":  2
-                                        },
-                                        {
-                                            "completedAt":  "2026-03-27 03:17:26",
-                                            "name":  "Mobile行程详情页接入真实API — 替换MOCK_TRIP_DETAILS",
-                                            "id":  "mobile-fix-trip-detail-mock"
-                                        }
-                                    ],
-                          "Count":  2
-                      },
-                      {
-                          "completedAt":  "2026-03-27 03:17:56",
-                          "name":  "Web行程页接入真实API — 替换MOCK_TRIPS",
-                          "id":  "web-fix-trips-mock-data"
-                      }
-                  ],
-        "Count":  2
+        "id":  "admin-add-coupons-search-filter",
+        "name":  "Admin优惠券管理页面缺少搜索和筛选功能 — 无法高效管理大量优惠券",
+        "completedAt":  "2026-03-27 06:39:47"
     },
     {
-        "completedAt":  "2026-03-27 03:18:27",
-        "name":  "API Service层any类型修复 — 替换where/data的any",
-        "id":  "api-fix-service-any-types"
+        "id":  "web-add-profile-edit",
+        "name":  "Web个人中心缺少编辑功能 — 用户无法修改头像/昵称/联系方式",
+        "completedAt":  "2026-03-27 06:39:02"
+    },
+    {
+        "id":  "web-add-order-detail-view",
+        "name":  "Web订单列表缺少详情查看 — 用户无法查看订单明细和状态历史",
+        "completedAt":  "2026-03-27 06:36:46"
+    },
+    {
+        "id":  "api-fix-xiaohong-missing-public-decorator",
+        "name":  "小鸿AI聊天两个端点缺少@Public()装饰器 — 前端调用401失败",
+        "completedAt":  "2026-03-27 06:55:10"
+    },
+    {
+        "id":  "mobile-fix-journal-hardcoded-userid",
+        "name":  "Mobile日志创建页面使用硬编码userId=\u0027anonymous\u0027 — 数据归属错误",
+        "completedAt":  "2026-03-27 06:55:37"
+    },
+    {
+        "id":  "miniprogram-fix-hardcoded-stats",
+        "name":  "小程序首页统计数字硬编码(12/60/27/30) — 数据与后端不同步",
+        "completedAt":  "2026-03-27 06:56:37"
+    },
+    {
+        "id":  "miniprogram-fix-wrong-api-endpoints",
+        "name":  "小程序API客户端调用错误的聊天端点 — /chat应为/xiaohong/chat",
+        "completedAt":  "2026-03-27 06:56:38"
+    },
+    {
+        "id":  "api-fix-order-dto-idor",
+        "name":  "Order创建DTO接受客户端userId — IDOR漏洞允许伪造下单身份",
+        "completedAt":  "2026-03-27 06:56:38"
+    },
+    {
+        "id":  "miniprogram-fix-auth-hardcoded-localhost",
+        "name":  "小程序auth.ts API_URL硬编码localhost:3002 — 生产环境认证完全失败",
+        "completedAt":  "2026-03-27 07:17:32"
+    },
+    {
+        "id":  "api-fix-journal-findone-no-ownership-check",
+        "name":  "Journal findOne缺少所有权校验 — 任何登录用户可读私密日志",
+        "completedAt":  "2026-03-27 07:17:47"
+    },
+    {
+        "id":  "miniprogram-fix-missing-fetchReligionById",
+        "name":  "小程序缺少fetchReligionById — 搜索跳转宗教详情页完全空白",
+        "completedAt":  "2026-03-27 07:18:33"
+    },
+    {
+        "id":  "mobile-fix-journal-list-no-onpress",
+        "name":  "Mobile日志列表卡片缺少onPress — 无法点击查看日志详情",
+        "completedAt":  "2026-03-27 07:18:48"
+    },
+    {
+        "id":  "api-fix-trip-public-endpoint-idor",
+        "name":  "GET /trips 公开端点泄露所有用户行程数据 — IDOR漏洞",
+        "completedAt":  "2026-03-27 07:20:03"
+    },
+    {
+        "id":  "miniprogram-fix-profile-wrong-stat-label",
+        "name":  "小程序个人中心\u0027已访圣地\u0027统计显示的是日志数量 — 数据与标签不匹配",
+        "completedAt":  "2026-03-27 07:20:33"
+    },
+    {
+        "id":  "api-fix-xiaohong-missing-await",
+        "name":  "XiaohongService fetchRelatedData缺少await — 宗教详情查询返回Promise对象而非数据",
+        "completedAt":  "2026-03-27 07:20:48"
+    },
+    {
+        "id":  "web-fix-search-religion-link-broken",
+        "name":  "Web搜索页宗教结果链接指向列表页而非详情页 — 搜索结果导航失效",
+        "completedAt":  "2026-03-27 07:21:34"
+    },
+    {
+        "id":  "admin-fix-auth-api-url-mismatch",
+        "name":  "Admin auth.ts和api.ts使用不同BASE_URL — 生产环境数据请求路由断裂",
+        "completedAt":  "2026-03-27 07:22:19"
+    },
+    {
+        "id":  "miniprogram-fix-unauthenticated-mutations",
+        "name":  "小程序postRequest缺少认证头 — 所有写入操作(创建日志/行程状态)静默失败401",
+        "completedAt":  "2026-03-27 07:22:49"
+    },
+    {
+        "id":  "miniprogram-fix-get-request-missing-auth",
+        "name":  "小程序GET请求缺少认证头 — 用户行程/订单/日志请求401失败",
+        "completedAt":  "2026-03-27 07:39:17"
+    },
+    {
+        "id":  "admin-fix-holysites-form-validation",
+        "name":  "Admin圣地管理表单缺少必填校验 — 提交空数据导致API 400错误",
+        "completedAt":  "2026-03-27 07:39:17"
+    },
+    {
+        "id":  "miniprogram-fix-chat-duplicate-api-call",
+        "name":  "小程序聊天页面绕过api.ts直接调用Taro.request — 代码重复",
+        "completedAt":  "2026-03-27 07:40:12"
+    },
+    {
+        "id":  "web-fix-checkout-missing-api-methods",
+        "name":  "Web结账页面缺少订单/支付API方法 — 无法完成购买流程",
+        "completedAt":  "2026-03-27 07:41:12"
+    },
+    {
+        "id":  "mobile-fix-missing-error-display",
+        "name":  "Mobile圣地/印列表Tab捕获错误但不展示 — 用户看到空白不知原因",
+        "completedAt":  "2026-03-27 07:42:42"
+    },
+    {
+        "id":  "web-fix-inline-api-calls-chat",
+        "name":  "Web聊天页面直接内联fetch而非使用api.ts — AI聊天功能分散",
+        "completedAt":  "2026-03-27 07:43:43"
+    },
+    {
+        "id":  "web-fix-inline-api-calls-journals",
+        "name":  "Web日志页面直接内联fetch而非使用api.ts — 违反垂直切片一致性",
+        "completedAt":  "2026-03-27 07:44:28"
+    },
+    {
+        "id":  "web-fix-any-types-sentry",
+        "name":  "Web/Admin sentry.ts使用any类型 — 违反R-01类型安全铁律",
+        "completedAt":  "2026-03-27 07:44:43"
+    },
+    {
+        "id":  "web-add-trip-mutation-apis",
+        "name":  "Web缺少行程编辑/状态转换/圣地管理API方法 — 行程管理功能不完整",
+        "completedAt":  "2026-03-27 07:58:55"
+    },
+    {
+        "id":  "api-fix-findmany-missing-take-limit",
+        "name":  "API四个Service的findMany缺少take参数 — 可被DoS攻击导致OOM崩溃",
+        "completedAt":  "2026-03-27 07:59:10"
+    },
+    {
+        "id":  "mobile-fix-any-types-auth-pages",
+        "name":  "Mobile登录/注册页面使用any类型 — 违反R-01类型安全铁律",
+        "completedAt":  "2026-03-27 07:59:26"
+    },
+    {
+        "id":  "miniprogram-fix-any-types-multiple",
+        "name":  "小程序多处使用any类型和不安全类型转换 — 违反R-01铁律",
+        "completedAt":  "2026-03-27 07:59:41"
+    },
+    {
+        "id":  "admin-fix-image-url-validation",
+        "name":  "Admin圣地/祖庭/祖师表单imageUrl字段缺少URL格式校验",
+        "completedAt":  "2026-03-27 08:01:11"
+    },
+    {
+        "id":  "admin-fix-dashboard-stats-no-pagination",
+        "name":  "Admin Dashboard统计函数获取全量数据无分页 — 数据增长后OOM崩溃",
+        "completedAt":  "2026-03-27 08:01:56"
+    },
+    {
+        "id":  "web-add-journal-mutation-apis",
+        "name":  "Web缺少日志编辑/删除API方法 — 日志CRUD不完整",
+        "completedAt":  "2026-03-27 08:02:41"
+    },
+    {
+        "id":  "web-fix-trip-detail-unknown-types",
+        "name":  "Web api.ts TripDetail接口使用unknown[]类型 — 类型安全缺失",
+        "completedAt":  "2026-03-27 08:03:26"
     }
 ]

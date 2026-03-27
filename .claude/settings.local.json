@@ -7,7 +7,14 @@
       "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\progress.json', [System.Text.Encoding]::UTF8\\)\")",
       "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\heartbeat-state.json', [System.Text.Encoding]::UTF8\\)\")",
       "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\completed-history.json', [System.Text.Encoding]::UTF8\\)\")",
-      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\failed-tasks.json', [System.Text.Encoding]::UTF8\\)\")"
+      "Bash(powershell -NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [System.IO.File]::ReadAllText\\('E:\\\\ZUTING\\\\logs\\\\heartbeat\\\\failed-tasks.json', [System.Text.Encoding]::UTF8\\)\")",
+      "Bash(find /e/ZUTING -type f -name *.json -o -name *.yml -o -name *.yaml -o -name .env* -o -name Dockerfile* -o -name docker-compose*)",
+      "Bash(find /e/ZUTING/services/api/src -name *payment* -o -name *order* -o -name *cart*)",
+      "Bash(find /e/ZUTING -name *i18n* -o -name *translation* -o -name *.json -path *locales*)",
+      "Bash(find /e/ZUTING -name *.seed.* -o -name *seed* -path */prisma/*)",
+      "Bash(find /e/ZUTING -name *wechat* -o -name *mini* -o -name *applet*)",
+      "Bash(grep -r \"production\\\\|deploy\" /e/ZUTING/.env*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

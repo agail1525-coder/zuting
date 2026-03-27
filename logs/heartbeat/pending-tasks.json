@@ -1,58 +1,58 @@
 ﻿[
     {
-        "id":  "api-fix-order-idor",
-        "name":  "修复订单接口IDOR漏洞 — 增加所有权验证",
+        "id":  "api-fix-simulate-payment-no-env-gate",
+        "name":  "POST /orders/:id/pay 模拟支付无环境检查 — 生产环境可绕过支付网关",
         "app":  "api",
         "priority":  0,
-        "description":  "【安全P0】OrderController存在严重IDOR漏洞。\n\n问题:\n1. findAll() 接受 userId query参数但不验证当前用户身份，任何人可查看他人订单\n2. findOne() 不验证订单归属，任何人可通过ID查看他人订单详情\n3. pay/cancel/refund 操作同样缺少所有权验证\n\n修复文件:\n- services/api/src/modules/order/order.controller.ts: 所有需要认证的方法注入 @CurrentUser()，传递 userId 给 service\n- services/api/src/modules/order/order.service.ts: findAll() 强制过滤 userId；findOne() 增加 userId 匹配校验，不匹配抛 ForbiddenException\n\n参考已修复的 journal.controller.ts 实现模式（使用 @CurrentUser() decorator）。\n\n铁律: R-68(IDOR防护), R-63(JwtAuthGuard)\n验证: pnpm --filter @zuting/api build"
+        "description":  "【P0安全漏洞】services/api/src/modules/order/order.controller.ts:144-160 和 order.service.ts:117-150，POST /orders/:id/pay 标注为 \u0027Simulate payment (dev mode)\u0027 但没有 NODE_ENV 检查。任何认证用户可在生产环境调用此端点，用 paymentId=\u0027SIM_${Date.now()}\u0027 标记订单为 PAID，完全绕过 Stripe/微信支付/支付宝网关。\n\n修复方案:\n1. 在 order.controller.ts 的 simulatePayment 方法开头加 NODE_ENV 检查: if (process.env.NODE_ENV === \u0027production\u0027) throw new ForbiddenException(\u0027Payment simulation disabled in production\u0027)\n2. 或者更安全: 在 order.service.ts simulatePayment 方法中加同样的检查\n3. 考虑用 ConfigService 注入环境变量而非直接读 process.env\n\n遵守铁律: R-63(Controller安全), HH-S02(禁止硬编码)\n验证: pnpm --filter @zuting/api exec tsc --noEmit"
     },
     {
-        "id":  "api-fix-trip-idor",
-        "name":  "修复行程接口IDOR漏洞 — 增加所有权验证",
+        "id":  "api-fix-seal-controller-redundant-guards",
+        "name":  "SealController重复@UseGuards导致@Public()失效 — 管理端点双重鉴权不一致",
         "app":  "api",
         "priority":  0,
-        "description":  "【安全P0】TripController存在IDOR漏洞，与订单模块相同模式。\n\n问题:\n1. findAll() 接受 userId query参数但不验证当前用户身份\n2. findOne() 不验证行程归属\n3. update/transition/addSite/removeSite 操作缺少所有权验证\n\n修复文件:\n- services/api/src/modules/trip/trip.controller.ts: 写操作注入 @CurrentUser()，传递 userId 给 service；GET列表如果有userId参数需验证匹配\n- services/api/src/modules/trip/trip.service.ts: 写操作方法增加 userId 参数，校验行程归属\n\n注意: GET单个行程详情如果是@Public()的（展示型），可以保持公开；但写操作必须验证。\n\n铁律: R-68(IDOR防护), R-63(JwtAuthGuard), R-07(状态变更校验)\n验证: pnpm --filter @zuting/api build"
+        "description":  "【P0安全一致性】services/api/src/modules/seal/seal.controller.ts:41,49,59 在 POST/PATCH/DELETE 上显式添加了 @UseGuards(JwtAuthGuard, RolesGuard)，而这两个 Guard 已在 app.module.ts 中注册为全局 APP_GUARD。这导致: (1)Guard执行两次 (2)如果未来添加@Public()将不生效因为本地Guard不受Reflector控制。其他所有Controller(religion, temple, holy-site等)都正确依赖全局Guard。\n\n修复方案:\n1. 删除 seal.controller.ts 中 POST/PATCH/DELETE 方法上的 @UseGuards(JwtAuthGuard, RolesGuard) 装饰器\n2. 保留 @Roles(\u0027ADMIN\u0027) 装饰器(这是正确的)\n3. 确认类级别没有 @UseGuards\n\n遵守铁律: R-63, R-74(@Roles必须配合@UseGuards但全局Guard已覆盖)\n验证: pnpm --filter @zuting/api exec tsc --noEmit"
     },
     {
-        "id":  "api-fix-xiaohong-unbounded-queries",
-        "name":  "修复小鸿AI服务无限查询 — 6处findMany缺少take",
-        "app":  "api",
-        "priority":  0,
-        "description":  "【安全P0/性能】XiaohongService中有6处findMany()调用没有take参数限制，可导致OOM。\n\n问题文件: services/api/src/modules/xiaohong/xiaohong.service.ts\n约在91-183行区间，以下findMany缺少take:\n1. religion.findMany() ~line 91\n2. holySite.findMany() ~line 112\n3. temple.findMany() ~line 126\n4. patriarch.findMany() ~line 140\n5. teaching.findMany() ~line 154\n6. seal.findMany() ~line 166\n\n修复: 每个findMany()添加 take: 100 参数。这些是为AI上下文加载的数据，100条足够。\n\n铁律: R-64(findMany必须有take参数，列表@Max(100)，防OOM)\n验证: pnpm --filter @zuting/api build"
-    },
-    {
-        "id":  "web-fix-trips-mock-data",
-        "name":  "Web行程页接入真实API — 替换MOCK_TRIPS",
+        "id":  "web-fix-checkout-raw-fetch-bypass",
+        "name":  "Web结账页绕过api.ts直接fetch — 类型不一致+无统一错误处理",
         "app":  "web",
         "priority":  1,
-        "description":  "【功能P1】Web端行程列表页和详情页使用硬编码MOCK_TRIPS，未连接后端API。\n\n问题文件:\n1. apps/web/src/app/trips/page.tsx: 约44-81行使用MOCK_TRIPS常量\n2. apps/web/src/app/trips/[id]/page.tsx: 约49-239行从MOCK_TRIPS查找数据\n\n修复:\n1. trips/page.tsx: 使用fetch调用 GET /api/trips 获取真实数据，实现loading/error/empty三态\n2. trips/[id]/page.tsx: 使用fetch调用 GET /api/trips/{id} 获取详情，处理404\n3. 删除所有MOCK_TRIPS相关代码\n4. 确保状态筛选Tab使用API的status查询参数\n\n参考已有的 journals/page.tsx 或 orders/page.tsx 的API调用模式。\n\n铁律: HH-V01(垂直切片), HH-V02(空壳零容忍), HH-V03(必须有真实API调用)\n验证: pnpm --filter @zuting/web build"
+        "description":  "【P1垂直切片违规】apps/web/src/app/trips/[id]/checkout/page.tsx 存在严重的垂直切片问题(HH-V01):\n1. 行11-35定义本地TripDetail/TripSite接口，与lib/api.ts的类型不一致(本地用holySite vs api.ts用site)\n2. 行69-80用raw fetch获取trip，绕过已有的fetchTrip()\n3. 行93-112用raw fetch验证优惠券，绕过已有的verifyCoupon()且漏传orderAmount参数\n4. 行115-157用raw fetch创建订单和支付，绕过已有的createOrder()和createPayment()\n5. 行9的API_URL带/api后缀，与lib/api.ts的baseURL不一致\n\n修复方案:\n1. 删除本地TripDetail/TripSite接口，从lib/api.ts导入\n2. 替换所有raw fetch调用为api.ts中的对应方法: fetchTrip, verifyCoupon, createOrder, createPayment\n3. 删除本地API_URL常量\n4. 确保字段名与api.ts类型一致\n\n遵守铁律: HH-V01(垂直切片), R-01(类型安全)\n验证: pnpm --filter @zuting/web exec tsc --noEmit"
     },
     {
-        "id":  "mobile-fix-trip-detail-mock",
-        "name":  "Mobile行程详情页接入真实API — 替换MOCK_TRIP_DETAILS",
+        "id":  "web-fix-payment-result-raw-fetch",
+        "name":  "Web支付结果页绕过api.ts且字段名错误 — 支付状态显示可能异常",
+        "app":  "web",
+        "priority":  1,
+        "description":  "【P1功能缺陷】apps/web/src/app/payment/result/page.tsx:\n1. 行8-21定义本地OrderDetail接口，字段名为amount，但api.ts中Order类型用的是totalAmount/paidAmount\n2. 行47用raw fetch获取订单详情，绕过已有的fetchOrder()\n3. 行144引用order.amount，但API实际返回的是totalAmount，导致支付金额可能显示undefined\n\n修复方案:\n1. 删除本地OrderDetail接口，从lib/api.ts导入Order类型\n2. 替换raw fetch为fetchOrder()\n3. 将所有order.amount引用改为order.totalAmount\n4. 删除本地API_URL常量\n\n遵守铁律: HH-V01(垂直切片), R-01(类型安全)\n验证: pnpm --filter @zuting/web exec tsc --noEmit"
+    },
+    {
+        "id":  "miniprogram-fix-trips-no-auth-gate",
+        "name":  "小程序行程页无登录检查 — 未登录用户看到空白页或401错误",
+        "app":  "miniprogram",
+        "priority":  1,
+        "description":  "【P1功能缺陷】apps/miniprogram/src/pages/trips/index.tsx fetchTrips()在useEffect中无条件调用，没有检查isLoggedIn()或getAccessToken()。未登录用户进入页面会收到401错误或空结果，没有任何提示。同样的问题存在于trip-detail页面。\n\n参考实现: chat/index.tsx:124已正确实现auth gate模式。\n\n修复方案:\n1. 在trips/index.tsx的useEffect开头加登录检查: if (!isLoggedIn()) { 显示登录提示UI; return; }\n2. 添加未登录状态的UI: 显示\u0027请先登录\u0027文字+跳转登录按钮\n3. 在trip-detail/index.tsx也加同样的auth gate\n4. 从lib/auth.ts导入isLoggedIn/getAccessToken\n\n遵守铁律: R-63(鉴权), HH-E01(Q4错误状态处理)\n验证: pnpm --filter @zuting/miniprogram exec tsc --noEmit"
+    },
+    {
+        "id":  "miniprogram-fix-journals-only-public",
+        "name":  "小程序日志列表硬编码isPublic=true — 用户私人日志永远不显示",
+        "app":  "miniprogram",
+        "priority":  1,
+        "description":  "【P1功能缺陷】apps/miniprogram/src/pages/journals/index.tsx:22 fetchJournals({ isPublic: \u0027true\u0027, limit: \u002750\u0027 }) 硬编码只获取公开日志。用户从个人中心\u0027朝圣日记\u0027进入此页面，期望看到自己的日志(包括私人的)，但永远只能看到公开社区日志。对比mobile的journals/index.tsx不带isPublic过滤。\n\n修复方案:\n1. 检查用户是否已登录\n2. 已登录: fetchJournals({ limit: \u002750\u0027 }) 不传isPublic，让后端根据token返回用户自己的日志\n3. 未登录: fetchJournals({ isPublic: \u0027true\u0027, limit: \u002750\u0027 }) 只看公开的\n4. 可选: 添加Tab切换\u0027我的日志\u0027/\u0027社区日志\u0027\n\n遵守铁律: BLG-01(数据服务于业务目的), HH-V03(真实数据渲染)\n验证: pnpm --filter @zuting/miniprogram exec tsc --noEmit"
+    },
+    {
+        "id":  "mobile-fix-religion-detail-permanent-spinner",
+        "name":  "Mobile宗教详情页加载失败后永久转圈 — 无错误提示无重试",
         "app":  "mobile",
         "priority":  1,
-        "description":  "【功能P1】Mobile端行程详情页使用硬编码MOCK_TRIP_DETAILS。\n\n问题文件: apps/mobile/app/trips/[id].tsx\n约59-122行定义了MOCK_TRIP_DETAILS对象，127行左右使用mock数据渲染。\n\n修复:\n1. 删除MOCK_TRIP_DETAILS常量\n2. 使用api.getTrips()或新增api.getTripDetail(id)获取真实数据\n3. 添加loading状态(ActivityIndicator)、error状态(重试按钮)、404状态\n4. 渲染真实的行程站点列表、状态历史\n\n铁律: HH-V01(垂直切片), HH-V02(空壳零容忍), HH-V03(真实API+真实数据)\n验证: npx tsc --noEmit (在apps/mobile目录)"
+        "description":  "【P1体验缺陷】apps/mobile/app/religions/[slug].tsx:62-64 加载失败时只console.error，loading设为false但religion保持null。由于行71判断 if (loading || !religion) return \u003cLoadingView /\u003e，religion为null会导致永久显示LoadingView。用户看到无限转圈，无法知道出了什么问题也无法重试。\n\n修复方案:\n1. 添加error state: const [error, setError] = useState\u003cstring | null\u003e(null)\n2. catch块中: setError(\u0027加载失败，请稍后重试\u0027)\n3. 在return逻辑中添加error判断: if (error) return \u003cErrorView message={error} onRetry={loadData} /\u003e\n4. 参考trips/[id].tsx的错误处理模式(有retry按钮)\n\n遵守铁律: HH-E01(Q4 loading/error/empty三态), HH-V03(交付≠编译通过)\n验证: pnpm --filter @zuting/mobile exec tsc --noEmit"
     },
     {
-        "id":  "mobile-fix-detail-pages-fetch-all",
-        "name":  "Mobile详情页优化 — 改用单条API替代全量获取",
-        "app":  "mobile",
-        "priority":  1,
-        "description":  "【性能P1】Mobile的4个详情页都是先获取全部数据再find，浪费带宽和内存。\n\n问题文件:\n1. apps/mobile/app/holy-sites/[id].tsx ~line 18: api.getHolySites() 获取全部再find\n2. apps/mobile/app/temples/[id].tsx ~line 18: 同上\n3. apps/mobile/app/patriarchs/[id].tsx ~line 18: 同上\n4. apps/mobile/app/seals/[id].tsx ~line 20: 同上\n\n修复:\n1. 检查 apps/mobile/src/lib/api.ts 是否有 getHolySiteById(id) 等单条获取方法\n2. 如没有则添加: getHolySiteById, getTempleById, getPatriarchById, getSealById\n3. 各详情页改用单条API: const site = await api.getHolySiteById(id)\n4. 添加proper error state（当前只有LoadingView没有error state）\n\n铁律: R-64(性能), HH-V03(交互可用)\n验证: npx tsc --noEmit (在apps/mobile目录)"
-    },
-    {
-        "id":  "api-fix-service-any-types",
-        "name":  "API Service层any类型修复 — 替换where/data的any",
-        "app":  "api",
-        "priority":  2,
-        "description":  "【代码质量P2】API多个service文件使用 where: any = {} 构建动态查询条件，违反R-01。\n\n问题文件(每个约1处any):\n1. services/api/src/modules/journal/journal.service.ts ~line 38: where: any = {}\n2. services/api/src/modules/coupon/coupon.service.ts ~line 68,182: data: any, where: any\n3. services/api/src/modules/order/order.service.ts ~line 66: where: any = {}\n4. services/api/src/modules/notification/notification.service.ts ~line 42: where: any\n5. services/api/src/modules/review/review.service.ts ~line 66: where: any = {}\n6. services/api/src/modules/trip/trip.service.ts ~line 67,125: where: any, data: any\n7. services/api/src/modules/moderation/moderation.service.ts ~line 45: where: any = {}\n\n修复: 将 where: any 改为 Prisma.XxxWhereInput 类型（从 @prisma/client 导入），如:\nimport { Prisma } from \u0027@prisma/client\u0027;\nconst where: Prisma.OrderWhereInput = {};\n\n铁律: R-01(严禁any类型，必须定义Interface/DTO)\n验证: pnpm --filter @zuting/api build"
-    },
-    {
-        "id":  "admin-fix-silent-error-handling",
-        "name":  "Admin CRUD页面错误处理修复 — 消除静默失败",
+        "id":  "admin-add-users-page",
+        "name":  "Admin缺少用户管理页面 — 无法查看/搜索/管理平台用户",
         "app":  "admin",
-        "priority":  2,
-        "description":  "【体验P2】Admin多个页面的API调用在catch中静默吞掉错误，用户看不到失败原因。\n\n问题文件:\n1. apps/admin/src/pages/OrdersPage.tsx ~line 28-30: .catch(() =\u003e setData([])) 无提示\n2. apps/admin/src/pages/TripsPage.tsx ~line 57-61: 同上\n3. apps/admin/src/pages/JournalsPage.tsx ~line 14-18: 同上\n\n修复: 在catch中添加 antd message.error() 提示:\n.catch((err) =\u003e { message.error(\u0027加载数据失败: \u0027 + (err.message || \u0027网络错误\u0027)); setData([]); })\n\n同时检查这些页面是否有empty state提示(表格为空时显示\u0027暂无数据\u0027)。\n\n铁律: HH-V03(交付≠编译通过), B7(安全访问)\n验证: pnpm --filter @zuting/admin build"
+        "priority":  1,
+        "description":  "【P1功能缺失】Admin后台没有UsersPage，没有/users路由，没有getUsers函数。管理员无法: 浏览用户列表、查看用户详情(姓名/邮箱/角色/注册日期)、停用账号、修改角色、搜索用户。OrdersPage和JournalsPage中显示user.name但无法点击跳转到用户详情。\n\n实现方案:\n1. 在apps/admin/src/lib/api.ts中添加 getUsers(params) 和 updateUser(id, data) API方法\n2. 创建apps/admin/src/pages/UsersPage.tsx: 表格展示用户列表(ID/姓名/邮箱/角色/注册时间/状态)，支持搜索/筛选/分页\n3. 添加角色修改功能(下拉选择USER/ADMIN)\n4. 添加停用/激活用户功能\n5. 在App.tsx中添加/users路由\n6. 在AdminLayout.tsx侧边栏添加\u0027用户管理\u0027菜单项\n7. 确认后端 services/api/src/modules/user/user.controller.ts 有对应的管理端点\n\n遵守铁律: HH-V01(垂直切片完整), R-64(列表分页), R-63(Admin Guard)\n验证: pnpm --filter @zuting/admin exec tsc --noEmit"
     }
 ]
