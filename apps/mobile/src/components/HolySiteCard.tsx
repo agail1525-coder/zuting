@@ -15,7 +15,7 @@ export function HolySiteCard({ site }: HolySiteCardProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-      onPress={() => router.push(`/holy-sites/${site.id}` as any)}
+      onPress={() => router.push({ pathname: '/holy-sites/[id]', params: { id: site.id } })}
     >
       <View style={styles.gradientBg}>
         <Ionicons name="location" size={32} color={colors.gold} />

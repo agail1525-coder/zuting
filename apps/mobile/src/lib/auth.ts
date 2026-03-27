@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 const TOKEN_KEY = 'zuting_access_token';
 const REFRESH_KEY = 'zuting_refresh_token';
@@ -9,92 +10,30 @@ declare const process: { env: Record<string, string | undefined> };
 export const API_URL =
   process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3002/api';
 
-// Dynamic import for expo-secure-store (may not be installed)
-interface SecureStoreAPI {
-  getItemAsync(key: string): Promise<string | null>;
-  setItemAsync(key: string, value: string): Promise<void>;
-  deleteItemAsync(key: string): Promise<void>;
-}
-let SecureStore: SecureStoreAPI | null = null;
-try {
-  SecureStore = require('expo-secure-store') as SecureStoreAPI;
-} catch {
-  SecureStore = null;
-}
-
-// Fallback: use AsyncStorage when SecureStore is unavailable (e.g. web)
-interface AsyncStorageAPI {
-  getItem(key: string): Promise<string | null>;
-  setItem(key: string, value: string): Promise<void>;
-  removeItem(key: string): Promise<void>;
-}
-let AsyncStorage: AsyncStorageAPI | null = null;
-try {
-  const mod = require('@react-native-async-storage/async-storage');
-  AsyncStorage = (mod.default || mod) as AsyncStorageAPI;
-} catch {
-  AsyncStorage = null;
-}
-
-// Simple in-memory fallback if neither is available
+// In-memory fallback for web platform (SecureStore is native-only)
 const memoryStore: Record<string, string> = {};
 
 async function getItem(key: string): Promise<string | null> {
-  if (SecureStore && Platform.OS !== 'web') {
-    try {
-      return await SecureStore.getItemAsync(key);
-    } catch {
-      // fall through
-    }
+  if (Platform.OS === 'web') {
+    return memoryStore[key] ?? null;
   }
-  if (AsyncStorage) {
-    try {
-      return await AsyncStorage.getItem(key);
-    } catch {
-      // fall through
-    }
-  }
-  return memoryStore[key] ?? null;
+  return SecureStore.getItemAsync(key);
 }
 
 async function setItem(key: string, value: string): Promise<void> {
-  if (SecureStore && Platform.OS !== 'web') {
-    try {
-      await SecureStore.setItemAsync(key, value);
-      return;
-    } catch {
-      // fall through
-    }
+  if (Platform.OS === 'web') {
+    memoryStore[key] = value;
+    return;
   }
-  if (AsyncStorage) {
-    try {
-      await AsyncStorage.setItem(key, value);
-      return;
-    } catch {
-      // fall through
-    }
-  }
-  memoryStore[key] = value;
+  await SecureStore.setItemAsync(key, value);
 }
 
 async function removeItem(key: string): Promise<void> {
-  if (SecureStore && Platform.OS !== 'web') {
-    try {
-      await SecureStore.deleteItemAsync(key);
-      return;
-    } catch {
-      // fall through
-    }
+  if (Platform.OS === 'web') {
+    delete memoryStore[key];
+    return;
   }
-  if (AsyncStorage) {
-    try {
-      await AsyncStorage.removeItem(key);
-      return;
-    } catch {
-      // fall through
-    }
-  }
-  delete memoryStore[key];
+  await SecureStore.deleteItemAsync(key);
 }
 
 export async function getAccessToken(): Promise<string | null> {

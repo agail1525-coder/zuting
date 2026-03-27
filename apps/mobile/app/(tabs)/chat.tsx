@@ -32,7 +32,7 @@ interface Message {
   isTyping?: boolean;
 }
 
-const QUICK_SUGGESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   '推荐一条朝圣路线',
   '佛教有哪些圣地？',
   '什么是曹溪三十印？',
@@ -41,28 +41,7 @@ const QUICK_SUGGESTIONS = [
   '道教祖庭在哪里？',
 ];
 
-const BOT_RESPONSES: Record<string, string> = {
-  '佛教': '佛教是世界三大宗教之一，起源于古印度。重要圣地包括：\n\n🏛 菩提伽耶 - 释迦牟尼成道之地\n🏛 鹿野苑 - 初转法轮之地\n🏛 拘尸那迦 - 涅槃之地\n🏛 蓝毗尼 - 诞生之地\n🏛 灵鹫山 - 说法之地\n\n您想了解哪个圣地的详细信息呢？',
-  '道教': '道教是中国本土宗教，以"道"为最高信仰。主要祖庭包括：\n\n🏛 龙虎山天师府 - 正一派祖庭\n🏛 武当山 - 真武大帝道场\n🏛 青城山 - 天师道发源地\n\n道教讲究"道法自然"，追求天人合一的境界。需要我为您推荐道教朝圣路线吗？',
-  '基督教': '基督教是世界最大的宗教，有约24亿信徒。重要圣地包括：\n\n🏛 耶路撒冷圣墓教堂 - 耶稣受难与复活之地\n🏛 伯利恒圣诞教堂 - 耶稣诞生之地\n🏛 梵蒂冈圣伯多禄大殿 - 天主教中心\n\n想了解更多基督教圣地信息吗？',
-  '伊斯兰': '伊斯兰教是世界第二大宗教，核心圣地包括：\n\n🏛 麦加禁寺 - 伊斯兰教第一圣地\n🏛 麦地那先知寺 - 穆罕默德安息之地\n🏛 耶路撒冷远寺 - 夜行登霄之地\n\n每年数百万穆斯林前往麦加朝觐，这是伊斯兰五功之一。',
-  '圣地': '全球祖庭平台收录了12大信仰的60个圣地，遍布世界各大洲。\n\n每个信仰有5个代表性圣地，包含：\n📍 GPS坐标定位\n🕐 当地时区信息\n📝 详细历史介绍\n\n您可以在"圣地"标签页浏览所有圣地，也可以告诉我您感兴趣的信仰，我为您推荐相关圣地。',
-  '印': '曹溪愿命三十印是一套完整的修行体系，分为五系：\n\n🟣 初印系 - 初发心阶段\n🟣 中印系 - 深入修行\n💗 印果印 - 证悟阶段\n🟡 成道印 - 成就阶段\n🟢 归源印 - 圆满回归\n\n共30印，每印包含诗偈、要义、修行法门和大愿。您可以在"修行"标签页查看完整内容。',
-  '路线': '为您推荐三条热门朝圣路线：\n\n🗺️ 东亚佛教之旅（14天）\n洛阳白马寺 → 嵩山少林寺 → 九华山 → 普陀山 → 日本奈良东大寺\n\n🗺️ 中东三教圣地之旅（10天）\n耶路撒冷 → 伯利恒 → 麦地那 → 伊斯坦布尔\n\n🗺️ 印度灵性之旅（12天）\n菩提伽耶 → 瓦拉纳西 → 阿姆利则金庙 → 瑞诗凯诗\n\n想了解哪条路线的详细行程？',
-  '修行': '修行是一段回归内心的旅程。平台提供多种修行资源：\n\n🪷 曹溪三十印 - 系统修行指南\n📿 每日功课提醒\n📖 各信仰祖训精选\n✍️ 朝圣日记记录\n\n建议从"初印系"开始，循序渐进。您想从哪个方面开始？',
-};
-
-const DEFAULT_RESPONSE = '感谢您的提问！作为小鸿AI助手，我可以帮您：\n\n🏛 了解全球圣地和祖庭\n🗺️ 规划朝圣路线\n📿 学习曹溪三十印\n📖 了解各大信仰文化\n\n请告诉我您感兴趣的方向，我来为您详细介绍。';
-
-function getBotResponse(userMessage: string): string {
-  const msg = userMessage.toLowerCase();
-  for (const [keyword, response] of Object.entries(BOT_RESPONSES)) {
-    if (msg.includes(keyword.toLowerCase()) || msg.includes(keyword)) {
-      return response;
-    }
-  }
-  return DEFAULT_RESPONSE;
-}
+const ERROR_RESPONSE = 'AI助手暂时不可用，请稍后重试';
 
 const WELCOME_MESSAGE: Message = {
   id: 'welcome',
@@ -77,8 +56,25 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>(DEFAULT_SUGGESTIONS);
   const flatListRef = useRef<FlatList>(null);
   const typingOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    fetch(`${API_URL}/xiaohong/suggestions`)
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error('Failed to fetch suggestions');
+      })
+      .then((data: { suggestions?: string[] }) => {
+        if (data.suggestions && data.suggestions.length > 0) {
+          setSuggestions(data.suggestions);
+        }
+      })
+      .catch(() => {
+        // Keep default suggestions on error
+      });
+  }, []);
 
   useEffect(() => {
     typingOpacity.value = withRepeat(
@@ -132,9 +128,8 @@ export default function ChatScreen() {
     [scrollToEnd],
   );
 
-  const sendMessage = useCallback(async () => {
-    const text = inputText.trim();
-    if (!text || isTyping) return;
+  const sendMessageWithText = useCallback(async (text: string) => {
+    if (!text.trim() || isTyping) return;
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -157,7 +152,6 @@ export default function ChatScreen() {
       isTyping: true,
     };
 
-    // Try to call real API with auth token
     let responseText: string;
     try {
       const token = await getAccessToken();
@@ -171,61 +165,34 @@ export default function ChatScreen() {
       });
       if (res.ok) {
         const data = await res.json();
-        responseText = data.reply || data.content || data.message || getBotResponse(text);
+        responseText = data.reply || data.content || data.message || ERROR_RESPONSE;
       } else {
-        responseText = getBotResponse(text);
+        responseText = ERROR_RESPONSE;
       }
     } catch {
-      // Fallback to local responses
-      responseText = getBotResponse(text);
+      responseText = ERROR_RESPONSE;
     }
 
     setTimeout(() => {
       setMessages((prev) => [...prev, botMsg]);
       scrollToEnd();
-
-      // Start typewriter effect
       setTimeout(() => {
         simulateTyping(responseText, botMsgId);
       }, 300);
     }, 600);
-  }, [inputText, isTyping, scrollToEnd, simulateTyping]);
+  }, [isTyping, scrollToEnd, simulateTyping]);
+
+  const sendMessage = useCallback(async () => {
+    const text = inputText.trim();
+    if (!text) return;
+    sendMessageWithText(text);
+  }, [inputText, sendMessageWithText]);
 
   const handleSuggestion = useCallback(
     (suggestion: string) => {
-      setInputText(suggestion);
-      setTimeout(() => {
-        const userMsg: Message = {
-          id: `user-${Date.now()}`,
-          role: 'user',
-          content: suggestion,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, userMsg]);
-        setIsTyping(true);
-        scrollToEnd();
-
-        setTimeout(() => {
-          const responseText = getBotResponse(suggestion);
-          const botMsgId = `bot-${Date.now()}`;
-          const botMsg: Message = {
-            id: botMsgId,
-            role: 'bot',
-            content: '',
-            timestamp: new Date(),
-            isTyping: true,
-          };
-          setMessages((prev) => [...prev, botMsg]);
-          scrollToEnd();
-          setTimeout(() => {
-            simulateTyping(responseText, botMsgId);
-          }, 300);
-        }, 600);
-
-        setInputText('');
-      }, 100);
+      sendMessageWithText(suggestion);
     },
-    [scrollToEnd, simulateTyping],
+    [sendMessageWithText],
   );
 
   const renderMessage = useCallback(
@@ -273,7 +240,7 @@ export default function ChatScreen() {
       <Animated.View entering={FadeInUp.duration(400).delay(400)} style={styles.suggestionsContainer}>
         <Text style={styles.suggestionsTitle}>您可以问我：</Text>
         <View style={styles.suggestionsGrid}>
-          {QUICK_SUGGESTIONS.map((suggestion) => (
+          {suggestions.map((suggestion) => (
             <Pressable
               key={suggestion}
               style={({ pressed }) => [
@@ -288,7 +255,7 @@ export default function ChatScreen() {
         </View>
       </Animated.View>
     );
-  }, [messages.length, handleSuggestion]);
+  }, [messages.length, handleSuggestion, suggestions]);
 
   // Auth gate: if not logged in, show prompt
   if (!user) {

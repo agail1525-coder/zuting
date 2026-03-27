@@ -213,9 +213,7 @@ export default function TripsScreen() {
       {/* Floating add button */}
       <Pressable
         style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
-        onPress={() => {
-          // Future: navigate to create trip screen
-        }}
+        onPress={() => router.push('/trips/create')}
       >
         <Ionicons name="add" size={28} color={colors.backgroundDark} />
       </Pressable>

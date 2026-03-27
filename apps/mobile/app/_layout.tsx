@@ -67,6 +67,10 @@ function RootLayout() {
           name="journals/index"
           options={{ title: '朝圣日记' }}
         />
+        <Stack.Screen
+          name="search"
+          options={{ title: '搜索' }}
+        />
       </Stack>
     </AuthProvider>
   );

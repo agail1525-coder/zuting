@@ -32,8 +32,8 @@ export default function LoginScreen() {
     try {
       await login(phone.trim(), password);
       router.replace('/(tabs)');
-    } catch (err: any) {
-      Alert.alert('登录失败', err.message || '请检查手机号和密码');
+    } catch (err: unknown) {
+      Alert.alert('登录失败', err instanceof Error ? err.message : '请检查手机号和密码');
     } finally {
       setLoading(false);
     }

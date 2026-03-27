@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Alert,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -71,52 +73,39 @@ export default function ProfileScreen() {
         <MenuItem
           icon="airplane"
           label="我的行程"
-          subtitle="3 个行程"
+          subtitle={`${counts?.trips ?? 0} 个行程`}
           onPress={() => router.push('/trips')}
         />
         <MenuItem
           icon="book"
           label="朝圣日记"
-          subtitle="8 篇日记"
+          subtitle={`${counts?.journals ?? 0} 篇日记`}
           onPress={() => router.push('/journals')}
         />
         <MenuItem
           icon="flower"
           label="修行记录"
-          subtitle="已完成 5 印"
+          subtitle={`已完成 ${counts?.practices ?? 0} 印`}
           onPress={() => router.push('/(tabs)/seals')}
         />
         <MenuItem
           icon="footsteps"
           label="我的足迹"
-          subtitle="12 个圣地已到访"
+          onPress={() => router.push('/trips')}
         />
-        <MenuItem
-          icon="bookmark"
-          label="收藏的圣地"
-          subtitle="6 个收藏"
-        />
-      </Animated.View>
-
-      {/* Settings */}
-      <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
-        <Text style={styles.menuSectionTitle}>设置</Text>
-        <MenuItem icon="language" label="语言 / Language" subtitle="中文" />
-        <MenuItem icon="moon" label="深色模式" subtitle="已开启" />
-        <MenuItem icon="notifications" label="通知设置" />
       </Animated.View>
 
       {/* About */}
-      <Animated.View entering={FadeInDown.duration(300).delay(400)} style={styles.menuSection}>
+      <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>
-        <MenuItem icon="information-circle" label="关于祖庭之旅" />
-        <MenuItem icon="document-text" label="用户协议" />
-        <MenuItem icon="shield-checkmark" label="隐私政策" />
+        <MenuItem icon="information-circle" label="关于祖庭之旅" onPress={() => Alert.alert('关于', '全球祖庭旅行平台 v0.2.0\n帮助100万人走祖庭')} />
+        <MenuItem icon="document-text" label="用户协议" onPress={() => Linking.openURL('https://zuting.com/terms')} />
+        <MenuItem icon="shield-checkmark" label="隐私政策" onPress={() => Linking.openURL('https://zuting.com/privacy')} />
       </Animated.View>
 
       {/* Logout */}
       {user && (
-        <Animated.View entering={FadeInDown.duration(300).delay(500)} style={styles.menuSection}>
+        <Animated.View entering={FadeInDown.duration(300).delay(400)} style={styles.menuSection}>
           <Pressable
             style={styles.logoutButton}
             onPress={async () => {

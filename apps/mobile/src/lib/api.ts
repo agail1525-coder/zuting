@@ -1,3 +1,5 @@
+import { getAccessToken } from './auth';
+
 const BASE_URL = __DEV__
   ? 'http://localhost:3002/api'
   : 'https://zuting.fszyl.top/api';
@@ -13,6 +15,45 @@ async function request<T>(endpoint: string, params?: Record<string, string>): Pr
   const response = await fetch(url.toString());
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+}
+
+async function requestMutateAuth<T>(
+  endpoint: string,
+  method: string,
+  body: Record<string, unknown>,
+  token: string,
+): Promise<T> {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(errorBody || `API Error: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+}
+
+async function requestMutate<T>(endpoint: string, method: string, body: Record<string, unknown>): Promise<T> {
+  const token = await getAccessToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    method,
+    headers,
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(errorBody || `API Error: ${response.status} ${response.statusText}`);
   }
   return response.json();
 }
@@ -137,11 +178,20 @@ export const api = {
   getHolySites: (religionId?: string) =>
     request<HolySite[]>('/holy-sites', religionId ? { religionId } : undefined),
 
+  getHolySiteById: (id: string) =>
+    request<HolySite>(`/holy-sites/${id}`),
+
   getTemples: (religionId?: string) =>
     request<Temple[]>('/temples', religionId ? { religionId } : undefined),
 
+  getTempleById: (id: string) =>
+    request<Temple>(`/temples/${id}`),
+
   getPatriarchs: (religionId?: string) =>
     request<Patriarch[]>('/patriarchs', religionId ? { religionId } : undefined),
+
+  getPatriarchById: (id: string) =>
+    request<Patriarch>(`/patriarchs/${id}`),
 
   getTeachings: (religionId?: string) =>
     request<Teaching[]>('/teachings', religionId ? { religionId } : undefined),
@@ -149,11 +199,49 @@ export const api = {
   getSeals: (series?: string) =>
     request<Seal[]>('/seals', series ? { series } : undefined),
 
+  getSealById: (id: string) =>
+    request<Seal>(`/seals/${id}`),
+
   getTrips: (params?: { userId?: string; status?: string; page?: string; limit?: string }) =>
     request<PaginatedTrips>('/trips', params),
 
+  getTripById: (id: string) =>
+    request<Trip>(`/trips/${id}`),
+
   getJournals: (params?: { page?: string; limit?: string; isPublic?: string }) =>
     request<PaginatedJournals>('/journals', params),
+
+  getJournalById: (id: string) =>
+    request<Journal>(`/journals/${id}`),
+
+  createTrip: (data: {
+    title: string;
+    startDate: string;
+    endDate: string;
+    persons: number;
+    contactName?: string;
+    contactPhone?: string;
+    note?: string;
+  }, token: string) => requestMutateAuth<Trip>('/trips', 'POST', data, token),
+
+  transitionTrip: (id: string, action: string, reason?: string) =>
+    requestMutate<Trip>(`/trips/${id}/transition`, 'POST', { action, reason }),
+
+  createJournal: (data: {
+    title: string;
+    content: string;
+    mood?: string;
+    isPublic?: boolean;
+    tripId?: string;
+  }) => requestMutate<Journal>('/journals', 'POST', data),
+
+  search: (q: string, type = 'all', page = 1, limit = 20) =>
+    request<SearchResponse>('/search', {
+      q,
+      type,
+      page: String(page),
+      limit: String(limit),
+    }),
 };
 
 export interface Journal {
@@ -175,4 +263,23 @@ export interface PaginatedJournals {
   total: number;
   page: number;
   limit: number;
+}
+
+export interface SearchResultItem {
+  type: string;
+  id: string | number;
+  title: string;
+  subtitle: string | null;
+  descriptionSnippet: string | null;
+  image: string | null;
+  religion: { name: string; symbol: string | null; color: string | null } | null;
+}
+
+export interface SearchResponse {
+  query: string;
+  type: string;
+  page: number;
+  limit: number;
+  total: number;
+  results: SearchResultItem[];
 }

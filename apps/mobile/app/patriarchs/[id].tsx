@@ -11,18 +11,19 @@ export default function PatriarchDetailScreen() {
   const navigation = useNavigation();
   const [patriarch, setPatriarch] = useState<Patriarch | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
     async function fetchData() {
       try {
-        const patriarchs = await api.getPatriarchs();
-        const found = patriarchs.find((p) => p.id === id);
-        if (found) {
-          setPatriarch(found);
-          navigation.setOptions({ title: found.nameZh });
-        }
+        setError(null);
+        const found = await api.getPatriarchById(id);
+        setPatriarch(found);
+        navigation.setOptions({ title: found.nameZh });
       } catch (err) {
         console.error('Failed to fetch patriarch detail:', err);
+        setError('加载祖师详情失败');
       } finally {
         setLoading(false);
       }
@@ -30,7 +31,15 @@ export default function PatriarchDetailScreen() {
     fetchData();
   }, [id, navigation]);
 
-  if (loading || !patriarch) return <LoadingView />;
+  if (loading) return <LoadingView />;
+  if (error || !patriarch) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
+        <Text style={styles.errorText}>{error ?? '祖师不存在'}</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -59,6 +68,17 @@ export default function PatriarchDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.lg,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,

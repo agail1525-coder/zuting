@@ -13,22 +13,27 @@ export default function SealDetailScreen() {
   const [seal, setSeal] = useState<Seal | null>(null);
   const [allSeals, setAllSeals] = useState<Seal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
     async function fetchData() {
       try {
-        const seals = await api.getSeals();
-        const sorted = seals.sort((a, b) => a.number - b.number);
-        setAllSeals(sorted);
-        const found = sorted.find((s) => s.id === id);
-        if (found) {
-          setSeal(found);
-          navigation.setOptions({
-            title: `第${found.number}印 · ${found.nameZh}`,
-          });
-        }
+        setError(null);
+        // 三十印是固定数据集(30条，不会增长)，fetch-all用于prev/next导航是合理的
+        // 后端已加take:50防御(R-64)
+        const [found, seals] = await Promise.all([
+          api.getSealById(id),
+          api.getSeals(),
+        ]);
+        setSeal(found);
+        navigation.setOptions({
+          title: `第${found.number}印 · ${found.nameZh}`,
+        });
+        setAllSeals(seals.sort((a, b) => a.number - b.number));
       } catch (err) {
         console.error('Failed to fetch seal detail:', err);
+        setError('加载印详情失败');
       } finally {
         setLoading(false);
       }
@@ -36,7 +41,15 @@ export default function SealDetailScreen() {
     fetchData();
   }, [id, navigation]);
 
-  if (loading || !seal) return <LoadingView />;
+  if (loading) return <LoadingView />;
+  if (error || !seal) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
+        <Text style={styles.errorText}>{error ?? '印不存在'}</Text>
+      </View>
+    );
+  }
 
   const seriesColor = seriesColors[seal.series] || colors.gold;
   const currentIndex = allSeals.findIndex((s) => s.id === id);
@@ -98,7 +111,7 @@ export default function SealDetailScreen() {
         {prevSeal ? (
           <Pressable
             style={styles.navButton}
-            onPress={() => router.replace(`/seals/${prevSeal.id}` as any)}
+            onPress={() => router.replace({ pathname: '/seals/[id]', params: { id: prevSeal.id } })}
           >
             <Ionicons name="chevron-back" size={20} color={colors.gold} />
             <View>
@@ -112,7 +125,7 @@ export default function SealDetailScreen() {
         {nextSeal ? (
           <Pressable
             style={[styles.navButton, styles.navButtonRight]}
-            onPress={() => router.replace(`/seals/${nextSeal.id}` as any)}
+            onPress={() => router.replace({ pathname: '/seals/[id]', params: { id: nextSeal.id } })}
           >
             <View style={styles.navTextRight}>
               <Text style={styles.navLabel}>下一印</Text>
@@ -129,6 +142,17 @@ export default function SealDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.lg,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,

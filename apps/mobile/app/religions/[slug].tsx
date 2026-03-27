@@ -95,7 +95,7 @@ export default function ReligionDetailScreen() {
             <Pressable
               key={site.id}
               style={styles.listItem}
-              onPress={() => router.push(`/holy-sites/${site.id}` as any)}
+              onPress={() => router.push({ pathname: '/holy-sites/[id]', params: { id: site.id } })}
             >
               <Ionicons name="location" size={18} color={colors.gold} />
               <View style={styles.listItemContent}>
@@ -122,7 +122,7 @@ export default function ReligionDetailScreen() {
             <Pressable
               key={temple.id}
               style={styles.listItem}
-              onPress={() => router.push(`/temples/${temple.id}` as any)}
+              onPress={() => router.push({ pathname: '/temples/[id]', params: { id: temple.id } })}
             >
               <Ionicons name="business" size={18} color={colors.gold} />
               <View style={styles.listItemContent}>
@@ -150,7 +150,7 @@ export default function ReligionDetailScreen() {
               key={patriarch.id}
               style={styles.listItem}
               onPress={() =>
-                router.push(`/patriarchs/${patriarch.id}` as any)
+                router.push({ pathname: '/patriarchs/[id]', params: { id: patriarch.id } })
               }
             >
               <Ionicons name="person" size={18} color={colors.gold} />

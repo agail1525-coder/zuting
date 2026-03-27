@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api, Journal } from '../../src/lib/api';
 
@@ -22,6 +22,7 @@ const MOOD_COLORS: Record<string, string> = {
 };
 
 export default function JournalsScreen() {
+  const router = useRouter();
   const [journals, setJournals] = useState<Journal[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -76,6 +77,7 @@ export default function JournalsScreen() {
         <Text style={styles.emptySubtitle}>去创建第一篇吧</Text>
         <Pressable
           style={({ pressed }) => [styles.fab, styles.fabInline, pressed && styles.fabPressed]}
+          onPress={() => router.push('/journals/create')}
         >
           <Ionicons name="create" size={24} color={colors.backgroundDark} />
           <Text style={styles.fabText}>写日记</Text>
@@ -125,6 +127,7 @@ export default function JournalsScreen() {
                   styles.journalCard,
                   pressed && styles.journalCardPressed,
                 ]}
+                onPress={() => router.push(`/journals/${item.id}`)}
               >
                 <View style={styles.cardHeader}>
                   <Text style={styles.cardEmoji}>📝</Text>
@@ -167,6 +170,7 @@ export default function JournalsScreen() {
       {/* Floating write button */}
       <Pressable
         style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+        onPress={() => router.push('/journals/create')}
       >
         <Ionicons name="create" size={24} color={colors.backgroundDark} />
         <Text style={styles.fabText}>写日记</Text>

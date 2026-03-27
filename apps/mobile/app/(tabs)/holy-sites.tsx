@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { api, HolySite, Religion } from '../../src/lib/api';
 import { HolySiteCard } from '../../src/components/HolySiteCard';
 import { FilterChips } from '../../src/components/FilterChips';
@@ -12,9 +12,11 @@ export default function HolySitesScreen() {
   const [selectedReligion, setSelectedReligion] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
+      setError(null);
       const [sitesData, religionsData] = await Promise.all([
         api.getHolySites(selectedReligion || undefined),
         api.getReligions(),
@@ -22,6 +24,8 @@ export default function HolySitesScreen() {
       setSites(sitesData);
       setReligions(religionsData);
     } catch (err) {
+      const message = err instanceof Error ? err.message : '加载失败';
+      setError(message);
       console.error('Failed to fetch holy sites:', err);
     } finally {
       setLoading(false);
@@ -42,6 +46,17 @@ export default function HolySitesScreen() {
   const chips = religions.map((r) => ({ id: r.id, label: r.nameZh }));
 
   if (loading && sites.length === 0) return <LoadingView />;
+
+  if (error && sites.length === 0) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+        <Pressable style={styles.retryButton} onPress={fetchData}>
+          <Text style={styles.retryButtonText}>重试</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -98,5 +113,29 @@ const styles = StyleSheet.create({
   emptyText: {
     color: colors.textMuted,
     fontSize: fontSize.md,
+  },
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.md,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  retryButton: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.gold,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: colors.background,
+    fontSize: fontSize.md,
+    fontWeight: '600',
   },
 });

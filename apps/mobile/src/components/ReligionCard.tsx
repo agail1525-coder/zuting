@@ -23,7 +23,7 @@ export function ReligionCard({ religion }: ReligionCardProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-      onPress={() => router.push(`/religions/${religion.slug}` as any)}
+      onPress={() => router.push({ pathname: '/religions/[slug]', params: { slug: religion.slug } })}
     >
       <View style={[styles.iconContainer, { backgroundColor: gradient[0] }]}>
         <Text style={styles.emoji}>{emoji}</Text>

@@ -47,8 +47,8 @@ export default function RegisterScreen() {
         password,
       });
       router.replace('/(tabs)');
-    } catch (err: any) {
-      Alert.alert('注册失败', err.message || '请稍后重试');
+    } catch (err: unknown) {
+      Alert.alert('注册失败', err instanceof Error ? err.message : '请稍后重试');
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Pressable,
   RefreshControl,
   SectionList,
   StyleSheet,
@@ -23,9 +24,11 @@ export default function SealsScreen() {
   const [sections, setSections] = useState<SealSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
+      setError(null);
       const seals = await api.getSeals();
       const grouped: Record<string, Seal[]> = {};
       seals.forEach((seal) => {
@@ -43,6 +46,8 @@ export default function SealsScreen() {
 
       setSections(sectionData);
     } catch (err) {
+      const message = err instanceof Error ? err.message : '加载失败';
+      setError(message);
       console.error('Failed to fetch seals:', err);
     } finally {
       setLoading(false);
@@ -60,6 +65,17 @@ export default function SealsScreen() {
   }, [fetchData]);
 
   if (loading) return <LoadingView />;
+
+  if (error && sections.length === 0) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+        <Pressable style={styles.retryButton} onPress={fetchData}>
+          <Text style={styles.retryButtonText}>重试</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <SectionList
@@ -181,5 +197,29 @@ const styles = StyleSheet.create({
   sectionCount: {
     fontSize: fontSize.sm,
     color: colors.textMuted,
+  },
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.md,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  retryButton: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.gold,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: colors.background,
+    fontSize: fontSize.md,
+    fontWeight: '600',
   },
 });

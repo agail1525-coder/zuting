@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -15,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api, Trip } from '../../src/lib/api';
+import { useAuth } from '../../src/lib/auth-context';
 
 const MOOD_OPTIONS: { value: string; label: string; color: string }[] = [
   { value: '平静', label: '平静', color: '#6366F1' },
@@ -26,6 +28,7 @@ const MOOD_OPTIONS: { value: string; label: string; color: string }[] = [
 
 export default function JournalCreateScreen() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -71,17 +74,23 @@ export default function JournalCreateScreen() {
       return;
     }
 
+    if (!user) {
+      Alert.alert('请先登录', '创建日记需要登录账号', [
+        { text: '取消', style: 'cancel' },
+        { text: '去登录', onPress: () => router.push('/(tabs)/profile') },
+      ]);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const body: {
-        userId: string;
         title: string;
         content: string;
         mood?: string;
         isPublic?: boolean;
         tripId?: string;
       } = {
-        userId: 'anonymous',
         title: title.trim(),
         content: content.trim(),
         isPublic,

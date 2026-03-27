@@ -15,7 +15,7 @@ export function SealCard({ seal }: SealCardProps) {
   return (
     <Pressable
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-      onPress={() => router.push(`/seals/${seal.id}` as any)}
+      onPress={() => router.push({ pathname: '/seals/[id]', params: { id: seal.id } })}
     >
       <View style={[styles.numberBadge, { backgroundColor: seriesColor }]}>
         <Text style={styles.numberText}>{seal.number}</Text>

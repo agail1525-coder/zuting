@@ -11,18 +11,19 @@ export default function HolySiteDetailScreen() {
   const navigation = useNavigation();
   const [site, setSite] = useState<HolySite | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
     async function fetchData() {
       try {
-        const sites = await api.getHolySites();
-        const found = sites.find((s) => s.id === id);
-        if (found) {
-          setSite(found);
-          navigation.setOptions({ title: found.nameZh });
-        }
+        setError(null);
+        const found = await api.getHolySiteById(id);
+        setSite(found);
+        navigation.setOptions({ title: found.nameZh });
       } catch (err) {
         console.error('Failed to fetch holy site detail:', err);
+        setError('加载圣地详情失败');
       } finally {
         setLoading(false);
       }
@@ -30,7 +31,15 @@ export default function HolySiteDetailScreen() {
     fetchData();
   }, [id, navigation]);
 
-  if (loading || !site) return <LoadingView />;
+  if (loading) return <LoadingView />;
+  if (error || !site) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
+        <Text style={styles.errorText}>{error ?? '圣地不存在'}</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -94,6 +103,17 @@ function InfoCard({
 }
 
 const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.lg,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,

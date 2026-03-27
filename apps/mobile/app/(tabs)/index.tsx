@@ -15,18 +15,37 @@ import { ReligionCard } from '../../src/components/ReligionCard';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
+interface Stats {
+  religions: number;
+  holySites: number;
+  temples: number;
+  seals: number;
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const [religions, setReligions] = useState<Religion[]>([]);
+  const [stats, setStats] = useState<Stats>({ religions: 0, holySites: 0, temples: 0, seals: 0 });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
-      const data = await api.getReligions();
-      setReligions(data);
+      const [religionsData, holySites, temples, seals] = await Promise.all([
+        api.getReligions(),
+        api.getHolySites(),
+        api.getTemples(),
+        api.getSeals(),
+      ]);
+      setReligions(religionsData);
+      setStats({
+        religions: religionsData.length,
+        holySites: holySites.length,
+        temples: temples.length,
+        seals: seals.length,
+      });
     } catch (err) {
-      console.error('Failed to fetch religions:', err);
+      console.error('Failed to fetch home data:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -65,15 +84,27 @@ export default function HomeScreen() {
         </Text>
       </View>
 
+      {/* Search Entry */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.searchBar,
+          pressed && styles.searchBarPressed,
+        ]}
+        onPress={() => router.push('/search')}
+      >
+        <Ionicons name="search" size={18} color={colors.textMuted} />
+        <Text style={styles.searchPlaceholder}>搜索圣地、祖庭、祖师...</Text>
+      </Pressable>
+
       {/* Stats Row */}
       <View style={styles.statsRow}>
-        <StatItem value="12" label="信仰" />
+        <StatItem value={String(stats.religions)} label="信仰" />
         <StatDivider />
-        <StatItem value="60" label="圣地" />
+        <StatItem value={String(stats.holySites)} label="圣地" />
         <StatDivider />
-        <StatItem value="27" label="祖庭" />
+        <StatItem value={String(stats.temples)} label="祖庭" />
         <StatDivider />
-        <StatItem value="30" label="印" />
+        <StatItem value={String(stats.seals)} label="印" />
       </View>
 
       {/* AI Assistant Quick Entry */}
@@ -184,6 +215,28 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     textAlign: 'center',
     lineHeight: 22,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.md,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.sm + 4,
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+  },
+  searchBarPressed: {
+    backgroundColor: 'rgba(30, 41, 59, 1)',
+    borderColor: colors.gold,
+  },
+  searchPlaceholder: {
+    color: colors.textMuted,
+    fontSize: fontSize.md,
+    flex: 1,
   },
   statsRow: {
     flexDirection: 'row',

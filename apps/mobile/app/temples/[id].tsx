@@ -11,18 +11,19 @@ export default function TempleDetailScreen() {
   const navigation = useNavigation();
   const [temple, setTemple] = useState<Temple | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
     async function fetchData() {
       try {
-        const temples = await api.getTemples();
-        const found = temples.find((t) => t.id === id);
-        if (found) {
-          setTemple(found);
-          navigation.setOptions({ title: found.nameZh });
-        }
+        setError(null);
+        const found = await api.getTempleById(id);
+        setTemple(found);
+        navigation.setOptions({ title: found.nameZh });
       } catch (err) {
         console.error('Failed to fetch temple detail:', err);
+        setError('加载祖庭详情失败');
       } finally {
         setLoading(false);
       }
@@ -30,7 +31,15 @@ export default function TempleDetailScreen() {
     fetchData();
   }, [id, navigation]);
 
-  if (loading || !temple) return <LoadingView />;
+  if (loading) return <LoadingView />;
+  if (error || !temple) {
+    return (
+      <View style={styles.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
+        <Text style={styles.errorText}>{error ?? '祖庭不存在'}</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -64,6 +73,17 @@ export default function TempleDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: fontSize.lg,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
