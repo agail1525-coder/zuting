@@ -4,12 +4,24 @@
   "description": "全球祖庭旅行平台",
   "appid": "touristappid",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": false,
-    "enhance": false,
+    "enhance": true,
     "compileHotReLoad": false,
-    "postcss": false,
-    "minified": false
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "autoAudits": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "condition": {},
+  "_comment_appid": "TODO: Replace 'touristappid' with the real AppID from https://mp.weixin.qq.com before submission. Set via env var WECHAT_MP_APP_ID on the backend side."
 }

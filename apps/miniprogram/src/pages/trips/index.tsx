@@ -69,10 +69,6 @@ export default function TripsPage() {
     Taro.navigateTo({ url: `/pages/trip-detail/index?id=${tripId}` })
   }
 
-  const handleCreate = () => {
-    Taro.showToast({ title: '创建行程功能即将开放', icon: 'none' })
-  }
-
   return (
     <View className='trips-page'>
       {/* Status Filter */}
@@ -148,10 +144,6 @@ export default function TripsPage() {
         <View style={{ height: '160rpx' }} />
       </ScrollView>
 
-      {/* Create Button */}
-      <View className='create-btn' onClick={handleCreate}>
-        <Text className='create-btn__text'>+ 创建行程</Text>
-      </View>
     </View>
   )
 }

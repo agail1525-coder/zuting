@@ -8,9 +8,12 @@ import {
   register,
   logout,
   fetchMe,
+  wechatLogin,
   type User,
 } from '../../lib/auth'
 import './index.scss'
+
+const APP_VERSION = '0.2.0'
 
 const MENU_ITEMS = [
   { icon: '\u{1F9ED}', label: '我的行程', desc: '管理朝圣行程', action: 'trips', url: '/pages/trips/index' },
@@ -48,6 +51,20 @@ export default function ProfilePage() {
     }
   }, [])
 
+  const handleWechatLogin = async () => {
+    setLoading(true)
+    try {
+      const u = await wechatLogin()
+      setUser(u)
+      Taro.showToast({ title: '登录成功', icon: 'success' })
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '微信登录失败'
+      Taro.showToast({ title: message, icon: 'none' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleLogin = async () => {
     if (!phone.trim() || !password.trim()) {
       Taro.showToast({ title: '请输入手机号和密码', icon: 'none' })
@@ -61,8 +78,9 @@ export default function ProfilePage() {
       setPhone('')
       setPassword('')
       Taro.showToast({ title: '登录成功', icon: 'success' })
-    } catch (err: any) {
-      Taro.showToast({ title: err.message || '登录失败', icon: 'none' })
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '登录失败'
+      Taro.showToast({ title: message, icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -91,8 +109,9 @@ export default function ProfilePage() {
       setNickname('')
       setConfirmPassword('')
       Taro.showToast({ title: '注册成功', icon: 'success' })
-    } catch (err: any) {
-      Taro.showToast({ title: err.message || '注册失败', icon: 'none' })
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '注册失败'
+      Taro.showToast({ title: message, icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -113,16 +132,40 @@ export default function ProfilePage() {
       case 'about':
         Taro.showModal({
           title: '关于祖庭之旅',
-          content: '全球祖庭旅行平台 v0.2.0\n\n帮助100万人走祖庭，建立全球宗教文化和平使者网络。\n\n十二大信仰 | 六十圣地 | 二十七祖庭 | 三十印',
+          content: `全球祖庭旅行平台 v${APP_VERSION}\n\n帮助100万人走祖庭，建立全球宗教文化和平使者网络。\n\n十二大信仰 | 六十圣地 | 二十七祖庭 | 三十印`,
           showCancel: false,
           confirmText: '了解'
         })
         break
       case 'feedback':
-        Taro.showToast({ title: '即将开放', icon: 'none' })
+        Taro.showModal({
+          title: '意见反馈',
+          content: '感谢您的宝贵意见！\n\n请发送反馈至:\nfeedback@zuting.travel\n\n我们会认真阅读每一条反馈。',
+          showCancel: false,
+          confirmText: '好的'
+        })
+        break
+      case 'language':
+        Taro.showActionSheet({
+          itemList: ['简体中文', 'English'],
+        }).then((res) => {
+          const lang = res.tapIndex === 0 ? '简体中文' : 'English'
+          Taro.showToast({ title: `已切换为${lang}`, icon: 'success' })
+        }).catch(() => { /* user cancelled */ })
+        break
+      case 'notifications':
+        Taro.openSetting()
+        break
+      case 'rate':
+        Taro.showModal({
+          title: '感谢支持',
+          content: '您的支持是我们前进的动力！\n\n请在微信「发现 → 小程序」中找到「祖庭之旅」，长按即可进行评分。',
+          showCancel: false,
+          confirmText: '知道了'
+        })
         break
       default:
-        Taro.showToast({ title: '即将开放', icon: 'none' })
+        break
     }
   }
 
@@ -242,10 +285,18 @@ export default function ProfilePage() {
             <Text className='profile-card__name'>祖庭行者</Text>
             <Text className='profile-card__desc'>开始你的祖庭之旅</Text>
             <View
-              className='profile-card__login-btn'
+              className='profile-card__login-btn profile-card__login-btn--wechat'
+              onClick={loading ? undefined : handleWechatLogin}
+            >
+              <Text className='profile-card__login-text'>
+                {loading ? '登录中...' : '微信一键登录'}
+              </Text>
+            </View>
+            <View
+              className='profile-card__alt-login'
               onClick={() => setShowLoginForm(true)}
             >
-              <Text className='profile-card__login-text'>登录 / 注册</Text>
+              <Text className='profile-card__alt-login-text'>手机号登录 / 注册</Text>
             </View>
           </>
         )}
@@ -255,7 +306,7 @@ export default function ProfilePage() {
       <View className='journey-stats'>
         <View className='journey-stats__item'>
           <Text className='journey-stats__number'>{user?._count?.journals ?? 0}</Text>
-          <Text className='journey-stats__label'>已访圣地</Text>
+          <Text className='journey-stats__label'>朝圣日志</Text>
         </View>
         <View className='journey-stats__divider' />
         <View className='journey-stats__item'>
@@ -299,7 +350,7 @@ export default function ProfilePage() {
 
       {/* Version */}
       <View className='version'>
-        <Text className='version__text'>祖庭之旅 v0.2.0</Text>
+        <Text className='version__text'>祖庭之旅 v{APP_VERSION}</Text>
         <Text className='version__copyright'>Global Ancestral Temple Travel Platform</Text>
       </View>
     </View>

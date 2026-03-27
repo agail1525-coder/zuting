@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Temple, fetchTempleById } from '../../lib/api'
 import './index.scss'
 
@@ -9,6 +9,18 @@ export default function TempleDetailPage() {
   const { id } = router.params
   const [temple, setTemple] = useState<Temple | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useShareAppMessage(() => ({
+    title: temple ? `${temple.name} — 全球祖庭之旅` : '探索祖庭 — 全球祖庭之旅',
+    path: `/pages/temple-detail/index?id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
+
+  useShareTimeline(() => ({
+    title: temple ? `${temple.name} | ${temple.city}, ${temple.country}` : '探索祖庭 — 全球祖庭之旅',
+    query: `id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
 
   useEffect(() => {
     if (id) loadTemple()

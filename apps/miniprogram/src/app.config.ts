@@ -13,7 +13,10 @@ export default defineAppConfig({
     'pages/trips/index',
     'pages/trip-detail/index',
     'pages/journals/index',
-    'pages/map/index'
+    'pages/journal-create/index',
+    'pages/journal-detail/index',
+    'pages/map/index',
+    'pages/search/index'
   ],
   tabBar: {
     color: '#94a3b8',

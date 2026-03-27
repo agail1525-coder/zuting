@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { HolySite, fetchHolySiteById } from '../../lib/api'
 import './index.scss'
 
@@ -9,6 +9,18 @@ export default function HolySiteDetailPage() {
   const { id } = router.params
   const [site, setSite] = useState<HolySite | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useShareAppMessage(() => ({
+    title: site ? `${site.name} — 全球祖庭之旅` : '探索圣地 — 全球祖庭之旅',
+    path: `/pages/holy-site-detail/index?id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
+
+  useShareTimeline(() => ({
+    title: site ? `${site.name} | ${site.city}, ${site.country}` : '探索圣地 — 全球祖庭之旅',
+    query: `id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
 
   useEffect(() => {
     if (id) loadSite()

@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro'
+import { getAccessToken } from './auth'
 
 const BASE_URL = process.env.TARO_APP_API_URL
   || (process.env.NODE_ENV === 'development' ? 'http://localhost:3002/api' : 'https://zuting.fszyl.top/api')
@@ -92,8 +93,14 @@ async function request<T>(path: string, params?: Record<string, string>): Promis
     if (query) url += `?${query}`
   }
 
+  const token = getAccessToken()
+  const header: Record<string, string> = {}
+  if (token) {
+    header['Authorization'] = `Bearer ${token}`
+  }
+
   try {
-    const res = await Taro.request({ url, method: 'GET' })
+    const res = await Taro.request({ url, method: 'GET', header })
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return res.data as T
     }
@@ -111,6 +118,10 @@ export function fetchReligions() {
 
 export function fetchReligionBySlug(slug: string) {
   return request<Religion[]>('/religions', { slug }).then(list => list[0])
+}
+
+export function fetchReligionById(id: string) {
+  return request<Religion>(`/religions/${id}`)
 }
 
 // Holy site endpoints
@@ -238,6 +249,10 @@ export function fetchJournals(params?: { page?: string; limit?: string; isPublic
   return request<PaginatedResponse<Journal>>('/journals', params)
 }
 
+export function fetchJournalById(id: string) {
+  return request<Journal>(`/journals/${id}`)
+}
+
 // AI Chat endpoints
 export interface ChatMessage {
   role: 'user' | 'assistant'
@@ -250,24 +265,80 @@ export interface AISuggestion {
 }
 
 export async function chatWithXiaohong(message: string, history?: ChatMessage[]): Promise<ChatMessage> {
-  const url = `${BASE_URL}/chat`
+  return postRequest<ChatMessage>('/xiaohong/chat', { message, history })
+}
+
+export function getAISuggestions() {
+  return request<AISuggestion[]>('/xiaohong/suggestions')
+}
+
+// Trip transition
+async function postRequest<T>(path: string, data?: Record<string, unknown> | object): Promise<T> {
+  const url = `${BASE_URL}${path}`
+  const token = getAccessToken()
+  const header: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (token) {
+    header['Authorization'] = `Bearer ${token}`
+  }
   try {
     const res = await Taro.request({
       url,
       method: 'POST',
-      data: { message, history },
-      header: { 'Content-Type': 'application/json' },
+      data,
+      header,
     })
     if (res.statusCode >= 200 && res.statusCode < 300) {
-      return res.data as ChatMessage
+      return res.data as T
     }
     throw new Error(`API Error: ${res.statusCode}`)
   } catch (err) {
-    console.error('[API] /chat failed:', err)
+    console.error(`[API] POST ${path} failed:`, err)
     throw err
   }
 }
 
-export function getAISuggestions() {
-  return request<AISuggestion[]>('/chat/suggestions')
+export function transitionTrip(tripId: string, action: string) {
+  return postRequest<TripDetail>(`/trips/${tripId}/transition`, { action })
+}
+
+// Journal creation
+export interface CreateJournalInput {
+  title: string
+  content: string
+  mood?: string
+  isPublic?: boolean
+  tripId?: string
+}
+
+export function createJournal(input: CreateJournalInput) {
+  return postRequest<Journal>('/journals', input)
+}
+
+// Search endpoints
+export interface SearchResultItem {
+  type: string
+  id: string | number
+  title: string
+  subtitle: string | null
+  descriptionSnippet: string | null
+  image: string | null
+  religion: { name: string; symbol: string | null; color: string | null } | null
+}
+
+export interface SearchResponse {
+  query: string
+  type: string
+  page: number
+  limit: number
+  total: number
+  results: SearchResultItem[]
+}
+
+export function searchAll(q: string, type: string = 'all', page: number = 1, limit: number = 20) {
+  return request<SearchResponse>('/search', {
+    q,
+    type,
+    page: String(page),
+    limit: String(limit),
+  })
 }

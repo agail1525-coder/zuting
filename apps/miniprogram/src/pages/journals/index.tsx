@@ -31,11 +31,7 @@ export default function JournalsPage() {
   }, [])
 
   const handleJournalTap = (id: string) => {
-    Taro.showToast({ title: '日记详情即将开放', icon: 'none' })
-  }
-
-  const handleCreate = () => {
-    Taro.showToast({ title: '写日记功能即将开放', icon: 'none' })
+    Taro.navigateTo({ url: `/pages/journal-detail/index?id=${id}` })
   }
 
   if (loading) {
@@ -59,6 +55,10 @@ export default function JournalsPage() {
     )
   }
 
+  const handleCreateJournal = () => {
+    Taro.navigateTo({ url: '/pages/journal-create/index' })
+  }
+
   if (journals.length === 0) {
     return (
       <View className='journals-page'>
@@ -67,8 +67,8 @@ export default function JournalsPage() {
           <Text className='empty__text'>暂无朝圣日记</Text>
           <Text className='empty__sub'>记录你的第一次朝圣之旅吧</Text>
         </View>
-        <View className='fab' onClick={handleCreate}>
-          <Text className='fab__icon'>{'\u270F'}</Text>
+        <View className='fab' onClick={handleCreateJournal}>
+          <Text className='fab__icon'>{'\u270F\uFE0F'}</Text>
           <Text className='fab__text'>写日记</Text>
         </View>
       </View>
@@ -122,9 +122,8 @@ export default function JournalsPage() {
         ))}
         <View style={{ height: '160rpx' }} />
       </ScrollView>
-
-      <View className='fab' onClick={handleCreate}>
-        <Text className='fab__icon'>{'\u270F'}</Text>
+      <View className='fab' onClick={handleCreateJournal}>
+        <Text className='fab__icon'>{'\u270F\uFE0F'}</Text>
         <Text className='fab__text'>写日记</Text>
       </View>
     </View>

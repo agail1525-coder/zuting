@@ -4,7 +4,8 @@ const TOKEN_KEY = 'zuting_access_token'
 const REFRESH_KEY = 'zuting_refresh_token'
 const USER_KEY = 'zuting_user'
 
-export const API_URL = 'http://localhost:3002/api'
+export const API_URL = process.env.TARO_APP_API_URL
+  || (process.env.NODE_ENV === 'development' ? 'http://localhost:3002/api' : 'https://zuting.fszyl.top/api')
 
 export interface User {
   id: string
@@ -51,6 +52,54 @@ export function getCachedUser(): User | null {
 
 export function setCachedUser(user: User) {
   Taro.setStorageSync(USER_KEY, JSON.stringify(user))
+}
+
+// ---------- WeChat Mini Program Login ----------
+
+/**
+ * WeChat native login flow for Mini Program:
+ * 1. Taro.login() -> get wx code
+ * 2. Send code to backend POST /api/auth/wechat/miniprogram
+ * 3. Backend exchanges code for openid via jscode2session
+ * 4. Backend returns JWT tokens + user info
+ */
+export async function wechatLogin(): Promise<User> {
+  const loginRes = await Taro.login()
+  if (!loginRes.code) {
+    throw new Error('微信登录失败，请重试')
+  }
+
+  const res = await Taro.request({
+    url: `${API_URL}/auth/wechat/miniprogram`,
+    method: 'POST',
+    header: { 'Content-Type': 'application/json' },
+    data: { code: loginRes.code },
+  })
+
+  if (res.statusCode < 200 || res.statusCode >= 300) {
+    const msg = res.data?.message || '微信登录失败'
+    throw new Error(msg)
+  }
+
+  setTokens(res.data.accessToken, res.data.refreshToken)
+
+  // If the backend returned user info inline, cache it
+  if (res.data.user) {
+    const inlineUser: User = {
+      id: res.data.user.id,
+      nickname: res.data.user.nickname,
+      avatar: res.data.user.avatar || null,
+      role: res.data.user.role || 'USER',
+      phone: res.data.user.phone || null,
+      email: res.data.user.email || null,
+      _count: res.data.user._count || { trips: 0, orders: 0, journals: 0, practices: 0 },
+    }
+    setCachedUser(inlineUser)
+  }
+
+  // Always refresh full profile from server
+  const user = await fetchMe()
+  return user
 }
 
 // ---------- Auth API calls ----------

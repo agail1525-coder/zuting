@@ -36,6 +36,7 @@ export default function MapPage() {
   const [filteredSites, setFilteredSites] = useState<HolySite[]>([])
   const [activeFilter, setActiveFilter] = useState<string>('all')
   const [loading, setLoading] = useState(true)
+  const [mapError, setMapError] = useState(false)
   const [center, setCenter] = useState({ latitude: 30.0, longitude: 31.0 })
 
   useEffect(() => {
@@ -102,9 +103,9 @@ export default function MapPage() {
     siteId: site.id,
   }))
 
-  const handleMarkerTap = (e: any) => {
-    const markerId = e.detail?.markerId ?? e.markerId
-    if (markerId !== undefined && markers[markerId]) {
+  const handleMarkerTap = (e: { detail?: { markerId?: string | number }; markerId?: string | number }) => {
+    const markerId = Number(e.detail?.markerId ?? e.markerId)
+    if (!isNaN(markerId) && markers[markerId]) {
       const site = filteredSites[markerId]
       if (site) {
         Taro.navigateTo({
@@ -145,19 +146,45 @@ export default function MapPage() {
 
       {/* Map */}
       <View className='map-container'>
-        <Map
+        {mapError && (
+          <View className='map-error-fallback'>
+            <Text className='map-error-fallback__title'>地图加载失败</Text>
+            <Text className='map-error-fallback__desc'>以下是圣地列表：</Text>
+            <ScrollView className='map-error-fallback__list' scrollY>
+              {filteredSites.map(site => (
+                <View
+                  key={site.id}
+                  className='map-error-fallback__item'
+                  onClick={() => Taro.navigateTo({ url: `/pages/holy-site-detail/index?id=${site.id}` })}
+                >
+                  <Text className='map-error-fallback__name'>{site.name}</Text>
+                  <Text className='map-error-fallback__location'>{site.city}, {site.country}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+        {!mapError && <Map
           className='map'
           latitude={center.latitude}
           longitude={center.longitude}
           scale={3}
           markers={markers}
           onMarkerTap={handleMarkerTap}
-          onError={() => {}}
+          onError={(e) => {
+            console.error('Map error:', e)
+            setMapError(true)
+            Taro.showToast({
+              title: '地图加载失败，请检查网络',
+              icon: 'none',
+              duration: 3000,
+            })
+          }}
           showLocation={false}
           enableScroll
           enableZoom
           style='width: 100%; height: 100%;'
-        />
+        />}
       </View>
 
       {/* Sites Count */}

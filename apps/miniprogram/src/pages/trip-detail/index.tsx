@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
-import { fetchTrip, TripDetail } from '../../lib/api'
+import { fetchTrip, transitionTrip, TripDetail } from '../../lib/api'
 import './index.scss'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -69,8 +69,23 @@ export default function TripDetailPage() {
 
   const currentStepIndex = STATUS_STEPS.indexOf(trip.status)
 
-  const handleAction = (action: string, label: string) => {
-    Taro.showToast({ title: `${label}功能即将开放`, icon: 'none' })
+  const refreshTrip = () => {
+    fetchTrip(tripId)
+      .then(data => setTrip(data))
+      .catch(err => console.error('refresh failed:', err))
+  }
+
+  const handleAction = async (action: string, label: string) => {
+    try {
+      Taro.showLoading({ title: '处理中...' })
+      await transitionTrip(trip.id, action)
+      Taro.hideLoading()
+      Taro.showToast({ title: `${label}成功`, icon: 'success' })
+      refreshTrip()
+    } catch (e) {
+      Taro.hideLoading()
+      Taro.showToast({ title: `${label}失败`, icon: 'none' })
+    }
   }
 
   return (

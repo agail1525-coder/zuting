@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Seal, fetchSealById } from '../../lib/api'
 import './index.scss'
 
@@ -17,6 +17,18 @@ export default function SealDetailPage() {
   const { id } = router.params
   const [seal, setSeal] = useState<Seal | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useShareAppMessage(() => ({
+    title: seal ? `${seal.name} (${seal.series}) — 全球祖庭之旅` : '修行印 — 全球祖庭之旅',
+    path: `/pages/seal-detail/index?id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
+
+  useShareTimeline(() => ({
+    title: seal ? `第${seal.number}印 ${seal.name} | ${seal.series}` : '修行印 — 全球祖庭之旅',
+    query: `id=${id}`,
+    imageUrl: '/assets/share-default.png',
+  }))
 
   useEffect(() => {
     if (id) loadSeal()

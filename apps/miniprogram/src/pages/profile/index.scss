@@ -59,6 +59,21 @@
     color: #0f172a;
   }
 
+  &__login-btn--wechat {
+    background: linear-gradient(135deg, #07c160, #06ad56);
+    margin-bottom: 20rpx;
+  }
+
+  &__alt-login {
+    display: inline-block;
+    padding: 8rpx 0;
+  }
+
+  &__alt-login-text {
+    font-size: 24rpx;
+    color: #94a3b8;
+  }
+
   &__phase-hint {
     display: block;
     font-size: 20rpx;

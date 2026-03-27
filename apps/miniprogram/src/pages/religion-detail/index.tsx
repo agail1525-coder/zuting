@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import {
   Religion, HolySite, Temple, Patriarch, Teaching,
-  fetchReligionBySlug, fetchHolySites, fetchTemples, fetchPatriarchs, fetchTeachings
+  fetchReligionBySlug, fetchReligionById, fetchHolySites, fetchTemples, fetchPatriarchs, fetchTeachings
 } from '../../lib/api'
 import HolySiteCard from '../../components/HolySiteCard'
 import './index.scss'
@@ -17,6 +17,7 @@ export default function ReligionDetailPage() {
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([])
   const [teachings, setTeachings] = useState<Teaching[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -26,9 +27,14 @@ export default function ReligionDetailPage() {
     if (!slug && !id) return
     try {
       setLoading(true)
-      const rel = slug ? await fetchReligionBySlug(slug) : null
+      setError(false)
+      const rel = id
+        ? await fetchReligionById(id)
+        : slug
+          ? await fetchReligionBySlug(slug)
+          : null
       setReligion(rel)
-      const religionId = id || rel?.id
+      const religionId = rel?.id || id
       if (religionId) {
         const [sites, tmps, pats, tchs] = await Promise.all([
           fetchHolySites(religionId),
@@ -43,7 +49,7 @@ export default function ReligionDetailPage() {
       }
     } catch (err) {
       console.error('Failed to load religion detail:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      setError(true)
     } finally {
       setLoading(false)
     }
@@ -53,6 +59,21 @@ export default function ReligionDetailPage() {
     return (
       <View className='container'>
         <Text className='loading-text'>正在加载...</Text>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View className='container' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80rpx 40rpx' }}>
+        <Text style={{ fontSize: '32rpx', color: '#94a3b8', marginBottom: '24rpx' }}>加载失败，请检查网络后重试</Text>
+        <View
+          hoverClass='card-hover'
+          style={{ padding: '16rpx 48rpx', backgroundColor: '#D4A855', borderRadius: '12rpx' }}
+          onClick={loadData}
+        >
+          <Text style={{ fontSize: '28rpx', color: '#0f172a' }}>重试</Text>
+        </View>
       </View>
     )
   }
