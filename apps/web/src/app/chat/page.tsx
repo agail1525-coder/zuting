@@ -2,6 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getAccessToken } from "../../lib/auth";
+import {
+  chatWithXiaohong,
+  fetchXiaohongSuggestions,
+} from "../../lib/api";
 
 interface Message {
   id: string;
@@ -9,8 +13,6 @@ interface Message {
   content: string;
   timestamp: Date;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
 
 const DEFAULT_SUGGESTIONS = [
   "推荐朝圣路线",
@@ -50,12 +52,7 @@ export default function ChatPage() {
     const token = getAccessToken();
     setIsLoggedIn(!!token);
 
-    // Fetch suggestions from API
-    fetch(`${API_URL}/xiaohong/suggestions`)
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error("Failed to fetch suggestions");
-      })
+    fetchXiaohongSuggestions()
       .then((data) => {
         if (data.suggestions && data.suggestions.length > 0) {
           setSuggestions(data.suggestions);
@@ -124,16 +121,13 @@ export default function ChatPage() {
       setInput("");
 
       try {
-        const res = await fetch(`${API_URL}/xiaohong/chat`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ message: msg }),
-        });
-
-        if (res.status === 401) {
+        const data = await chatWithXiaohong(msg);
+        const reply = data.reply || "抱歉，我暂时无法回答这个问题。";
+        simulateTypewriter(reply);
+      } catch (err) {
+        const isAuthError =
+          err instanceof Error && err.message.includes("401");
+        if (isAuthError || (err instanceof Error && err.message === "Not authenticated")) {
           setIsLoggedIn(false);
           setMessages((prev) => [
             ...prev,
@@ -146,15 +140,6 @@ export default function ChatPage() {
           ]);
           return;
         }
-
-        if (!res.ok) {
-          throw new Error(`API error: ${res.status}`);
-        }
-
-        const data = await res.json();
-        const reply = data.reply || "抱歉，我暂时无法回答这个问题。";
-        simulateTypewriter(reply);
-      } catch (err) {
         setMessages((prev) => [
           ...prev,
           {

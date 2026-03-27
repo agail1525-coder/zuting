@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ClientProviders from "./providers";
 import RootJsonLd from "@/components/JsonLd";
+import CookieConsent from "@/components/CookieConsent";
 
 const BASE_URL = "https://zuting.fszyl.top";
 
@@ -133,6 +134,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <RootJsonLd />
         <ClientProviders>{children}</ClientProviders>
+        <CookieConsent />
       </body>
     </html>
   );

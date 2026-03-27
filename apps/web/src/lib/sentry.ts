@@ -4,16 +4,26 @@
  * Zero build-time dependency — loads at runtime.
  */
 
-let SentryModule: any = null;
+interface SentryScope {
+  setExtras(extras: Record<string, unknown>): void;
+}
+
+interface SentryLike {
+  init(options: Record<string, unknown>): void;
+  captureException(error: Error): void;
+  withScope(callback: (scope: SentryScope) => void): void;
+}
+
+let SentryModule: SentryLike | null = null;
 let initAttempted = false;
 
-async function loadSentry(): Promise<any> {
+async function loadSentry(): Promise<SentryLike | null> {
   if (SentryModule) return SentryModule;
   try {
     // Construct at runtime to avoid webpack static analysis
     const pkg = ['@sentry', 'nextjs'].join('/');
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    const m = await new Function('p', 'return import(p)')(pkg);
+    const m = await new Function('p', 'return import(p)')(pkg) as SentryLike;
     SentryModule = m;
     return m;
   } catch {
@@ -43,7 +53,7 @@ export function initSentry() {
 
 export function captureException(
   error: Error,
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
 ) {
   if (!SentryModule) {
     console.error('[Sentry unavailable]', error);
@@ -51,9 +61,9 @@ export function captureException(
   }
   try {
     if (context) {
-      SentryModule.withScope((scope: any) => {
+      SentryModule.withScope((scope: SentryScope) => {
         scope.setExtras(context);
-        SentryModule.captureException(error);
+        SentryModule!.captureException(error);
       });
     } else {
       SentryModule.captureException(error);

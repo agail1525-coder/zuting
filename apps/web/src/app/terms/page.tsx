@@ -268,8 +268,8 @@ export default function TermsPage() {
               service@zuting.com
             </p>
             <p>
-              <strong className="text-temple-200">联系电话：</strong>
-              400-XXX-XXXX
+              <strong className="text-temple-200">联系邮箱：</strong>
+              service@zuting.com
             </p>
             <p>
               <strong className="text-temple-200">办公地址：</strong>

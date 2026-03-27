@@ -2,25 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { getAccessToken } from "@/lib/auth";
+import { useParams, useRouter } from "next/navigation";
+import { fetchJournal, updateJournal, deleteJournal, type JournalDetail, type UpdateJournalData } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 export const dynamic = "force-dynamic";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
-
-interface Journal {
-  id: string;
-  title: string;
-  content: string;
-  mood: string | null;
-  images: string[];
-  isPublic: boolean;
-  createdAt: string;
-  trip?: { id: string; title: string } | null;
-  user?: { nickname: string } | null;
-  holySite?: { id: string; name: string } | null;
-}
 
 const MOOD_MAP: Record<string, { emoji: string; label: string }> = {
   "感悟": { emoji: "💡", label: "感悟" },
@@ -35,37 +21,82 @@ const MOOD_MAP: Record<string, { emoji: string; label: string }> = {
 
 export default function JournalDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
+  const { user } = useAuth();
 
-  const [journal, setJournal] = useState<Journal | null>(null);
+  const [journal, setJournal] = useState<JournalDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editMood, setEditMood] = useState("");
+  const [editIsPublic, setEditIsPublic] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const isOwner = !!(user && journal?.userId && user.id === journal.userId);
 
   useEffect(() => {
     if (!id) return;
-    const fetchJournal = async () => {
+    const loadJournal = async () => {
       try {
-        const token = getAccessToken();
-        const headers: Record<string, string> = {};
-        if (token) headers.Authorization = `Bearer ${token}`;
-        const res = await fetch(`${API_URL}/journals/${id}`, { headers });
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError("not_found");
-          } else {
-            throw new Error("日志加载失败");
-          }
-          return;
-        }
-        setJournal(await res.json());
+        setJournal(await fetchJournal(id));
       } catch (err) {
-        setError(err instanceof Error ? err.message : "加载失败");
+        const msg = err instanceof Error ? err.message : "";
+        if (msg.includes("404")) {
+          setError("not_found");
+        } else {
+          setError(msg || "加载失败");
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchJournal();
+    loadJournal();
   }, [id]);
+
+  const handleEdit = () => {
+    if (!journal) return;
+    setEditTitle(journal.title);
+    setEditContent(journal.content);
+    setEditMood(journal.mood ?? "");
+    setEditIsPublic(journal.isPublic);
+    setEditing(true);
+  };
+
+  const handleSave = async () => {
+    if (!journal) return;
+    setSaving(true);
+    try {
+      const data: UpdateJournalData = {
+        title: editTitle,
+        content: editContent,
+        mood: editMood || undefined,
+        isPublic: editIsPublic,
+      };
+      const updated = await updateJournal(journal.id, data);
+      setJournal(updated);
+      setEditing(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "保存失败");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!journal || !confirm("确定删除这篇日志吗？此操作不可撤销。")) return;
+    setDeleting(true);
+    try {
+      await deleteJournal(journal.id);
+      router.push("/journals");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "删除失败");
+      setDeleting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -146,9 +177,28 @@ export default function JournalDetailPage() {
       <article className="card-glow rounded-2xl bg-temple-800/50 p-6 md:p-8">
         {/* Header */}
         <header className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-serif font-bold text-gradient-gold mb-3">
-            {journal.title}
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-gradient-gold mb-3">
+              {journal.title}
+            </h1>
+            {isOwner && !editing && (
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={handleEdit}
+                  className="px-3 py-1.5 text-xs rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-gold hover:border-gold/30 transition-colors"
+                >
+                  编辑
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="px-3 py-1.5 text-xs rounded-lg bg-red-900/30 border border-red-800/50 text-red-400 hover:text-red-300 hover:border-red-700 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? "删除中..." : "删除"}
+                </button>
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-3 flex-wrap text-sm">
             <span className="text-temple-500">{date}</span>
             {mood && (
@@ -166,7 +216,7 @@ export default function JournalDetailPage() {
             )}
             {journal.holySite && (
               <span className="px-2 py-0.5 rounded-full bg-temple-700/50 border border-temple-600 text-temple-300 text-xs">
-                🏛 {journal.holySite.name}
+                {journal.holySite.name}
               </span>
             )}
             {journal.user && (
@@ -177,30 +227,96 @@ export default function JournalDetailPage() {
           </div>
         </header>
 
-        {/* Images */}
-        {journal.images && journal.images.length > 0 && (
-          <div className="mb-6 grid grid-cols-2 gap-3">
-            {journal.images.map((img, i) => (
-              <div
-                key={i}
-                className="rounded-xl overflow-hidden border border-temple-700/50"
-              >
-                <img
-                  src={img}
-                  alt={`${journal.title} - ${i + 1}`}
-                  className="w-full h-48 object-cover"
-                />
+        {editing ? (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-temple-400 mb-1">标题</label>
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                maxLength={200}
+                className="w-full px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-temple-400 mb-1">内容</label>
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                rows={10}
+                className="w-full px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none resize-y"
+              />
+            </div>
+            <div className="flex gap-4 items-center">
+              <div>
+                <label className="block text-sm text-temple-400 mb-1">心情</label>
+                <select
+                  value={editMood}
+                  onChange={(e) => setEditMood(e.target.value)}
+                  className="px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none"
+                >
+                  <option value="">无</option>
+                  {Object.entries(MOOD_MAP).map(([key, v]) => (
+                    <option key={key} value={key}>{v.emoji} {v.label}</option>
+                  ))}
+                </select>
               </div>
-            ))}
+              <label className="flex items-center gap-2 text-sm text-temple-400 mt-5">
+                <input
+                  type="checkbox"
+                  checked={editIsPublic}
+                  onChange={(e) => setEditIsPublic(e.target.checked)}
+                  className="rounded border-temple-700"
+                />
+                公开可见
+              </label>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={handleSave}
+                disabled={saving || !editTitle.trim() || !editContent.trim()}
+                className="px-4 py-2 text-sm rounded-lg bg-gold/20 border border-gold/30 text-gold hover:bg-gold/30 transition-colors disabled:opacity-50"
+              >
+                {saving ? "保存中..." : "保存"}
+              </button>
+              <button
+                onClick={() => setEditing(false)}
+                disabled={saving}
+                className="px-4 py-2 text-sm rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-temple-200 transition-colors disabled:opacity-50"
+              >
+                取消
+              </button>
+            </div>
           </div>
-        )}
+        ) : (
+          <>
+            {/* Images */}
+            {journal.images && journal.images.length > 0 && (
+              <div className="mb-6 grid grid-cols-2 gap-3">
+                {journal.images.map((img, i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl overflow-hidden border border-temple-700/50"
+                  >
+                    <img
+                      src={img}
+                      alt={`${journal.title} - ${i + 1}`}
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
-        {/* Content */}
-        <div className="prose prose-invert max-w-none">
-          <div className="text-temple-300 leading-relaxed whitespace-pre-wrap">
-            {journal.content}
-          </div>
-        </div>
+            {/* Content */}
+            <div className="prose prose-invert max-w-none">
+              <div className="text-temple-300 leading-relaxed whitespace-pre-wrap">
+                {journal.content}
+              </div>
+            </div>
+          </>
+        )}
       </article>
     </div>
   );

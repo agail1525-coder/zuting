@@ -4,9 +4,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { getAccessToken } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
+import { fetchTrips, createJournal } from "@/lib/api";
 
 interface TripOption {
   id: string;
@@ -39,19 +37,12 @@ export default function JournalCreatePage() {
     }
   }, [authLoading, user, router]);
 
-  // Fetch user's trips for linking
   useEffect(() => {
     if (!user) return;
-    const token = getAccessToken();
-    if (!token) return;
-    fetch(`${API_URL}/trips`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setTrips(data.map((t: { id: string; title: string }) => ({ id: t.id, title: t.title })));
-        }
+    fetchTrips()
+      .then((res) => {
+        const list = Array.isArray(res) ? res : res.data || [];
+        setTrips(list.map((t: { id: string; title: string }) => ({ id: t.id, title: t.title })));
       })
       .catch(() => {});
   }, [user]);
@@ -81,30 +72,15 @@ export default function JournalCreatePage() {
 
     setSubmitting(true);
     try {
-      const token = getAccessToken();
-      const body: Record<string, unknown> = {
+      const data: Parameters<typeof createJournal>[0] = {
         title: title.trim(),
         content: content.trim(),
         isPublic,
       };
-      if (mood) body.mood = mood;
-      if (tripId) body.tripId = tripId;
+      if (mood) data.mood = mood;
+      if (tripId) data.tripId = tripId;
 
-      const res = await fetch(`${API_URL}/journals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "创建失败");
-      }
-
-      const journal = await res.json();
+      const journal = await createJournal(data);
       router.push(`/journals/${journal.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建日记失败，请重试");

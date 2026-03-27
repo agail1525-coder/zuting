@@ -4,9 +4,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { getAccessToken } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
+import { createTrip } from "@/lib/api";
 
 export default function TripCreatePage() {
   const { user, loading: authLoading } = useAuth();
@@ -57,30 +55,15 @@ export default function TripCreatePage() {
 
     setSubmitting(true);
     try {
-      const token = getAccessToken();
-      const res = await fetch(`${API_URL}/trips`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: title.trim(),
-          startDate,
-          endDate,
-          persons,
-          contactName: contactName.trim() || undefined,
-          contactPhone: contactPhone.trim() || undefined,
-          note: note.trim() || undefined,
-        }),
+      const trip = await createTrip({
+        title: title.trim(),
+        startDate,
+        endDate,
+        persons,
+        contactName: contactName.trim() || undefined,
+        contactPhone: contactPhone.trim() || undefined,
+        note: note.trim() || undefined,
       });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "创建失败");
-      }
-
-      const trip = await res.json();
       router.push(`/trips/${trip.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "创建行程失败，请重试");

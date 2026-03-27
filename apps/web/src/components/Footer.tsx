@@ -55,7 +55,7 @@ export default function Footer() {
 
         <div className="mt-4 text-center">
           <p className="text-temple-600 text-xs">
-            粤ICP备XXXXXXXX号
+            备案审核中
           </p>
         </div>
       </div>

@@ -102,8 +102,8 @@ export default function AboutPage() {
               contact@zuting.com
             </p>
             <p className="text-temple-300">
-              <strong className="text-temple-200">联系电话：</strong>
-              400-XXX-XXXX
+              <strong className="text-temple-200">联系邮箱：</strong>
+              contact@zuting.com
             </p>
             <p className="text-temple-300">
               <strong className="text-temple-200">办公地址：</strong>
@@ -119,7 +119,7 @@ export default function AboutPage() {
         {/* ICP备案 */}
         <div className="text-center py-4">
           <p className="text-temple-500 text-sm">
-            粤ICP备XXXXXXXX号
+            备案审核中
           </p>
         </div>
       </div>

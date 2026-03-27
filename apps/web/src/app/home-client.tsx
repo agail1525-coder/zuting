@@ -7,7 +7,7 @@ import ReligionCard from "@/components/ReligionCard";
 import HolySiteCard from "@/components/HolySiteCard";
 import StatsCounter from "@/components/StatsCounter";
 import QuickActions from "@/components/QuickActions";
-import type { Religion, HolySite } from "@/lib/api";
+import type { Religion, HolySite, Temple, Patriarch, Seal } from "@/lib/api";
 
 const WorldMapDynamic = lazy(() => import("@/components/WorldMapDynamic"));
 const OnboardingModal = lazy(() => import("@/components/OnboardingModal"));
@@ -16,6 +16,9 @@ interface Props {
   religions: Religion[];
   featuredSites: HolySite[];
   allSites: HolySite[];
+  temples: Temple[];
+  patriarchs: Patriarch[];
+  seals: Seal[];
 }
 
 // Carousel component for featured sites
@@ -194,7 +197,7 @@ const WISDOM_QUOTES = [
   },
 ];
 
-export default function HomeClient({ religions, featuredSites, allSites }: Props) {
+export default function HomeClient({ religions, featuredSites, allSites, temples, patriarchs, seals }: Props) {
   const { t, locale } = useTranslation();
   const [quoteIndex, setQuoteIndex] = useState(0);
 
@@ -208,11 +211,11 @@ export default function HomeClient({ religions, featuredSites, allSites }: Props
   }, []);
 
   const stats = [
-    { value: 12, label: t("stats.faiths") },
-    { value: 60, label: t("stats.holySites") },
-    { value: 27, label: t("stats.temples") },
-    { value: 28, label: t("stats.patriarchs") },
-    { value: 30, label: t("stats.seals") },
+    { value: religions.length, label: t("stats.faiths") },
+    { value: allSites.length, label: t("stats.holySites") },
+    { value: temples.length, label: t("stats.temples") },
+    { value: patriarchs.length, label: t("stats.patriarchs") },
+    { value: seals.length, label: t("stats.seals") },
   ];
 
   const currentQuote = WISDOM_QUOTES[quoteIndex];
@@ -261,7 +264,7 @@ export default function HomeClient({ religions, featuredSites, allSites }: Props
           {/* Small top label */}
           <div className="mb-6 animate-fade-in-up">
             <span className="inline-block px-5 py-1.5 border border-gold/20 rounded-full text-gold/70 text-sm tracking-[0.3em] uppercase font-sans">
-              12 Faiths · 60 Holy Sites · 27 Temples
+              {`${religions.length} Faiths · ${allSites.length} Holy Sites · ${temples.length} Temples`}
             </span>
           </div>
 
@@ -563,7 +566,7 @@ export default function HomeClient({ religions, featuredSites, allSites }: Props
                 {isZh ? "探索全球圣地地图" : "Explore the Global Map"}
               </h2>
               <p className="text-temple-400 text-lg">
-                {isZh ? "12大信仰 · 60处圣地 · 遍布全球" : "12 Faiths · 60 Sites · Worldwide"}
+                {isZh ? `${religions.length}大信仰 · ${allSites.length}处圣地 · 遍布全球` : `${religions.length} Faiths · ${allSites.length} Sites · Worldwide`}
               </p>
             </div>
             <div className="rounded-2xl overflow-hidden border border-gold/10 card-glow mb-8">
@@ -635,17 +638,17 @@ export default function HomeClient({ religions, featuredSites, allSites }: Props
           {/* Trust indicators */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-temple-500 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-gold">12</span>
+              <span className="text-gold">{religions.length}</span>
               <span>{isZh ? "大信仰" : "Faiths"}</span>
             </div>
             <div className="w-px h-4 bg-temple-700" />
             <div className="flex items-center gap-2">
-              <span className="text-gold">60</span>
+              <span className="text-gold">{allSites.length}</span>
               <span>{isZh ? "处圣地" : "Holy Sites"}</span>
             </div>
             <div className="w-px h-4 bg-temple-700" />
             <div className="flex items-center gap-2">
-              <span className="text-gold">30</span>
+              <span className="text-gold">{seals.length}</span>
               <span>{isZh ? "枚修行印" : "Practice Seals"}</span>
             </div>
             <div className="w-px h-4 bg-temple-700" />

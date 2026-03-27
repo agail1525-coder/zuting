@@ -36,7 +36,7 @@ const TYPE_LABELS: Record<string, string> = {
 function getDetailHref(item: SearchResultItem): string {
   switch (item.type) {
     case "religion":
-      return `/religions`;
+      return item.slug ? `/religions/${item.slug}` : `/religions`;
     case "holy-site":
       return `/holy-sites/${item.id}`;
     case "temple":

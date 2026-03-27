@@ -168,6 +168,7 @@ export async function fetchTeaching(id: string): Promise<Teaching> {
 export interface SearchResultItem {
   type: string;
   id: string | number;
+  slug?: string;
   title: string;
   subtitle: string | null;
   descriptionSnippet: string | null;
@@ -203,4 +204,530 @@ export async function fetchSeals(series?: string): Promise<Seal[]> {
 
 export async function fetchSeal(id: number): Promise<Seal> {
   return fetchJson<Seal>(`/api/seals/${id}`);
+}
+
+// --- Trips ---
+
+export type TripStatus =
+  | "DRAFT"
+  | "PLANNING"
+  | "SUBMITTED"
+  | "CONFIRMED"
+  | "PAID"
+  | "PREPARING"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "REVIEWING"
+  | "CANCELLED"
+  | "REFUNDING"
+  | "REFUNDED";
+
+export interface TripSite {
+  id: string;
+  order: number;
+  visitDate: string | null;
+  notes: string | null;
+  site: HolySite;
+}
+
+export interface TripStatusHistory {
+  id: string;
+  fromStatus: string | null;
+  toStatus: string;
+  action: string;
+  operator: string | null;
+  reason: string | null;
+  createdAt: string;
+}
+
+export interface Trip {
+  id: string;
+  title: string;
+  status: TripStatus;
+  startDate: string | null;
+  endDate: string | null;
+  persons: number | null;
+  totalBudget: number | null;
+  contactName: string | null;
+  contactPhone: string | null;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+  sites: TripSite[];
+  _count?: { orders: number; journals: number };
+}
+
+export type OrderStatus = "PENDING" | "PAID" | "CANCELLED" | "REFUNDING" | "REFUNDED";
+
+export interface Order {
+  id: string;
+  orderNo: string;
+  tripId: string;
+  userId: string;
+  totalAmount: number;
+  paidAmount: number | null;
+  paymentMethod: string | null;
+  paymentId: string | null;
+  status: OrderStatus;
+  createdAt: string;
+  paidAt: string | null;
+  cancelledAt: string | null;
+  refundedAt: string | null;
+}
+
+export interface JournalEntry {
+  id: string;
+  userId: string;
+  tripId: string | null;
+  siteId: string | null;
+  title: string;
+  content: string;
+  images: string[];
+  mood: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TripDetail extends Trip {
+  user: { id: string; nickname: string | null; avatar: string | null } | null;
+  statusHistory: TripStatusHistory[];
+  orders: Order[];
+  journals: JournalEntry[];
+  availableActions: string[];
+  statusLabel: string;
+  statusColor: string;
+}
+
+export interface TripListResponse {
+  data: Trip[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function fetchTrips(params?: {
+  status?: TripStatus;
+  page?: number;
+  limit?: number;
+}): Promise<TripListResponse> {
+  const qs = new URLSearchParams();
+  if (params?.status) qs.set("status", params.status);
+  if (params?.page) qs.set("page", String(params.page));
+  if (params?.limit) qs.set("limit", String(params.limit));
+  const q = qs.toString();
+  return fetchJson<TripListResponse>(`/api/trips${q ? `?${q}` : ""}`);
+}
+
+export async function fetchTrip(id: string): Promise<TripDetail> {
+  return fetchJson<TripDetail>(`/api/trips/${id}`);
+}
+
+// --- Notifications (authenticated) ---
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: string;
+  title: string;
+  content: string;
+  link: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationListResponse {
+  data: Notification[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+async function fetchAuthed<T>(
+  url: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const { getAccessToken } = await import("./auth");
+  const token = getAccessToken();
+  if (!token) throw new Error("Not authenticated");
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const res = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...options.headers,
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export async function fetchNotifications(
+  page = 1,
+  limit = 20,
+  unreadOnly = false
+): Promise<NotificationListResponse> {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+  if (unreadOnly) params.set("unreadOnly", "true");
+  return fetchAuthed<NotificationListResponse>(
+    `/api/notifications?${params}`
+  );
+}
+
+export async function fetchUnreadCount(): Promise<{ count: number }> {
+  return fetchAuthed<{ count: number }>("/api/notifications/unread-count");
+}
+
+export async function markNotificationAsRead(
+  id: string
+): Promise<Notification> {
+  return fetchAuthed<Notification>(`/api/notifications/${id}/read`, {
+    method: "PATCH",
+  });
+}
+
+export async function markAllNotificationsAsRead(): Promise<{
+  updated: number;
+}> {
+  return fetchAuthed<{ updated: number }>("/api/notifications/read-all", {
+    method: "POST",
+  });
+}
+
+export async function deleteNotification(id: string): Promise<Notification> {
+  return fetchAuthed<Notification>(`/api/notifications/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// --- Orders (authenticated) ---
+
+export interface OrderDetail {
+  id: string;
+  orderNo: string;
+  tripId: string;
+  userId: string;
+  totalAmount: number;
+  paidAmount: number | null;
+  paymentMethod: string | null;
+  paymentId: string | null;
+  status: string;
+  createdAt: string;
+  paidAt: string | null;
+  cancelledAt: string | null;
+  refundedAt: string | null;
+  trip?: {
+    id: string;
+    title: string;
+    status: string;
+    sites?: Array<{
+      id: string;
+      order: number;
+      site: { name: string; country: string };
+    }>;
+    user?: { id: string; nickname: string | null };
+  };
+}
+
+export interface OrderListResponse {
+  data: OrderDetail[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function fetchOrders(params?: {
+  status?: string;
+  page?: number;
+  limit?: number;
+}): Promise<OrderListResponse> {
+  const qs = new URLSearchParams();
+  if (params?.status) qs.set("status", params.status);
+  if (params?.page) qs.set("page", String(params.page));
+  if (params?.limit) qs.set("limit", String(params.limit));
+  const q = qs.toString();
+  return fetchAuthed<OrderListResponse>(`/api/orders${q ? `?${q}` : ""}`);
+}
+
+export async function fetchOrder(id: string): Promise<OrderDetail> {
+  return fetchAuthed<OrderDetail>(`/api/orders/${id}`);
+}
+
+export async function cancelOrder(id: string): Promise<OrderDetail> {
+  return fetchAuthed<OrderDetail>(`/api/orders/${id}/cancel`, {
+    method: "POST",
+  });
+}
+
+export async function refundOrder(
+  id: string,
+  reason?: string
+): Promise<OrderDetail> {
+  return fetchAuthed<OrderDetail>(`/api/orders/${id}/refund`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+}
+
+// --- Trips (authenticated mutations) ---
+
+export interface CreateTripData {
+  title: string;
+  startDate?: string;
+  endDate?: string;
+  totalBudget?: number;
+  persons?: number;
+  contactName?: string;
+  contactPhone?: string;
+  note?: string;
+}
+
+export async function createTrip(data: CreateTripData): Promise<Trip> {
+  return fetchAuthed<Trip>("/api/trips", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateTrip(
+  id: string,
+  data: Partial<CreateTripData>
+): Promise<Trip> {
+  return fetchAuthed<Trip>(`/api/trips/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function transitionTrip(
+  id: string,
+  action: string
+): Promise<TripDetail> {
+  return fetchAuthed<TripDetail>(`/api/trips/${id}/transition`, {
+    method: "POST",
+    body: JSON.stringify({ action }),
+  });
+}
+
+export async function addSiteToTrip(
+  tripId: string,
+  siteId: string
+): Promise<TripSite> {
+  return fetchAuthed<TripSite>(`/api/trips/${tripId}/sites`, {
+    method: "POST",
+    body: JSON.stringify({ siteId }),
+  });
+}
+
+export async function removeSiteFromTrip(
+  tripId: string,
+  siteId: string
+): Promise<void> {
+  return fetchAuthed<void>(`/api/trips/${tripId}/sites/${siteId}`, {
+    method: "DELETE",
+  });
+}
+
+// --- Orders (authenticated mutations) ---
+
+export interface CreateOrderData {
+  tripId: string;
+  totalAmount: number;
+  paymentMethod?: string;
+  currency?: string;
+}
+
+export async function createOrder(data: CreateOrderData): Promise<OrderDetail> {
+  return fetchAuthed<OrderDetail>("/api/orders", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// --- Payments (authenticated) ---
+
+export interface PaymentResult {
+  transaction: {
+    id: string;
+    orderId: string;
+    gateway: string;
+    amount: number;
+    status: string;
+  };
+  paymentParams: Record<string, unknown>;
+}
+
+export async function createPayment(
+  orderId: string,
+  gateway: string
+): Promise<PaymentResult> {
+  return fetchAuthed<PaymentResult>("/api/payments/create", {
+    method: "POST",
+    body: JSON.stringify({ orderId, gateway }),
+  });
+}
+
+// --- Coupons ---
+
+export interface CouponVerifyResult {
+  valid: boolean;
+  reason?: string;
+  discount?: number;
+  coupon?: {
+    id: string;
+    code: string;
+    name: string;
+    type: string;
+    value: number;
+  };
+}
+
+export async function verifyCoupon(
+  code: string,
+  orderAmount: number
+): Promise<CouponVerifyResult> {
+  return fetchAuthed<CouponVerifyResult>("/api/coupons/verify", {
+    method: "POST",
+    body: JSON.stringify({ code, orderAmount }),
+  });
+}
+
+// --- XiaoHong AI Chat ---
+
+export interface ChatResponse {
+  reply: string;
+}
+
+export interface SuggestionsResponse {
+  suggestions: string[];
+}
+
+export async function chatWithXiaohong(
+  message: string
+): Promise<ChatResponse> {
+  return fetchAuthed<ChatResponse>("/api/xiaohong/chat", {
+    method: "POST",
+    body: JSON.stringify({ message }),
+  });
+}
+
+export async function fetchXiaohongSuggestions(): Promise<SuggestionsResponse> {
+  return fetchJson<SuggestionsResponse>("/api/xiaohong/suggestions");
+}
+
+// --- Journals (authenticated) ---
+
+export interface JournalItem {
+  id: string;
+  title: string;
+  content: string;
+  mood: string | null;
+  images: string[];
+  isPublic: boolean;
+  createdAt: string;
+  trip?: { id: string; title: string } | null;
+  holySite?: { id: string; name: string } | null;
+}
+
+export interface JournalDetail extends JournalItem {
+  userId?: string;
+  user?: { nickname: string } | null;
+}
+
+export interface UpdateJournalData {
+  title?: string;
+  content?: string;
+  mood?: string;
+  images?: string[];
+  isPublic?: boolean;
+}
+
+export interface JournalListResponse {
+  data: JournalItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface CreateJournalData {
+  title: string;
+  content: string;
+  mood?: string;
+  isPublic?: boolean;
+  tripId?: string;
+}
+
+export async function fetchJournals(params?: {
+  userId?: string;
+  tripId?: string;
+  page?: number;
+  limit?: number;
+}): Promise<JournalListResponse> {
+  const qs = new URLSearchParams();
+  if (params?.userId) qs.set("userId", params.userId);
+  if (params?.tripId) qs.set("tripId", params.tripId);
+  if (params?.page) qs.set("page", String(params.page));
+  if (params?.limit) qs.set("limit", String(params.limit));
+  const q = qs.toString();
+  return fetchAuthed<JournalListResponse>(`/api/journals${q ? `?${q}` : ""}`);
+}
+
+export async function fetchJournal(id: string): Promise<JournalDetail> {
+  return fetchAuthed<JournalDetail>(`/api/journals/${id}`);
+}
+
+export async function createJournal(
+  data: CreateJournalData
+): Promise<{ id: string }> {
+  return fetchAuthed<{ id: string }>("/api/journals", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateJournal(
+  id: string,
+  data: UpdateJournalData
+): Promise<JournalDetail> {
+  return fetchAuthed<JournalDetail>(`/api/journals/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteJournal(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/journals/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// --- Profile ---
+
+export interface UpdateProfileData {
+  nickname?: string;
+  avatar?: string;
+  phone?: string;
+}
+
+export async function updateProfile(
+  data: UpdateProfileData
+): Promise<{ id: string; nickname: string; avatar: string | null; phone: string | null }> {
+  return fetchAuthed(`/api/auth/profile`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 }

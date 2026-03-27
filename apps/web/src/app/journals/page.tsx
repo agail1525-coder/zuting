@@ -4,21 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { getAccessToken } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
-
-interface JournalItem {
-  id: string;
-  title: string;
-  content: string;
-  mood: string | null;
-  images: string[];
-  isPublic: boolean;
-  createdAt: string;
-  trip?: { id: string; title: string } | null;
-  holySite?: { id: string; name: string } | null;
-}
+import { fetchJournals, type JournalItem } from "@/lib/api";
 
 const MOOD_EMOJI: Record<string, string> = {
   "觉悟": "🪷",
@@ -65,24 +51,17 @@ export default function JournalsPage() {
 
   useEffect(() => {
     if (!user) return;
-    const fetchJournals = async () => {
+    const loadJournals = async () => {
       try {
-        const token = getAccessToken();
-        const headers: Record<string, string> = {};
-        if (token) headers.Authorization = `Bearer ${token}`;
-        const res = await fetch(`${API_URL}/journals?userId=${user.id}`, {
-          headers,
-        });
-        if (!res.ok) throw new Error("日记加载失败");
-        const data = await res.json();
-        setJournals(Array.isArray(data) ? data : data.data || []);
+        const res = await fetchJournals({ userId: user.id });
+        setJournals(Array.isArray(res) ? res : res.data || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : "加载失败");
       } finally {
         setLoading(false);
       }
     };
-    fetchJournals();
+    loadJournals();
   }, [user]);
 
   if (authLoading || loading) {
