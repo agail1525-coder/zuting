@@ -1,0 +1,119 @@
+.temples-page {
+  min-height: 100vh;
+  background-color: #020617;
+  padding: 24rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+
+  &__title {
+    font-size: 40rpx;
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+
+  &__count {
+    font-size: 24rpx;
+    color: #D4A855;
+    background: rgba(212, 168, 85, 0.1);
+    padding: 8rpx 20rpx;
+    border-radius: 20rpx;
+  }
+}
+
+.temples-list {
+  flex: 1;
+}
+
+.temple-card {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid rgba(212, 168, 85, 0.1);
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+
+  &--hover {
+    opacity: 0.85;
+  }
+
+  &__header {
+    margin-bottom: 16rpx;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6rpx;
+  }
+
+  &__name {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #f1f5f9;
+    flex: 1;
+  }
+
+  &__badge {
+    font-size: 20rpx;
+    color: #D4A855;
+    background: rgba(212, 168, 85, 0.1);
+    padding: 4rpx 14rpx;
+    border-radius: 16rpx;
+    border: 1rpx solid rgba(212, 168, 85, 0.2);
+    flex-shrink: 0;
+    margin-left: 12rpx;
+  }
+
+  &__name-en {
+    display: block;
+    font-size: 24rpx;
+    color: #94a3b8;
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12rpx;
+  }
+
+  &__location-icon {
+    font-size: 24rpx;
+    margin-right: 8rpx;
+  }
+
+  &__location-text {
+    font-size: 24rpx;
+    color: #cbd5e1;
+  }
+
+  &__founded {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12rpx;
+  }
+
+  &__founded-label {
+    font-size: 22rpx;
+    color: #64748b;
+  }
+
+  &__founded-value {
+    font-size: 22rpx;
+    color: #D4A855;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 24rpx;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+}
