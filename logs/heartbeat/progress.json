@@ -1,7 +1,8 @@
 ﻿{
-    "TotalCompleted":  0,
-    "LastUpdate":  "2026-03-27 08:20:43",
-    "CurrentPhase":  "scanning",
-    "CycleCount":  38,
-    "CycleTasks":  "0/0"
+    "TotalCompleted":  102,
+    "CycleCount":  14,
+    "LastUpdate":  "2026-03-27 08:21:45",
+    "Slots":  "5/5",
+    "CycleTasks":  "0/8",
+    "CurrentPhase":  "building"
 }
