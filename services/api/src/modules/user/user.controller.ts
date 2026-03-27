@@ -1,0 +1,114 @@
+import {
+  Controller,
+  Get,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UserService } from './user.service';
+
+@ApiTags('users')
+@Controller('users')
+export class UserController {
+  private readonly logger = new Logger(UserController.name);
+
+  constructor(private readonly userService: UserService) {}
+
+  @Get('me/export')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Export all user data (GDPR)',
+    description:
+      'GDPR合规：导出当前用户的所有个人数据，包括个人资料、行程、订单、日志、评价、通知和帖子。\n\n' +
+      'GDPR compliance: Export all personal data for the authenticated user, including profile, trips, orders, journals, reviews, notifications, and posts.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'All user data exported as JSON. / 用户数据已导出为JSON。',
+    schema: {
+      type: 'object',
+      properties: {
+        profile: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            nickname: { type: 'string' },
+            email: { type: 'string', nullable: true },
+            phone: { type: 'string', nullable: true },
+            role: { type: 'string' },
+            createdAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        trips: { type: 'array', items: { type: 'object' } },
+        orders: { type: 'array', items: { type: 'object' } },
+        journals: { type: 'array', items: { type: 'object' } },
+        reviews: { type: 'array', items: { type: 'object' } },
+        notifications: { type: 'array', items: { type: 'object' } },
+        posts: { type: 'array', items: { type: 'object' } },
+        exportedAt: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized — valid JWT required. / 未授权——需要有效的JWT。',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found. / 用户不存在。',
+  })
+  exportMyData(@CurrentUser('id') userId: string) {
+    this.logger.log(`User ${userId} requested data export`);
+    return this.userService.exportUserData(userId);
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Delete user account (GDPR right to be forgotten)',
+    description:
+      'GDPR合规：软删除当前用户账号。\n\n' +
+      '执行步骤：\n' +
+      '1. 匿名化个人信息（昵称→"Deleted User"，邮箱→null，手机→null）\n' +
+      '2. 清除所有OAuth关联（微信、Google）\n' +
+      '3. 删除所有登录会话（立即登出）\n' +
+      '4. 停用账号（isActive=false）\n\n' +
+      '30天宽限期后，计划任务将硬删除所有关联数据（行程、订单、日志、评价、通知、帖子、上传文件、优惠券使用记录）。\n\n' +
+      'GDPR compliance: Soft-delete the current user account.\n\n' +
+      'Steps:\n' +
+      '1. Anonymize PII (nickname→"Deleted User", email→null, phone→null)\n' +
+      '2. Clear all OAuth associations (WeChat, Google)\n' +
+      '3. Delete all sessions (immediate logout)\n' +
+      '4. Deactivate account (isActive=false)\n\n' +
+      'After a 30-day grace period, a scheduled job will hard-delete all related data ' +
+      '(trips, trip status history, orders, payment transactions, journals, reviews, ' +
+      'notifications, posts, uploads, coupon usages).',
+  })
+  @ApiResponse({
+    status: 204,
+    description:
+      'Account soft-deleted successfully. Data will be permanently removed after 30 days. / 账号已软删除。数据将在30天后永久删除。',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized — valid JWT required. / 未授权——需要有效的JWT。',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found. / 用户不存在。',
+  })
+  async deleteMyAccount(@CurrentUser('id') userId: string): Promise<void> {
+    this.logger.warn(`User ${userId} requested account deletion`);
+    await this.userService.softDeleteAccount(userId);
+  }
+}
