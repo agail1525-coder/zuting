@@ -10,13 +10,6 @@ export class CreateOrderDto {
   tripId: string;
 
   @ApiProperty({
-    description: 'ID of the user placing the order. / 下单用户ID',
-    example: 'clx1abc2d0000ab12cd34ef56',
-  })
-  @IsString()
-  userId: string;
-
-  @ApiProperty({
     description: 'Total amount in cents (e.g., 1500000 = 15,000.00 CNY). Minimum 1. / 总金额（分），例如 1500000 = 15000.00元，最小值1',
     example: 1500000,
     minimum: 1,

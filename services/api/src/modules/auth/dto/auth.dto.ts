@@ -142,6 +142,49 @@ export class VerifyCodeDto {
   purpose: 'register' | 'reset' | 'login';
 }
 
+export class UpdateProfileDto {
+  @ApiPropertyOptional({
+    description: 'User display name, 2-20 characters. / 用户昵称，2-20个字符',
+    example: '朝圣者',
+    minLength: 2,
+    maxLength: 20,
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(20)
+  nickname?: string;
+
+  @ApiPropertyOptional({
+    description: 'Avatar image URL. / 头像图片URL',
+    example: 'https://example.com/avatar.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  avatar?: string;
+
+  @ApiPropertyOptional({
+    description: 'Chinese mobile phone number (11 digits starting with 1). / 中国大陆手机号',
+    example: '13800138000',
+    pattern: '^1[3-9]\\d{9}$',
+  })
+  @IsOptional()
+  @IsString()
+  @Matches(/^1[3-9]\d{9}$/, { message: 'Invalid Chinese phone number' })
+  phone?: string;
+
+  @ApiPropertyOptional({
+    description: 'User bio / self-introduction, max 200 characters. / 个人简介，最多200字',
+    example: '虔诚朝圣者，探索世界宗教文化',
+    maxLength: 200,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  bio?: string;
+}
+
 export class ResetPasswordDto {
   @ApiProperty({
     description: 'Phone number or email the code was sent to. / 验证码发送目标',

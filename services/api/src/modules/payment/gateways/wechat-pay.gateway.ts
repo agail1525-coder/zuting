@@ -9,6 +9,9 @@ import type {
   RefundParams,
   RefundResult,
   QueryResult,
+  WebhookBody,
+  WechatWebhookBody,
+  WechatDecryptedPayment,
 } from './payment-gateway.interface';
 
 /**
@@ -38,6 +41,8 @@ export class WechatPayGateway implements PaymentGateway {
   private readonly notifyUrl: string;
   private readonly baseUrl = 'https://api.mch.weixin.qq.com';
   private readonly mockMode: boolean;
+  private readonly isProduction: boolean;
+  private platformCertCache: { serial: string; publicKey: crypto.KeyObject } | null = null;
 
   constructor(private readonly config: ConfigService) {
     this.appId = this.config.get<string>('WECHAT_PAY_APP_ID', '');
@@ -48,6 +53,7 @@ export class WechatPayGateway implements PaymentGateway {
     this.notifyUrl = this.config.get<string>('WECHAT_PAY_NOTIFY_URL', '');
 
     this.mockMode = !this.mchId || !this.privateKey || !this.apiV3Key;
+    this.isProduction = this.config.get<string>('NODE_ENV', 'development') === 'production';
 
     if (this.mockMode) {
       this.logger.warn('WeChat Pay running in MOCK mode — set WECHAT_PAY_MCH_ID, WECHAT_PAY_PRIVATE_KEY, WECHAT_PAY_API_V3_KEY for production');
@@ -102,7 +108,7 @@ export class WechatPayGateway implements PaymentGateway {
 
   // ──────────────────── Verify Callback ────────────────────
 
-  async verifyCallback(body: any, headers?: Record<string, string>): Promise<boolean> {
+  async verifyCallback(body: WebhookBody, headers?: Record<string, string>): Promise<boolean> {
     if (this.mockMode) {
       this.logger.warn('[MOCK] Skipping WeChat Pay signature verification');
       return true;
@@ -118,34 +124,67 @@ export class WechatPayGateway implements PaymentGateway {
     const signature = headers['wechatpay-signature'];
     const serial = headers['wechatpay-serial'];
 
-    if (!timestamp || !nonce || !signature) {
+    if (!timestamp || !nonce || !signature || !serial) {
       this.logger.warn('Missing required WeChat Pay callback headers');
       return false;
     }
 
-    // Build the verification message
+    // Reject stale callbacks (> 5 minutes old)
+    const callbackAge = Math.abs(Date.now() / 1000 - Number(timestamp));
+    if (callbackAge > 300) {
+      this.logger.warn(`WeChat callback rejected: timestamp too old (${callbackAge}s)`);
+      return false;
+    }
+
+    // Build the verification message per WeChat Pay V3 spec
     const bodyStr = typeof body === 'string' ? body : JSON.stringify(body);
     const message = `${timestamp}\n${nonce}\n${bodyStr}\n`;
 
-    // In production, you would fetch and cache the WeChat Pay platform certificate
-    // using GET /v3/certificates endpoint to verify the signature.
-    // For now, we verify the AEAD decryption of the resource, which implicitly
-    // validates authenticity via the API v3 key.
-    this.logger.log(`WeChat callback verification: serial=${serial}, timestamp=${timestamp}`);
-    return true; // Signature verified via AEAD decryption in parseCallback
+    // Fetch platform certificate for RSA-SHA256 signature verification
+    const platformCert = await this.getPlatformCertificate(serial);
+    if (!platformCert) {
+      if (!this.isProduction) {
+        this.logger.warn(
+          'WeChat signature verification skipped in dev mode — platform certificate unavailable. ' +
+          'This MUST be resolved before production deployment.',
+        );
+        return true;
+      }
+      this.logger.error(`WeChat callback rejected: platform certificate not available for serial=${serial}`);
+      return false;
+    }
+
+    // Verify RSA-SHA256 signature using WeChat platform public key
+    try {
+      const verified = crypto.createVerify('RSA-SHA256')
+        .update(message)
+        .verify(platformCert, Buffer.from(signature, 'base64'));
+
+      if (!verified) {
+        this.logger.error(`WeChat callback signature verification FAILED: serial=${serial}`);
+      } else {
+        this.logger.log(`WeChat callback signature verified: serial=${serial}`);
+      }
+      return verified;
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`WeChat callback signature verification error: ${errMsg}`);
+      return false;
+    }
   }
 
   // ──────────────────── Parse Callback ────────────────────
 
-  async parseCallback(body: any): Promise<CallbackResult> {
+  async parseCallback(body: WebhookBody): Promise<CallbackResult> {
     if (this.mockMode) {
-      return this.mockParseCallback(body);
+      return this.mockParseCallback(body as WechatWebhookBody);
     }
 
+    const wechatBody = body as WechatWebhookBody;
     // WeChat V3 callback body structure:
     // { event_type, resource: { algorithm, ciphertext, nonce, associated_data } }
-    const eventType = body?.event_type;
-    const resource = body?.resource;
+    const eventType = wechatBody.event_type;
+    const resource = wechatBody.resource;
 
     if (!resource?.ciphertext || !resource?.nonce || !resource?.associated_data) {
       this.logger.error('Invalid WeChat callback: missing resource fields');
@@ -153,12 +192,12 @@ export class WechatPayGateway implements PaymentGateway {
         transactionId: '',
         gatewayTransactionId: '',
         success: false,
-        rawData: body,
+        rawData: wechatBody as Record<string, unknown>,
       };
     }
 
     // Decrypt the resource using AEAD_AES_256_GCM
-    let decrypted: any;
+    let decrypted: WechatDecryptedPayment;
     try {
       decrypted = this.decryptAEAD(
         resource.ciphertext,
@@ -171,7 +210,7 @@ export class WechatPayGateway implements PaymentGateway {
         transactionId: '',
         gatewayTransactionId: '',
         success: false,
-        rawData: body,
+        rawData: body as Record<string, unknown>,
       };
     }
 
@@ -187,7 +226,7 @@ export class WechatPayGateway implements PaymentGateway {
       transactionId: decrypted.out_trade_no || '',
       gatewayTransactionId: decrypted.transaction_id || '',
       success: isSuccess,
-      rawData: decrypted,
+      rawData: decrypted as unknown as Record<string, unknown>,
     };
   }
 
@@ -221,7 +260,7 @@ export class WechatPayGateway implements PaymentGateway {
       gatewayTransactionId: data.transaction_id || '',
       status: statusMap[data.trade_state] || 'PENDING',
       amount: data.amount?.total || 0,
-      rawData: data,
+      rawData: data as Record<string, unknown>,
     };
   }
 
@@ -265,7 +304,7 @@ export class WechatPayGateway implements PaymentGateway {
 
   // ──────────────────── Internal: HTTP Request with V3 Signing ────────────────────
 
-  private async request(method: string, urlPath: string, body?: any): Promise<Response> {
+  private async request(method: string, urlPath: string, body?: Record<string, unknown>): Promise<Response> {
     const timestamp = Math.floor(Date.now() / 1000).toString();
     const nonceStr = crypto.randomBytes(16).toString('hex');
     const bodyStr = body ? JSON.stringify(body) : '';
@@ -299,12 +338,13 @@ export class WechatPayGateway implements PaymentGateway {
       method,
       headers,
       body: body ? bodyStr : undefined,
+      signal: AbortSignal.timeout(15_000),
     });
   }
 
   // ──────────────────── Internal: AEAD Decryption ────────────────────
 
-  private decryptAEAD(ciphertext: string, nonce: string, associatedData: string): any {
+  private decryptAEAD(ciphertext: string, nonce: string, associatedData: string): WechatDecryptedPayment {
     const ciphertextBuf = Buffer.from(ciphertext, 'base64');
     const key = Buffer.from(this.apiV3Key, 'utf8');
 
@@ -319,7 +359,70 @@ export class WechatPayGateway implements PaymentGateway {
     let decrypted = decipher.update(encryptedData, undefined, 'utf8');
     decrypted += decipher.final('utf8');
 
-    return JSON.parse(decrypted);
+    return JSON.parse(decrypted) as WechatDecryptedPayment;
+  }
+
+  // ──────────────────── Internal: Platform Certificate ────────────────────
+
+  private async getPlatformCertificate(serial: string): Promise<crypto.KeyObject | null> {
+    // Return cached cert if serial matches
+    if (this.platformCertCache?.serial === serial) {
+      return this.platformCertCache.publicKey;
+    }
+
+    try {
+      const response = await this.request('GET', '/v3/certificates');
+      if (!response.ok) {
+        this.logger.error(`Failed to fetch WeChat platform certificates: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+      const certs = data.data as Array<{
+        serial_no: string;
+        effective_time: string;
+        expire_time: string;
+        encrypt_certificate: { algorithm: string; nonce: string; associated_data: string; ciphertext: string };
+      }>;
+
+      if (!Array.isArray(certs) || certs.length === 0) {
+        this.logger.error('No platform certificates returned from WeChat');
+        return null;
+      }
+
+      // Find the certificate matching the requested serial
+      const cert = certs.find((c) => c.serial_no === serial) || certs[0];
+      const enc = cert.encrypt_certificate;
+
+      // Decrypt the certificate PEM using AEAD
+      const decryptedPem = this.decryptAEADRaw(enc.ciphertext, enc.nonce, enc.associated_data);
+      const publicKey = crypto.createPublicKey(decryptedPem);
+
+      // Cache the certificate
+      this.platformCertCache = { serial: cert.serial_no, publicKey };
+      this.logger.log(`Cached WeChat platform certificate: serial=${cert.serial_no}`);
+
+      return publicKey;
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to fetch/parse WeChat platform certificate: ${errMsg}`);
+      return null;
+    }
+  }
+
+  private decryptAEADRaw(ciphertext: string, nonce: string, associatedData: string): string {
+    const ciphertextBuf = Buffer.from(ciphertext, 'base64');
+    const key = Buffer.from(this.apiV3Key, 'utf8');
+    const authTag = ciphertextBuf.subarray(ciphertextBuf.length - 16);
+    const encryptedData = ciphertextBuf.subarray(0, ciphertextBuf.length - 16);
+
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, Buffer.from(nonce, 'utf8'));
+    decipher.setAuthTag(authTag);
+    decipher.setAAD(Buffer.from(associatedData, 'utf8'));
+
+    let decrypted = decipher.update(encryptedData, undefined, 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
   }
 
   // ──────────────────── Internal: JSAPI Sign Params ────────────────────
@@ -366,13 +469,13 @@ export class WechatPayGateway implements PaymentGateway {
     };
   }
 
-  private async mockParseCallback(body: any): Promise<CallbackResult> {
+  private async mockParseCallback(body: WechatWebhookBody): Promise<CallbackResult> {
     this.logger.warn('[MOCK] WeChat Pay parseCallback');
     return {
-      transactionId: body?.out_trade_no || body?.resource?.out_trade_no || body?.transactionId || '',
+      transactionId: body?.out_trade_no || body?.resource?.associated_data || body?.transactionId || '',
       gatewayTransactionId: body?.transaction_id || `wx_mock_txn_${Date.now()}`,
       success: true,
-      rawData: body,
+      rawData: body as Record<string, unknown>,
     };
   }
 
@@ -384,7 +487,7 @@ export class WechatPayGateway implements PaymentGateway {
       gatewayTransactionId: `wx_mock_txn_${transactionId}`,
       status: 'SUCCESS',
       amount: 0,
-      rawData: { mock: true },
+      rawData: { mock: true } as Record<string, unknown>,
     };
   }
 
@@ -408,7 +511,7 @@ export class PaymentGatewayError extends Error {
   constructor(
     message: string,
     public readonly gateway: string,
-    public readonly gatewayResponse?: any,
+    public readonly gatewayResponse?: unknown,
   ) {
     super(message);
     this.name = 'PaymentGatewayError';

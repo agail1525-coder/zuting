@@ -1,3 +1,65 @@
+import type {
+  Religion,
+  HolySite,
+  Temple,
+  Patriarch,
+  Teaching,
+  Seal,
+} from '@prisma/client';
+
+// ── Related data types returned by fetchRelatedData ──
+
+export interface ReligionWithRelations extends Religion {
+  holySites: HolySite[];
+  temples: Temple[];
+  patriarchs: Patriarch[];
+}
+
+export interface HolySiteWithReligion extends HolySite {
+  religion: Religion;
+}
+
+export interface TempleWithReligion extends Temple {
+  religion: Religion;
+}
+
+export interface PatriarchWithReligion extends Patriarch {
+  religion: Religion;
+}
+
+export interface TeachingWithReligion extends Teaching {
+  religion: Religion;
+}
+
+export type RelatedData =
+  | Religion[]
+  | ReligionWithRelations
+  | HolySiteWithReligion[]
+  | TempleWithReligion[]
+  | PatriarchWithReligion[]
+  | TeachingWithReligion[]
+  | Seal[]
+  | null;
+
+export interface SummarizedItem {
+  id: string | number;
+  name: string;
+  nameEn?: string;
+  country?: string;
+  series?: string;
+}
+
+export interface SummarizedDetail {
+  id: string;
+  name: string;
+  nameEn: string;
+  holySites?: number;
+  temples?: number;
+  patriarchs?: number;
+}
+
+export type SummarizedData = SummarizedItem[] | SummarizedDetail;
+
 export enum ChatIntent {
   RELIGION_INFO = 'RELIGION_INFO',
   HOLY_SITE_INFO = 'HOLY_SITE_INFO',
@@ -15,7 +77,7 @@ export interface ChatResponse {
   role: 'assistant';
   content: string;
   intent: ChatIntent;
-  relatedData?: any;
+  relatedData?: SummarizedData;
   timestamp: string;
 }
 

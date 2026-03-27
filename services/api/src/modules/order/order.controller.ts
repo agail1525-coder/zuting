@@ -16,10 +16,12 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import type { OrderStatus } from '@prisma/client';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { OrderService } from './order.service';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
+import { RefundOrderDto } from './dto/refund-order.dto';
 
 @ApiTags('orders')
 @Controller('orders')
@@ -31,8 +33,8 @@ export class OrderController {
   @ApiOperation({
     summary: 'Create an order for a trip',
     description:
-      '为指定行程创建订单，需提供行程ID、用户ID和总金额（分）。可选择支付方式和币种。\n\n' +
-      'Create an order for a specified trip. Requires trip ID, user ID, and total amount in cents. Optionally specify payment method and currency.',
+      '为指定行程创建订单，需提供行程ID和总金额（分）。用户ID从JWT令牌中获取。可选择支付方式和币种。\n\n' +
+      'Create an order for a specified trip. Requires trip ID and total amount in cents. User ID is derived from JWT token. Optionally specify payment method and currency.',
   })
   @ApiBody({ type: CreateOrderDto })
   @ApiResponse({
@@ -53,8 +55,8 @@ export class OrderController {
   })
   @ApiResponse({ status: 400, description: 'Validation failed or trip not eligible for ordering. / 校验失败或行程不符合下单条件。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
-  create(@Body() dto: CreateOrderDto) {
-    return this.orderService.create(dto);
+  create(@Body() dto: CreateOrderDto, @CurrentUser('id') userId: string) {
+    return this.orderService.create(dto, userId);
   }
 
   @Get()
@@ -64,12 +66,6 @@ export class OrderController {
     description:
       '获取订单列表，支持按用户ID、行程ID、状态筛选和分页。\n\n' +
       'Retrieve order list with optional filters by user ID, trip ID, status, and pagination.',
-  })
-  @ApiQuery({
-    name: 'userId',
-    required: false,
-    description: 'Filter by user ID. / 按用户ID筛选',
-    example: 'clx1abc2d0000ab12cd34ef56',
   })
   @ApiQuery({
     name: 'tripId',
@@ -112,12 +108,12 @@ export class OrderController {
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   findAll(
     @Query() pagination: PaginationQueryDto,
-    @Query('userId') userId?: string,
+    @CurrentUser('id') currentUserId: string,
     @Query('tripId') tripId?: string,
     @Query('status') status?: string,
   ) {
     return this.orderService.findAll({
-      userId,
+      userId: currentUserId,
       tripId,
       status: status as OrderStatus,
       page: pagination.page,
@@ -141,8 +137,8 @@ export class OrderController {
   @ApiResponse({ status: 200, description: 'Order detail returned. / 订单详情返回成功。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.orderService.findOne(id, userId);
   }
 
   @Post(':id/pay')
@@ -159,8 +155,8 @@ export class OrderController {
   @ApiResponse({ status: 400, description: 'Order not in PENDING status. / 订单不在待支付状态。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
-  pay(@Param('id') id: string, @Body() dto: PayOrderDto) {
-    return this.orderService.pay(id, dto);
+  pay(@Param('id') id: string, @Body() dto: PayOrderDto, @CurrentUser('id') userId: string) {
+    return this.orderService.pay(id, userId, dto);
   }
 
   @Post(':id/cancel')
@@ -176,8 +172,8 @@ export class OrderController {
   @ApiResponse({ status: 400, description: 'Order not in PENDING status — cannot cancel. / 订单不在待支付状态——无法取消。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
-  cancel(@Param('id') id: string) {
-    return this.orderService.cancel(id);
+  cancel(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.orderService.cancel(id, userId);
   }
 
   @Post(':id/refund')
@@ -189,24 +185,11 @@ export class OrderController {
       'Request a refund for a paid order. Only orders with PAID status are eligible. An optional reason may be provided.',
   })
   @ApiParam({ name: 'id', description: 'Order ID (CUID). / 订单ID', example: 'clx4ord0001ab12cd34ef56' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        reason: {
-          type: 'string',
-          description: 'Reason for refund request. / 退款原因',
-          example: '行程变更，无法出行 / Trip changed, unable to travel',
-        },
-      },
-    },
-    required: false,
-  })
   @ApiResponse({ status: 201, description: 'Refund request submitted — order status changed to REFUNDING. / 退款申请已提交——订单状态变为退款中。' })
   @ApiResponse({ status: 400, description: 'Order not in PAID status — cannot refund. / 订单不在已支付状态——无法退款。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
-  refund(@Param('id') id: string, @Body('reason') reason?: string) {
-    return this.orderService.refund(id, reason);
+  refund(@Param('id') id: string, @CurrentUser('id') userId: string, @Body() dto: RefundOrderDto) {
+    return this.orderService.refund(id, userId, dto.reason);
   }
 }

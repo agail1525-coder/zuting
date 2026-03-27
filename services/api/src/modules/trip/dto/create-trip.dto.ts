@@ -83,11 +83,4 @@ export class CreateTripDto {
   @IsOptional()
   @IsString()
   note?: string;
-
-  @ApiProperty({
-    description: 'ID of the user creating this trip. / 创建行程的用户ID',
-    example: 'clx1abc2d0000ab12cd34ef56',
-  })
-  @IsString()
-  userId: string;
 }

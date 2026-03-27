@@ -7,8 +7,22 @@ export interface PaymentParams {
   gateway: string;
   /** Whether this is a mock response (dev mode) */
   mock: boolean;
-  /** Gateway-specific data the client needs to initiate payment */
-  [key: string]: any;
+  // WeChat Pay specific
+  codeUrl?: string;
+  prepayId?: string;
+  appId?: string;
+  timeStamp?: string;
+  nonceStr?: string;
+  package?: string;
+  signType?: string;
+  paySign?: string;
+  // Alipay specific
+  paymentUrl?: string;
+  outTradeNo?: string;
+  // Stripe specific
+  clientSecret?: string;
+  paymentIntentId?: string;
+  publishableKey?: string;
 }
 
 export interface CreatePaymentParams {
@@ -27,7 +41,7 @@ export interface CallbackResult {
   transactionId: string;
   gatewayTransactionId: string;
   success: boolean;
-  rawData: any;
+  rawData: Record<string, unknown>;
 }
 
 export interface RefundParams {
@@ -48,8 +62,137 @@ export interface QueryResult {
   gatewayTransactionId: string;
   status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'CLOSED' | 'REFUNDED';
   amount: number;
-  rawData: any;
+  rawData: Record<string, unknown>;
 }
+
+/** WeChat Pay V3 webhook notification body */
+export interface WechatWebhookBody {
+  id?: string;
+  create_time?: string;
+  event_type?: string;
+  resource_type?: string;
+  resource?: {
+    algorithm?: string;
+    ciphertext?: string;
+    nonce?: string;
+    associated_data?: string;
+    original_type?: string;
+  };
+  summary?: string;
+  // Mock mode fallback fields
+  out_trade_no?: string;
+  transaction_id?: string;
+  transactionId?: string;
+}
+
+/** Decrypted WeChat Pay AEAD resource */
+export interface WechatDecryptedPayment {
+  appid?: string;
+  mchid?: string;
+  out_trade_no?: string;
+  transaction_id?: string;
+  trade_type?: string;
+  trade_state?: string;
+  trade_state_desc?: string;
+  bank_type?: string;
+  attach?: string;
+  success_time?: string;
+  payer?: { openid?: string };
+  amount?: {
+    total?: number;
+    payer_total?: number;
+    currency?: string;
+    payer_currency?: string;
+  };
+}
+
+/** Alipay async notification body (URL-encoded form) */
+export interface AlipayWebhookBody {
+  notify_time?: string;
+  notify_type?: string;
+  notify_id?: string;
+  app_id?: string;
+  charset?: string;
+  version?: string;
+  sign_type?: string;
+  sign?: string;
+  trade_no?: string;
+  out_trade_no?: string;
+  out_biz_no?: string;
+  buyer_id?: string;
+  seller_id?: string;
+  trade_status?: string;
+  total_amount?: string;
+  receipt_amount?: string;
+  buyer_pay_amount?: string;
+  subject?: string;
+  gmt_create?: string;
+  gmt_payment?: string;
+  gmt_refund?: string;
+  gmt_close?: string;
+  fund_bill_list?: string;
+  passback_params?: string;
+  // Mock mode fallback
+  transactionId?: string;
+  [key: string]: string | undefined;
+}
+
+/** Stripe webhook event body */
+export interface StripeWebhookBody {
+  id?: string;
+  object?: string;
+  api_version?: string;
+  created?: number;
+  type?: string;
+  data?: {
+    object?: StripePaymentIntent;
+  };
+  livemode?: boolean;
+  pending_webhooks?: number;
+  request?: { id?: string; idempotency_key?: string };
+  // Mock mode fallback
+  transactionId?: string;
+}
+
+/** Stripe PaymentIntent object (subset of fields used) */
+export interface StripePaymentIntent {
+  id?: string;
+  object?: string;
+  amount?: number;
+  currency?: string;
+  status?: string;
+  client_secret?: string;
+  metadata?: Record<string, string>;
+  description?: string;
+}
+
+/** Alipay API response wrapper */
+export interface AlipayApiResponse {
+  code?: string;
+  msg?: string;
+  sub_code?: string;
+  sub_msg?: string;
+  trade_no?: string;
+  out_trade_no?: string;
+  trade_status?: string;
+  total_amount?: string;
+  fund_change?: string;
+  [key: string]: unknown;
+}
+
+/** Stripe PaymentIntent query response */
+export interface StripePaymentIntentResponse {
+  id: string;
+  object: string;
+  amount?: number;
+  currency?: string;
+  status?: string;
+  metadata?: Record<string, string>;
+  data?: StripePaymentIntentResponse[];
+}
+
+/** Union type for all gateway webhook bodies */
+export type WebhookBody = WechatWebhookBody | AlipayWebhookBody | StripeWebhookBody;
 
 export interface PaymentGateway {
   /** Gateway identifier */
@@ -68,12 +211,12 @@ export interface PaymentGateway {
    * Verify the webhook callback signature / authenticity.
    * Returns true if the callback is genuine.
    */
-  verifyCallback(body: any, headers?: Record<string, string>): Promise<boolean>;
+  verifyCallback(body: WebhookBody, headers?: Record<string, string>): Promise<boolean>;
 
   /**
    * Parse the callback body and extract the transaction result.
    */
-  parseCallback(body: any): Promise<CallbackResult>;
+  parseCallback(body: WebhookBody): Promise<CallbackResult>;
 
   /**
    * Query payment status from the gateway.

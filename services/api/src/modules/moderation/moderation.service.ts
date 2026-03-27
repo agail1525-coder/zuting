@@ -4,6 +4,7 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReportDto } from './dto/create-report.dto';
 
@@ -42,7 +43,8 @@ export class ModerationService {
 
   /** Admin: paginated list of reports, filterable by status */
   async findAll(page = 1, limit = 20, status?: string) {
-    const where: any = {};
+    limit = Math.min(limit, 100);
+    const where: Prisma.ContentReportWhereInput = {};
     if (status) where.status = status;
 
     const [data, total] = await Promise.all([

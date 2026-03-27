@@ -10,7 +10,6 @@ import {
 import {
   ApiTags,
   ApiOperation,
-  ApiQuery,
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
@@ -19,6 +18,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReviewReportDto } from './dto/review-report.dto';
+import { ModerationQueryDto } from './dto/moderation-query.dto';
 
 @ApiTags('moderation')
 @Controller('reports')
@@ -39,22 +39,11 @@ export class ModerationController {
   @Roles('ADMIN')
   @ApiBearerAuth()
   @ApiOperation({ summary: '举报列表 / Admin list reports' })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: ['PENDING', 'REVIEWED', 'DISMISSED'],
-  })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  findAll(
-    @Query('status') status?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
+  findAll(@Query() query: ModerationQueryDto) {
     return this.moderationService.findAll(
-      page ? parseInt(page, 10) : undefined,
-      limit ? parseInt(limit, 10) : undefined,
-      status,
+      query.page,
+      query.limit,
+      query.status,
     );
   }
 

@@ -96,7 +96,9 @@ export class SmsService {
 
       const url = `https://dysmsapi.aliyuncs.com/?${queryString}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(10_000),
+      });
       const result = await response.json();
 
       if (result.Code === 'OK') {

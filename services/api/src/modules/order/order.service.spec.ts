@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TripStateMachine } from '../../common/trip-state-machine';
@@ -67,10 +67,9 @@ describe('OrderService', () => {
 
       const result = await service.create({
         tripId: 'trip-1',
-        userId: 'user-1',
         totalAmount: 9999,
         paymentMethod: 'wechat',
-      });
+      }, 'user-1');
 
       expect(prisma.order.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -90,11 +89,22 @@ describe('OrderService', () => {
       await expect(
         service.create({
           tripId: 'nonexistent',
-          userId: 'user-1',
           totalAmount: 100,
           paymentMethod: 'wechat',
-        }),
+        }, 'user-1'),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if trip belongs to another user', async () => {
+      prisma.trip.findUnique.mockResolvedValue(mockTrip);
+
+      await expect(
+        service.create({
+          tripId: 'trip-1',
+          totalAmount: 100,
+          paymentMethod: 'wechat',
+        }, 'user-2'),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should throw BadRequestException if trip is not CONFIRMED', async () => {
@@ -103,10 +113,9 @@ describe('OrderService', () => {
       await expect(
         service.create({
           tripId: 'trip-1',
-          userId: 'user-1',
           totalAmount: 100,
           paymentMethod: 'wechat',
-        }),
+        }, 'user-1'),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -117,10 +126,9 @@ describe('OrderService', () => {
       await expect(
         service.create({
           tripId: 'trip-1',
-          userId: 'user-1',
           totalAmount: 100,
           paymentMethod: 'wechat',
-        }),
+        }, 'user-1'),
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -136,7 +144,7 @@ describe('OrderService', () => {
       };
       prisma.order.update.mockResolvedValue(paidOrder);
 
-      const result = await service.pay('order-1', {
+      const result = await service.pay('order-1', 'user-1', {
         paymentMethod: 'wechat',
       });
 
@@ -162,15 +170,23 @@ describe('OrderService', () => {
       prisma.order.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.pay('nonexistent', { paymentMethod: 'wechat' }),
+        service.pay('nonexistent', 'user-1', { paymentMethod: 'wechat' }),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if order belongs to another user', async () => {
+      prisma.order.findUnique.mockResolvedValue(mockOrder);
+
+      await expect(
+        service.pay('order-1', 'user-2', { paymentMethod: 'wechat' }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should throw BadRequestException if order is not PENDING', async () => {
       prisma.order.findUnique.mockResolvedValue({ ...mockOrder, status: 'PAID' });
 
       await expect(
-        service.pay('order-1', { paymentMethod: 'wechat' }),
+        service.pay('order-1', 'user-1', { paymentMethod: 'wechat' }),
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -184,7 +200,7 @@ describe('OrderService', () => {
         cancelledAt: new Date(),
       });
 
-      const result = await service.cancel('order-1');
+      const result = await service.cancel('order-1', 'user-1');
 
       expect(prisma.order.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -197,13 +213,19 @@ describe('OrderService', () => {
     it('should throw BadRequestException when cancelling a PAID order', async () => {
       prisma.order.findUnique.mockResolvedValue({ ...mockOrder, status: 'PAID' });
 
-      await expect(service.cancel('order-1')).rejects.toThrow(BadRequestException);
+      await expect(service.cancel('order-1', 'user-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw NotFoundException if order does not exist', async () => {
       prisma.order.findUnique.mockResolvedValue(null);
 
-      await expect(service.cancel('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.cancel('nonexistent', 'user-1')).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if order belongs to another user', async () => {
+      prisma.order.findUnique.mockResolvedValue(mockOrder);
+
+      await expect(service.cancel('order-1', 'user-2')).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -213,7 +235,7 @@ describe('OrderService', () => {
       prisma.order.findUnique.mockResolvedValue(paidOrder);
       prisma.order.update.mockResolvedValue({ ...paidOrder, status: 'REFUNDING' });
 
-      const result = await service.refund('order-1', 'Changed my mind');
+      const result = await service.refund('order-1', 'user-1', 'Changed my mind');
 
       expect(prisma.order.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -233,13 +255,20 @@ describe('OrderService', () => {
     it('should throw BadRequestException when refunding a PENDING order', async () => {
       prisma.order.findUnique.mockResolvedValue(mockOrder); // status: PENDING
 
-      await expect(service.refund('order-1')).rejects.toThrow(BadRequestException);
+      await expect(service.refund('order-1', 'user-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw NotFoundException if order not found', async () => {
       prisma.order.findUnique.mockResolvedValue(null);
 
-      await expect(service.refund('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.refund('nonexistent', 'user-1')).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if order belongs to another user', async () => {
+      const paidOrder = { ...mockOrder, status: 'PAID' };
+      prisma.order.findUnique.mockResolvedValue(paidOrder);
+
+      await expect(service.refund('order-1', 'user-2')).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -248,14 +277,21 @@ describe('OrderService', () => {
       const orderWithTrip = { ...mockOrder, trip: mockTrip };
       prisma.order.findUnique.mockResolvedValue(orderWithTrip);
 
-      const result = await service.findOne('order-1');
+      const result = await service.findOne('order-1', 'user-1');
       expect(result).toEqual(orderWithTrip);
     });
 
     it('should throw NotFoundException if order not found', async () => {
       prisma.order.findUnique.mockResolvedValue(null);
 
-      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('nonexistent', 'user-1')).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException if order belongs to another user', async () => {
+      const orderWithTrip = { ...mockOrder, trip: mockTrip };
+      prisma.order.findUnique.mockResolvedValue(orderWithTrip);
+
+      await expect(service.findOne('order-1', 'user-2')).rejects.toThrow(ForbiddenException);
     });
   });
 });

@@ -23,6 +23,7 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
 import { SearchModule } from './modules/search/search.module';
+import { UserModule } from './modules/user/user.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -51,6 +52,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     CouponModule,
     ModerationModule,
     SearchModule,
+    UserModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

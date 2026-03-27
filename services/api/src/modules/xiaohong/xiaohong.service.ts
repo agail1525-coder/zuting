@@ -1,7 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Observable, Subscriber } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
-import { ChatIntent, ChatResponse, INTENT_KEYWORDS } from './xiaohong.types';
+import {
+  ChatIntent,
+  ChatResponse,
+  INTENT_KEYWORDS,
+  RelatedData,
+  ReligionWithRelations,
+  HolySiteWithReligion,
+  TempleWithReligion,
+  PatriarchWithReligion,
+  TeachingWithReligion,
+  SummarizedData,
+  SummarizedItem,
+} from './xiaohong.types';
+import type { Religion, Seal } from '@prisma/client';
 
 /** 小鸿的性格语录，用于生成开场白 */
 const GREETINGS: Record<ChatIntent, string[]> = {
@@ -85,10 +98,11 @@ export class XiaohongService {
   private async fetchRelatedData(
     intent: ChatIntent,
     message: string,
-  ): Promise<any> {
+  ): Promise<RelatedData> {
     switch (intent) {
       case ChatIntent.RELIGION_INFO: {
         const religions = await this.prisma.religion.findMany({
+          take: 100,
           orderBy: { name: 'asc' },
         });
         // 尝试匹配具体宗教
@@ -96,7 +110,7 @@ export class XiaohongService {
           (r) => message.includes(r.name) || message.includes(r.nameEn),
         );
         if (matched) {
-          return this.prisma.religion.findUnique({
+          return await this.prisma.religion.findUnique({
             where: { id: matched.id },
             include: {
               holySites: { take: 3 },
@@ -110,6 +124,7 @@ export class XiaohongService {
 
       case ChatIntent.HOLY_SITE_INFO: {
         const sites = await this.prisma.holySite.findMany({
+          take: 100,
           include: { religion: true },
           orderBy: { name: 'asc' },
         });
@@ -124,6 +139,7 @@ export class XiaohongService {
 
       case ChatIntent.TEMPLE_INFO: {
         const temples = await this.prisma.temple.findMany({
+          take: 100,
           include: { religion: true },
           orderBy: { name: 'asc' },
         });
@@ -138,6 +154,7 @@ export class XiaohongService {
 
       case ChatIntent.PATRIARCH_INFO: {
         const patriarchs = await this.prisma.patriarch.findMany({
+          take: 100,
           include: { religion: true },
           orderBy: { name: 'asc' },
         });
@@ -152,6 +169,7 @@ export class XiaohongService {
 
       case ChatIntent.TEACHING_INFO: {
         const teachings = await this.prisma.teaching.findMany({
+          take: 100,
           include: { religion: true },
           orderBy: { name: 'asc' },
         });
@@ -164,6 +182,7 @@ export class XiaohongService {
 
       case ChatIntent.SEAL_INFO: {
         const seals = await this.prisma.seal.findMany({
+          take: 100,
           orderBy: { id: 'asc' },
         });
         // 检查是否问特定系列
@@ -194,7 +213,7 @@ export class XiaohongService {
   private generateResponse(
     intent: ChatIntent,
     message: string,
-    data: any,
+    data: RelatedData,
   ): string {
     const greeting =
       GREETINGS[intent][Math.floor(Math.random() * GREETINGS[intent].length)];
@@ -202,19 +221,20 @@ export class XiaohongService {
     switch (intent) {
       case ChatIntent.RELIGION_INFO: {
         if (Array.isArray(data)) {
-          const names = data.map((r: any) => r.name).join('、');
+          const religions = data as Religion[];
+          const names = religions.map((r) => r.name).join('、');
           return `${greeting}\n\n全球祖庭旅行平台涵盖12大信仰传统：${names}。\n\n每一种信仰都有其独特的智慧和修行方法。你想深入了解哪一个？我可以为你介绍它的圣地、祖庭、祖师和核心教义。`;
         }
-        const r = data;
+        const r = data as ReligionWithRelations;
         let text = `${greeting}\n\n**${r.name}（${r.nameEn}）**\n`;
         if (r.holySites?.length) {
-          text += `\n📍 主要圣地：${r.holySites.map((s: any) => `${s.name}（${s.country}）`).join('、')}`;
+          text += `\n📍 主要圣地：${r.holySites.map((s) => `${s.name}（${s.country}）`).join('、')}`;
         }
         if (r.temples?.length) {
-          text += `\n🏛️ 重要祖庭：${r.temples.map((t: any) => `${t.name}（${t.country}）`).join('、')}`;
+          text += `\n🏛️ 重要祖庭：${r.temples.map((t) => `${t.name}（${t.country}）`).join('、')}`;
         }
         if (r.patriarchs?.length) {
-          text += `\n👤 代表祖师：${r.patriarchs.map((p: any) => p.name).join('、')}`;
+          text += `\n👤 代表祖师：${r.patriarchs.map((p) => p.name).join('、')}`;
         }
         return text;
       }
@@ -223,7 +243,7 @@ export class XiaohongService {
         if (!Array.isArray(data) || data.length === 0) {
           return `${greeting}\n\n平台收录了60个全球宗教圣地。你想了解哪个信仰的圣地？`;
         }
-        const sites = data.slice(0, 5);
+        const sites = (data as HolySiteWithReligion[]).slice(0, 5);
         let text = `${greeting}\n\n`;
         for (const site of sites) {
           text += `\n**${site.name}（${site.nameEn}）** — ${site.country}`;
@@ -240,7 +260,7 @@ export class XiaohongService {
         if (!Array.isArray(data) || data.length === 0) {
           return `${greeting}\n\n平台收录了27座全球祖庭。你想了解哪个信仰的祖庭？`;
         }
-        const temples = data.slice(0, 5);
+        const temples = (data as TempleWithReligion[]).slice(0, 5);
         let text = `${greeting}\n\n`;
         for (const temple of temples) {
           text += `\n**${temple.name}** — ${temple.country}（${temple.religion.name}）`;
@@ -255,7 +275,7 @@ export class XiaohongService {
         if (!Array.isArray(data) || data.length === 0) {
           return `${greeting}\n\n平台收录了28位各大信仰的祖师。你想了解哪位祖师？`;
         }
-        const patriarchs = data.slice(0, 5);
+        const patriarchs = (data as PatriarchWithReligion[]).slice(0, 5);
         let text = `${greeting}\n\n`;
         for (const p of patriarchs) {
           text += `\n**${p.name}** — ${p.religion.name}`;
@@ -271,7 +291,7 @@ export class XiaohongService {
         if (!Array.isArray(data) || data.length === 0) {
           return `${greeting}\n\n平台收录了39条祖训精华。你想了解哪个信仰的祖训？`;
         }
-        const teachings = data.slice(0, 5);
+        const teachings = (data as TeachingWithReligion[]).slice(0, 5);
         let text = `${greeting}\n\n`;
         for (const t of teachings) {
           text += `\n**${t.name}**（${t.religion.name}）`;
@@ -293,7 +313,7 @@ export class XiaohongService {
           CHENGDAOYIN: '成道印',
           GUIYUANYIN: '归源印',
         };
-        const seals = data.slice(0, 6);
+        const seals = (data as Seal[]).slice(0, 6);
         let text = `${greeting}\n\n`;
         for (const seal of seals) {
           text += `\n**第${seal.id}印 · ${seal.name}**（${seriesNames[seal.series] || seal.series}）`;
@@ -478,27 +498,28 @@ export class XiaohongService {
   //  辅助方法：精简返回数据（避免过大）
   // ──────────────────────────────────────────────
 
-  private summarizeData(data: any): any {
+  private summarizeData(data: RelatedData): SummarizedData | undefined {
     if (!data) return undefined;
 
     if (Array.isArray(data)) {
-      return data.slice(0, 10).map((item: any) => ({
+      return data.slice(0, 10).map((item): SummarizedItem => ({
         id: item.id,
         name: item.name,
-        ...(item.nameEn ? { nameEn: item.nameEn } : {}),
-        ...(item.country ? { country: item.country } : {}),
-        ...(item.series ? { series: item.series } : {}),
+        ...('nameEn' in item && item.nameEn ? { nameEn: item.nameEn } : {}),
+        ...('country' in item && item.country ? { country: item.country } : {}),
+        ...('series' in item && item.series ? { series: item.series } : {}),
       }));
     }
 
     // 单个对象（如具体宗教详情）
+    const detail = data as ReligionWithRelations;
     return {
-      id: data.id,
-      name: data.name,
-      nameEn: data.nameEn,
-      holySites: data.holySites?.length,
-      temples: data.temples?.length,
-      patriarchs: data.patriarchs?.length,
+      id: detail.id,
+      name: detail.name,
+      nameEn: detail.nameEn,
+      holySites: detail.holySites?.length,
+      temples: detail.temples?.length,
+      patriarchs: detail.patriarchs?.length,
     };
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
@@ -7,10 +8,10 @@ import { UpdateJournalDto } from './dto/update-journal.dto';
 export class JournalService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateJournalDto) {
+  async create(userId: string, dto: CreateJournalDto) {
     return this.prisma.journalEntry.create({
       data: {
-        userId: dto.userId,
+        userId,
         tripId: dto.tripId,
         siteId: dto.siteId,
         title: dto.title,
@@ -32,13 +33,19 @@ export class JournalService {
     isPublic?: boolean;
     page?: number;
     limit?: number;
+    currentUserId?: string;
   }) {
-    const { userId, tripId, isPublic, page = 1, limit = 20 } = params;
+    const { userId, tripId, isPublic, page = 1, limit = 20, currentUserId } = params;
     const take = Math.min(limit, 100);
-    const where: any = {};
+    const where: Prisma.JournalEntryWhereInput = {};
     if (userId) where.userId = userId;
     if (tripId) where.tripId = tripId;
-    if (isPublic !== undefined) where.isPublic = isPublic;
+    // IDOR防护(R-68): 非本人查看时强制只显示公开日志
+    if (isPublic !== undefined) {
+      where.isPublic = isPublic;
+    } else if (!currentUserId || currentUserId !== userId) {
+      where.isPublic = true;
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.journalEntry.findMany({
@@ -57,7 +64,7 @@ export class JournalService {
     return { data, total, page, limit };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, requestUserId?: string) {
     const entry = await this.prisma.journalEntry.findUnique({
       where: { id },
       include: {
@@ -66,6 +73,9 @@ export class JournalService {
       },
     });
     if (!entry) throw new NotFoundException(`Journal entry ${id} not found`);
+    if (!entry.isPublic && entry.userId !== requestUserId) {
+      throw new ForbiddenException('You cannot access this private journal entry');
+    }
     return entry;
   }
 

@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -63,7 +64,7 @@ export class ReviewService {
   }) {
     const { targetType, targetId, page = 1, limit = 20 } = params;
     const take = Math.min(limit, 100);
-    const where: any = {};
+    const where: Prisma.ReviewWhereInput = {};
     if (targetType) where.targetType = targetType;
     if (targetId) where.targetId = targetId;
 
@@ -103,29 +104,32 @@ export class ReviewService {
 
   /** Get stats: average rating + count by star */
   async getStats(targetType: string, targetId: string) {
-    const reviews = await this.prisma.review.findMany({
-      where: { targetType, targetId },
-      select: { rating: true },
-    });
+    const where = { targetType, targetId };
 
-    const total = reviews.length;
-    if (total === 0) {
-      return {
-        averageRating: 0,
-        totalCount: 0,
-        distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-      };
-    }
+    const [aggregate, groups] = await Promise.all([
+      this.prisma.review.aggregate({
+        where,
+        _avg: { rating: true },
+        _count: { _all: true },
+      }),
+      this.prisma.review.groupBy({
+        by: ['rating'],
+        where,
+        _count: { _all: true },
+      }),
+    ]);
 
-    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    const totalCount = aggregate._count._all;
     const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    for (const r of reviews) {
-      distribution[r.rating]++;
+    for (const g of groups) {
+      distribution[g.rating] = g._count._all;
     }
 
     return {
-      averageRating: Math.round((sum / total) * 10) / 10,
-      totalCount: total,
+      averageRating: totalCount > 0
+        ? Math.round((aggregate._avg.rating ?? 0) * 10) / 10
+        : 0,
+      totalCount,
       distribution,
     };
   }

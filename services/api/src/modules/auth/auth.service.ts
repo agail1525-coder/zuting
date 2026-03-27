@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, UpdateProfileDto } from './dto/auth.dto';
 import { WechatOAuthStrategy } from './strategies/wechat.strategy';
 import { GoogleOAuthStrategy } from './strategies/google.strategy';
 
@@ -182,6 +182,45 @@ export class AuthService {
     return user;
   }
 
+  /** Update current user's profile */
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const data: Record<string, string> = {};
+    if (dto.nickname !== undefined) data.nickname = dto.nickname;
+    if (dto.avatar !== undefined) data.avatar = dto.avatar;
+
+    if (dto.phone !== undefined) {
+      if (dto.phone) {
+        const existing = await this.prisma.user.findUnique({ where: { phone: dto.phone } });
+        if (existing && existing.id !== userId) {
+          throw new ConflictException('Phone number already in use / 该手机号已被使用');
+        }
+      }
+      data.phone = dto.phone;
+    }
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      select: {
+        id: true,
+        phone: true,
+        email: true,
+        nickname: true,
+        avatar: true,
+        role: true,
+        language: true,
+        emailVerified: true,
+        phoneVerified: true,
+        createdAt: true,
+        lastLoginAt: true,
+        _count: {
+          select: { trips: true, orders: true, journals: true, practices: true },
+        },
+      },
+      data,
+    });
+    return updated;
+  }
+
   /** Reset password for a user identified by phone or email */
   async resetPassword(target: string, newPassword: string): Promise<void> {
     // Find user by phone or email
@@ -319,6 +358,91 @@ export class AuthService {
     }
 
     return this.generateTokens(user.id, user.role);
+  }
+
+  // ─── WeChat Mini Program Login ────────────────────────────
+
+  /**
+   * Handle WeChat Mini Program login via jscode2session API.
+   *
+   * Uses WECHAT_MP_APP_ID and WECHAT_MP_APP_SECRET env vars
+   * (separate from web OAuth WECHAT_APP_ID / WECHAT_APP_SECRET).
+   *
+   * Flow:
+   * 1. Frontend calls Taro.login() -> gets code
+   * 2. Backend exchanges code for openid via jscode2session
+   * 3. Find or create user by wechatOpenId
+   * 4. Return JWT tokens
+   */
+  async wechatMiniProgramLogin(code: string) {
+    const appId = this.config.get<string>('WECHAT_MP_APP_ID', '');
+    const appSecret = this.config.get<string>('WECHAT_MP_APP_SECRET', '');
+
+    if (!appId || !appSecret) {
+      throw new BadRequestException(
+        'WeChat Mini Program login is not configured. Set WECHAT_MP_APP_ID and WECHAT_MP_APP_SECRET.',
+      );
+    }
+
+    // Exchange code for session via WeChat jscode2session API
+    const url =
+      `https://api.weixin.qq.com/sns/jscode2session` +
+      `?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`;
+
+    const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    const data = (await res.json()) as {
+      openid?: string;
+      session_key?: string;
+      unionid?: string;
+      errcode?: number;
+      errmsg?: string;
+    };
+
+    if (data.errcode || !data.openid) {
+      this.logger.error(
+        `WeChat jscode2session failed: ${data.errmsg} (${data.errcode})`,
+      );
+      throw new BadRequestException(
+        `WeChat login failed: ${data.errmsg || 'unknown error'}`,
+      );
+    }
+
+    const { openid, unionid } = data;
+
+    // Find or create user
+    let user = await this.prisma.user.findUnique({
+      where: { wechatOpenId: openid },
+    });
+
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          wechatOpenId: openid,
+          wechatUnionId: unionid || null,
+          nickname: '微信用户',
+          avatar: null,
+        },
+      });
+      this.logger.log(
+        `New user created via WeChat MiniProgram: ${user.id}`,
+      );
+    } else {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+    }
+
+    const tokens = await this.generateTokens(user.id, user.role);
+
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
+      },
+    };
   }
 
   // ─── Verification codes ───────────────────────────────────

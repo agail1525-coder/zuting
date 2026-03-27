@@ -3,6 +3,7 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { OrderStatus, TripStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -10,13 +11,14 @@ import { TripStateMachine } from '../../common/trip-state-machine';
 import { WechatPayGateway } from './gateways/wechat-pay.gateway';
 import { AlipayGateway } from './gateways/alipay.gateway';
 import { StripeGateway } from './gateways/stripe.gateway';
-import type { PaymentGateway } from './gateways/payment-gateway.interface';
+import type { PaymentGateway, WebhookBody } from './gateways/payment-gateway.interface';
 import {
   PaymentFailedException,
   PaymentTimeoutException,
   PaymentSignatureException,
   RefundFailedException,
 } from './payment.errors';
+import { NotificationService } from '../notification/notification.service';
 
 /** Default timeout for gateway operations (15 seconds) */
 const GATEWAY_TIMEOUT_MS = 15_000;
@@ -39,6 +41,7 @@ export class PaymentService {
     private readonly wechatPayGateway: WechatPayGateway,
     private readonly alipayGateway: AlipayGateway,
     private readonly stripeGateway: StripeGateway,
+    private readonly notificationService: NotificationService,
   ) {
     this.gateways = {
       wechat: this.wechatPayGateway,
@@ -162,21 +165,21 @@ export class PaymentService {
   //  Handle Gateway Callbacks
   // ════════════════════════════════════════════════════════════════
 
-  async handleWechatCallback(body: any, headers?: Record<string, string>) {
+  async handleWechatCallback(body: WebhookBody, headers?: Record<string, string>) {
     return this.handleGatewayCallback('wechat', body, headers);
   }
 
-  async handleAlipayCallback(body: any) {
+  async handleAlipayCallback(body: WebhookBody) {
     return this.handleGatewayCallback('alipay', body);
   }
 
-  async handleStripeCallback(body: any, headers?: Record<string, string>) {
+  async handleStripeCallback(body: WebhookBody, headers?: Record<string, string>) {
     return this.handleGatewayCallback('stripe', body, headers);
   }
 
   private async handleGatewayCallback(
     gatewayName: string,
-    body: any,
+    body: WebhookBody,
     headers?: Record<string, string>,
   ) {
     const gw = this.getGateway(gatewayName);
@@ -233,7 +236,7 @@ export class PaymentService {
       data: {
         status: newStatus,
         transactionId: result.gatewayTransactionId,
-        callbackPayload: result.rawData,
+        callbackPayload: result.rawData as Record<string, string | number | boolean | null>,
       },
     });
 
@@ -273,6 +276,17 @@ export class PaymentService {
           `Failed to transition trip ${transaction.order.tripId} to PAID: ${err.message}`,
         );
       }
+
+      // Notify user of successful payment
+      try {
+        await this.notificationService.notifyPaymentSuccess(
+          transaction.order.userId,
+          transaction.orderId,
+          transaction.amount,
+        );
+      } catch (err) {
+        this.logger.error(`Failed to send payment success notification: ${err.message}`);
+      }
     }
 
     return { success: true, status: newStatus };
@@ -282,7 +296,7 @@ export class PaymentService {
   //  Query Payment Status
   // ════════════════════════════════════════════════════════════════
 
-  async getPaymentStatus(orderId: string) {
+  async getPaymentStatus(orderId: string, userId: string) {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: {
@@ -292,6 +306,9 @@ export class PaymentService {
       },
     });
     if (!order) throw new NotFoundException(`Order ${orderId} not found`);
+    if (order.userId !== userId) {
+      throw new ForbiddenException('You can only view payment status for your own orders');
+    }
 
     return {
       orderId: order.id,
@@ -307,12 +324,16 @@ export class PaymentService {
    * Query payment status from the gateway directly (with retry).
    * Useful for reconciliation and when callbacks are delayed.
    */
-  async queryPaymentFromGateway(transactionId: string) {
+  async queryPaymentFromGateway(transactionId: string, userId: string) {
     const transaction = await this.prisma.paymentTransaction.findUnique({
       where: { id: transactionId },
+      include: { order: { select: { userId: true } } },
     });
     if (!transaction) {
       throw new NotFoundException(`Transaction ${transactionId} not found`);
+    }
+    if (transaction.order.userId !== userId) {
+      throw new ForbiddenException('You can only query transactions for your own orders');
     }
 
     const gw = this.getGateway(transaction.gateway);
@@ -450,6 +471,17 @@ export class PaymentService {
       });
     }
 
+    // Notify user of refund result
+    try {
+      await this.notificationService.notifyRefundResult(
+        order.userId,
+        orderId,
+        refundResult.success,
+      );
+    } catch (err) {
+      this.logger.error(`Failed to send refund notification: ${err.message}`);
+    }
+
     return { refundTransaction: refundTxn, success: refundResult.success };
   }
 
@@ -543,7 +575,7 @@ export class PaymentService {
    * Structured audit log for payment events.
    * All payment operations should be traceable for compliance.
    */
-  private auditLog(event: string, data: Record<string, any>) {
+  private auditLog(event: string, data: Record<string, unknown>) {
     this.logger.log(
       JSON.stringify({
         audit: true,

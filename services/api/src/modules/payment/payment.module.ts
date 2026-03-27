@@ -6,9 +6,10 @@ import { WechatPayGateway } from './gateways/wechat-pay.gateway';
 import { AlipayGateway } from './gateways/alipay.gateway';
 import { StripeGateway } from './gateways/stripe.gateway';
 import { TripModule } from '../trip/trip.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [ConfigModule, TripModule],
+  imports: [ConfigModule, TripModule, NotificationModule],
   controllers: [PaymentController],
   providers: [
     PaymentService,

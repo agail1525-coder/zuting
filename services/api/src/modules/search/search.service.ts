@@ -13,6 +13,7 @@ export type SearchType =
 export interface SearchResultItem {
   type: string;
   id: string | number;
+  slug?: string;
   title: string;
   subtitle: string | null;
   descriptionSnippet: string | null;
@@ -103,6 +104,7 @@ export class SearchService {
     return results.map((r) => ({
       type: 'religion',
       id: r.id,
+      slug: r.slug,
       title: r.name,
       subtitle: r.nameEn,
       descriptionSnippet: null,

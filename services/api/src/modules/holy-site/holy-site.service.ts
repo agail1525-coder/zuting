@@ -9,6 +9,7 @@ export class HolySiteService {
 
   findAll(religionId?: string) {
     return this.prisma.holySite.findMany({
+      take: 100,
       where: religionId ? { religionId } : undefined,
       include: { religion: { select: { name: true, nameEn: true, slug: true, color: true } } },
       orderBy: { name: 'asc' },

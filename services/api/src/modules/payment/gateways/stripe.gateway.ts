@@ -9,6 +9,10 @@ import type {
   RefundParams,
   RefundResult,
   QueryResult,
+  WebhookBody,
+  StripeWebhookBody,
+  StripePaymentIntent,
+  StripePaymentIntentResponse,
 } from './payment-gateway.interface';
 import { PaymentGatewayError } from './wechat-pay.gateway';
 
@@ -99,7 +103,7 @@ export class StripeGateway implements PaymentGateway {
 
   // ──────────────────── Verify Callback ────────────────────
 
-  async verifyCallback(body: any, headers?: Record<string, string>): Promise<boolean> {
+  async verifyCallback(body: WebhookBody, headers?: Record<string, string>): Promise<boolean> {
     if (this.mockMode) {
       this.logger.warn('[MOCK] Skipping Stripe webhook signature verification');
       return true;
@@ -161,14 +165,15 @@ export class StripeGateway implements PaymentGateway {
 
   // ──────────────────── Parse Callback ────────────────────
 
-  async parseCallback(body: any): Promise<CallbackResult> {
+  async parseCallback(body: WebhookBody): Promise<CallbackResult> {
     if (this.mockMode) {
-      return this.mockParseCallback(body);
+      return this.mockParseCallback(body as StripeWebhookBody);
     }
 
+    const stripeBody = body as StripeWebhookBody;
     // Stripe sends { type, data: { object: PaymentIntent } }
-    const eventType = body?.type;
-    const paymentIntent = body?.data?.object;
+    const eventType = stripeBody.type;
+    const paymentIntent: StripePaymentIntent | undefined = stripeBody.data?.object;
 
     if (!paymentIntent) {
       this.logger.error('Stripe callback: missing data.object');
@@ -176,7 +181,7 @@ export class StripeGateway implements PaymentGateway {
         transactionId: '',
         gatewayTransactionId: '',
         success: false,
-        rawData: body,
+        rawData: stripeBody as unknown as Record<string, unknown>,
       };
     }
 
@@ -191,7 +196,7 @@ export class StripeGateway implements PaymentGateway {
       transactionId: paymentIntent.metadata?.transactionId || '',
       gatewayTransactionId: paymentIntent.id || '',
       success: isSuccess,
-      rawData: body,
+      rawData: stripeBody as unknown as Record<string, unknown>,
     };
   }
 
@@ -205,7 +210,7 @@ export class StripeGateway implements PaymentGateway {
     // We need to search for the PaymentIntent by metadata
     // First try treating transactionId as a PaymentIntent ID
     let response: Response;
-    let data: any;
+    let data: StripePaymentIntentResponse;
 
     if (transactionId.startsWith('pi_')) {
       response = await this.request('GET', `/payment_intents/${transactionId}`);
@@ -226,14 +231,15 @@ export class StripeGateway implements PaymentGateway {
       );
     }
 
-    data = await response.json();
+    data = await response.json() as StripePaymentIntentResponse;
 
     // Handle list response vs single object
+    let resolved: StripePaymentIntentResponse | undefined = data;
     if (data.object === 'list') {
-      data = data.data?.[0];
+      resolved = data.data?.[0];
     }
 
-    if (!data) {
+    if (!resolved) {
       throw new PaymentGatewayError(`Stripe PaymentIntent not found: ${transactionId}`, 'stripe');
     }
 
@@ -248,11 +254,11 @@ export class StripeGateway implements PaymentGateway {
     };
 
     return {
-      transactionId: data.metadata?.transactionId || transactionId,
-      gatewayTransactionId: data.id,
-      status: statusMap[data.status] || 'FAILED',
-      amount: data.amount || 0,
-      rawData: data,
+      transactionId: resolved.metadata?.transactionId || transactionId,
+      gatewayTransactionId: resolved.id,
+      status: statusMap[resolved.status || ''] || 'FAILED',
+      amount: resolved.amount || 0,
+      rawData: resolved as unknown as Record<string, unknown>,
     };
   }
 
@@ -303,6 +309,7 @@ export class StripeGateway implements PaymentGateway {
       method,
       headers,
       body: method !== 'GET' ? body : undefined,
+      signal: AbortSignal.timeout(15_000),
     });
   }
 
@@ -320,14 +327,14 @@ export class StripeGateway implements PaymentGateway {
     };
   }
 
-  private async mockParseCallback(body: any): Promise<CallbackResult> {
+  private async mockParseCallback(body: StripeWebhookBody): Promise<CallbackResult> {
     this.logger.warn('[MOCK] Stripe parseCallback');
-    const pi = body?.data?.object || {};
+    const pi: StripePaymentIntent = body?.data?.object || {};
     return {
       transactionId: pi?.metadata?.transactionId || body?.transactionId || '',
       gatewayTransactionId: pi?.id || `pi_mock_${Date.now()}`,
       success: true,
-      rawData: body,
+      rawData: body as unknown as Record<string, unknown>,
     };
   }
 
@@ -339,7 +346,7 @@ export class StripeGateway implements PaymentGateway {
       gatewayTransactionId: `pi_mock_${transactionId}`,
       status: 'SUCCESS',
       amount: 0,
-      rawData: { mock: true },
+      rawData: { mock: true } as Record<string, unknown>,
     };
   }
 

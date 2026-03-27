@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
 
 export class CreateHolySiteDto {
   @ApiProperty({
@@ -30,6 +30,8 @@ export class CreateHolySiteDto {
     maximum: 90,
   })
   @IsNumber()
+  @Min(-90)
+  @Max(90)
   latitude: number;
 
   @ApiProperty({
@@ -39,6 +41,8 @@ export class CreateHolySiteDto {
     maximum: 180,
   })
   @IsNumber()
+  @Min(-180)
+  @Max(180)
   longitude: number;
 
   @ApiProperty({
@@ -46,6 +50,8 @@ export class CreateHolySiteDto {
     example: 5.5,
   })
   @IsNumber()
+  @Min(-12)
+  @Max(14)
   utcOffset: number;
 
   @ApiProperty({

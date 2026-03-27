@@ -7,7 +7,7 @@ export class PaymentFailedException extends HttpException {
   constructor(
     public readonly gateway: string,
     message: string,
-    public readonly gatewayResponse?: any,
+    public readonly gatewayResponse?: unknown,
   ) {
     super(
       {
@@ -67,7 +67,7 @@ export class RefundFailedException extends HttpException {
   constructor(
     public readonly gateway: string,
     message: string,
-    public readonly gatewayResponse?: any,
+    public readonly gatewayResponse?: unknown,
   ) {
     super(
       {

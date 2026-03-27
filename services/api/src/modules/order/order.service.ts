@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { OrderStatus, TripStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -18,9 +19,13 @@ export class OrderService {
   ) {}
 
   /** Create a new order for a confirmed trip */
-  async create(dto: CreateOrderDto) {
+  async create(dto: CreateOrderDto, currentUserId: string) {
     const trip = await this.prisma.trip.findUnique({ where: { id: dto.tripId } });
     if (!trip) throw new NotFoundException(`Trip ${dto.tripId} not found`);
+
+    if (trip.userId !== currentUserId) {
+      throw new ForbiddenException('You can only create orders for your own trips');
+    }
 
     if (trip.status !== TripStatus.CONFIRMED) {
       throw new BadRequestException(
@@ -45,7 +50,7 @@ export class OrderService {
       data: {
         orderNo: generateOrderNo(),
         tripId: dto.tripId,
-        userId: dto.userId,
+        userId: currentUserId,
         totalAmount: dto.totalAmount,
         paymentMethod: dto.paymentMethod,
       },
@@ -53,9 +58,9 @@ export class OrderService {
     });
   }
 
-  /** List orders with optional filters */
+  /** List orders — always scoped to authenticated user */
   async findAll(params: {
-    userId?: string;
+    userId: string;
     tripId?: string;
     status?: OrderStatus;
     page?: number;
@@ -63,8 +68,7 @@ export class OrderService {
   }) {
     const { userId, tripId, status, page = 1, limit = 20 } = params;
     const take = Math.min(limit, 100);
-    const where: any = {};
-    if (userId) where.userId = userId;
+    const where: Record<string, unknown> = { userId };
     if (tripId) where.tripId = tripId;
     if (status) where.status = status;
 
@@ -84,8 +88,8 @@ export class OrderService {
     return { data, total, page, limit };
   }
 
-  /** Get order detail */
-  async findOne(id: string) {
+  /** Get order detail — verifies ownership */
+  async findOne(id: string, userId: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -98,6 +102,15 @@ export class OrderService {
       },
     });
     if (!order) throw new NotFoundException(`Order ${id} not found`);
+    if (order.userId !== userId) throw new ForbiddenException('You can only view your own orders');
+    return order;
+  }
+
+  /** Verify order exists and belongs to user */
+  private async findOrderWithOwnership(id: string, userId: string) {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
+    if (order.userId !== userId) throw new ForbiddenException('You can only operate on your own orders');
     return order;
   }
 
@@ -105,9 +118,8 @@ export class OrderService {
    * Simulate payment (dev mode).
    * In production this would be called by a payment gateway callback.
    */
-  async pay(id: string, dto: PayOrderDto) {
-    const order = await this.prisma.order.findUnique({ where: { id } });
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
+  async pay(id: string, userId: string, dto: PayOrderDto) {
+    const order = await this.findOrderWithOwnership(id, userId);
 
     if (order.status !== OrderStatus.PENDING) {
       throw new BadRequestException(`Order is not PENDING. Current: ${order.status}`);
@@ -138,9 +150,8 @@ export class OrderService {
   }
 
   /** Cancel a pending order */
-  async cancel(id: string) {
-    const order = await this.prisma.order.findUnique({ where: { id } });
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
+  async cancel(id: string, userId: string) {
+    const order = await this.findOrderWithOwnership(id, userId);
 
     if (order.status !== OrderStatus.PENDING) {
       throw new BadRequestException(`Only PENDING orders can be cancelled. Current: ${order.status}`);
@@ -156,9 +167,8 @@ export class OrderService {
   }
 
   /** Request a refund for a paid order */
-  async refund(id: string, reason?: string) {
-    const order = await this.prisma.order.findUnique({ where: { id } });
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
+  async refund(id: string, userId: string, reason?: string) {
+    const order = await this.findOrderWithOwnership(id, userId);
 
     if (order.status !== OrderStatus.PAID) {
       throw new BadRequestException(`Only PAID orders can be refunded. Current: ${order.status}`);

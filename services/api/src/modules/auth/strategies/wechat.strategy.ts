@@ -68,7 +68,7 @@ export class WechatOAuthStrategy {
   async getAccessToken(code: string): Promise<WechatTokenResponse> {
     const url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${this.appId}&secret=${this.appSecret}&code=${code}&grant_type=authorization_code`;
 
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
     const data: WechatTokenResponse = await res.json();
 
     if (data.errcode) {
@@ -83,7 +83,7 @@ export class WechatOAuthStrategy {
   async getUserInfo(accessToken: string, openid: string): Promise<WechatUserInfo> {
     const url = `https://api.weixin.qq.com/sns/userinfo?access_token=${accessToken}&openid=${openid}&lang=zh_CN`;
 
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
     const data = await res.json();
 
     if (data.errcode) {

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { Transporter } from 'nodemailer';
 
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private transporter: any = null;
+  private transporter: Transporter | null = null;
   private readonly from: string;
   private readonly isConfigured: boolean;
 
@@ -135,8 +136,9 @@ export class EmailService {
           html,
         });
         this.logger.log(`Email sent to ${to}: ${subject}`);
-      } catch (err) {
-        this.logger.error(`Failed to send email to ${to}: ${err.message}`);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        this.logger.error(`Failed to send email to ${to}: ${message}`);
         // Don't throw — graceful degradation
       }
     } else {

@@ -68,6 +68,7 @@ export class GoogleOAuthStrategy {
     const res = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      signal: AbortSignal.timeout(10_000),
       body: new URLSearchParams({
         code,
         client_id: this.clientId,
@@ -91,6 +92,7 @@ export class GoogleOAuthStrategy {
   async getUserInfo(accessToken: string): Promise<GoogleUserInfo> {
     const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(10_000),
     });
 
     const data = await res.json();

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, Sse } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Sse, BadRequestException } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -15,6 +15,7 @@ import { Public } from '../auth/decorators/public.decorator';
 export class XiaohongController {
   constructor(private readonly xiaohongService: XiaohongService) {}
 
+  @Public()
   @Post('chat')
   @ApiOperation({
     summary: '小鸿对话 / Chat with XiaoHong',
@@ -29,6 +30,7 @@ export class XiaohongController {
     return this.xiaohongService.chat(dto.message, dto.conversationId);
   }
 
+  @Public()
   @Sse('chat/stream')
   @ApiOperation({
     summary: '小鸿流式对话 / Streaming chat with XiaoHong (SSE)',
@@ -44,6 +46,11 @@ export class XiaohongController {
   chatStream(
     @Query('message') message: string,
   ): Observable<MessageEvent> {
+    if (!message || message.length > 2000) {
+      throw new BadRequestException(
+        'Message is required and must not exceed 2000 characters',
+      );
+    }
     return this.xiaohongService.chatStream(message);
   }
 

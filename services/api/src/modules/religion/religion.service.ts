@@ -9,6 +9,7 @@ export class ReligionService {
 
   findAll() {
     return this.prisma.religion.findMany({
+      take: 100,
       orderBy: { name: 'asc' },
     });
   }

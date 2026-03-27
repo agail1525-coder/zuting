@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
@@ -39,7 +40,7 @@ export class NotificationService {
     unreadOnly?: boolean,
   ) {
     const take = Math.min(limit, 100);
-    const where: any = { userId };
+    const where: Prisma.NotificationWhereInput = { userId };
     if (unreadOnly) {
       where.isRead = false;
     }

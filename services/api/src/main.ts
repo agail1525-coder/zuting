@@ -15,7 +15,10 @@ import { initSentry } from './common/sentry.init';
 initSentry();
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    // Enable raw body access for webhook signature verification (Stripe, WeChat Pay)
+    rawBody: true,
+  });
 
   // Security
   app.use(helmet());
@@ -128,6 +131,27 @@ async function bootstrap() {
       syntaxHighlight: { activate: true, theme: 'monokai' },
     },
   });
+
+  // Security: warn if JWT_SECRET is still the default value
+  const jwtSecret = process.env.JWT_SECRET || '';
+  if (!jwtSecret || jwtSecret === 'change-me-in-production') {
+    const isProduction = process.env.NODE_ENV === 'production';
+    if (isProduction) {
+      console.error(
+        '\n╔══════════════════════════════════════════════════════════════╗\n' +
+        '║  CRITICAL: JWT_SECRET is using the default value!          ║\n' +
+        '║  Set a strong, unique JWT_SECRET in production.            ║\n' +
+        '║  Current value is publicly known and INSECURE.             ║\n' +
+        '╚══════════════════════════════════════════════════════════════╝\n',
+      );
+      process.exit(1);
+    } else {
+      console.warn(
+        '⚠ JWT_SECRET is using default value "change-me-in-production" — ' +
+        'set a strong secret before deploying to production.',
+      );
+    }
+  }
 
   const port = process.env.API_PORT || 3002;
   await app.listen(port);

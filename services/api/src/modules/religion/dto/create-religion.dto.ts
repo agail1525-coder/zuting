@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, Matches } from 'class-validator';
 
 export class CreateReligionDto {
   @ApiProperty({
@@ -21,6 +21,7 @@ export class CreateReligionDto {
     example: 'buddhism',
   })
   @IsString()
+  @Matches(/^[a-z0-9-]+$/, { message: 'slug must contain only lowercase letters, numbers, and hyphens' })
   slug: string;
 
   @ApiPropertyOptional({
@@ -38,5 +39,6 @@ export class CreateReligionDto {
   })
   @IsOptional()
   @IsString()
+  @Matches(/^#[0-9A-Fa-f]{6}$/, { message: 'color must be a valid hex color (e.g. #FFD700)' })
   color?: string;
 }

@@ -9,6 +9,9 @@ import type {
   RefundParams,
   RefundResult,
   QueryResult,
+  WebhookBody,
+  AlipayWebhookBody,
+  AlipayApiResponse,
 } from './payment-gateway.interface';
 import { PaymentGatewayError } from './wechat-pay.gateway';
 
@@ -94,14 +97,15 @@ export class AlipayGateway implements PaymentGateway {
 
   // ──────────────────── Verify Callback ────────────────────
 
-  async verifyCallback(body: any, _headers?: Record<string, string>): Promise<boolean> {
+  async verifyCallback(body: WebhookBody, _headers?: Record<string, string>): Promise<boolean> {
     if (this.mockMode) {
       this.logger.warn('[MOCK] Skipping Alipay signature verification');
       return true;
     }
 
     // Alipay sends callback as URL-encoded form data (key=value pairs)
-    const params = { ...body };
+    const alipayBody = body as AlipayWebhookBody;
+    const params: Record<string, string | undefined> = { ...alipayBody };
     const sign = params.sign;
     const signType = params.sign_type || 'RSA2';
 
@@ -141,24 +145,25 @@ export class AlipayGateway implements PaymentGateway {
 
   // ──────────────────── Parse Callback ────────────────────
 
-  async parseCallback(body: any): Promise<CallbackResult> {
+  async parseCallback(body: WebhookBody): Promise<CallbackResult> {
     if (this.mockMode) {
-      return this.mockParseCallback(body);
+      return this.mockParseCallback(body as AlipayWebhookBody);
     }
 
-    const tradeStatus = body?.trade_status;
+    const alipayBody = body as AlipayWebhookBody;
+    const tradeStatus = alipayBody.trade_status;
     const isSuccess = tradeStatus === 'TRADE_SUCCESS' || tradeStatus === 'TRADE_FINISHED';
 
     this.logger.log(
-      `Alipay callback parsed: out_trade_no=${body?.out_trade_no}, ` +
-      `trade_no=${body?.trade_no}, trade_status=${tradeStatus}`,
+      `Alipay callback parsed: out_trade_no=${alipayBody.out_trade_no}, ` +
+      `trade_no=${alipayBody.trade_no}, trade_status=${tradeStatus}`,
     );
 
     return {
-      transactionId: body?.out_trade_no || '',
-      gatewayTransactionId: body?.trade_no || '',
+      transactionId: alipayBody.out_trade_no || '',
+      gatewayTransactionId: alipayBody.trade_no || '',
       success: isSuccess,
-      rawData: body,
+      rawData: alipayBody as Record<string, unknown>,
     };
   }
 
@@ -182,9 +187,9 @@ export class AlipayGateway implements PaymentGateway {
     return {
       transactionId: result.out_trade_no || transactionId,
       gatewayTransactionId: result.trade_no || '',
-      status: statusMap[result.trade_status] || 'PENDING',
+      status: (result.trade_status ? statusMap[result.trade_status] : undefined) || 'PENDING',
       amount: Math.round(parseFloat(result.total_amount || '0') * 100),
-      rawData: result,
+      rawData: result as Record<string, unknown>,
     };
   }
 
@@ -222,7 +227,7 @@ export class AlipayGateway implements PaymentGateway {
 
   // ──────────────────── Internal: Execute API Call ────────────────────
 
-  private async execute(method: string, bizContent: Record<string, any>): Promise<any> {
+  private async execute(method: string, bizContent: Record<string, string>): Promise<AlipayApiResponse> {
     const commonParams = this.buildCommonParams(method);
     commonParams['biz_content'] = JSON.stringify(bizContent);
     commonParams['sign'] = this.signParams(commonParams);
@@ -234,6 +239,7 @@ export class AlipayGateway implements PaymentGateway {
     const response = await fetch(`${this.gatewayUrl}?${queryString}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' },
+      signal: AbortSignal.timeout(15_000),
     });
 
     if (!response.ok) {
@@ -241,7 +247,7 @@ export class AlipayGateway implements PaymentGateway {
       throw new PaymentGatewayError(`Alipay API ${method} failed: ${response.status}`, 'alipay', text);
     }
 
-    const data = await response.json();
+    const data = await response.json() as Record<string, AlipayApiResponse>;
     // Alipay wraps response in alipay_trade_xxx_response
     const responseKey = method.replace(/\./g, '_') + '_response';
     const result = data[responseKey];
@@ -309,13 +315,13 @@ export class AlipayGateway implements PaymentGateway {
     };
   }
 
-  private async mockParseCallback(body: any): Promise<CallbackResult> {
+  private async mockParseCallback(body: AlipayWebhookBody): Promise<CallbackResult> {
     this.logger.warn('[MOCK] Alipay parseCallback');
     return {
       transactionId: body?.out_trade_no || body?.transactionId || '',
       gatewayTransactionId: body?.trade_no || `ali_mock_txn_${Date.now()}`,
       success: true,
-      rawData: body,
+      rawData: body as Record<string, unknown>,
     };
   }
 
@@ -327,7 +333,7 @@ export class AlipayGateway implements PaymentGateway {
       gatewayTransactionId: `ali_mock_txn_${transactionId}`,
       status: 'SUCCESS',
       amount: 0,
-      rawData: { mock: true },
+      rawData: { mock: true } as Record<string, unknown>,
     };
   }
 

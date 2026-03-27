@@ -58,8 +58,8 @@ export class JournalController {
   })
   @ApiResponse({ status: 400, description: 'Validation failed. / 数据校验失败。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
-  create(@Body() dto: CreateJournalDto) {
-    return this.journalService.create(dto);
+  create(@Body() dto: CreateJournalDto, @CurrentUser('id') userId: string) {
+    return this.journalService.create(userId, dto);
   }
 
   @Public()
@@ -121,6 +121,7 @@ export class JournalController {
     @Query('userId') userId?: string,
     @Query('tripId') tripId?: string,
     @Query('isPublic') isPublic?: string,
+    @CurrentUser('id') currentUserId?: string,
   ) {
     return this.journalService.findAll({
       userId,
@@ -128,6 +129,7 @@ export class JournalController {
       isPublic: isPublic !== undefined ? isPublic === 'true' : undefined,
       page: pagination.page,
       limit: pagination.limit,
+      currentUserId,
     });
   }
 
@@ -145,9 +147,10 @@ export class JournalController {
     example: 'clx5jrn0001ab12cd34ef56',
   })
   @ApiResponse({ status: 200, description: 'Journal entry detail returned. / 日志详情返回成功。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — private journal of another user. / 权限不足——他人私密日志。' })
   @ApiResponse({ status: 404, description: 'Journal entry not found. / 日志不存在。' })
-  findOne(@Param('id') id: string) {
-    return this.journalService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
+    return this.journalService.findOne(id, userId);
   }
 
   @Patch(':id')

@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import type { TripStatus } from '@prisma/client';
 import { TripService } from './trip.service';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateTripDto } from './dto/create-trip.dto';
@@ -62,8 +63,8 @@ export class TripController {
   })
   @ApiResponse({ status: 400, description: 'Validation failed. / 数据校验失败。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
-  create(@Body() dto: CreateTripDto) {
-    return this.tripService.create(dto);
+  create(@Body() dto: CreateTripDto, @CurrentUser('id') userId: string) {
+    return this.tripService.create(userId, dto);
   }
 
   @Public()
@@ -117,8 +118,10 @@ export class TripController {
     @Query() pagination: PaginationQueryDto,
     @Query('userId') userId?: string,
     @Query('status') status?: string,
+    @CurrentUser('id') currentUserId?: string,
   ) {
     return this.tripService.findAll({
+      currentUserId,
       userId,
       status: status as TripStatus,
       page: pagination.page,
@@ -173,8 +176,8 @@ export class TripController {
   })
   @ApiResponse({ status: 200, description: 'Trip detail returned successfully. / 行程详情返回成功。' })
   @ApiResponse({ status: 404, description: 'Trip not found. / 行程不存在。' })
-  findOne(@Param('id') id: string) {
-    return this.tripService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser('id') userId?: string) {
+    return this.tripService.findOne(id, userId);
   }
 
   @Patch(':id')
@@ -191,8 +194,8 @@ export class TripController {
   @ApiResponse({ status: 400, description: 'Cannot update trip in current status. / 当前状态下无法更新行程。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Trip not found. / 行程不存在。' })
-  update(@Param('id') id: string, @Body() dto: UpdateTripDto) {
-    return this.tripService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateTripDto, @CurrentUser('id') userId: string) {
+    return this.tripService.update(id, userId, dto);
   }
 
   @Post(':id/transition')
@@ -213,8 +216,13 @@ export class TripController {
   @ApiResponse({ status: 400, description: 'Invalid transition — action not allowed from current state. / 无效转换——当前状态不允许该操作。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Trip not found. / 行程不存在。' })
-  transition(@Param('id') id: string, @Body() dto: TransitionTripDto) {
-    return this.tripService.transition(id, dto.action, dto.operator, dto.reason);
+  transition(
+    @Param('id') id: string,
+    @Body() dto: TransitionTripDto,
+    @CurrentUser('id') userId: string,
+    @CurrentUser('role') userRole: string,
+  ) {
+    return this.tripService.transition(id, userId, userRole, dto.action, dto.operator, dto.reason);
   }
 
   @Post(':id/sites')
@@ -231,8 +239,8 @@ export class TripController {
   @ApiResponse({ status: 400, description: 'Validation failed or site already in trip. / 校验失败或圣地已在行程中。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Trip or holy site not found. / 行程或圣地不存在。' })
-  addSite(@Param('id') id: string, @Body() dto: AddTripSiteDto) {
-    return this.tripService.addSite(id, dto);
+  addSite(@Param('id') id: string, @Body() dto: AddTripSiteDto, @CurrentUser('id') userId: string) {
+    return this.tripService.addSite(id, userId, dto);
   }
 
   @Delete(':id/sites/:siteId')
@@ -248,7 +256,7 @@ export class TripController {
   @ApiResponse({ status: 200, description: 'Site removed from trip successfully. / 圣地已从行程中移除。' })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 404, description: 'Trip or trip-site record not found. / 行程或行程圣地记录不存在。' })
-  removeSite(@Param('id') id: string, @Param('siteId') siteId: string) {
-    return this.tripService.removeSite(id, siteId);
+  removeSite(@Param('id') id: string, @Param('siteId') siteId: string, @CurrentUser('id') userId: string) {
+    return this.tripService.removeSite(id, userId, siteId);
   }
 }

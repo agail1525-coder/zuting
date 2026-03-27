@@ -8,13 +8,23 @@ import { AlipayGateway } from './gateways/alipay.gateway';
 import { StripeGateway } from './gateways/stripe.gateway';
 import { PaymentSignatureException } from './payment.errors';
 
+interface MockGateway {
+  name: string;
+  isMockMode: jest.Mock;
+  createPayment: jest.Mock;
+  verifyCallback: jest.Mock;
+  parseCallback: jest.Mock;
+  queryPayment: jest.Mock;
+  processRefund: jest.Mock;
+}
+
 describe('PaymentService', () => {
   let service: PaymentService;
-  let prisma: Record<string, any>;
-  let stateMachine: Record<string, any>;
-  let wechatGw: Record<string, any>;
-  let alipayGw: Record<string, any>;
-  let stripeGw: Record<string, any>;
+  let prisma: Record<string, Record<string, jest.Mock>>;
+  let stateMachine: Record<string, jest.Mock>;
+  let wechatGw: MockGateway;
+  let alipayGw: MockGateway;
+  let stripeGw: MockGateway;
 
   const mockOrder = {
     id: 'order-1',
@@ -264,7 +274,10 @@ describe('PaymentService', () => {
 
   describe('queryPaymentFromGateway', () => {
     it('should query gateway and return combined status', async () => {
-      prisma.paymentTransaction.findUnique.mockResolvedValue(mockTransaction);
+      prisma.paymentTransaction.findUnique.mockResolvedValue({
+        ...mockTransaction,
+        order: { userId: 'user-1' },
+      });
       wechatGw.queryPayment.mockResolvedValue({
         transactionId: 'txn-1',
         gatewayTransactionId: 'wx_txn_12345',
@@ -273,7 +286,7 @@ describe('PaymentService', () => {
         rawData: {},
       });
 
-      const result = await service.queryPaymentFromGateway('txn-1');
+      const result = await service.queryPaymentFromGateway('txn-1', 'user-1');
 
       expect(result.localStatus).toBe('PENDING');
       expect(result.gatewayStatus).toBe('SUCCESS');
@@ -284,8 +297,19 @@ describe('PaymentService', () => {
       prisma.paymentTransaction.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.queryPaymentFromGateway('nonexistent'),
+        service.queryPaymentFromGateway('nonexistent', 'user-1'),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw ForbiddenException for other user transaction', async () => {
+      prisma.paymentTransaction.findUnique.mockResolvedValue({
+        ...mockTransaction,
+        order: { userId: 'user-1' },
+      });
+
+      await expect(
+        service.queryPaymentFromGateway('txn-1', 'other-user'),
+      ).rejects.toThrow('You can only query transactions for your own orders');
     });
   });
 

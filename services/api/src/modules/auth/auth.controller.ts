@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Body,
   Req,
   Res,
@@ -27,9 +28,11 @@ import {
   RegisterDto,
   LoginDto,
   RefreshTokenDto,
+  WechatLoginDto,
   SendCodeDto,
   VerifyCodeDto,
   ResetPasswordDto,
+  UpdateProfileDto,
 } from './dto/auth.dto';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -190,6 +193,28 @@ export class AuthController {
     return this.authService.getProfile(userId);
   }
 
+  @Patch('profile')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Update current user profile',
+    description:
+      '更新当前用户的个人资料（昵称、头像、手机号）。\n\n' +
+      'Update the authenticated user\'s profile (nickname, avatar, phone).',
+  })
+  @ApiBody({ type: UpdateProfileDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Profile updated successfully. / 资料更新成功。',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 409, description: 'Phone number already in use. / 手机号已被使用。' })
+  updateProfile(
+    @CurrentUser('id') userId: string,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return this.authService.updateProfile(userId, dto);
+  }
+
   // ─── Verification Code Endpoints ─────────────────────────────
 
   @Public()
@@ -285,6 +310,43 @@ export class AuthController {
     // Reset the password
     await this.authService.resetPassword(dto.target, dto.newPassword);
     return { message: 'Password reset successfully / 密码重置成功' };
+  }
+
+  // ─── WeChat Mini Program Login ────────────────────────────
+
+  @Public()
+  @Post('wechat/miniprogram')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'WeChat Mini Program login via wx.login() code',
+    description:
+      '微信小程序登录：前端调用 Taro.login() 获取 code，发送至此接口换取JWT令牌。\n\n' +
+      'Mini Program login: frontend calls Taro.login() to get a code, sends it here to exchange for JWT tokens.',
+  })
+  @ApiBody({ type: WechatLoginDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful. Returns JWT tokens. / 登录成功，返回JWT令牌。',
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIs...' },
+        refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIs...' },
+        expiresIn: { type: 'number', example: 900 },
+        user: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            nickname: { type: 'string' },
+            avatar: { type: 'string', nullable: true },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Missing code or jscode2session exchange failed.' })
+  async wechatMiniProgramLogin(@Body() dto: WechatLoginDto) {
+    return this.authService.wechatMiniProgramLogin(dto.code);
   }
 
   // ─── OAuth: Social Login ───────────────────────────────────

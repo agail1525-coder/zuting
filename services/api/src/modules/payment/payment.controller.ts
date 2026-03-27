@@ -7,7 +7,9 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -17,10 +19,16 @@ import {
   ApiBody,
   ApiHeader,
 } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type {
+  WechatWebhookBody,
+  AlipayWebhookBody,
+  StripeWebhookBody,
+} from './gateways/payment-gateway.interface';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -77,6 +85,7 @@ export class PaymentController {
   // ──────────────────── WeChat Pay Webhook ────────────────────
 
   @Public()
+  @SkipThrottle()
   @Post('webhook/wechat')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -92,7 +101,8 @@ export class PaymentController {
   @ApiResponse({ status: 200, description: 'Webhook processed. / 回调处理成功。' })
   @ApiResponse({ status: 400, description: 'Invalid signature or payload. / 签名或数据无效。' })
   handleWechatWebhook(
-    @Body() body: any,
+    @Req() req: Request & { rawBody?: Buffer },
+    @Body() body: WechatWebhookBody,
     @Headers('wechatpay-timestamp') timestamp?: string,
     @Headers('wechatpay-nonce') nonce?: string,
     @Headers('wechatpay-signature') signature?: string,
@@ -104,12 +114,15 @@ export class PaymentController {
     if (signature) headers['wechatpay-signature'] = signature;
     if (serial) headers['wechatpay-serial'] = serial;
 
-    return this.paymentService.handleWechatCallback(body, headers);
+    // Pass raw body for accurate signature verification
+    const rawBody = req.rawBody ? req.rawBody.toString('utf8') : body;
+    return this.paymentService.handleWechatCallback(rawBody as WechatWebhookBody, headers);
   }
 
   // ──────────────────── Alipay Webhook ────────────────────
 
   @Public()
+  @SkipThrottle()
   @Post('webhook/alipay')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -120,7 +133,7 @@ export class PaymentController {
   })
   @ApiResponse({ status: 200, description: 'Webhook processed. Returns "success". / 回调处理成功。' })
   @ApiResponse({ status: 400, description: 'Invalid signature or payload. / 签名或数据无效。' })
-  async handleAlipayWebhook(@Body() body: any) {
+  async handleAlipayWebhook(@Body() body: AlipayWebhookBody) {
     const result = await this.paymentService.handleAlipayCallback(body);
     // Alipay requires the response body to be exactly "success"
     if (result.success) return 'success';
@@ -130,6 +143,7 @@ export class PaymentController {
   // ──────────────────── Stripe Webhook ────────────────────
 
   @Public()
+  @SkipThrottle()
   @Post('webhook/stripe')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -146,13 +160,16 @@ export class PaymentController {
   @ApiResponse({ status: 200, description: 'Webhook processed. / 回调处理成功。' })
   @ApiResponse({ status: 400, description: 'Invalid signature or payload. / 签名或数据无效。' })
   handleStripeWebhook(
-    @Body() body: any,
+    @Req() req: Request & { rawBody?: Buffer },
+    @Body() body: StripeWebhookBody,
     @Headers('stripe-signature') signature?: string,
   ) {
     const headers: Record<string, string> = {};
     if (signature) headers['stripe-signature'] = signature;
 
-    return this.paymentService.handleStripeCallback(body, headers);
+    // Pass raw body for accurate HMAC-SHA256 signature verification
+    const rawBody = req.rawBody ? req.rawBody.toString('utf8') : body;
+    return this.paymentService.handleStripeCallback(rawBody as StripeWebhookBody, headers);
   }
 
   // ──────────────────── Payment Status ────────────────────
@@ -186,9 +203,13 @@ export class PaymentController {
     },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — not your order. / 无权访问该订单。' })
   @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
-  getPaymentStatus(@Param('orderId') orderId: string) {
-    return this.paymentService.getPaymentStatus(orderId);
+  getPaymentStatus(
+    @Param('orderId') orderId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.paymentService.getPaymentStatus(orderId, userId);
   }
 
   // ──────────────────── Query Gateway Directly ────────────────────
@@ -223,11 +244,15 @@ export class PaymentController {
     },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — not your transaction. / 无权访问该交易。' })
   @ApiResponse({ status: 404, description: 'Transaction not found. / 交易不存在。' })
   @ApiResponse({ status: 502, description: 'Gateway error. / 网关错误。' })
   @ApiResponse({ status: 504, description: 'Gateway timeout. / 网关超时。' })
-  queryFromGateway(@Param('transactionId') transactionId: string) {
-    return this.paymentService.queryPaymentFromGateway(transactionId);
+  queryFromGateway(
+    @Param('transactionId') transactionId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.paymentService.queryPaymentFromGateway(transactionId, userId);
   }
 
   // ──────────────────── Gateway Health ────────────────────

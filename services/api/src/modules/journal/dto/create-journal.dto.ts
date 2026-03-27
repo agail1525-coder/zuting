@@ -8,13 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateJournalDto {
-  @ApiProperty({
-    description: 'ID of the user creating this journal entry. / 创建日志的用户ID',
-    example: 'clx1abc2d0000ab12cd34ef56',
-  })
-  @IsString()
-  userId: string;
-
   @ApiPropertyOptional({
     description: 'ID of the associated trip (optional). / 关联行程ID（可选）',
     example: 'clx3trip0001ab12cd34ef56',

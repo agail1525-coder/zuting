@@ -4,6 +4,7 @@ import {
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
@@ -65,7 +66,7 @@ export class CouponService {
       throw new BadRequestException('Percent value must be between 1 and 100');
     }
 
-    const data: any = { ...dto };
+    const data: Prisma.CouponUpdateInput = { ...dto };
     if (dto.startAt) data.startAt = new Date(dto.startAt);
     if (dto.endAt) data.endAt = new Date(dto.endAt);
 
@@ -176,10 +177,11 @@ export class CouponService {
     const usedCoupons = await this.prisma.couponUsage.findMany({
       where: { userId },
       select: { couponId: true },
+      take: 500,
     });
     const usedCouponIds = usedCoupons.map((u) => u.couponId);
 
-    const where: any = {
+    const where: Prisma.CouponWhereInput = {
       isActive: true,
       startAt: { lte: now },
       endAt: { gte: now },
@@ -192,6 +194,7 @@ export class CouponService {
     const coupons = await this.prisma.coupon.findMany({
       where,
       orderBy: { endAt: 'asc' },
+      take: 50,
     });
 
     // Filter out fully used coupons
