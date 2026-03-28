@@ -3,6 +3,7 @@ import "./globals.css";
 import ClientProviders from "./providers";
 import RootJsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
+import SiteGate from "@/components/SiteGate";
 
 const BASE_URL = "https://joinus.com";
 
@@ -125,7 +126,9 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <RootJsonLd />
-        <ClientProviders>{children}</ClientProviders>
+        <ClientProviders>
+          <SiteGate>{children}</SiteGate>
+        </ClientProviders>
         <CookieConsent />
       </body>
     </html>
