@@ -1,7 +1,7 @@
 ﻿{
-    "id":  "web-fix-trip-detail-unknown-types",
-    "name":  "Web api.ts TripDetail接口使用unknown[]类型 — 类型安全缺失",
+    "id":  "web-fix-error-page-i18n-hardcoded",
+    "name":  "Web错误页面error.tsx仍有4处中文硬编码 — 国际用户遇错看到中文",
     "app":  "web",
     "priority":  2,
-    "description":  "apps/web/src/lib/api.ts 约263-265行，TripDetail接口的 orders、journals、availableActions 字段使用 unknown[] 类型，违反 [R-01]。\n\n修改:\n1. orders: Order[] (复用已有Order接口)\n2. journals: Journal[] (复用已有Journal接口)\n3. availableActions: string[] (行程可用操作列表)\n\n先用 Grep 确认 Order 和 Journal 接口已在 api.ts 中定义，若无则需添加。确保 trips/[id]/page.tsx 中的使用处也正确类型化。\n\n验证: pnpm --filter @zuting/web exec tsc --noEmit"
+    "description":  "文件: apps/web/src/app/error.tsx\n\n问题:\n- 第24行: \u0027出了点问题\u0027 (标题)\n- 第27行: \u0027页面加载时发生错误，请稍后再试。\u0027 (描述)\n- 第35行: \u0027重试\u0027 (按钮)\n- 第41行: \u0027返回首页\u0027 (按钮)\n\n这些字符串未通过 i18n t() 函数翻译。error.tsx 是 React Error Boundary，可能无法使用 useTranslation hook (客户端组件)。\n\n修复:\n1. 确认 error.tsx 是否已经是 \u0027use client\u0027 组件\n2. 如果是，添加 useTranslation hook，将4处中文替换为 t(\u0027error.title\u0027), t(\u0027error.description\u0027), t(\u0027error.retry\u0027), t(\u0027error.backHome\u0027)\n3. 在 i18n 的 zh-CN.json 和 en.json 中添加对应翻译key\n4. 注意: Error Boundary 中使用 i18n 要确保 provider 在其上层\n\n铁律: BLG-01 (页面数据必须服务于目标用户)\n验证: cd apps/web \u0026\u0026 pnpm build"
 }

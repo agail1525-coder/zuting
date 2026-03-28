@@ -168,5 +168,975 @@
         "id":  "web-fix-trip-detail-unknown-types",
         "name":  "Web api.ts TripDetail接口使用unknown[]类型 — 类型安全缺失",
         "completedAt":  "2026-03-27 08:03:26"
+    },
+    {
+        "id":  "api-fix-seal-controller-redundant-guards",
+        "name":  "SealController重复@UseGuards导致@Public()失效 — 管理端点双重鉴权不一致",
+        "completedAt":  "2026-03-27 08:22:00"
+    },
+    {
+        "id":  "api-fix-simulate-payment-no-env-gate",
+        "name":  "POST /orders/:id/pay 模拟支付无环境检查 — 生产环境可绕过支付网关",
+        "completedAt":  "2026-03-27 08:22:15"
+    },
+    {
+        "id":  "mobile-fix-religion-detail-permanent-spinner",
+        "name":  "Mobile宗教详情页加载失败后永久转圈 — 无错误提示无重试",
+        "completedAt":  "2026-03-27 08:23:30"
+    },
+    {
+        "id":  "miniprogram-fix-journals-only-public",
+        "name":  "小程序日志列表硬编码isPublic=true — 用户私人日志永远不显示",
+        "completedAt":  "2026-03-27 08:23:46"
+    },
+    {
+        "id":  "web-fix-payment-result-raw-fetch",
+        "name":  "Web支付结果页绕过api.ts且字段名错误 — 支付状态显示可能异常",
+        "completedAt":  "2026-03-27 08:25:01"
+    },
+    {
+        "id":  "web-fix-checkout-raw-fetch-bypass",
+        "name":  "Web结账页绕过api.ts直接fetch — 类型不一致+无统一错误处理",
+        "completedAt":  "2026-03-27 08:25:46"
+    },
+    {
+        "id":  "admin-add-users-page",
+        "name":  "Admin缺少用户管理页面 — 无法查看/搜索/管理平台用户",
+        "completedAt":  "2026-03-27 08:26:31"
+    },
+    {
+        "id":  "miniprogram-fix-trips-no-auth-gate",
+        "name":  "小程序行程页无登录检查 — 未登录用户看到空白页或401错误",
+        "completedAt":  "2026-03-27 08:26:46"
+    },
+    {
+        "id":  "api-fix-trip-operator-audit-poisoning",
+        "name":  "Trip状态转换的operator字段由客户端提供 — 审计日志可被伪造",
+        "completedAt":  "2026-03-27 08:42:12"
+    },
+    {
+        "id":  "admin-fix-api-error-body-discarded",
+        "name":  "Admin api.ts丢弃错误响应体 — 管理员只看到HTTP状态码无法排障",
+        "completedAt":  "2026-03-27 08:42:27"
+    },
+    {
+        "id":  "api-fix-user-update-no-dto-validation",
+        "name":  "API用户更新端点无DTO类 — role字段可设任意字符串导致权限提升",
+        "completedAt":  "2026-03-27 08:42:57"
+    },
+    {
+        "id":  "miniprogram-fix-journal-create-no-auth-gate",
+        "name":  "小程序日志创建页无登录检查 — 未登录用户填完表单提交才发现401",
+        "completedAt":  "2026-03-27 08:43:12"
+    },
+    {
+        "id":  "web-fix-trips-page-no-auth-gate",
+        "name":  "Web行程页无登录检查 — 未认证用户看到原始API错误信息",
+        "completedAt":  "2026-03-27 08:43:42"
+    },
+    {
+        "id":  "admin-fix-religions-pagination-disabled",
+        "name":  "Admin宗教管理表格显式禁用分页 — 数据增长后性能崩溃",
+        "completedAt":  "2026-03-27 08:45:43"
+    },
+    {
+        "id":  "web-fix-review-section-inline-fetch",
+        "name":  "Web ReviewSection组件绕过api.ts直接fetch且缺少写评价功能",
+        "completedAt":  "2026-03-27 08:45:58"
+    },
+    {
+        "id":  "miniprogram-fix-detail-pages-wrong-error-message",
+        "name":  "小程序4个详情页网络错误时显示\"不存在\"误导用户",
+        "completedAt":  "2026-03-27 08:46:58"
+    },
+    {
+        "id":  "miniprogram-add-temples-patriarchs-teachings-pages",
+        "name":  "小程序缺少祖庭/祖师/祖训列表页 — 3类核心内容无法在微信中浏览",
+        "completedAt":  "2026-03-27 09:05:13"
+    },
+    {
+        "id":  "admin-fix-trips-orders-journals-reviews-no-pagination",
+        "name":  "Admin四个管理表格(行程/订单/日志/评价)无分页 — 数据增长后前端OOM崩溃",
+        "completedAt":  "2026-03-27 09:06:43"
+    },
+    {
+        "id":  "web-fix-social-login-inline-fetch",
+        "name":  "Web SocialLoginButtons组件直接fetch且sitemap.ts未走api.ts — API调用分散",
+        "completedAt":  "2026-03-27 09:07:28"
+    },
+    {
+        "id":  "web-fix-list-pages-silent-fail",
+        "name":  "Web 7个列表页数据加载失败静默吞错 — 用户看到空白页面无任何提示",
+        "completedAt":  "2026-03-27 09:07:29"
+    },
+    {
+        "id":  "web-fix-auth-context-inline-fetch",
+        "name":  "Web auth-context.tsx 4处绕过api.ts直接fetch — 认证流程无统一错误处理",
+        "completedAt":  "2026-03-27 09:07:54"
+    },
+    {
+        "id":  "mobile-fix-sentry-any-types",
+        "name":  "Mobile sentry.ts使用any类型 — 违反R-01类型安全铁律",
+        "completedAt":  "2026-03-27 09:10:09"
+    },
+    {
+        "id":  "web-fix-notifications-silent-errors",
+        "name":  "Web通知页面5处catch静默吞错 — 标记已读/删除等操作失败用户无感知",
+        "completedAt":  "2026-03-27 09:10:24"
+    },
+    {
+        "id":  "web-fix-i18n-hardcoded-form-placeholders",
+        "name":  "Web 5个表单页面中文placeholder硬编码 — 国际化用户看到中文占位符",
+        "completedAt":  "2026-03-27 09:16:24"
+    },
+    {
+        "id":  "admin-fix-temples-form-missing-coordinates",
+        "name":  "Admin祖庭表单缺少经纬度字段 — 空间数据无法通过UI添加",
+        "completedAt":  "2026-03-27 09:57:42"
+    },
+    {
+        "id":  "mobile-add-teaching-detail-screen",
+        "name":  "Mobile缺少祖训详情屏 — 搜索结果中teaching类型无法导航",
+        "completedAt":  "2026-03-27 09:58:12"
+    },
+    {
+        "id":  "api-fix-coupon-service-pagination",
+        "name":  "API优惠券服务getUserCoupons使用take:500 — 超出R-64分页限制",
+        "completedAt":  "2026-03-27 09:59:13"
+    },
+    {
+        "id":  "miniprogram-add-teaching-detail-page",
+        "name":  "小程序缺少祖训详情页 — teachings列表页卡片不可点击且无详情页面",
+        "completedAt":  "2026-03-27 09:59:58"
+    },
+    {
+        "id":  "admin-fix-aiconfig-mock-suggestions",
+        "name":  "Admin AI配置页面使用硬编码mock数据 — 建议列表不可管理",
+        "completedAt":  "2026-03-27 10:00:58"
+    },
+    {
+        "id":  "admin-add-orders-search-filter",
+        "name":  "Admin订单管理缺少搜索筛选 — 无法按订单号/用户/状态查找订单",
+        "completedAt":  "2026-03-27 10:00:58"
+    },
+    {
+        "id":  "admin-add-journals-search-filter",
+        "name":  "Admin日志管理缺少搜索筛选 — 无法按标题/用户/公开状态查找日志",
+        "completedAt":  "2026-03-27 10:01:13"
+    },
+    {
+        "id":  "web-add-not-found-page",
+        "name":  "Web缺少专用404页面 — 访问不存在路由显示默认错误而非友好提示",
+        "completedAt":  "2026-03-27 10:02:29"
+    },
+    {
+        "id":  "api-fix-upload-findone-no-ownership-check",
+        "name":  "Upload GET /:id缺少所有权校验 — 任何登录用户可查看他人上传记录(IDOR)",
+        "completedAt":  "2026-03-27 10:17:43"
+    },
+    {
+        "id":  "api-fix-coupon-dto-missing-length-validation",
+        "name":  "优惠券DTO的code和name字段缺少长度校验 — 可提交超长字符串",
+        "completedAt":  "2026-03-27 10:18:13"
+    },
+    {
+        "id":  "api-fix-xiaohong-suggestions-missing-roles-guard",
+        "name":  "小鸿建议管理端点缺少@Roles(\u0027ADMIN\u0027)守卫 — 任何登录用户可增删改建议",
+        "completedAt":  "2026-03-27 10:18:29"
+    },
+    {
+        "id":  "web-fix-i18n-chat-page-hardcoded",
+        "name":  "Web聊天页chat/page.tsx 15+处中文硬编码未国际化",
+        "completedAt":  "2026-03-27 10:22:44"
+    },
+    {
+        "id":  "web-fix-i18n-map-page-hardcoded",
+        "name":  "Web地图页map/client.tsx 10处中文硬编码未国际化",
+        "completedAt":  "2026-03-27 10:24:44"
+    },
+    {
+        "id":  "web-fix-i18n-about-page-hardcoded",
+        "name":  "Web关于页面全部内容中文硬编码 — 国际用户完全无法阅读",
+        "completedAt":  "2026-03-27 10:26:59"
+    },
+    {
+        "id":  "web-fix-i18n-trips-orders-status-labels",
+        "name":  "Web行程/订单页状态标签中文硬编码 — 国际用户看到中文状态名",
+        "completedAt":  "2026-03-27 10:33:24"
+    },
+    {
+        "id":  "api-fix-seal-update-dto-validation-bypass",
+        "name":  "API Seal更新端点使用Partial\u003cCreateSealDto\u003e绕过class-validator — 任何payload通过校验",
+        "completedAt":  "2026-03-27 10:51:17"
+    },
+    {
+        "id":  "miniprogram-fix-journals-mine-tab-shows-others",
+        "name":  "小程序日志\u0027我的\u0027Tab未传userId筛选 — 显示其他用户日志数据泄露",
+        "completedAt":  "2026-03-27 10:52:03"
+    },
+    {
+        "id":  "web-fix-i18n-payment-result-page",
+        "name":  "Web支付结果页全部中文硬编码+无auth gate — 国际用户看不懂支付状态",
+        "completedAt":  "2026-03-27 10:53:03"
+    },
+    {
+        "id":  "web-fix-i18n-search-page-plus-error",
+        "name":  "Web搜索页中文硬编码+API错误静默吞掉 — 搜索失败用户无感知",
+        "completedAt":  "2026-03-27 10:53:18"
+    },
+    {
+        "id":  "miniprogram-fix-auth-check-race-condition",
+        "name":  "小程序聊天页和行程页useEffect认证检查不会在页面聚焦时刷新 — 登录后返回仍显示锁屏",
+        "completedAt":  "2026-03-27 10:53:18"
+    },
+    {
+        "id":  "mobile-fix-chat-bypasses-api-module",
+        "name":  "Mobile聊天页直接fetch绕过api.ts模块 — API基础URL逻辑重复且不一致",
+        "completedAt":  "2026-03-27 10:53:44"
+    },
+    {
+        "id":  "miniprogram-fix-map-blank-marker-icons",
+        "name":  "小程序地图标记iconPath为空字符串 — 地图上所有圣地标记不显示或显示默认图标",
+        "completedAt":  "2026-03-27 10:53:44"
+    },
+    {
+        "id":  "web-fix-i18n-journals-pages",
+        "name":  "Web日志列表页+详情页全部中文硬编码 — 国际用户完全无法使用日志功能",
+        "completedAt":  "2026-03-27 10:54:14"
+    },
+    {
+        "id":  "admin-fix-six-pages-silent-load-errors",
+        "name":  "Admin六个管理页面load()无catch — API失败时永久loading无任何提示",
+        "completedAt":  "2026-03-27 10:56:44"
+    },
+    {
+        "id":  "web-fix-i18n-trip-detail-page",
+        "name":  "Web行程详情页全部中文硬编码+缺少auth gate+无结账按钮 — 国际用户无法使用",
+        "completedAt":  "2026-03-27 10:56:59"
+    },
+    {
+        "id":  "mobile-fix-missing-auth-gates",
+        "name":  "Mobile日志创建和行程创建页缺少登录检查 — 未登录用户填表后才发现401",
+        "completedAt":  "2026-03-27 13:33:04"
+    },
+    {
+        "id":  "web-fix-i18n-onboarding-modal",
+        "name":  "Web引导弹窗OnboardingModal全中文硬编码 — 新用户首次体验完全中文",
+        "completedAt":  "2026-03-27 13:33:04"
+    },
+    {
+        "id":  "web-fix-i18n-notifications-page",
+        "name":  "Web通知页面30+处中文硬编码+缺少登录重定向 — 国际用户完全无法使用通知功能",
+        "completedAt":  "2026-03-27 13:33:04"
+    },
+    {
+        "id":  "web-fix-i18n-home-wisdom-quotes",
+        "name":  "Web首页WISDOM_QUOTES数组中文硬编码 — 智慧语录国际用户看不懂",
+        "completedAt":  "2026-03-27 13:33:04"
+    },
+    {
+        "id":  "web-fix-i18n-header-footer-components",
+        "name":  "Web Header/Footer组件中文硬编码 — 全站导航和页脚国际用户看到中文",
+        "completedAt":  "2026-03-27 13:33:04"
+    },
+    {
+        "id":  "miniprogram-add-seals-page",
+        "name":  "小程序缺少三十印(Seals)页面 — Web有但小程序无法浏览印内容",
+        "completedAt":  "2026-03-27 13:33:49"
+    },
+    {
+        "id":  "web-fix-i18n-page-metadata",
+        "name":  "Web 7个页面metadata中文硬编码 — SEO标题描述对国际搜索引擎无效",
+        "completedAt":  "2026-03-27 13:33:49"
+    },
+    {
+        "id":  "web-fix-orders-hardcoded-locale",
+        "name":  "Web订单页日期格式硬编码zh-CN — 国际用户看到中文日期格式",
+        "completedAt":  "2026-03-27 13:33:49"
+    },
+    {
+        "id":  "miniprogram-fix-chat-bypasses-api-client",
+        "name":  "小程序聊天页再次绕过api.ts直接调用Taro.request — 代码重复且认证不一致",
+        "completedAt":  "2026-03-27 13:48:08"
+    },
+    {
+        "id":  "api-fix-user-service-uncapped-take",
+        "name":  "UserService.listUsers的take参数无上限 — 可被DoS攻击导致OOM",
+        "completedAt":  "2026-03-27 13:48:08"
+    },
+    {
+        "id":  "mobile-fix-api-url-divergence",
+        "name":  "Mobile api.ts硬编码生产URL与auth.ts使用环境变量不一致 — 域名变更后API调用分裂",
+        "completedAt":  "2026-03-27 13:48:08"
+    },
+    {
+        "id":  "api-add-dto-maxlength-journal-trip-chat",
+        "name":  "Journal/Trip/Chat DTO的用户输入字段缺少@MaxLength — 可提交无限长度字符串",
+        "completedAt":  "2026-03-27 13:48:08"
+    },
+    {
+        "id":  "api-fix-journal-ispublic-idor-bypass",
+        "name":  "Journal findAll的isPublic参数绕过IDOR防护 — 任何人可读取他人私密日志",
+        "completedAt":  "2026-03-27 13:48:08"
+    },
+    {
+        "id":  "web-fix-i18n-mobilenav-quickactions",
+        "name":  "Web MobileNav和QuickActions组件导航标签中文硬编码 — 移动端国际用户导航失效",
+        "completedAt":  "2026-03-27 13:49:03"
+    },
+    {
+        "id":  "web-fix-console-log-production",
+        "name":  "Web两处console.log在生产环境持续输出 — 泄露内部信息且影响性能",
+        "completedAt":  "2026-03-27 13:49:03"
+    },
+    {
+        "id":  "mobile-fix-journals-missing-auth-gates",
+        "name":  "Mobile日志列表和详情页缺少登录检查 — 未认证用户可浏览受保护内容",
+        "completedAt":  "2026-03-27 13:49:03"
+    },
+    {
+        "id":  "web-fix-i18n-notification-bell-component",
+        "name":  "Web NotificationBell组件全部中文硬编码 — 国际用户通知功能完全不可用",
+        "completedAt":  "2026-03-27 13:49:03"
+    },
+    {
+        "id":  "api-fix-upload-remove-path-traversal",
+        "name":  "Upload.remove()路径遍历风险 — DB中tainted URL可删除任意文件",
+        "completedAt":  "2026-03-27 14:15:21"
+    },
+    {
+        "id":  "api-fix-dto-missing-isnotempty-maxlength",
+        "name":  "API 6个CreateDTO的string字段缺少@IsNotEmpty和@MaxLength — 可提交空或超长内容",
+        "completedAt":  "2026-03-27 14:15:21"
+    },
+    {
+        "id":  "api-fix-pay-order-dto-no-enum-validation",
+        "name":  "pay-order.dto paymentMethod无枚举校验 — 任意字符串可作为支付方式提交",
+        "completedAt":  "2026-03-27 14:15:21"
+    },
+    {
+        "id":  "mobile-fix-teaching-detail-missing-layout-registration",
+        "name":  "Mobile _layout.tsx未注册teachings/[id]路由 — 搜索结果点击祖训导航崩溃",
+        "completedAt":  "2026-03-27 14:15:21"
+    },
+    {
+        "id":  "api-fix-crud-services-missing-existence-check",
+        "name":  "API五个CRUD Service的update/delete缺少存在性检查 — 不存在的ID返回500而非404",
+        "completedAt":  "2026-03-27 14:15:21"
+    },
+    {
+        "id":  "miniprogram-fix-chat-suggestions-hardcoded",
+        "name":  "小程序聊天页建议列表硬编码 — Admin配置的AI建议完全不生效",
+        "completedAt":  "2026-03-27 14:16:07"
+    },
+    {
+        "id":  "web-fix-i18n-error-pages",
+        "name":  "Web error.tsx和global-error.tsx全中文硬编码 — 国际用户遇到错误完全看不懂",
+        "completedAt":  "2026-03-27 14:16:07"
+    },
+    {
+        "id":  "miniprogram-fix-search-teaching-case-missing",
+        "name":  "小程序搜索页getDetailUrl缺少teaching类型 — 祖训搜索结果点击无反应",
+        "completedAt":  "2026-03-27 14:16:07"
+    },
+    {
+        "id":  "api-fix-dto-maxlength-notification-review-report",
+        "name":  "API通知/评价/举报DTO的string字段缺少@MaxLength — 可提交无限长内容导致DoS",
+        "completedAt":  "2026-03-27 14:35:22"
+    },
+    {
+        "id":  "web-fix-i18n-layout-metadata",
+        "name":  "Web根布局layout.tsx metadata全中文 — 站点级SEO标题/描述/关键词对国际引擎无效",
+        "completedAt":  "2026-03-27 14:35:22"
+    },
+    {
+        "id":  "web-fix-i18n-religions-slug-h1",
+        "name":  "Web宗教列表页h1标题\u0027十二大信仰\u0027中文硬编码 — 页面主标题国际用户看不懂",
+        "completedAt":  "2026-03-27 14:35:22"
+    },
+    {
+        "id":  "web-fix-profile-page-no-auth-gate",
+        "name":  "Web个人中心页无登录检查 — 未认证用户看到空白页面而非登录重定向",
+        "completedAt":  "2026-03-27 14:35:22"
+    },
+    {
+        "id":  "web-fix-i18n-terms-page",
+        "name":  "Web服务条款页面内容全中文硬编码 — 国际用户无法阅读法律条款",
+        "completedAt":  "2026-03-27 14:35:22"
+    },
+    {
+        "id":  "web-fix-i18n-list-page-metadata-titles",
+        "name":  "Web 6个列表页metadata标题中文硬编码 — SEO对国际搜索引擎无效",
+        "completedAt":  "2026-03-27 14:35:57"
+    },
+    {
+        "id":  "web-fix-i18n-detail-pages-not-found",
+        "name":  "Web 6个详情页中文\u0027未找到\u0027错误消息硬编码 — 国际用户看到中文错误提示",
+        "completedAt":  "2026-03-27 14:35:57"
+    },
+    {
+        "id":  "web-fix-journal-mood-chinese-keys",
+        "name":  "Web日志页面mood映射使用中文字符串作为key — 国际用户创建的日志mood无法匹配显示",
+        "completedAt":  "2026-03-27 14:58:42"
+    },
+    {
+        "id":  "mobile-add-orders-page",
+        "name":  "Mobile缺少订单列表和详情页 — 用户个人中心显示订单数但无法查看订单",
+        "completedAt":  "2026-03-27 14:58:42"
+    },
+    {
+        "id":  "api-fix-cors-hardcoded-localhost",
+        "name":  "API CORS白名单硬编码localhost地址 — 生产环境包含不必要的开发地址",
+        "completedAt":  "2026-03-27 14:58:42"
+    },
+    {
+        "id":  "web-fix-journal-create-limited-moods",
+        "name":  "Web日志创建页面只有4种心情选项 — 列表页展示8种但创建时只能选4种",
+        "completedAt":  "2026-03-27 14:58:42"
+    },
+    {
+        "id":  "api-fix-jwt-secret-hardcoded-fallback",
+        "name":  "API JWT密钥使用硬编码默认值\u0027change-me-in-production\u0027 — 生产环境可被预测令牌伪造",
+        "completedAt":  "2026-03-27 14:58:42"
+    },
+    {
+        "id":  "api-add-favorites-module",
+        "name":  "API缺少收藏(Favorites)模块 — 用户无法收藏圣地/祖庭/行程",
+        "completedAt":  "2026-03-27 14:59:27"
+    },
+    {
+        "id":  "miniprogram-fix-trip-detail-missing-transitions",
+        "name":  "小程序行程详情页缺少状态转换操作按钮 — 用户无法在小程序中推进行程状态",
+        "completedAt":  "2026-03-27 14:59:27"
+    },
+    {
+        "id":  "mobile-add-profile-edit",
+        "name":  "Mobile个人中心无编辑功能 — 用户无法修改头像/昵称等个人信息",
+        "completedAt":  "2026-03-27 14:59:27"
+    },
+    {
+        "id":  "mobile-fix-api-request-missing-auth-header",
+        "name":  "Mobile api.ts的request()函数不发送Authorization头 — 所有GET请求无认证",
+        "completedAt":  "2026-03-27 15:16:16"
+    },
+    {
+        "id":  "mobile-fix-entity-type-name-mismatch",
+        "name":  "Mobile所有实体接口使用nameZh但后端返回name — 5种数据类型名称显示空白",
+        "completedAt":  "2026-03-27 15:16:16"
+    },
+    {
+        "id":  "api-fix-trip-payment-success-self-trigger",
+        "name":  "Trip状态机允许用户自触发payment_success — 可绕过支付网关免费完成行程",
+        "completedAt":  "2026-03-27 15:16:16"
+    },
+    {
+        "id":  "api-fix-order-totalamount-client-controlled",
+        "name":  "Order创建的totalAmount由客户端传入 — 用户可自定义订单金额绕过定价",
+        "completedAt":  "2026-03-27 15:16:16"
+    },
+    {
+        "id":  "api-fix-coupon-apply-order-ownership-idor",
+        "name":  "优惠券applyWithOrderLookup无订单所有权校验 — 可将优惠券应用到他人订单",
+        "completedAt":  "2026-03-27 15:16:16"
+    },
+    {
+        "id":  "admin-fix-pagination-reset-on-filter-change",
+        "name":  "Admin三个管理页面切换筛选器不重置页码 — 翻页后换筛选条件显示空数据",
+        "completedAt":  "2026-03-27 15:17:01"
+    },
+    {
+        "id":  "mobile-fix-chat-suggestions-wrong-response-shape",
+        "name":  "Mobile聊天页解析AI建议的响应格式错误 — 永远使用默认建议忽略管理员配置",
+        "completedAt":  "2026-03-27 15:17:02"
+    },
+    {
+        "id":  "mobile-fix-layout-missing-screen-registrations",
+        "name":  "Mobile _layout.tsx未注册3个重要页面 — journals/create、trips/create、journals/[id]无标题栏",
+        "completedAt":  "2026-03-27 15:17:02"
+    },
+    {
+        "id":  "web-fix-chat-page-no-auth-gate",
+        "name":  "Web聊天页面缺少登录检查 — 未认证用户可使用AI聊天功能",
+        "completedAt":  "2026-03-27 15:31:59"
+    },
+    {
+        "id":  "miniprogram-fix-index-loading-forever-on-error",
+        "name":  "小程序首页加载失败后永久显示\u0027正在加载\u0027 — 无错误UI无重试",
+        "completedAt":  "2026-03-27 15:31:59"
+    },
+    {
+        "id":  "api-fix-seal-dto-fields-maxlength",
+        "name":  "Seal DTO五个字符串字段缺少@MaxLength — 可提交无限长度内容导致DoS",
+        "completedAt":  "2026-03-27 15:31:59"
+    },
+    {
+        "id":  "mobile-fix-journal-create-error-display",
+        "name":  "Mobile日志创建页面错误状态不显示 — 用户提交失败无任何反馈",
+        "completedAt":  "2026-03-27 15:32:00"
+    },
+    {
+        "id":  "api-fix-trip-transition-reason-maxlength",
+        "name":  "Trip状态转换DTO的reason字段缺少@MaxLength — 审计日志可被注入超长内容",
+        "completedAt":  "2026-03-27 15:32:00"
+    },
+    {
+        "id":  "admin-add-seals-search-filter",
+        "name":  "Admin三十印管理页面缺少名称搜索 — 30条印只有系列筛选无法快速定位",
+        "completedAt":  "2026-03-27 15:32:45"
+    },
+    {
+        "id":  "mobile-fix-trip-create-error-display",
+        "name":  "Mobile行程创建页面错误状态不显示 — 用户提交失败无任何反馈",
+        "completedAt":  "2026-03-27 15:32:45"
+    },
+    {
+        "id":  "admin-add-teachings-search-filter",
+        "name":  "Admin祖训管理页面缺少搜索功能 — 39条祖训无法按内容/来源快速定位",
+        "completedAt":  "2026-03-27 15:32:45"
+    },
+    {
+        "id":  "api-fix-notification-dto-missing-isnotempty",
+        "name":  "API SendNotificationDto的content字段缺少@IsNotEmpty — 可发送空通知",
+        "completedAt":  "2026-03-27 15:51:49"
+    },
+    {
+        "id":  "api-fix-payment-dto-missing-isnotempty",
+        "name":  "API CreatePaymentDto的orderId和gateway缺少@IsNotEmpty — 可提交空支付请求",
+        "completedAt":  "2026-03-27 15:51:49"
+    },
+    {
+        "id":  "miniprogram-fix-journal-create-submitting-stuck",
+        "name":  "小程序日志创建成功后submitting状态未重置 — 返回后表单锁死无法再次提交",
+        "completedAt":  "2026-03-27 15:51:49"
+    },
+    {
+        "id":  "api-fix-unsafe-enum-cast-query-params",
+        "name":  "API三个Controller对Query参数做unsafe类型断言 — 无效枚举值绕过校验",
+        "completedAt":  "2026-03-27 15:51:49"
+    },
+    {
+        "id":  "web-fix-i18n-notifications-remaining",
+        "name":  "Web通知页面仍有30+处中文硬编码 — timeAgo/typeLabel/按钮/空状态全中文",
+        "completedAt":  "2026-03-27 15:51:49"
+    },
+    {
+        "id":  "web-fix-i18n-sealcard-series-names",
+        "name":  "Web SealCard组件印系名称中文硬编码 — 国际用户看不懂五系分类",
+        "completedAt":  "2026-03-27 15:52:35"
+    },
+    {
+        "id":  "web-fix-i18n-cookie-consent",
+        "name":  "Web CookieConsent组件中文内容未走i18n — 应使用翻译key而非内联双语",
+        "completedAt":  "2026-03-27 15:52:35"
+    },
+    {
+        "id":  "web-fix-orders-remaining-hardcoded-locale",
+        "name":  "Web订单页formatDate/formatDateTime仍硬编码zh-CN — 之前修复不完整",
+        "completedAt":  "2026-03-27 15:52:35"
+    },
+    {
+        "id":  "api-fix-createorder-enum-validation",
+        "name":  "CreateOrderDto的paymentMethod和currency字段无枚举校验 — 可存入任意字符串",
+        "completedAt":  "2026-03-27 16:14:47"
+    },
+    {
+        "id":  "api-fix-coupon-apply-race-condition",
+        "name":  "优惠券apply存在竞态条件 — 并发请求可超额使用优惠券",
+        "completedAt":  "2026-03-27 16:14:47"
+    },
+    {
+        "id":  "api-fix-journal-create-tripid-idor",
+        "name":  "Journal创建端点未校验tripId归属 — 任何用户可将日志关联到他人行程(IDOR)",
+        "completedAt":  "2026-03-27 16:14:47"
+    },
+    {
+        "id":  "api-fix-content-dto-maxlength-batch",
+        "name":  "四个内容CreateDTO字段缺少@MaxLength — 可提交超长字符串导致DoS",
+        "completedAt":  "2026-03-27 16:14:47"
+    },
+    {
+        "id":  "api-fix-upload-avatar-not-updating-user",
+        "name":  "uploadAvatar端点上传成功但未更新用户avatar字段 — 头像永远不变",
+        "completedAt":  "2026-03-27 16:14:47"
+    },
+    {
+        "id":  "web-fix-holysites-empty-filter-state",
+        "name":  "Web圣地列表页筛选后无结果时显示空白 — 用户不知道是否加载中还是无数据",
+        "completedAt":  "2026-03-27 16:15:33"
+    },
+    {
+        "id":  "web-fix-auth-callback-i18n",
+        "name":  "Web OAuth回调页面全部中文硬编码 — 国际用户登录流程看到中文错误信息",
+        "completedAt":  "2026-03-27 16:15:33"
+    },
+    {
+        "id":  "miniprogram-fix-search-patriarch-navigation",
+        "name":  "小程序搜索页patriarch类型结果点击无反应 — 祖师搜索结果无法导航到详情",
+        "completedAt":  "2026-03-27 16:15:33"
+    },
+    {
+        "id":  "miniprogram-add-orders-page",
+        "name":  "小程序缺少订单管理页面 — 用户在微信中无法查看/管理订单",
+        "completedAt":  "2026-03-27 21:05:36"
+    },
+    {
+        "id":  "web-fix-i18n-privacy-page-fullpage",
+        "name":  "Web隐私政策页面全部中文硬编码 — 国际用户无法阅读法律条款(270+行中文)",
+        "completedAt":  "2026-03-27 21:05:36"
+    },
+    {
+        "id":  "miniprogram-fix-journal-detail-no-auth-gate",
+        "name":  "小程序日志详情页缺少登录检查 — 私密日志可能泄露给未登录用户",
+        "completedAt":  "2026-03-27 21:05:36"
+    },
+    {
+        "id":  "web-fix-i18n-notifications-timeago-typelabel",
+        "name":  "Web通知页面timeAgo/typeLabel/空状态仍全中文 — 之前修复不完整",
+        "completedAt":  "2026-03-27 21:05:36"
+    },
+    {
+        "id":  "web-fix-i18n-auth-callback-page",
+        "name":  "Web OAuth回调页面仍有中文硬编码 — 之前修复可能不完整",
+        "completedAt":  "2026-03-27 21:05:36"
+    },
+    {
+        "id":  "miniprogram-fix-console-error-production",
+        "name":  "小程序20+处console.error在生产环境输出 — 泄露API路径和错误详情",
+        "completedAt":  "2026-03-27 21:06:22"
+    },
+    {
+        "id":  "web-fix-console-log-webvitals-globalerror",
+        "name":  "Web生产代码2处console输出 — web-vitals和global-error泄露内部信息",
+        "completedAt":  "2026-03-27 21:06:22"
+    },
+    {
+        "id":  "web-fix-i18n-auth-callback-hardcoded",
+        "name":  "Web OAuth回调页面6处中文硬编码 — 登录失败/认证处理状态国际用户看不懂",
+        "completedAt":  "2026-03-27 21:26:24"
+    },
+    {
+        "id":  "api-fix-content-services-missing-existence-check",
+        "name":  "API 5个内容Service的update/remove缺少存在性检查 — 不存在ID返回Prisma P2025错误",
+        "completedAt":  "2026-03-27 21:26:24"
+    },
+    {
+        "id":  "web-fix-console-output-production",
+        "name":  "Web生产代码4处console输出 — 泄露Sentry初始化信息和Web Vitals数据",
+        "completedAt":  "2026-03-27 21:26:24"
+    },
+    {
+        "id":  "web-fix-i18n-notifications-page-remaining",
+        "name":  "Web通知页面仍有30+处中文硬编码 — timeAgo/typeLabel/按钮/空状态/错误消息全中文",
+        "completedAt":  "2026-03-27 21:26:24"
+    },
+    {
+        "id":  "api-fix-coupon-dto-missing-isnotempty",
+        "name":  "API优惠券DTO的name/startAt/endAt字段缺少@IsNotEmpty — 可提交空名称和空日期",
+        "completedAt":  "2026-03-27 21:26:25"
+    },
+    {
+        "id":  "web-fix-i18n-religions-page-metadata",
+        "name":  "Web宗教页面metadata和h1标题中文硬编码 — SEO标题国际搜索引擎无效",
+        "completedAt":  "2026-03-27 21:27:10"
+    },
+    {
+        "id":  "web-add-metadata-missing-pages",
+        "name":  "Web 10个页面缺少metadata导出 — SEO标题/描述完全缺失影响搜索引擎收录",
+        "completedAt":  "2026-03-27 21:27:10"
+    },
+    {
+        "id":  "web-fix-list-pages-empty-state",
+        "name":  "Web 5个列表页筛选结果为空时无提示 — 用户不知是无数据还是加载中",
+        "completedAt":  "2026-03-27 21:27:10"
+    },
+    {
+        "id":  "api-fix-seal-dto-missing-validation",
+        "name":  "API CreateSealDto的5个string字段缺少@IsNotEmpty和@MaxLength — 可提交空或超长印数据",
+        "completedAt":  "2026-03-27 22:06:16"
+    },
+    {
+        "id":  "miniprogram-add-trip-create-page",
+        "name":  "小程序缺少行程创建页面 — 用户无法在微信中发起新的朝圣行程",
+        "completedAt":  "2026-03-27 22:06:32"
+    },
+    {
+        "id":  "miniprogram-add-journal-mutation-apis",
+        "name":  "小程序api.ts缺少updateJournal和deleteJournal方法 — 用户无法编辑或删除自己的日志",
+        "completedAt":  "2026-03-27 22:06:58"
+    },
+    {
+        "id":  "miniprogram-fix-seal-detail-missing-error-ui",
+        "name":  "小程序印详情页缺少error状态和重试UI — 加载失败只显示toast无持久化错误提示",
+        "completedAt":  "2026-03-27 22:06:58"
+    },
+    {
+        "id":  "mobile-add-journal-trip-mutation-apis",
+        "name":  "Mobile api.ts缺少updateJournal/deleteJournal/updateTrip/deleteTrip方法 — 数据只读无法修改",
+        "completedAt":  "2026-03-27 22:07:35"
+    },
+    {
+        "id":  "miniprogram-fix-list-pages-missing-error-state",
+        "name":  "小程序圣地/祖庭列表页缺少error状态显示 — 网络失败后用户只看到空白无法重试",
+        "completedAt":  "2026-03-27 22:07:36"
+    },
+    {
+        "id":  "web-fix-i18n-detail-page-metadata",
+        "name":  "Web 6个详情页metadata中文硬编码 — 国际搜索引擎SEO标题/描述无效",
+        "completedAt":  "2026-03-27 22:08:02"
+    },
+    {
+        "id":  "miniprogram-fix-search-teaching-navigation",
+        "name":  "小程序搜索页teaching类型点击无反应 — getDetailUrl缺少teaching/case导航失败",
+        "completedAt":  "2026-03-28 09:16:36"
+    },
+    {
+        "id":  "web-fix-i18n-header-footer-remaining",
+        "name":  "Web Header/Footer组件仍有中文硬编码 — 全站导航和页脚国际用户看到中文",
+        "completedAt":  "2026-03-28 09:16:36"
+    },
+    {
+        "id":  "web-fix-payment-amount-display",
+        "name":  "Web支付结果页金额显示可能错误 — totalAmount未除以100直接展示",
+        "completedAt":  "2026-03-28 09:16:36"
+    },
+    {
+        "id":  "api-fix-patriarch-teaching-dto-validation",
+        "name":  "API Patriarch/Teaching DTO缺少@IsNotEmpty和@MaxLength — 可提交空或超长内容",
+        "completedAt":  "2026-03-28 09:16:36"
+    },
+    {
+        "id":  "web-fix-console-output-sentry-webvitals",
+        "name":  "Web生产代码4处console输出 — 泄露Sentry初始化和Web Vitals内部信息",
+        "completedAt":  "2026-03-28 09:16:36"
+    },
+    {
+        "id":  "mobile-fix-detail-pages-missing-retry",
+        "name":  "Mobile 4个详情页加载失败无重试按钮 — 用户只能退出再进入",
+        "completedAt":  "2026-03-28 09:17:32"
+    },
+    {
+        "id":  "web-fix-i18n-dataload-error-component",
+        "name":  "Web DataLoadError组件中文硬编码 — 所有使用该组件的页面错误信息为中文",
+        "completedAt":  "2026-03-28 09:17:32"
+    },
+    {
+        "id":  "miniprogram-fix-religion-detail-missing-retry",
+        "name":  "小程序宗教详情页错误UI缺少重试按钮 — 加载失败用户无法重试只能退出",
+        "completedAt":  "2026-03-28 09:17:32"
+    },
+    {
+        "id":  "miniprogram-add-pull-to-refresh-lists",
+        "name":  "小程序7个列表页缺少下拉刷新 — 用户只能退出再进入页面刷新数据",
+        "completedAt":  "2026-03-28 09:17:32"
+    },
+    {
+        "id":  "web-fix-i18n-error-pages-remaining",
+        "name":  "Web error.tsx和global-error.tsx仍有中文硬编码 — 国际用户看到中文错误页面",
+        "completedAt":  "2026-03-28 09:17:32"
+    },
+    {
+        "id":  "web-fix-i18n-notifications-page-v3",
+        "name":  "Web通知页面仍有30+处中文硬编码 — 前两次修复未彻底完成",
+        "completedAt":  "2026-03-28 09:37:28"
+    },
+    {
+        "id":  "web-fix-i18n-holysites-client-mode-labels",
+        "name":  "Web圣地列表页视图切换按钮中文硬编码 — \u0027列表模式\u0027/\u0027地图模式\u0027国际用户看不懂",
+        "completedAt":  "2026-03-28 09:37:28"
+    },
+    {
+        "id":  "mobile-fix-console-error-production",
+        "name":  "Mobile 12处console.error在生产环境输出 — 泄露API路径和内部错误信息",
+        "completedAt":  "2026-03-28 09:37:28"
+    },
+    {
+        "id":  "web-fix-i18n-onboarding-modal-v2",
+        "name":  "Web OnboardingModal引导弹窗仍有40+处中文硬编码 — 新用户首次体验完全中文",
+        "completedAt":  "2026-03-28 09:37:29"
+    },
+    {
+        "id":  "web-fix-i18n-header-footer-v3",
+        "name":  "Web Header/Footer组件仍有中文硬编码 — 全站导航对国际用户不可用",
+        "completedAt":  "2026-03-28 09:37:29"
+    },
+    {
+        "id":  "admin-fix-console-log-sentry",
+        "name":  "Admin sentry.ts生产环境console.log输出 — 泄露Sentry初始化状态",
+        "completedAt":  "2026-03-28 09:38:14"
+    },
+    {
+        "id":  "web-fix-journals-mood-chinese-keys-i18n",
+        "name":  "Web日志页面mood映射和选项仍使用中文字符串 — 国际用户心情标签不可用",
+        "completedAt":  "2026-03-28 09:38:14"
+    },
+    {
+        "id":  "miniprogram-fix-holysites-seals-journals-list-missing-retry",
+        "name":  "小程序3个列表页错误状态缺少重试按钮 — 加载失败用户无法重试",
+        "completedAt":  "2026-03-28 09:38:14"
+    },
+    {
+        "id":  "mobile-fix-chat-hardcoded-suggestions",
+        "name":  "Mobile聊天页DEFAULT_SUGGESTIONS硬编码中文 — 国际用户看到中文建议且忽略Admin配置",
+        "completedAt":  "2026-03-28 10:05:26"
+    },
+    {
+        "id":  "api-implement-favorites-module",
+        "name":  "API收藏模块标记已完成但实际未实现 — Prisma无Favorite模型、无模块代码、无路由",
+        "completedAt":  "2026-03-28 10:05:26"
+    },
+    {
+        "id":  "api-fix-prisma-missing-indexes",
+        "name":  "Prisma JournalEntry缺少isPublic复合索引 — 公开日志列表查询全表扫描性能差",
+        "completedAt":  "2026-03-28 10:05:26"
+    },
+    {
+        "id":  "web-add-favorites-page",
+        "name":  "Web缺少收藏页面 — 后端收藏模块实现后前端无法使用收藏功能",
+        "completedAt":  "2026-03-28 10:05:26"
+    },
+    {
+        "id":  "api-fix-holy-site-dto-missing-validation",
+        "name":  "API圣地DTO缺少@IsNotEmpty和@MaxLength — 可提交空名称或超长描述导致数据污染/DoS",
+        "completedAt":  "2026-03-28 10:05:26"
+    },
+    {
+        "id":  "web-fix-list-pages-missing-empty-states",
+        "name":  "Web 6个列表页筛选后无结果时显示空白 — 用户以为页面坏了",
+        "completedAt":  "2026-03-28 10:06:12"
+    },
+    {
+        "id":  "web-fix-filter-buttons-missing-aria",
+        "name":  "Web FilterBar和Tab按钮缺少ARIA属性 — 屏幕阅读器用户无法理解筛选状态",
+        "completedAt":  "2026-03-28 10:06:12"
+    },
+    {
+        "id":  "admin-fix-holysites-missing-soundeffect-field",
+        "name":  "Admin圣地管理表单缺少soundEffect字段 — 环境音效无法通过UI配置",
+        "completedAt":  "2026-03-28 10:06:12"
+    },
+    {
+        "id":  "api-fix-xiaohong-any-types",
+        "name":  "API小鸿模块3处any类型 — Controller的req和Service的类型断言违反R-01",
+        "completedAt":  "2026-03-28 10:22:22"
+    },
+    {
+        "id":  "api-fix-holysite-dto-missing-validation",
+        "name":  "API圣地DTO缺少@IsNotEmpty和@MaxLength校验 — 可提交空名称或无限长字符串",
+        "completedAt":  "2026-03-28 10:22:22"
+    },
+    {
+        "id":  "api-fix-temple-patriarch-teaching-dto-missing-validation",
+        "name":  "API祖庭/祖师/祖训DTO缺少@IsNotEmpty和@MaxLength校验 — 三个模块同类问题",
+        "completedAt":  "2026-03-28 10:22:22"
+    },
+    {
+        "id":  "miniprogram-fix-error-state-boolean-to-string",
+        "name":  "小程序3个列表页error用boolean类型 — 无法显示具体错误信息给用户",
+        "completedAt":  "2026-03-28 10:22:22"
+    },
+    {
+        "id":  "miniprogram-add-trip-create-page",
+        "name":  "小程序缺少行程创建页面 — Web和Mobile都有但小程序用户无法创建行程",
+        "completedAt":  "2026-03-28 10:22:22"
+    },
+    {
+        "id":  "web-fix-remaining-metadata-chinese-hardcoded",
+        "name":  "Web多个页面metadata/SEO标题仍有中文硬编码 — 国际搜索引擎SEO失效",
+        "completedAt":  "2026-03-28 10:23:18"
+    },
+    {
+        "id":  "web-fix-profile-responsive-grid",
+        "name":  "Web个人中心/日志创建/行程创建页面grid布局缺少响应式断点 — 移动端溢出",
+        "completedAt":  "2026-03-28 10:23:18"
+    },
+    {
+        "id":  "mobile-fix-chat-inline-fetch-remaining",
+        "name":  "Mobile聊天页和auth-context仍有4+处直接fetch绕过api.ts — API调用分散不一致",
+        "completedAt":  "2026-03-28 10:23:18"
+    },
+    {
+        "id":  "admin-fix-aiconfig-any-type-and-hardcoded-paths",
+        "name":  "Admin AI配置页面使用as any类型断言且模型路径硬编码 — 违反R-01和可维护性",
+        "completedAt":  "2026-03-28 10:23:18"
+    },
+    {
+        "id":  "mobile-fix-images-no-error-fallback",
+        "name":  "Mobile图片组件无onError回退 — 图片加载失败显示空白",
+        "completedAt":  "2026-03-28 10:39:40"
+    },
+    {
+        "id":  "miniprogram-fix-trips-page-missing-error-retry",
+        "name":  "小程序行程列表页缺少错误状态和重试UI — 加载失败显示空白",
+        "completedAt":  "2026-03-28 10:39:40"
+    },
+    {
+        "id":  "api-fix-controllers-missing-useguards",
+        "name":  "API 6个Controller缺少@UseGuards装饰器 — @Roles()无实际鉴权效果",
+        "completedAt":  "2026-03-28 10:39:40"
+    },
+    {
+        "id":  "web-fix-i18n-profile-page-remaining",
+        "name":  "Web个人中心页面仍有中文硬编码 — 编辑表单标签/按钮未国际化",
+        "completedAt":  "2026-03-28 10:39:40"
+    },
+    {
+        "id":  "api-fix-prisma-ondelete-cascade-critical",
+        "name":  "Prisma Schema 24个外键关系缺少onDelete策略 — 删除父记录产生孤儿数据",
+        "completedAt":  "2026-03-28 10:39:40"
+    },
+    {
+        "id":  "admin-fix-aiconfig-stats-empty-shell",
+        "name":  "Admin AI配置页StatsTab是空壳 — 只显示硬编码零值违反HH-V02",
+        "completedAt":  "2026-03-28 10:40:15"
+    },
+    {
+        "id":  "mobile-add-pull-to-refresh-pages",
+        "name":  "Mobile 5个页面缺少下拉刷新 — 数据过期用户只能退出重进",
+        "completedAt":  "2026-03-28 10:40:15"
+    },
+    {
+        "id":  "api-fix-remaining-dto-maxlength-patriarch-teaching-temple",
+        "name":  "祖师/祖训/祖庭DTO的长文本字段缺少@MaxLength — 可提交无限长内容DoS",
+        "completedAt":  "2026-03-28 11:07:39"
+    },
+    {
+        "id":  "api-fix-auth-dto-target-maxlength",
+        "name":  "认证DTO的target字段缺少@MaxLength — 发送验证码端点可接收无限长字符串",
+        "completedAt":  "2026-03-28 11:07:39"
+    },
+    {
+        "id":  "admin-fix-aiconfig-hardcoded-model-paths",
+        "name":  "Admin AI配置页面硬编码服务器文件系统路径 — 前端暴露GPU服务器内部路径",
+        "completedAt":  "2026-03-28 11:07:39"
+    },
+    {
+        "id":  "api-fix-aiconfig-findmany-no-take",
+        "name":  "AI配置Service的findMany缺少take限制 — 违反R-64防OOM铁律",
+        "completedAt":  "2026-03-28 11:07:39"
+    },
+    {
+        "id":  "mobile-fix-chat-inline-fetch-regression",
+        "name":  "Mobile聊天页仍直接fetch绕过api.ts — 之前修复未覆盖suggestions和chat调用",
+        "completedAt":  "2026-03-28 11:07:39"
+    },
+    {
+        "id":  "admin-fix-coupons-clientside-filter-overflow",
+        "name":  "Admin优惠券页面客户端筛选限制100条 — 超过100条的优惠券筛选时静默丢失",
+        "completedAt":  "2026-03-28 11:08:35"
+    },
+    {
+        "id":  "miniprogram-fix-nine-pages-error-display",
+        "name":  "小程序9个页面API错误静默吞掉 — 用户看到空白/冻结UI无法重试",
+        "completedAt":  "2026-03-28 11:08:35"
+    },
+    {
+        "id":  "miniprogram-fix-detail-pages-error-display",
+        "name":  "小程序祖师/祖训详情页+印列表+地图页API错误不显示 — 网络失败用户无感知",
+        "completedAt":  "2026-03-28 11:08:35"
+    },
+    {
+        "id":  "web-fix-error-page-i18n-hardcoded",
+        "name":  "Web错误页面error.tsx仍有4处中文硬编码 — 国际用户遇错看到中文",
+        "completedAt":  "2026-03-28 11:08:35"
     }
 ]
