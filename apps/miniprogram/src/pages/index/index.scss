@@ -1,143 +1,338 @@
 .index-page {
   min-height: 100vh;
   background-color: #F5F5F5;
-  padding: 0 32rpx;
 }
 
-/* Hero Section */
+/* ── 1. Hero ── */
 .hero {
-  position: relative;
+  background: linear-gradient(135deg, #0066FF, #003D99);
+  padding: 80rpx 32rpx 40rpx;
   text-align: center;
-  padding: 80rpx 20rpx 48rpx;
-  overflow: hidden;
-
-  &__glow {
-    position: absolute;
-    top: -60rpx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400rpx;
-    height: 400rpx;
-    background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
 
   &__title {
     display: block;
-    font-size: 56rpx;
+    font-size: 48rpx;
     font-weight: 800;
-    color: #0066FF;
-    letter-spacing: 4rpx;
-    margin-bottom: 12rpx;
-    position: relative;
+    color: #FFFFFF;
+    letter-spacing: 2rpx;
+    margin-bottom: 8rpx;
   }
 
   &__subtitle {
     display: block;
     font-size: 26rpx;
-    color: #6B7280;
-    letter-spacing: 2rpx;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &__tags {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    margin-top: 24rpx;
+  }
+
+  &__tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 22rpx;
+    padding: 6rpx 18rpx;
+    border-radius: 999rpx;
+    margin-right: 12rpx;
+  }
+
+  &__trust {
+    display: block;
+    font-size: 20rpx;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 20rpx;
+    text-align: center;
   }
 }
 
-/* Search Entry */
-.search-entry {
-  display: flex;
-  align-items: center;
+/* ── Search Card ── */
+.search-card {
   background: #FFFFFF;
-  border-radius: 40rpx;
-  padding: 20rpx 28rpx;
-  margin-bottom: 16rpx;
-  border: 1rpx solid rgba(107, 114, 128, 0.15);
+  border-radius: 24rpx;
+  margin-top: 32rpx;
+  padding: 20rpx 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 
-  &--hover {
-    opacity: 0.85;
-    border-color: rgba(0, 102, 255, 0.3);
+  &__tabs {
+    display: flex;
+    gap: 8rpx;
+    margin-bottom: 16rpx;
   }
 
-  &__icon {
+  &__tab {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6rpx;
+    padding: 10rpx 0;
+    border-radius: 12rpx;
+    background: #F9FAFB;
+  }
+
+  &__tab--active {
+    background: #EFF6FF;
+  }
+
+  &__tab-icon {
+    font-size: 24rpx;
+  }
+
+  &__tab-text {
+    font-size: 22rpx;
+    color: #9CA3AF;
+
+    &--active {
+      color: #0066FF;
+      font-weight: 600;
+    }
+  }
+
+  &__input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #F9FAFB;
+    border-radius: 32rpx;
+    padding: 16rpx 24rpx;
+    border: 1rpx solid #E5E7EB;
+  }
+
+  &__input-icon {
     font-size: 28rpx;
     margin-right: 12rpx;
-    flex-shrink: 0;
   }
 
-  &__text {
-    font-size: 26rpx;
+  &__input-text {
+    font-size: 24rpx;
     color: #9CA3AF;
   }
 }
 
-/* Hot Tags */
-.tags-scroll {
-  display: flex;
-  flex-direction: row;
-  white-space: nowrap;
-  margin-bottom: 24rpx;
-}
-
-.tag-chip {
-  display: inline-block;
-  background: rgba(0, 102, 255, 0.08);
-  color: #0066FF;
-  font-size: 24rpx;
-  padding: 8rpx 20rpx;
-  border-radius: 999rpx;
-  border: 1rpx solid rgba(0, 102, 255, 0.2);
-  margin-right: 12rpx;
-}
-
-/* Category Grid */
-.category-grid {
+/* ── 2. Category Card ── */
+.category-card {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 16rpx;
-}
+  background: #FFFFFF;
+  margin: -16rpx 32rpx 0;
+  border-radius: 24rpx;
+  padding: 20rpx 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 1;
 
-.category-item {
-  width: 25%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16rpx 0;
+  &__item {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12rpx 0;
 
-  &--hover {
-    opacity: 0.7;
+    &--hover {
+      opacity: 0.7;
+    }
   }
 
   &__icon {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 40rpx;
-    background: #F3F4F6;
-    border: 1rpx solid #E5E7EB;
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 36rpx;
+    background: #EFF6FF;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   &__emoji {
-    font-size: 40rpx;
+    font-size: 36rpx;
   }
 
   &__label {
     font-size: 22rpx;
     color: #6B7280;
-    margin-top: 8rpx;
+    margin-top: 6rpx;
   }
 }
 
-/* Route Scroll */
+/* ── Section Headers ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.section-more {
+  font-size: 24rpx;
+  color: #0066FF;
+}
+
+/* ── 3. Platform Highlights ── */
+.highlight-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 32rpx;
+  gap: 16rpx;
+}
+
+.highlight-card {
+  width: calc(50% - 8rpx);
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #E5E7EB;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+  &__icon {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 16rpx;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12rpx;
+  }
+
+  &__emoji {
+    font-size: 32rpx;
+  }
+
+  &__title {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 22rpx;
+    color: #9CA3AF;
+    margin-top: 4rpx;
+  }
+
+  &__cta {
+    display: block;
+    font-size: 22rpx;
+    color: #0066FF;
+    margin-top: 12rpx;
+  }
+}
+
+/* ── 4. Pilgrim Stories ── */
+.story-scroll {
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  padding: 0 32rpx;
+}
+
+.story-card {
+  display: inline-block;
+  width: 440rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #FFFFFF;
+  margin-right: 20rpx;
+  vertical-align: top;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+
+  &__image {
+    width: 100%;
+    height: 220rpx;
+
+    &--placeholder {
+      background: #EFF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__placeholder-icon {
+    font-size: 56rpx;
+  }
+
+  &__body {
+    padding: 20rpx;
+    white-space: normal;
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    margin-bottom: 10rpx;
+  }
+
+  &__avatar {
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 20rpx;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__avatar-text {
+    font-size: 20rpx;
+    color: #0066FF;
+    font-weight: 600;
+  }
+
+  &__author-name {
+    font-size: 20rpx;
+    color: #6B7280;
+  }
+
+  &__title {
+    display: block;
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__excerpt {
+    display: block;
+    font-size: 22rpx;
+    color: #9CA3AF;
+    margin-top: 6rpx;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ── 5. Route Cards ── */
 .route-scroll {
   display: flex;
   flex-direction: row;
   white-space: nowrap;
-  margin-bottom: 8rpx;
+  padding: 0 32rpx;
 }
 
 .route-card {
   display: inline-block;
-  width: 400rpx;
+  width: 440rpx;
   background: #FFFFFF;
   border-radius: 20rpx;
   border: 1rpx solid #E5E7EB;
@@ -145,17 +340,19 @@
   margin-right: 20rpx;
   vertical-align: top;
 
-  &--hover {
-    opacity: 0.85;
-  }
-
   &__image {
-    height: 200rpx;
-    background: rgba(0, 102, 255, 0.05);
+    height: 220rpx;
+    background: #EFF6FF;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   &__cover {
@@ -166,8 +363,8 @@
     left: 0;
   }
 
-  &__emoji {
-    font-size: 72rpx;
+  &__placeholder-icon {
+    font-size: 64rpx;
     opacity: 0.4;
   }
 
@@ -176,13 +373,28 @@
     top: 12rpx;
     left: 12rpx;
     background: rgba(0, 0, 0, 0.5);
-    padding: 4rpx 12rpx;
-    border-radius: 8rpx;
+    padding: 4rpx 14rpx;
+    border-radius: 10rpx;
   }
 
   &__badge-text {
-    color: #fff;
+    color: #FFFFFF;
     font-size: 20rpx;
+  }
+
+  &__rating {
+    position: absolute;
+    top: 12rpx;
+    right: 12rpx;
+    background: #0066FF;
+    padding: 4rpx 12rpx;
+    border-radius: 10rpx;
+  }
+
+  &__rating-text {
+    color: #FFFFFF;
+    font-size: 20rpx;
+    font-weight: 600;
   }
 
   &__body {
@@ -220,33 +432,24 @@
   &__price {
     font-size: 32rpx;
     font-weight: 700;
-    color: #ef4444;
+    color: #EF4444;
   }
 
-  &__rating {
-    font-size: 22rpx;
-    color: #0066FF;
+  &__price-unit {
+    font-size: 20rpx;
+    font-weight: 400;
+    color: #9CA3AF;
   }
 }
 
-/* AI Card */
-.ai-card {
+/* ── 6. AI Banner ── */
+.ai-banner {
   display: flex;
-  align-items: center;
-  background: rgba(0, 102, 255, 0.06);
-  border-radius: 20rpx;
-  border: 1rpx solid rgba(0, 102, 255, 0.15);
-  padding: 24rpx;
-  margin: 24rpx 0;
-
-  &--hover {
-    opacity: 0.8;
-  }
-
-  &__icon {
-    font-size: 48rpx;
-    margin-right: 20rpx;
-  }
+  background: linear-gradient(135deg, #0066FF, #0052CC);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 32rpx 32rpx;
+  overflow: hidden;
 
   &__content {
     flex: 1;
@@ -254,41 +457,215 @@
 
   &__title {
     display: block;
-    font-size: 30rpx;
+    font-size: 32rpx;
     font-weight: 700;
-    color: #0066FF;
+    color: #FFFFFF;
   }
 
   &__desc {
     display: block;
-    font-size: 24rpx;
-    color: #9CA3AF;
-    margin-top: 4rpx;
+    font-size: 22rpx;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 10rpx;
+    line-height: 1.5;
   }
 
-  &__arrow {
-    font-size: 28rpx;
+  &__btn {
+    display: inline-block;
+    background: #FFFFFF;
+    border-radius: 999rpx;
+    padding: 10rpx 24rpx;
+    margin-top: 20rpx;
+  }
+
+  &__btn-text {
+    font-size: 22rpx;
+    font-weight: 600;
     color: #0066FF;
+  }
+
+  &__chat {
+    width: 220rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10rpx;
+    padding-left: 16rpx;
+  }
+
+  &__bubble {
+    border-radius: 16rpx;
+    padding: 10rpx 14rpx;
+
+    &--user {
+      background: rgba(255, 255, 255, 0.2);
+      align-self: flex-end;
+    }
+
+    &--reply {
+      background: rgba(255, 255, 255, 0.9);
+      align-self: flex-start;
+    }
+  }
+
+  &__bubble-text {
+    font-size: 18rpx;
+    color: #FFFFFF;
+
+    &--reply {
+      font-size: 18rpx;
+      color: #0066FF;
+    }
   }
 }
 
-/* Stats Section */
-.stats {
+/* ── 7. Destinations Grid ── */
+.dest-grid {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #FFFFFF;
-  border-radius: 24rpx;
-  padding: 32rpx 16rpx;
-  margin: 24rpx 0;
-  border: 1rpx solid #E5E7EB;
+  flex-wrap: wrap;
+  padding: 0 32rpx;
+  gap: 16rpx;
+}
+
+.dest-card {
+  width: calc(50% - 8rpx);
+  height: 200rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  position: relative;
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &--placeholder {
+      background: #EFF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 48rpx 16rpx 12rpx;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  }
+
+  &__name {
+    display: block;
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  &__country {
+    display: block;
+    font-size: 20rpx;
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* ── 8. Recommendation Tabs ── */
+.rec-tabs {
+  display: flex;
+  padding: 0 32rpx;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
 
   &__item {
-    flex: 1;
+    padding: 10rpx 28rpx;
+    border-radius: 999rpx;
+    background: #F3F4F6;
+
+    &--active {
+      background: #0066FF;
+    }
+  }
+
+  &__text {
+    font-size: 24rpx;
+    color: #6B7280;
+
+    &--active {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+  }
+}
+
+.rec-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 32rpx;
+  gap: 16rpx;
+}
+
+.rec-card {
+  width: calc(33.33% - 12rpx);
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+  border: 1rpx solid #E5E7EB;
+
+  &__image {
+    width: 100%;
+    height: 140rpx;
+
+    &--placeholder {
+      background: #EFF6FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__name {
+    display: block;
+    font-size: 22rpx;
+    font-weight: 600;
+    color: #1A1A1A;
+    padding: 10rpx 10rpx 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__sub {
+    display: block;
+    font-size: 18rpx;
+    color: #9CA3AF;
+    padding: 2rpx 10rpx 10rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ── 9. Stats + CTA ── */
+.stats-card {
+  margin: 32rpx 32rpx 0;
+  background: #F8FAFC;
+  border-radius: 24rpx;
+  padding: 32rpx 16rpx;
+
+  &__grid {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  &__item {
     text-align: center;
   }
 
-  &__number {
+  &__value {
     display: block;
     font-size: 40rpx;
     font-weight: 800;
@@ -298,64 +675,33 @@
 
   &__label {
     display: block;
-    font-size: 22rpx;
+    font-size: 20rpx;
     color: #6B7280;
     margin-top: 4rpx;
   }
-
-  &__divider {
-    width: 1rpx;
-    height: 56rpx;
-    background: rgba(107, 114, 128, 0.2);
-  }
 }
 
-/* Section */
-.section {
-  margin-bottom: 32rpx;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24rpx;
-  }
-
-  &__more {
-    font-size: 24rpx;
-    color: #0066FF;
-    flex-shrink: 0;
-  }
-}
-
-.section-title {
-  font-size: 36rpx;
-  font-weight: 700;
-  color: #1A1A1A;
-}
-
-/* CTA Section */
 .cta-section {
   text-align: center;
   background: #FFFFFF;
   border-radius: 24rpx;
   padding: 48rpx 32rpx;
-  margin: 32rpx 0;
-  border: 1rpx solid rgba(0, 102, 255, 0.2);
+  margin: 24rpx 32rpx;
+  border: 1rpx solid #E5E7EB;
 
   &__title {
     display: block;
-    font-size: 40rpx;
-    font-weight: 800;
-    color: #0066FF;
-    margin-bottom: 12rpx;
+    font-size: 36rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 8rpx;
   }
 
   &__desc {
     display: block;
-    font-size: 26rpx;
+    font-size: 24rpx;
     color: #6B7280;
-    margin-bottom: 28rpx;
+    margin-bottom: 32rpx;
   }
 
   &__buttons {
@@ -384,17 +730,11 @@
     font-size: 28rpx;
     font-weight: 700;
     color: #FFFFFF;
-  }
 
-  &__btn-text--outline {
-    font-size: 28rpx;
-    font-weight: 700;
-    color: #0066FF;
+    &--outline {
+      font-size: 28rpx;
+      font-weight: 700;
+      color: #0066FF;
+    }
   }
-}
-
-/* Religion Grid */
-.religion-grid {
-  display: flex;
-  flex-direction: column;
 }

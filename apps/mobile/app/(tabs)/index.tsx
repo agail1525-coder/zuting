@@ -10,39 +10,82 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { api, Religion, Route } from '../../src/lib/api';
+import { api, Religion, Route, HolySite, Temple, Patriarch } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
-const CATEGORY_ICONS: { value: string; icon: string; label: string }[] = [
-  { value: 'ZEN', icon: '🏯', label: '禅宗' },
-  { value: 'BUDDHIST', icon: '☸', label: '佛教' },
-  { value: 'TAOIST', icon: '☯', label: '道教' },
-  { value: 'CHRISTIAN', icon: '⛪', label: '基督' },
-  { value: 'ISLAMIC', icon: '🕌', label: '丝路' },
-  { value: 'CROSS_CULTURAL', icon: '🌏', label: '跨文化' },
-  { value: 'HINDU', icon: '🕉', label: '印度教' },
-  { value: 'CULTURAL_HERITAGE', icon: '📖', label: '遗产' },
+/* ─── Constants ─── */
+
+const SEARCH_TABS = [
+  { key: 'sites', label: '圣地', icon: 'location' as const },
+  { key: 'routes', label: '路线', icon: 'map' as const },
+  { key: 'ai', label: 'AI', icon: 'chatbubble-ellipses' as const },
+  { key: 'wiki', label: '百科', icon: 'book' as const },
+];
+
+const CATEGORY_ICONS: { value: string; icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
+  { value: 'ZEN', icon: 'leaf', label: '禅宗' },
+  { value: 'BUDDHIST', icon: 'flower', label: '佛教' },
+  { value: 'TAOIST', icon: 'water', label: '道教' },
+  { value: 'CHRISTIAN', icon: 'home', label: '基督' },
+  { value: 'ISLAMIC', icon: 'moon', label: '丝路' },
+  { value: 'CROSS_CULTURAL', icon: 'globe', label: '跨文化' },
+  { value: 'HINDU', icon: 'sunny', label: '印度教' },
+  { value: 'CULTURAL_HERITAGE', icon: 'library', label: '遗产' },
 ];
 
 const HOT_TAGS = ['禅宗路线', '耶路撒冷', '丝绸之路', '朝圣之旅', '文化体验'];
+
+const PLATFORM_HIGHLIGHTS = [
+  { icon: 'earth' as const, title: '12大信仰', desc: '全球文化传统', route: '/religions/buddhism' },
+  { icon: 'location' as const, title: '60+圣地', desc: '精选目的地', route: '/(tabs)/holy-sites' },
+  { icon: 'chatbubble-ellipses' as const, title: 'AI规划师', desc: '智能路线定制', route: '/(tabs)/chat' },
+  { icon: 'journal' as const, title: '朝圣日志', desc: '记录旅途故事', route: '/journals' },
+];
+
+const PILGRIM_STORIES = [
+  { siteName: '南华寺', author: '慧明', title: '六祖故里三日记', excerpt: '在南华寺的晨钟暮鼓中感悟禅意...' },
+  { siteName: '耶路撒冷', author: 'David', title: '圣城朝圣之路', excerpt: '踏上这片古老的土地，感受千年信仰...' },
+  { siteName: '武当山', author: '清风', title: '问道武当七日行', excerpt: '太极发源地的山水与道法自然...' },
+  { siteName: '菩提伽耶', author: 'Ananda', title: '菩提树下的觉悟', excerpt: '佛陀成道之地，感受最纯粹的宁静...' },
+];
+
+const REC_TABS = [
+  { key: 'temples', label: '祖庭' },
+  { key: 'patriarchs', label: '祖师' },
+  { key: 'sites', label: '圣地' },
+];
+
+/* ─── Main Screen ─── */
 
 export default function HomeScreen() {
   const router = useRouter();
   const [featuredRoutes, setFeaturedRoutes] = useState<Route[]>([]);
   const [religions, setReligions] = useState<Religion[]>([]);
+  const [holySites, setHolySites] = useState<HolySite[]>([]);
+  const [temples, setTemples] = useState<Temple[]>([]);
+  const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeSearchTab, setActiveSearchTab] = useState('sites');
+  const [activeRecTab, setActiveRecTab] = useState('temples');
 
   const fetchData = useCallback(async () => {
     try {
-      const [routesData, religionsData] = await Promise.all([
+      const [routesData, religionsData, sitesData, templesData, patriarchsData] = await Promise.all([
         api.getFeaturedRoutes(6),
         api.getReligions(),
+        api.getHolySites(),
+        api.getTemples(),
+        api.getPatriarchs(),
       ]);
       setFeaturedRoutes(routesData);
       setReligions(religionsData);
+      setHolySites(sitesData);
+      setTemples(templesData);
+      setPatriarchs(patriarchsData);
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -62,619 +105,547 @@ export default function HomeScreen() {
 
   if (loading && featuredRoutes.length === 0) return <LoadingView />;
 
+  const handleSearchTabPress = (key: string) => {
+    setActiveSearchTab(key);
+    if (key === 'ai') router.push('/(tabs)/chat');
+    else router.push('/search');
+  };
+
+  const recData = activeRecTab === 'temples'
+    ? temples.slice(0, 6).map(t => ({ id: t.id, name: t.nameZh, sub: t.country, image: t.imageUrl }))
+    : activeRecTab === 'patriarchs'
+    ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.nameZh, sub: p.era, image: p.imageUrl }))
+    : holySites.slice(0, 6).map(s => ({ id: s.id, name: s.nameZh, sub: s.country, image: s.imageUrl }));
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={colors.gold}
-        />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.gold} />
       }
     >
-      {/* Hero Section */}
-      <View style={styles.hero}>
-        <Text style={styles.heroTitle}>走祖庭，看世界</Text>
-        <Text style={styles.heroSubtitle}>
-          探索全球文化圣地 · 深度旅行体验
-        </Text>
-      </View>
+      {/* ── 1. Hero + Tab Search ── */}
+      <LinearGradient colors={['#0066FF', '#003D99']} style={styles.hero}>
+        <Text style={styles.heroTitle}>帮助100万人走祖庭</Text>
+        <Text style={styles.heroSubtitle}>探索全球60+文化圣地 · 深度旅行体验</Text>
 
-      {/* Search Entry */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.searchBar,
-          pressed && styles.searchBarPressed,
-        ]}
-        onPress={() => router.push('/search')}
-      >
-        <Ionicons name="search" size={18} color={colors.textMuted} />
-        <Text style={styles.searchPlaceholder}>搜路线、查目的地...</Text>
-      </Pressable>
-
-      {/* Hot Tags */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.tagsContainer}
-      >
-        {HOT_TAGS.map((tag) => (
-          <Pressable
-            key={tag}
-            style={styles.tag}
-            onPress={() => router.push('/search')}
-          >
-            <Text style={styles.tagText}>#{tag}</Text>
+        {/* Tab Search Card */}
+        <View style={styles.searchCard}>
+          <View style={styles.searchTabs}>
+            {SEARCH_TABS.map(tab => (
+              <Pressable
+                key={tab.key}
+                style={[styles.searchTab, activeSearchTab === tab.key && styles.searchTabActive]}
+                onPress={() => handleSearchTabPress(tab.key)}
+              >
+                <Ionicons
+                  name={tab.icon}
+                  size={14}
+                  color={activeSearchTab === tab.key ? '#0066FF' : '#9CA3AF'}
+                />
+                <Text style={[styles.searchTabText, activeSearchTab === tab.key && styles.searchTabTextActive]}>
+                  {tab.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <Pressable style={styles.searchBar} onPress={() => router.push('/search')}>
+            <Ionicons name="search" size={16} color="#9CA3AF" />
+            <Text style={styles.searchPlaceholder}>搜路线、查目的地...</Text>
           </Pressable>
-        ))}
-      </ScrollView>
+        </View>
 
-      {/* Category Icons */}
-      <View style={styles.categoryGrid}>
-        {CATEGORY_ICONS.map((cat) => (
+        {/* Hot Tags */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.heroTags}>
+          {HOT_TAGS.map(tag => (
+            <Pressable key={tag} style={styles.heroTag} onPress={() => router.push('/search')}>
+              <Text style={styles.heroTagText}>#{tag}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        {/* Trust badge */}
+        <Text style={styles.trustText}>12大文化传统 · 60+圣地 · 专业路线规划 · AI旅行顾问</Text>
+      </LinearGradient>
+
+      {/* ── 2. Category Icons ── */}
+      <View style={styles.categoryCard}>
+        {CATEGORY_ICONS.map(cat => (
           <Pressable
             key={cat.value}
-            style={({ pressed }) => [
-              styles.categoryItem,
-              pressed && styles.categoryItemPressed,
-            ]}
-            onPress={() => router.push('/routes' as never)}
+            style={styles.categoryItem}
+            onPress={() => router.push('/search')}
           >
             <View style={styles.categoryIcon}>
-              <Text style={styles.categoryEmoji}>{cat.icon}</Text>
+              <Ionicons name={cat.icon} size={22} color="#0066FF" />
             </View>
             <Text style={styles.categoryLabel}>{cat.label}</Text>
           </Pressable>
         ))}
       </View>
 
-      {/* Featured Routes */}
+      {/* ── 3. Platform Highlights ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>为什么选择我们</Text>
+      </View>
+      <View style={styles.highlightGrid}>
+        {PLATFORM_HIGHLIGHTS.map(h => (
+          <Pressable
+            key={h.title}
+            style={styles.highlightCard}
+            onPress={() => router.push(h.route as never)}
+          >
+            <View style={styles.highlightIconBox}>
+              <Ionicons name={h.icon} size={20} color="#0066FF" />
+            </View>
+            <Text style={styles.highlightTitle}>{h.title}</Text>
+            <Text style={styles.highlightDesc}>{h.desc}</Text>
+            <Text style={styles.highlightCta}>了解更多 &gt;</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ── 4. Pilgrim Stories ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>朝圣故事</Text>
+        <Pressable onPress={() => router.push('/journals' as never)}>
+          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+        </Pressable>
+      </View>
+      <FlatList
+        data={PILGRIM_STORIES}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.storyList}
+        keyExtractor={item => item.siteName}
+        renderItem={({ item }) => {
+          const matchedSite = holySites.find(s => s.nameZh.includes(item.siteName));
+          return (
+            <Pressable style={styles.storyCard} onPress={() => router.push('/journals' as never)}>
+              {matchedSite?.imageUrl ? (
+                <Image source={{ uri: matchedSite.imageUrl }} style={styles.storyImage} resizeMode="cover" />
+              ) : (
+                <View style={[styles.storyImage, styles.storyImagePlaceholder]}>
+                  <Ionicons name="image" size={28} color="#CBD5E1" />
+                </View>
+              )}
+              <View style={styles.storyOverlay}>
+                <View style={styles.storyAuthorRow}>
+                  <View style={styles.storyAvatar}>
+                    <Text style={styles.storyAvatarText}>{item.author[0]}</Text>
+                  </View>
+                  <Text style={styles.storyAuthorName}>{item.author}</Text>
+                </View>
+                <Text style={styles.storyTitle} numberOfLines={1}>{item.title}</Text>
+                <Text style={styles.storyExcerpt} numberOfLines={2}>{item.excerpt}</Text>
+              </View>
+            </Pressable>
+          );
+        }}
+      />
+
+      {/* ── 5. Featured Routes ── */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>精选路线</Text>
         <Pressable onPress={() => router.push('/routes' as never)}>
           <Text style={styles.sectionMore}>查看全部 &gt;</Text>
         </Pressable>
       </View>
-
       <FlatList
         data={featuredRoutes}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.routeListContainer}
-        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.routeList}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <RouteCard route={item} onPress={() => router.push(`/routes/${item.slug}` as never)} />
         )}
       />
 
-      {/* AI Planner Card */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.aiCard,
-          pressed && styles.aiCardPressed,
-        ]}
-        onPress={() => router.push('/(tabs)/chat')}
-      >
-        <View style={styles.aiCardLeft}>
-          <View style={styles.aiAvatar}>
-            <Text style={styles.aiAvatarText}>🤖</Text>
+      {/* ── 6. AI Planner Banner ── */}
+      <Pressable onPress={() => router.push('/(tabs)/chat')} style={styles.aiBannerWrap}>
+        <LinearGradient colors={['#0066FF', '#0052CC']} style={styles.aiBanner}>
+          <View style={styles.aiBannerContent}>
+            <Text style={styles.aiBannerTitle}>AI旅行规划师</Text>
+            <Text style={styles.aiBannerDesc}>告诉我你想去哪里，我来帮你规划完美的朝圣路线</Text>
+            <View style={styles.aiBannerBtn}>
+              <Text style={styles.aiBannerBtnText}>开始对话</Text>
+              <Ionicons name="arrow-forward" size={14} color="#0066FF" />
+            </View>
           </View>
-          <View style={styles.aiCardContent}>
-            <Text style={styles.aiCardTitle}>AI旅行规划师</Text>
-            <Text style={styles.aiCardSubtitle}>
-              帮你定制专属文化旅行路线
-            </Text>
+          <View style={styles.aiBannerChat}>
+            <View style={styles.chatBubble}>
+              <Text style={styles.chatBubbleText}>推荐一条禅宗路线</Text>
+            </View>
+            <View style={[styles.chatBubble, styles.chatBubbleReply]}>
+              <Text style={styles.chatBubbleReplyText}>为您推荐「禅宗祖庭巡礼」5天4晚...</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.aiCardArrow}>
-          <Ionicons name="chatbubble-ellipses" size={20} color={colors.gold} />
-        </View>
+        </LinearGradient>
       </Pressable>
 
-      {/* Cultural Traditions */}
+      {/* ── 7. Popular Destinations ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>文化百科</Text>
-        <Pressable onPress={() => router.push('/religions/buddhism' as never)}>
-          <Text style={styles.sectionMore}>探索 &gt;</Text>
+        <Text style={styles.sectionTitle}>热门目的地</Text>
+        <Pressable onPress={() => router.push('/(tabs)/holy-sites' as never)}>
+          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
         </Pressable>
       </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.religionsContainer}
-      >
-        {religions.slice(0, 8).map((r) => (
+      <View style={styles.destGrid}>
+        {holySites.slice(0, 4).map(site => (
           <Pressable
-            key={r.id}
-            style={({ pressed }) => [
-              styles.religionChip,
-              pressed && { opacity: 0.7 },
-            ]}
-            onPress={() => router.push(`/religions/${r.slug}` as never)}
+            key={site.id}
+            style={styles.destCard}
+            onPress={() => router.push(`/holy-sites/${site.id}` as never)}
           >
-            <Text style={styles.religionEmoji}>{r.symbol}</Text>
-            <Text style={styles.religionName}>{r.nameZh}</Text>
+            {site.imageUrl ? (
+              <Image source={{ uri: site.imageUrl }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+            ) : (
+              <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' }]}>
+                <Ionicons name="image" size={24} color="#CBD5E1" />
+              </View>
+            )}
+            <LinearGradient colors={['transparent', 'rgba(0,0,0,0.6)']} style={styles.destOverlay}>
+              <Text style={styles.destName}>{site.nameZh}</Text>
+              <Text style={styles.destCountry}>{site.country}</Text>
+            </LinearGradient>
           </Pressable>
         ))}
-      </ScrollView>
-
-      {/* Stats Row */}
-      <View style={styles.statsRow}>
-        <StatItem value="12" label="文化传统" />
-        <StatDivider />
-        <StatItem value="60+" label="圣地" />
-        <StatDivider />
-        <StatItem value="10+" label="路线" />
-        <StatDivider />
-        <StatItem value="50000+" label="旅行者" />
       </View>
 
-      {/* Bottom CTA */}
+      {/* ── 8. Recommendation Tabs ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>热门推荐</Text>
+      </View>
+      <View style={styles.recTabs}>
+        {REC_TABS.map(tab => (
+          <Pressable
+            key={tab.key}
+            style={[styles.recTab, activeRecTab === tab.key && styles.recTabActive]}
+            onPress={() => setActiveRecTab(tab.key)}
+          >
+            <Text style={[styles.recTabText, activeRecTab === tab.key && styles.recTabTextActive]}>
+              {tab.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      <View style={styles.recGrid}>
+        {recData.map(item => (
+          <Pressable key={item.id} style={styles.recCard}>
+            {item.image ? (
+              <Image source={{ uri: item.image }} style={styles.recCardImage} resizeMode="cover" />
+            ) : (
+              <View style={[styles.recCardImage, { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' }]}>
+                <Ionicons name="image" size={20} color="#CBD5E1" />
+              </View>
+            )}
+            <Text style={styles.recCardName} numberOfLines={1}>{item.name}</Text>
+            <Text style={styles.recCardSub} numberOfLines={1}>{item.sub}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ── 9. Stats + CTA ── */}
+      <View style={styles.statsCard}>
+        <View style={styles.statsGrid}>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>12</Text>
+            <Text style={styles.statLabel}>文化传统</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>60+</Text>
+            <Text style={styles.statLabel}>圣地</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>27</Text>
+            <Text style={styles.statLabel}>祖庭</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>50000+</Text>
+            <Text style={styles.statLabel}>旅行者</Text>
+          </View>
+        </View>
+      </View>
+
       <View style={styles.ctaSection}>
         <Text style={styles.ctaTitle}>开启你的文化之旅</Text>
-        <Text style={styles.ctaSubtitle}>
-          精选深度路线，探访全球文化圣地
-        </Text>
+        <Text style={styles.ctaSubtitle}>精选深度路线，探访全球文化圣地</Text>
         <View style={styles.ctaButtons}>
           <Pressable
-            style={({ pressed }) => [
-              styles.ctaButton,
-              pressed && styles.ctaButtonPressed,
-            ]}
+            style={styles.ctaButton}
             onPress={() => router.push('/routes' as never)}
           >
-            <Ionicons name="compass" size={18} color="#FFFFFF" />
+            <Ionicons name="compass" size={16} color="#FFFFFF" />
             <Text style={styles.ctaButtonText}>浏览路线</Text>
           </Pressable>
           <Pressable
-            style={({ pressed }) => [
-              styles.ctaButtonOutline,
-              pressed && { opacity: 0.7 },
-            ]}
+            style={styles.ctaButtonOutline}
             onPress={() => router.push('/(tabs)/chat')}
           >
-            <Ionicons name="chatbubble-ellipses" size={18} color={colors.gold} />
+            <Ionicons name="chatbubble-ellipses" size={16} color="#0066FF" />
             <Text style={styles.ctaButtonOutlineText}>AI帮你规划</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>走祖庭，看世界</Text>
+        <Text style={styles.footerText}>帮助100万人走祖庭</Text>
       </View>
     </ScrollView>
   );
 }
 
+/* ─── Sub-components ─── */
+
 function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
   const price = (route.priceFrom / 100).toLocaleString();
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.routeCard,
-        pressed && { opacity: 0.9 },
-      ]}
-      onPress={onPress}
-    >
+    <Pressable style={styles.routeCard} onPress={onPress}>
       <View style={styles.routeCardImage}>
         {route.coverImage ? (
           <Image source={{ uri: route.coverImage }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
         ) : (
-          <Text style={styles.routeCardEmoji}>
-            {route.category === 'ZEN' ? '🏯' : route.category === 'BUDDHIST' ? '☸' : route.category === 'TAOIST' ? '☯' : route.category === 'CHRISTIAN' ? '⛪' : route.category === 'ISLAMIC' ? '🕌' : '🌏'}
-          </Text>
+          <View style={[StyleSheet.absoluteFillObject, { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' }]}>
+            <Ionicons name="map" size={32} color="#CBD5E1" />
+          </View>
         )}
-        <View style={styles.routeCardBadge}>
-          <Text style={styles.routeCardBadgeText}>{route.duration}天{route.nights}晚</Text>
+        <View style={styles.routeBadge}>
+          <Text style={styles.routeBadgeText}>{route.duration}天{route.nights}晚</Text>
         </View>
+        {route.rating && (
+          <View style={styles.routeRatingBadge}>
+            <Ionicons name="star" size={10} color="#FFFFFF" />
+            <Text style={styles.routeRatingText}>{route.rating.toFixed(1)}</Text>
+          </View>
+        )}
       </View>
       <View style={styles.routeCardBody}>
         <Text style={styles.routeCardTitle} numberOfLines={1}>{route.title}</Text>
         <Text style={styles.routeCardSubtitle} numberOfLines={1}>{route.subtitle}</Text>
         <View style={styles.routeCardFooter}>
-          <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>/人</Text></Text>
-          {route.rating && (
-            <Text style={styles.routeCardRating}>★ {route.rating.toFixed(1)}</Text>
-          )}
+          <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>/人起</Text></Text>
         </View>
       </View>
     </Pressable>
   );
 }
 
-function StatItem({ value, label }: { value: string; label: string }) {
-  return (
-    <View style={styles.statItem}>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </View>
-  );
-}
-
-function StatDivider() {
-  return <View style={styles.statDivider} />;
-}
+/* ─── Styles ─── */
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  content: { paddingBottom: spacing.xxl },
+
+  // Hero
+  hero: { paddingTop: 60, paddingBottom: 24, paddingHorizontal: spacing.md, alignItems: 'center' },
+  heroTitle: { fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: 1 },
+  heroSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 6, textAlign: 'center' },
+
+  // Search Card
+  searchCard: {
+    backgroundColor: '#FFFFFF', borderRadius: 16, marginTop: 20, width: '100%',
+    paddingVertical: 12, paddingHorizontal: 14,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4,
   },
-  content: {
-    paddingBottom: spacing.xxl,
+  searchTabs: { flexDirection: 'row', gap: 4, marginBottom: 10 },
+  searchTab: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 4, paddingVertical: 6, borderRadius: 8, backgroundColor: '#F9FAFB',
   },
-  hero: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.md,
-  },
-  heroTitle: {
-    fontSize: fontSize.hero,
-    fontWeight: '800',
-    color: colors.gold,
-    letterSpacing: 2,
-  },
-  heroSubtitle: {
-    fontSize: fontSize.md,
-    color: colors.textSecondary,
-    marginTop: spacing.sm,
-    textAlign: 'center',
-  },
+  searchTabActive: { backgroundColor: '#EFF6FF' },
+  searchTabText: { fontSize: 12, color: '#9CA3AF' },
+  searchTabTextActive: { color: '#0066FF', fontWeight: '600' },
   searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundCardSolid,
-    marginHorizontal: spacing.md,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingVertical: spacing.sm + 4,
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#F9FAFB', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 14,
+    borderWidth: 1, borderColor: '#E5E7EB',
   },
-  searchBarPressed: {
-    borderColor: colors.gold,
+  searchPlaceholder: { color: '#9CA3AF', fontSize: 13, flex: 1 },
+
+  // Hero Tags
+  heroTags: { paddingTop: 14, gap: 8 },
+  heroTag: { backgroundColor: 'rgba(255,255,255,0.15)', paddingHorizontal: 12, paddingVertical: 5, borderRadius: 999 },
+  heroTagText: { color: 'rgba(255,255,255,0.9)', fontSize: 12 },
+  trustText: { color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 12, textAlign: 'center' },
+
+  // Category Card
+  categoryCard: {
+    flexDirection: 'row', flexWrap: 'wrap', backgroundColor: '#FFFFFF',
+    marginHorizontal: spacing.md, marginTop: -12, borderRadius: 16,
+    paddingVertical: 12, paddingHorizontal: 8,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
-  searchPlaceholder: {
-    color: colors.textMuted,
-    fontSize: fontSize.md,
-    flex: 1,
-  },
-  tagsContainer: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    gap: spacing.sm,
-  },
-  tag: {
-    backgroundColor: 'rgba(0, 102, 255, 0.08)',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 102, 255, 0.15)',
-  },
-  tagText: {
-    color: colors.gold,
-    fontSize: fontSize.sm,
-  },
-  categoryGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.lg,
-  },
-  categoryItem: {
-    width: '25%',
-    alignItems: 'center',
-    paddingVertical: spacing.sm,
-  },
-  categoryItemPressed: {
-    opacity: 0.7,
-  },
+  categoryItem: { width: '25%', alignItems: 'center', paddingVertical: 8 },
   categoryIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.backgroundCardSolid,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    width: 44, height: 44, borderRadius: 22, backgroundColor: '#EFF6FF',
+    justifyContent: 'center', alignItems: 'center',
   },
-  categoryEmoji: {
-    fontSize: 22,
-  },
-  categoryLabel: {
-    color: colors.textSecondary,
-    fontSize: fontSize.xs,
-    marginTop: spacing.xs,
-  },
+  categoryLabel: { color: '#6B7280', fontSize: 11, marginTop: 4 },
+
+  // Section Header
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.md,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: spacing.md, paddingTop: 24, paddingBottom: 12,
   },
-  sectionTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: '700',
-    color: colors.textPrimary,
+  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
+  sectionMore: { fontSize: 12, color: '#0066FF' },
+
+  // Platform Highlights
+  highlightGrid: {
+    flexDirection: 'row', flexWrap: 'wrap',
+    paddingHorizontal: spacing.md, gap: 10,
   },
-  sectionMore: {
-    fontSize: fontSize.sm,
-    color: colors.gold,
+  highlightCard: {
+    width: '48%', backgroundColor: '#FFFFFF', borderRadius: 12,
+    padding: 14, borderWidth: 1, borderColor: '#E5E7EB',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1,
   },
-  routeListContainer: {
-    paddingHorizontal: spacing.md,
-    gap: spacing.md,
+  highlightIconBox: {
+    width: 36, height: 36, borderRadius: 10, backgroundColor: '#EFF6FF',
+    justifyContent: 'center', alignItems: 'center', marginBottom: 8,
   },
+  highlightTitle: { fontSize: 15, fontWeight: '700', color: '#1A1A1A' },
+  highlightDesc: { fontSize: 12, color: '#9CA3AF', marginTop: 2 },
+  highlightCta: { fontSize: 12, color: '#0066FF', marginTop: 8 },
+
+  // Pilgrim Stories
+  storyList: { paddingHorizontal: spacing.md, gap: 12 },
+  storyCard: {
+    width: 260, borderRadius: 12, overflow: 'hidden', backgroundColor: '#FFFFFF',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
+  },
+  storyImage: { width: '100%', height: 130 },
+  storyImagePlaceholder: { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' },
+  storyOverlay: { padding: 12 },
+  storyAuthorRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
+  storyAvatar: {
+    width: 24, height: 24, borderRadius: 12, backgroundColor: '#EFF6FF',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  storyAvatarText: { fontSize: 11, color: '#0066FF', fontWeight: '600' },
+  storyAuthorName: { fontSize: 11, color: '#6B7280' },
+  storyTitle: { fontSize: 14, fontWeight: '700', color: '#1A1A1A' },
+  storyExcerpt: { fontSize: 12, color: '#9CA3AF', marginTop: 4, lineHeight: 18 },
+
+  // Route Cards
+  routeList: { paddingHorizontal: spacing.md, gap: 12 },
   routeCard: {
-    width: 240,
-    backgroundColor: colors.backgroundCardSolid,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    width: 260, backgroundColor: '#FFFFFF', borderRadius: 12, overflow: 'hidden',
+    borderWidth: 1, borderColor: '#E5E7EB',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
-  routeCardImage: {
-    height: 120,
-    backgroundColor: 'rgba(0, 102, 255, 0.05)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  routeCardImage: { height: 130, backgroundColor: '#EFF6FF' },
+  routeBadge: {
+    position: 'absolute', top: 8, left: 8, backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6,
   },
-  routeCardEmoji: {
-    fontSize: 40,
-    opacity: 0.5,
+  routeBadgeText: { color: '#FFFFFF', fontSize: 10 },
+  routeRatingBadge: {
+    position: 'absolute', top: 8, right: 8, backgroundColor: '#0066FF',
+    flexDirection: 'row', alignItems: 'center', gap: 2,
+    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6,
   },
-  routeCardBadge: {
-    position: 'absolute',
-    top: spacing.sm,
-    left: spacing.sm,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: borderRadius.sm,
+  routeRatingText: { color: '#FFFFFF', fontSize: 10, fontWeight: '600' },
+  routeCardBody: { padding: 12 },
+  routeCardTitle: { fontSize: 15, fontWeight: '700', color: '#1A1A1A' },
+  routeCardSubtitle: { fontSize: 12, color: '#9CA3AF', marginTop: 2 },
+  routeCardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
+  routeCardPrice: { fontSize: 16, fontWeight: '700', color: '#EF4444' },
+  routeCardPriceUnit: { fontSize: 11, fontWeight: '400', color: '#9CA3AF' },
+
+  // AI Banner
+  aiBannerWrap: { marginHorizontal: spacing.md, marginTop: 24 },
+  aiBanner: { borderRadius: 16, padding: 20, flexDirection: 'row', overflow: 'hidden' },
+  aiBannerContent: { flex: 1 },
+  aiBannerTitle: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+  aiBannerDesc: { fontSize: 12, color: 'rgba(255,255,255,0.8)', marginTop: 6, lineHeight: 18 },
+  aiBannerBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 12,
+    backgroundColor: '#FFFFFF', alignSelf: 'flex-start',
+    paddingHorizontal: 14, paddingVertical: 6, borderRadius: 999,
   },
-  routeCardBadgeText: {
-    color: '#FFFFFF',
-    fontSize: fontSize.xs,
+  aiBannerBtnText: { fontSize: 12, fontWeight: '600', color: '#0066FF' },
+  aiBannerChat: { width: 120, justifyContent: 'center', gap: 6 },
+  chatBubble: {
+    backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 5,
+    alignSelf: 'flex-end',
   },
-  routeCardBody: {
-    padding: spacing.md,
+  chatBubbleText: { fontSize: 10, color: '#FFFFFF' },
+  chatBubbleReply: { backgroundColor: 'rgba(255,255,255,0.9)', alignSelf: 'flex-start' },
+  chatBubbleReplyText: { fontSize: 10, color: '#0066FF' },
+
+  // Destinations Grid
+  destGrid: {
+    flexDirection: 'row', flexWrap: 'wrap',
+    paddingHorizontal: spacing.md, gap: 10,
   },
-  routeCardTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '700',
-    color: colors.textPrimary,
+  destCard: {
+    width: '48%', height: 120, borderRadius: 12, overflow: 'hidden',
+    backgroundColor: '#EFF6FF',
   },
-  routeCardSubtitle: {
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-    marginTop: 2,
+  destOverlay: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    paddingHorizontal: 10, paddingBottom: 8, paddingTop: 30,
   },
-  routeCardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: spacing.sm,
+  destName: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
+  destCountry: { fontSize: 11, color: 'rgba(255,255,255,0.8)' },
+
+  // Recommendation Tabs
+  recTabs: {
+    flexDirection: 'row', paddingHorizontal: spacing.md, gap: 8, marginBottom: 12,
   },
-  routeCardPrice: {
-    fontSize: fontSize.lg,
-    fontWeight: '700',
-    color: colors.gold,
+  recTab: {
+    paddingHorizontal: 16, paddingVertical: 6, borderRadius: 999,
+    backgroundColor: '#F3F4F6',
   },
-  routeCardPriceUnit: {
-    fontSize: fontSize.xs,
-    fontWeight: '400',
-    color: colors.textMuted,
+  recTabActive: { backgroundColor: '#0066FF' },
+  recTabText: { fontSize: 13, color: '#6B7280' },
+  recTabTextActive: { color: '#FFFFFF', fontWeight: '600' },
+  recGrid: {
+    flexDirection: 'row', flexWrap: 'wrap',
+    paddingHorizontal: spacing.md, gap: 10,
   },
-  routeCardRating: {
-    fontSize: fontSize.sm,
-    color: '#F59E0B',
+  recCard: {
+    width: '31%', backgroundColor: '#FFFFFF', borderRadius: 10, overflow: 'hidden',
+    borderWidth: 1, borderColor: '#E5E7EB',
   },
-  aiCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(0, 102, 255, 0.05)',
-    marginHorizontal: spacing.md,
-    marginTop: spacing.lg,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 102, 255, 0.15)',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
+  recCardImage: { width: '100%', height: 80 },
+  recCardName: { fontSize: 12, fontWeight: '600', color: '#1A1A1A', paddingHorizontal: 6, paddingTop: 6 },
+  recCardSub: { fontSize: 10, color: '#9CA3AF', paddingHorizontal: 6, paddingBottom: 6 },
+
+  // Stats
+  statsCard: {
+    marginHorizontal: spacing.md, marginTop: 24, backgroundColor: '#F8FAFC',
+    borderRadius: 16, padding: 20,
   },
-  aiCardPressed: {
-    opacity: 0.8,
-  },
-  aiCardLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    flex: 1,
-  },
-  aiAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0, 102, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  aiAvatarText: {
-    fontSize: 22,
-  },
-  aiCardContent: {
-    flex: 1,
-  },
-  aiCardTitle: {
-    color: colors.gold,
-    fontSize: fontSize.lg,
-    fontWeight: '700',
-  },
-  aiCardSubtitle: {
-    color: colors.textMuted,
-    fontSize: fontSize.sm,
-    marginTop: 2,
-  },
-  aiCardArrow: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0, 102, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  religionsContainer: {
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
-  },
-  religionChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundCardSolid,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    gap: spacing.xs,
-  },
-  religionEmoji: {
-    fontSize: 16,
-  },
-  religionName: {
-    color: colors.textSecondary,
-    fontSize: fontSize.sm,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundCardSolid,
-    marginHorizontal: spacing.md,
-    marginTop: spacing.xl,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: fontSize.xl,
-    fontWeight: '800',
-    color: colors.gold,
-  },
-  statLabel: {
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  statDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: '#E5E7EB',
-  },
+  statsGrid: { flexDirection: 'row', justifyContent: 'space-around' },
+  statItem: { alignItems: 'center' },
+  statValue: { fontSize: 22, fontWeight: '800', color: '#0066FF' },
+  statLabel: { fontSize: 11, color: '#6B7280', marginTop: 2 },
+
+  // CTA
   ctaSection: {
-    alignItems: 'center',
-    marginHorizontal: spacing.md,
-    marginTop: spacing.xl,
-    backgroundColor: colors.backgroundCardSolid,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    alignItems: 'center', marginHorizontal: spacing.md, marginTop: 20,
+    backgroundColor: '#FFFFFF', borderRadius: 16, paddingVertical: 28, paddingHorizontal: spacing.md,
+    borderWidth: 1, borderColor: '#E5E7EB',
   },
-  ctaTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  ctaSubtitle: {
-    fontSize: fontSize.md,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginTop: spacing.xs,
-    marginBottom: spacing.lg,
-  },
-  ctaButtons: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
+  ctaTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
+  ctaSubtitle: { fontSize: 13, color: '#6B7280', textAlign: 'center', marginTop: 4, marginBottom: 16 },
+  ctaButtons: { flexDirection: 'row', gap: 12 },
   ctaButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.gold,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 4,
-    borderRadius: borderRadius.full,
-    gap: spacing.sm,
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    backgroundColor: '#0066FF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
   },
-  ctaButtonPressed: {
-    backgroundColor: colors.goldDark,
-  },
-  ctaButtonText: {
-    color: '#FFFFFF',
-    fontSize: fontSize.md,
-    fontWeight: '700',
-  },
+  ctaButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
   ctaButtonOutline: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.gold,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 4,
-    borderRadius: borderRadius.full,
-    gap: spacing.sm,
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    borderWidth: 1, borderColor: '#0066FF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
   },
-  ctaButtonOutlineText: {
-    color: colors.gold,
-    fontSize: fontSize.md,
-    fontWeight: '700',
-  },
-  footer: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-  },
-  footerText: {
-    color: colors.textMuted,
-    fontSize: fontSize.md,
-  },
+  ctaButtonOutlineText: { color: '#0066FF', fontSize: 14, fontWeight: '600' },
+
+  // Footer
+  footer: { alignItems: 'center', paddingVertical: 24 },
+  footerText: { color: '#9CA3AF', fontSize: 13 },
 });
