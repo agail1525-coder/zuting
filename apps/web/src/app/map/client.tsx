@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import WorldMapDynamic from "@/components/WorldMapDynamic";
+import OptimizedImage from "@/components/OptimizedImage";
 import type { Religion, HolySite } from "@/lib/api";
 import DataLoadError from "@/components/DataLoadError";
 import { useTranslation } from "@/lib/i18n";
@@ -139,7 +140,14 @@ export default function MapClient({ religions, holySites, error }: Props) {
                   {t("map.close")}
                 </button>
               </div>
-              <div className="card-glow rounded-xl bg-temple-800/50 p-4">
+              <div className="card-glow rounded-xl bg-temple-800/50 overflow-hidden">
+                {selectedSite.imageUrl && (
+                  <div className="relative h-32 w-full">
+                    <OptimizedImage src={selectedSite.imageUrl} alt={selectedSite.name} fill className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-temple-800/80" />
+                  </div>
+                )}
+                <div className="p-4">
                 <h4
                   className="text-lg font-serif font-bold mb-1"
                   style={{
@@ -170,6 +178,7 @@ export default function MapClient({ religions, holySites, error }: Props) {
                 >
                   {t("map.viewDetail")} &rarr;
                 </Link>
+                </div>
               </div>
             </div>
           )}
