@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
+import ReviewSection from "@/components/ReviewSection";
 import type { HolySite } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -156,6 +157,9 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             </div>
           </div>
         )}
+
+        {/* Reviews Section */}
+        <ReviewSection targetType="holy-site" targetId={site.id} />
 
         {/* CTA */}
         <div className="text-center mt-10">

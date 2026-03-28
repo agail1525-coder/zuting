@@ -18,26 +18,36 @@ export default function FilterBar({ religions, selectedId, onChange }: FilterBar
         onClick={() => onChange(null)}
         className={`px-4 py-2 rounded-full text-sm transition-all ${
           selectedId === null
-            ? "bg-gold text-temple-900 font-semibold"
-            : "bg-temple-800 text-temple-300 hover:bg-temple-700 border border-temple-600"
+            ? "bg-gold text-temple-900 font-semibold shadow-lg shadow-gold/20"
+            : "bg-temple-800/60 text-temple-300 hover:bg-temple-700/60 border border-temple-600/50"
         }`}
       >
         {t("filter.all")}
       </button>
-      {religions.map((r) => (
-        <button
-          key={r.id}
-          onClick={() => onChange(r.id)}
-          className={`px-4 py-2 rounded-full text-sm transition-all ${
-            selectedId === r.id
-              ? "bg-gold text-temple-900 font-semibold"
-              : "bg-temple-800 text-temple-300 hover:bg-temple-700 border border-temple-600"
-          }`}
-        >
-          {r.symbol && <span className="mr-1">{r.symbol}</span>}
-          {r.name}
-        </button>
-      ))}
+      {religions.map((r) => {
+        const isActive = selectedId === r.id;
+        const color = r.color ?? "#D4A855";
+        return (
+          <button
+            key={r.id}
+            onClick={() => onChange(r.id)}
+            className={`px-4 py-2 rounded-full text-sm transition-all inline-flex items-center gap-1.5 ${
+              isActive
+                ? "font-semibold shadow-lg border"
+                : "bg-temple-800/60 text-temple-300 hover:bg-temple-700/60 border border-temple-600/50"
+            }`}
+            style={isActive ? {
+              backgroundColor: `${color}25`,
+              color: color,
+              borderColor: `${color}50`,
+              boxShadow: `0 4px 14px ${color}15`,
+            } : undefined}
+          >
+            {r.symbol && <span>{r.symbol}</span>}
+            {r.name}
+          </button>
+        );
+      })}
     </div>
   );
 }

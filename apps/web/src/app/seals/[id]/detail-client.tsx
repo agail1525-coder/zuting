@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 import type { Seal } from "@/lib/api";
 
 const seriesDotColors: Record<string, string> = {
@@ -120,6 +121,8 @@ export default function SealDetailClient({ seal, prev, next }: Props) {
           )}
         </div>
       </div>
+
+      <MobileNav />
     </div>
   );
 }

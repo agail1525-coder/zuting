@@ -1,4 +1,5 @@
 import { PrismaClient, SealSeries, RouteCategory, RouteDifficulty, RouteStatus } from '@prisma/client';
+import { HOLY_SITE_IMAGES, TEMPLE_IMAGES, PATRIARCH_IMAGES, ROUTE_IMAGES } from './seed-images';
 
 const prisma = new PrismaClient();
 
@@ -1668,6 +1669,7 @@ async function main() {
         utcOffset: site.utcOffset,
         description: site.description,
         soundEffect: site.soundEffect,
+        imageUrl: HOLY_SITE_IMAGES[site.name] || null,
         religionId: religionMap[site.religionSlug],
       },
     });
@@ -1685,6 +1687,7 @@ async function main() {
         country: t.country,
         foundingDate: t.foundingDate,
         description: t.description,
+        imageUrl: TEMPLE_IMAGES[t.name] || null,
         latitude: t.latitude,
         longitude: t.longitude,
         religionId: religionMap[t.religionSlug],
@@ -1705,6 +1708,7 @@ async function main() {
         title: p.title,
         biography: p.biography,
         coreTeaching: p.coreTeaching,
+        imageUrl: PATRIARCH_IMAGES[p.name] || null,
         religionId: religionMap[p.religionSlug],
       },
     });
@@ -1779,6 +1783,8 @@ async function main() {
         tips: r.tips,
         season: r.season,
         groupSize: r.groupSize,
+        coverImage: ROUTE_IMAGES[r.slug]?.cover || null,
+        images: ROUTE_IMAGES[r.slug]?.images || [],
         status: RouteStatus.PUBLISHED,
         religionId: r.religionSlug ? religionMap[r.religionSlug] : null,
       },

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title,
         description,
-        images: patriarch.imageUrl ? [patriarch.imageUrl] : ["/og-default.jpg"],
+        images: patriarch.imageUrl ? [patriarch.imageUrl] : ["/og-default.svg"],
       },
     };
   } catch {

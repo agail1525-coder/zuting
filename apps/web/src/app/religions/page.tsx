@@ -1,5 +1,6 @@
 import { fetchReligions, type Religion } from "@/lib/api";
 import ReligionCard from "@/components/ReligionCard";
+import MobileNav from "@/components/MobileNav";
 import DataLoadError from "@/components/DataLoadError";
 
 export const dynamic = "force-dynamic";
@@ -29,23 +30,27 @@ export default async function ReligionsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
-          十二大信仰
-        </h1>
-        <p className="text-temple-400 text-lg">Twelve Great Faiths of the World</p>
+    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            十二大信仰
+          </h1>
+          <p className="text-temple-400 text-lg">Twelve Great Faiths of the World</p>
+        </div>
+
+        {error ? (
+          <DataLoadError />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            {religions.map((r) => (
+              <ReligionCard key={r.id} religion={r} />
+            ))}
+          </div>
+        )}
       </div>
 
-      {error ? (
-        <DataLoadError />
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {religions.map((r) => (
-            <ReligionCard key={r.id} religion={r} />
-          ))}
-        </div>
-      )}
+      <MobileNav />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title,
         description,
-        images: temple.imageUrl ? [temple.imageUrl] : ["/og-default.jpg"],
+        images: temple.imageUrl ? [temple.imageUrl] : ["/og-default.svg"],
       },
     };
   } catch {
