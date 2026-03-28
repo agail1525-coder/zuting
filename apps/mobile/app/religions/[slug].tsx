@@ -48,7 +48,7 @@ export default function ReligionDetailScreen() {
         const rel = religions[0];
         if (!rel) return;
         setReligion(rel);
-        navigation.setOptions({ title: rel.nameZh });
+        navigation.setOptions({ title: (rel as any).name ?? rel.nameZh });
 
         const [sitesData, templesData, patriarchsData, teachingsData] =
           await Promise.all([
@@ -85,7 +85,7 @@ export default function ReligionDetailScreen() {
       {/* Hero */}
       <View style={[styles.hero, { backgroundColor: gradient[0] }]}>
         <Text style={styles.heroEmoji}>{emoji}</Text>
-        <Text style={styles.heroNameZh}>{religion.nameZh}</Text>
+        <Text style={styles.heroNameZh}>{(religion as any).name ?? religion.nameZh}</Text>
         <Text style={styles.heroNameEn}>{religion.nameEn}</Text>
       </View>
 
@@ -106,7 +106,7 @@ export default function ReligionDetailScreen() {
             >
               <Ionicons name="location" size={18} color={colors.gold} />
               <View style={styles.listItemContent}>
-                <Text style={styles.listItemTitle}>{site.nameZh}</Text>
+                <Text style={styles.listItemTitle}>{(site as any).name ?? site.nameZh}</Text>
                 <Text style={styles.listItemSubtitle}>
                   {site.country}
                   {site.city ? ` · ${site.city}` : ''}
@@ -133,7 +133,7 @@ export default function ReligionDetailScreen() {
             >
               <Ionicons name="business" size={18} color={colors.gold} />
               <View style={styles.listItemContent}>
-                <Text style={styles.listItemTitle}>{temple.nameZh}</Text>
+                <Text style={styles.listItemTitle}>{(temple as any).name ?? temple.nameZh}</Text>
                 <Text style={styles.listItemSubtitle}>
                   {temple.country}
                   {temple.city ? ` · ${temple.city}` : ''}
@@ -162,9 +162,9 @@ export default function ReligionDetailScreen() {
             >
               <Ionicons name="person" size={18} color={colors.gold} />
               <View style={styles.listItemContent}>
-                <Text style={styles.listItemTitle}>{patriarch.nameZh}</Text>
+                <Text style={styles.listItemTitle}>{(patriarch as any).name ?? patriarch.nameZh}</Text>
                 <Text style={styles.listItemSubtitle}>
-                  {patriarch.title} · {patriarch.era}
+                  {patriarch.title} · {(patriarch as any).dates ?? patriarch.era}
                 </Text>
               </View>
               <Ionicons

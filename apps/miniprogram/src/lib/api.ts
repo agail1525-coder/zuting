@@ -378,6 +378,21 @@ export function transitionTrip(tripId: string, action: string) {
   return postRequest<TripDetail>(`/trips/${tripId}/transition`, { action })
 }
 
+// Trip creation
+export interface CreateTripInput {
+  title: string
+  startDate: string
+  endDate: string
+  persons?: number
+  contactName?: string
+  contactPhone?: string
+  note?: string
+}
+
+export function createTrip(input: CreateTripInput) {
+  return postRequest<TripDetail>('/trips', input)
+}
+
 // Journal creation
 export interface CreateJournalInput {
   title: string
@@ -418,4 +433,122 @@ export function searchAll(q: string, type: string = 'all', page: number = 1, lim
     page: String(page),
     limit: String(limit),
   })
+}
+
+// --- Reviews ---
+
+export interface ReviewUser {
+  id: string
+  nickname: string | null
+  avatar: string | null
+}
+
+export interface Review {
+  id: string
+  rating: number
+  content: string
+  images: string[]
+  createdAt: string
+  user: ReviewUser
+}
+
+export interface ReviewListResponse {
+  data: Review[]
+  total: number
+  page: number
+  limit: number
+}
+
+export interface ReviewStats {
+  averageRating: number
+  totalCount: number
+  distribution: Record<number, number>
+}
+
+export interface CreateReviewData {
+  targetType: 'TRIP' | 'GUIDE' | 'SITE'
+  targetId: string
+  rating: number
+  content?: string
+}
+
+export function fetchReviewStats(targetType: string, targetId: string) {
+  return request<ReviewStats>(`/reviews/stats/${targetType}/${targetId}`)
+}
+
+export function fetchReviews(targetType: string, targetId: string, limit = 5) {
+  return request<ReviewListResponse>('/reviews', { targetType, targetId, limit: String(limit) })
+}
+
+export function createReview(data: CreateReviewData) {
+  return postRequest<Review>('/reviews', data)
+}
+
+// --- Orders ---
+
+export interface OrderDetail {
+  id: string
+  orderNo: string
+  tripId: string
+  userId: string
+  totalAmount: number
+  paidAmount: number | null
+  paymentMethod: string | null
+  status: string
+  createdAt: string
+  paidAt: string | null
+  cancelledAt: string | null
+  refundedAt: string | null
+  trip?: { id: string; title: string; status: string }
+}
+
+export interface OrderListResponse {
+  data: OrderDetail[]
+  total: number
+  page: number
+  limit: number
+}
+
+export function fetchOrderList(params?: { status?: string; page?: string; limit?: string }) {
+  return request<OrderListResponse>('/orders', params)
+}
+
+export function cancelOrder(id: string) {
+  return postRequest<OrderDetail>(`/orders/${id}/cancel`, {})
+}
+
+// --- Notifications ---
+
+export interface AppNotification {
+  id: string
+  userId: string
+  type: string
+  title: string
+  content: string
+  link: string | null
+  read: boolean
+  createdAt: string
+}
+
+export interface NotificationListResponse {
+  data: AppNotification[]
+  total: number
+  page: number
+  limit: number
+}
+
+export function fetchNotifications(params?: { page?: string; limit?: string; unreadOnly?: string }) {
+  return request<NotificationListResponse>('/notifications', params)
+}
+
+export function fetchUnreadCount() {
+  return request<{ count: number }>('/notifications/unread-count')
+}
+
+export function markNotificationRead(id: string) {
+  return postRequest<AppNotification>(`/notifications/${id}/read`, {})
+}
+
+export function markAllNotificationsRead() {
+  return postRequest<void>('/notifications/read-all', {})
 }

@@ -311,6 +311,41 @@ export const api = {
       page: String(page),
       limit: String(limit),
     }),
+
+  getReviewStats: (targetType: string, targetId: string) =>
+    request<ReviewStats>(`/reviews/stats/${targetType}/${targetId}`),
+
+  getReviews: (targetType: string, targetId: string, limit = 5) =>
+    request<ReviewListResponse>('/reviews', { targetType, targetId, limit: String(limit) }),
+
+  createReview: (data: CreateReviewData) =>
+    requestMutate<Review>('/reviews', 'POST', data as unknown as Record<string, unknown>),
+
+  // Orders
+  getOrders: (params?: { status?: string; page?: string; limit?: string }) =>
+    request<OrderListResponse>('/orders', params),
+
+  getOrderById: (id: string) =>
+    request<OrderDetail>(`/orders/${id}`),
+
+  cancelOrder: (id: string) =>
+    requestMutate<OrderDetail>(`/orders/${id}/cancel`, 'POST', {}),
+
+  refundOrder: (id: string, reason?: string) =>
+    requestMutate<OrderDetail>(`/orders/${id}/refund`, 'POST', { reason }),
+
+  // Notifications
+  getNotifications: (params?: { page?: string; limit?: string; unreadOnly?: string }) =>
+    request<NotificationListResponse>('/notifications', params),
+
+  getUnreadCount: () =>
+    request<{ count: number }>('/notifications/unread-count'),
+
+  markNotificationRead: (id: string) =>
+    requestMutate<Notification>(`/notifications/${id}/read`, 'POST', {}),
+
+  markAllNotificationsRead: () =>
+    requestMutate<void>('/notifications/read-all', 'POST', {}),
 };
 
 export interface Journal {
@@ -329,6 +364,90 @@ export interface Journal {
 
 export interface PaginatedJournals {
   data: Journal[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// --- Reviews ---
+
+export interface ReviewUser {
+  id: string;
+  nickname: string | null;
+  avatar: string | null;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  content: string;
+  images: string[];
+  createdAt: string;
+  user: ReviewUser;
+}
+
+export interface ReviewListResponse {
+  data: Review[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalCount: number;
+  distribution: Record<number, number>;
+}
+
+export interface CreateReviewData {
+  targetType: 'TRIP' | 'GUIDE' | 'SITE';
+  targetId: string;
+  rating: number;
+  content?: string;
+}
+
+// --- Orders ---
+
+export type OrderStatus = 'PENDING' | 'PAID' | 'CANCELLED' | 'REFUNDING' | 'REFUNDED';
+
+export interface OrderDetail {
+  id: string;
+  orderNo: string;
+  tripId: string;
+  userId: string;
+  totalAmount: number;
+  paidAmount: number | null;
+  paymentMethod: string | null;
+  status: string;
+  createdAt: string;
+  paidAt: string | null;
+  cancelledAt: string | null;
+  refundedAt: string | null;
+  trip?: { id: string; title: string; status: string };
+}
+
+export interface OrderListResponse {
+  data: OrderDetail[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// --- Notifications ---
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: string;
+  title: string;
+  content: string;
+  link: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface NotificationListResponse {
+  data: Notification[];
   total: number;
   page: number;
   limit: number;

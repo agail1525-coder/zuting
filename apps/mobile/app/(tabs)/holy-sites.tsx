@@ -43,7 +43,7 @@ export default function HolySitesScreen() {
     fetchData();
   }, [fetchData]);
 
-  const chips = religions.map((r) => ({ id: r.id, label: r.nameZh }));
+  const chips = religions.map((r) => ({ id: r.id, label: (r as any).name ?? r.nameZh }));
 
   if (loading && sites.length === 0) return <LoadingView />;
 
@@ -68,7 +68,9 @@ export default function HolySitesScreen() {
       <FlatList
         data={sites}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <HolySiteCard site={item} />}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        renderItem={({ item }) => <HolySiteCard site={item} compact />}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -96,7 +98,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   list: {
+    paddingHorizontal: 12,
     paddingBottom: spacing.xxl,
+  },
+  row: {
+    justifyContent: 'space-between',
   },
   count: {
     color: colors.textMuted,

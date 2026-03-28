@@ -245,6 +245,76 @@
   }
 }
 
+/* Orders Section */
+.orders-section {
+  margin-bottom: 32rpx;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 8rpx;
+  gap: 16rpx;
+
+  &__left {
+    flex: 1;
+  }
+
+  &__status {
+    font-size: 24rpx;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  &__amount {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #EF4444;
+  }
+
+  &__date {
+    font-size: 20rpx;
+    color: #9CA3AF;
+    margin-left: 12rpx;
+  }
+}
+
+/* Journals Section */
+.journals-section {
+  margin-bottom: 32rpx;
+}
+
+.journal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 8rpx;
+
+  &__title {
+    font-size: 26rpx;
+    color: #374151;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__date {
+    font-size: 20rpx;
+    color: #9CA3AF;
+    flex-shrink: 0;
+    margin-left: 12rpx;
+  }
+}
+
 /* History Section */
 .history-section {
   margin-bottom: 32rpx;

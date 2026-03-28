@@ -22,7 +22,10 @@ export default defineAppConfig({
     'pages/journal-create/index',
     'pages/journal-detail/index',
     'pages/map/index',
-    'pages/search/index'
+    'pages/search/index',
+    'pages/orders/index',
+    'pages/notifications/index',
+    'pages/checkout/index'
   ],
   tabBar: {
     color: '#9CA3AF',

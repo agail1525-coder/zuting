@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { fetchTrip, transitionTrip, TripDetail } from '../../lib/api'
+import ReviewSection from '../../components/ReviewSection'
 import { isLoggedIn } from '../../lib/auth'
 import './index.scss'
 
@@ -202,6 +203,39 @@ export default function TripDetailPage() {
         </View>
       )}
 
+      {/* Related Orders */}
+      {trip.orders && trip.orders.length > 0 && (
+        <View className='orders-section'>
+          <Text className='section-title'>关联订单</Text>
+          {trip.orders.map(order => (
+            <View key={order.id} className='order-item'>
+              <View className='order-item__left'>
+                <Text className='order-item__status'>{order.status === 'PAID' ? '✅' : '⏳'} {order.status}</Text>
+              </View>
+              <Text className='order-item__amount'>¥{(order.amount / 100).toFixed(2)}</Text>
+              <Text className='order-item__date'>{order.createdAt.slice(0, 10)}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Related Journals */}
+      {trip.journals && trip.journals.length > 0 && (
+        <View className='journals-section'>
+          <Text className='section-title'>朝圣日志</Text>
+          {trip.journals.map(journal => (
+            <View
+              key={journal.id}
+              className='journal-item'
+              onClick={() => Taro.navigateTo({ url: `/pages/journal-detail/index?id=${journal.id}` })}
+            >
+              <Text className='journal-item__title'>📝 {journal.title}</Text>
+              <Text className='journal-item__date'>{journal.createdAt.slice(0, 10)}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
       {/* Status History */}
       {trip.statusHistory.length > 0 && (
         <View className='history-section'>
@@ -225,6 +259,13 @@ export default function TripDetailPage() {
               </View>
             ))}
           </View>
+        </View>
+      )}
+
+      {/* Reviews */}
+      {tripId && (
+        <View style={{ padding: '0 32rpx', marginTop: '32rpx' }}>
+          <ReviewSection targetType='TRIP' targetId={tripId} />
         </View>
       )}
 

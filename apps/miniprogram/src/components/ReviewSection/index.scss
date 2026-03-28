@@ -1,0 +1,276 @@
+/* ── ReviewSection Component Styles ── */
+
+.review-section {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #E5E7EB;
+
+  &__title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 16rpx;
+  }
+
+  &__loading {
+    display: block;
+    color: #9CA3AF;
+    font-size: 26rpx;
+    text-align: center;
+    padding: 40rpx 0;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40rpx 0;
+  }
+
+  &__empty-text {
+    font-size: 26rpx;
+    color: #9CA3AF;
+  }
+}
+
+/* Stars */
+.stars-row {
+  display: flex;
+  flex-direction: row;
+  gap: 4rpx;
+
+  &__star {
+    font-size: 28rpx;
+    color: #D1D5DB;
+
+    &--active {
+      color: #0066FF;
+    }
+
+    &--interactive {
+      font-size: 44rpx;
+    }
+  }
+}
+
+/* Stats Card */
+.stats-card {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 16rpx;
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 100rpx;
+  }
+
+  &__avg {
+    font-size: 44rpx;
+    font-weight: 800;
+    color: #0066FF;
+  }
+
+  &__right {
+    flex: 1;
+  }
+
+  &__total {
+    display: block;
+    font-size: 22rpx;
+    color: #6B7280;
+    margin-bottom: 8rpx;
+  }
+
+  &__bar-row {
+    display: flex;
+    align-items: center;
+    gap: 6rpx;
+    margin-bottom: 4rpx;
+  }
+
+  &__bar-label {
+    width: 24rpx;
+    font-size: 20rpx;
+    color: #6B7280;
+    text-align: right;
+  }
+
+  &__bar-star {
+    font-size: 18rpx;
+    color: #0066FF;
+  }
+
+  &__bar-bg {
+    flex: 1;
+    height: 8rpx;
+    background: #E5E7EB;
+    border-radius: 4rpx;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background: rgba(0, 102, 255, 0.5);
+    border-radius: 4rpx;
+  }
+
+  &__bar-count {
+    width: 36rpx;
+    font-size: 20rpx;
+    color: #9CA3AF;
+    text-align: right;
+  }
+}
+
+/* Review Card */
+.review-card {
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 12rpx;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    margin-bottom: 8rpx;
+  }
+
+  &__avatar {
+    width: 48rpx;
+    height: 48rpx;
+    border-radius: 50%;
+    background: rgba(0, 102, 255, 0.1);
+    border: 1rpx solid rgba(0, 102, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__avatar-text {
+    font-size: 22rpx;
+    color: #0066FF;
+  }
+
+  &__nickname {
+    flex: 1;
+    font-size: 24rpx;
+    color: #374151;
+  }
+
+  &__date {
+    font-size: 20rpx;
+    color: #9CA3AF;
+  }
+
+  &__content {
+    display: block;
+    font-size: 24rpx;
+    color: #4B5563;
+    line-height: 1.6;
+    margin-top: 8rpx;
+  }
+}
+
+/* Expand Button */
+.expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  border: 2rpx dashed rgba(0, 102, 255, 0.3);
+
+  &__text {
+    font-size: 26rpx;
+    color: #0066FF;
+  }
+}
+
+/* Form Card */
+.form-card {
+  background: #F9FAFB;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 1rpx solid #E5E7EB;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    margin-bottom: 16rpx;
+  }
+
+  &__label {
+    font-size: 24rpx;
+    color: #6B7280;
+  }
+
+  &__hint {
+    font-size: 22rpx;
+    color: #9CA3AF;
+  }
+
+  &__input {
+    width: 100%;
+    min-height: 120rpx;
+    background: #FFFFFF;
+    border: 1rpx solid #E5E7EB;
+    border-radius: 12rpx;
+    padding: 16rpx;
+    font-size: 26rpx;
+    color: #374151;
+  }
+
+  &__placeholder {
+    color: #9CA3AF;
+  }
+
+  &__error {
+    display: block;
+    font-size: 22rpx;
+    color: #EF4444;
+    margin-top: 8rpx;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20rpx;
+    margin-top: 16rpx;
+    align-items: center;
+  }
+
+  &__cancel {
+    font-size: 24rpx;
+    color: #6B7280;
+    padding: 8rpx 0;
+  }
+
+  &__submit {
+    background: #0066FF;
+    padding: 12rpx 24rpx;
+    border-radius: 12rpx;
+
+    &--disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__submit-text {
+    font-size: 24rpx;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+}

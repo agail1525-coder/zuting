@@ -12,6 +12,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api, type Trip, type TripStatus } from '../../src/lib/api';
+import ReviewSection from '../../src/components/ReviewSection';
 
 const STATUS_STEPS: { key: TripStatus; label: string }[] = [
   { key: 'PLANNING', label: '计划中' },
@@ -241,7 +242,7 @@ export default function TripDetailScreen() {
                   <View style={styles.siteHeader}>
                     <Text style={styles.siteEmoji}>{'📍'}</Text>
                     <View style={styles.siteInfo}>
-                      <Text style={styles.siteName}>{tripSite.site.nameZh}</Text>
+                      <Text style={styles.siteName}>{(tripSite.site as any).name ?? tripSite.site.nameZh}</Text>
                       <Text style={styles.siteNameEn}>{tripSite.site.nameEn}</Text>
                     </View>
                     {tripSite.visitDate && (
@@ -284,6 +285,11 @@ export default function TripDetailScreen() {
           })}
         </Animated.View>
       )}
+
+      {/* Reviews */}
+      <View style={{ marginHorizontal: spacing.md, marginBottom: spacing.lg }}>
+        <ReviewSection targetType="TRIP" targetId={id!} />
+      </View>
 
       {/* Trip info */}
       <Animated.View entering={FadeInDown.duration(300).delay(500)} style={styles.timelineSection}>
