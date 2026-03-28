@@ -189,10 +189,66 @@ export async function fetchSearch(
   q: string,
   type = "all",
   page = 1,
-  limit = 20
+  limit = 20,
+  religionId?: string,
+  sort?: string
 ): Promise<SearchResponse> {
   const params = new URLSearchParams({ q, type, page: String(page), limit: String(limit) });
+  if (religionId) params.set("religionId", religionId);
+  if (sort) params.set("sort", sort);
   return fetchJson<SearchResponse>(`/api/search?${params}`);
+}
+
+// --- Search: Suggestions ---
+export interface SearchSuggestion {
+  type: string;
+  id: string | number;
+  title: string;
+  subtitle: string | null;
+  image: string | null;
+}
+
+export interface SearchSuggestionsResponse {
+  entities: SearchSuggestion[];
+  keywords: string[];
+}
+
+export async function fetchSearchSuggestions(q: string): Promise<SearchSuggestionsResponse> {
+  return fetchJson<SearchSuggestionsResponse>(`/api/search/suggestions?q=${encodeURIComponent(q)}`);
+}
+
+// --- Search: Hot Keywords ---
+export interface HotKeyword {
+  keyword: string;
+  count: number;
+}
+
+export async function fetchHotKeywords(): Promise<{ keywords: HotKeyword[] }> {
+  return fetchJson<{ keywords: HotKeyword[] }>("/api/search/hot");
+}
+
+// --- Search: Map ---
+export interface MapSearchItem {
+  type: string;
+  id: string;
+  name: string;
+  nameEn: string;
+  latitude: number;
+  longitude: number;
+  imageUrl: string | null;
+  religionName: string;
+  religionColor: string | null;
+}
+
+export async function fetchMapSearch(bounds: {
+  swLat: number; swLng: number; neLat: number; neLng: number;
+}, religionId?: string): Promise<{ items: MapSearchItem[] }> {
+  const params = new URLSearchParams({
+    swLat: String(bounds.swLat), swLng: String(bounds.swLng),
+    neLat: String(bounds.neLat), neLng: String(bounds.neLng),
+  });
+  if (religionId) params.set("religionId", religionId);
+  return fetchJson<{ items: MapSearchItem[] }>(`/api/search/map?${params}`);
 }
 
 // --- Seals ---
@@ -1088,4 +1144,107 @@ export async function fetchFeaturedRoutes(limit = 8): Promise<Route[]> {
 
 export async function fetchRoutesBySite(siteId: string): Promise<Route[]> {
   return fetchJson<Route[]>(`/api/routes/by-site/${siteId}`);
+}
+
+// --- Collections (authenticated) ---
+
+export type CollectionEntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'TRIP';
+
+export interface CollectionItem {
+  id: string;
+  entityType: CollectionEntityType;
+  entityId: string;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  description: string | null;
+  coverImage: string | null;
+  isPublic: boolean;
+  shareToken: string | null;
+  createdAt: string;
+  updatedAt: string;
+  items: CollectionItem[];
+  _count?: { items: number };
+}
+
+export async function fetchCollections(): Promise<Collection[]> {
+  return fetchAuthed<Collection[]>("/api/collections");
+}
+
+export async function fetchCollection(id: string): Promise<Collection> {
+  return fetchAuthed<Collection>(`/api/collections/${id}`);
+}
+
+export async function createCollection(data: {
+  name: string;
+  description?: string;
+  isPublic?: boolean;
+}): Promise<Collection> {
+  return fetchAuthed<Collection>("/api/collections", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateCollection(id: string, data: {
+  name?: string;
+  description?: string;
+  isPublic?: boolean;
+}): Promise<Collection> {
+  return fetchAuthed<Collection>(`/api/collections/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteCollection(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/collections/${id}`, { method: "DELETE" });
+}
+
+export async function addToCollection(collectionId: string, data: {
+  entityType: CollectionEntityType;
+  entityId: string;
+  note?: string;
+}): Promise<CollectionItem> {
+  return fetchAuthed<CollectionItem>(`/api/collections/${collectionId}/items`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function removeFromCollection(collectionId: string, itemId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/collections/${collectionId}/items/${itemId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function quickSave(entityType: CollectionEntityType, entityId: string): Promise<CollectionItem> {
+  return fetchAuthed<CollectionItem>("/api/collections/quick-save", {
+    method: "POST",
+    body: JSON.stringify({ entityType, entityId }),
+  });
+}
+
+export async function checkSaved(entityType: CollectionEntityType, entityId: string): Promise<{
+  saved: boolean;
+  collections: Array<{ id: string; name: string }>;
+}> {
+  const params = new URLSearchParams({ entityType, entityId });
+  return fetchAuthed<{ saved: boolean; collections: Array<{ id: string; name: string }> }>(
+    `/api/collections/check?${params}`
+  );
+}
+
+export async function fetchSharedCollection(shareToken: string): Promise<Collection> {
+  return fetchJson<Collection>(`/api/collections/shared/${shareToken}`);
+}
+
+export async function generateShareLink(id: string): Promise<{ shareToken: string; shareUrl: string }> {
+  return fetchAuthed<{ shareToken: string; shareUrl: string }>(`/api/collections/${id}/share`, {
+    method: "POST",
+  });
 }

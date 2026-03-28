@@ -3,7 +3,17 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { fetchSearch, type SearchResultItem, type SearchResponse } from "@/lib/api";
+import {
+  fetchSearch,
+  fetchSearchSuggestions,
+  fetchHotKeywords,
+  fetchReligions,
+  type SearchResultItem,
+  type SearchResponse,
+  type SearchSuggestion,
+  type HotKeyword,
+  type Religion,
+} from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
 
 const TAB_KEYS = ["all", "religion", "holy-site", "temple", "patriarch", "teaching", "seal"] as const;
@@ -36,10 +46,20 @@ const TYPE_BADGE_STYLES: Record<string, string> = {
   seal: "bg-yellow-50 text-yellow-700 border-yellow-200",
 };
 
-function getDetailHref(item: SearchResultItem): string {
+const TYPE_LABEL_ZH: Record<string, string> = {
+  religion: "信仰",
+  "holy-site": "圣地",
+  temple: "祖庭",
+  patriarch: "祖师",
+  teaching: "祖训",
+  seal: "印",
+};
+
+function getDetailHref(item: SearchResultItem | SearchSuggestion): string {
+  const asResult = item as SearchResultItem;
   switch (item.type) {
     case "religion":
-      return item.slug ? `/religions/${item.slug}` : `/religions`;
+      return asResult.slug ? `/religions/${asResult.slug}` : `/religions`;
     case "holy-site":
       return `/holy-sites/${item.id}`;
     case "temple":
@@ -69,10 +89,46 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<"relevance" | "name">("relevance");
+  const [religionId, setReligionId] = useState<string>("");
+
+  // Hot keywords
+  const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
+  const [hotLoading, setHotLoading] = useState(false);
+
+  // Suggestions
+  const [suggestions, setSuggestions] = useState<{ entities: SearchSuggestion[]; keywords: string[] } | null>(null);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+  const suggestAbortRef = useRef<AbortController | null>(null);
+
+  // Religions for filter
+  const [religions, setReligions] = useState<Religion[]>([]);
+
+  // Refs
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suggestDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Load religions for filter
+  useEffect(() => {
+    fetchReligions()
+      .then(setReligions)
+      .catch(() => {});
+  }, []);
+
+  // Load hot keywords on mount
+  useEffect(() => {
+    setHotLoading(true);
+    fetchHotKeywords()
+      .then((res) => setHotKeywords(res.keywords ?? []))
+      .catch(() => setHotKeywords([]))
+      .finally(() => setHotLoading(false));
+  }, []);
 
   const doSearch = useCallback(
-    async (q: string, type: string, p: number) => {
+    async (q: string, type: string, p: number, rid: string, s: string) => {
       if (!q.trim()) {
         setResults(null);
         setError(null);
@@ -81,7 +137,7 @@ export default function SearchPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchSearch(q.trim(), type, p, 20);
+        const data = await fetchSearch(q.trim(), type, p, 20, rid || undefined, s !== "relevance" ? s : undefined);
         setResults(data);
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : String(e);
@@ -94,6 +150,29 @@ export default function SearchPage() {
     []
   );
 
+  // Suggestions fetch with debounce + abort
+  const fetchSuggestions = useCallback((q: string) => {
+    if (suggestDebounceRef.current) clearTimeout(suggestDebounceRef.current);
+    if (q.length < 2) {
+      setSuggestions(null);
+      return;
+    }
+    suggestDebounceRef.current = setTimeout(async () => {
+      if (suggestAbortRef.current) suggestAbortRef.current.abort();
+      const controller = new AbortController();
+      suggestAbortRef.current = controller;
+      setSuggestionsLoading(true);
+      try {
+        const data = await fetchSearchSuggestions(q);
+        if (!controller.signal.aborted) setSuggestions(data);
+      } catch {
+        if (!controller.signal.aborted) setSuggestions(null);
+      } finally {
+        if (!controller.signal.aborted) setSuggestionsLoading(false);
+      }
+    }, 200);
+  }, []);
+
   // Sync URL params
   useEffect(() => {
     if (query.trim()) {
@@ -101,28 +180,60 @@ export default function SearchPage() {
       params.set("q", query.trim());
       if (activeType !== "all") params.set("type", activeType);
       if (page > 1) params.set("page", String(page));
+      if (religionId) params.set("religionId", religionId);
+      if (sort !== "relevance") params.set("sort", sort);
       router.replace(`/search?${params.toString()}`, { scroll: false });
     }
-  }, [query, activeType, page, router]);
+  }, [query, activeType, page, religionId, sort, router]);
 
-  // Debounced search on query change
+  // Debounced search on query/filter/sort change
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setPage(1);
-      doSearch(query, activeType, 1);
+      doSearch(query, activeType, 1, religionId, sort);
     }, 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, activeType, doSearch]);
+  }, [query, activeType, religionId, sort, doSearch]);
 
   // Search on page change
   useEffect(() => {
-    if (page > 1) doSearch(query, activeType, page);
-  }, [page, query, activeType, doSearch]);
+    if (page > 1) doSearch(query, activeType, page, religionId, sort);
+  }, [page, query, activeType, religionId, sort, doSearch]);
+
+  // Update suggestions as user types
+  useEffect(() => {
+    fetchSuggestions(query);
+  }, [query, fetchSuggestions]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setInputFocused(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const totalPages = results ? Math.ceil(results.total / results.limit) : 0;
+
+  const showHotKeywords = inputFocused && !query.trim() && hotKeywords.length > 0;
+  const showSuggestions = inputFocused && query.length >= 2 && (suggestionsLoading || (suggestions && (suggestions.entities.length > 0 || suggestions.keywords.length > 0)));
+
+  function applyKeyword(kw: string) {
+    setQuery(kw);
+    setInputFocused(false);
+    setSuggestions(null);
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -134,7 +245,7 @@ export default function SearchPage() {
         <p className="text-gray-500">{t("search.subtitle")}</p>
       </div>
 
-      {/* Search Input */}
+      {/* Search Input + Dropdown */}
       <div className="relative mb-6">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -142,16 +253,19 @@ export default function SearchPage() {
           </svg>
         </div>
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setInputFocused(true)}
           placeholder={t("search.placeholder")}
-          className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-lg"
+          className="w-full pl-12 pr-10 py-3.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-lg"
           autoFocus
+          autoComplete="off"
         />
         {query && (
           <button
-            onClick={() => { setQuery(""); setResults(null); setError(null); }}
+            onClick={() => { setQuery(""); setResults(null); setError(null); setSuggestions(null); }}
             className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#0066FF] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,23 +273,180 @@ export default function SearchPage() {
             </svg>
           </button>
         )}
+
+        {/* Suggestions / Hot keywords dropdown */}
+        {(showHotKeywords || showSuggestions) && (
+          <div
+            ref={dropdownRef}
+            className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden"
+          >
+            {/* Hot keywords panel */}
+            {showHotKeywords && (
+              <div className="p-4">
+                <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">
+                  热门搜索 / Hot Searches
+                </p>
+                {hotLoading ? (
+                  <div className="flex gap-2">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-7 w-16 bg-gray-100 rounded-full animate-pulse" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {hotKeywords.map((hk) => (
+                      <button
+                        key={hk.keyword}
+                        onMouseDown={(e) => { e.preventDefault(); applyKeyword(hk.keyword); }}
+                        className="px-3 py-1 bg-[#0066FF]/8 text-[#0066FF] rounded-full text-sm hover:bg-[#0066FF]/15 transition-colors border border-[#0066FF]/20"
+                      >
+                        {hk.keyword}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Suggestions panel */}
+            {showSuggestions && (
+              <div>
+                {suggestionsLoading && (
+                  <div className="flex justify-center py-4">
+                    <div className="w-5 h-5 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
+                  </div>
+                )}
+                {!suggestionsLoading && suggestions && (
+                  <>
+                    {/* Entity suggestions */}
+                    {suggestions.entities.length > 0 && (
+                      <div>
+                        <p className="px-4 pt-3 pb-1 text-xs text-gray-400 font-medium uppercase tracking-wide">
+                          相关结果 / Results
+                        </p>
+                        {suggestions.entities.map((entity) => (
+                          <Link
+                            key={`${entity.type}-${entity.id}`}
+                            href={getDetailHref(entity)}
+                            onMouseDown={() => setInputFocused(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                          >
+                            {entity.image ? (
+                              <img
+                                src={entity.image}
+                                alt={entity.title}
+                                className="w-9 h-9 rounded-lg object-cover shrink-0 bg-gray-100"
+                              />
+                            ) : (
+                              <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                                <span className="text-gray-400 text-sm">&#x1F3DB;</span>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-gray-900 truncate font-medium">{entity.title}</p>
+                              {entity.subtitle && (
+                                <p className="text-xs text-gray-400 truncate">{entity.subtitle}</p>
+                              )}
+                            </div>
+                            <span
+                              className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ${
+                                TYPE_BADGE_STYLES[entity.type] || "bg-gray-100 text-gray-600 border-gray-200"
+                              }`}
+                            >
+                              {TYPE_LABEL_ZH[entity.type] || entity.type}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                    {/* Keyword suggestions */}
+                    {suggestions.keywords.length > 0 && (
+                      <div className="border-t border-gray-100">
+                        <p className="px-4 pt-3 pb-1 text-xs text-gray-400 font-medium uppercase tracking-wide">
+                          搜索建议 / Suggestions
+                        </p>
+                        {suggestions.keywords.map((kw) => (
+                          <button
+                            key={kw}
+                            onMouseDown={(e) => { e.preventDefault(); applyKeyword(kw); }}
+                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors text-left"
+                          >
+                            <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span className="text-sm text-gray-700">{kw}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Type Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {TAB_KEYS.map((key) => (
-          <button
-            key={key}
-            onClick={() => { setActiveType(key); setPage(1); }}
-            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all border ${
-              activeType === key
-                ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30 font-semibold"
-                : "bg-white text-gray-500 border-gray-200 hover:text-[#0066FF] hover:border-[#0066FF]/20"
-            }`}
+      {/* Type Tabs + Religion Filter + Sort */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        {/* Type tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-1 flex-1 scrollbar-hide">
+          {TAB_KEYS.map((key) => (
+            <button
+              key={key}
+              onClick={() => { setActiveType(key); setPage(1); }}
+              className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all border ${
+                activeType === key
+                  ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30 font-semibold"
+                  : "bg-white text-gray-500 border-gray-200 hover:text-[#0066FF] hover:border-[#0066FF]/20"
+              }`}
+            >
+              {t(TAB_I18N_KEYS[key])}
+            </button>
+          ))}
+        </div>
+
+        {/* Religion filter + Sort */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Religion filter */}
+          <select
+            value={religionId}
+            onChange={(e) => { setReligionId(e.target.value); setPage(1); }}
+            className="px-3 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#0066FF]/50 transition-colors"
           >
-            {t(TAB_I18N_KEYS[key])}
-          </button>
-        ))}
+            <option value="">全部信仰 / All</option>
+            {religions.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.symbol ? `${r.symbol} ` : ""}{r.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Sort buttons */}
+          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+            <button
+              onClick={() => { setSort("relevance"); setPage(1); }}
+              className={`px-3 py-2 text-sm transition-colors ${
+                sort === "relevance"
+                  ? "bg-[#0066FF]/10 text-[#0066FF] font-medium"
+                  : "bg-white text-gray-500 hover:text-[#0066FF]"
+              }`}
+            >
+              相关度
+            </button>
+            <div className="w-px bg-gray-200" />
+            <button
+              onClick={() => { setSort("name"); setPage(1); }}
+              className={`px-3 py-2 text-sm transition-colors ${
+                sort === "name"
+                  ? "bg-[#0066FF]/10 text-[#0066FF] font-medium"
+                  : "bg-white text-gray-500 hover:text-[#0066FF]"
+              }`}
+            >
+              名称
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Loading */}
@@ -191,19 +462,54 @@ export default function SearchPage() {
           <div className="text-6xl mb-4 opacity-30">&#x26A0;</div>
           <p className="text-red-500 text-lg">{t("search.error")}</p>
           <button
-            onClick={() => doSearch(query, activeType, page)}
+            onClick={() => doSearch(query, activeType, page, religionId, sort)}
             className="mt-4 px-6 py-2 rounded-lg border border-[#0066FF]/30 text-[#0066FF] hover:bg-[#0066FF]/10 transition-all"
           >
-            {t("search.tab.all") === "全部" ? "重试" : "Retry"}
+            重试 / Retry
           </button>
         </div>
       )}
 
       {/* Empty state - no query */}
       {!loading && !error && !query.trim() && (
-        <div className="text-center py-20">
-          <div className="text-6xl mb-4 opacity-30">&#x1F50D;</div>
-          <p className="text-gray-500 text-lg">{t("search.emptyPrompt")}</p>
+        <div className="py-12">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4 opacity-30">&#x1F50D;</div>
+            <p className="text-gray-500 text-lg">{t("search.emptyPrompt")}</p>
+          </div>
+
+          {/* Hot keywords section below empty prompt */}
+          {hotKeywords.length > 0 && (
+            <div className="bg-white border border-gray-100 rounded-2xl p-6 max-w-2xl mx-auto">
+              <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
+                热门搜索 / Hot Searches
+              </h2>
+              {hotLoading ? (
+                <div className="flex flex-wrap gap-2">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-8 w-20 bg-gray-100 rounded-full animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {hotKeywords.map((hk, idx) => (
+                    <button
+                      key={hk.keyword}
+                      onClick={() => applyKeyword(hk.keyword)}
+                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm border border-[#0066FF]/20 text-[#0066FF] hover:bg-[#0066FF]/8 transition-colors"
+                    >
+                      {idx < 3 && (
+                        <span className={`text-xs font-bold ${idx === 0 ? "text-red-500" : idx === 1 ? "text-orange-500" : "text-yellow-500"}`}>
+                          {idx + 1}
+                        </span>
+                      )}
+                      {hk.keyword}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -221,9 +527,11 @@ export default function SearchPage() {
       {/* Results */}
       {!loading && !error && results && results.results.length > 0 && (
         <>
-          <p className="text-gray-500 text-sm mb-4">
-            {t("search.resultCount").replace("{total}", String(results.total))}
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-gray-500 text-sm">
+              {t("search.resultCount").replace("{total}", String(results.total))}
+            </p>
+          </div>
 
           <div className="space-y-3">
             {results.results.map((item, i) => (

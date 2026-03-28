@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import SaveButton from "@/components/SaveButton";
 import type { Patriarch } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -64,9 +65,14 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
                 </span>
               )}
 
-              <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg">
-                {patriarch.name}
-              </h1>
+              <div className="flex items-start gap-3">
+                <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">
+                  {patriarch.name}
+                </h1>
+                <div className="mt-1">
+                  <SaveButton entityType="PATRIARCH" entityId={patriarch.id} size="md" />
+                </div>
+              </div>
               {patriarch.nameEn && (
                 <p className="text-xl text-white/70 mt-2">{patriarch.nameEn}</p>
               )}

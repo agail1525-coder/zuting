@@ -5,6 +5,7 @@ import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import SaveButton from "@/components/SaveButton";
 import type { HolySite } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -64,9 +65,14 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                 </span>
               )}
 
-              <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg">
-                {site.name}
-              </h1>
+              <div className="flex items-start gap-3">
+                <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">
+                  {site.name}
+                </h1>
+                <div className="mt-1">
+                  <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
+                </div>
+              </div>
               <p className="text-xl text-white/70 mt-2">{site.nameEn}</p>
 
               <div className="flex flex-wrap items-center gap-4 mt-4">
