@@ -31,8 +31,8 @@ function Stars({
           key={star}
           className={`${
             star <= (hover || Math.round(rating))
-              ? "text-gold"
-              : "text-temple-600"
+              ? "text-[#0066FF]"
+              : "text-gray-300"
           } ${interactive ? "cursor-pointer" : ""}`}
           onClick={interactive ? () => onSelect?.(star) : undefined}
           onMouseEnter={interactive ? () => setHover(star) : undefined}
@@ -67,7 +67,7 @@ function ReviewForm({
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="w-full py-3 rounded-xl border border-dashed border-gold/30 text-gold/70 hover:text-gold hover:border-gold/50 transition-colors text-sm"
+        className="w-full py-3 rounded-xl border border-dashed border-[#0066FF]/30 text-[#0066FF]/70 hover:text-[#0066FF] hover:border-[#0066FF]/50 transition-colors text-sm"
       >
         {t("review.write")}
       </button>
@@ -103,12 +103,12 @@ function ReviewForm({
   };
 
   return (
-    <div className="p-4 rounded-xl bg-temple-700/30 border border-temple-700/50 space-y-3">
+    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-temple-300">{t("review.ratingLabel")}</span>
+        <span className="text-sm text-gray-600">{t("review.ratingLabel")}</span>
         <Stars rating={rating} interactive onSelect={setRating} />
         {rating > 0 && (
-          <span className="text-xs text-temple-400">{rating} {t("review.stars")}</span>
+          <span className="text-xs text-gray-500">{rating} {t("review.stars")}</span>
         )}
       </div>
       <textarea
@@ -116,13 +116,13 @@ function ReviewForm({
         onChange={(e) => setContent(e.target.value)}
         placeholder={t("review.contentPlaceholder")}
         rows={3}
-        className="w-full bg-temple-800/50 border border-temple-700/50 rounded-lg px-3 py-2 text-sm text-temple-200 placeholder:text-temple-500 focus:outline-none focus:border-gold/40 resize-none"
+        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-[#0066FF]/40 resize-none"
       />
       {error && <p className="text-xs text-red-400">{error}</p>}
       <div className="flex justify-end gap-2">
         <button
           onClick={() => setExpanded(false)}
-          className="px-3 py-1.5 text-xs text-temple-400 hover:text-temple-200 transition-colors"
+          className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
           disabled={submitting}
         >
           {t("common.cancel")}
@@ -130,7 +130,7 @@ function ReviewForm({
         <button
           onClick={handleSubmit}
           disabled={submitting || rating === 0}
-          className="px-4 py-1.5 text-xs rounded-lg bg-gold/20 text-gold hover:bg-gold/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-1.5 text-xs rounded-lg bg-[#0066FF] text-white hover:bg-[#0052CC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? t("review.submitting") : t("review.submitReview")}
         </button>
@@ -182,12 +182,12 @@ export default function ReviewSection({
 
   if (loading) {
     return (
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("review.pilgrimageReviews")}
         </h2>
         <div className="flex items-center justify-center py-8">
-          <span className="text-temple-500 animate-pulse">{t("review.loadingReviews")}</span>
+          <span className="text-gray-400 animate-pulse">{t("review.loadingReviews")}</span>
         </div>
       </div>
     );
@@ -195,8 +195,8 @@ export default function ReviewSection({
 
   if (error) {
     return (
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("review.pilgrimageReviews")}
         </h2>
         <div className="flex items-center justify-center py-8">
@@ -209,14 +209,14 @@ export default function ReviewSection({
   const isEmpty = !stats || stats.totalCount === 0;
 
   return (
-    <div className="card-glow rounded-2xl bg-temple-800/50 p-6">
-      <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
         {t("review.pilgrimageReviews")}
       </h2>
 
       {isEmpty ? (
         <div className="space-y-4">
-          <div className="flex flex-col items-center justify-center py-8 text-temple-500">
+          <div className="flex flex-col items-center justify-center py-8 text-gray-400">
             <span className="text-3xl mb-2">📝</span>
             <span className="text-sm">{t("review.noReviews")}</span>
           </div>
@@ -229,15 +229,15 @@ export default function ReviewSection({
       ) : (
         <>
           {/* Stats Summary */}
-          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-temple-700/30 border border-temple-700/50">
+          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-gray-50 border border-gray-200">
             <div className="text-center">
-              <div className="text-3xl font-bold text-gold">
+              <div className="text-3xl font-bold text-[#0066FF]">
                 {stats.averageRating.toFixed(1)}
               </div>
               <Stars rating={stats.averageRating} />
             </div>
             <div className="flex-1">
-              <div className="text-sm text-temple-400 mb-2">
+              <div className="text-sm text-gray-500 mb-2">
                 {stats.totalCount} {t("review.totalReviews")}
               </div>
               <div className="space-y-1">
@@ -252,17 +252,17 @@ export default function ReviewSection({
                       key={star}
                       className="flex items-center gap-2 text-xs"
                     >
-                      <span className="text-temple-400 w-4 text-right">
+                      <span className="text-gray-500 w-4 text-right">
                         {star}
                       </span>
-                      <span className="text-gold text-[10px]">★</span>
-                      <div className="flex-1 h-1.5 bg-temple-700 rounded-full overflow-hidden">
+                      <span className="text-[#0066FF] text-[10px]">★</span>
+                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gold/60 rounded-full"
+                          className="h-full bg-[#0066FF]/60 rounded-full"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-temple-500 w-6 text-right">
+                      <span className="text-gray-400 w-6 text-right">
                         {count}
                       </span>
                     </div>
@@ -277,18 +277,18 @@ export default function ReviewSection({
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="p-4 rounded-xl bg-temple-700/20 border border-temple-700/40"
+                className="p-4 rounded-xl bg-gray-50 border border-gray-200"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-xs text-gold">
+                    <div className="w-7 h-7 rounded-full bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-xs text-[#0066FF]">
                       {(review.user.nickname ?? t("review.anonymous")).charAt(0)}
                     </div>
-                    <span className="text-sm text-temple-200">
+                    <span className="text-sm text-gray-700">
                       {review.user.nickname ?? t("review.anonymousPilgrim")}
                     </span>
                   </div>
-                  <span className="text-xs text-temple-500">
+                  <span className="text-xs text-gray-400">
                     {review.createdAt.slice(0, 10)}
                   </span>
                 </div>
@@ -296,7 +296,7 @@ export default function ReviewSection({
                   <Stars rating={review.rating} />
                 </div>
                 {review.content && (
-                  <p className="text-sm text-temple-300 leading-relaxed">
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {review.content}
                   </p>
                 )}

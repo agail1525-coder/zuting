@@ -28,7 +28,7 @@ export default function ReligionDetailClient({
 }: Props) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("holySites");
-  const color = religion.color ?? "#D4A855";
+  const color = religion.color ?? "#0066FF";
 
   const tabs: { key: Tab; label: string; count: number }[] = [
     { key: "holySites", label: t("religion.holySites"), count: holySites.length },
@@ -38,7 +38,7 @@ export default function ReligionDetailClient({
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div className="relative py-20 overflow-hidden">
         <div
@@ -47,16 +47,16 @@ export default function ReligionDetailClient({
         />
         <div className="relative max-w-5xl mx-auto px-4 text-center">
           {/* Breadcrumb */}
-          <div className="flex items-center justify-center gap-2 text-sm text-white/60 mb-6">
-            <Link href="/religions" className="hover:text-gold transition-colors">{t("nav.religions") || "信仰"}</Link>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-6">
+            <Link href="/religions" className="hover:text-[#0066FF] transition-colors">{t("nav.religions") || "信仰"}</Link>
             <span>/</span>
-            <span className="text-white/80">{religion.name}</span>
+            <span className="text-gray-700">{religion.name}</span>
           </div>
 
           {religion.symbol && (
             <span className="text-7xl block mb-4">{religion.symbol}</span>
           )}
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-2">
             {religion.name}
           </h1>
           <p className="text-xl" style={{ color }}>{religion.nameEn}</p>
@@ -64,20 +64,20 @@ export default function ReligionDetailClient({
           {/* Total count */}
           <div className="flex flex-wrap justify-center gap-6 mt-8">
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">{holySites.length}</p>
-              <p className="text-temple-400 text-sm">{t("religion.holySites")}</p>
+              <p className="text-2xl font-bold text-gray-900">{holySites.length}</p>
+              <p className="text-gray-500 text-sm">{t("religion.holySites")}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">{temples.length}</p>
-              <p className="text-temple-400 text-sm">{t("religion.temples")}</p>
+              <p className="text-2xl font-bold text-gray-900">{temples.length}</p>
+              <p className="text-gray-500 text-sm">{t("religion.temples")}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">{patriarchs.length}</p>
-              <p className="text-temple-400 text-sm">{t("religion.patriarchs")}</p>
+              <p className="text-2xl font-bold text-gray-900">{patriarchs.length}</p>
+              <p className="text-gray-500 text-sm">{t("religion.patriarchs")}</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-white">{teachings.length}</p>
-              <p className="text-temple-400 text-sm">{t("religion.teachings")}</p>
+              <p className="text-2xl font-bold text-gray-900">{teachings.length}</p>
+              <p className="text-gray-500 text-sm">{t("religion.teachings")}</p>
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function ReligionDetailClient({
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === tab.key
                   ? "font-semibold shadow-lg border"
-                  : "bg-temple-800/60 text-temple-300 hover:bg-temple-700/60 border border-temple-600/50"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200"
               }`}
               style={activeTab === tab.key ? {
                 backgroundColor: `${color}25`,
@@ -137,15 +137,15 @@ export default function ReligionDetailClient({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {teachings.map((teaching) => (
               <Link key={teaching.id} href={`/teachings/${teaching.id}`}>
-                <div className="card-glow rounded-xl p-6 bg-temple-800/50 group cursor-pointer h-full">
-                  <h3 className="font-serif font-bold text-white group-hover:text-gold transition-colors mb-3">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 group cursor-pointer h-full">
+                  <h3 className="font-serif font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors mb-3">
                     {teaching.name}
                   </h3>
-                  <p className="text-temple-400 text-sm font-serif leading-relaxed line-clamp-3">
+                  <p className="text-gray-500 text-sm font-serif leading-relaxed line-clamp-3">
                     {teaching.originalText}
                   </p>
                   {teaching.sourceText && (
-                    <p className="text-temple-500 text-xs mt-2">— {teaching.sourceText}</p>
+                    <p className="text-gray-400 text-xs mt-2">— {teaching.sourceText}</p>
                   )}
                 </div>
               </Link>
@@ -157,7 +157,7 @@ export default function ReligionDetailClient({
         <div className="text-center mt-12">
           <Link
             href="/religions"
-            className="px-6 py-3 bg-temple-700/60 hover:bg-temple-600/60 text-white font-medium rounded-xl transition-all border border-gold/20"
+            className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-all border border-gray-200"
           >
             ← {t("detail.backToList") || "返回信仰列表"}
           </Link>
