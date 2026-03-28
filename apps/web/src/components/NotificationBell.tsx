@@ -46,6 +46,7 @@ export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const loadUnreadCount = useCallback(async () => {
@@ -84,11 +85,12 @@ export default function NotificationBell() {
     }
     setOpen(true);
     setLoading(true);
+    setError(null);
     try {
       const res = await fetchNotifications(1, 10);
       setNotifications(res.data);
     } catch {
-      setNotifications([]);
+      setError("加载通知失败");
     } finally {
       setLoading(false);
     }
@@ -102,7 +104,7 @@ export default function NotificationBell() {
       );
       setUnreadCount((c) => Math.max(0, c - 1));
     } catch {
-      // ignore
+      setError("标记已读失败");
     }
   };
 
@@ -112,7 +114,7 @@ export default function NotificationBell() {
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch {
-      // ignore
+      setError("全部标记已读失败");
     }
   };
 
@@ -160,11 +162,16 @@ export default function NotificationBell() {
           </div>
 
           <div className="max-h-80 overflow-y-auto">
+            {error && (
+              <div className="px-4 py-2 bg-red-500/10 text-red-400 text-xs text-center">
+                {error}
+              </div>
+            )}
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-5 h-5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
               </div>
-            ) : notifications.length === 0 ? (
+            ) : !error && notifications.length === 0 ? (
               <div className="py-8 text-center text-temple-400 text-sm">
                 暂无通知
               </div>

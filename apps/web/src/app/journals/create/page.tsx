@@ -4,6 +4,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { fetchTrips, createJournal } from "@/lib/api";
 
 interface TripOption {
@@ -11,16 +12,17 @@ interface TripOption {
   title: string;
 }
 
-const MOOD_OPTIONS = [
-  { value: "感悟", label: "感悟", emoji: "💡" },
-  { value: "喜悦", label: "喜悦", emoji: "😊" },
-  { value: "平静", label: "平静", emoji: "🕊️" },
-  { value: "震撼", label: "震撼", emoji: "⚡" },
-];
-
 export default function JournalCreatePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const MOOD_OPTIONS = [
+    { value: "感悟", label: t("journal.mood.insight"), emoji: "💡" },
+    { value: "喜悦", label: t("journal.mood.joy"), emoji: "😊" },
+    { value: "平静", label: t("journal.mood.peace"), emoji: "🕊️" },
+    { value: "震撼", label: t("journal.mood.awe"), emoji: "⚡" },
+  ];
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -29,6 +31,7 @@ export default function JournalCreatePage() {
   const [tripId, setTripId] = useState("");
   const [trips, setTrips] = useState<TripOption[]>([]);
   const [error, setError] = useState("");
+  const [tripError, setTripError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -44,13 +47,13 @@ export default function JournalCreatePage() {
         const list = Array.isArray(res) ? res : res.data || [];
         setTrips(list.map((t: { id: string; title: string }) => ({ id: t.id, title: t.title })));
       })
-      .catch(() => {});
+      .catch((e: Error) => setTripError(e.message || t("journal.tripLoadFailed")));
   }, [user]);
 
   if (authLoading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-temple-400 text-sm font-serif">加载中...</p>
+        <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
       </div>
     );
   }
@@ -62,11 +65,11 @@ export default function JournalCreatePage() {
     setError("");
 
     if (!title.trim()) {
-      setError("请输入日记标题");
+      setError(t("journal.titleRequired"));
       return;
     }
     if (!content.trim()) {
-      setError("请输入日记内容");
+      setError(t("journal.contentRequired"));
       return;
     }
 
@@ -83,7 +86,7 @@ export default function JournalCreatePage() {
       const journal = await createJournal(data);
       router.push(`/journals/${journal.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "创建日记失败，请重试");
+      setError(err instanceof Error ? err.message : t("journal.createFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -97,10 +100,10 @@ export default function JournalCreatePage() {
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">📖</div>
             <h1 className="text-2xl font-serif font-bold text-gradient-gold">
-              写朝圣日记
+              {t("journal.createTitle")}
             </h1>
             <p className="text-temple-400 text-sm mt-2">
-              记录您心灵的触动与觉醒
+              {t("journal.createSubtitle")}
             </p>
           </div>
 
@@ -118,14 +121,14 @@ export default function JournalCreatePage() {
                 htmlFor="title"
                 className="block text-sm text-temple-300 mb-1.5"
               >
-                标题 *
+                {t("journal.title")} *
               </label>
               <input
                 id="title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="如：菩提树下的觉悟"
+                placeholder={t("journal.titlePlaceholder")}
                 className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
               />
             </div>
@@ -135,13 +138,13 @@ export default function JournalCreatePage() {
                 htmlFor="content"
                 className="block text-sm text-temple-300 mb-1.5"
               >
-                内容 *
+                {t("journal.content")} *
               </label>
               <textarea
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="写下您的朝圣感悟..."
+                placeholder={t("journal.contentPlaceholder")}
                 rows={8}
                 className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors resize-none"
               />
@@ -153,7 +156,7 @@ export default function JournalCreatePage() {
                   htmlFor="mood"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  心情
+                  {t("journal.mood")}
                 </label>
                 <select
                   id="mood"
@@ -161,7 +164,7 @@ export default function JournalCreatePage() {
                   onChange={(e) => setMood(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
                 >
-                  <option value="">选择心情</option>
+                  <option value="">{t("journal.selectMood")}</option>
                   {MOOD_OPTIONS.map((m) => (
                     <option key={m.value} value={m.value}>
                       {m.emoji} {m.label}
@@ -175,7 +178,7 @@ export default function JournalCreatePage() {
                   htmlFor="trip"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  关联行程
+                  {t("journal.linkedTrip")}
                 </label>
                 <select
                   id="trip"
@@ -183,7 +186,7 @@ export default function JournalCreatePage() {
                   onChange={(e) => setTripId(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
                 >
-                  <option value="">不关联</option>
+                  <option value="">{t("journal.noLink")}</option>
                   {trips.map((t) => (
                     <option key={t.id} value={t.id}>
                       {t.title}
@@ -193,12 +196,19 @@ export default function JournalCreatePage() {
               </div>
             </div>
 
+            {/* Trip load error */}
+            {tripError && (
+              <div className="p-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs text-center">
+                {tripError}
+              </div>
+            )}
+
             {/* Public toggle */}
             <div className="flex items-center justify-between p-3 rounded-xl bg-temple-900/50 border border-temple-600/20">
               <div>
-                <span className="text-sm text-temple-200">公开日记</span>
+                <span className="text-sm text-temple-200">{t("journal.publicJournal")}</span>
                 <p className="text-xs text-temple-500 mt-0.5">
-                  公开后其他朝圣者可以看到
+                  {t("journal.publicDesc")}
                 </p>
               </div>
               <button
@@ -225,7 +235,7 @@ export default function JournalCreatePage() {
               disabled={submitting}
               className="w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? "发布中..." : "发布日记"}
+              {submitting ? t("journal.publishing") : t("journal.publish")}
             </button>
           </form>
 
@@ -235,7 +245,7 @@ export default function JournalCreatePage() {
               href="/journals"
               className="text-temple-400 text-sm hover:text-gold transition-colors"
             >
-              返回日记列表
+              {t("journal.backToList")}
             </Link>
           </div>
         </div>

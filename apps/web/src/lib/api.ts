@@ -1,4 +1,4 @@
-const API_BASE =
+export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
   (typeof window === "undefined" ? "http://localhost:3002" : "");
 
@@ -609,7 +609,10 @@ export async function verifyCoupon(
 // --- XiaoHong AI Chat ---
 
 export interface ChatResponse {
-  reply: string;
+  content: string;
+  reply?: string;
+  intent?: string;
+  conversationId?: string;
 }
 
 export interface SuggestionsResponse {
@@ -617,16 +620,79 @@ export interface SuggestionsResponse {
 }
 
 export async function chatWithXiaohong(
-  message: string
+  message: string,
+  conversationId?: string
 ): Promise<ChatResponse> {
   return fetchAuthed<ChatResponse>("/api/xiaohong/chat", {
     method: "POST",
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, conversationId }),
   });
 }
 
 export async function fetchXiaohongSuggestions(): Promise<SuggestionsResponse> {
   return fetchJson<SuggestionsResponse>("/api/xiaohong/suggestions");
+}
+
+/** SSE streaming chat - returns an AbortController to cancel */
+export function chatStreamXiaohong(
+  message: string,
+  conversationId?: string,
+  onChunk?: (text: string, meta?: { intent?: string; conversationId?: string; done?: boolean }) => void,
+): AbortController {
+  const controller = new AbortController();
+  const params = new URLSearchParams({ message });
+  if (conversationId) params.set("conversationId", conversationId);
+  const url = `${API_BASE}/api/xiaohong/chat/stream?${params.toString()}`;
+
+  (async () => {
+    const { getAccessToken } = await import("./auth");
+    const token = getAccessToken();
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token || ""}` },
+        signal: controller.signal,
+      });
+      if (!res.ok || !res.body) {
+        onChunk?.("小鸿暂时无法回答，请稍后再试。", { done: true });
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data:")) {
+            const jsonStr = line.slice(5).trim();
+            if (!jsonStr) continue;
+            try {
+              const data = JSON.parse(jsonStr);
+              onChunk?.(data.content || "", {
+                intent: data.intent,
+                conversationId: data.conversationId,
+                done: data.done,
+              });
+            } catch {
+              onChunk?.(jsonStr, {});
+            }
+          }
+        }
+      }
+    } catch {
+      if (!controller.signal.aborted) {
+        onChunk?.("网络异常，请稍后再试。", { done: true });
+      }
+    }
+  })();
+
+  return controller;
 }
 
 // --- Journals (authenticated) ---
@@ -715,6 +781,75 @@ export async function deleteJournal(id: string): Promise<void> {
   });
 }
 
+// --- Reviews ---
+
+export interface ReviewUser {
+  id: string;
+  nickname: string | null;
+  avatar: string | null;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  content: string;
+  images: string[];
+  createdAt: string;
+  user: ReviewUser;
+}
+
+export interface ReviewListResponse {
+  data: Review[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalCount: number;
+  distribution: Record<number, number>;
+}
+
+export interface CreateReviewData {
+  targetType: "TRIP" | "GUIDE" | "SITE";
+  targetId: string;
+  rating: number;
+  content?: string;
+  images?: string[];
+}
+
+export async function fetchReviewStats(
+  targetType: string,
+  targetId: string
+): Promise<ReviewStats> {
+  return fetchJson<ReviewStats>(
+    `/api/reviews/stats/${targetType}/${targetId}`
+  );
+}
+
+export async function fetchReviews(
+  targetType: string,
+  targetId: string,
+  limit = 5
+): Promise<ReviewListResponse> {
+  const params = new URLSearchParams({
+    targetType,
+    targetId,
+    limit: String(limit),
+  });
+  return fetchJson<ReviewListResponse>(`/api/reviews?${params}`);
+}
+
+export async function createReview(
+  data: CreateReviewData
+): Promise<Review> {
+  return fetchAuthed<Review>("/api/reviews", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 // --- Profile ---
 
 export interface UpdateProfileData {
@@ -730,4 +865,95 @@ export async function updateProfile(
     method: "PATCH",
     body: JSON.stringify(data),
   });
+}
+
+// --- Auth ---
+
+interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface AuthUser {
+  id: string;
+  nickname: string;
+  avatar: string | null;
+  role: string;
+  phone: string | null;
+  email: string | null;
+  _count: { trips: number; orders: number; journals: number; practices: number };
+}
+
+async function fetchAuthEndpoint<T>(
+  url: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const res = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const msg = Array.isArray(err.message)
+        ? err.message.join("; ")
+        : err.message || `Auth error: ${res.status}`;
+      throw new Error(msg);
+    }
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export async function fetchMe(token: string): Promise<AuthUser> {
+  return fetchAuthEndpoint<AuthUser>("/api/auth/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function loginUser(
+  phone: string,
+  password: string
+): Promise<AuthTokens> {
+  return fetchAuthEndpoint<AuthTokens>("/api/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ phone, password }),
+  });
+}
+
+export async function registerUser(body: {
+  phone?: string;
+  email?: string;
+  password: string;
+  nickname: string;
+}): Promise<AuthTokens> {
+  return fetchAuthEndpoint<AuthTokens>("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function logoutUser(token: string): Promise<void> {
+  await fetchAuthEndpoint<void>("/api/auth/logout", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  }).catch(() => {});
+}
+
+// --- OAuth Providers ---
+
+export interface OAuthProviders {
+  wechat: boolean;
+  google: boolean;
+}
+
+export async function fetchAuthProviders(): Promise<OAuthProviders> {
+  return fetchJson<OAuthProviders>("/api/auth/providers");
 }

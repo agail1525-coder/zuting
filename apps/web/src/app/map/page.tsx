@@ -11,14 +11,15 @@ export const metadata = {
 export default async function MapPage() {
   let religions: Religion[] = [];
   let holySites: HolySite[] = [];
+  let error = false;
   try {
     [religions, holySites] = await Promise.all([
       fetchReligions(),
       fetchHolySites(),
     ]);
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <MapClient religions={religions} holySites={holySites} />;
+  return <MapClient religions={religions} holySites={holySites} error={error} />;
 }

@@ -4,31 +4,35 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { getAccessToken } from "../../lib/auth";
 import {
   chatWithXiaohong,
+  chatStreamXiaohong,
   fetchXiaohongSuggestions,
 } from "../../lib/api";
+import { useTranslation } from "@/lib/i18n";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  intent?: string;
 }
 
-const DEFAULT_SUGGESTIONS = [
-  "推荐朝圣路线",
-  "佛教圣地介绍",
-  "三十印如何修炼",
-  "道教祖庭",
-  "今日修行指引",
-];
-
 export default function ChatPage() {
+  const { t } = useTranslation();
+
+  const DEFAULT_SUGGESTIONS = [
+    t("chat.suggestion.route"),
+    t("chat.suggestion.buddhism"),
+    t("chat.suggestion.seals"),
+    t("chat.suggestion.taoism"),
+    t("chat.suggestion.practice"),
+  ];
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content:
-        "🙏 您好！我是小鸿，您的朝圣旅行智慧助手。\n\n我熟知全球12大信仰、60处圣地、27座祖庭的文化与历史。无论您想了解朝圣路线、修行方法，还是宗教文化，都可以问我。\n\n请问有什么可以帮到您的？",
+      content: t("chat.welcomeFull"),
       timestamp: new Date(),
     },
   ]);
@@ -36,8 +40,10 @@ export default function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>(DEFAULT_SUGGESTIONS);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [conversationId, setConversationId] = useState<string | undefined>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const streamControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,41 +69,6 @@ export default function ChatPage() {
       });
   }, []);
 
-  const simulateTypewriter = useCallback(
-    (fullText: string) => {
-      setIsStreaming(true);
-      const msgId = `assistant-${Date.now()}`;
-      setMessages((prev) => [
-        ...prev,
-        { id: msgId, role: "assistant", content: "", timestamp: new Date() },
-      ]);
-
-      let index = 0;
-      const chunkSize = 3;
-      const interval = setInterval(() => {
-        index += chunkSize;
-        if (index >= fullText.length) {
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === msgId ? { ...m, content: fullText } : m
-            )
-          );
-          setIsStreaming(false);
-          clearInterval(interval);
-        } else {
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === msgId
-                ? { ...m, content: fullText.slice(0, index) }
-                : m
-            )
-          );
-        }
-      }, 20);
-    },
-    []
-  );
-
   const handleSend = useCallback(
     async (text?: string) => {
       const msg = (text || input).trim();
@@ -109,6 +80,7 @@ export default function ChatPage() {
         return;
       }
 
+      // Add user message
       setMessages((prev) => [
         ...prev,
         {
@@ -119,39 +91,115 @@ export default function ChatPage() {
         },
       ]);
       setInput("");
+      setIsStreaming(true);
 
+      // Create assistant message placeholder
+      const assistantMsgId = `assistant-${Date.now()}`;
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: assistantMsgId,
+          role: "assistant",
+          content: "",
+          timestamp: new Date(),
+        },
+      ]);
+
+      // Try SSE streaming first
       try {
-        const data = await chatWithXiaohong(msg);
-        const reply = data.reply || "抱歉，我暂时无法回答这个问题。";
-        simulateTypewriter(reply);
+        let streamFailed = false;
+        const controller = chatStreamXiaohong(
+          msg,
+          conversationId,
+          (chunk, meta) => {
+            if (meta?.conversationId && !conversationId) {
+              setConversationId(meta.conversationId);
+            }
+            if (meta?.done) {
+              setIsStreaming(false);
+              return;
+            }
+            // Append chunk to assistant message
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? { ...m, content: m.content + chunk, intent: meta?.intent || m.intent }
+                  : m
+              )
+            );
+          }
+        );
+        streamControllerRef.current = controller;
+
+        // Set a timeout — if SSE fails within 10s with no data, fall back
+        const timeout = setTimeout(async () => {
+          // Check if we got any content
+          const currentMsg = messages.find((m) => m.id === assistantMsgId);
+          if (!currentMsg?.content && !streamFailed) {
+            streamFailed = true;
+            controller.abort();
+            // Fallback to non-streaming
+            try {
+              const data = await chatWithXiaohong(msg, conversationId);
+              const reply = data.content || data.reply || t("chat.fallbackReply");
+              if (data.conversationId) setConversationId(data.conversationId);
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantMsgId ? { ...m, content: reply } : m
+                )
+              );
+            } catch {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantMsgId
+                    ? { ...m, content: t("chat.networkError") }
+                    : m
+                )
+              );
+            }
+            setIsStreaming(false);
+          }
+        }, 10000);
+
+        // Clean up timeout if stream completes normally
+        return () => clearTimeout(timeout);
       } catch (err) {
-        const isAuthError =
-          err instanceof Error && err.message.includes("401");
-        if (isAuthError || (err instanceof Error && err.message === "Not authenticated")) {
-          setIsLoggedIn(false);
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: `error-${Date.now()}`,
-              role: "assistant",
-              content: "登录已过期，请重新登录后继续对话。",
-              timestamp: new Date(),
-            },
-          ]);
-          return;
+        // Fallback to regular chat
+        try {
+          const data = await chatWithXiaohong(msg, conversationId);
+          const reply = data.content || data.reply || t("chat.fallbackReply");
+          if (data.conversationId) setConversationId(data.conversationId);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMsgId ? { ...m, content: reply } : m
+            )
+          );
+        } catch (innerErr) {
+          const isAuthError =
+            innerErr instanceof Error && innerErr.message.includes("401");
+          if (isAuthError) {
+            setIsLoggedIn(false);
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? { ...m, content: t("chat.authExpired") }
+                  : m
+              )
+            );
+          } else {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? { ...m, content: t("chat.networkError") }
+                  : m
+              )
+            );
+          }
         }
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `error-${Date.now()}`,
-            role: "assistant",
-            content: "抱歉，网络出现问题，请稍后重试。",
-            timestamp: new Date(),
-          },
-        ]);
+        setIsStreaming(false);
       }
     },
-    [input, isStreaming, simulateTypewriter]
+    [input, isStreaming, conversationId, t]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -170,26 +218,26 @@ export default function ChatPage() {
         </div>
         <div>
           <h1 className="text-lg font-serif font-bold text-gradient-gold">
-            小鸿 AI 助手
+            {t("chat.title")}
           </h1>
           <p className="text-xs text-temple-400">
-            全球祖庭朝圣智慧导航
+            {t("chat.subtitle")}
           </p>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-jade animate-glow" />
-          <span className="text-xs text-jade">在线</span>
+          <span className="text-xs text-jade">{t("chat.online")}</span>
         </div>
       </div>
 
       {/* Login prompt */}
       {!isLoggedIn && (
         <div className="mx-4 mt-4 px-4 py-3 rounded-xl border border-gold/20 bg-gold/5 text-sm text-temple-200">
-          请先{" "}
+          {t("chat.loginPromptPrefix")}{" "}
           <a href="/login" className="text-gold underline hover:text-gold/80">
-            登录
+            {t("chat.loginPromptLink")}
           </a>{" "}
-          后再与小鸿对话。
+          {t("chat.loginPromptSuffix")}
         </div>
       )}
 
@@ -257,7 +305,7 @@ export default function ChatPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isLoggedIn ? "输入您的问题..." : "请先登录后再对话"}
+            placeholder={isLoggedIn ? t("chat.placeholder") : t("chat.loginRequired")}
             disabled={isStreaming || !isLoggedIn}
             className="flex-1 bg-transparent text-temple-100 placeholder:text-temple-500 outline-none text-sm py-1"
           />
@@ -282,7 +330,7 @@ export default function ChatPage() {
           </button>
         </div>
         <p className="text-center text-[10px] text-temple-600 mt-2">
-          小鸿 AI 基于全球祖庭数据库提供文化参考，不构成宗教指导
+          {t("chat.disclaimer")}
         </p>
       </div>
     </div>

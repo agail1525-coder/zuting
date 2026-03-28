@@ -4,31 +4,19 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { fetchJournals, type JournalItem } from "@/lib/api";
 
-const MOOD_EMOJI: Record<string, string> = {
-  "觉悟": "🪷",
-  "平静": "🌅",
-  "感动": "🙏",
-  "振奋": "⚡",
-  "喜悦": "😊",
-  "感悟": "💡",
-  "震撼": "⚡",
-  "虔诚": "🪷",
+const MOOD_EMOJI: Record<string, { emoji: string; key: string }> = {
+  "觉悟": { emoji: "🪷", key: "journal.mood.awakening" },
+  "平静": { emoji: "🌅", key: "journal.mood.calm" },
+  "感动": { emoji: "🙏", key: "journal.mood.touched" },
+  "振奋": { emoji: "⚡", key: "journal.mood.excited" },
+  "喜悦": { emoji: "😊", key: "journal.mood.joy" },
+  "感悟": { emoji: "💡", key: "journal.mood.insight" },
+  "震撼": { emoji: "⚡", key: "journal.mood.awe" },
+  "虔诚": { emoji: "🪷", key: "journal.mood.devout" },
 };
-
-function formatDate(dateStr: string) {
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("zh-CN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  } catch {
-    return dateStr;
-  }
-}
 
 function getExcerpt(content: string, maxLen = 120): string {
   if (!content) return "";
@@ -38,6 +26,7 @@ function getExcerpt(content: string, maxLen = 120): string {
 export default function JournalsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { t, locale } = useTranslation();
 
   const [journals, setJournals] = useState<JournalItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +45,7 @@ export default function JournalsPage() {
         const res = await fetchJournals({ userId: user.id });
         setJournals(Array.isArray(res) ? res : res.data || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "加载失败");
+        setError(err instanceof Error ? err.message : t("journal.loadFailed"));
       } finally {
         setLoading(false);
       }
@@ -64,12 +53,25 @@ export default function JournalsPage() {
     loadJournals();
   }, [user]);
 
+  const formatDate = (dateStr: string) => {
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString(locale, {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">加载中...</p>
+          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -83,17 +85,17 @@ export default function JournalsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-serif font-bold text-gradient-gold">
-            朝圣日记
+            {t("journal.listTitle")}
           </h1>
           <p className="text-temple-400 mt-1 text-sm">
-            记录每一次心灵的触动与觉醒
+            {t("journal.listSubtitle")}
           </p>
         </div>
         <Link
           href="/journals/create"
           className="px-5 py-2.5 bg-gold text-temple-900 font-semibold rounded-full text-sm hover:bg-gold-light transition-colors shadow-lg shadow-gold/20"
         >
-          + 写日记
+          {t("journal.writeJournal")}
         </Link>
       </div>
 
@@ -109,16 +111,16 @@ export default function JournalsPage() {
         <div className="card-glow rounded-2xl bg-temple-800/50 p-12 text-center">
           <div className="text-5xl mb-4">📖</div>
           <h2 className="text-xl font-serif text-temple-200 mb-3">
-            还没有日记
+            {t("journal.emptyTitle")}
           </h2>
           <p className="text-temple-400 text-sm mb-6">
-            开始记录您的朝圣感悟吧
+            {t("journal.emptyDesc")}
           </p>
           <Link
             href="/journals/create"
             className="inline-block px-6 py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors"
           >
-            写第一篇日记
+            {t("journal.writeFirst")}
           </Link>
         </div>
       )}
@@ -127,9 +129,8 @@ export default function JournalsPage() {
       {journals.length > 0 && (
         <div className="space-y-4">
           {journals.map((journal, i) => {
-            const moodEmoji = journal.mood
-              ? MOOD_EMOJI[journal.mood] || "📝"
-              : "📝";
+            const moodInfo = journal.mood ? MOOD_EMOJI[journal.mood] : null;
+            const moodEmoji = moodInfo?.emoji || "📝";
             return (
               <Link
                 key={journal.id}
@@ -162,9 +163,9 @@ export default function JournalsPage() {
                       <span className="text-xs text-temple-500">
                         {formatDate(journal.createdAt)}
                       </span>
-                      {journal.mood && (
+                      {journal.mood && moodInfo && (
                         <span className="px-2 py-0.5 text-xs rounded-full bg-gold/10 border border-gold/20 text-gold/80">
-                          {moodEmoji} {journal.mood}
+                          {moodInfo.emoji} {t(moodInfo.key)}
                         </span>
                       )}
                       {journal.trip && (
@@ -179,7 +180,7 @@ export default function JournalsPage() {
                       )}
                       {journal.isPublic && (
                         <span className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 border border-green-500/20 text-green-400">
-                          公开
+                          {t("journal.publicTag")}
                         </span>
                       )}
                     </div>

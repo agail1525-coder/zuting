@@ -5,18 +5,19 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { fetchJournal, updateJournal, deleteJournal, type JournalDetail, type UpdateJournalData } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-const MOOD_MAP: Record<string, { emoji: string; label: string }> = {
-  "感悟": { emoji: "💡", label: "感悟" },
-  "喜悦": { emoji: "😊", label: "喜悦" },
-  "平静": { emoji: "🕊️", label: "平静" },
-  "震撼": { emoji: "⚡", label: "震撼" },
-  "觉悟": { emoji: "🪷", label: "觉悟" },
-  "感动": { emoji: "🙏", label: "感动" },
-  "振奋": { emoji: "⚡", label: "振奋" },
-  "虔诚": { emoji: "🪷", label: "虔诚" },
+const MOOD_KEYS: Record<string, { emoji: string; key: string }> = {
+  "感悟": { emoji: "💡", key: "journal.mood.insight" },
+  "喜悦": { emoji: "😊", key: "journal.mood.joy" },
+  "平静": { emoji: "🕊️", key: "journal.mood.calm" },
+  "震撼": { emoji: "⚡", key: "journal.mood.awe" },
+  "觉悟": { emoji: "🪷", key: "journal.mood.awakening" },
+  "感动": { emoji: "🙏", key: "journal.mood.touched" },
+  "振奋": { emoji: "⚡", key: "journal.mood.excited" },
+  "虔诚": { emoji: "🪷", key: "journal.mood.devout" },
 };
 
 export default function JournalDetailPage() {
@@ -24,6 +25,7 @@ export default function JournalDetailPage() {
   const router = useRouter();
   const id = params.id as string;
   const { user } = useAuth();
+  const { t, locale } = useTranslation();
 
   const [journal, setJournal] = useState<JournalDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function JournalDetailPage() {
         if (msg.includes("404")) {
           setError("not_found");
         } else {
-          setError(msg || "加载失败");
+          setError(msg || t("journal.loadFailed"));
         }
       } finally {
         setLoading(false);
@@ -80,20 +82,20 @@ export default function JournalDetailPage() {
       setJournal(updated);
       setEditing(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "保存失败");
+      alert(err instanceof Error ? err.message : t("journal.saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!journal || !confirm("确定删除这篇日志吗？此操作不可撤销。")) return;
+    if (!journal || !confirm(t("journal.deleteConfirm"))) return;
     setDeleting(true);
     try {
       await deleteJournal(journal.id);
       router.push("/journals");
     } catch (err) {
-      alert(err instanceof Error ? err.message : "删除失败");
+      alert(err instanceof Error ? err.message : t("journal.deleteFailed"));
       setDeleting(false);
     }
   };
@@ -103,7 +105,7 @@ export default function JournalDetailPage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">加载中...</p>
+          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -114,13 +116,13 @@ export default function JournalDetailPage() {
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">📖</div>
         <h1 className="text-2xl font-serif text-temple-200 mb-4">
-          日志未找到
+          {t("journal.notFound")}
         </h1>
         <Link
           href="/journals"
           className="text-gold hover:text-gold-light transition-colors"
         >
-          返回日记列表
+          {t("journal.backToList")}
         </Link>
       </div>
     );
@@ -135,7 +137,7 @@ export default function JournalDetailPage() {
           href="/journals"
           className="text-gold hover:text-gold-light transition-colors"
         >
-          返回日记列表
+          {t("journal.backToList")}
         </Link>
       </div>
     );
@@ -143,8 +145,8 @@ export default function JournalDetailPage() {
 
   if (!journal) return null;
 
-  const mood = journal.mood ? MOOD_MAP[journal.mood] : null;
-  const date = new Date(journal.createdAt).toLocaleDateString("zh-CN", {
+  const mood = journal.mood ? MOOD_KEYS[journal.mood] : null;
+  const date = new Date(journal.createdAt).toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -170,7 +172,7 @@ export default function JournalDetailPage() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        返回日记列表
+        {t("journal.backToList")}
       </Link>
 
       {/* Article */}
@@ -187,14 +189,14 @@ export default function JournalDetailPage() {
                   onClick={handleEdit}
                   className="px-3 py-1.5 text-xs rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-gold hover:border-gold/30 transition-colors"
                 >
-                  编辑
+                  {t("journal.edit")}
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
                   className="px-3 py-1.5 text-xs rounded-lg bg-red-900/30 border border-red-800/50 text-red-400 hover:text-red-300 hover:border-red-700 transition-colors disabled:opacity-50"
                 >
-                  {deleting ? "删除中..." : "删除"}
+                  {deleting ? t("journal.deleting") : t("journal.delete")}
                 </button>
               </div>
             )}
@@ -203,7 +205,7 @@ export default function JournalDetailPage() {
             <span className="text-temple-500">{date}</span>
             {mood && (
               <span className="px-2 py-0.5 rounded-full bg-gold/10 border border-gold/20 text-gold/80 text-xs">
-                {mood.emoji} {mood.label}
+                {mood.emoji} {t(mood.key)}
               </span>
             )}
             {journal.trip && (
@@ -230,7 +232,7 @@ export default function JournalDetailPage() {
         {editing ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-temple-400 mb-1">标题</label>
+              <label className="block text-sm text-temple-400 mb-1">{t("journal.labelTitle")}</label>
               <input
                 type="text"
                 value={editTitle}
@@ -240,7 +242,7 @@ export default function JournalDetailPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-temple-400 mb-1">内容</label>
+              <label className="block text-sm text-temple-400 mb-1">{t("journal.labelContent")}</label>
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
@@ -250,15 +252,15 @@ export default function JournalDetailPage() {
             </div>
             <div className="flex gap-4 items-center">
               <div>
-                <label className="block text-sm text-temple-400 mb-1">心情</label>
+                <label className="block text-sm text-temple-400 mb-1">{t("journal.labelMood")}</label>
                 <select
                   value={editMood}
                   onChange={(e) => setEditMood(e.target.value)}
                   className="px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none"
                 >
-                  <option value="">无</option>
-                  {Object.entries(MOOD_MAP).map(([key, v]) => (
-                    <option key={key} value={key}>{v.emoji} {v.label}</option>
+                  <option value="">{t("journal.moodNone")}</option>
+                  {Object.entries(MOOD_KEYS).map(([key, v]) => (
+                    <option key={key} value={key}>{v.emoji} {t(v.key)}</option>
                   ))}
                 </select>
               </div>
@@ -269,7 +271,7 @@ export default function JournalDetailPage() {
                   onChange={(e) => setEditIsPublic(e.target.checked)}
                   className="rounded border-temple-700"
                 />
-                公开可见
+                {t("journal.publicVisible")}
               </label>
             </div>
             <div className="flex gap-2 pt-2">
@@ -278,14 +280,14 @@ export default function JournalDetailPage() {
                 disabled={saving || !editTitle.trim() || !editContent.trim()}
                 className="px-4 py-2 text-sm rounded-lg bg-gold/20 border border-gold/30 text-gold hover:bg-gold/30 transition-colors disabled:opacity-50"
               >
-                {saving ? "保存中..." : "保存"}
+                {saving ? t("journal.saving") : t("journal.save")}
               </button>
               <button
                 onClick={() => setEditing(false)}
                 disabled={saving}
                 className="px-4 py-2 text-sm rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-temple-200 transition-colors disabled:opacity-50"
               >
-                取消
+                {t("journal.cancel")}
               </button>
             </div>
           </div>

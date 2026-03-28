@@ -1,42 +1,14 @@
 import type { MetadataRoute } from "next";
+import {
+  fetchReligions,
+  fetchHolySites,
+  fetchTemples,
+  fetchPatriarchs,
+  fetchTeachings,
+  fetchSeals,
+} from "@/lib/api";
 
 const BASE_URL = "https://zuting.fszyl.top";
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
-
-async function fetchIds<T extends { id: string }>(
-  endpoint: string
-): Promise<T[]> {
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
-
-async function fetchReligionSlugs(): Promise<{ slug: string }[]> {
-  try {
-    const res = await fetch(`${API_BASE}/religions`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
-
-async function fetchSealIds(): Promise<{ id: number }[]> {
-  try {
-    const res = await fetch(`${API_BASE}/seals`, { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -129,15 +101,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic pages
+  // Dynamic pages — reuse api.ts functions, catch errors to avoid breaking sitemap
+  const safe = <T,>(p: Promise<T[]>): Promise<T[]> =>
+    p.catch(() => [] as T[]);
+
   const [religions, holySites, temples, patriarchs, teachings, seals] =
     await Promise.all([
-      fetchReligionSlugs(),
-      fetchIds<{ id: string }>("/holy-sites"),
-      fetchIds<{ id: string }>("/temples"),
-      fetchIds<{ id: string }>("/patriarchs"),
-      fetchIds<{ id: string }>("/teachings"),
-      fetchSealIds(),
+      safe(fetchReligions()),
+      safe(fetchHolySites()),
+      safe(fetchTemples()),
+      safe(fetchPatriarchs()),
+      safe(fetchTeachings()),
+      safe(fetchSeals()),
     ]);
 
   const religionPages: MetadataRoute.Sitemap = religions.map((r) => ({

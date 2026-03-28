@@ -20,6 +20,7 @@ export default async function HomePage() {
   let temples: Temple[] = [];
   let patriarchs: Patriarch[] = [];
   let seals: Seal[] = [];
+  let error = false;
   try {
     [religions, holySites, temples, patriarchs, seals] = await Promise.all([
       fetchReligions(),
@@ -29,7 +30,7 @@ export default async function HomePage() {
       fetchSeals(),
     ]);
   } catch {
-    // fallback to empty
+    error = true;
   }
 
   const featured = holySites.slice(0, 6);
@@ -42,6 +43,7 @@ export default async function HomePage() {
       temples={temples}
       patriarchs={patriarchs}
       seals={seals}
+      error={error}
     />
   );
 }

@@ -21,14 +21,15 @@ export const metadata = {
 export default async function HolySitesPage() {
   let religions: Religion[] = [];
   let holySites: HolySite[] = [];
+  let error = false;
   try {
     [religions, holySites] = await Promise.all([
       fetchReligions(),
       fetchHolySites(),
     ]);
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <HolySitesClient religions={religions} holySites={holySites} />;
+  return <HolySitesClient religions={religions} holySites={holySites} error={error} />;
 }

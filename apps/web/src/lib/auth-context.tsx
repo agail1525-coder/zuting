@@ -2,8 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { getAccessToken, setTokens, clearTokens } from './auth';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
+import { fetchMe, loginUser, registerUser, logoutUser } from './api';
 
 interface User {
   id: string;
@@ -34,16 +33,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = getAccessToken();
     if (!token) { setUser(null); setLoading(false); return; }
     try {
-      const res = await fetch(`${API_URL}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        setUser(await res.json());
-      } else {
-        clearTokens();
-        setUser(null);
-      }
+      setUser(await fetchMe(token));
     } catch {
+      clearTokens();
       setUser(null);
     } finally {
       setLoading(false);
@@ -53,31 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => { refreshUser(); }, [refreshUser]);
 
   const login = async (phone: string, password: string) => {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, password }),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Login failed');
-    }
-    const data = await res.json();
+    const data = await loginUser(phone, password);
     setTokens(data.accessToken, data.refreshToken);
     await refreshUser();
   };
 
   const register = async (body: { phone?: string; email?: string; password: string; nickname: string }) => {
-    const res = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Registration failed');
-    }
-    const data = await res.json();
+    const data = await registerUser(body);
     setTokens(data.accessToken, data.refreshToken);
     await refreshUser();
   };
@@ -85,10 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     const token = getAccessToken();
     if (token) {
-      await fetch(`${API_URL}/auth/logout`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      }).catch(() => {});
+      await logoutUser(token);
     }
     clearTokens();
     setUser(null);

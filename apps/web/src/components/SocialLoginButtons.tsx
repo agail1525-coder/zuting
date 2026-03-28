@@ -1,20 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
-
-interface OAuthProviders {
-  wechat: boolean;
-  google: boolean;
-}
+import { API_BASE, fetchAuthProviders, type OAuthProviders } from '@/lib/api';
 
 export default function SocialLoginButtons() {
   const [providers, setProviders] = useState<OAuthProviders | null>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/auth/providers`)
-      .then((res) => res.json())
+    fetchAuthProviders()
       .then((data) => setProviders(data))
       .catch(() => setProviders({ wechat: false, google: false }));
   }, []);
@@ -25,11 +18,11 @@ export default function SocialLoginButtons() {
   }
 
   const handleWechat = () => {
-    window.location.href = `${API_URL}/auth/wechat`;
+    window.location.href = `${API_BASE}/api/auth/wechat`;
   };
 
   const handleGoogle = () => {
-    window.location.href = `${API_URL}/auth/google`;
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   return (

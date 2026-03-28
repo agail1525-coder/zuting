@@ -4,13 +4,17 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import WorldMapDynamic from "@/components/WorldMapDynamic";
 import type { Religion, HolySite } from "@/lib/api";
+import DataLoadError from "@/components/DataLoadError";
+import { useTranslation } from "@/lib/i18n";
 
 interface Props {
   religions: Religion[];
   holySites: HolySite[];
+  error?: boolean;
 }
 
-export default function MapClient({ religions, holySites }: Props) {
+export default function MapClient({ religions, holySites, error }: Props) {
+  const { t } = useTranslation();
   const [selectedReligions, setSelectedReligions] = useState<Set<string>>(
     new Set()
   );
@@ -41,6 +45,19 @@ export default function MapClient({ religions, holySites }: Props) {
     setSidebarOpen(true);
   };
 
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-2xl font-serif font-bold text-gradient-gold mb-4">
+            {t("map.title")}
+          </h1>
+        </div>
+        <DataLoadError />
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 top-16 flex">
       {/* Sidebar */}
@@ -53,10 +70,10 @@ export default function MapClient({ religions, holySites }: Props) {
           {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-serif font-bold text-gradient-gold mb-1">
-              全球圣地地图
+              {t("map.title")}
             </h1>
             <p className="text-temple-400 text-sm">
-              {filteredSites.length} / {holySites.length} 圣地
+              {t("map.holySiteCount").replace("{filtered}", String(filteredSites.length)).replace("{total}", String(holySites.length))}
             </p>
           </div>
 
@@ -64,13 +81,13 @@ export default function MapClient({ religions, holySites }: Props) {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-temple-300 uppercase tracking-wider">
-                按信仰筛选
+                {t("map.filterByFaith")}
               </h3>
               <button
                 onClick={selectAll}
                 className="text-xs text-gold/60 hover:text-gold transition-colors"
               >
-                显示全部
+                {t("map.showAll")}
               </button>
             </div>
             <div className="space-y-1">
@@ -113,13 +130,13 @@ export default function MapClient({ religions, holySites }: Props) {
             <div className="border-t border-gold/10 pt-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-temple-300 uppercase tracking-wider">
-                  圣地详情
+                  {t("map.siteDetail")}
                 </h3>
                 <button
                   onClick={() => setSelectedSite(null)}
                   className="text-temple-500 hover:text-temple-300 text-xs"
                 >
-                  关闭
+                  {t("map.close")}
                 </button>
               </div>
               <div className="card-glow rounded-xl bg-temple-800/50 p-4">
@@ -151,7 +168,7 @@ export default function MapClient({ religions, holySites }: Props) {
                   href={`/holy-sites/${selectedSite.id}`}
                   className="inline-block px-4 py-2 text-sm border border-gold/30 text-gold rounded-full hover:bg-gold/10 transition-all"
                 >
-                  查看详情 &rarr;
+                  {t("map.viewDetail")} &rarr;
                 </Link>
               </div>
             </div>
@@ -164,7 +181,7 @@ export default function MapClient({ religions, holySites }: Props) {
             href="/holy-sites"
             className="block text-center px-4 py-2.5 bg-gold/10 text-gold rounded-lg hover:bg-gold/20 transition-all text-sm font-medium"
           >
-            查看全部圣地列表
+            {t("map.viewAllSites")}
           </Link>
         </div>
       </div>
