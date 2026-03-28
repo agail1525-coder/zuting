@@ -86,7 +86,7 @@ export default function Header() {
                   </>
                 ) : (
                   <span className="px-4 py-1.5 bg-[#0066FF] text-white rounded-full text-sm font-medium hover:bg-[#0052CC] transition-colors">
-                    {t("common.login") || "登录"}
+                    {t("nav.login")}
                   </span>
                 )}
               </Link>

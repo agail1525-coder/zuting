@@ -15,14 +15,14 @@ interface Props {
 }
 
 const CATEGORY_ICONS = [
-  { label: "禅宗路线", icon: "🏯", href: "/routes?category=ZEN", color: "#78716C" },
-  { label: "佛教圣地", icon: "☸", href: "/routes?category=BUDDHIST", color: "#F59E0B" },
-  { label: "道教寻根", icon: "☯", href: "/routes?category=TAOIST", color: "#10B981" },
-  { label: "基督文化", icon: "⛪", href: "/routes?category=CHRISTIAN", color: "#3B82F6" },
-  { label: "丝路探秘", icon: "🕌", href: "/routes?category=ISLAMIC", color: "#059669" },
-  { label: "跨文化之旅", icon: "🌏", href: "/routes?category=CROSS_CULTURAL", color: "#7C3AED" },
-  { label: "AI智能规划", icon: "✨", href: "/chat", color: "#0066FF" },
-  { label: "文化百科", icon: "📖", href: "/religions", color: "#0891B2" },
+  { label: "禅宗路线", icon: "禅", href: "/routes?category=ZEN", color: "#78716C" },
+  { label: "佛教圣地", icon: "佛", href: "/routes?category=BUDDHIST", color: "#F59E0B" },
+  { label: "道教寻根", icon: "道", href: "/routes?category=TAOIST", color: "#10B981" },
+  { label: "基督文化", icon: "十", href: "/routes?category=CHRISTIAN", color: "#3B82F6" },
+  { label: "丝路探秘", icon: "丝", href: "/routes?category=ISLAMIC", color: "#059669" },
+  { label: "跨文化之旅", icon: "融", href: "/routes?category=CROSS_CULTURAL", color: "#7C3AED" },
+  { label: "AI智能规划", icon: "AI", href: "/chat", color: "#0066FF" },
+  { label: "文化百科", icon: "典", href: "/religions", color: "#0891B2" },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -33,7 +33,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 function RouteCard({ route }: { route: Route }) {
   const price = (route.priceFrom / 100).toLocaleString();
   return (
-    <Link href={`/routes/${route.slug}`} className="group flex-shrink-0 w-72 md:w-80">
+    <Link href={`/routes/${route.slug}`} className="group">
       <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
         <div className="relative h-44 overflow-hidden">
           {route.coverImage ? (
@@ -84,16 +84,6 @@ function DestinationCard({ site }: { site: HolySite }) {
           <h3 className="text-white font-bold text-lg drop-shadow-lg">{site.name}</h3>
           <p className="text-white/80 text-sm">{site.country}</p>
         </div>
-        {site.religion && (
-          <div className="absolute top-3 right-3">
-            <span
-              className="text-xs px-2 py-1 rounded-full bg-white/90 backdrop-blur-sm font-medium"
-              style={{ color: site.religion.color ?? '#0066FF' }}
-            >
-              {site.religion.symbol}
-            </span>
-          </div>
-        )}
       </div>
     </Link>
   );
@@ -165,8 +155,8 @@ export default function HomeClient({ religions, holySites, featuredRoutes, error
           {CATEGORY_ICONS.map((cat) => (
             <Link key={cat.label} href={cat.href} className="flex flex-col items-center gap-2 group">
               <span
-                className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-2xl group-hover:scale-110 transition-all duration-300 text-2xl"
-                style={{ backgroundColor: `${cat.color}15` }}
+                className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full group-hover:scale-110 transition-all duration-300 text-base font-bold text-white"
+                style={{ backgroundColor: cat.color }}
               >
                 {cat.icon}
               </span>
@@ -192,9 +182,9 @@ export default function HomeClient({ religions, holySites, featuredRoutes, error
               </Link>
             </div>
           </div>
-          <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-4 px-4 md:px-[max(1rem,calc((100%-72rem)/2+1rem))] pb-4">
-              {featuredRoutes.map((route) => (
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {featuredRoutes.slice(0, 8).map((route) => (
                 <RouteCard key={route.id} route={route} />
               ))}
             </div>

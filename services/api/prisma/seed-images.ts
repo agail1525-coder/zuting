@@ -1,84 +1,83 @@
-// Unsplash image URLs for all seed data entities
-// Pattern: https://images.unsplash.com/photo-{ID}?w=800&h=600&fit=crop&q=80
-
-const u = (id: string) => `https://images.unsplash.com/photo-${id}?w=800&h=600&fit=crop&q=80`;
+// Local image paths for all seed data entities
+// Images stored in apps/web/public/images/
+// Pattern: /images/{category}/{slug}.jpg
 
 // ══════════════════════════════════════════════════════
 //  60 Holy Sites
 // ══════════════════════════════════════════════════════
 export const HOLY_SITE_IMAGES: Record<string, string> = {
   // Buddhism (8)
-  '菩提伽耶': u('1578662996442-48f60103fc96'),
-  '布达拉宫': u('1555400038-63f5ba517a47'),
-  '吴哥窟': u('1567591370504-cba8e7f8a803'),
-  '法隆寺': u('1528360983277-13d401cdc186'),
-  '五台山': u('1533669955142-6a73332af4db'),
-  '仰光大金塔': u('1590709899716-adbb7c5e570e'),
-  '婆罗浮屠': u('1580619305218-8423a532f7f4'),
-  '敦煌莫高窟': u('1584967918940-a7d51b064268'),
+  '菩提伽耶': '/images/holy-sites/bodhi-gaya.jpg',
+  '布达拉宫': '/images/holy-sites/potala-palace.jpg',
+  '吴哥窟': '/images/holy-sites/angkor-wat.jpg',
+  '法隆寺': '/images/holy-sites/horyuji.jpg',
+  '五台山': '/images/holy-sites/wutai-mountain.jpg',
+  '仰光大金塔': '/images/holy-sites/shwedagon-pagoda.jpg',
+  '婆罗浮屠': '/images/holy-sites/borobudur.jpg',
+  '敦煌莫高窟': '/images/holy-sites/mogao-caves.jpg',
   // Taoism (6)
-  '武当山': u('1547981609845-4c7e98dcde89'),
-  '青城山': u('1516466723877-e4ec1d736c8a'),
-  '龙虎山': u('1504681869696-d977211a5e35'),
-  '茅山': u('1532236204992-18baa7b3e7b0'),
-  '崂山': u('1506905925346-21bda4d32df4'),
-  '白云观': u('1518509562392-e4f8e5ba3659'),
+  '武当山': '/images/holy-sites/wudang-mountain.jpg',
+  '青城山': '/images/holy-sites/qingcheng-mountain.jpg',
+  '龙虎山': '/images/holy-sites/longhu-mountain.jpg',
+  '茅山': '/images/holy-sites/mao-mountain.jpg',
+  '崂山': '/images/holy-sites/lao-mountain.jpg',
+  '白云观': '/images/holy-sites/baiyun-temple.jpg',
   // Christianity (8)
-  '梵蒂冈圣彼得大教堂': u('1548625149-fc4a29cf7092'),
-  '圣家堂': u('1553933899-de0ff81f81b9'),
-  '巴黎圣母院': u('1499856871958-5b9357976b82'),
-  '圣索菲亚大教堂': u('1543489822-c49534ee4696'),
-  '科隆大教堂': u('1476362174823-3a23f4aa6e2d'),
-  '威斯敏斯特教堂': u('1501959181438-3e0fdf812ec7'),
-  '耶路撒冷圣墓教堂': u('1507003211169-0a1dd7228f2d'),
-  '米兰大教堂': u('1520175480-66953d66e926'),
+  '梵蒂冈圣彼得大教堂': '/images/holy-sites/st-peters-basilica.jpg',
+  '圣家堂': '/images/holy-sites/sagrada-familia.jpg',
+  '巴黎圣母院': '/images/holy-sites/notre-dame-paris.jpg',
+  '圣索菲亚大教堂': '/images/holy-sites/hagia-sophia.jpg',
+  '科隆大教堂': '/images/holy-sites/cologne-cathedral.jpg',
+  '威斯敏斯特教堂': '/images/holy-sites/westminster-abbey.jpg',
+  '耶路撒冷圣墓教堂': '/images/holy-sites/holy-sepulchre.jpg',
+  '米兰大教堂': '/images/holy-sites/milan-cathedral.jpg',
   // Islam (6)
-  '麦加禁寺': u('1564769625905-50e93615e769'),
-  '麦地那先知寺': u('1585036156171-384164a8c696'),
-  '阿尔罕布拉宫': u('1542816645-95d572263cd2'),
-  '蓝色清真寺': u('1570913149827-d2ac84ab3f9a'),
-  '圆顶清真寺': u('1566478989037-eec170784d0b'),
-  '泰姬陵': u('1540959733332-eab44bc4f75b'),
+  '麦加禁寺': '/images/holy-sites/masjid-al-haram.jpg',
+  '麦地那先知寺': '/images/holy-sites/al-masjid-an-nabawi.jpg',
+  '阿尔罕布拉宫': '/images/holy-sites/alhambra.jpg',
+  '蓝色清真寺': '/images/holy-sites/blue-mosque.jpg',
+  '圆顶清真寺': '/images/holy-sites/dome-of-the-rock.jpg',
+  '泰姬陵': '/images/holy-sites/taj-mahal.jpg',
   // Hinduism (6)
-  '瓦拉纳西恒河': u('1561361513-2d000a50f0dc'),
-  '巴厘岛母庙': u('1585123388867-3bfe7d1f27e5'),
-  '科纳克太阳神庙': u('1570168007204-dfb528c6958f'),
-  '尼泊尔帕斯帕提纳': u('1524492412937-b28074a5d7da'),
-  '吴哥窟印度教': u('1609340884849-0e5e5fca2b75'),
-  '阿克萨达姆神庙': u('1548013146216-f9c4e6c02c10'),
+  '瓦拉纳西恒河': '/images/holy-sites/varanasi-ganges.jpg',
+  '巴厘岛母庙': '/images/holy-sites/besakih-temple.jpg',
+  '科纳克太阳神庙': '/images/holy-sites/konark-sun-temple.jpg',
+  '尼泊尔帕斯帕提纳': '/images/holy-sites/pashupatinath.jpg',
+  '吴哥窟印度教': '/images/holy-sites/angkor-hindu.jpg',
+  '阿克萨达姆神庙': '/images/holy-sites/akshardham.jpg',
   // Judaism (4)
-  '耶路撒冷哭墙': u('1552751753-0fc84ae9e3e9'),
-  '马萨达要塞': u('1544967082-7f0e50927f25'),
-  '死海古卷洞': u('1558618047-3cdd1f9e0d0e'),
-  '锡安山': u('1559827291572-1149a24e64cf'),
+  '耶路撒冷哭墙': '/images/holy-sites/western-wall.jpg',
+  '马萨达要塞': '/images/holy-sites/masada.jpg',
+  '死海古卷洞': '/images/holy-sites/dead-sea-scrolls.jpg',
+  '锡安山': '/images/holy-sites/mount-zion.jpg',
   // Confucianism (4)
-  '曲阜孔庙': u('1534972195531-d756b9bfa9f2'),
-  '岳麓书院': u('1502823403499-180f3e50e76c'),
-  '白鹿洞书院': u('1546476501-15e7f4f2e4e2'),
-  '北京国子监': u('1508804185872-d7badad00f7d'),
+  '曲阜孔庙': '/images/holy-sites/qufu-confucius-temple.jpg',
+  '岳麓书院': '/images/holy-sites/yuelu-academy.jpg',
+  '白鹿洞书院': '/images/holy-sites/bailudong-academy.jpg',
+  '北京国子监': '/images/holy-sites/beijing-guozijian.jpg',
   // Sikhism (3)
-  '阿姆利则金庙': u('1587474260584-136574528ed5'),
-  '旁遮普古鲁圣地': u('1582655299517-6abf335397e3'),
-  '锡克教圣殿': u('1551718678-77b3f77309aa'),
+  '阿姆利则金庙': '/images/holy-sites/golden-temple.jpg',
+  '旁遮普古鲁圣地': '/images/holy-sites/punjab-gurdwara.jpg',
+  '锡克教圣殿': '/images/holy-sites/sikh-shrine.jpg',
   // Shinto (4)
-  '伊势神宫': u('1493976040374-85c8e12f0c0e'),
-  '严岛神社': u('1478436127897-769e1b3f0f36'),
-  '伏见稻荷大社': u('1524413840807-0c3cb6e1c6b3'),
-  '明治神宫': u('1545569341-9eb8b30979d5'),
+  '伊势神宫': '/images/holy-sites/ise-grand-shrine.jpg',
+  '严岛神社': '/images/holy-sites/itsukushima-shrine.jpg',
+  '伏见稻荷大社': '/images/holy-sites/fushimi-inari.jpg',
+  '明治神宫': '/images/holy-sites/meiji-shrine.jpg',
   // Tibetan Buddhism (4)
-  '拉萨大昭寺': u('1544735716-392fe2489ffa'),
-  '甘丹寺': u('1519451241324-20b4ea2c4220'),
-  '色达喇荣五明佛学院': u('1488085061387-422e29b40080'),
-  '不丹虎穴寺': u('1476514525535-07fb3b4ae5f1'),
+  '拉萨大昭寺': '/images/holy-sites/jokhang-temple.jpg',
+  '甘丹寺': '/images/holy-sites/ganden-monastery.jpg',
+  '色达喇荣五明佛学院': '/images/holy-sites/seda-larung-gar.jpg',
+  '不丹虎穴寺': '/images/holy-sites/tigers-nest.jpg',
   // Indigenous (4)
-  '乌鲁鲁巨石': u('1469474968028-56623f02e42e'),
-  '马丘比丘': u('1526392060635-9d6bf92b4469'),
-  '巨石阵': u('1516738901171-8eb4fc13bd20'),
-  '奇琴伊察': u('1518638150340-f706e86654de'),
+  '乌鲁鲁巨石': '/images/holy-sites/uluru.jpg',
+  '马丘比丘': '/images/holy-sites/machu-picchu.jpg',
+  '巨石阵': '/images/holy-sites/stonehenge.jpg',
+  '奇琴伊察': '/images/holy-sites/chichen-itza.jpg',
   // Bahai (3)
-  '海法空中花园': u('1558976825-6b1b03e11db4'),
-  '新德里莲花寺': u('1565689157206-0fddef7589a2'),
-  '威尔梅特灵曦堂': u('1433086966358-54859d0ed716'),
+  '海法空中花园': '/images/holy-sites/haifa-gardens.jpg',
+  '新德里莲花寺': '/images/holy-sites/lotus-temple.jpg',
+  '威尔梅特灵曦堂': '/images/holy-sites/wilmette-temple.jpg',
 };
 
 // ══════════════════════════════════════════════════════
@@ -86,44 +85,44 @@ export const HOLY_SITE_IMAGES: Record<string, string> = {
 // ══════════════════════════════════════════════════════
 export const TEMPLE_IMAGES: Record<string, string> = {
   // Buddhism
-  '鹿野苑': u('1578662996442-48f60103fc96'),
-  '灵鹫山': u('1580619305218-8423a532f7f4'),
-  '祇园精舍': u('1590709899716-adbb7c5e570e'),
+  '鹿野苑': '/images/temples/sarnath.jpg',
+  '灵鹫山': '/images/temples/vulture-peak.jpg',
+  '祇园精舍': '/images/temples/jetavana.jpg',
   // Taoism
-  '鹤鸣山': u('1547981609845-4c7e98dcde89'),
-  '终南山': u('1533669955142-6a73332af4db'),
-  '楼观台': u('1584967918940-a7d51b064268'),
+  '鹤鸣山': '/images/temples/heming-mountain.jpg',
+  '终南山': '/images/temples/zhongnan-mountain.jpg',
+  '楼观台': '/images/temples/louguan-platform.jpg',
   // Christianity
-  '伯利恒主诞堂': u('1548625149-fc4a29cf7092'),
-  '各各他': u('1507003211169-0a1dd7228f2d'),
-  '安提阿': u('1553933899-de0ff81f81b9'),
+  '伯利恒主诞堂': '/images/temples/church-nativity.jpg',
+  '各各他': '/images/temples/golgotha.jpg',
+  '安提阿': '/images/temples/antioch.jpg',
   // Islam
-  '希拉山洞': u('1564769625905-50e93615e769'),
-  '库巴清真寺': u('1585036156171-384164a8c696'),
+  '希拉山洞': '/images/temples/cave-hira.jpg',
+  '库巴清真寺': '/images/temples/quba-mosque.jpg',
   // Hinduism
-  '哈里德瓦尔': u('1561361513-2d000a50f0dc'),
-  '瑞诗凯诗': u('1585123388867-3bfe7d1f27e5'),
+  '哈里德瓦尔': '/images/temples/haridwar.jpg',
+  '瑞诗凯诗': '/images/temples/rishikesh.jpg',
   // Judaism
-  '圣殿山': u('1552751753-0fc84ae9e3e9'),
-  '希伯伦先祖墓': u('1544967082-7f0e50927f25'),
+  '圣殿山': '/images/temples/temple-mount.jpg',
+  '希伯伦先祖墓': '/images/temples/cave-patriarchs.jpg',
   // Confucianism
-  '曲阜阙里': u('1534972195531-d756b9bfa9f2'),
-  '洙泗书堂': u('1502823403499-180f3e50e76c'),
+  '曲阜阙里': '/images/temples/qufu-queli.jpg',
+  '洙泗书堂': '/images/temples/zhusi-academy.jpg',
   // Sikhism
-  '卡塔普尔': u('1587474260584-136574528ed5'),
-  '南德德': u('1551718678-77b3f77309aa'),
+  '卡塔普尔': '/images/temples/kartarpur.jpg',
+  '南德德': '/images/temples/nanded.jpg',
   // Shinto
-  '出云大社': u('1493976040374-85c8e12f0c0e'),
-  '高天原': u('1478436127897-769e1b3f0f36'),
+  '出云大社': '/images/temples/izumo-taisha.jpg',
+  '高天原': '/images/temples/takamagahara.jpg',
   // Tibetan Buddhism
-  '桑耶寺': u('1544735716-392fe2489ffa'),
-  '甘丹寺祖庭': u('1519451241324-20b4ea2c4220'),
+  '桑耶寺': '/images/temples/samye-monastery.jpg',
+  '甘丹寺祖庭': '/images/temples/ganden-ancestral.jpg',
   // Indigenous
-  '梦时代圣地': u('1469474968028-56623f02e42e'),
-  '太阳神庙库斯科': u('1526392060635-9d6bf92b4469'),
+  '梦时代圣地': '/images/temples/dreamtime-site.jpg',
+  '太阳神庙库斯科': '/images/temples/coricancha.jpg',
   // Bahai
-  '巴格达Ridvan花园': u('1558976825-6b1b03e11db4'),
-  '阿卡监狱城': u('1565689157206-0fddef7589a2'),
+  '巴格达Ridvan花园': '/images/temples/ridvan-garden.jpg',
+  '阿卡监狱城': '/images/temples/akka-prison.jpg',
 };
 
 // ══════════════════════════════════════════════════════
@@ -131,45 +130,45 @@ export const TEMPLE_IMAGES: Record<string, string> = {
 // ══════════════════════════════════════════════════════
 export const PATRIARCH_IMAGES: Record<string, string> = {
   // Buddhism
-  '释迦牟尼': u('1578662996442-48f60103fc96'),
-  '龙树菩萨': u('1580619305218-8423a532f7f4'),
-  '六祖慧能': u('1544735716-392fe2489ffa'),
+  '释迦牟尼': '/images/patriarchs/shakyamuni.jpg',
+  '龙树菩萨': '/images/patriarchs/nagarjuna.jpg',
+  '六祖慧能': '/images/patriarchs/huineng.jpg',
   // Taoism
-  '老子': u('1547981609845-4c7e98dcde89'),
-  '张道陵': u('1533669955142-6a73332af4db'),
-  '王重阳': u('1516466723877-e4ec1d736c8a'),
+  '老子': '/images/patriarchs/laozi.jpg',
+  '张道陵': '/images/patriarchs/zhang-daoling.jpg',
+  '王重阳': '/images/patriarchs/wang-chongyang.jpg',
   // Christianity
-  '耶稣基督': u('1548625149-fc4a29cf7092'),
-  '使徒保罗': u('1553933899-de0ff81f81b9'),
-  '奥古斯丁': u('1476362174823-3a23f4aa6e2d'),
+  '耶稣基督': '/images/patriarchs/jesus-christ.jpg',
+  '使徒保罗': '/images/patriarchs/apostle-paul.jpg',
+  '奥古斯丁': '/images/patriarchs/augustine.jpg',
   // Islam
-  '先知穆罕默德': u('1564769625905-50e93615e769'),
-  '阿布·伯克尔': u('1585036156171-384164a8c696'),
+  '先知穆罕默德': '/images/patriarchs/prophet-muhammad.jpg',
+  '阿布·伯克尔': '/images/patriarchs/abu-bakr.jpg',
   // Hinduism
-  '商羯罗': u('1561361513-2d000a50f0dc'),
-  '罗摩努阇': u('1570168007204-dfb528c6958f'),
+  '商羯罗': '/images/patriarchs/shankaracharya.jpg',
+  '罗摩努阇': '/images/patriarchs/ramanuja.jpg',
   // Judaism
-  '亚伯拉罕': u('1552751753-0fc84ae9e3e9'),
-  '摩西': u('1544967082-7f0e50927f25'),
+  '亚伯拉罕': '/images/patriarchs/abraham.jpg',
+  '摩西': '/images/patriarchs/moses.jpg',
   // Confucianism
-  '孔子': u('1534972195531-d756b9bfa9f2'),
-  '孟子': u('1502823403499-180f3e50e76c'),
-  '朱熹': u('1546476501-15e7f4f2e4e2'),
+  '孔子': '/images/patriarchs/confucius.jpg',
+  '孟子': '/images/patriarchs/mencius.jpg',
+  '朱熹': '/images/patriarchs/zhu-xi.jpg',
   // Sikhism
-  '古鲁那纳克': u('1587474260584-136574528ed5'),
-  '古鲁阿尔詹': u('1582655299517-6abf335397e3'),
+  '古鲁那纳克': '/images/patriarchs/guru-nanak.jpg',
+  '古鲁阿尔詹': '/images/patriarchs/guru-arjan.jpg',
   // Shinto
-  '天照大神': u('1493976040374-85c8e12f0c0e'),
+  '天照大神': '/images/patriarchs/amaterasu.jpg',
   // Tibetan Buddhism
-  '莲花生大士': u('1519451241324-20b4ea2c4220'),
-  '宗喀巴大师': u('1488085061387-422e29b40080'),
-  '阿底峡尊者': u('1476514525535-07fb3b4ae5f1'),
+  '莲花生大士': '/images/patriarchs/padmasambhava.jpg',
+  '宗喀巴大师': '/images/patriarchs/tsongkhapa.jpg',
+  '阿底峡尊者': '/images/patriarchs/atisha.jpg',
   // Indigenous
-  '梦时代祖灵': u('1469474968028-56623f02e42e'),
-  '印加太阳神因蒂': u('1526392060635-9d6bf92b4469'),
+  '梦时代祖灵': '/images/patriarchs/dreamtime-spirit.jpg',
+  '印加太阳神因蒂': '/images/patriarchs/inti.jpg',
   // Bahai
-  '巴哈欧拉': u('1558976825-6b1b03e11db4'),
-  '巴孛': u('1565689157206-0fddef7589a2'),
+  '巴哈欧拉': '/images/patriarchs/bahaullah.jpg',
+  '巴孛': '/images/patriarchs/the-bab.jpg',
 };
 
 // ══════════════════════════════════════════════════════
@@ -177,43 +176,43 @@ export const PATRIARCH_IMAGES: Record<string, string> = {
 // ══════════════════════════════════════════════════════
 export const ROUTE_IMAGES: Record<string, { cover: string; images: string[] }> = {
   'sixth-patriarch-huineng': {
-    cover: u('1544735716-392fe2489ffa'),
-    images: [u('1533669955142-6a73332af4db'), u('1580619305218-8423a532f7f4'), u('1584967918940-a7d51b064268')],
+    cover: '/images/routes/sixth-patriarch-huineng-cover.jpg',
+    images: ['/images/routes/sixth-patriarch-huineng-1.jpg', '/images/routes/sixth-patriarch-huineng-2.jpg', '/images/routes/sixth-patriarch-huineng-3.jpg'],
   },
   'bodhidharma-route': {
-    cover: u('1578662996442-48f60103fc96'),
-    images: [u('1547981609845-4c7e98dcde89'), u('1555400038-63f5ba517a47'), u('1590709899716-adbb7c5e570e')],
+    cover: '/images/routes/bodhidharma-route-cover.jpg',
+    images: ['/images/routes/bodhidharma-route-1.jpg', '/images/routes/bodhidharma-route-2.jpg', '/images/routes/bodhidharma-route-3.jpg'],
   },
   'buddha-footsteps-india': {
-    cover: u('1561361513-2d000a50f0dc'),
-    images: [u('1585123388867-3bfe7d1f27e5'), u('1570168007204-dfb528c6958f'), u('1524492412937-b28074a5d7da')],
+    cover: '/images/routes/buddha-footsteps-india-cover.jpg',
+    images: ['/images/routes/buddha-footsteps-india-1.jpg', '/images/routes/buddha-footsteps-india-2.jpg', '/images/routes/buddha-footsteps-india-3.jpg'],
   },
   'wudang-taoist-heritage': {
-    cover: u('1547981609845-4c7e98dcde89'),
-    images: [u('1516466723877-e4ec1d736c8a'), u('1504681869696-d977211a5e35'), u('1532236204992-18baa7b3e7b0')],
+    cover: '/images/routes/wudang-taoist-heritage-cover.jpg',
+    images: ['/images/routes/wudang-taoist-heritage-1.jpg', '/images/routes/wudang-taoist-heritage-2.jpg', '/images/routes/wudang-taoist-heritage-3.jpg'],
   },
   'jerusalem-pilgrimage': {
-    cover: u('1552751753-0fc84ae9e3e9'),
-    images: [u('1507003211169-0a1dd7228f2d'), u('1566478989037-eec170784d0b'), u('1559827291572-1149a24e64cf')],
+    cover: '/images/routes/jerusalem-pilgrimage-cover.jpg',
+    images: ['/images/routes/jerusalem-pilgrimage-1.jpg', '/images/routes/jerusalem-pilgrimage-2.jpg', '/images/routes/jerusalem-pilgrimage-3.jpg'],
   },
   'silk-road-mosques': {
-    cover: u('1570913149827-d2ac84ab3f9a'),
-    images: [u('1564769625905-50e93615e769'), u('1585036156171-384164a8c696'), u('1542816645-95d572263cd2')],
+    cover: '/images/routes/silk-road-mosques-cover.jpg',
+    images: ['/images/routes/silk-road-mosques-1.jpg', '/images/routes/silk-road-mosques-2.jpg', '/images/routes/silk-road-mosques-3.jpg'],
   },
   'jerusalem-three-faiths': {
-    cover: u('1544967082-7f0e50927f25'),
-    images: [u('1552751753-0fc84ae9e3e9'), u('1548625149-fc4a29cf7092'), u('1566478989037-eec170784d0b')],
+    cover: '/images/routes/jerusalem-three-faiths-cover.jpg',
+    images: ['/images/routes/jerusalem-three-faiths-1.jpg', '/images/routes/jerusalem-three-faiths-2.jpg', '/images/routes/jerusalem-three-faiths-3.jpg'],
   },
   'japan-shinbutsu': {
-    cover: u('1528360983277-13d401cdc186'),
-    images: [u('1493976040374-85c8e12f0c0e'), u('1478436127897-769e1b3f0f36'), u('1524413840807-0c3cb6e1c6b3')],
+    cover: '/images/routes/japan-shinbutsu-cover.jpg',
+    images: ['/images/routes/japan-shinbutsu-1.jpg', '/images/routes/japan-shinbutsu-2.jpg', '/images/routes/japan-shinbutsu-3.jpg'],
   },
   'ganges-holy-cities': {
-    cover: u('1524492412937-b28074a5d7da'),
-    images: [u('1561361513-2d000a50f0dc'), u('1585123388867-3bfe7d1f27e5'), u('1540959733332-eab44bc4f75b')],
+    cover: '/images/routes/ganges-holy-cities-cover.jpg',
+    images: ['/images/routes/ganges-holy-cities-1.jpg', '/images/routes/ganges-holy-cities-2.jpg', '/images/routes/ganges-holy-cities-3.jpg'],
   },
   'china-three-teachings': {
-    cover: u('1534972195531-d756b9bfa9f2'),
-    images: [u('1547981609845-4c7e98dcde89'), u('1533669955142-6a73332af4db'), u('1502823403499-180f3e50e76c')],
+    cover: '/images/routes/china-three-teachings-cover.jpg',
+    images: ['/images/routes/china-three-teachings-1.jpg', '/images/routes/china-three-teachings-2.jpg', '/images/routes/china-three-teachings-3.jpg'],
   },
 };
