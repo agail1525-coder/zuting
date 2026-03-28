@@ -11,7 +11,7 @@ export default function HolySiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
-  const [site, setSite] = useState<any>(null);
+  const [site, setSite] = useState<HolySite | null>(null);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,7 @@ export default function HolySiteDetailScreen() {
         ]);
         setSite(found);
         setRoutes(relatedRoutes);
-        navigation.setOptions({ title: (found as any).name ?? found.nameZh });
+        navigation.setOptions({ title: found.name });
       } catch (err) {
         console.error('Failed to fetch holy site:', err);
         setError('加载圣地详情失败');
@@ -47,7 +47,7 @@ export default function HolySiteDetailScreen() {
     );
   }
 
-  const name = site.name ?? site.nameZh ?? '';
+  const name = site.name ?? '';
   const nameEn = site.nameEn ?? '';
   const religion = site.religion;
   const hasImage = !!site.imageUrl;
@@ -64,7 +64,7 @@ export default function HolySiteDetailScreen() {
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={s.heroOverlay}>
           {religion && (
             <View style={s.religionBadge}>
-              <Text style={s.religionBadgeText}>{religion.name ?? religion.nameZh}</Text>
+              <Text style={s.religionBadgeText}>{religion.name}</Text>
             </View>
           )}
           <Text style={s.heroTitle}>{name}</Text>

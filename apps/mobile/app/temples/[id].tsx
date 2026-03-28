@@ -10,7 +10,7 @@ export default function TempleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
-  const [temple, setTemple] = useState<any>(null);
+  const [temple, setTemple] = useState<Temple | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +21,7 @@ export default function TempleDetailScreen() {
         setError(null);
         const found = await api.getTempleById(id);
         setTemple(found);
-        navigation.setOptions({ title: (found as any).name ?? found.nameZh });
+        navigation.setOptions({ title: found.name });
       } catch (err) {
         console.error('Failed to fetch temple:', err);
         setError('加载祖庭详情失败');
@@ -41,10 +41,10 @@ export default function TempleDetailScreen() {
     );
   }
 
-  const name = (temple as any).name ?? temple.nameZh ?? '';
+  const name = temple.name ?? '';
   const nameEn = temple.nameEn ?? '';
   const religion = temple.religion;
-  const founded = (temple as any).foundingDate ?? '';
+  const founded = temple.foundingDate ?? '';
   const hasImage = !!temple.imageUrl;
 
   return (
@@ -59,7 +59,7 @@ export default function TempleDetailScreen() {
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={s.heroOverlay}>
           {religion && (
             <View style={s.religionBadge}>
-              <Text style={s.religionBadgeText}>{religion.name ?? religion.nameZh}</Text>
+              <Text style={s.religionBadgeText}>{religion.name}</Text>
             </View>
           )}
           <Text style={s.heroTitle}>{name}</Text>

@@ -8,7 +8,7 @@ import './index.scss'
 export default function HolySiteDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [site, setSite] = useState<any>(null)
+  const [site, setSite] = useState<HolySite | null>(null)
   const [routes, setRoutes] = useState<Route[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

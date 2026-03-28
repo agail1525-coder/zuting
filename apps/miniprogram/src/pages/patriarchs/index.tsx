@@ -91,10 +91,10 @@ export default function PatriarchsPage() {
               {patriarch.title && (
                 <Text className='patriarch-card__title-text'>{patriarch.title}</Text>
               )}
-              {patriarch.era && (
+              {patriarch.dates && (
                 <View className='patriarch-card__era'>
                   <Text className='patriarch-card__era-label'>年代: </Text>
-                  <Text className='patriarch-card__era-value'>{patriarch.era}</Text>
+                  <Text className='patriarch-card__era-value'>{patriarch.dates}</Text>
                 </View>
               )}
               {patriarch.biography && (

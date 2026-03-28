@@ -21,12 +21,9 @@ export function SealCard({ seal }: SealCardProps) {
         <Text style={styles.numberText}>{seal.number}</Text>
       </View>
       <View style={styles.content}>
-        <Text style={styles.nameZh}>{(seal as any).name ?? seal.nameZh}</Text>
-        <Text style={styles.nameEn} numberOfLines={1}>
-          {seal.nameEn}
-        </Text>
+        <Text style={styles.nameZh}>{seal.name}</Text>
         <Text style={styles.poem} numberOfLines={2}>
-          {(seal as any).poem ?? (seal as any).verse ?? ''}
+          {seal.poem}
         </Text>
       </View>
       <View style={[styles.seriesIndicator, { backgroundColor: seriesColor }]} />

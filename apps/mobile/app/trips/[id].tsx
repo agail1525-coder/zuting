@@ -242,7 +242,7 @@ export default function TripDetailScreen() {
                   <View style={styles.siteHeader}>
                     <Text style={styles.siteEmoji}>{'📍'}</Text>
                     <View style={styles.siteInfo}>
-                      <Text style={styles.siteName}>{(tripSite.site as any).name ?? tripSite.site.nameZh}</Text>
+                      <Text style={styles.siteName}>{tripSite.site.name}</Text>
                       <Text style={styles.siteNameEn}>{tripSite.site.nameEn}</Text>
                     </View>
                     {tripSite.visitDate && (

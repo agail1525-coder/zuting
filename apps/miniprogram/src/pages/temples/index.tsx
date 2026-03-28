@@ -92,10 +92,10 @@ export default function TemplesPage() {
                 <Text className='temple-card__location-icon'>{'\u{1F3DB}'}</Text>
                 <Text className='temple-card__location-text'>{temple.city}, {temple.country}</Text>
               </View>
-              {temple.founded && (
+              {temple.foundingDate && (
                 <View className='temple-card__founded'>
                   <Text className='temple-card__founded-label'>始建: </Text>
-                  <Text className='temple-card__founded-value'>{temple.founded}</Text>
+                  <Text className='temple-card__founded-value'>{temple.foundingDate}</Text>
                 </View>
               )}
               {temple.description && (

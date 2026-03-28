@@ -10,7 +10,7 @@ export default function PatriarchDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
-  const [patriarch, setPatriarch] = useState<any>(null);
+  const [patriarch, setPatriarch] = useState<Patriarch | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +21,7 @@ export default function PatriarchDetailScreen() {
         setError(null);
         const found = await api.getPatriarchById(id);
         setPatriarch(found);
-        navigation.setOptions({ title: (found as any).name ?? found.nameZh });
+        navigation.setOptions({ title: found.name });
       } catch (err) {
         console.error('Failed to fetch patriarch:', err);
         setError('加载祖师详情失败');
@@ -41,11 +41,11 @@ export default function PatriarchDetailScreen() {
     );
   }
 
-  const name = patriarch.name ?? patriarch.nameZh ?? '';
+  const name = patriarch.name ?? '';
   const nameEn = patriarch.nameEn ?? '';
   const religion = patriarch.religion;
   const title = patriarch.title ?? '';
-  const era = patriarch.dates ?? patriarch.era ?? '';
+  const era = patriarch.dates ?? '';
   const coreTeaching = patriarch.coreTeaching ?? '';
   const biography = patriarch.biography ?? '';
   const hasImage = !!patriarch.imageUrl;
@@ -62,7 +62,7 @@ export default function PatriarchDetailScreen() {
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={s.heroOverlay}>
           {religion && (
             <View style={s.religionBadge}>
-              <Text style={s.religionBadgeText}>{religion.name ?? religion.nameZh}</Text>
+              <Text style={s.religionBadgeText}>{religion.name}</Text>
             </View>
           )}
           <Text style={s.heroTitle}>{name}</Text>

@@ -7,7 +7,7 @@ import './index.scss'
 export default function TempleDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [temple, setTemple] = useState<any>(null)
+  const [temple, setTemple] = useState<Temple | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

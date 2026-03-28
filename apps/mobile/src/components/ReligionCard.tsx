@@ -29,7 +29,7 @@ export function ReligionCard({ religion }: ReligionCardProps) {
         <Text style={styles.emoji}>{emoji}</Text>
       </View>
       <Text style={styles.nameZh} numberOfLines={1}>
-        {religion.nameZh}
+        {religion.name}
       </Text>
       <Text style={styles.nameEn} numberOfLines={1}>
         {religion.nameEn}

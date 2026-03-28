@@ -12,7 +12,7 @@ interface HolySiteCardProps {
 
 export function HolySiteCard({ site, compact }: HolySiteCardProps) {
   const router = useRouter();
-  const name = (site as any).name ?? site.nameZh;
+  const name = site.name;
 
   return (
     <Pressable

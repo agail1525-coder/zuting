@@ -7,7 +7,7 @@ import './index.scss'
 export default function PatriarchDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [patriarch, setPatriarch] = useState<any>(null)
+  const [patriarch, setPatriarch] = useState<Patriarch | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,7 +34,7 @@ export default function PatriarchDetailPage() {
   if (!patriarch) return <View className='container'><Text className='empty-text'>祖师不存在</Text></View>
 
   const hasImage = !!patriarch.imageUrl
-  const era = patriarch.dates ?? patriarch.era ?? ''
+  const era = patriarch.dates ?? ''
   const coreTeaching = patriarch.coreTeaching ?? ''
 
   return (

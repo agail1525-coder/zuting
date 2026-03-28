@@ -15,7 +15,7 @@ const SERIES_COLORS: Record<string, string> = {
 export default function SealDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [seal, setSeal] = useState<any>(null)
+  const [seal, setSeal] = useState<Seal | null>(null)
   const [loading, setLoading] = useState(true)
 
   useShareAppMessage(() => ({
@@ -70,21 +70,21 @@ export default function SealDetailPage() {
       </View>
 
       {/* Poem/Verse */}
-      {(seal.verse || seal.poem) && (
+      {seal.poem && (
         <View className='section'>
           <Text className='section__title'>偈颂</Text>
           <View className='poem-card'>
-            <Text className='poem-card__text'>{seal.verse || seal.poem}</Text>
+            <Text className='poem-card__text'>{seal.poem}</Text>
           </View>
         </View>
       )}
 
       {/* Essence/Meaning */}
-      {(seal.essence || seal.meaning) && (
+      {seal.essence && (
         <View className='section'>
           <Text className='section__title'>要义</Text>
           <View className='card'>
-            <Text className='card__text'>{seal.essence || seal.meaning}</Text>
+            <Text className='card__text'>{seal.essence}</Text>
           </View>
         </View>
       )}

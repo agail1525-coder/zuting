@@ -38,10 +38,9 @@ export default function SealCard({ seal }: Props) {
             {seal.series}
           </Text>
         </View>
-        <Text className='seal-card__name-en'>{seal.nameEn}</Text>
-        {seal.verse && (
+        {seal.poem && (
           <Text className='seal-card__verse'>
-            {seal.verse.slice(0, 60)}{seal.verse.length > 60 ? '...' : ''}
+            {seal.poem.slice(0, 60)}{seal.poem.length > 60 ? '...' : ''}
           </Text>
         )}
       </View>

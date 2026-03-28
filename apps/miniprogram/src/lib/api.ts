@@ -33,6 +33,16 @@ export interface HolySite {
   longitude: number
   utcOffset: number
   imageUrl?: string
+  openingHours?: string
+  ticketPrice?: string
+  bestSeason?: string
+  visitDuration?: string
+  transport?: string
+  tips?: string[]
+  nearbyFood?: string
+  nearbyStay?: string
+  nearbyExperience?: string
+  nearbySights?: string
   religion?: Religion
   religionId: string
 }
@@ -40,13 +50,13 @@ export interface HolySite {
 export interface Temple {
   id: string
   name: string
-  nameEn: string
+  nameEn?: string
   description: string
-  city: string
+  city?: string
   country: string
-  latitude: number
-  longitude: number
-  founded: string
+  latitude?: number
+  longitude?: number
+  foundingDate?: string
   imageUrl?: string
   religion?: Religion
   religionId: string
@@ -55,10 +65,11 @@ export interface Temple {
 export interface Patriarch {
   id: string
   name: string
-  nameEn: string
-  title: string
-  era: string
+  nameEn?: string
+  title?: string
+  dates?: string
   biography: string
+  coreTeaching?: string
   imageUrl?: string
   religion?: Religion
   religionId: string
@@ -70,21 +81,19 @@ export interface Teaching {
   originalText: string
   sourceText?: string
   translationCn?: string
-  content: string
-  source: string
   religion?: Religion
   religionId: string
 }
 
 export interface Seal {
-  id: string
-  number: number
+  id: number
   name: string
-  nameEn: string
   series: string
-  verse: string
-  meaning: string
+  poem: string
+  essence: string
   practice: string
+  vow: string
+  color?: string
 }
 
 async function request<T>(path: string, params?: Record<string, string>): Promise<T> {

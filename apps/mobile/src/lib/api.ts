@@ -61,16 +61,15 @@ async function requestMutate<T>(endpoint: string, method: string, body: Record<s
 export interface Religion {
   id: string;
   slug: string;
-  nameZh: string;
+  name: string;
   nameEn: string;
   symbol: string;
-  description: string;
   color?: string;
 }
 
 export interface HolySite {
   id: string;
-  nameZh: string;
+  name: string;
   nameEn: string;
   country: string;
   city?: string;
@@ -81,11 +80,21 @@ export interface HolySite {
   imageUrl?: string;
   religionId: string;
   religion?: Religion;
+  openingHours?: string;
+  ticketPrice?: string;
+  bestSeason?: string;
+  visitDuration?: string;
+  transport?: string;
+  tips?: string;
+  nearbyFood?: string;
+  nearbyStay?: string;
+  nearbyExperience?: string;
+  nearbySights?: string;
 }
 
 export interface Temple {
   id: string;
-  nameZh: string;
+  name: string;
   nameEn: string;
   country: string;
   city?: string;
@@ -93,25 +102,30 @@ export interface Temple {
   imageUrl?: string;
   religionId: string;
   religion?: Religion;
+  foundingDate?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Patriarch {
   id: string;
-  nameZh: string;
+  name: string;
   nameEn: string;
-  era: string;
+  dates: string;
   title: string;
   biography: string;
   imageUrl?: string;
   religionId: string;
   religion?: Religion;
+  coreTeaching?: string;
 }
 
 export interface Teaching {
   id: string;
-  title: string;
+  name: string;
   originalText: string;
-  source: string;
+  sourceText: string;
+  translationCn?: string;
   religionId: string;
   religion?: Religion;
 }
@@ -119,8 +133,7 @@ export interface Teaching {
 export interface Seal {
   id: string;
   number: number;
-  nameZh: string;
-  nameEn: string;
+  name: string;
   series: string;
   poem: string;
   essence: string;

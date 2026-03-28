@@ -152,7 +152,7 @@ export default function ReligionDetailPage() {
               <Text className='card__name'>{p.name}</Text>
               <Text className='card__name-en'>{p.nameEn}</Text>
               {p.title && <Text className='card__subtitle'>{p.title}</Text>}
-              {p.era && <Text className='card__era'>{p.era}</Text>}
+              {p.dates && <Text className='card__era'>{p.dates}</Text>}
             </View>
           ))}
         </View>

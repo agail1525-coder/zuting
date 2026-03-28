@@ -26,7 +26,7 @@ export default function SealDetailScreen() {
           api.getSeals(),
         ]);
         setSeal(found);
-        navigation.setOptions({ title: `第${found.number}印 · ${found.nameZh}` });
+        navigation.setOptions({ title: `第${found.number}印 · ${found.name}` });
         setAllSeals(seals.sort((a, b) => a.number - b.number));
       } catch (err) {
         console.error('Failed to fetch seal detail:', err);
@@ -61,8 +61,8 @@ export default function SealDetailScreen() {
           <View style={s.numberCircle}>
             <Text style={s.numberText}>{seal.number}</Text>
           </View>
-          <Text style={s.heroTitle}>{seal.nameZh}</Text>
-          <Text style={s.heroSubtitle}>{seal.nameEn}</Text>
+          <Text style={s.heroTitle}>{seal.name}</Text>
+          <Text style={s.heroSubtitle}>{seal.name}</Text>
           <View style={s.seriesBadge}>
             <View style={[s.seriesDot, { backgroundColor: '#FFFFFF' }]} />
             <Text style={s.seriesText}>{seal.series}</Text>
@@ -118,7 +118,7 @@ export default function SealDetailScreen() {
             <Ionicons name="chevron-back" size={20} color="#0066FF" />
             <View>
               <Text style={s.navLabel}>上一印</Text>
-              <Text style={s.navName}>{prevSeal.nameZh}</Text>
+              <Text style={s.navName}>{prevSeal.name}</Text>
             </View>
           </Pressable>
         ) : <View style={s.navSpacer} />}
@@ -129,7 +129,7 @@ export default function SealDetailScreen() {
           >
             <View style={{ alignItems: 'flex-end' }}>
               <Text style={s.navLabel}>下一印</Text>
-              <Text style={s.navName}>{nextSeal.nameZh}</Text>
+              <Text style={s.navName}>{nextSeal.name}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#0066FF" />
           </Pressable>

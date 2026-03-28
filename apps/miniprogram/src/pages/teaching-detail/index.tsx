@@ -7,7 +7,7 @@ import './index.scss'
 export default function TeachingDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [teaching, setTeaching] = useState<any>(null)
+  const [teaching, setTeaching] = useState<Teaching | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -33,9 +33,9 @@ export default function TeachingDetailPage() {
   if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadTeaching}>点击重试</Text></View>
   if (!teaching) return <View className='container'><Text className='empty-text'>祖训不存在</Text></View>
 
-  const originalText = teaching.originalText || teaching.content || ''
-  const source = teaching.sourceText || teaching.source || ''
-  const religionName = teaching.religion?.name ?? teaching.religion?.nameZh ?? ''
+  const originalText = teaching.originalText || ''
+  const source = teaching.sourceText || ''
+  const religionName = teaching.religion?.name ?? ''
 
   return (
     <ScrollView className='detail-page' scrollY>
@@ -48,7 +48,7 @@ export default function TeachingDetailPage() {
               <Text className='detail-hero__badge-text'>{religionName}</Text>
             </View>
           )}
-          <Text className='detail-hero__title'>{teaching.title || teaching.name}</Text>
+          <Text className='detail-hero__title'>{teaching.name}</Text>
           {source && (
             <Text className='detail-hero__subtitle'>📖 {source}</Text>
           )}

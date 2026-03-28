@@ -44,7 +44,7 @@ export default function MapScreen() {
 
   const filtered = useMemo(() => {
     if (!selectedReligion) return sites;
-    return sites.filter(s => (s as any).religionId === selectedReligion);
+    return sites.filter(s => s.religionId === selectedReligion);
   }, [sites, selectedReligion]);
 
   const regions = useMemo<RegionGroup[]>(() => {
@@ -59,7 +59,7 @@ export default function MapScreen() {
       .map(([region, regionSites]) => ({ region, sites: regionSites }));
   }, [filtered]);
 
-  const chips = religions.map(r => ({ id: r.id, label: (r as any).name ?? r.nameZh }));
+  const chips = religions.map(r => ({ id: r.id, label: r.name }));
 
   if (loading) return <LoadingView />;
 
@@ -86,7 +86,7 @@ export default function MapScreen() {
               <Text style={styles.regionCount}>{group.sites.length}</Text>
             </View>
             {group.sites.map(site => {
-              const name = (site as any).name ?? site.nameZh;
+              const name = site.name;
               return (
                 <View key={site.id} style={styles.siteRow}>
                   <Pressable

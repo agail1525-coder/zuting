@@ -10,7 +10,7 @@ export default function TeachingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
-  const [teaching, setTeaching] = useState<any>(null);
+  const [teaching, setTeaching] = useState<Teaching | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +21,7 @@ export default function TeachingDetailScreen() {
         setError(null);
         const found = await api.getTeachingById(id);
         setTeaching(found);
-        navigation.setOptions({ title: (found as any).title ?? '' });
+        navigation.setOptions({ title: found.name ?? '' });
       } catch (err) {
         console.error('Failed to fetch teaching detail:', err);
         setError('加载祖训详情失败');
@@ -41,7 +41,7 @@ export default function TeachingDetailScreen() {
     );
   }
 
-  const religionName = teaching.religion?.name ?? teaching.religion?.nameZh ?? '';
+  const religionName = teaching.religion?.name ?? '';
 
   return (
     <ScrollView style={s.container} contentContainerStyle={s.content}>
@@ -54,11 +54,11 @@ export default function TeachingDetailScreen() {
               <Text style={s.religionBadgeText}>{religionName}</Text>
             </View>
           ) : null}
-          <Text style={s.heroTitle}>{teaching.title}</Text>
-          {teaching.source ? (
+          <Text style={s.heroTitle}>{teaching.name}</Text>
+          {teaching.sourceText ? (
             <View style={s.sourceBadge}>
               <Ionicons name="book-outline" size={12} color="rgba(255,255,255,0.8)" />
-              <Text style={s.sourceText}>{teaching.source}</Text>
+              <Text style={s.sourceText}>{teaching.sourceText}</Text>
             </View>
           ) : null}
         </LinearGradient>
@@ -74,11 +74,11 @@ export default function TeachingDetailScreen() {
       </View>
 
       {/* Translation */}
-      {teaching.translation ? (
+      {teaching.translationCn ? (
         <View style={s.section}>
           <Text style={s.sectionTitle}>译文</Text>
           <View style={s.card}>
-            <Text style={s.cardText}>{teaching.translation}</Text>
+            <Text style={s.cardText}>{teaching.translationCn}</Text>
           </View>
         </View>
       ) : null}

@@ -109,7 +109,7 @@ export default function IndexPage() {
   const recData = activeRecTab === 'temples'
     ? temples.slice(0, 6).map(t => ({ id: t.id, name: t.name, sub: t.country, image: t.imageUrl }))
     : activeRecTab === 'patriarchs'
-    ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.name, sub: p.era, image: p.imageUrl }))
+    ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.name, sub: p.dates, image: p.imageUrl }))
     : holySites.slice(0, 6).map(s => ({ id: s.id, name: s.name, sub: s.country, image: s.imageUrl }))
 
   return (

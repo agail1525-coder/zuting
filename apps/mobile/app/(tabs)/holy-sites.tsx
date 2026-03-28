@@ -43,7 +43,7 @@ export default function HolySitesScreen() {
     fetchData();
   }, [fetchData]);
 
-  const chips = religions.map((r) => ({ id: r.id, label: (r as any).name ?? r.nameZh }));
+  const chips = religions.map((r) => ({ id: r.id, label: r.name }));
 
   if (loading && sites.length === 0) return <LoadingView />;
 
