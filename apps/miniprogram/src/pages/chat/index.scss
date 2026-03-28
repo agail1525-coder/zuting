@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #020617;
+  background-color: #F5F5F5;
 }
 
 /* Auth Gate */
@@ -22,19 +22,19 @@
   &__title {
     font-size: 40rpx;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #1A1A1A;
     margin-bottom: 16rpx;
   }
 
   &__desc {
     font-size: 28rpx;
-    color: #94a3b8;
+    color: #6B7280;
     margin-bottom: 48rpx;
     text-align: center;
   }
 
   &__btn {
-    background: linear-gradient(135deg, #D4A855, #b8922e);
+    background: linear-gradient(135deg, #0066FF, #0052CC);
     border-radius: 40rpx;
     padding: 20rpx 64rpx;
   }
@@ -42,7 +42,7 @@
   &__btn-text {
     font-size: 30rpx;
     font-weight: 600;
-    color: #0f172a;
+    color: #FFFFFF;
   }
 }
 
@@ -51,20 +51,20 @@
   flex-shrink: 0;
   white-space: nowrap;
   padding: 20rpx 24rpx;
-  border-bottom: 1rpx solid rgba(212, 168, 85, 0.1);
+  border-bottom: 1rpx solid #E5E7EB;
 }
 
 .suggestion-chip {
   display: inline-block;
-  background: linear-gradient(145deg, #1e293b, #0f172a);
-  border: 1rpx solid rgba(212, 168, 85, 0.25);
+  background: #FFFFFF;
+  border: 1rpx solid rgba(0, 102, 255, 0.25);
   border-radius: 32rpx;
   padding: 12rpx 28rpx;
   margin-right: 16rpx;
 
   &__text {
     font-size: 24rpx;
-    color: #D4A855;
+    color: #0066FF;
     white-space: nowrap;
   }
 }
@@ -89,8 +89,8 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(212, 168, 85, 0.2), rgba(212, 168, 85, 0.05));
-    border: 2rpx solid rgba(212, 168, 85, 0.3);
+    background: rgba(0, 102, 255, 0.06);
+    border: 2rpx solid rgba(0, 102, 255, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,13 +108,13 @@
     padding: 20rpx 28rpx;
 
     &--bot {
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      border: 1rpx solid rgba(212, 168, 85, 0.2);
+      background: #F3F4F6;
+      border: 1rpx solid #E5E7EB;
       border-top-left-radius: 4rpx;
     }
 
     &--user {
-      background: linear-gradient(135deg, #D4A855, #b8922e);
+      background: linear-gradient(135deg, #0066FF, #0052CC);
       border-top-right-radius: 4rpx;
     }
   }
@@ -122,16 +122,16 @@
   &__text {
     font-size: 28rpx;
     line-height: 1.7;
-    color: #e2e8f0;
+    color: #374151;
   }
 
   &--user &__text {
-    color: #0f172a;
+    color: #FFFFFF;
   }
 }
 
 .typing-cursor {
-  color: #D4A855;
+  color: #0066FF;
   animation: blink 0.8s infinite;
 }
 
@@ -145,14 +145,14 @@
   flex-shrink: 0;
   padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: #0f172a;
-  border-top: 1rpx solid rgba(212, 168, 85, 0.1);
+  background: #FFFFFF;
+  border-top: 1rpx solid #E5E7EB;
 
   &__wrapper {
     display: flex;
     align-items: center;
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-    border: 1rpx solid rgba(212, 168, 85, 0.2);
+    background: #F3F4F6;
+    border: 1rpx solid #E5E7EB;
     border-radius: 40rpx;
     padding: 8rpx 8rpx 8rpx 28rpx;
   }
@@ -160,19 +160,19 @@
   &__input {
     flex: 1;
     font-size: 28rpx;
-    color: #e2e8f0;
+    color: #374151;
     height: 64rpx;
   }
 
   &__placeholder {
-    color: #475569;
+    color: #9CA3AF;
   }
 
   &__send {
     width: 64rpx;
     height: 64rpx;
     border-radius: 50%;
-    background: linear-gradient(135deg, #D4A855, #b8922e);
+    background: linear-gradient(135deg, #0066FF, #0052CC);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,6 +181,6 @@
 
   &__send-text {
     font-size: 28rpx;
-    color: #0f172a;
+    color: #FFFFFF;
   }
 }

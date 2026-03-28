@@ -8,7 +8,7 @@ const SERIES_COLORS: Record<string, string> = {
   '初印系': '#60a5fa',
   '中印系': '#a78bfa',
   '印果印': '#f472b6',
-  '成道印': '#D4A855',
+  '成道印': '#f59e0b',
   '归源印': '#34d399',
 }
 
@@ -63,7 +63,7 @@ export default function SealDetailPage() {
     )
   }
 
-  const seriesColor = SERIES_COLORS[seal.series] || '#D4A855'
+  const seriesColor = SERIES_COLORS[seal.series] || '#0066FF'
 
   return (
     <ScrollView className='seal-detail' scrollY>

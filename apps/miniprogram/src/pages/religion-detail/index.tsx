@@ -66,13 +66,13 @@ export default function ReligionDetailPage() {
   if (error) {
     return (
       <View className='container' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80rpx 40rpx' }}>
-        <Text style={{ fontSize: '32rpx', color: '#94a3b8', marginBottom: '24rpx' }}>加载失败，请检查网络后重试</Text>
+        <Text style={{ fontSize: '32rpx', color: '#6B7280', marginBottom: '24rpx' }}>加载失败，请检查网络后重试</Text>
         <View
           hoverClass='card-hover'
-          style={{ padding: '16rpx 48rpx', backgroundColor: '#D4A855', borderRadius: '12rpx' }}
+          style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
           onClick={loadData}
         >
-          <Text style={{ fontSize: '28rpx', color: '#0f172a' }}>重试</Text>
+          <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重试</Text>
         </View>
       </View>
     )

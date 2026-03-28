@@ -23,18 +23,18 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: '#94a3b8',
-  PLANNING: '#60a5fa',
-  SUBMITTED: '#a78bfa',
-  CONFIRMED: '#D4A855',
-  PAID: '#D4A855',
-  PREPARING: '#fbbf24',
-  IN_PROGRESS: '#34d399',
-  COMPLETED: '#94a3b8',
+  DRAFT: '#6B7280',
+  PLANNING: '#3b82f6',
+  SUBMITTED: '#8b5cf6',
+  CONFIRMED: '#0066FF',
+  PAID: '#0066FF',
+  PREPARING: '#f59e0b',
+  IN_PROGRESS: '#10b981',
+  COMPLETED: '#6B7280',
   REVIEWING: '#f97316',
   CANCELLED: '#ef4444',
   REFUNDING: '#f97316',
-  REFUNDED: '#94a3b8',
+  REFUNDED: '#6B7280',
 }
 
 const FILTER_LIST: { key: StatusFilter; label: string }[] = [
@@ -138,13 +138,13 @@ export default function TripsPage() {
                 <View
                   className='trip-card__tag'
                   style={{
-                    backgroundColor: `${STATUS_COLORS[trip.status] ?? '#94a3b8'}20`,
-                    borderColor: `${STATUS_COLORS[trip.status] ?? '#94a3b8'}40`,
+                    backgroundColor: `${STATUS_COLORS[trip.status] ?? '#6B7280'}20`,
+                    borderColor: `${STATUS_COLORS[trip.status] ?? '#6B7280'}40`,
                   }}
                 >
                   <Text
                     className='trip-card__tag-text'
-                    style={{ color: STATUS_COLORS[trip.status] ?? '#94a3b8' }}
+                    style={{ color: STATUS_COLORS[trip.status] ?? '#6B7280' }}
                   >
                     {STATUS_LABELS[trip.status] ?? trip.status}
                   </Text>

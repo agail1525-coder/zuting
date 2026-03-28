@@ -25,9 +25,10 @@ export default defineAppConfig({
     'pages/search/index'
   ],
   tabBar: {
-    color: '#94a3b8',
-    selectedColor: '#D4A855',
-    backgroundColor: '#0f172a',
+    color: '#9CA3AF',
+    selectedColor: '#0066FF',
+    backgroundColor: '#FFFFFF',
+    borderStyle: 'white',
     list: [
       {
         pagePath: 'pages/index/index',
@@ -56,10 +57,10 @@ export default defineAppConfig({
     ]
   },
   window: {
-    backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#0f172a',
+    backgroundTextStyle: 'light',
+    navigationBarBackgroundColor: '#FFFFFF',
     navigationBarTitleText: '祖庭之旅',
-    navigationBarTextStyle: 'white',
-    backgroundColor: '#020617'
+    navigationBarTextStyle: 'black',
+    backgroundColor: '#F5F5F5'
   }
 })

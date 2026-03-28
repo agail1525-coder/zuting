@@ -1,12 +1,12 @@
 .seal-card {
   display: flex;
   align-items: flex-start;
-  background: linear-gradient(145deg, #1e293b, #162032);
+  background: #FFFFFF;
   border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 16rpx;
-  border: 1rpx solid rgba(212, 168, 85, 0.08);
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.25);
+  border: 1rpx solid #E5E7EB;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 
   &--hover {
     opacity: 0.85;
@@ -16,12 +16,12 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 50%;
-    border: 2rpx solid #D4A855;
+    border: 2rpx solid #0066FF;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.05);
   }
 
   &__number-text {
@@ -45,7 +45,7 @@
   &__name {
     font-size: 30rpx;
     font-weight: 600;
-    color: #f1f5f9;
+    color: #1A1A1A;
   }
 
   &__series {
@@ -60,14 +60,14 @@
   &__name-en {
     display: block;
     font-size: 22rpx;
-    color: #94a3b8;
+    color: #6B7280;
     margin-bottom: 8rpx;
   }
 
   &__verse {
     display: block;
     font-size: 24rpx;
-    color: #cbd5e1;
+    color: #4B5563;
     line-height: 1.5;
     font-style: italic;
   }

@@ -102,7 +102,7 @@ export default function JournalCreatePage() {
           <Switch
             checked={isPublic}
             onChange={e => setIsPublic(e.detail.value)}
-            color='#D4A855'
+            color='#0066FF'
           />
         </View>
 

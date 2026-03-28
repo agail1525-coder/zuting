@@ -1,6 +1,6 @@
 .index-page {
   min-height: 100vh;
-  background-color: #020617;
+  background-color: #F5F5F5;
   padding: 0 32rpx;
 }
 
@@ -18,7 +18,7 @@
     transform: translateX(-50%);
     width: 400rpx;
     height: 400rpx;
-    background: radial-gradient(circle, rgba(212, 168, 85, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
   }
@@ -27,7 +27,7 @@
     display: block;
     font-size: 56rpx;
     font-weight: 800;
-    color: #D4A855;
+    color: #0066FF;
     letter-spacing: 4rpx;
     margin-bottom: 12rpx;
     position: relative;
@@ -36,7 +36,7 @@
   &__subtitle {
     display: block;
     font-size: 26rpx;
-    color: #94a3b8;
+    color: #6B7280;
     letter-spacing: 2rpx;
   }
 }
@@ -45,15 +45,15 @@
 .search-entry {
   display: flex;
   align-items: center;
-  background: #1e293b;
+  background: #FFFFFF;
   border-radius: 40rpx;
   padding: 20rpx 28rpx;
   margin-bottom: 16rpx;
-  border: 1rpx solid rgba(148, 163, 184, 0.15);
+  border: 1rpx solid rgba(107, 114, 128, 0.15);
 
   &--hover {
     opacity: 0.85;
-    border-color: rgba(212, 168, 85, 0.3);
+    border-color: rgba(0, 102, 255, 0.3);
   }
 
   &__icon {
@@ -64,7 +64,7 @@
 
   &__text {
     font-size: 26rpx;
-    color: #64748b;
+    color: #9CA3AF;
   }
 }
 
@@ -78,12 +78,12 @@
 
 .tag-chip {
   display: inline-block;
-  background: rgba(212, 168, 85, 0.1);
-  color: #D4A855;
+  background: rgba(0, 102, 255, 0.08);
+  color: #0066FF;
   font-size: 24rpx;
   padding: 8rpx 20rpx;
   border-radius: 999rpx;
-  border: 1rpx solid rgba(212, 168, 85, 0.2);
+  border: 1rpx solid rgba(0, 102, 255, 0.2);
   margin-right: 12rpx;
 }
 
@@ -109,8 +109,8 @@
     width: 80rpx;
     height: 80rpx;
     border-radius: 40rpx;
-    background: #1e293b;
-    border: 1rpx solid rgba(212, 168, 85, 0.2);
+    background: #F3F4F6;
+    border: 1rpx solid #E5E7EB;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,7 +122,7 @@
 
   &__label {
     font-size: 22rpx;
-    color: #94a3b8;
+    color: #6B7280;
     margin-top: 8rpx;
   }
 }
@@ -138,9 +138,9 @@
 .route-card {
   display: inline-block;
   width: 400rpx;
-  background: #1e293b;
+  background: #FFFFFF;
   border-radius: 20rpx;
-  border: 1rpx solid rgba(212, 168, 85, 0.15);
+  border: 1rpx solid #E5E7EB;
   overflow: hidden;
   margin-right: 20rpx;
   vertical-align: top;
@@ -151,7 +151,7 @@
 
   &__image {
     height: 200rpx;
-    background: rgba(212, 168, 85, 0.05);
+    background: rgba(0, 102, 255, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -194,7 +194,7 @@
     display: block;
     font-size: 28rpx;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #1A1A1A;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -203,7 +203,7 @@
   &__subtitle {
     display: block;
     font-size: 22rpx;
-    color: #64748b;
+    color: #9CA3AF;
     margin-top: 4rpx;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -225,7 +225,7 @@
 
   &__rating {
     font-size: 22rpx;
-    color: #D4A855;
+    color: #0066FF;
   }
 }
 
@@ -233,9 +233,9 @@
 .ai-card {
   display: flex;
   align-items: center;
-  background: rgba(212, 168, 85, 0.08);
+  background: rgba(0, 102, 255, 0.06);
   border-radius: 20rpx;
-  border: 1rpx solid rgba(212, 168, 85, 0.2);
+  border: 1rpx solid rgba(0, 102, 255, 0.15);
   padding: 24rpx;
   margin: 24rpx 0;
 
@@ -256,19 +256,19 @@
     display: block;
     font-size: 30rpx;
     font-weight: 700;
-    color: #D4A855;
+    color: #0066FF;
   }
 
   &__desc {
     display: block;
     font-size: 24rpx;
-    color: #64748b;
+    color: #9CA3AF;
     margin-top: 4rpx;
   }
 
   &__arrow {
     font-size: 28rpx;
-    color: #D4A855;
+    color: #0066FF;
   }
 }
 
@@ -277,11 +277,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #1e293b, #0f172a);
+  background: #FFFFFF;
   border-radius: 24rpx;
   padding: 32rpx 16rpx;
   margin: 24rpx 0;
-  border: 1rpx solid rgba(212, 168, 85, 0.15);
+  border: 1rpx solid #E5E7EB;
 
   &__item {
     flex: 1;
@@ -292,21 +292,21 @@
     display: block;
     font-size: 40rpx;
     font-weight: 800;
-    color: #D4A855;
+    color: #0066FF;
     line-height: 1.2;
   }
 
   &__label {
     display: block;
     font-size: 22rpx;
-    color: #94a3b8;
+    color: #6B7280;
     margin-top: 4rpx;
   }
 
   &__divider {
     width: 1rpx;
     height: 56rpx;
-    background: rgba(148, 163, 184, 0.2);
+    background: rgba(107, 114, 128, 0.2);
   }
 }
 
@@ -323,7 +323,7 @@
 
   &__more {
     font-size: 24rpx;
-    color: #D4A855;
+    color: #0066FF;
     flex-shrink: 0;
   }
 }
@@ -331,30 +331,30 @@
 .section-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #1A1A1A;
 }
 
 /* CTA Section */
 .cta-section {
   text-align: center;
-  background: linear-gradient(145deg, #1e293b, #0f172a);
+  background: #FFFFFF;
   border-radius: 24rpx;
   padding: 48rpx 32rpx;
   margin: 32rpx 0;
-  border: 1rpx solid rgba(212, 168, 85, 0.2);
+  border: 1rpx solid rgba(0, 102, 255, 0.2);
 
   &__title {
     display: block;
     font-size: 40rpx;
     font-weight: 800;
-    color: #D4A855;
+    color: #0066FF;
     margin-bottom: 12rpx;
   }
 
   &__desc {
     display: block;
     font-size: 26rpx;
-    color: #94a3b8;
+    color: #6B7280;
     margin-bottom: 28rpx;
   }
 
@@ -366,13 +366,13 @@
 
   &__btn {
     display: inline-block;
-    background: linear-gradient(135deg, #D4A855, #b8922e);
+    background: linear-gradient(135deg, #0066FF, #0052CC);
     border-radius: 40rpx;
     padding: 16rpx 48rpx;
 
     &--outline {
       background: transparent;
-      border: 1rpx solid #D4A855;
+      border: 1rpx solid #0066FF;
     }
 
     &--hover {
@@ -383,13 +383,13 @@
   &__btn-text {
     font-size: 28rpx;
     font-weight: 700;
-    color: #0f172a;
+    color: #FFFFFF;
   }
 
   &__btn-text--outline {
     font-size: 28rpx;
     font-weight: 700;
-    color: #D4A855;
+    color: #0066FF;
   }
 }
 

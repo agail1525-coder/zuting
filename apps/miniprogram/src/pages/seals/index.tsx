@@ -11,7 +11,7 @@ const SERIES_INFO: Record<string, { desc: string; color: string }> = {
   '初印系': { desc: '修行的起步与发心', color: '#60a5fa' },
   '中印系': { desc: '修行的深入与精进', color: '#a78bfa' },
   '印果印': { desc: '修行的成果与印证', color: '#f472b6' },
-  '成道印': { desc: '觉悟与证道', color: '#D4A855' },
+  '成道印': { desc: '觉悟与证道', color: '#f59e0b' },
   '归源印': { desc: '回归本源、圆满归一', color: '#34d399' },
 }
 

@@ -88,9 +88,9 @@ export default function MapPage() {
     height: 28,
     callout: {
       content: `${site.name}\n${site.city}, ${site.country}`,
-      color: '#f1f5f9',
-      bgColor: '#1e293b',
-      borderColor: '#D4A855',
+      color: '#1A1A1A',
+      bgColor: '#FFFFFF',
+      borderColor: '#0066FF',
       borderWidth: 1,
       borderRadius: 8,
       padding: 8,
