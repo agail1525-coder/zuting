@@ -41,4 +41,41 @@ export class SearchQueryDto {
   @Min(1)
   @Max(50)
   limit?: number = 20;
+
+  @ApiPropertyOptional({
+    description: 'Filter by religion ID / 按信仰ID过滤',
+    example: 'clx1abc2d0000ab12cd34ef56',
+  })
+  @IsOptional()
+  @IsString()
+  religionId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Filter by country or region / 按国家/地区过滤',
+    example: 'India',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  country?: string;
+
+  @ApiPropertyOptional({
+    description: 'Sort mode: relevance | name | popular / 排序方式',
+    enum: ['relevance', 'name', 'popular'],
+    example: 'relevance',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(['relevance', 'name', 'popular'])
+  sort?: string = 'relevance';
+
+  @ApiPropertyOptional({
+    description: 'Sort direction: asc | desc / 排序方向',
+    enum: ['asc', 'desc'],
+    example: 'asc',
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(['asc', 'desc'])
+  sortOrder?: string = 'asc';
 }

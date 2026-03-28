@@ -43,6 +43,7 @@ model User {
   reportsReviewed ContentReport[] @relation("ReportsReviewed")
   conversations   Conversation[]
   routeBookings   RouteBooking[]
+  collections     Collection[]
 }
 
 model Session {
@@ -649,4 +650,56 @@ model CouponUsage {
 
   @@unique([couponId, userId, orderId])
   @@index([userId])
+}
+
+// ========== 搜索统计 ==========
+
+model SearchStat {
+  id        String   @id @default(cuid())
+  keyword   String   @unique
+  count     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([count])
+}
+
+// ========== 收藏系统 ==========
+
+enum CollectionEntityType {
+  HOLY_SITE
+  TEMPLE
+  PATRIARCH
+  TRIP
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String   @default("默认收藏夹")
+  description String?
+  coverImage  String?
+  isPublic    Boolean  @default(false)
+  shareToken  String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items CollectionItem[]
+
+  @@index([userId])
+}
+
+model CollectionItem {
+  id           String               @id @default(cuid())
+  collectionId String
+  collection   Collection           @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  entityType   CollectionEntityType
+  entityId     String
+  note         String?
+  createdAt    DateTime             @default(now())
+
+  @@unique([collectionId, entityType, entityId])
+  @@index([collectionId])
+  @@index([entityType, entityId])
 }
