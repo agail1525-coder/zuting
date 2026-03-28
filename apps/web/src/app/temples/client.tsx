@@ -5,19 +5,34 @@ import { useTranslation } from "@/lib/i18n";
 import FilterBar from "@/components/FilterBar";
 import TempleCard from "@/components/TempleCard";
 import type { Religion, Temple } from "@/lib/api";
+import DataLoadError from "@/components/DataLoadError";
 
 interface Props {
   religions: Religion[];
   temples: Temple[];
+  error?: boolean;
 }
 
-export default function TemplesClient({ religions, temples }: Props) {
+export default function TemplesClient({ religions, temples, error }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string | null>(null);
 
   const filtered = filter
     ? temples.filter((t) => t.religionId === filter)
     : temples;
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            {t("section.allTemples")}
+          </h1>
+        </div>
+        <DataLoadError />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

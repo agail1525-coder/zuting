@@ -66,7 +66,14 @@ export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const limit = 20;
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const loadNotifications = useCallback(async () => {
     if (!user) return;
@@ -76,8 +83,7 @@ export default function NotificationsPage() {
       setNotifications(res.data);
       setTotal(res.total);
     } catch {
-      setNotifications([]);
-      setTotal(0);
+      setError("加载通知失败，请稍后重试");
     } finally {
       setLoading(false);
     }
@@ -94,7 +100,7 @@ export default function NotificationsPage() {
         prev.map((n) => (n.id === id ? { ...n, read: true } : n))
       );
     } catch {
-      // ignore
+      showToast("标记已读失败，请重试");
     }
   };
 
@@ -103,7 +109,7 @@ export default function NotificationsPage() {
       await markAllNotificationsAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch {
-      // ignore
+      showToast("全部标记已读失败，请重试");
     }
   };
 
@@ -113,7 +119,7 @@ export default function NotificationsPage() {
       setNotifications((prev) => prev.filter((n) => n.id !== id));
       setTotal((t) => t - 1);
     } catch {
-      // ignore
+      showToast("删除通知失败，请重试");
     }
   };
 
@@ -189,9 +195,26 @@ export default function NotificationsPage() {
         </button>
       </div>
 
+      {toast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-red-500/90 text-white text-sm rounded-lg shadow-lg animate-fade-in">
+          {toast}
+        </div>
+      )}
+
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+        </div>
+      ) : error ? (
+        <div className="text-center py-16">
+          <span className="text-4xl block mb-4">&#x26A0;&#xFE0F;</span>
+          <p className="text-red-400 mb-4">{error}</p>
+          <button
+            onClick={() => { setError(null); loadNotifications(); }}
+            className="px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-colors"
+          >
+            重试
+          </button>
         </div>
       ) : notifications.length === 0 ? (
         <div className="text-center py-16">

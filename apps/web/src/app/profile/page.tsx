@@ -3,41 +3,44 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { updateProfile } from "@/lib/api";
-
-const MENU_ITEMS = [
-  {
-    icon: "🗺",
-    label: "我的行程",
-    desc: "朝圣旅行规划",
-    href: "/trips",
-    color: "from-gold/20 to-gold/5",
-  },
-  {
-    icon: "📿",
-    label: "修行记录",
-    desc: "三十印修行进度",
-    href: "/seals",
-    color: "from-lotus/20 to-lotus/5",
-  },
-  {
-    icon: "📖",
-    label: "朝圣日记",
-    desc: "心灵感悟记录",
-    href: "/journals",
-    color: "from-jade/20 to-jade/5",
-  },
-  {
-    icon: "ℹ️",
-    label: "关于",
-    desc: "全球祖庭旅行平台",
-    href: "/about",
-    color: "from-incense/20 to-incense/5",
-  },
-];
 
 export default function ProfilePage() {
   const { user, loading, logout, refreshUser } = useAuth();
+  const { t } = useTranslation();
+
+  const MENU_ITEMS = [
+    {
+      icon: "🗺",
+      label: t("profile.myTrips"),
+      desc: t("profile.myTripsDesc"),
+      href: "/trips",
+      color: "from-gold/20 to-gold/5",
+    },
+    {
+      icon: "📿",
+      label: t("profile.myPractice"),
+      desc: t("profile.myPracticeDesc"),
+      href: "/seals",
+      color: "from-lotus/20 to-lotus/5",
+    },
+    {
+      icon: "📖",
+      label: t("profile.myJournals"),
+      desc: t("profile.myJournalsDesc"),
+      href: "/journals",
+      color: "from-jade/20 to-jade/5",
+    },
+    {
+      icon: "ℹ️",
+      label: t("profile.aboutLabel"),
+      desc: t("profile.aboutDesc"),
+      href: "/about",
+      color: "from-incense/20 to-incense/5",
+    },
+  ];
+
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
@@ -56,15 +59,15 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (form.nickname.length < 2 || form.nickname.length > 20) {
-      setToast({ type: "error", msg: "昵称需要2-20个字符" });
+      setToast({ type: "error", msg: t("profile.nicknameInvalid") });
       return;
     }
     if (form.phone && !/^1[3-9]\d{9}$/.test(form.phone)) {
-      setToast({ type: "error", msg: "请输入有效的手机号" });
+      setToast({ type: "error", msg: t("profile.phoneInvalid") });
       return;
     }
     if (form.avatar && form.avatar.length > 500) {
-      setToast({ type: "error", msg: "头像URL过长" });
+      setToast({ type: "error", msg: t("profile.avatarTooLong") });
       return;
     }
 
@@ -84,10 +87,10 @@ export default function ProfilePage() {
       await updateProfile(data);
       await refreshUser();
       setEditing(false);
-      setToast({ type: "success", msg: "资料更新成功" });
+      setToast({ type: "success", msg: t("profile.updateSuccess") });
       setTimeout(() => setToast(null), 3000);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "更新失败，请稍后重试";
+      const message = err instanceof Error ? err.message : t("profile.updateFailed");
       setToast({ type: "error", msg: message });
     } finally {
       setSaving(false);
@@ -97,7 +100,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-        <div className="text-temple-400 text-sm">加载中...</div>
+        <div className="text-temple-400 text-sm">{t("common.loading")}</div>
       </div>
     );
   }
@@ -127,17 +130,17 @@ export default function ProfilePage() {
           )}
         </div>
         <h1 className="text-2xl font-serif font-bold text-gradient-gold">
-          {user ? user.nickname : "朝圣者"}
+          {user ? user.nickname : t("profile.pilgrim")}
         </h1>
         <p className="text-temple-400 text-sm mt-1">
-          愿以朝圣之心，行和平之路
+          {t("profile.motto")}
         </p>
         {user && !editing && (
           <button
             onClick={openEdit}
             className="mt-3 px-4 py-1.5 bg-gold/10 border border-gold/20 text-gold rounded-full text-xs font-medium hover:bg-gold/20 transition-colors"
           >
-            编辑资料
+            {t("profile.editProfile")}
           </button>
         )}
       </div>
@@ -145,21 +148,21 @@ export default function ProfilePage() {
       {/* Edit Form */}
       {editing && user && (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-8">
-          <h2 className="text-temple-100 font-medium mb-4">编辑个人资料</h2>
+          <h2 className="text-temple-100 font-medium mb-4">{t("profile.editTitle")}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-temple-400 text-xs mb-1">昵称 (2-20字符)</label>
+              <label className="block text-temple-400 text-xs mb-1">{t("profile.nicknameLabel")}</label>
               <input
                 type="text"
                 value={form.nickname}
                 onChange={(e) => setForm((f) => ({ ...f, nickname: e.target.value }))}
                 maxLength={20}
                 className="w-full px-3 py-2 bg-temple-900/50 border border-temple-600/30 rounded-lg text-temple-100 text-sm placeholder-temple-500 focus:outline-none focus:border-gold/40"
-                placeholder="输入昵称"
+                placeholder={t("profile.nicknamePlaceholder")}
               />
             </div>
             <div>
-              <label className="block text-temple-400 text-xs mb-1">头像URL</label>
+              <label className="block text-temple-400 text-xs mb-1">{t("profile.avatarLabel")}</label>
               <input
                 type="url"
                 value={form.avatar}
@@ -169,7 +172,7 @@ export default function ProfilePage() {
               />
             </div>
             <div>
-              <label className="block text-temple-400 text-xs mb-1">手机号</label>
+              <label className="block text-temple-400 text-xs mb-1">{t("profile.phoneLabel")}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -185,13 +188,13 @@ export default function ProfilePage() {
               disabled={saving}
               className="flex-1 py-2.5 bg-gold/20 border border-gold/30 text-gold rounded-full text-sm font-medium hover:bg-gold/30 transition-colors disabled:opacity-50"
             >
-              {saving ? "保存中..." : "保存"}
+              {saving ? t("profile.saving") : t("common.save")}
             </button>
             <button
               onClick={() => { setEditing(false); setToast(null); }}
               className="px-6 py-2.5 bg-temple-700/50 border border-temple-600/30 text-temple-300 rounded-full text-sm hover:bg-temple-700/70 transition-colors"
             >
-              取消
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -201,10 +204,10 @@ export default function ProfilePage() {
       {user && (
         <div className="grid grid-cols-4 gap-3 mb-8">
           {[
-            { value: user._count.trips, label: "行程" },
-            { value: user._count.orders, label: "订单" },
-            { value: user._count.journals, label: "日记" },
-            { value: user._count.practices, label: "修行" },
+            { value: user._count.trips, label: t("profile.stats.trips") },
+            { value: user._count.orders, label: t("profile.stats.orders") },
+            { value: user._count.journals, label: t("profile.stats.journals") },
+            { value: user._count.practices, label: t("profile.stats.practices") },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -242,33 +245,33 @@ export default function ProfilePage() {
       {user ? (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6 text-center">
           <p className="text-temple-300 text-sm mb-3">
-            已登录为 <span className="text-gold">{user.nickname}</span>
+            {t("profile.loggedInAs")} <span className="text-gold">{user.nickname}</span>
             {user.phone && <span className="text-temple-500 ml-2">({user.phone})</span>}
           </p>
           <button
             onClick={logout}
             className="px-6 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full text-sm font-medium hover:bg-red-500/20 transition-colors"
           >
-            退出登录
+            {t("auth.logout")}
           </button>
         </div>
       ) : (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6 text-center">
           <p className="text-temple-300 text-sm mb-3">
-            登录以同步您的朝圣数据
+            {t("profile.syncPrompt")}
           </p>
           <div className="flex items-center justify-center gap-3">
             <Link
               href="/login"
               className="px-6 py-2.5 bg-gold/15 border border-gold/30 text-gold rounded-full text-sm font-medium hover:bg-gold/25 transition-colors"
             >
-              登录
+              {t("auth.login")}
             </Link>
             <Link
               href="/register"
               className="px-6 py-2.5 bg-temple-700/50 border border-temple-600/30 text-temple-200 rounded-full text-sm font-medium hover:bg-temple-700/70 transition-colors"
             >
-              注册
+              {t("auth.register")}
             </Link>
           </div>
         </div>

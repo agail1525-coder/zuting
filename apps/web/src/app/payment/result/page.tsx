@@ -1,24 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getAccessToken } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
-
-interface OrderDetail {
-  id: string;
-  orderNo: string;
-  amount: number;
-  status: string;
-  tripId: string;
-  trip?: {
-    id: string;
-    title: string;
-  };
-  createdAt: string;
-}
+import { fetchOrder, type OrderDetail } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 
 type ResultState = "loading" | "success" | "pending" | "failed";
 
@@ -28,6 +15,9 @@ const POLL_INTERVAL = 3000;
 export default function PaymentResultPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
+  const router = useRouter();
 
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [state, setState] = useState<ResultState>("loading");
@@ -35,20 +25,21 @@ export default function PaymentResultPage() {
   const pollCount = useRef(0);
   const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const fetchOrder = useCallback(async () => {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [authLoading, user, router]);
+
+  const pollOrder = useCallback(async () => {
     if (!orderId) {
-      setError("缺少订单信息");
+      setError(t("paymentResult.missingOrder"));
       setState("failed");
       return;
     }
 
     try {
-      const token = getAccessToken();
-      const res = await fetch(`${API_URL}/orders/${orderId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-      if (!res.ok) throw new Error("订单查询失败");
-      const data: OrderDetail = await res.json();
+      const data = await fetchOrder(orderId);
       setOrder(data);
 
       const status = data.status?.toUpperCase();
@@ -65,20 +56,20 @@ export default function PaymentResultPage() {
       setState("pending");
       pollCount.current += 1;
       if (pollCount.current < MAX_POLLS) {
-        pollTimer.current = setTimeout(fetchOrder, POLL_INTERVAL);
+        pollTimer.current = setTimeout(pollOrder, POLL_INTERVAL);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "查询失败");
+      setError(err instanceof Error ? err.message : t("paymentResult.queryFailed"));
       setState("failed");
     }
   }, [orderId]);
 
   useEffect(() => {
-    fetchOrder();
+    pollOrder();
     return () => {
       if (pollTimer.current) clearTimeout(pollTimer.current);
     };
-  }, [fetchOrder]);
+  }, [pollOrder]);
 
   // Loading
   if (state === "loading") {
@@ -86,7 +77,7 @@ export default function PaymentResultPage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-temple-400 text-sm font-serif">查询支付结果...</p>
+          <p className="text-temple-400 text-sm font-serif">{t("paymentResult.querying")}</p>
         </div>
       </div>
     );
@@ -116,32 +107,32 @@ export default function PaymentResultPage() {
             </div>
 
             <h1 className="text-2xl font-serif font-bold text-gradient-gold mb-2">
-              支付成功!
+              {t("paymentResult.successTitle")}
             </h1>
             <p className="text-temple-400 text-sm mb-6">
-              您的朝圣之旅已确认
+              {t("paymentResult.successSubtitle")}
             </p>
 
             {order && (
               <div className="space-y-2 text-sm mb-8 text-left bg-temple-700/30 rounded-xl p-4 border border-temple-700/50">
                 <div className="flex justify-between">
-                  <span className="text-temple-400">订单号</span>
+                  <span className="text-temple-400">{t("paymentResult.orderNo")}</span>
                   <span className="text-temple-200 font-mono text-xs">
                     {order.orderNo}
                   </span>
                 </div>
                 {order.trip?.title && (
                   <div className="flex justify-between">
-                    <span className="text-temple-400">行程</span>
+                    <span className="text-temple-400">{t("paymentResult.trip")}</span>
                     <span className="text-temple-200">
                       {order.trip.title}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-temple-400">金额</span>
+                  <span className="text-temple-400">{t("paymentResult.amount")}</span>
                   <span className="text-gold font-semibold">
-                    ¥{(order.amount || 0).toFixed(2)}
+                    ¥{(order.totalAmount || 0).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -152,13 +143,13 @@ export default function PaymentResultPage() {
                 href={order?.tripId ? `/trips/${order.tripId}` : "/trips"}
                 className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
               >
-                查看行程
+                {t("paymentResult.viewTrip")}
               </Link>
               <Link
                 href="/orders"
                 className="block text-temple-400 text-sm hover:text-gold transition-colors"
               >
-                查看全部订单
+                {t("paymentResult.viewAllOrders")}
               </Link>
             </div>
           </div>
@@ -195,17 +186,17 @@ export default function PaymentResultPage() {
             )}
 
             <h1 className="text-2xl font-serif font-bold text-temple-100 mb-2">
-              支付处理中...
+              {t("paymentResult.pendingTitle")}
             </h1>
             <p className="text-temple-400 text-sm mb-6">
               {reachedMax
-                ? "支付状态仍在处理中，请稍后在订单页面查看"
-                : "正在确认支付结果，请稍候"}
+                ? t("paymentResult.pendingTimeout")
+                : t("paymentResult.pendingConfirming")}
             </p>
 
             {order && (
               <div className="text-sm text-temple-500 mb-6">
-                订单号: {order.orderNo}
+                {t("paymentResult.orderNo")}: {order.orderNo}
               </div>
             )}
 
@@ -214,13 +205,13 @@ export default function PaymentResultPage() {
                 href="/orders"
                 className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
               >
-                查看我的订单
+                {t("paymentResult.viewMyOrders")}
               </Link>
               <Link
                 href="/"
                 className="block text-temple-400 text-sm hover:text-gold transition-colors"
               >
-                返回首页
+                {t("paymentResult.backHome")}
               </Link>
             </div>
           </div>
@@ -252,15 +243,15 @@ export default function PaymentResultPage() {
           </div>
 
           <h1 className="text-2xl font-serif font-bold text-temple-100 mb-2">
-            支付失败
+            {t("paymentResult.failedTitle")}
           </h1>
           <p className="text-temple-400 text-sm mb-2">
-            {error || "支付未完成或已取消"}
+            {error || t("paymentResult.failedDefault")}
           </p>
 
           {order && (
             <div className="text-sm text-temple-500 mb-6">
-              订单号: {order.orderNo}
+              {t("paymentResult.orderNo")}: {order.orderNo}
             </div>
           )}
 
@@ -270,20 +261,20 @@ export default function PaymentResultPage() {
                 href={`/trips/${order.tripId}/checkout`}
                 className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
               >
-                重新支付
+                {t("paymentResult.retryPayment")}
               </Link>
             )}
             <Link
               href="/orders"
               className="block w-full py-3 rounded-xl bg-temple-700/40 border border-temple-600/30 text-temple-200 font-semibold hover:bg-temple-700/60 transition-colors text-center"
             >
-              查看订单
+              {t("paymentResult.viewOrders")}
             </Link>
             <Link
               href="/"
               className="block text-temple-400 text-sm hover:text-gold transition-colors"
             >
-              返回首页
+              {t("paymentResult.backHome")}
             </Link>
           </div>
         </div>

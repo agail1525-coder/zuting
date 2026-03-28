@@ -20,14 +20,15 @@ export const metadata = {
 export default async function TemplesPage() {
   let religions: Religion[] = [];
   let temples: Temple[] = [];
+  let error = false;
   try {
     [religions, temples] = await Promise.all([
       fetchReligions(),
       fetchTemples(),
     ]);
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <TemplesClient religions={religions} temples={temples} />;
+  return <TemplesClient religions={religions} temples={temples} error={error} />;
 }

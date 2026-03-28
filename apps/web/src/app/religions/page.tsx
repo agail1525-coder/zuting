@@ -1,5 +1,6 @@
 import { fetchReligions, type Religion } from "@/lib/api";
 import ReligionCard from "@/components/ReligionCard";
+import DataLoadError from "@/components/DataLoadError";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +21,11 @@ export const metadata = {
 
 export default async function ReligionsPage() {
   let religions: Religion[] = [];
+  let error = false;
   try {
     religions = await fetchReligions();
   } catch {
-    // fallback
+    error = true;
   }
 
   return (
@@ -35,11 +37,15 @@ export default async function ReligionsPage() {
         <p className="text-temple-400 text-lg">Twelve Great Faiths of the World</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {religions.map((r) => (
-          <ReligionCard key={r.id} religion={r} />
-        ))}
-      </div>
+      {error ? (
+        <DataLoadError />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {religions.map((r) => (
+            <ReligionCard key={r.id} religion={r} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -4,16 +4,28 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { fetchSearch, type SearchResultItem, type SearchResponse } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
-const TYPE_TABS = [
-  { key: "all", label: "全部", labelEn: "All" },
-  { key: "religion", label: "信仰", labelEn: "Religions" },
-  { key: "holy-site", label: "圣地", labelEn: "Holy Sites" },
-  { key: "temple", label: "祖庭", labelEn: "Temples" },
-  { key: "patriarch", label: "祖师", labelEn: "Patriarchs" },
-  { key: "teaching", label: "祖训", labelEn: "Teachings" },
-  { key: "seal", label: "印", labelEn: "Seals" },
-];
+const TAB_KEYS = ["all", "religion", "holy-site", "temple", "patriarch", "teaching", "seal"] as const;
+
+const TAB_I18N_KEYS: Record<string, string> = {
+  all: "search.tab.all",
+  religion: "search.tab.religion",
+  "holy-site": "search.tab.holySite",
+  temple: "search.tab.temple",
+  patriarch: "search.tab.patriarch",
+  teaching: "search.tab.teaching",
+  seal: "search.tab.seal",
+};
+
+const TYPE_I18N_KEYS: Record<string, string> = {
+  religion: "search.type.religion",
+  "holy-site": "search.type.holySite",
+  temple: "search.type.temple",
+  patriarch: "search.type.patriarch",
+  teaching: "search.type.teaching",
+  seal: "search.type.seal",
+};
 
 const TYPE_BADGE_STYLES: Record<string, string> = {
   religion: "bg-amber-500/20 text-amber-300 border-amber-500/30",
@@ -22,15 +34,6 @@ const TYPE_BADGE_STYLES: Record<string, string> = {
   patriarch: "bg-purple-500/20 text-purple-300 border-purple-500/30",
   teaching: "bg-rose-500/20 text-rose-300 border-rose-500/30",
   seal: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  religion: "信仰",
-  "holy-site": "圣地",
-  temple: "祖庭",
-  patriarch: "祖师",
-  teaching: "祖训",
-  seal: "印",
 };
 
 function getDetailHref(item: SearchResultItem): string {
@@ -55,6 +58,7 @@ function getDetailHref(item: SearchResultItem): string {
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useTranslation();
 
   const initialQ = searchParams.get("q") || "";
   const initialType = searchParams.get("type") || "all";
@@ -63,6 +67,7 @@ export default function SearchPage() {
   const [activeType, setActiveType] = useState(initialType);
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -70,13 +75,17 @@ export default function SearchPage() {
     async (q: string, type: string, p: number) => {
       if (!q.trim()) {
         setResults(null);
+        setError(null);
         return;
       }
       setLoading(true);
+      setError(null);
       try {
         const data = await fetchSearch(q.trim(), type, p, 20);
         setResults(data);
-      } catch {
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        setError(message);
         setResults(null);
       } finally {
         setLoading(false);
@@ -120,9 +129,9 @@ export default function SearchPage() {
       {/* Title */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold mb-2">
-          全局搜索
+          {t("search.title")}
         </h1>
-        <p className="text-temple-400">Search across religions, holy sites, temples, patriarchs, teachings, and seals</p>
+        <p className="text-temple-400">{t("search.subtitle")}</p>
       </div>
 
       {/* Search Input */}
@@ -136,13 +145,13 @@ export default function SearchPage() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="输入关键词搜索... / Search keywords..."
+          placeholder={t("search.placeholder")}
           className="w-full pl-12 pr-4 py-3.5 bg-temple-800/50 border border-gold/20 rounded-xl text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-all text-lg"
           autoFocus
         />
         {query && (
           <button
-            onClick={() => { setQuery(""); setResults(null); }}
+            onClick={() => { setQuery(""); setResults(null); setError(null); }}
             className="absolute inset-y-0 right-0 pr-4 flex items-center text-temple-400 hover:text-gold transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,17 +163,17 @@ export default function SearchPage() {
 
       {/* Type Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-        {TYPE_TABS.map((tab) => (
+        {TAB_KEYS.map((key) => (
           <button
-            key={tab.key}
-            onClick={() => { setActiveType(tab.key); setPage(1); }}
+            key={key}
+            onClick={() => { setActiveType(key); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all border ${
-              activeType === tab.key
+              activeType === key
                 ? "bg-gold/20 text-gold border-gold/40 font-semibold"
                 : "bg-temple-800/30 text-temple-400 border-temple-700/30 hover:text-gold hover:border-gold/20"
             }`}
           >
-            {tab.label}
+            {t(TAB_I18N_KEYS[key])}
           </button>
         ))}
       </div>
@@ -176,31 +185,44 @@ export default function SearchPage() {
         </div>
       )}
 
+      {/* Error state */}
+      {!loading && error && (
+        <div className="text-center py-20">
+          <div className="text-6xl mb-4 opacity-30">&#x26A0;</div>
+          <p className="text-red-400 text-lg">{t("search.error")}</p>
+          <button
+            onClick={() => doSearch(query, activeType, page)}
+            className="mt-4 px-6 py-2 rounded-lg border border-gold/30 text-gold hover:bg-gold/10 transition-all"
+          >
+            {t("search.tab.all") === "全部" ? "重试" : "Retry"}
+          </button>
+        </div>
+      )}
+
       {/* Empty state - no query */}
-      {!loading && !query.trim() && (
+      {!loading && !error && !query.trim() && (
         <div className="text-center py-20">
           <div className="text-6xl mb-4 opacity-30">&#x1F50D;</div>
-          <p className="text-temple-400 text-lg">输入关键词开始搜索</p>
-          <p className="text-temple-500 text-sm mt-1">Enter keywords to start searching</p>
+          <p className="text-temple-400 text-lg">{t("search.emptyPrompt")}</p>
         </div>
       )}
 
       {/* Empty state - no results */}
-      {!loading && query.trim() && results && results.results.length === 0 && (
+      {!loading && !error && query.trim() && results && results.results.length === 0 && (
         <div className="text-center py-20">
           <div className="text-6xl mb-4 opacity-30">&#x1F6AB;</div>
           <p className="text-temple-400 text-lg">
-            未找到与 &ldquo;{query}&rdquo; 相关的结果
+            {t("search.noResults").replace("{query}", query)}
           </p>
-          <p className="text-temple-500 text-sm mt-1">No results found. Try different keywords.</p>
+          <p className="text-temple-500 text-sm mt-1">{t("search.noResultsHint")}</p>
         </div>
       )}
 
       {/* Results */}
-      {!loading && results && results.results.length > 0 && (
+      {!loading && !error && results && results.results.length > 0 && (
         <>
           <p className="text-temple-400 text-sm mb-4">
-            共找到 <span className="text-gold font-semibold">{results.total}</span> 条结果
+            {t("search.resultCount").replace("{total}", String(results.total))}
           </p>
 
           <div className="space-y-3">
@@ -238,7 +260,7 @@ export default function SearchPage() {
                           TYPE_BADGE_STYLES[item.type] || "bg-temple-700/30 text-temple-300 border-temple-600/30"
                         }`}
                       >
-                        {TYPE_LABELS[item.type] || item.type}
+                        {t(TYPE_I18N_KEYS[item.type] || `search.type.${item.type}`)}
                       </span>
                       {/* Religion badge */}
                       {item.religion && item.type !== "religion" && (
@@ -291,7 +313,7 @@ export default function SearchPage() {
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 className="px-4 py-2 rounded-lg border border-temple-700/30 text-temple-300 hover:border-gold/30 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                上一页
+                {t("search.prevPage")}
               </button>
               <span className="text-temple-400 text-sm">
                 {page} / {totalPages}
@@ -301,7 +323,7 @@ export default function SearchPage() {
                 onClick={() => setPage((p) => p + 1)}
                 className="px-4 py-2 rounded-lg border border-temple-700/30 text-temple-300 hover:border-gold/30 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                下一页
+                {t("search.nextPage")}
               </button>
             </div>
           )}

@@ -1,60 +1,95 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { fetchTrip, type TripDetail, type TripStatus } from "@/lib/api";
 import ReviewSection from "@/components/ReviewSection";
 
-const STATUS_STEPS: { key: TripStatus; label: string; icon: string }[] = [
-  { key: "DRAFT", label: "草稿", icon: "📝" },
-  { key: "PLANNING", label: "规划", icon: "📋" },
-  { key: "SUBMITTED", label: "提交", icon: "📤" },
-  { key: "CONFIRMED", label: "确认", icon: "✅" },
-  { key: "PAID", label: "已付", icon: "💰" },
-  { key: "PREPARING", label: "筹备", icon: "🎒" },
-  { key: "IN_PROGRESS", label: "朝圣", icon: "🙏" },
-  { key: "COMPLETED", label: "圆满", icon: "🏛" },
-  { key: "REVIEWING", label: "评价", icon: "📖" },
+const STATUS_ICONS: Record<string, string> = {
+  DRAFT: "📝",
+  PLANNING: "📋",
+  SUBMITTED: "📤",
+  CONFIRMED: "✅",
+  PAID: "💰",
+  PREPARING: "🎒",
+  IN_PROGRESS: "🙏",
+  COMPLETED: "🏛",
+  REVIEWING: "📖",
+};
+
+const STATUS_STEPS: TripStatus[] = [
+  "DRAFT",
+  "PLANNING",
+  "SUBMITTED",
+  "CONFIRMED",
+  "PAID",
+  "PREPARING",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "REVIEWING",
 ];
 
 function getStatusIndex(status: TripStatus): number {
-  return STATUS_STEPS.findIndex((s) => s.key === status);
+  return STATUS_STEPS.indexOf(status);
 }
 
-function formatDate(d: string | null): string {
-  if (!d) return "待定";
+function formatDate(d: string | null, tbd: string): string {
+  if (!d) return tbd;
   return d.slice(0, 10);
 }
 
-function formatBudget(n: number | null): string {
-  if (n == null) return "待定";
+function formatBudget(n: number | null, tbd: string): string {
+  if (n == null) return tbd;
   return `¥${n.toLocaleString()}`;
 }
 
 export default function TripDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
 
   const [trip, setTrip] = useState<TripDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Auth gate
   useEffect(() => {
-    if (!id) return;
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [authLoading, user, router]);
+
+  useEffect(() => {
+    if (!id || !user) return;
     setLoading(true);
     setError(null);
     fetchTrip(id)
       .then(setTrip)
-      .catch((e) => setError(e instanceof Error ? e.message : "加载失败"))
+      .catch((e) =>
+        setError(e instanceof Error ? e.message : t("tripDetail.loadError"))
+      )
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, user, t]);
+
+  if (authLoading || (!user && !error)) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
+        <div className="text-5xl mb-4 animate-pulse">🏛</div>
+        <p className="text-temple-500">{t("tripDetail.loading")}</p>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4 animate-pulse">🏛</div>
-        <p className="text-temple-500">加载行程详情...</p>
+        <p className="text-temple-500">{t("tripDetail.loading")}</p>
       </div>
     );
   }
@@ -64,19 +99,22 @@ export default function TripDetailPage() {
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">🏛</div>
         <h1 className="text-2xl font-serif text-temple-200 mb-4">
-          {error?.includes("404") ? "行程未找到" : error ?? "行程未找到"}
+          {error?.includes("404")
+            ? t("tripDetail.notFound")
+            : error ?? t("tripDetail.notFound")}
         </h1>
         <Link
           href="/trips"
           className="text-gold hover:text-gold-light transition-colors"
         >
-          返回行程列表
+          {t("tripDetail.backToList")}
         </Link>
       </div>
     );
   }
 
   const currentIndex = getStatusIndex(trip.status);
+  const tbd = t("tripDetail.dateTbd");
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -98,7 +136,7 @@ export default function TripDetailPage() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        返回行程列表
+        {t("tripDetail.backToList")}
       </Link>
 
       {/* Trip Header */}
@@ -107,26 +145,49 @@ export default function TripDetailPage() {
           <h1 className="text-2xl md:text-3xl font-serif font-bold text-gradient-gold">
             {trip.title}
           </h1>
+          {trip.status === "CONFIRMED" && (
+            <Link
+              href={`/trips/${id}/checkout`}
+              className="shrink-0 ml-4 px-5 py-2 rounded-xl bg-gold/90 hover:bg-gold text-temple-900 font-semibold text-sm transition-colors"
+            >
+              {t("tripDetail.goCheckout")}
+            </Link>
+          )}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
-            <span className="text-temple-500 block mb-0.5">日期</span>
+            <span className="text-temple-500 block mb-0.5">
+              {t("tripDetail.date")}
+            </span>
             <span className="text-temple-200">
-              {formatDate(trip.startDate)} ~ {formatDate(trip.endDate)}
+              {formatDate(trip.startDate, tbd)} ~{" "}
+              {formatDate(trip.endDate, tbd)}
             </span>
           </div>
           <div>
-            <span className="text-temple-500 block mb-0.5">人数</span>
-            <span className="text-temple-200">{trip.persons ?? 1} 人</span>
+            <span className="text-temple-500 block mb-0.5">
+              {t("tripDetail.persons")}
+            </span>
+            <span className="text-temple-200">
+              {trip.persons ?? 1} {t("tripDetail.personUnit")}
+            </span>
           </div>
           <div>
-            <span className="text-temple-500 block mb-0.5">预算</span>
-            <span className="text-temple-200">{formatBudget(trip.totalBudget)}</span>
+            <span className="text-temple-500 block mb-0.5">
+              {t("tripDetail.budget")}
+            </span>
+            <span className="text-temple-200">
+              {formatBudget(trip.totalBudget, t("tripDetail.budgetTbd"))}
+            </span>
           </div>
           <div>
-            <span className="text-temple-500 block mb-0.5">圣地</span>
-            <span className="text-temple-200">{trip.sites.length} 处</span>
+            <span className="text-temple-500 block mb-0.5">
+              {t("tripDetail.sites")}
+            </span>
+            <span className="text-temple-200">
+              {trip.sites.length} {t("tripDetail.siteUnit")}
+            </span>
           </div>
         </div>
       </div>
@@ -134,15 +195,15 @@ export default function TripDetailPage() {
       {/* Status Steps */}
       <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
         <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-          行程状态
+          {t("tripDetail.statusTitle")}
         </h2>
         <div className="overflow-x-auto pb-2">
           <div className="flex items-center gap-0 min-w-max">
-            {STATUS_STEPS.map((step, i) => {
+            {STATUS_STEPS.map((stepKey, i) => {
               const isPast = i <= currentIndex;
               const isCurrent = i === currentIndex;
               return (
-                <div key={step.key} className="flex items-center">
+                <div key={stepKey} className="flex items-center">
                   <div className="flex flex-col items-center">
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center text-xs border transition-all ${
@@ -153,7 +214,7 @@ export default function TripDetailPage() {
                           : "bg-temple-700/50 border-temple-600 text-temple-500"
                       }`}
                     >
-                      {step.icon}
+                      {STATUS_ICONS[stepKey] ?? "⏳"}
                     </div>
                     <span
                       className={`text-[10px] mt-1 whitespace-nowrap ${
@@ -164,7 +225,7 @@ export default function TripDetailPage() {
                           : "text-temple-500"
                       }`}
                     >
-                      {step.label}
+                      {t(`tripDetail.status.${stepKey}`)}
                     </span>
                   </div>
                   {i < STATUS_STEPS.length - 1 && (
@@ -185,7 +246,7 @@ export default function TripDetailPage() {
       {trip.sites.length > 0 && (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
           <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-            朝圣圣地
+            {t("tripDetail.sitesTitle")}
           </h2>
           <div className="space-y-3">
             {trip.sites.map((ts) => (
@@ -219,7 +280,7 @@ export default function TripDetailPage() {
       {trip.statusHistory.length > 0 && (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6">
           <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-            状态历史
+            {t("tripDetail.historyTitle")}
           </h2>
           <div className="relative pl-6">
             <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gold/20" />

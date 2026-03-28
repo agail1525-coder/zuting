@@ -2,80 +2,35 @@
 
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { fetchTrips, type Trip, type TripStatus } from "@/lib/api";
 
-const STATUS_CONFIG: Record<
+const STATUS_STYLE: Record<
   TripStatus,
-  { label: string; color: string; bgColor: string }
+  { color: string; bgColor: string }
 > = {
-  DRAFT: {
-    label: "草稿",
-    color: "text-temple-400",
-    bgColor: "bg-temple-600/10 border-temple-600/20",
-  },
-  PLANNING: {
-    label: "规划中",
-    color: "text-incense",
-    bgColor: "bg-incense/10 border-incense/20",
-  },
-  SUBMITTED: {
-    label: "已提交",
-    color: "text-blue-400",
-    bgColor: "bg-blue-400/10 border-blue-400/20",
-  },
-  CONFIRMED: {
-    label: "已确认",
-    color: "text-jade",
-    bgColor: "bg-jade/10 border-jade/20",
-  },
-  PAID: {
-    label: "已支付",
-    color: "text-green-400",
-    bgColor: "bg-green-400/10 border-green-400/20",
-  },
-  PREPARING: {
-    label: "筹备中",
-    color: "text-amber-400",
-    bgColor: "bg-amber-400/10 border-amber-400/20",
-  },
-  IN_PROGRESS: {
-    label: "朝圣中",
-    color: "text-gold",
-    bgColor: "bg-gold/10 border-gold/20",
-  },
-  COMPLETED: {
-    label: "已完成",
-    color: "text-emerald-400",
-    bgColor: "bg-emerald-400/10 border-emerald-400/20",
-  },
-  REVIEWING: {
-    label: "评价中",
-    color: "text-purple-400",
-    bgColor: "bg-purple-400/10 border-purple-400/20",
-  },
-  CANCELLED: {
-    label: "已取消",
-    color: "text-red-400",
-    bgColor: "bg-red-400/10 border-red-400/20",
-  },
-  REFUNDING: {
-    label: "退款中",
-    color: "text-orange-400",
-    bgColor: "bg-orange-400/10 border-orange-400/20",
-  },
-  REFUNDED: {
-    label: "已退款",
-    color: "text-gray-400",
-    bgColor: "bg-gray-400/10 border-gray-400/20",
-  },
+  DRAFT: { color: "text-temple-400", bgColor: "bg-temple-600/10 border-temple-600/20" },
+  PLANNING: { color: "text-incense", bgColor: "bg-incense/10 border-incense/20" },
+  SUBMITTED: { color: "text-blue-400", bgColor: "bg-blue-400/10 border-blue-400/20" },
+  CONFIRMED: { color: "text-jade", bgColor: "bg-jade/10 border-jade/20" },
+  PAID: { color: "text-green-400", bgColor: "bg-green-400/10 border-green-400/20" },
+  PREPARING: { color: "text-amber-400", bgColor: "bg-amber-400/10 border-amber-400/20" },
+  IN_PROGRESS: { color: "text-gold", bgColor: "bg-gold/10 border-gold/20" },
+  COMPLETED: { color: "text-emerald-400", bgColor: "bg-emerald-400/10 border-emerald-400/20" },
+  REVIEWING: { color: "text-purple-400", bgColor: "bg-purple-400/10 border-purple-400/20" },
+  CANCELLED: { color: "text-red-400", bgColor: "bg-red-400/10 border-red-400/20" },
+  REFUNDING: { color: "text-orange-400", bgColor: "bg-orange-400/10 border-orange-400/20" },
+  REFUNDED: { color: "text-gray-400", bgColor: "bg-gray-400/10 border-gray-400/20" },
 };
 
-const TABS: { key: "all" | TripStatus; label: string }[] = [
-  { key: "all", label: "全部" },
-  { key: "PLANNING", label: "规划中" },
-  { key: "CONFIRMED", label: "已确认" },
-  { key: "IN_PROGRESS", label: "朝圣中" },
-  { key: "COMPLETED", label: "已完成" },
+const TAB_KEYS: Array<{ key: "all" | TripStatus; i18nKey: string }> = [
+  { key: "all", i18nKey: "trips.tab.all" },
+  { key: "PLANNING", i18nKey: "trips.tab.planning" },
+  { key: "CONFIRMED", i18nKey: "trips.tab.confirmed" },
+  { key: "IN_PROGRESS", i18nKey: "trips.tab.inProgress" },
+  { key: "COMPLETED", i18nKey: "trips.tab.completed" },
 ];
 
 function formatDate(d: string | null): string {
@@ -84,10 +39,19 @@ function formatDate(d: string | null): string {
 }
 
 export default function TripsPage() {
+  const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"all" | TripStatus>("all");
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login?redirect=/trips");
+    }
+  }, [authLoading, user, router]);
 
   const loadTrips = useCallback(async () => {
     setLoading(true);
@@ -97,15 +61,29 @@ export default function TripsPage() {
       const res = await fetchTrips(params);
       setTrips(Array.isArray(res.data) ? res.data : []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "加载失败");
+      setError(e instanceof Error ? e.message : t("common.error"));
     } finally {
       setLoading(false);
     }
   }, [activeTab]);
 
   useEffect(() => {
+    if (!user) return;
     loadTrips();
-  }, [loadTrips]);
+  }, [user, loadTrips]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -113,23 +91,23 @@ export default function TripsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-serif font-bold text-gradient-gold">
-            我的朝圣之旅
+            {t("trips.pageTitle")}
           </h1>
           <p className="text-temple-400 mt-1 text-sm">
-            规划、记录您的每一次心灵旅程
+            {t("trips.pageSubtitle")}
           </p>
         </div>
         <Link
           href="/trips/create"
           className="px-5 py-2.5 bg-gold text-temple-900 font-semibold rounded-full text-sm hover:bg-gold-light transition-colors shadow-lg shadow-gold/20"
         >
-          + 创建新行程
+          + {t("trips.createNew")}
         </Link>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 mb-6 overflow-x-auto pb-1">
-        {TABS.map((tab) => (
+        {TAB_KEYS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
@@ -139,7 +117,7 @@ export default function TripsPage() {
                 : "text-temple-400 hover:text-temple-200 border border-transparent hover:border-temple-700"
             }`}
           >
-            {tab.label}
+            {t(tab.i18nKey)}
           </button>
         ))}
       </div>
@@ -148,7 +126,7 @@ export default function TripsPage() {
       {loading && (
         <div className="text-center py-20 text-temple-500">
           <div className="text-5xl mb-4 animate-pulse">🏛</div>
-          <p>加载行程中...</p>
+          <p>{t("trips.loading")}</p>
         </div>
       )}
 
@@ -161,7 +139,7 @@ export default function TripsPage() {
             onClick={loadTrips}
             className="px-4 py-2 bg-gold/20 text-gold rounded-full text-sm hover:bg-gold/30 transition-colors"
           >
-            重试
+            {t("trips.retry")}
           </button>
         </div>
       )}
@@ -170,11 +148,11 @@ export default function TripsPage() {
       {!loading && !error && (
         <div className="space-y-4">
           {trips.map((trip, i) => {
-            const sc = STATUS_CONFIG[trip.status] ?? {
-              label: trip.status,
+            const sc = STATUS_STYLE[trip.status] ?? {
               color: "text-temple-400",
               bgColor: "bg-temple-600/10 border-temple-600/20",
             };
+            const statusLabel = t(`trip.status.${trip.status}`);
             return (
               <Link
                 key={trip.id}
@@ -196,12 +174,12 @@ export default function TripsPage() {
                       <span
                         className={`px-2 py-0.5 text-xs rounded-full border ${sc.bgColor} ${sc.color} shrink-0`}
                       >
-                        {sc.label}
+                        {statusLabel}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-temple-400">
-                      <span>{trip.sites.length} 个圣地</span>
+                      <span>{trip.sites.length} {t("trips.siteCount")}</span>
                       {(trip.startDate || trip.endDate) && (
                         <span>
                           {formatDate(trip.startDate)} ~ {formatDate(trip.endDate)}
@@ -235,7 +213,7 @@ export default function TripsPage() {
       {!loading && !error && trips.length === 0 && (
         <div className="text-center py-20 text-temple-500">
           <div className="text-5xl mb-4">🏛</div>
-          <p>暂无此状态的行程</p>
+          <p>{t("trips.empty")}</p>
         </div>
       )}
     </div>

@@ -4,49 +4,29 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { getAccessToken } from "@/lib/auth";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002/api";
-
-interface TripSite {
-  id: string;
-  order: number;
-  holySite: {
-    id: string;
-    name: string;
-    nameEn: string;
-    country: string;
-    emoji?: string;
-  };
-}
-
-interface TripDetail {
-  id: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  persons: number;
-  totalBudget: number | null;
-  contactName: string | null;
-  contactPhone: string | null;
-  note: string | null;
-  status: string;
-  sites: TripSite[];
-}
+import { useTranslation } from "@/lib/i18n";
+import {
+  fetchTrip,
+  verifyCoupon,
+  createOrder,
+  createPayment,
+  type TripDetail,
+} from "@/lib/api";
 
 type PaymentGateway = "wechat" | "alipay" | "stripe";
-
-const PAYMENT_METHODS: { key: PaymentGateway; label: string; icon: string }[] = [
-  { key: "wechat", label: "微信支付", icon: "💚" },
-  { key: "alipay", label: "支付宝", icon: "🔵" },
-  { key: "stripe", label: "Stripe", icon: "💳" },
-];
 
 export default function CheckoutPage() {
   const params = useParams();
   const tripId = params.id as string;
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
+
+  const PAYMENT_METHODS: { key: PaymentGateway; label: string; icon: string }[] = [
+    { key: "wechat", label: t("payment.wechat"), icon: "💚" },
+    { key: "alipay", label: t("payment.alipay"), icon: "🔵" },
+    { key: "stripe", label: t("payment.stripe"), icon: "💳" },
+  ];
 
   const [trip, setTrip] = useState<TripDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,47 +46,31 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!user) return;
-    const fetchTrip = async () => {
+    const loadTrip = async () => {
       try {
-        const token = getAccessToken();
-        const res = await fetch(`${API_URL}/trips/${tripId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("行程加载失败");
-        const data = await res.json();
+        const data = await fetchTrip(tripId);
         setTrip(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "加载失败");
+        setError(err instanceof Error ? err.message : t("common.error"));
       } finally {
         setLoading(false);
       }
     };
-    fetchTrip();
+    loadTrip();
   }, [tripId, user]);
+
+  const totalAmount = trip?.totalBudget ?? 0;
 
   const handleVerifyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponError("");
     setCouponVerifying(true);
     try {
-      const token = getAccessToken();
-      const res = await fetch(`${API_URL}/coupons/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ code: couponCode.trim() }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "优惠码无效");
-      }
-      const data = await res.json();
-      setCouponDiscount(data.discount || 0);
+      const data = await verifyCoupon(couponCode.trim(), totalAmount);
+      setCouponDiscount(data.discount ?? 0);
     } catch (err) {
       setCouponDiscount(0);
-      setCouponError(err instanceof Error ? err.message : "验证失败");
+      setCouponError(err instanceof Error ? err.message : t("common.error"));
     } finally {
       setCouponVerifying(false);
     }
@@ -116,41 +80,21 @@ export default function CheckoutPage() {
     setError("");
     setSubmitting(true);
     try {
-      const token = getAccessToken();
+      const finalAmount = Math.max(0, totalAmount - couponDiscount);
 
       // Step 1: Create order
-      const orderRes = await fetch(`${API_URL}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ tripId }),
+      const order = await createOrder({
+        tripId,
+        totalAmount: finalAmount,
       });
-      if (!orderRes.ok) {
-        const data = await orderRes.json();
-        throw new Error(data.message || "创建订单失败");
-      }
-      const order = await orderRes.json();
 
       // Step 2: Create payment
-      const paymentRes = await fetch(`${API_URL}/payments/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ orderId: order.id, gateway }),
-      });
-      if (!paymentRes.ok) {
-        const data = await paymentRes.json();
-        throw new Error(data.message || "创建支付失败");
-      }
+      await createPayment(order.id, gateway);
 
       // Redirect to payment result
       router.push(`/payment/result?orderId=${order.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "提交订单失败，请重试");
+      setError(err instanceof Error ? err.message : t("common.error"));
     } finally {
       setSubmitting(false);
     }
@@ -161,7 +105,7 @@ export default function CheckoutPage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">加载中...</p>
+          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -178,7 +122,7 @@ export default function CheckoutPage() {
           href={`/trips/${tripId}`}
           className="text-gold hover:text-gold-light transition-colors"
         >
-          返回行程详情
+          {t("checkout.backToTrip")}
         </Link>
       </div>
     );
@@ -186,7 +130,6 @@ export default function CheckoutPage() {
 
   if (!trip) return null;
 
-  const totalAmount = trip.totalBudget || 0;
   const discountAmount = couponDiscount;
   const finalAmount = Math.max(0, totalAmount - discountAmount);
 
@@ -210,17 +153,17 @@ export default function CheckoutPage() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        返回行程详情
+        {t("checkout.backToTrip")}
       </Link>
 
       {/* Page Title */}
       <div className="text-center mb-8">
         <div className="text-4xl mb-3">🧾</div>
         <h1 className="text-2xl font-serif font-bold text-gradient-gold">
-          订单确认
+          {t("checkout.title")}
         </h1>
         <p className="text-temple-400 text-sm mt-2">
-          请核实行程信息并完成支付
+          {t("checkout.subtitle")}
         </p>
       </div>
 
@@ -234,22 +177,22 @@ export default function CheckoutPage() {
       {/* Trip Summary */}
       <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
         <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-          行程概要
+          {t("checkout.tripSummary")}
         </h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">行程名称</span>
+            <span className="text-temple-400">{t("checkout.tripName")}</span>
             <span className="text-temple-100 font-medium">{trip.title}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">出行日期</span>
+            <span className="text-temple-400">{t("checkout.travelDate")}</span>
             <span className="text-temple-200">
-              {trip.startDate} ~ {trip.endDate}
+              {trip.startDate ?? t("checkout.pending")} ~ {trip.endDate ?? t("checkout.pending")}
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">出行人数</span>
-            <span className="text-temple-200">{trip.persons} 人</span>
+            <span className="text-temple-400">{t("checkout.travelers")}</span>
+            <span className="text-temple-200">{trip.persons ?? 1} {t("checkout.persons")}</span>
           </div>
         </div>
 
@@ -257,18 +200,15 @@ export default function CheckoutPage() {
         {trip.sites && trip.sites.length > 0 && (
           <div className="mt-4 pt-4 border-t border-temple-700/50">
             <p className="text-sm text-temple-400 mb-2">
-              朝圣圣地 ({trip.sites.length} 处)
+              {t("checkout.holySites")} ({trip.sites.length} {t("checkout.sites")})
             </p>
             <div className="flex flex-wrap gap-2">
-              {trip.sites.map((site) => (
+              {trip.sites.map((tripSite) => (
                 <span
-                  key={site.id || site.order}
+                  key={tripSite.id || tripSite.order}
                   className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-temple-700/40 border border-temple-600/30 text-xs text-temple-200"
                 >
-                  {site.holySite?.emoji && (
-                    <span>{site.holySite.emoji}</span>
-                  )}
-                  {site.holySite?.name || `圣地 ${site.order}`}
+                  {tripSite.site?.name || `${t("checkout.holySites")} ${tripSite.order}`}
                 </span>
               ))}
             </div>
@@ -280,18 +220,18 @@ export default function CheckoutPage() {
       {(trip.contactName || trip.contactPhone) && (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
           <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-            联系信息
+            {t("checkout.contactInfo")}
           </h2>
           <div className="space-y-3">
             {trip.contactName && (
               <div className="flex justify-between text-sm">
-                <span className="text-temple-400">联系人</span>
+                <span className="text-temple-400">{t("checkout.contactPerson")}</span>
                 <span className="text-temple-200">{trip.contactName}</span>
               </div>
             )}
             {trip.contactPhone && (
               <div className="flex justify-between text-sm">
-                <span className="text-temple-400">联系电话</span>
+                <span className="text-temple-400">{t("checkout.contactPhone")}</span>
                 <span className="text-temple-200">{trip.contactPhone}</span>
               </div>
             )}
@@ -302,7 +242,7 @@ export default function CheckoutPage() {
       {/* Payment Method */}
       <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
         <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-          支付方式
+          {t("checkout.paymentMethod")}
         </h2>
         <div className="space-y-3">
           {PAYMENT_METHODS.map((method) => (
@@ -351,7 +291,7 @@ export default function CheckoutPage() {
       {/* Coupon Code */}
       <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
         <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-          优惠码
+          {t("checkout.couponCode")}
         </h2>
         <div className="flex gap-3">
           <input
@@ -362,7 +302,7 @@ export default function CheckoutPage() {
               setCouponError("");
               setCouponDiscount(0);
             }}
-            placeholder="输入优惠码（选填）"
+            placeholder={t("checkout.couponPlaceholder")}
             className="flex-1 px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
           />
           <button
@@ -370,7 +310,7 @@ export default function CheckoutPage() {
             disabled={couponVerifying || !couponCode.trim()}
             className="px-5 py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold text-sm hover:bg-gold/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
           >
-            {couponVerifying ? "验证中..." : "验证"}
+            {couponVerifying ? t("checkout.verifying") : t("checkout.verify")}
           </button>
         </div>
         {couponError && (
@@ -378,7 +318,7 @@ export default function CheckoutPage() {
         )}
         {couponDiscount > 0 && (
           <p className="text-green-400 text-xs mt-2">
-            优惠码有效，已减免 ¥{couponDiscount.toFixed(2)}
+            {t("checkout.couponValid")} ¥{couponDiscount.toFixed(2)}
           </p>
         )}
       </div>
@@ -386,25 +326,25 @@ export default function CheckoutPage() {
       {/* Price Breakdown */}
       <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
         <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
-          费用明细
+          {t("checkout.priceBreakdown")}
         </h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">行程费用</span>
+            <span className="text-temple-400">{t("checkout.tripFee")}</span>
             <span className="text-temple-200">
               ¥{totalAmount.toFixed(2)}
             </span>
           </div>
           {couponDiscount > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-temple-400">优惠减免</span>
+              <span className="text-temple-400">{t("checkout.couponDiscount")}</span>
               <span className="text-green-400">
                 -¥{discountAmount.toFixed(2)}
               </span>
             </div>
           )}
           <div className="pt-3 border-t border-temple-700/50 flex justify-between">
-            <span className="text-temple-200 font-semibold">应付总额</span>
+            <span className="text-temple-200 font-semibold">{t("checkout.totalDue")}</span>
             <span className="text-xl font-bold text-gold">
               ¥{finalAmount.toFixed(2)}
             </span>
@@ -421,15 +361,15 @@ export default function CheckoutPage() {
         {submitting ? (
           <span className="inline-flex items-center gap-2">
             <span className="w-5 h-5 border-2 border-temple-900/30 border-t-temple-900 rounded-full animate-spin" />
-            处理中...
+            {t("checkout.processing")}
           </span>
         ) : (
-          `确认支付 ¥${finalAmount.toFixed(2)}`
+          `${t("checkout.confirmPay")} ¥${finalAmount.toFixed(2)}`
         )}
       </button>
 
       <p className="text-center text-temple-500 text-xs mt-4">
-        提交订单即表示您同意《祖庭旅行服务协议》
+        {t("checkout.agreementText")}
       </p>
     </div>
   );

@@ -5,19 +5,34 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import FilterBar from "@/components/FilterBar";
 import type { Religion, Teaching } from "@/lib/api";
+import DataLoadError from "@/components/DataLoadError";
 
 interface Props {
   religions: Religion[];
   teachings: Teaching[];
+  error?: boolean;
 }
 
-export default function TeachingsClient({ religions, teachings }: Props) {
+export default function TeachingsClient({ religions, teachings, error }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string | null>(null);
 
   const filtered = filter
     ? teachings.filter((td) => td.religionId === filter)
     : teachings;
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            {t("section.allTeachings")}
+          </h1>
+        </div>
+        <DataLoadError />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

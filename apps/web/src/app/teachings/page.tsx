@@ -20,14 +20,15 @@ export const metadata = {
 export default async function TeachingsPage() {
   let religions: Religion[] = [];
   let teachings: Teaching[] = [];
+  let error = false;
   try {
     [religions, teachings] = await Promise.all([
       fetchReligions(),
       fetchTeachings(),
     ]);
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <TeachingsClient religions={religions} teachings={teachings} />;
+  return <TeachingsClient religions={religions} teachings={teachings} error={error} />;
 }

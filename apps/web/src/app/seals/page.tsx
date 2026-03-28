@@ -20,11 +20,12 @@ export const metadata = {
 
 export default async function SealsPage() {
   let seals: Seal[] = [];
+  let error = false;
   try {
     seals = await fetchSeals();
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <SealsClient seals={seals} />;
+  return <SealsClient seals={seals} error={error} />;
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchOrders,
   fetchOrder,
@@ -12,58 +13,23 @@ import {
   type OrderDetail,
 } from "@/lib/api";
 
-const STATUS_CONFIG: Record<
+const STATUS_STYLE: Record<
   string,
-  { label: string; color: string; bg: string; border: string }
+  { color: string; bg: string; border: string }
 > = {
-  PENDING: {
-    label: "待支付",
-    color: "text-yellow-400",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/20",
-  },
-  PAID: {
-    label: "已支付",
-    color: "text-green-400",
-    bg: "bg-green-500/10",
-    border: "border-green-500/20",
-  },
-  CANCELLED: {
-    label: "已取消",
-    color: "text-temple-400",
-    bg: "bg-temple-600/10",
-    border: "border-temple-600/20",
-  },
-  REFUNDING: {
-    label: "退款中",
-    color: "text-orange-400",
-    bg: "bg-orange-500/10",
-    border: "border-orange-500/20",
-  },
-  REFUNDED: {
-    label: "已退款",
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-  },
-  COMPLETED: {
-    label: "已完成",
-    color: "text-green-400",
-    bg: "bg-green-500/10",
-    border: "border-green-500/20",
-  },
+  PENDING: { color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
+  PAID: { color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20" },
+  CANCELLED: { color: "text-temple-400", bg: "bg-temple-600/10", border: "border-temple-600/20" },
+  REFUNDING: { color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
+  REFUNDED: { color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+  COMPLETED: { color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20" },
 };
 
-function getStatusConfig(status: string) {
+const DEFAULT_STYLE = { color: "text-temple-400", bg: "bg-temple-600/10", border: "border-temple-600/20" };
+
+function getStatusStyle(status: string) {
   const upper = status?.toUpperCase() || "";
-  return (
-    STATUS_CONFIG[upper] || {
-      label: status,
-      color: "text-temple-400",
-      bg: "bg-temple-600/10",
-      border: "border-temple-600/20",
-    }
-  );
+  return STATUS_STYLE[upper] || DEFAULT_STYLE;
 }
 
 function formatDate(dateStr: string) {
@@ -99,11 +65,11 @@ function formatAmount(cents: number | null | undefined) {
   return `¥${((cents ?? 0) / 100).toFixed(2)}`;
 }
 
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  wechat: "微信支付",
-  alipay: "支付宝",
-  stripe: "Stripe",
-  bank_transfer: "银行转账",
+const PAYMENT_METHOD_I18N: Record<string, string> = {
+  wechat: "orders.paymentWechat",
+  alipay: "orders.paymentAlipay",
+  stripe: "orders.paymentStripe",
+  bank_transfer: "orders.paymentBankTransfer",
 };
 
 // --- Confirmation Modal ---
@@ -122,6 +88,7 @@ function ConfirmModal({
   onCancel: () => void;
   loading: boolean;
 }) {
+  const { t } = useTranslation();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -136,14 +103,14 @@ function ConfirmModal({
             disabled={loading}
             className="px-4 py-2 rounded-lg text-sm text-temple-300 hover:bg-temple-800 transition-colors"
           >
-            取消
+            {t("common.cancel")}
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
             className="px-4 py-2 rounded-lg text-sm bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500/30 transition-colors disabled:opacity-50"
           >
-            {loading ? "处理中..." : "确认"}
+            {loading ? t("orders.processing") : t("orders.confirm")}
           </button>
         </div>
       </div>
@@ -161,6 +128,7 @@ function OrderDrawer({
   onClose: () => void;
   onAction: () => void;
 }) {
+  const { t } = useTranslation();
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
   const [confirmModal, setConfirmModal] = useState<{
@@ -169,7 +137,8 @@ function OrderDrawer({
 
   if (!order) return null;
 
-  const sc = getStatusConfig(order.status);
+  const sc = getStatusStyle(order.status);
+  const statusLabel = t(`order.status.${order.status?.toUpperCase() || "PENDING"}`);
   const upperStatus = order.status?.toUpperCase() || "";
   const canCancel = upperStatus === "PENDING";
   const canRefund = upperStatus === "PAID";
@@ -188,7 +157,7 @@ function OrderDrawer({
       onAction();
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "操作失败，请重试"
+        err instanceof Error ? err.message : t("orders.actionFailed")
       );
     } finally {
       setActionLoading(false);
@@ -201,29 +170,29 @@ function OrderDrawer({
     time: string | null;
     done: boolean;
   }> = [
-    { label: "创建订单", time: order.createdAt, done: true },
+    { label: t("orders.timeline.created"), time: order.createdAt, done: true },
     {
-      label: "完成支付",
+      label: t("orders.timeline.paid"),
       time: order.paidAt,
       done: !!order.paidAt,
     },
   ];
   if (order.cancelledAt) {
     timelineEvents.push({
-      label: "取消订单",
+      label: t("orders.timeline.cancelled"),
       time: order.cancelledAt,
       done: true,
     });
   }
   if (order.refundedAt) {
     timelineEvents.push({
-      label: "退款完成",
+      label: t("orders.timeline.refunded"),
       time: order.refundedAt,
       done: true,
     });
   }
   if (upperStatus === "REFUNDING") {
-    timelineEvents.push({ label: "退款中", time: null, done: false });
+    timelineEvents.push({ label: t("orders.timeline.refunding"), time: null, done: false });
   }
 
   return (
@@ -239,7 +208,7 @@ function OrderDrawer({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-serif font-bold text-temple-100">
-              订单详情
+              {t("orders.drawerTitle")}
             </h2>
             <button
               onClick={onClose}
@@ -254,49 +223,48 @@ function OrderDrawer({
             <span
               className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium border ${sc.color} ${sc.bg} ${sc.border}`}
             >
-              {sc.label}
+              {statusLabel}
             </span>
           </div>
 
           {/* Order Info */}
           <div className="space-y-4 mb-6">
             <div className="bg-temple-800/50 rounded-xl p-4 space-y-3">
-              <InfoRow label="订单号" value={order.orderNo} mono />
-              <InfoRow label="订单金额" value={formatAmount(order.totalAmount)} highlight />
+              <InfoRow label={t("orders.orderNo")} value={order.orderNo} mono />
+              <InfoRow label={t("orders.totalAmount")} value={formatAmount(order.totalAmount)} highlight />
               {order.paidAmount != null && (
                 <InfoRow
-                  label="实付金额"
+                  label={t("orders.paidAmount")}
                   value={formatAmount(order.paidAmount)}
                 />
               )}
               <InfoRow
-                label="支付方式"
+                label={t("orders.paymentMethod")}
                 value={
                   order.paymentMethod
-                    ? PAYMENT_METHOD_LABELS[order.paymentMethod] ||
-                      order.paymentMethod
-                    : "未选择"
+                    ? t(PAYMENT_METHOD_I18N[order.paymentMethod] || order.paymentMethod)
+                    : t("orders.paymentNotSelected")
                 }
               />
               <InfoRow
-                label="创建时间"
+                label={t("orders.createdTime")}
                 value={formatDateTime(order.createdAt)}
               />
               {order.paidAt && (
                 <InfoRow
-                  label="支付时间"
+                  label={t("orders.paidTime")}
                   value={formatDateTime(order.paidAt)}
                 />
               )}
               {order.cancelledAt && (
                 <InfoRow
-                  label="取消时间"
+                  label={t("orders.cancelledTime")}
                   value={formatDateTime(order.cancelledAt)}
                 />
               )}
               {order.refundedAt && (
                 <InfoRow
-                  label="退款时间"
+                  label={t("orders.refundedTime")}
                   value={formatDateTime(order.refundedAt)}
                 />
               )}
@@ -307,7 +275,7 @@ function OrderDrawer({
           {order.trip && (
             <div className="mb-6">
               <h3 className="text-sm font-medium text-temple-300 mb-3">
-                关联行程
+                {t("orders.associatedTrip")}
               </h3>
               <Link
                 href={`/trips/${order.trip.id}`}
@@ -317,12 +285,12 @@ function OrderDrawer({
                   {order.trip.title}
                 </p>
                 <p className="text-xs text-temple-500 mt-1">
-                  状态: {getStatusConfig(order.trip.status).label}
+                  {t("orders.statusLabel")}: {t(`order.status.${order.trip.status?.toUpperCase() || "PENDING"}`)}
                 </p>
                 {Array.isArray(order.trip.sites) &&
                   order.trip.sites.length > 0 && (
                     <p className="text-xs text-temple-500 mt-1">
-                      途经:{" "}
+                      {t("orders.routePrefix")}:{" "}
                       {order.trip.sites
                         .map((s) => s.site.name)
                         .join(" → ")}
@@ -335,7 +303,7 @@ function OrderDrawer({
           {/* Status Timeline */}
           <div className="mb-6">
             <h3 className="text-sm font-medium text-temple-300 mb-3">
-              状态流转
+              {t("orders.statusTimeline")}
             </h3>
             <div className="space-y-0">
               {timelineEvents.map((evt, i) => (
@@ -386,7 +354,7 @@ function OrderDrawer({
                   onClick={() => setConfirmModal({ type: "cancel" })}
                   className="w-full py-3 rounded-xl text-sm font-medium bg-temple-800 border border-temple-600 text-temple-300 hover:bg-temple-700 transition-colors"
                 >
-                  取消订单
+                  {t("orders.cancelOrder")}
                 </button>
               )}
               {canRefund && (
@@ -394,7 +362,7 @@ function OrderDrawer({
                   onClick={() => setConfirmModal({ type: "refund" })}
                   className="w-full py-3 rounded-xl text-sm font-medium bg-orange-500/10 border border-orange-500/30 text-orange-400 hover:bg-orange-500/20 transition-colors"
                 >
-                  申请退款
+                  {t("orders.requestRefund")}
                 </button>
               )}
             </div>
@@ -406,12 +374,12 @@ function OrderDrawer({
       <ConfirmModal
         open={!!confirmModal}
         title={
-          confirmModal?.type === "cancel" ? "确认取消订单?" : "确认申请退款?"
+          confirmModal?.type === "cancel" ? t("orders.confirmCancel") : t("orders.confirmRefund")
         }
         message={
           confirmModal?.type === "cancel"
-            ? "取消后订单将无法恢复，您需要重新下单。"
-            : "退款申请提交后将进入审核流程，请耐心等待。"
+            ? t("orders.cancelMessage")
+            : t("orders.refundMessage")
         }
         onConfirm={handleAction}
         onCancel={() => {
@@ -456,6 +424,7 @@ function InfoRow({
 // --- Main Page ---
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
   const router = useRouter();
 
   const [orders, setOrders] = useState<OrderDetail[]>([]);
@@ -477,7 +446,7 @@ export default function OrdersPage() {
       setOrders(Array.isArray(res.data) ? res.data : []);
       setError("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "订单加载失败");
+      setError(err instanceof Error ? err.message : t("orders.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -494,7 +463,7 @@ export default function OrdersPage() {
       const detail = await fetchOrder(orderId);
       setSelectedOrder(detail);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载订单详情失败");
+      setError(err instanceof Error ? err.message : t("orders.detailLoadFailed"));
     } finally {
       setDrawerLoading(false);
     }
@@ -510,7 +479,7 @@ export default function OrdersPage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">加载中...</p>
+          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -524,9 +493,9 @@ export default function OrdersPage() {
       <div className="text-center mb-8">
         <div className="text-4xl mb-3">📋</div>
         <h1 className="text-2xl font-serif font-bold text-gradient-gold">
-          我的订单
+          {t("orders.pageTitle")}
         </h1>
-        <p className="text-temple-400 text-sm mt-2">查看您的全部订单记录</p>
+        <p className="text-temple-400 text-sm mt-2">{t("orders.pageSubtitle")}</p>
       </div>
 
       {/* Error */}
@@ -540,15 +509,15 @@ export default function OrdersPage() {
       {!error && orders.length === 0 && (
         <div className="card-glow rounded-2xl bg-temple-800/50 p-12 text-center">
           <div className="text-5xl mb-4">🏛</div>
-          <h2 className="text-xl font-serif text-temple-200 mb-3">暂无订单</h2>
+          <h2 className="text-xl font-serif text-temple-200 mb-3">{t("orders.empty")}</h2>
           <p className="text-temple-400 text-sm mb-6">
-            开始规划您的祖庭朝圣之旅吧
+            {t("orders.emptyHint")}
           </p>
           <Link
             href="/trips"
             className="inline-block px-6 py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors"
           >
-            浏览行程
+            {t("orders.browseTrips")}
           </Link>
         </div>
       )}
@@ -564,7 +533,8 @@ export default function OrdersPage() {
       {orders.length > 0 && (
         <div className="space-y-4">
           {orders.map((order) => {
-            const sc = getStatusConfig(order.status);
+            const sc = getStatusStyle(order.status);
+            const orderStatusLabel = t(`order.status.${order.status?.toUpperCase() || "PENDING"}`);
             return (
               <div
                 key={order.id}
@@ -573,7 +543,7 @@ export default function OrdersPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base font-semibold text-temple-100 truncate">
-                      {order.trip?.title || `订单 ${order.orderNo}`}
+                      {order.trip?.title || `${t("orders.orderPrefix")} ${order.orderNo}`}
                     </h3>
                     <p className="text-xs text-temple-500 font-mono mt-1">
                       {order.orderNo}
@@ -582,7 +552,7 @@ export default function OrdersPage() {
                   <span
                     className={`shrink-0 ml-3 px-3 py-1 rounded-full text-xs font-medium border ${sc.color} ${sc.bg} ${sc.border}`}
                   >
-                    {sc.label}
+                    {orderStatusLabel}
                   </span>
                 </div>
 
@@ -598,7 +568,7 @@ export default function OrdersPage() {
                       onClick={() => openDetail(order.id)}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium bg-gold/10 border border-gold/20 text-gold hover:bg-gold/20 transition-colors"
                     >
-                      查看详情
+                      {t("orders.viewDetail")}
                     </button>
                   </div>
                 </div>

@@ -20,14 +20,15 @@ export const metadata = {
 export default async function PatriarchsPage() {
   let religions: Religion[] = [];
   let patriarchs: Patriarch[] = [];
+  let error = false;
   try {
     [religions, patriarchs] = await Promise.all([
       fetchReligions(),
       fetchPatriarchs(),
     ]);
   } catch {
-    // fallback
+    error = true;
   }
 
-  return <PatriarchsClient religions={religions} patriarchs={patriarchs} />;
+  return <PatriarchsClient religions={religions} patriarchs={patriarchs} error={error} />;
 }

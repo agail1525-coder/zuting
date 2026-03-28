@@ -4,11 +4,13 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import { createTrip } from "@/lib/api";
 
 export default function TripCreatePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -29,7 +31,7 @@ export default function TripCreatePage() {
   if (authLoading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <p className="text-temple-400 text-sm font-serif">加载中...</p>
+        <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
       </div>
     );
   }
@@ -41,15 +43,15 @@ export default function TripCreatePage() {
     setError("");
 
     if (!title.trim()) {
-      setError("请输入行程标题");
+      setError(t("trip.titleRequired"));
       return;
     }
     if (!startDate || !endDate) {
-      setError("请选择出发和返程日期");
+      setError(t("trip.dateRequired"));
       return;
     }
     if (new Date(endDate) <= new Date(startDate)) {
-      setError("返程日期必须晚于出发日期");
+      setError(t("trip.dateInvalid"));
       return;
     }
 
@@ -66,7 +68,7 @@ export default function TripCreatePage() {
       });
       router.push(`/trips/${trip.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "创建行程失败，请重试");
+      setError(err instanceof Error ? err.message : t("trip.createFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -80,10 +82,10 @@ export default function TripCreatePage() {
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">&#x2708;&#xFE0F;</div>
             <h1 className="text-2xl font-serif font-bold text-gradient-gold">
-              创建新行程
+              {t("trip.createTitle")}
             </h1>
             <p className="text-temple-400 text-sm mt-2">
-              规划您的祖庭朝圣之旅
+              {t("trip.createSubtitle")}
             </p>
           </div>
 
@@ -101,14 +103,14 @@ export default function TripCreatePage() {
                 htmlFor="title"
                 className="block text-sm text-temple-300 mb-1.5"
               >
-                行程标题 *
+                {t("trip.labelTitleRequired")}
               </label>
               <input
                 id="title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="如：东方禅宗祖庭朝圣之旅"
+                placeholder={t("trip.titlePlaceholder")}
                 className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
               />
             </div>
@@ -119,7 +121,7 @@ export default function TripCreatePage() {
                   htmlFor="startDate"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  出发日期 *
+                  {t("trip.labelStartDateRequired")}
                 </label>
                 <input
                   id="startDate"
@@ -134,7 +136,7 @@ export default function TripCreatePage() {
                   htmlFor="endDate"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  返程日期 *
+                  {t("trip.labelEndDateRequired")}
                 </label>
                 <input
                   id="endDate"
@@ -152,7 +154,7 @@ export default function TripCreatePage() {
                   htmlFor="persons"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  出行人数
+                  {t("trip.persons")}
                 </label>
                 <input
                   id="persons"
@@ -173,14 +175,14 @@ export default function TripCreatePage() {
                   htmlFor="contactPhone"
                   className="block text-sm text-temple-300 mb-1.5"
                 >
-                  联系电话
+                  {t("trip.contactPhone")}
                 </label>
                 <input
                   id="contactPhone"
                   type="tel"
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
-                  placeholder="手机号"
+                  placeholder={t("trip.contactPhonePlaceholder")}
                   className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
                 />
               </div>
@@ -191,14 +193,14 @@ export default function TripCreatePage() {
                 htmlFor="contactName"
                 className="block text-sm text-temple-300 mb-1.5"
               >
-                联系人姓名
+                {t("trip.contactName")}
               </label>
               <input
                 id="contactName"
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
-                placeholder="请输入联系人姓名"
+                placeholder={t("trip.contactNamePlaceholder")}
                 className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
               />
             </div>
@@ -208,13 +210,13 @@ export default function TripCreatePage() {
                 htmlFor="note"
                 className="block text-sm text-temple-300 mb-1.5"
               >
-                备注
+                {t("trip.note")}
               </label>
               <textarea
                 id="note"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="特殊需求或注意事项..."
+                placeholder={t("trip.notePlaceholder")}
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors resize-none"
               />
@@ -225,7 +227,7 @@ export default function TripCreatePage() {
               disabled={submitting}
               className="w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? "创建中..." : "创建行程"}
+              {submitting ? t("trip.creating") : t("trip.createSubmit")}
             </button>
           </form>
 
@@ -235,7 +237,7 @@ export default function TripCreatePage() {
               href="/trips"
               className="text-temple-400 text-sm hover:text-gold transition-colors"
             >
-              返回行程列表
+              {t("trip.backToList")}
             </Link>
           </div>
         </div>

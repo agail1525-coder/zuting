@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import SealCard from "@/components/SealCard";
 import type { Seal, SealSeries } from "@/lib/api";
+import DataLoadError from "@/components/DataLoadError";
 
 const seriesOrder: SealSeries[] = [
   "CHUYIN",
@@ -23,9 +24,10 @@ const seriesButtonColors: Record<string, string> = {
 
 interface Props {
   seals: Seal[];
+  error?: boolean;
 }
 
-export default function SealsClient({ seals }: Props) {
+export default function SealsClient({ seals, error }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<SealSeries | null>(null);
 
@@ -41,6 +43,19 @@ export default function SealsClient({ seals }: Props) {
   const displayGroups = filter
     ? grouped.filter((g) => g.series === filter)
     : grouped;
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            {t("section.thirtySeals")}
+          </h1>
+        </div>
+        <DataLoadError />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
