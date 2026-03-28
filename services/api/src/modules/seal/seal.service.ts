@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SealSeries } from '@prisma/client';
 import { CreateSealDto } from './dto/create-seal.dto';
+import { UpdateSealDto } from './dto/update-seal.dto';
 
 @Injectable()
 export class SealService {
@@ -34,7 +35,7 @@ export class SealService {
     });
   }
 
-  update(id: number, dto: Partial<CreateSealDto>) {
+  update(id: number, dto: UpdateSealDto) {
     const data: Record<string, unknown> = {};
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.series !== undefined) data.series = dto.series as SealSeries;

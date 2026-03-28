@@ -77,6 +77,7 @@ export interface ChatResponse {
   role: 'assistant';
   content: string;
   intent: ChatIntent;
+  conversationId?: string;
   relatedData?: SummarizedData;
   timestamp: string;
 }

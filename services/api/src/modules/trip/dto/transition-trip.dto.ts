@@ -54,11 +54,4 @@ export class TransitionTripDto {
   @IsString()
   reason?: string;
 
-  @ApiPropertyOptional({
-    description: 'ID of the user/admin performing this action. / 执行此操作的用户/管理员ID',
-    example: 'clx1abc2d0000ab12cd34ef56',
-  })
-  @IsOptional()
-  @IsString()
-  operator?: string;
 }

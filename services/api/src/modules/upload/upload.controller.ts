@@ -94,9 +94,13 @@ export class UploadController {
   @ApiParam({ name: 'id', description: 'Upload ID (上传记录ID)' })
   @ApiResponse({ status: 200, description: 'Upload info returned / 上传信息返回成功' })
   @ApiResponse({ status: 401, description: 'Unauthorized — valid JWT required / 未授权' })
+  @ApiResponse({ status: 403, description: 'Forbidden — not owner or admin / 无权查看' })
   @ApiResponse({ status: 404, description: 'Upload not found / 上传记录不存在' })
-  findOne(@Param('id') id: string) {
-    return this.uploadService.findOne(id);
+  findOne(
+    @Param('id') id: string,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    return this.uploadService.findOne(id, user.id, user.role === 'ADMIN');
   }
 
   @Delete(':id')

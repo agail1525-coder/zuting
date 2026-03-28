@@ -222,7 +222,7 @@ export class TripController {
     @CurrentUser('id') userId: string,
     @CurrentUser('role') userRole: string,
   ) {
-    return this.tripService.transition(id, userId, userRole, dto.action, dto.operator, dto.reason);
+    return this.tripService.transition(id, userId, userRole, dto.action, userId, dto.reason);
   }
 
   @Post(':id/sites')

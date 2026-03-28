@@ -7,15 +7,21 @@ import {
   IsDateString,
   Min,
   Max,
+  MinLength,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateCouponDto {
   @ApiProperty({ description: '优惠券代码', example: 'SPRING2026' })
   @IsString()
+  @MinLength(2)
+  @MaxLength(32)
   code: string;
 
   @ApiProperty({ description: '优惠券名称', example: '春季朝圣优惠' })
   @IsString()
+  @MinLength(1)
+  @MaxLength(100)
   name: string;
 
   @ApiProperty({

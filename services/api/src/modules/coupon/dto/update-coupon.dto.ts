@@ -7,12 +7,16 @@ import {
   IsDateString,
   IsBoolean,
   Min,
+  MinLength,
+  MaxLength,
 } from 'class-validator';
 
 export class UpdateCouponDto {
   @ApiPropertyOptional({ description: '优惠券名称' })
   @IsOptional()
   @IsString()
+  @MinLength(1)
+  @MaxLength(100)
   name?: string;
 
   @ApiPropertyOptional({

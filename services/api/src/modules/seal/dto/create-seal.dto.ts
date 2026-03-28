@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsInt, Min } from 'class-validator';
+import { IsString, IsOptional, IsInt, Min, IsIn } from 'class-validator';
 
 const SEAL_SERIES_VALUES = ['CHUYIN', 'ZHONGYIN', 'YINGUOYIN', 'CHENGDAOYIN', 'GUIYUANYIN'];
 
@@ -15,6 +15,7 @@ export class CreateSealDto {
 
   @ApiProperty({ example: 'CHUYIN', enum: SEAL_SERIES_VALUES })
   @IsString()
+  @IsIn(SEAL_SERIES_VALUES)
   series: string;
 
   @ApiProperty({ example: '发心向道，初入法门' })

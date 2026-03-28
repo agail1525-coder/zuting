@@ -12,6 +12,7 @@ import { TempleModule } from './modules/temple/temple.module';
 import { PatriarchModule } from './modules/patriarch/patriarch.module';
 import { TeachingModule } from './modules/teaching/teaching.module';
 import { SealModule } from './modules/seal/seal.module';
+import { AiConfigModule } from './modules/ai-config/ai-config.module';
 import { XiaohongModule } from './modules/xiaohong/xiaohong.module';
 import { TripModule } from './modules/trip/trip.module';
 import { OrderModule } from './modules/order/order.module';
@@ -41,6 +42,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     PatriarchModule,
     TeachingModule,
     SealModule,
+    AiConfigModule,
     XiaohongModule,
     TripModule,
     OrderModule,

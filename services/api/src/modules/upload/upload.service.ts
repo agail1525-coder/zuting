@@ -96,10 +96,13 @@ export class UploadService {
     };
   }
 
-  /** Get upload info by ID */
-  async findOne(id: string) {
+  /** Get upload info by ID — owner or admin only (R-68 IDOR) */
+  async findOne(id: string, userId: string, isAdmin: boolean) {
     const upload = await this.prisma.upload.findUnique({ where: { id } });
     if (!upload) throw new NotFoundException(`Upload ${id} not found`);
+    if (!isAdmin && upload.userId !== userId) {
+      throw new ForbiddenException('You can only view your own uploads');
+    }
     return {
       id: upload.id,
       url: upload.url,

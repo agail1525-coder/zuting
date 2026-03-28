@@ -87,7 +87,10 @@ export class CouponController {
   @Get('my')
   @ApiBearerAuth()
   @ApiOperation({ summary: '我的可用优惠券 / My available coupons' })
-  getUserCoupons(@CurrentUser('id') userId: string) {
-    return this.couponService.getUserCoupons(userId);
+  getUserCoupons(
+    @CurrentUser('id') userId: string,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.couponService.getUserCoupons(userId, pagination.page, pagination.limit);
   }
 }

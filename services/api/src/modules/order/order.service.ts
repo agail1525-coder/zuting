@@ -4,6 +4,7 @@ import {
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { OrderStatus, TripStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TripStateMachine } from '../../common/trip-state-machine';
@@ -16,6 +17,7 @@ export class OrderService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly stateMachine: TripStateMachine,
+    private readonly configService: ConfigService,
   ) {}
 
   /** Create a new order for a confirmed trip */
@@ -119,6 +121,13 @@ export class OrderService {
    * In production this would be called by a payment gateway callback.
    */
   async pay(id: string, userId: string, dto: PayOrderDto) {
+    const nodeEnv = this.configService.get<string>('NODE_ENV', 'development');
+    if (nodeEnv === 'production') {
+      throw new ForbiddenException(
+        'Payment simulation is disabled in production. Use payment gateway webhooks.',
+      );
+    }
+
     const order = await this.findOrderWithOwnership(id, userId);
 
     if (order.status !== OrderStatus.PENDING) {

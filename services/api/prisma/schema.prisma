@@ -41,6 +41,7 @@ model User {
   uploads       Upload[]
   reportsMade     ContentReport[] @relation("ReportsMade")
   reportsReviewed ContentReport[] @relation("ReportsReviewed")
+  conversations   Conversation[]
 }
 
 model Session {
@@ -447,6 +448,46 @@ model ContentReport {
 
   @@index([status])
   @@index([targetType, targetId])
+}
+
+// ========== AI 配置 + 对话历史 ==========
+
+model AiConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  label       String
+  description String?
+  category    String   @default("general") // general / model / prompt / safety
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model Conversation {
+  id        String                @id @default(cuid())
+  userId    String
+  user      User                  @relation(fields: [userId], references: [id])
+  title     String?
+  messages  ConversationMessage[]
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ConversationMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // user / assistant / system
+  content        String       @db.Text
+  intent         String?
+  tokenCount     Int?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@index([createdAt])
 }
 
 // ========== P4: 优惠券 ==========

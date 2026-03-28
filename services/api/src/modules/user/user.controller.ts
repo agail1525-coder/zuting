@@ -2,6 +2,10 @@ import {
   Controller,
   Get,
   Delete,
+  Patch,
+  Param,
+  Query,
+  Body,
   HttpCode,
   HttpStatus,
   Logger,
@@ -11,9 +15,13 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { UserService } from './user.service';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -21,6 +29,43 @@ export class UserController {
   private readonly logger = new Logger(UserController.name);
 
   constructor(private readonly userService: UserService) {}
+
+  @Get()
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'List users (admin only) / 用户列表（仅管理员）' })
+  @ApiQuery({ name: 'search', required: false, description: 'Search by nickname or email' })
+  @ApiQuery({ name: 'role', required: false, description: 'Filter by role' })
+  @ApiQuery({ name: 'isActive', required: false, description: 'Filter by active status' })
+  @ApiResponse({ status: 200, description: 'Paginated user list' })
+  listUsers(
+    @Query() pagination: PaginationQueryDto,
+    @Query('search') search?: string,
+    @Query('role') role?: string,
+    @Query('isActive') isActive?: string,
+  ) {
+    return this.userService.listUsers({
+      page: pagination.page ?? 1,
+      limit: pagination.limit ?? 20,
+      search,
+      role,
+      isActive: isActive === undefined ? undefined : isActive === 'true',
+    });
+  }
+
+  @Patch(':id')
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Update user (admin only) / 更新用户（仅管理员）' })
+  @ApiResponse({ status: 200, description: 'User updated' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  updateUser(
+    @Param('id') id: string,
+    @Body() data: AdminUpdateUserDto,
+  ) {
+    this.logger.log(`Admin updating user ${id}: ${JSON.stringify(data)}`);
+    return this.userService.adminUpdateUser(id, data);
+  }
 
   @Get('me/export')
   @ApiBearerAuth('bearer')

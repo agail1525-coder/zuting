@@ -6,6 +6,7 @@ import {
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { SealService } from './seal.service';
 import { CreateSealDto } from './dto/create-seal.dto';
+import { UpdateSealDto } from './dto/update-seal.dto';
 import type { SealSeries } from '@prisma/client';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -44,7 +45,7 @@ export class SealController {
   @Patch(':id')
   @Roles('ADMIN')
   @ApiOperation({ summary: '更新印' })
-  async update(@Param('id', ParseIntPipe) id: number, @Body() dto: Partial<CreateSealDto>) {
+  async update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateSealDto) {
     const seal = await this.sealService.findById(id);
     if (!seal) throw new NotFoundException();
     return this.sealService.update(id, dto);

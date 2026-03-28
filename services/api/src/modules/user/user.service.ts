@@ -105,6 +105,97 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * List users with pagination, search, and filtering (admin only).
+   */
+  async listUsers(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    role?: string;
+    isActive?: boolean;
+  }) {
+    const { page, limit, search, role, isActive } = params;
+    const where: Record<string, unknown> = {};
+
+    if (search) {
+      where.OR = [
+        { nickname: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    if (role) {
+      where.role = role;
+    }
+    if (isActive !== undefined) {
+      where.isActive = isActive;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          nickname: true,
+          email: true,
+          phone: true,
+          avatar: true,
+          role: true,
+          isActive: true,
+          emailVerified: true,
+          phoneVerified: true,
+          lastLoginAt: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: { select: { trips: true, orders: true, journals: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return { data, total, page, limit };
+  }
+
+  /**
+   * Admin update user role or active status.
+   */
+  async adminUpdateUser(
+    userId: string,
+    data: { role?: string; isActive?: boolean },
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found / 用户不存在');
+    }
+
+    const updateData: Record<string, unknown> = {};
+    if (data.role !== undefined) {
+      updateData.role = data.role;
+    }
+    if (data.isActive !== undefined) {
+      updateData.isActive = data.isActive;
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        nickname: true,
+        email: true,
+        role: true,
+        isActive: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  /**
    * Export all user data for GDPR compliance.
    * Collects profile, trips, orders, journals, reviews, notifications, posts.
    */

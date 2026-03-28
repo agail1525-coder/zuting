@@ -12,7 +12,7 @@ export class ChatMessageDto {
   message: string;
 
   @ApiPropertyOptional({
-    description: '会话ID（可选） / Conversation ID (optional)',
+    description: '会话ID（可选，传入则继续该对话） / Conversation ID for multi-turn chat',
     example: 'conv_abc123',
   })
   @IsString()

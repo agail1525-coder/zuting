@@ -170,37 +170,36 @@ export class CouponService {
   }
 
   /** Get active coupons the user hasn't used */
-  async getUserCoupons(userId: string) {
+  async getUserCoupons(userId: string, page = 1, limit = 20) {
+    const take = Math.min(limit, 50);
+    const skip = (page - 1) * take;
     const now = new Date();
 
-    // Get coupon IDs the user has already used
-    const usedCoupons = await this.prisma.couponUsage.findMany({
-      where: { userId },
-      select: { couponId: true },
-      take: 500,
-    });
-    const usedCouponIds = usedCoupons.map((u) => u.couponId);
-
+    // Use relation filter to exclude coupons already used by this user
+    // (replaces the old take:500 couponUsage query)
     const where: Prisma.CouponWhereInput = {
       isActive: true,
       startAt: { lte: now },
       endAt: { gte: now },
+      usages: { none: { userId } },
     };
 
-    if (usedCouponIds.length > 0) {
-      where.id = { notIn: usedCouponIds };
-    }
+    const [items, total] = await Promise.all([
+      this.prisma.coupon.findMany({
+        where,
+        orderBy: { endAt: 'asc' },
+        skip,
+        take,
+      }),
+      this.prisma.coupon.count({ where }),
+    ]);
 
-    const coupons = await this.prisma.coupon.findMany({
-      where,
-      orderBy: { endAt: 'asc' },
-      take: 50,
-    });
-
-    // Filter out fully used coupons
-    return coupons.filter(
+    // Filter out fully used coupons (Prisma can't compare two columns)
+    const filtered = items.filter(
       (c) => c.totalCount === 0 || c.usedCount < c.totalCount,
     );
+
+    return { items: filtered, total, page, pageSize: take };
   }
 
   private calculateDiscount(

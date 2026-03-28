@@ -1412,6 +1412,132 @@ async function main() {
   }
   console.log(`  ✓ ${seals.length} seals created`);
 
+  // ── 7. AI Config (小鸿配置) ──
+  console.log('Creating AI config...');
+  await prisma.aiConfig.deleteMany();
+  const aiConfigs = [
+    {
+      key: 'system_prompt',
+      label: '系统人设',
+      category: 'prompt',
+      description: '小鸿AI助手的核心人设提示词，决定AI的身份、风格和行为准则',
+      value: `你是「小鸿」，全球祖庭旅行平台的AI助手。
+
+## 身份
+- 名字：小鸿（XiaoHong）
+- 角色：宗教文化顾问 + 朝圣旅行规划师 + 修行指导师
+- 性格：温和、博学、尊重所有信仰、不偏不倚
+
+## 知识范围
+平台涵盖12大信仰传统：佛教、道教、基督教、伊斯兰教、印度教、犹太教、儒教、锡克教、神道教、藏传佛教、原住民灵性、巴哈伊教。
+收录60个圣地、27座祖庭、28位祖师、39条祖训、曹溪愿命三十印。
+
+## 行为准则
+1. 对所有宗教一视同仁，不评判优劣
+2. 回答基于平台数据库的真实数据，优先引用提供的上下文数据
+3. 不涉及政治敏感话题
+4. 鼓励用户实地朝圣体验
+5. 推荐时优先使用平台收录的圣地和祖庭数据
+6. 如果用户问的内容不在你的知识范围内，诚实说明并引导回宗教文化话题
+
+## 回答风格
+- 用温暖、有智慧的语气
+- 适当引用祖训和经典
+- 涉及具体数据时准确引用上下文中提供的数据
+- 旅行规划要实用（包含时间、路线、注意事项）
+- 回答控制在300-800字之间，避免过长
+- 使用中文回答，如用户使用英文则用英文回答`,
+    },
+    {
+      key: 'safety_prompt',
+      label: '安全约束',
+      category: 'safety',
+      description: '附加在系统提示词后的安全边界约束',
+      value: `## 安全边界
+- 不讨论政治、战争、恐怖主义等敏感话题
+- 不对任何宗教做出价值判断或比较优劣
+- 不提供医疗、法律、财务建议
+- 遇到不当请求时，温和地引导回宗教文化话题
+- 不编造不存在的圣地、祖师或历史事件`,
+    },
+    {
+      key: 'welcome_message',
+      label: '欢迎语',
+      category: 'prompt',
+      description: '用户首次进入聊天时显示的欢迎消息',
+      value: '你好！我是小鸿，你的祖庭旅行与修行伙伴。我可以帮你了解全球12大信仰传统、60个宗教圣地、27座祖庭，规划朝圣路线，或者聊聊修行心得。请问你想了解什么？',
+    },
+    {
+      key: 'model',
+      label: '模型选择',
+      category: 'model',
+      description: 'vLLM使用的模型路径（OpenAI兼容格式）',
+      value: '/root/autodl-tmp/models/qwen3.5-35b-a3b-fp8',
+    },
+    {
+      key: 'max_tokens',
+      label: '最大输出Token',
+      category: 'model',
+      description: '每次回复的最大token数量',
+      value: '2048',
+    },
+    {
+      key: 'temperature',
+      label: '温度',
+      category: 'model',
+      description: '控制回答的创造性，0=确定性，1=创造性',
+      value: '0.7',
+    },
+    {
+      key: 'context_window',
+      label: '上下文轮数',
+      category: 'model',
+      description: '发送给AI的历史对话轮数（越多上下文越丰富，但消耗更多token）',
+      value: '10',
+    },
+    {
+      key: 'enable_rag',
+      label: '启用RAG检索',
+      category: 'general',
+      description: '是否根据用户问题自动检索数据库中的相关数据作为上下文',
+      value: 'true',
+    },
+    {
+      key: 'enable_history',
+      label: '启用对话历史',
+      category: 'general',
+      description: '是否保存和使用多轮对话历史',
+      value: 'true',
+    },
+    {
+      key: 'max_daily_messages',
+      label: '每日消息限额',
+      category: 'safety',
+      description: '每个用户每天最多可发送的消息数量（0=无限制）',
+      value: '100',
+    },
+    {
+      key: 'suggestions',
+      label: '推荐问题',
+      category: 'prompt',
+      description: '聊天界面显示的快捷推荐问题（JSON数组）',
+      value: JSON.stringify([
+        { text: '推荐一个朝圣路线', category: '路线推荐' },
+        { text: '佛教有哪些圣地？', category: '知识问答' },
+        { text: '三十印修炼如何开始？', category: '修行指导' },
+        { text: '介绍道教祖庭', category: '知识问答' },
+        { text: '今天适合修炼什么？', category: '修行指导' },
+        { text: '基督教的祖师有哪些？', category: '知识问答' },
+        { text: '介绍一下儒教的祖训', category: '知识问答' },
+        { text: '耶路撒冷有什么宗教意义？', category: '知识问答' },
+      ]),
+    },
+  ];
+  for (const cfg of aiConfigs) {
+    await prisma.aiConfig.create({ data: cfg });
+  }
+  console.log(`  ✓ ${aiConfigs.length} AI configs created`);
+
   console.log('\nSeed complete!');
   console.log(`  Religions: ${religions.length}`);
   console.log(`  Holy Sites: ${holySites.length}`);
@@ -1419,6 +1545,7 @@ async function main() {
   console.log(`  Patriarchs: ${patriarchs.length}`);
   console.log(`  Teachings: ${teachings.length}`);
   console.log(`  Seals: ${seals.length}`);
+  console.log(`  AI Configs: ${aiConfigs.length}`);
 }
 
 main()
