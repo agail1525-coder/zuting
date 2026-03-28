@@ -104,7 +104,7 @@ export default function LoginScreen() {
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color={colors.backgroundDark} />
+              <ActivityIndicator color="#FFFFFF" />
             ) : (
               <Text style={styles.loginButtonText}>登录</Text>
             )}
@@ -141,9 +141,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.08)',
     borderWidth: 2,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.md,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     paddingHorizontal: spacing.md,
     gap: spacing.sm,
   },
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   loginButtonText: {
-    color: colors.backgroundDark,
+    color: '#FFFFFF',
     fontSize: fontSize.lg,
     fontWeight: '700',
   },

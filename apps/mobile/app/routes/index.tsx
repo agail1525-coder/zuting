@@ -72,7 +72,7 @@ export default function RoutesListScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: '文化路线', headerStyle: { backgroundColor: '#0f172a' }, headerTintColor: colors.gold }} />
+      <Stack.Screen options={{ title: '文化路线', headerStyle: { backgroundColor: '#FFFFFF' }, headerTintColor: colors.gold }} />
 
       {/* Category Filter */}
       <FlatList
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: 100,
-    backgroundColor: 'rgba(212, 168, 85, 0.08)',
+    backgroundColor: 'rgba(0, 102, 255, 0.08)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   cardTag: {
     fontSize: fontSize.xs,
     color: colors.gold,
-    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     paddingHorizontal: spacing.sm,
     paddingVertical: 1,
     borderRadius: borderRadius.sm,

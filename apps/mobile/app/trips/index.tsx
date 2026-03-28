@@ -23,11 +23,11 @@ const STATUS_CONFIG: Record<TripStatus, { label: string; color: string; icon: ke
   PAID: { label: '已付款', color: '#10B981', icon: 'card' },
   PREPARING: { label: '准备中', color: '#F97316', icon: 'construct' },
   IN_PROGRESS: { label: '进行中', color: '#F59E0B', icon: 'walk' },
-  COMPLETED: { label: '已完成', color: '#D4A855', icon: 'trophy' },
+  COMPLETED: { label: '已完成', color: '#0066FF', icon: 'trophy' },
   REVIEWING: { label: '评价中', color: '#EC4899', icon: 'star' },
-  CANCELLED: { label: '已取消', color: '#64748B', icon: 'close-circle' },
+  CANCELLED: { label: '已取消', color: '#9CA3AF', icon: 'close-circle' },
   REFUNDING: { label: '退款中', color: '#EF4444', icon: 'time' },
-  REFUNDED: { label: '已退款', color: '#94A3B8', icon: 'return-down-back' },
+  REFUNDED: { label: '已退款', color: '#9CA3AF', icon: 'return-down-back' },
 };
 
 const FILTER_OPTIONS: { key: TripStatus | 'all'; label: string }[] = [
@@ -162,7 +162,7 @@ export default function TripsScreen() {
                   <View style={styles.tripHeader}>
                     <View style={styles.tripHeaderText}>
                       <Text style={styles.tripTitle}>{item.title}</Text>
-                      <View style={[styles.statusBadge, { backgroundColor: `${statusCfg.color}20` }]}>
+                      <View style={[styles.statusBadge, { backgroundColor: `${statusCfg.color}15` }]}>
                         <Ionicons name={statusCfg.icon} size={12} color={statusCfg.color} />
                         <Text style={[styles.statusText, { color: statusCfg.color }]}>
                           {statusCfg.label}
@@ -215,7 +215,7 @@ export default function TripsScreen() {
         style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
         onPress={() => router.push('/trips/create')}
       >
-        <Ionicons name="add" size={28} color={colors.backgroundDark} />
+        <Ionicons name="add" size={28} color="#FFFFFF" />
       </Pressable>
     </View>
   );
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   filterBar: {
     maxHeight: 56,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
+    borderBottomColor: '#E5E7EB',
   },
   filterContent: {
     paddingHorizontal: spacing.md,
@@ -249,11 +249,11 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.full,
     backgroundColor: colors.backgroundCardSolid,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     marginRight: spacing.sm,
   },
   filterChipActive: {
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     borderColor: colors.gold,
   },
   filterText: {
@@ -272,9 +272,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     padding: spacing.md,
     marginBottom: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   tripCardPressed: {
     opacity: 0.85,
@@ -318,7 +323,7 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
     paddingTop: spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
+    borderTopColor: '#E5E7EB',
   },
   tripMeta: {
     flexDirection: 'row',

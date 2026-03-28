@@ -10,18 +10,18 @@ initSentry();
 function RootLayout() {
   return (
     <AuthProvider>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#0f172a',
+            backgroundColor: '#FFFFFF',
           },
-          headerTintColor: '#D4A855',
+          headerTintColor: '#0066FF',
           headerTitleStyle: {
             fontWeight: '600',
           },
           contentStyle: {
-            backgroundColor: '#0f172a',
+            backgroundColor: '#FFFFFF',
           },
           animation: 'slide_from_right',
         }}

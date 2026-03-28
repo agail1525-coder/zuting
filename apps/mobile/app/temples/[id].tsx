@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(212, 168, 85, 0.08)',
+    backgroundColor: 'rgba(0, 102, 255, 0.05)',
   },
   heroTitle: {
     fontSize: fontSize.xxl,
@@ -115,13 +115,18 @@ const styles = StyleSheet.create({
   },
   infoCard: {
     flex: 1,
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: '#E5E7EB',
     padding: spacing.md,
     alignItems: 'center',
     gap: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   infoLabel: {
     color: colors.textMuted,
@@ -137,10 +142,15 @@ const styles = StyleSheet.create({
   descriptionCard: {
     margin: spacing.md,
     padding: spacing.lg,
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   sectionTitle: {
     fontSize: fontSize.xl,

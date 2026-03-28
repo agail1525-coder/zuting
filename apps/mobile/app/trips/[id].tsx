@@ -28,9 +28,9 @@ const STATUS_COLORS: Record<string, string> = {
   PAID: '#10B981',
   PREPARING: '#06B6D4',
   IN_PROGRESS: '#F59E0B',
-  COMPLETED: '#D4A855',
+  COMPLETED: '#0066FF',
   REVIEWING: '#A78BFA',
-  CANCELLED: '#64748B',
+  CANCELLED: '#9CA3AF',
   REFUNDING: '#EF4444',
   REFUNDED: '#9CA3AF',
 };
@@ -190,7 +190,7 @@ export default function TripDetailScreen() {
                     ]}
                   >
                     {isActive && (
-                      <Ionicons name="checkmark" size={12} color={colors.white} />
+                      <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                     )}
                   </View>
                   {index < STATUS_STEPS.length - 1 && (
@@ -200,7 +200,7 @@ export default function TripDetailScreen() {
                         {
                           backgroundColor: index < currentStepIndex
                             ? STATUS_COLORS[STATUS_STEPS[index + 1].key]
-                            : colors.border,
+                            : '#E5E7EB',
                         },
                       ]}
                     />
@@ -272,9 +272,9 @@ export default function TripDetailScreen() {
                 disabled={transitioning}
               >
                 {transitioning ? (
-                  <ActivityIndicator size="small" color={isPrimary ? colors.backgroundDark : colors.gold} />
+                  <ActivityIndicator size="small" color={isPrimary ? '#FFFFFF' : colors.gold} />
                 ) : (
-                  <Ionicons name={t.icon} size={20} color={isPrimary ? colors.backgroundDark : colors.gold} />
+                  <Ionicons name={t.icon} size={20} color={isPrimary ? '#FFFFFF' : colors.gold} />
                 )}
                 <Text style={isPrimary ? styles.primaryButtonText : styles.secondaryButtonText}>
                   {t.label}
@@ -396,8 +396,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     padding: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   sectionTitle: {
     fontSize: fontSize.xl,
@@ -430,7 +435,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   stepDotCurrent: {
-    shadowColor: '#D4A855',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 6,
@@ -466,9 +471,9 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     color: colors.gold,
     fontSize: fontSize.sm,
     fontWeight: '700',
@@ -479,7 +484,7 @@ const styles = StyleSheet.create({
   siteConnector: {
     width: 2,
     height: 32,
-    backgroundColor: colors.border,
+    backgroundColor: '#E5E7EB',
     marginVertical: 2,
   },
   siteContent: {
@@ -487,7 +492,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     padding: spacing.md,
     marginBottom: spacing.sm,
   },
@@ -542,7 +547,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   primaryButtonText: {
-    color: colors.backgroundDark,
+    color: '#FFFFFF',
     fontSize: fontSize.lg,
     fontWeight: '700',
   },
@@ -550,9 +555,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    backgroundColor: 'rgba(0, 102, 255, 0.06)',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     paddingVertical: spacing.md,
     borderRadius: borderRadius.lg,
     gap: spacing.sm,
@@ -591,7 +596,7 @@ const styles = StyleSheet.create({
   timelineLine: {
     width: 2,
     flex: 1,
-    backgroundColor: colors.border,
+    backgroundColor: '#E5E7EB',
     marginVertical: 4,
   },
   timelineContent: {
@@ -617,7 +622,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: '#E5E7EB',
   },
   contactLabel: {
     color: colors.textSecondary,

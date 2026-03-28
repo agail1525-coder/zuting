@@ -278,7 +278,7 @@ export default function ChatScreen() {
             }}
             onPress={() => router.push('/login')}
           >
-            <Text style={{ color: colors.backgroundDark, fontSize: fontSize.lg, fontWeight: '700' }}>
+            <Text style={{ color: '#FFFFFF', fontSize: fontSize.lg, fontWeight: '700' }}>
               登录 / 注册
             </Text>
           </Pressable>
@@ -345,7 +345,7 @@ export default function ChatScreen() {
               size={20}
               color={
                 inputText.trim() && !isTyping
-                  ? colors.backgroundDark
+                  ? '#FFFFFF'
                   : colors.textMuted
               }
             />
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: 'rgba(212, 168, 85, 0.03)',
+    backgroundColor: 'rgba(0, 102, 255, 0.03)',
   },
   bgCircle2: {
     position: 'absolute',
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: 'rgba(212, 168, 85, 0.02)',
+    backgroundColor: 'rgba(0, 102, 255, 0.02)',
   },
   messageList: {
     paddingHorizontal: spacing.md,
@@ -403,9 +403,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.sm,
@@ -420,15 +420,13 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
   },
   botBubble: {
-    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: 'rgba(212, 168, 85, 0.15)',
+    borderColor: '#E5E7EB',
     borderBottomLeftRadius: borderRadius.sm,
   },
   userBubble: {
-    backgroundColor: colors.backgroundCardSolid,
-    borderWidth: 1,
-    borderColor: 'rgba(148, 163, 184, 0.15)',
+    backgroundColor: colors.gold,
     borderBottomRightRadius: borderRadius.sm,
   },
   messageText: {
@@ -439,7 +437,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   userText: {
-    color: colors.textPrimary,
+    color: '#FFFFFF',
   },
   typingCursor: {
     marginTop: 4,
@@ -476,15 +474,15 @@ const styles = StyleSheet.create({
     marginLeft: 36 + spacing.sm,
   },
   suggestionChip: {
-    backgroundColor: 'rgba(212, 168, 85, 0.08)',
+    backgroundColor: 'rgba(0, 102, 255, 0.06)',
     borderWidth: 1,
-    borderColor: 'rgba(212, 168, 85, 0.2)',
+    borderColor: 'rgba(0, 102, 255, 0.15)',
     borderRadius: borderRadius.full,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
   suggestionChipPressed: {
-    backgroundColor: 'rgba(212, 168, 85, 0.2)',
+    backgroundColor: 'rgba(0, 102, 255, 0.15)',
   },
   suggestionText: {
     color: colors.gold,
@@ -495,16 +493,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 4,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(212, 168, 85, 0.1)',
-    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    borderTopColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: colors.backgroundCardSolid,
+    backgroundColor: '#F5F5F5',
     borderRadius: borderRadius.xl,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     paddingLeft: spacing.md,
     paddingRight: spacing.xs,
     paddingVertical: spacing.xs,
@@ -527,7 +525,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sendButtonDisabled: {
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: '#E5E7EB',
   },
   sendButtonPressed: {
     backgroundColor: colors.goldDark,

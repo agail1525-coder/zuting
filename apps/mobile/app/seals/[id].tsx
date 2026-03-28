@@ -20,8 +20,6 @@ export default function SealDetailScreen() {
     async function fetchData() {
       try {
         setError(null);
-        // 三十印是固定数据集(30条，不会增长)，fetch-all用于prev/next导航是合理的
-        // 后端已加take:50防御(R-64)
         const [found, seals] = await Promise.all([
           api.getSealById(id),
           api.getSeals(),
@@ -163,7 +161,7 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(212, 168, 85, 0.05)',
+    backgroundColor: 'rgba(0, 102, 255, 0.03)',
   },
   numberCircle: {
     width: 72,
@@ -174,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   numberText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontSize: fontSize.xxl,
     fontWeight: '800',
   },
@@ -211,10 +209,15 @@ const styles = StyleSheet.create({
     margin: spacing.md,
     marginBottom: 0,
     padding: spacing.lg,
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   cardLabel: {
     color: colors.gold,
@@ -257,11 +260,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     padding: spacing.md,
     borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: '#E5E7EB',
     gap: spacing.sm,
   },
   navButtonRight: {

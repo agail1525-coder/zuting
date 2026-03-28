@@ -62,7 +62,7 @@ export default function RouteDetailScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Stack.Screen options={{ title: route.title, headerStyle: { backgroundColor: '#0f172a' }, headerTintColor: colors.gold }} />
+      <Stack.Screen options={{ title: route.title, headerStyle: { backgroundColor: '#FFFFFF' }, headerTintColor: colors.gold }} />
 
       {/* Hero */}
       <View style={styles.hero}>
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   categoryBadge: {
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     color: colors.gold,
     fontSize: fontSize.xs,
     paddingHorizontal: spacing.sm,
@@ -317,12 +317,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   highlightChip: {
-    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    backgroundColor: 'rgba(0, 102, 255, 0.08)',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
     borderRadius: borderRadius.full,
     borderWidth: 1,
-    borderColor: 'rgba(212, 168, 85, 0.2)',
+    borderColor: 'rgba(0, 102, 255, 0.15)',
   },
   highlightText: {
     color: colors.gold,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   tipsSection: {
     paddingHorizontal: spacing.md,
     marginTop: spacing.lg,
-    backgroundColor: 'rgba(212, 168, 85, 0.05)',
+    backgroundColor: 'rgba(0, 102, 255, 0.03)',
     borderRadius: borderRadius.lg,
     marginHorizontal: spacing.md,
     padding: spacing.md,

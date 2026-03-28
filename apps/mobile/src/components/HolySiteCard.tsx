@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   gradientBg: {
     width: 80,
-    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },

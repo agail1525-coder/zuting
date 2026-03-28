@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "祖庭之旅",
+    "name": "Joinus",
     "slug": "zuting-travel",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "zuting",
-    "userInterfaceStyle": "dark",
+    "scheme": "joinus",
+    "userInterfaceStyle": "light",
     "splash": {
-      "backgroundColor": "#0f172a"
+      "backgroundColor": "#0066FF"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0f172a"
+        "backgroundColor": "#0066FF"
       },
       "package": "com.zuting.travel"
     },
@@ -31,7 +31,7 @@
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
-          "color": "#D4A855"
+          "color": "#0066FF"
         }
       ]
     ],

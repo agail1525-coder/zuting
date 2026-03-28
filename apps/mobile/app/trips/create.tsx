@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.backgroundCardSolid,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
     borderRadius: borderRadius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 4,
@@ -347,12 +347,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
     paddingVertical: spacing.md,
     borderRadius: borderRadius.md,
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
+    backgroundColor: 'rgba(0, 102, 255, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(212, 168, 85, 0.4)',
+    borderColor: 'rgba(0, 102, 255, 0.3)',
   },
   submitButtonPressed: {
-    backgroundColor: 'rgba(212, 168, 85, 0.25)',
+    backgroundColor: 'rgba(0, 102, 255, 0.2)',
   },
   submitButtonDisabled: {
     opacity: 0.5,

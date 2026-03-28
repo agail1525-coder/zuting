@@ -89,13 +89,13 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(212, 168, 85, 0.08)',
+    backgroundColor: 'rgba(0, 102, 255, 0.05)',
   },
   avatarCircle: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     borderWidth: 3,
     borderColor: colors.gold,
     justifyContent: 'center',
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   badge: {
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderRadius: borderRadius.full,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: '#E5E7EB',
   },
   badgeText: {
     color: colors.goldLight,
@@ -133,10 +133,15 @@ const styles = StyleSheet.create({
   biographyCard: {
     margin: spacing.md,
     padding: spacing.lg,
-    backgroundColor: colors.backgroundCard,
+    backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 1,
+    elevation: 1,
   },
   sectionTitle: {
     fontSize: fontSize.xl,
