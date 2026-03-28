@@ -91,11 +91,12 @@ export default function ChatPage() {
       ]);
 
       try {
-        let streamFailed = false;
+        let gotChunk = false;
         const controller = chatStreamXiaohong(
           msg,
           conversationId,
           (chunk, meta) => {
+            gotChunk = true;
             if (meta?.conversationId && !conversationId) {
               setConversationId(meta.conversationId);
             }
@@ -114,34 +115,30 @@ export default function ChatPage() {
         );
         streamControllerRef.current = controller;
 
-        const timeout = setTimeout(async () => {
-          const currentMsg = messages.find((m) => m.id === assistantMsgId);
-          if (!currentMsg?.content && !streamFailed) {
-            streamFailed = true;
-            controller.abort();
-            try {
-              const data = await chatWithXiaohong(msg, conversationId);
-              const reply = data.content || data.reply || t("chat.fallbackReply");
-              if (data.conversationId) setConversationId(data.conversationId);
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantMsgId ? { ...m, content: reply } : m
-                )
-              );
-            } catch {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantMsgId
-                    ? { ...m, content: t("chat.networkError") }
-                    : m
-                )
-              );
-            }
-            setIsStreaming(false);
+        // Fallback: if no chunk received after 15s, try sync API
+        setTimeout(async () => {
+          if (gotChunk) return; // stream is working, don't interfere
+          controller.abort();
+          try {
+            const data = await chatWithXiaohong(msg, conversationId);
+            const reply = data.content || data.reply || t("chat.fallbackReply");
+            if (data.conversationId) setConversationId(data.conversationId);
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId ? { ...m, content: reply } : m
+              )
+            );
+          } catch {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantMsgId
+                  ? { ...m, content: t("chat.networkError") }
+                  : m
+              )
+            );
           }
-        }, 10000);
-
-        return () => clearTimeout(timeout);
+          setIsStreaming(false);
+        }, 15000);
       } catch {
         try {
           const data = await chatWithXiaohong(msg, conversationId);
@@ -164,7 +161,7 @@ export default function ChatPage() {
         setIsStreaming(false);
       }
     },
-    [input, isStreaming, conversationId, t, messages]
+    [input, isStreaming, conversationId, t]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -174,10 +171,12 @@ export default function ChatPage() {
     }
   };
 
+  const hasUserMessages = messages.length > 1;
+
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-white">
+    <div className="flex flex-col h-screen pt-16 max-w-4xl mx-auto bg-white">
       {/* Chat Header */}
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-200">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white shrink-0">
         <div className="w-10 h-10 rounded-full bg-[#0066FF] flex items-center justify-center text-lg text-white">
           💬
         </div>
@@ -196,45 +195,88 @@ export default function ChatPage() {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 bg-gray-50">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
-          >
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${
-                msg.role === "assistant"
-                  ? "bg-[#0066FF] text-white"
-                  : "bg-gray-200 text-gray-600"
-              }`}
-            >
-              {msg.role === "assistant" ? "💬" : "👤"}
-            </div>
+      <div className="flex-1 overflow-y-auto bg-gray-50">
+        {/* Welcome Hero — only before user sends first message */}
+        {!hasUserMessages && (
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#0066FF] to-[#003D99] px-6 py-10 text-center">
+            {/* Decorative circles */}
+            <div className="absolute top-[-40px] right-[-40px] w-40 h-40 rounded-full bg-white/5" />
+            <div className="absolute bottom-[-20px] left-[-20px] w-28 h-28 rounded-full bg-white/5" />
+            <div className="absolute top-[30%] left-[15%] w-3 h-3 rounded-full bg-white/20" />
+            <div className="absolute top-[20%] right-[20%] w-2 h-2 rounded-full bg-white/30" />
 
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                msg.role === "assistant"
-                  ? "bg-white border border-gray-200 text-gray-800 shadow-sm"
-                  : "bg-[#0066FF] text-white"
-              }`}
-            >
-              {msg.content}
-              {msg.id !== "welcome" &&
-                msg.role === "assistant" &&
-                isStreaming &&
-                msg === messages[messages.length - 1] && (
-                  <span className="inline-block w-1.5 h-4 bg-[#0066FF]/60 ml-0.5 animate-pulse" />
-                )}
+            <div className="relative z-10">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl">
+                🙏
+              </div>
+              <h2 className="text-xl font-bold text-white mb-2">
+                {t("chat.title")}
+              </h2>
+              <p className="text-blue-100 text-sm max-w-md mx-auto leading-relaxed">
+                {t("chat.subtitle")}
+              </p>
+
+              {/* Feature pills */}
+              <div className="flex flex-wrap justify-center gap-2 mt-5">
+                {[
+                  { icon: "🌍", label: "12大信仰" },
+                  { icon: "📍", label: "60处圣地" },
+                  { icon: "🏛️", label: "27座祖庭" },
+                  { icon: "✈️", label: "路线规划" },
+                ].map((f) => (
+                  <span
+                    key={f.label}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 text-white text-xs"
+                  >
+                    {f.icon} {f.label}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        ))}
-        <div ref={messagesEndRef} />
+        )}
+
+        {/* Chat messages */}
+        <div className="px-4 py-6 space-y-6">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${
+                  msg.role === "assistant"
+                    ? "bg-[#0066FF] text-white"
+                    : "bg-gray-200 text-gray-600"
+                }`}
+              >
+                {msg.role === "assistant" ? "💬" : "👤"}
+              </div>
+
+              <div
+                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                  msg.role === "assistant"
+                    ? "bg-white border border-gray-200 text-gray-800 shadow-sm"
+                    : "bg-[#0066FF] text-white"
+                }`}
+              >
+                {msg.content}
+                {msg.id !== "welcome" &&
+                  msg.role === "assistant" &&
+                  isStreaming &&
+                  msg === messages[messages.length - 1] && (
+                    <span className="inline-block w-1.5 h-4 bg-[#0066FF]/60 ml-0.5 animate-pulse" />
+                  )}
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Suggestions */}
-      {messages.length <= 1 && (
-        <div className="px-4 pb-3 pt-2 bg-gray-50 flex flex-wrap gap-2">
+      {!hasUserMessages && (
+        <div className="px-4 pb-3 pt-2 bg-gray-50 flex flex-wrap justify-center gap-2 shrink-0">
           {suggestions.map((s) => (
             <button
               key={s}
@@ -248,7 +290,7 @@ export default function ChatPage() {
       )}
 
       {/* Input Bar */}
-      <div className="px-4 pb-20 md:pb-4 pt-2 border-t border-gray-200 bg-white">
+      <div className="px-4 pb-20 md:pb-4 pt-2 border-t border-gray-200 bg-white shrink-0">
         <div className="flex items-center gap-2 bg-gray-50 border border-gray-300 rounded-2xl px-4 py-2 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-[#0066FF]/20 transition-all">
           <input
             ref={inputRef}

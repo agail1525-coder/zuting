@@ -47,14 +47,14 @@ def pack_local():
         "dist", "prisma", "package.json",
     ], check=True)
 
-    # Web: .next/standalone + .next/static
+    # Web: .next/standalone + .next/static + public/
     print("  打包 Web...")
     web_dir = PROJECT_ROOT / "apps" / "web"
     next_dir = web_dir / ".next"
     subprocess.run([
         "tar", "czf", f"{tmp}/zuting-web.tar.gz",
-        "-C", str(next_dir),
-        "standalone", "static",
+        "-C", str(next_dir), "standalone", "static",
+        "-C", str(web_dir), "public",
     ], check=True)
 
     # Admin: dist/
@@ -110,21 +110,29 @@ def main():
     run(ssh, f"cd {REMOTE_BASE}/web && tar xzf ../web.tar.gz", show=False)
     run(ssh, f"cd {REMOTE_BASE}/admin && tar xzf ../admin.tar.gz && mv dist/* . 2>/dev/null; rmdir dist 2>/dev/null", show=False)
 
-    # Move standalone contents to web root for cleaner structure
+    # Keep standalone structure intact — just wire in static + public
     run(ssh, f"""
 cd {REMOTE_BASE}/web
-mv standalone/node_modules . 2>/dev/null
-mv standalone/apps/web/server.js . 2>/dev/null
-mv standalone/apps/web/node_modules ./app_modules 2>/dev/null
-mv standalone/apps/web/package.json ./app_package.json 2>/dev/null
-mkdir -p .next
-mv static .next/static 2>/dev/null
-rm -rf standalone
+# Move static assets into standalone's .next directory
+mkdir -p standalone/apps/web/.next
+mv static standalone/apps/web/.next/static 2>/dev/null
+# Move public assets into standalone's app directory
+mv public standalone/apps/web/public 2>/dev/null
+echo "Static CSS: $(ls standalone/apps/web/.next/static/css/ 2>/dev/null | wc -l) files"
+echo "Public images: $(find standalone/apps/web/public/images -type f 2>/dev/null | wc -l) files"
 """, show=False)
 
     # Create API .env
     db_url = f"postgresql://{PG_USER}:uoUSiW6cmCxrtKTY21bp@localhost:5434/{DB_NAME}?schema=public"
-    env = f'DATABASE_URL="{db_url}"\nREDIS_URL="redis://localhost:6379/2"\nPORT={API_PORT}\nNODE_ENV=production\n'
+    env = f"""DATABASE_URL="{db_url}"
+REDIS_URL="redis://:CbFjnSKeIFi3dk7mzIRW@localhost:6379/2"
+PORT={API_PORT}
+NODE_ENV=production
+JWT_SECRET="zuting-prod-jwt-s3cret-2026-k9x7m"
+LLM_BASE_URL="http://120.24.31.151:18001/v1"
+LLM_MODEL="/root/autodl-tmp/models/qwen3.5-35b-a3b-fp8"
+LLM_API_KEY="zuoyelang2026"
+"""
     with sftp.open(f"{REMOTE_BASE}/api/.env", "w") as f:
         f.write(env)
     print("  ✓ 配置完成")
@@ -142,56 +150,104 @@ rm -rf standalone
     print("  Seeding...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed.ts 2>&1 | tail -5")
 
-    # Fix web node_modules — create symlinks for pnpm flat structure
-    print("\n  修复 Web node_modules 链接...")
-    run(ssh, f"""cd {REMOTE_BASE}/web/node_modules
-# Create symlinks from .pnpm packages to top-level
-if [ -d .pnpm ]; then
-    for pkg_dir in .pnpm/*/node_modules/*; do
-        pkg_name=$(echo "$pkg_dir" | sed 's|.*node_modules/||')
-        if [ ! -e "$pkg_name" ] && [ -d "$pkg_dir" ]; then
-            # Handle scoped packages
-            if [[ "$pkg_name" == @* ]]; then
-                scope=$(echo "$pkg_name" | cut -d/ -f1)
-                mkdir -p "$scope"
-            fi
-            ln -sf "$(pwd)/$pkg_dir" "$pkg_name" 2>/dev/null
-        fi
-    done
-fi
-echo "Symlinks created: $(ls -1 | wc -l) top-level packages"
-""")
+    # Fix ALL broken pnpm symlinks via Python script on server
+    print("  修复 Web standalone pnpm symlinks...")
+    fix_script = r'''
+import os, re, subprocess
 
-    # Also merge app_modules
-    run(ssh, f"""cd {REMOTE_BASE}/web
-if [ -d app_modules ]; then
-    cp -rn app_modules/* node_modules/ 2>/dev/null
-    if [ -d app_modules/.pnpm ]; then
-        for pkg_dir in app_modules/.pnpm/*/node_modules/*; do
-            pkg_name=$(echo "$pkg_dir" | sed 's|.*node_modules/||')
-            if [ ! -e "node_modules/$pkg_name" ] && [ -d "$pkg_dir" ]; then
-                if [[ "$pkg_name" == @* ]]; then
-                    scope=$(echo "$pkg_name" | cut -d/ -f1)
-                    mkdir -p "node_modules/$scope"
-                fi
-                ln -sf "$(pwd)/$pkg_dir" "node_modules/$pkg_name" 2>/dev/null
-            fi
-        done
-    fi
-fi
-echo "Final: $(ls node_modules/ | wc -l) packages"
-""")
+base = "/opt/zuting/web/standalone/node_modules"
+pnpm_dir = os.path.join(base, ".pnpm")
+
+# Step 1: Index all REAL (non-symlink) directories in .pnpm
+pkg_map = {}  # "react" -> "/opt/.../node_modules/react", "@swc/helpers" -> "/opt/.../@swc/helpers"
+for entry in os.listdir(pnpm_dir):
+    nm = os.path.join(pnpm_dir, entry, "node_modules")
+    if not os.path.isdir(nm):
+        continue
+    for item in os.listdir(nm):
+        full = os.path.join(nm, item)
+        if item.startswith("@") and os.path.isdir(full):
+            for sub in os.listdir(full):
+                sub_full = os.path.join(full, sub)
+                if os.path.isdir(sub_full) and not os.path.islink(sub_full):
+                    pkg_map[f"{item}/{sub}"] = sub_full
+        elif os.path.isdir(full) and not os.path.islink(full):
+            pkg_map[item] = full
+print(f"Indexed {len(pkg_map)} real packages")
+
+# Step 2: Find and fix ALL broken symlinks
+result = subprocess.run(
+    ["find", "/opt/zuting/web/standalone", "-type", "l", "-exec",
+     "test", "!", "-e", "{}", ";", "-print"],
+    capture_output=True, text=True
+)
+broken_links = [l.strip() for l in result.stdout.strip().split("\n") if l.strip()]
+print(f"Found {len(broken_links)} broken symlinks")
+
+fix_count = 0
+unfixed = []
+for link_path in broken_links:
+    target = os.readlink(link_path)
+    # Extract the LAST node_modules/<pkg> from the target
+    # e.g. //?/E:/ZUTING/node_modules/.pnpm/react@19.2.4/node_modules/react
+    parts = re.split(r"[/\\]node_modules[/\\]", target)
+    if len(parts) >= 2:
+        pkg_name = parts[-1].replace("\\", "/").rstrip("/")
+        if pkg_name in pkg_map:
+            os.remove(link_path)
+            os.symlink(pkg_map[pkg_name], link_path)
+            fix_count += 1
+        else:
+            unfixed.append(f"  {pkg_name} (not in .pnpm)")
+    else:
+        unfixed.append(f"  {target[:80]} (no node_modules in path)")
+print(f"Fixed {fix_count} broken symlinks")
+if unfixed:
+    print(f"Could not fix {len(unfixed)}:")
+    for u in unfixed[:5]:
+        print(u)
+
+# Step 3: Create top-level symlinks in node_modules/ for require() resolution
+created = 0
+for pkg_name, real_path in pkg_map.items():
+    link_path = os.path.join(base, pkg_name)
+    if not os.path.exists(link_path) and not os.path.islink(link_path):
+        os.makedirs(os.path.dirname(link_path), exist_ok=True)
+        os.symlink(real_path, link_path)
+        created += 1
+    elif os.path.islink(link_path) and not os.path.exists(link_path):
+        os.remove(link_path)
+        os.symlink(real_path, link_path)
+        created += 1
+print(f"Created {created} top-level symlinks")
+
+# Step 4: Verify
+result2 = subprocess.run(
+    ["find", "/opt/zuting/web/standalone", "-type", "l", "-exec",
+     "test", "!", "-e", "{}", ";", "-print"],
+    capture_output=True, text=True
+)
+remaining = len([l for l in result2.stdout.strip().split("\n") if l.strip()])
+print(f"Remaining broken: {remaining}")
+'''
+    with sftp.open(f"{REMOTE_BASE}/fix-symlinks.py", "w") as f:
+        f.write(fix_script)
+    run(ssh, f"python3 {REMOTE_BASE}/fix-symlinks.py")
+    run(ssh, f"rm -f {REMOTE_BASE}/fix-symlinks.py", show=False)
 
     # ── 5. 启动服务 ──
     print("\n[5/7] 启动服务...")
     run(ssh, "pkill -f 'node.*zuting' 2>/dev/null; pkill -f 'node.*opt/zuting' 2>/dev/null; sleep 1", show=False)
 
     start_script = f"""#!/bin/bash
-# Kill previous
+# Kill previous (match both old and new process patterns)
 pkill -f 'node /opt/zuting' 2>/dev/null
+pkill -f 'next-server' 2>/dev/null
+fuser -k {WEB_PORT}/tcp 2>/dev/null
+fuser -k {API_PORT}/tcp 2>/dev/null
 docker stop zuting-admin-nginx 2>/dev/null
 docker rm zuting-admin-nginx 2>/dev/null
-sleep 1
+sleep 2
 
 # Start API
 cd /opt/zuting/api
@@ -199,12 +255,12 @@ export NODE_ENV=production PORT={API_PORT}
 nohup node dist/main.js > /opt/zuting/api.log 2>&1 &
 echo "API PID: $!"
 
-# Start Web
-cd /opt/zuting/web
+# Start Web (standalone keeps monorepo path structure)
+cd /opt/zuting/web/standalone
 export NODE_ENV=production PORT={WEB_PORT} HOSTNAME=0.0.0.0
 export NEXT_PUBLIC_API_URL=http://localhost:{API_PORT}
 export API_INTERNAL_URL=http://localhost:{API_PORT}
-nohup node server.js > /opt/zuting/web.log 2>&1 &
+nohup node apps/web/server.js > /opt/zuting/web.log 2>&1 &
 echo "Web PID: $!"
 
 # Start Admin (nginx container serving static files)

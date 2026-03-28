@@ -1,5 +1,5 @@
 {
-  "site.title": "Joinus 文化旅行",
+  "site.title": "帮助100万人走祖庭",
   "site.subtitle": "加入我们，探索世界",
   "site.description": "全球文化旅行平台，深度探索人类文明与宗教文化圣地",
 
@@ -351,6 +351,7 @@
   "footer.privacy": "隐私政策",
   "footer.terms": "用户协议",
   "footer.explore": "探索",
+  "footer.support": "支持",
 
   "home.searchPlaceholder": "搜索目的地、路线或文化关键词...",
   "home.search": "搜索",
