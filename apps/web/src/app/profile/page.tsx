@@ -16,28 +16,28 @@ export default function ProfilePage() {
       label: t("profile.myTrips"),
       desc: t("profile.myTripsDesc"),
       href: "/trips",
-      color: "from-gold/20 to-gold/5",
+      color: "from-[#0066FF]/20 to-[#0066FF]/5",
     },
     {
       icon: "📿",
       label: t("profile.myPractice"),
       desc: t("profile.myPracticeDesc"),
       href: "/seals",
-      color: "from-lotus/20 to-lotus/5",
+      color: "from-purple-500/20 to-purple-500/5",
     },
     {
       icon: "📖",
       label: t("profile.myJournals"),
       desc: t("profile.myJournalsDesc"),
       href: "/journals",
-      color: "from-jade/20 to-jade/5",
+      color: "from-emerald-500/20 to-emerald-500/5",
     },
     {
       icon: "ℹ️",
       label: t("profile.aboutLabel"),
       desc: t("profile.aboutDesc"),
       href: "/about",
-      color: "from-incense/20 to-incense/5",
+      color: "from-orange-500/20 to-orange-500/5",
     },
   ];
 
@@ -100,7 +100,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-        <div className="text-temple-400 text-sm">{t("common.loading")}</div>
+        <div className="text-gray-500 text-sm">{t("common.loading")}</div>
       </div>
     );
   }
@@ -122,23 +122,23 @@ export default function ProfilePage() {
 
       {/* User Info */}
       <div className="text-center mb-8 relative">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 border-2 border-gold/20 flex items-center justify-center text-3xl mx-auto mb-4">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#0066FF]/30 to-[#0066FF]/10 border-2 border-[#0066FF]/20 flex items-center justify-center text-3xl mx-auto mb-4">
           {user?.avatar ? (
             <img src={user.avatar} alt={user.nickname} className="w-full h-full rounded-full object-cover" />
           ) : (
             "🏛"
           )}
         </div>
-        <h1 className="text-2xl font-serif font-bold text-gradient-gold">
+        <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
           {user ? user.nickname : t("profile.pilgrim")}
         </h1>
-        <p className="text-temple-400 text-sm mt-1">
+        <p className="text-gray-500 text-sm mt-1">
           {t("profile.motto")}
         </p>
         {user && !editing && (
           <button
             onClick={openEdit}
-            className="mt-3 px-4 py-1.5 bg-gold/10 border border-gold/20 text-gold rounded-full text-xs font-medium hover:bg-gold/20 transition-colors"
+            className="mt-3 px-4 py-1.5 bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF] rounded-full text-xs font-medium hover:bg-[#0066FF]/20 transition-colors"
           >
             {t("profile.editProfile")}
           </button>
@@ -147,37 +147,37 @@ export default function ProfilePage() {
 
       {/* Edit Form */}
       {editing && user && (
-        <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-8">
-          <h2 className="text-temple-100 font-medium mb-4">{t("profile.editTitle")}</h2>
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-8">
+          <h2 className="text-gray-900 font-medium mb-4">{t("profile.editTitle")}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-temple-400 text-xs mb-1">{t("profile.nicknameLabel")}</label>
+              <label className="block text-gray-500 text-xs mb-1">{t("profile.nicknameLabel")}</label>
               <input
                 type="text"
                 value={form.nickname}
                 onChange={(e) => setForm((f) => ({ ...f, nickname: e.target.value }))}
                 maxLength={20}
-                className="w-full px-3 py-2 bg-temple-900/50 border border-temple-600/30 rounded-lg text-temple-100 text-sm placeholder-temple-500 focus:outline-none focus:border-gold/40"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-[#0066FF]"
                 placeholder={t("profile.nicknamePlaceholder")}
               />
             </div>
             <div>
-              <label className="block text-temple-400 text-xs mb-1">{t("profile.avatarLabel")}</label>
+              <label className="block text-gray-500 text-xs mb-1">{t("profile.avatarLabel")}</label>
               <input
                 type="url"
                 value={form.avatar}
                 onChange={(e) => setForm((f) => ({ ...f, avatar: e.target.value }))}
-                className="w-full px-3 py-2 bg-temple-900/50 border border-temple-600/30 rounded-lg text-temple-100 text-sm placeholder-temple-500 focus:outline-none focus:border-gold/40"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-[#0066FF]"
                 placeholder="https://example.com/avatar.jpg"
               />
             </div>
             <div>
-              <label className="block text-temple-400 text-xs mb-1">{t("profile.phoneLabel")}</label>
+              <label className="block text-gray-500 text-xs mb-1">{t("profile.phoneLabel")}</label>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                className="w-full px-3 py-2 bg-temple-900/50 border border-temple-600/30 rounded-lg text-temple-100 text-sm placeholder-temple-500 focus:outline-none focus:border-gold/40"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:border-[#0066FF]"
                 placeholder="13800138000"
               />
             </div>
@@ -186,13 +186,13 @@ export default function ProfilePage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 py-2.5 bg-gold/20 border border-gold/30 text-gold rounded-full text-sm font-medium hover:bg-gold/30 transition-colors disabled:opacity-50"
+              className="flex-1 py-2.5 bg-[#0066FF] text-white rounded-full text-sm font-medium hover:bg-[#0052CC] transition-colors disabled:opacity-50"
             >
               {saving ? t("profile.saving") : t("common.save")}
             </button>
             <button
               onClick={() => { setEditing(false); setToast(null); }}
-              className="px-6 py-2.5 bg-temple-700/50 border border-temple-600/30 text-temple-300 rounded-full text-sm hover:bg-temple-700/70 transition-colors"
+              className="px-6 py-2.5 bg-gray-50 border border-gray-200 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors"
             >
               {t("common.cancel")}
             </button>
@@ -211,10 +211,10 @@ export default function ProfilePage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="text-center card-glow rounded-xl bg-temple-800/50 py-4 px-2"
+              className="text-center rounded-xl bg-white shadow-sm border border-gray-100 py-4 px-2"
             >
-              <div className="text-2xl font-bold text-gold">{stat.value}</div>
-              <div className="text-xs text-temple-400 mt-0.5">{stat.label}</div>
+              <div className="text-2xl font-bold text-[#0066FF]">{stat.value}</div>
+              <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -226,27 +226,27 @@ export default function ProfilePage() {
           <Link
             key={item.label}
             href={item.href}
-            className="card-glow rounded-xl bg-temple-800/50 p-4 hover:bg-temple-800/70 transition-all group"
+            className="rounded-xl bg-white shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all group"
           >
             <div
               className={`w-10 h-10 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition-transform`}
             >
               {item.icon}
             </div>
-            <h3 className="text-temple-100 font-medium text-sm">
+            <h3 className="text-gray-900 font-medium text-sm">
               {item.label}
             </h3>
-            <p className="text-temple-500 text-xs mt-0.5">{item.desc}</p>
+            <p className="text-gray-400 text-xs mt-0.5">{item.desc}</p>
           </Link>
         ))}
       </div>
 
       {/* Auth Section */}
       {user ? (
-        <div className="card-glow rounded-2xl bg-temple-800/50 p-6 text-center">
-          <p className="text-temple-300 text-sm mb-3">
-            {t("profile.loggedInAs")} <span className="text-gold">{user.nickname}</span>
-            {user.phone && <span className="text-temple-500 ml-2">({user.phone})</span>}
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 text-center">
+          <p className="text-gray-600 text-sm mb-3">
+            {t("profile.loggedInAs")} <span className="text-[#0066FF]">{user.nickname}</span>
+            {user.phone && <span className="text-gray-400 ml-2">({user.phone})</span>}
           </p>
           <button
             onClick={logout}
@@ -256,20 +256,20 @@ export default function ProfilePage() {
           </button>
         </div>
       ) : (
-        <div className="card-glow rounded-2xl bg-temple-800/50 p-6 text-center">
-          <p className="text-temple-300 text-sm mb-3">
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 text-center">
+          <p className="text-gray-600 text-sm mb-3">
             {t("profile.syncPrompt")}
           </p>
           <div className="flex items-center justify-center gap-3">
             <Link
               href="/login"
-              className="px-6 py-2.5 bg-gold/15 border border-gold/30 text-gold rounded-full text-sm font-medium hover:bg-gold/25 transition-colors"
+              className="px-6 py-2.5 bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF] rounded-full text-sm font-medium hover:bg-[#0066FF]/20 transition-colors"
             >
               {t("auth.login")}
             </Link>
             <Link
               href="/register"
-              className="px-6 py-2.5 bg-temple-700/50 border border-temple-600/30 text-temple-200 rounded-full text-sm font-medium hover:bg-temple-700/70 transition-colors"
+              className="px-6 py-2.5 bg-gray-50 border border-gray-200 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
             >
               {t("auth.register")}
             </Link>

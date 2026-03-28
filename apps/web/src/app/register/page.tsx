@@ -54,14 +54,14 @@ export default function RegisterPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
+        <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
           {/* Title */}
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">🏛</div>
-            <h1 className="text-2xl font-serif font-bold text-gradient-gold">
+            <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
               {t('site.title')}
             </h1>
-            <p className="text-temple-400 text-sm mt-2">
+            <p className="text-gray-500 text-sm mt-2">
               {t('auth.registerSubtitle')}
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function RegisterPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="phone" className="block text-sm text-temple-300 mb-1.5">
+              <label htmlFor="phone" className="block text-sm text-gray-600 mb-1.5">
                 {t('auth.phone')}
               </label>
               <input
@@ -85,12 +85,12 @@ export default function RegisterPage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={t('auth.phonePlaceholder')}
-                className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="nickname" className="block text-sm text-temple-300 mb-1.5">
+              <label htmlFor="nickname" className="block text-sm text-gray-600 mb-1.5">
                 {t('auth.nickname')}
               </label>
               <input
@@ -99,12 +99,12 @@ export default function RegisterPage() {
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder={t('auth.nicknamePlaceholder')}
-                className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm text-temple-300 mb-1.5">
+              <label htmlFor="password" className="block text-sm text-gray-600 mb-1.5">
                 {t('auth.password')}
               </label>
               <input
@@ -113,12 +113,12 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('auth.passwordPlaceholder')}
-                className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm text-temple-300 mb-1.5">
+              <label htmlFor="confirmPassword" className="block text-sm text-gray-600 mb-1.5">
                 {t('auth.confirmPassword')}
               </label>
               <input
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t('auth.confirmPasswordPlaceholder')}
-                className="w-full px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
               />
             </div>
 
@@ -138,15 +138,15 @@ export default function RegisterPage() {
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-temple-600/30 bg-temple-900/80 text-gold focus:ring-gold/30 accent-[#D4A855]"
+                className="mt-1 h-4 w-4 rounded border-gray-200 bg-gray-50 text-[#0066FF] focus:ring-[#0066FF] accent-[#0066FF]"
               />
-              <label htmlFor="agreement" className="text-sm text-temple-400 leading-relaxed">
+              <label htmlFor="agreement" className="text-sm text-gray-500 leading-relaxed">
                 {t('auth.agreeTerms')}{' '}
-                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-gold/80 transition-colors underline">
+                <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#0066FF] hover:text-[#0066FF]/80 transition-colors underline">
                   {t('auth.termsOfService')}
                 </a>{' '}
                 {t('auth.and')}{' '}
-                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-gold/80 transition-colors underline">
+                <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#0066FF] hover:text-[#0066FF]/80 transition-colors underline">
                   {t('auth.privacyPolicy')}
                 </a>
               </label>
@@ -155,7 +155,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading || !agreed}
-              className="w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0052CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? t('auth.registering') : t('auth.register')}
             </button>
@@ -166,9 +166,9 @@ export default function RegisterPage() {
 
           {/* Login link */}
           <div className="mt-6 text-center">
-            <p className="text-temple-400 text-sm">
+            <p className="text-gray-500 text-sm">
               {t('auth.hasAccount')}{' '}
-              <Link href="/login" className="text-gold hover:text-gold/80 transition-colors">
+              <Link href="/login" className="text-[#0066FF] hover:text-[#0066FF]/80 transition-colors">
                 {t('auth.loginNow')}
               </Link>
             </p>

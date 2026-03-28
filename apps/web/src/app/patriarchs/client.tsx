@@ -24,10 +24,10 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
               {t("section.allPatriarchs")}
             </h1>
           </div>
@@ -39,14 +39,14 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         {/* Hero Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
             {t("section.allPatriarchs")}
           </h1>
-          <p className="text-temple-400 text-lg">
+          <p className="text-gray-500 text-lg">
             {filtered.length} {t("stats.patriarchs")}
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-4xl block mb-4">👤</span>
-            <p className="text-temple-400">{t("common.noResults") || "暂无数据"}</p>
+            <p className="text-gray-500">{t("common.noResults") || "暂无数据"}</p>
           </div>
         )}
       </div>

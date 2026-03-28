@@ -129,7 +129,7 @@ export default function NotificationsPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
       </div>
     );
   }
@@ -137,10 +137,10 @@ export default function NotificationsPage() {
   if (!user) {
     return (
       <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4">
-        <p className="text-temple-300">请先登录查看通知</p>
+        <p className="text-gray-600">请先登录查看通知</p>
         <Link
           href="/login"
-          className="px-6 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-colors"
+          className="px-6 py-2 bg-[#0066FF]/10 text-[#0066FF] rounded-lg hover:bg-[#0066FF]/20 transition-colors"
         >
           去登录
         </Link>
@@ -151,14 +151,14 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-serif font-bold text-gradient-gold">
+        <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
           通知中心
         </h1>
         <div className="flex items-center gap-3">
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllRead}
-              className="text-sm text-gold hover:text-gold/80 transition-colors"
+              className="text-sm text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
             >
               全部已读
             </button>
@@ -174,8 +174,8 @@ export default function NotificationsPage() {
           }}
           className={`px-4 py-1.5 rounded-lg text-sm transition-colors ${
             filter === "all"
-              ? "bg-gold/20 text-gold border border-gold/30"
-              : "text-temple-400 hover:text-gold hover:bg-gold/5"
+              ? "bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/30"
+              : "text-gray-500 hover:text-[#0066FF] hover:bg-[#0066FF]/5"
           }`}
         >
           全部
@@ -187,8 +187,8 @@ export default function NotificationsPage() {
           }}
           className={`px-4 py-1.5 rounded-lg text-sm transition-colors ${
             filter === "unread"
-              ? "bg-gold/20 text-gold border border-gold/30"
-              : "text-temple-400 hover:text-gold hover:bg-gold/5"
+              ? "bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/30"
+              : "text-gray-500 hover:text-[#0066FF] hover:bg-[#0066FF]/5"
           }`}
         >
           未读
@@ -203,7 +203,7 @@ export default function NotificationsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
         </div>
       ) : error ? (
         <div className="text-center py-16">
@@ -211,7 +211,7 @@ export default function NotificationsPage() {
           <p className="text-red-400 mb-4">{error}</p>
           <button
             onClick={() => { setError(null); loadNotifications(); }}
-            className="px-4 py-2 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-colors"
+            className="px-4 py-2 bg-[#0066FF]/10 text-[#0066FF] rounded-lg hover:bg-[#0066FF]/20 transition-colors"
           >
             重试
           </button>
@@ -219,7 +219,7 @@ export default function NotificationsPage() {
       ) : notifications.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-4xl block mb-4">🔔</span>
-          <p className="text-temple-400">
+          <p className="text-gray-500">
             {filter === "unread" ? "没有未读通知" : "暂无通知"}
           </p>
         </div>
@@ -230,8 +230,8 @@ export default function NotificationsPage() {
               key={n.id}
               className={`relative p-4 rounded-xl border transition-colors ${
                 n.read
-                  ? "border-gold/5 bg-temple-800/50"
-                  : "border-gold/20 bg-gold/[0.03]"
+                  ? "border-gray-100 bg-white"
+                  : "border-[#0066FF]/20 bg-[#0066FF]/[0.03]"
               }`}
             >
               <div className="flex gap-3">
@@ -242,26 +242,26 @@ export default function NotificationsPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-gold/10 text-gold/70">
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#0066FF]/10 text-[#0066FF]/70">
                           {typeLabel(n.type)}
                         </span>
                         {!n.read && (
-                          <span className="w-2 h-2 rounded-full bg-gold" />
+                          <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
                         )}
                       </div>
                       <p
                         className={`text-sm ${
                           n.read
-                            ? "text-temple-300"
-                            : "text-temple-100 font-medium"
+                            ? "text-gray-600"
+                            : "text-gray-900 font-medium"
                         }`}
                       >
                         {n.title}
                       </p>
-                      <p className="text-sm text-temple-400 mt-1">
+                      <p className="text-sm text-gray-500 mt-1">
                         {n.content}
                       </p>
-                      <p className="text-xs text-temple-500 mt-2">
+                      <p className="text-xs text-gray-400 mt-2">
                         {timeAgo(n.createdAt)}
                       </p>
                     </div>
@@ -269,7 +269,7 @@ export default function NotificationsPage() {
                       {!n.read && (
                         <button
                           onClick={() => handleMarkRead(n.id)}
-                          className="p-1.5 text-temple-400 hover:text-gold transition-colors rounded-lg hover:bg-gold/10"
+                          className="p-1.5 text-gray-500 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-[#0066FF]/10"
                           title="标为已读"
                         >
                           <svg
@@ -289,7 +289,7 @@ export default function NotificationsPage() {
                       )}
                       <button
                         onClick={() => handleDelete(n.id)}
-                        className="p-1.5 text-temple-400 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10"
+                        className="p-1.5 text-gray-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10"
                         title="删除"
                       >
                         <svg
@@ -335,17 +335,17 @@ export default function NotificationsPage() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 text-sm rounded-lg border border-gold/20 text-temple-300 hover:text-gold hover:border-gold/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             上一页
           </button>
-          <span className="text-sm text-temple-400">
+          <span className="text-sm text-gray-500">
             {page} / {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 text-sm rounded-lg border border-gold/20 text-temple-300 hover:text-gold hover:border-gold/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             下一页
           </button>

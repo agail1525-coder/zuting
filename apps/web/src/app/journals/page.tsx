@@ -70,8 +70,8 @@ export default function JournalsPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -84,16 +84,16 @@ export default function JournalsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-gradient-gold">
+          <h1 className="text-3xl font-serif font-bold text-[#0066FF]">
             {t("journal.listTitle")}
           </h1>
-          <p className="text-temple-400 mt-1 text-sm">
+          <p className="text-gray-500 mt-1 text-sm">
             {t("journal.listSubtitle")}
           </p>
         </div>
         <Link
           href="/journals/create"
-          className="px-5 py-2.5 bg-gold text-temple-900 font-semibold rounded-full text-sm hover:bg-gold-light transition-colors shadow-lg shadow-gold/20"
+          className="px-5 py-2.5 bg-[#0066FF] text-white font-semibold rounded-full text-sm hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20"
         >
           {t("journal.writeJournal")}
         </Link>
@@ -108,17 +108,17 @@ export default function JournalsPage() {
 
       {/* Empty State */}
       {!error && journals.length === 0 && (
-        <div className="card-glow rounded-2xl bg-temple-800/50 p-12 text-center">
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
           <div className="text-5xl mb-4">📖</div>
-          <h2 className="text-xl font-serif text-temple-200 mb-3">
+          <h2 className="text-xl font-serif text-gray-700 mb-3">
             {t("journal.emptyTitle")}
           </h2>
-          <p className="text-temple-400 text-sm mb-6">
+          <p className="text-gray-500 text-sm mb-6">
             {t("journal.emptyDesc")}
           </p>
           <Link
             href="/journals/create"
-            className="inline-block px-6 py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors"
+            className="inline-block px-6 py-3 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] font-semibold hover:bg-[#0066FF]/20 transition-colors"
           >
             {t("journal.writeFirst")}
           </Link>
@@ -135,12 +135,12 @@ export default function JournalsPage() {
               <Link
                 key={journal.id}
                 href={`/journals/${journal.id}`}
-                className="block card-glow rounded-2xl bg-temple-800/50 p-5 hover:bg-temple-800/70 transition-all animate-fade-in-up"
+                className="block rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all animate-fade-in-up"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <div className="flex items-start gap-4">
                   {/* Image or Emoji Placeholder */}
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-gold/10 to-temple-700/50 border border-gold/10 flex items-center justify-center text-2xl shrink-0 overflow-hidden">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#0066FF]/10 to-gray-50 border border-gray-200 flex items-center justify-center text-2xl shrink-0 overflow-hidden">
                     {journal.images && journal.images.length > 0 ? (
                       <img
                         src={journal.images[0]}
@@ -153,28 +153,28 @@ export default function JournalsPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-serif font-semibold text-temple-100 mb-1 truncate">
+                    <h3 className="text-lg font-serif font-semibold text-gray-900 mb-1 truncate">
                       {journal.title}
                     </h3>
-                    <p className="text-sm text-temple-400 leading-relaxed line-clamp-2 mb-3">
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-3">
                       {getExcerpt(journal.content)}
                     </p>
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-xs text-temple-500">
+                      <span className="text-xs text-gray-400">
                         {formatDate(journal.createdAt)}
                       </span>
                       {journal.mood && moodInfo && (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-gold/10 border border-gold/20 text-gold/80">
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF]/80">
                           {moodInfo.emoji} {t(moodInfo.key)}
                         </span>
                       )}
                       {journal.trip && (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-temple-700/50 border border-temple-600 text-temple-300">
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-gray-50 border border-gray-200 text-gray-600">
                           🗺 {journal.trip.title}
                         </span>
                       )}
                       {journal.holySite && (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-temple-700/50 border border-temple-600 text-temple-300">
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-gray-50 border border-gray-200 text-gray-600">
                           🏛 {journal.holySite.name}
                         </span>
                       )}

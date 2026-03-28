@@ -8,7 +8,7 @@ import {
   fetchSeals,
 } from "@/lib/api";
 
-const BASE_URL = "https://zuting.fszyl.top";
+const BASE_URL = "https://joinus.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

@@ -104,8 +104,8 @@ export default function JournalDetailPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -115,12 +115,12 @@ export default function JournalDetailPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">📖</div>
-        <h1 className="text-2xl font-serif text-temple-200 mb-4">
+        <h1 className="text-2xl font-serif text-gray-700 mb-4">
           {t("journal.notFound")}
         </h1>
         <Link
           href="/journals"
-          className="text-gold hover:text-gold-light transition-colors"
+          className="text-[#0066FF] hover:text-[#0052CC] transition-colors"
         >
           {t("journal.backToList")}
         </Link>
@@ -132,10 +132,10 @@ export default function JournalDetailPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">⚠️</div>
-        <h1 className="text-2xl font-serif text-temple-200 mb-4">{error}</h1>
+        <h1 className="text-2xl font-serif text-gray-700 mb-4">{error}</h1>
         <Link
           href="/journals"
-          className="text-gold hover:text-gold-light transition-colors"
+          className="text-[#0066FF] hover:text-[#0052CC] transition-colors"
         >
           {t("journal.backToList")}
         </Link>
@@ -157,7 +157,7 @@ export default function JournalDetailPage() {
       {/* Back */}
       <Link
         href="/journals"
-        className="inline-flex items-center gap-1 text-sm text-temple-400 hover:text-gold transition-colors mb-6"
+        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#0066FF] transition-colors mb-6"
       >
         <svg
           className="w-4 h-4"
@@ -176,25 +176,25 @@ export default function JournalDetailPage() {
       </Link>
 
       {/* Article */}
-      <article className="card-glow rounded-2xl bg-temple-800/50 p-6 md:p-8">
+      <article className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 md:p-8">
         {/* Header */}
         <header className="mb-6">
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-2xl md:text-3xl font-serif font-bold text-gradient-gold mb-3">
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#0066FF] mb-3">
               {journal.title}
             </h1>
             {isOwner && !editing && (
               <div className="flex gap-2 shrink-0">
                 <button
                   onClick={handleEdit}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-gold hover:border-gold/30 transition-colors"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors"
                 >
                   {t("journal.edit")}
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={deleting}
-                  className="px-3 py-1.5 text-xs rounded-lg bg-red-900/30 border border-red-800/50 text-red-400 hover:text-red-300 hover:border-red-700 transition-colors disabled:opacity-50"
+                  className="px-3 py-1.5 text-xs rounded-lg bg-red-900/10 border border-red-800/20 text-red-400 hover:text-red-300 hover:border-red-700 transition-colors disabled:opacity-50"
                 >
                   {deleting ? t("journal.deleting") : t("journal.delete")}
                 </button>
@@ -202,27 +202,27 @@ export default function JournalDetailPage() {
             )}
           </div>
           <div className="flex items-center gap-3 flex-wrap text-sm">
-            <span className="text-temple-500">{date}</span>
+            <span className="text-gray-400">{date}</span>
             {mood && (
-              <span className="px-2 py-0.5 rounded-full bg-gold/10 border border-gold/20 text-gold/80 text-xs">
+              <span className="px-2 py-0.5 rounded-full bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF]/80 text-xs">
                 {mood.emoji} {t(mood.key)}
               </span>
             )}
             {journal.trip && (
               <Link
                 href={`/trips/${journal.trip.id}`}
-                className="px-2 py-0.5 rounded-full bg-temple-700/50 border border-temple-600 text-temple-300 text-xs hover:text-gold transition-colors"
+                className="px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-600 text-xs hover:text-[#0066FF] transition-colors"
               >
                 {journal.trip.title}
               </Link>
             )}
             {journal.holySite && (
-              <span className="px-2 py-0.5 rounded-full bg-temple-700/50 border border-temple-600 text-temple-300 text-xs">
+              <span className="px-2 py-0.5 rounded-full bg-gray-50 border border-gray-200 text-gray-600 text-xs">
                 {journal.holySite.name}
               </span>
             )}
             {journal.user && (
-              <span className="text-temple-500 text-xs">
+              <span className="text-gray-400 text-xs">
                 {journal.user.nickname}
               </span>
             )}
@@ -232,31 +232,31 @@ export default function JournalDetailPage() {
         {editing ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-temple-400 mb-1">{t("journal.labelTitle")}</label>
+              <label className="block text-sm text-gray-500 mb-1">{t("journal.labelTitle")}</label>
               <input
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 maxLength={200}
-                className="w-full px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 focus:border-[#0066FF] focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm text-temple-400 mb-1">{t("journal.labelContent")}</label>
+              <label className="block text-sm text-gray-500 mb-1">{t("journal.labelContent")}</label>
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
                 rows={10}
-                className="w-full px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none resize-y"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 focus:border-[#0066FF] focus:outline-none resize-y"
               />
             </div>
             <div className="flex gap-4 items-center">
               <div>
-                <label className="block text-sm text-temple-400 mb-1">{t("journal.labelMood")}</label>
+                <label className="block text-sm text-gray-500 mb-1">{t("journal.labelMood")}</label>
                 <select
                   value={editMood}
                   onChange={(e) => setEditMood(e.target.value)}
-                  className="px-3 py-2 rounded-lg bg-temple-900/50 border border-temple-700 text-temple-200 focus:border-gold/50 focus:outline-none"
+                  className="px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 focus:border-[#0066FF] focus:outline-none"
                 >
                   <option value="">{t("journal.moodNone")}</option>
                   {Object.entries(MOOD_KEYS).map(([key, v]) => (
@@ -264,12 +264,12 @@ export default function JournalDetailPage() {
                   ))}
                 </select>
               </div>
-              <label className="flex items-center gap-2 text-sm text-temple-400 mt-5">
+              <label className="flex items-center gap-2 text-sm text-gray-500 mt-5">
                 <input
                   type="checkbox"
                   checked={editIsPublic}
                   onChange={(e) => setEditIsPublic(e.target.checked)}
-                  className="rounded border-temple-700"
+                  className="rounded border-gray-200"
                 />
                 {t("journal.publicVisible")}
               </label>
@@ -278,14 +278,14 @@ export default function JournalDetailPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !editTitle.trim() || !editContent.trim()}
-                className="px-4 py-2 text-sm rounded-lg bg-gold/20 border border-gold/30 text-gold hover:bg-gold/30 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-lg bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF] hover:bg-[#0066FF]/20 transition-colors disabled:opacity-50"
               >
                 {saving ? t("journal.saving") : t("journal.save")}
               </button>
               <button
                 onClick={() => setEditing(false)}
                 disabled={saving}
-                className="px-4 py-2 text-sm rounded-lg bg-temple-700/50 border border-temple-600 text-temple-300 hover:text-temple-200 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm rounded-lg bg-gray-50 border border-gray-200 text-gray-600 hover:text-gray-700 transition-colors disabled:opacity-50"
               >
                 {t("journal.cancel")}
               </button>
@@ -299,7 +299,7 @@ export default function JournalDetailPage() {
                 {journal.images.map((img, i) => (
                   <div
                     key={i}
-                    className="rounded-xl overflow-hidden border border-temple-700/50"
+                    className="rounded-xl overflow-hidden border border-gray-200"
                   >
                     <img
                       src={img}
@@ -312,8 +312,8 @@ export default function JournalDetailPage() {
             )}
 
             {/* Content */}
-            <div className="prose prose-invert max-w-none">
-              <div className="text-temple-300 leading-relaxed whitespace-pre-wrap">
+            <div className="prose max-w-none">
+              <div className="text-gray-600 leading-relaxed whitespace-pre-wrap">
                 {journal.content}
               </div>
             </div>

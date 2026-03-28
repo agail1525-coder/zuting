@@ -47,10 +47,10 @@ export default function SealsClient({ seals, error }: Props) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
               {t("section.thirtySeals")}
             </h1>
           </div>
@@ -62,13 +62,13 @@ export default function SealsClient({ seals, error }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
             {t("section.thirtySeals")}
           </h1>
-          <p className="text-temple-400 text-lg">
+          <p className="text-gray-500 text-lg">
             {filtered.length} {t("stats.seals")}
           </p>
         </div>
@@ -79,8 +79,8 @@ export default function SealsClient({ seals, error }: Props) {
             onClick={() => setFilter(null)}
             className={`px-4 py-2 rounded-full text-sm transition-all ${
               filter === null
-                ? "bg-gold text-temple-900 font-semibold shadow-lg shadow-gold/20"
-                : "bg-temple-800/60 text-temple-300 hover:bg-temple-700/60 border border-temple-600/50"
+                ? "bg-[#0066FF] text-white font-semibold shadow-lg shadow-blue-500/20"
+                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
             }`}
           >
             {t("filter.all")}
@@ -92,7 +92,7 @@ export default function SealsClient({ seals, error }: Props) {
               className={`px-4 py-2 rounded-full text-sm transition-all ${
                 filter === series
                   ? seriesButtonColors[series]
-                  : "bg-temple-800/60 text-temple-300 hover:bg-temple-700/60 border border-temple-600/50"
+                  : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
               }`}
             >
               {t(`seal.series.${series}`)}
@@ -105,7 +105,7 @@ export default function SealsClient({ seals, error }: Props) {
           (group) =>
             group.seals.length > 0 && (
               <div key={group.series} className="mb-12">
-                <h2 className="text-2xl font-serif font-bold text-temple-200 mb-6 flex items-center gap-3">
+                <h2 className="text-2xl font-serif font-bold text-gray-700 mb-6 flex items-center gap-3">
                   <span
                     className={`w-3 h-3 rounded-full ${
                       {
@@ -131,7 +131,7 @@ export default function SealsClient({ seals, error }: Props) {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-4xl block mb-4">🙏</span>
-            <p className="text-temple-400">{t("common.noResults") || "暂无数据"}</p>
+            <p className="text-gray-500">{t("common.noResults") || "暂无数据"}</p>
           </div>
         )}
       </div>

@@ -104,8 +104,8 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -117,10 +117,10 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">😔</div>
-        <h1 className="text-2xl font-serif text-temple-200 mb-4">{error}</h1>
+        <h1 className="text-2xl font-serif text-gray-700 mb-4">{error}</h1>
         <Link
           href={`/trips/${tripId}`}
-          className="text-gold hover:text-gold-light transition-colors"
+          className="text-[#0066FF] hover:text-[#0052CC] transition-colors"
         >
           {t("checkout.backToTrip")}
         </Link>
@@ -138,7 +138,7 @@ export default function CheckoutPage() {
       {/* Back */}
       <Link
         href={`/trips/${tripId}`}
-        className="inline-flex items-center gap-1 text-sm text-temple-400 hover:text-gold transition-colors mb-6"
+        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#0066FF] transition-colors mb-6"
       >
         <svg
           className="w-4 h-4"
@@ -159,10 +159,10 @@ export default function CheckoutPage() {
       {/* Page Title */}
       <div className="text-center mb-8">
         <div className="text-4xl mb-3">🧾</div>
-        <h1 className="text-2xl font-serif font-bold text-gradient-gold">
+        <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
           {t("checkout.title")}
         </h1>
-        <p className="text-temple-400 text-sm mt-2">
+        <p className="text-gray-500 text-sm mt-2">
           {t("checkout.subtitle")}
         </p>
       </div>
@@ -175,38 +175,38 @@ export default function CheckoutPage() {
       )}
 
       {/* Trip Summary */}
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("checkout.tripSummary")}
         </h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">{t("checkout.tripName")}</span>
-            <span className="text-temple-100 font-medium">{trip.title}</span>
+            <span className="text-gray-500">{t("checkout.tripName")}</span>
+            <span className="text-gray-900 font-medium">{trip.title}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">{t("checkout.travelDate")}</span>
-            <span className="text-temple-200">
+            <span className="text-gray-500">{t("checkout.travelDate")}</span>
+            <span className="text-gray-700">
               {trip.startDate ?? t("checkout.pending")} ~ {trip.endDate ?? t("checkout.pending")}
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">{t("checkout.travelers")}</span>
-            <span className="text-temple-200">{trip.persons ?? 1} {t("checkout.persons")}</span>
+            <span className="text-gray-500">{t("checkout.travelers")}</span>
+            <span className="text-gray-700">{trip.persons ?? 1} {t("checkout.persons")}</span>
           </div>
         </div>
 
         {/* Sites */}
         {trip.sites && trip.sites.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-temple-700/50">
-            <p className="text-sm text-temple-400 mb-2">
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <p className="text-sm text-gray-500 mb-2">
               {t("checkout.holySites")} ({trip.sites.length} {t("checkout.sites")})
             </p>
             <div className="flex flex-wrap gap-2">
               {trip.sites.map((tripSite) => (
                 <span
                   key={tripSite.id || tripSite.order}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-temple-700/40 border border-temple-600/30 text-xs text-temple-200"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-gray-700"
                 >
                   {tripSite.site?.name || `${t("checkout.holySites")} ${tripSite.order}`}
                 </span>
@@ -218,21 +218,21 @@ export default function CheckoutPage() {
 
       {/* Contact Info */}
       {(trip.contactName || trip.contactPhone) && (
-        <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
-          <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-6">
+          <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
             {t("checkout.contactInfo")}
           </h2>
           <div className="space-y-3">
             {trip.contactName && (
               <div className="flex justify-between text-sm">
-                <span className="text-temple-400">{t("checkout.contactPerson")}</span>
-                <span className="text-temple-200">{trip.contactName}</span>
+                <span className="text-gray-500">{t("checkout.contactPerson")}</span>
+                <span className="text-gray-700">{trip.contactName}</span>
               </div>
             )}
             {trip.contactPhone && (
               <div className="flex justify-between text-sm">
-                <span className="text-temple-400">{t("checkout.contactPhone")}</span>
-                <span className="text-temple-200">{trip.contactPhone}</span>
+                <span className="text-gray-500">{t("checkout.contactPhone")}</span>
+                <span className="text-gray-700">{trip.contactPhone}</span>
               </div>
             )}
           </div>
@@ -240,8 +240,8 @@ export default function CheckoutPage() {
       )}
 
       {/* Payment Method */}
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("checkout.paymentMethod")}
         </h2>
         <div className="space-y-3">
@@ -250,8 +250,8 @@ export default function CheckoutPage() {
               key={method.key}
               className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                 gateway === method.key
-                  ? "bg-gold/10 border-gold/40"
-                  : "bg-temple-700/30 border-temple-700/50 hover:border-temple-600"
+                  ? "bg-[#0066FF]/5 border-[#0066FF]/40"
+                  : "bg-gray-50 border-gray-200 hover:border-gray-300"
               }`}
             >
               <input
@@ -265,20 +265,20 @@ export default function CheckoutPage() {
               <div
                 className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                   gateway === method.key
-                    ? "border-gold"
-                    : "border-temple-500"
+                    ? "border-[#0066FF]"
+                    : "border-gray-400"
                 }`}
               >
                 {gateway === method.key && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-gold" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#0066FF]" />
                 )}
               </div>
               <span className="text-lg">{method.icon}</span>
               <span
                 className={`text-sm font-medium ${
                   gateway === method.key
-                    ? "text-gold"
-                    : "text-temple-200"
+                    ? "text-[#0066FF]"
+                    : "text-gray-700"
                 }`}
               >
                 {method.label}
@@ -289,8 +289,8 @@ export default function CheckoutPage() {
       </div>
 
       {/* Coupon Code */}
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("checkout.couponCode")}
         </h2>
         <div className="flex gap-3">
@@ -303,12 +303,12 @@ export default function CheckoutPage() {
               setCouponDiscount(0);
             }}
             placeholder={t("checkout.couponPlaceholder")}
-            className="flex-1 px-4 py-3 rounded-xl bg-temple-900/80 border border-temple-600/30 text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-colors"
+            className="flex-1 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
           />
           <button
             onClick={handleVerifyCoupon}
             disabled={couponVerifying || !couponCode.trim()}
-            className="px-5 py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold text-sm hover:bg-gold/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+            className="px-5 py-3 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] font-semibold text-sm hover:bg-[#0066FF]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
           >
             {couponVerifying ? t("checkout.verifying") : t("checkout.verify")}
           </button>
@@ -324,28 +324,28 @@ export default function CheckoutPage() {
       </div>
 
       {/* Price Breakdown */}
-      <div className="card-glow rounded-2xl bg-temple-800/50 p-6 mb-6">
-        <h2 className="text-lg font-serif font-semibold text-temple-100 mb-4">
+      <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("checkout.priceBreakdown")}
         </h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-temple-400">{t("checkout.tripFee")}</span>
-            <span className="text-temple-200">
+            <span className="text-gray-500">{t("checkout.tripFee")}</span>
+            <span className="text-gray-700">
               ¥{totalAmount.toFixed(2)}
             </span>
           </div>
           {couponDiscount > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-temple-400">{t("checkout.couponDiscount")}</span>
+              <span className="text-gray-500">{t("checkout.couponDiscount")}</span>
               <span className="text-green-400">
                 -¥{discountAmount.toFixed(2)}
               </span>
             </div>
           )}
-          <div className="pt-3 border-t border-temple-700/50 flex justify-between">
-            <span className="text-temple-200 font-semibold">{t("checkout.totalDue")}</span>
-            <span className="text-xl font-bold text-gold">
+          <div className="pt-3 border-t border-gray-200 flex justify-between">
+            <span className="text-gray-700 font-semibold">{t("checkout.totalDue")}</span>
+            <span className="text-xl font-bold text-[#0066FF]">
               ¥{finalAmount.toFixed(2)}
             </span>
           </div>
@@ -356,11 +356,11 @@ export default function CheckoutPage() {
       <button
         onClick={handleSubmitOrder}
         disabled={submitting}
-        className="w-full py-4 rounded-2xl bg-gold text-temple-900 font-bold text-lg hover:bg-gold-light transition-colors shadow-lg shadow-gold/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-4 rounded-2xl bg-[#0066FF] text-white font-bold text-lg hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? (
           <span className="inline-flex items-center gap-2">
-            <span className="w-5 h-5 border-2 border-temple-900/30 border-t-temple-900 rounded-full animate-spin" />
+            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             {t("checkout.processing")}
           </span>
         ) : (
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
         )}
       </button>
 
-      <p className="text-center text-temple-500 text-xs mt-4">
+      <p className="text-center text-gray-400 text-xs mt-4">
         {t("checkout.agreementText")}
       </p>
     </div>

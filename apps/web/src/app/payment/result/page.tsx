@@ -76,8 +76,8 @@ export default function PaymentResultPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-10 h-10 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-temple-400 text-sm font-serif">{t("paymentResult.querying")}</p>
+          <div className="w-10 h-10 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-500 text-sm font-serif">{t("paymentResult.querying")}</p>
         </div>
       </div>
     );
@@ -88,7 +88,7 @@ export default function PaymentResultPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md text-center">
-          <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
+          <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
             {/* Green checkmark */}
             <div className="w-20 h-20 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -106,32 +106,32 @@ export default function PaymentResultPage() {
               </svg>
             </div>
 
-            <h1 className="text-2xl font-serif font-bold text-gradient-gold mb-2">
+            <h1 className="text-2xl font-serif font-bold text-[#0066FF] mb-2">
               {t("paymentResult.successTitle")}
             </h1>
-            <p className="text-temple-400 text-sm mb-6">
+            <p className="text-gray-500 text-sm mb-6">
               {t("paymentResult.successSubtitle")}
             </p>
 
             {order && (
-              <div className="space-y-2 text-sm mb-8 text-left bg-temple-700/30 rounded-xl p-4 border border-temple-700/50">
+              <div className="space-y-2 text-sm mb-8 text-left bg-gray-50 rounded-xl p-4 border border-gray-200">
                 <div className="flex justify-between">
-                  <span className="text-temple-400">{t("paymentResult.orderNo")}</span>
-                  <span className="text-temple-200 font-mono text-xs">
+                  <span className="text-gray-500">{t("paymentResult.orderNo")}</span>
+                  <span className="text-gray-700 font-mono text-xs">
                     {order.orderNo}
                   </span>
                 </div>
                 {order.trip?.title && (
                   <div className="flex justify-between">
-                    <span className="text-temple-400">{t("paymentResult.trip")}</span>
-                    <span className="text-temple-200">
+                    <span className="text-gray-500">{t("paymentResult.trip")}</span>
+                    <span className="text-gray-700">
                       {order.trip.title}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-temple-400">{t("paymentResult.amount")}</span>
-                  <span className="text-gold font-semibold">
+                  <span className="text-gray-500">{t("paymentResult.amount")}</span>
+                  <span className="text-[#0066FF] font-semibold">
                     ¥{(order.totalAmount || 0).toFixed(2)}
                   </span>
                 </div>
@@ -141,13 +141,13 @@ export default function PaymentResultPage() {
             <div className="space-y-3">
               <Link
                 href={order?.tripId ? `/trips/${order.tripId}` : "/trips"}
-                className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
+                className="block w-full py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0052CC] transition-colors text-center"
               >
                 {t("paymentResult.viewTrip")}
               </Link>
               <Link
                 href="/orders"
-                className="block text-temple-400 text-sm hover:text-gold transition-colors"
+                className="block text-gray-500 text-sm hover:text-[#0066FF] transition-colors"
               >
                 {t("paymentResult.viewAllOrders")}
               </Link>
@@ -164,9 +164,9 @@ export default function PaymentResultPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md text-center">
-          <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
+          <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
             {!reachedMax ? (
-              <div className="w-16 h-16 border-3 border-gold/20 border-t-gold rounded-full animate-spin mx-auto mb-6" />
+              <div className="w-16 h-16 border-3 border-[#0066FF]/20 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-6" />
             ) : (
               <div className="w-20 h-20 rounded-full bg-yellow-500/10 border-2 border-yellow-500/30 flex items-center justify-center mx-auto mb-6">
                 <svg
@@ -185,17 +185,17 @@ export default function PaymentResultPage() {
               </div>
             )}
 
-            <h1 className="text-2xl font-serif font-bold text-temple-100 mb-2">
+            <h1 className="text-2xl font-serif font-bold text-gray-900 mb-2">
               {t("paymentResult.pendingTitle")}
             </h1>
-            <p className="text-temple-400 text-sm mb-6">
+            <p className="text-gray-500 text-sm mb-6">
               {reachedMax
                 ? t("paymentResult.pendingTimeout")
                 : t("paymentResult.pendingConfirming")}
             </p>
 
             {order && (
-              <div className="text-sm text-temple-500 mb-6">
+              <div className="text-sm text-gray-400 mb-6">
                 {t("paymentResult.orderNo")}: {order.orderNo}
               </div>
             )}
@@ -203,13 +203,13 @@ export default function PaymentResultPage() {
             <div className="space-y-3">
               <Link
                 href="/orders"
-                className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
+                className="block w-full py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0052CC] transition-colors text-center"
               >
                 {t("paymentResult.viewMyOrders")}
               </Link>
               <Link
                 href="/"
-                className="block text-temple-400 text-sm hover:text-gold transition-colors"
+                className="block text-gray-500 text-sm hover:text-[#0066FF] transition-colors"
               >
                 {t("paymentResult.backHome")}
               </Link>
@@ -224,7 +224,7 @@ export default function PaymentResultPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
-        <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
+        <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
           {/* Red X */}
           <div className="w-20 h-20 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center mx-auto mb-6">
             <svg
@@ -242,15 +242,15 @@ export default function PaymentResultPage() {
             </svg>
           </div>
 
-          <h1 className="text-2xl font-serif font-bold text-temple-100 mb-2">
+          <h1 className="text-2xl font-serif font-bold text-gray-900 mb-2">
             {t("paymentResult.failedTitle")}
           </h1>
-          <p className="text-temple-400 text-sm mb-2">
+          <p className="text-gray-500 text-sm mb-2">
             {error || t("paymentResult.failedDefault")}
           </p>
 
           {order && (
-            <div className="text-sm text-temple-500 mb-6">
+            <div className="text-sm text-gray-400 mb-6">
               {t("paymentResult.orderNo")}: {order.orderNo}
             </div>
           )}
@@ -259,20 +259,20 @@ export default function PaymentResultPage() {
             {order?.tripId && (
               <Link
                 href={`/trips/${order.tripId}/checkout`}
-                className="block w-full py-3 rounded-xl bg-gold/20 border border-gold/40 text-gold font-semibold hover:bg-gold/30 transition-colors text-center"
+                className="block w-full py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0052CC] transition-colors text-center"
               >
                 {t("paymentResult.retryPayment")}
               </Link>
             )}
             <Link
               href="/orders"
-              className="block w-full py-3 rounded-xl bg-temple-700/40 border border-temple-600/30 text-temple-200 font-semibold hover:bg-temple-700/60 transition-colors text-center"
+              className="block w-full py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 font-semibold hover:bg-gray-100 transition-colors text-center"
             >
               {t("paymentResult.viewOrders")}
             </Link>
             <Link
               href="/"
-              className="block text-temple-400 text-sm hover:text-gold transition-colors"
+              className="block text-gray-500 text-sm hover:text-[#0066FF] transition-colors"
             >
               {t("paymentResult.backHome")}
             </Link>

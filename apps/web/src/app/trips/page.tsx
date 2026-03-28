@@ -11,13 +11,13 @@ const STATUS_STYLE: Record<
   TripStatus,
   { color: string; bgColor: string }
 > = {
-  DRAFT: { color: "text-temple-400", bgColor: "bg-temple-600/10 border-temple-600/20" },
-  PLANNING: { color: "text-incense", bgColor: "bg-incense/10 border-incense/20" },
+  DRAFT: { color: "text-gray-500", bgColor: "bg-gray-100 border-gray-200" },
+  PLANNING: { color: "text-orange-500", bgColor: "bg-orange-50 border-orange-200" },
   SUBMITTED: { color: "text-blue-400", bgColor: "bg-blue-400/10 border-blue-400/20" },
-  CONFIRMED: { color: "text-jade", bgColor: "bg-jade/10 border-jade/20" },
+  CONFIRMED: { color: "text-emerald-600", bgColor: "bg-emerald-50 border-emerald-200" },
   PAID: { color: "text-green-400", bgColor: "bg-green-400/10 border-green-400/20" },
   PREPARING: { color: "text-amber-400", bgColor: "bg-amber-400/10 border-amber-400/20" },
-  IN_PROGRESS: { color: "text-gold", bgColor: "bg-gold/10 border-gold/20" },
+  IN_PROGRESS: { color: "text-[#0066FF]", bgColor: "bg-[#0066FF]/10 border-[#0066FF]/20" },
   COMPLETED: { color: "text-emerald-400", bgColor: "bg-emerald-400/10 border-emerald-400/20" },
   REVIEWING: { color: "text-purple-400", bgColor: "bg-purple-400/10 border-purple-400/20" },
   CANCELLED: { color: "text-red-400", bgColor: "bg-red-400/10 border-red-400/20" },
@@ -76,8 +76,8 @@ export default function TripsPage() {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-temple-400 text-sm font-serif">{t("common.loading")}</p>
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 text-sm font-serif">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -90,16 +90,16 @@ export default function TripsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-gradient-gold">
+          <h1 className="text-3xl font-serif font-bold text-[#0066FF]">
             {t("trips.pageTitle")}
           </h1>
-          <p className="text-temple-400 mt-1 text-sm">
+          <p className="text-gray-500 mt-1 text-sm">
             {t("trips.pageSubtitle")}
           </p>
         </div>
         <Link
           href="/trips/create"
-          className="px-5 py-2.5 bg-gold text-temple-900 font-semibold rounded-full text-sm hover:bg-gold-light transition-colors shadow-lg shadow-gold/20"
+          className="px-5 py-2.5 bg-[#0066FF] text-white font-semibold rounded-full text-sm hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20"
         >
           + {t("trips.createNew")}
         </Link>
@@ -113,8 +113,8 @@ export default function TripsPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-all ${
               activeTab === tab.key
-                ? "bg-gold/15 text-gold border border-gold/30"
-                : "text-temple-400 hover:text-temple-200 border border-transparent hover:border-temple-700"
+                ? "bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/30"
+                : "text-gray-500 hover:text-gray-700 border border-transparent hover:border-gray-200"
             }`}
           >
             {t(tab.i18nKey)}
@@ -124,7 +124,7 @@ export default function TripsPage() {
 
       {/* Loading */}
       {loading && (
-        <div className="text-center py-20 text-temple-500">
+        <div className="text-center py-20 text-gray-400">
           <div className="text-5xl mb-4 animate-pulse">🏛</div>
           <p>{t("trips.loading")}</p>
         </div>
@@ -137,7 +137,7 @@ export default function TripsPage() {
           <p className="mb-4">{error}</p>
           <button
             onClick={loadTrips}
-            className="px-4 py-2 bg-gold/20 text-gold rounded-full text-sm hover:bg-gold/30 transition-colors"
+            className="px-4 py-2 bg-[#0066FF]/10 text-[#0066FF] rounded-full text-sm hover:bg-[#0066FF]/20 transition-colors"
           >
             {t("trips.retry")}
           </button>
@@ -149,26 +149,26 @@ export default function TripsPage() {
         <div className="space-y-4">
           {trips.map((trip, i) => {
             const sc = STATUS_STYLE[trip.status] ?? {
-              color: "text-temple-400",
-              bgColor: "bg-temple-600/10 border-temple-600/20",
+              color: "text-gray-500",
+              bgColor: "bg-gray-100 border-gray-200",
             };
             const statusLabel = t(`trip.status.${trip.status}`);
             return (
               <Link
                 key={trip.id}
                 href={`/trips/${trip.id}`}
-                className="block card-glow rounded-2xl bg-temple-800/50 p-5 hover:bg-temple-800/70 transition-all animate-fade-in-up"
+                className="block rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-all animate-fade-in-up"
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <div className="flex items-start gap-4">
                   {/* Cover Emoji */}
-                  <div className="w-14 h-14 rounded-xl bg-temple-700/50 border border-gold/10 flex items-center justify-center text-2xl shrink-0">
+                  <div className="w-14 h-14 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-2xl shrink-0">
                     🏛
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg font-serif font-semibold text-temple-100 truncate">
+                      <h3 className="text-lg font-serif font-semibold text-gray-900 truncate">
                         {trip.title}
                       </h3>
                       <span
@@ -178,7 +178,7 @@ export default function TripsPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-sm text-temple-400">
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
                       <span>{trip.sites.length} {t("trips.siteCount")}</span>
                       {(trip.startDate || trip.endDate) && (
                         <span>
@@ -190,7 +190,7 @@ export default function TripsPage() {
 
                   {/* Arrow */}
                   <svg
-                    className="w-5 h-5 text-temple-500 shrink-0 mt-1"
+                    className="w-5 h-5 text-gray-400 shrink-0 mt-1"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -211,7 +211,7 @@ export default function TripsPage() {
 
       {/* Empty */}
       {!loading && !error && trips.length === 0 && (
-        <div className="text-center py-20 text-temple-500">
+        <div className="text-center py-20 text-gray-400">
           <div className="text-5xl mb-4">🏛</div>
           <p>{t("trips.empty")}</p>
         </div>

@@ -124,7 +124,7 @@ export default function NotificationBell() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleOpen}
-        className="relative p-2 text-temple-300 hover:text-gold transition-colors rounded-lg hover:bg-gold/5"
+        className="relative p-2 text-gray-600 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-[#0066FF]/5"
         aria-label={`通知${unreadCount > 0 ? ` (${unreadCount}条未读)` : ""}`}
       >
         <svg
@@ -148,13 +148,13 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-temple-800 border border-gold/20 rounded-xl shadow-2xl overflow-hidden z-50">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gold/10">
-            <h3 className="text-sm font-semibold text-temple-100">通知</h3>
+        <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-900">通知</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-xs text-gold hover:text-gold/80 transition-colors"
+                className="text-xs text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
               >
                 全部标为已读
               </button>
@@ -169,18 +169,18 @@ export default function NotificationBell() {
             )}
             {loading ? (
               <div className="flex items-center justify-center py-8">
-                <div className="w-5 h-5 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
               </div>
             ) : !error && notifications.length === 0 ? (
-              <div className="py-8 text-center text-temple-400 text-sm">
+              <div className="py-8 text-center text-gray-500 text-sm">
                 暂无通知
               </div>
             ) : (
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  className={`px-4 py-3 border-b border-gold/5 hover:bg-gold/5 transition-colors cursor-pointer ${
-                    !n.read ? "bg-gold/[0.03]" : ""
+                  className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                    !n.read ? "bg-[#0066FF]/[0.03]" : ""
                   }`}
                   onClick={() => {
                     if (!n.read) handleMarkRead(n.id);
@@ -195,20 +195,20 @@ export default function NotificationBell() {
                         <p
                           className={`text-sm truncate ${
                             n.read
-                              ? "text-temple-300"
-                              : "text-temple-100 font-medium"
+                              ? "text-gray-600"
+                              : "text-gray-900 font-medium"
                           }`}
                         >
                           {n.title}
                         </p>
                         {!n.read && (
-                          <span className="w-2 h-2 rounded-full bg-gold shrink-0 mt-1.5" />
+                          <span className="w-2 h-2 rounded-full bg-[#0066FF] shrink-0 mt-1.5" />
                         )}
                       </div>
-                      <p className="text-xs text-temple-400 mt-0.5 line-clamp-2">
+                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
                         {n.content}
                       </p>
-                      <p className="text-[10px] text-temple-500 mt-1">
+                      <p className="text-[10px] text-gray-400 mt-1">
                         {timeAgo(n.createdAt)}
                       </p>
                     </div>
@@ -218,10 +218,10 @@ export default function NotificationBell() {
             )}
           </div>
 
-          <div className="px-4 py-2.5 border-t border-gold/10 text-center">
+          <div className="px-4 py-2.5 border-t border-gray-100 text-center">
             <Link
               href="/notifications"
-              className="text-xs text-gold hover:text-gold/80 transition-colors"
+              className="text-xs text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
               onClick={() => setOpen(false)}
             >
               查看全部通知

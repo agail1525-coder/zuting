@@ -28,12 +28,12 @@ const TYPE_I18N_KEYS: Record<string, string> = {
 };
 
 const TYPE_BADGE_STYLES: Record<string, string> = {
-  religion: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  "holy-site": "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-  temple: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  patriarch: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  teaching: "bg-rose-500/20 text-rose-300 border-rose-500/30",
-  seal: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  religion: "bg-amber-50 text-amber-700 border-amber-200",
+  "holy-site": "bg-emerald-50 text-emerald-700 border-emerald-200",
+  temple: "bg-blue-50 text-blue-700 border-blue-200",
+  patriarch: "bg-purple-50 text-purple-700 border-purple-200",
+  teaching: "bg-rose-50 text-rose-700 border-rose-200",
+  seal: "bg-yellow-50 text-yellow-700 border-yellow-200",
 };
 
 function getDetailHref(item: SearchResultItem): string {
@@ -128,16 +128,16 @@ export default function SearchPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       {/* Title */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold mb-2">
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#0066FF] mb-2">
           {t("search.title")}
         </h1>
-        <p className="text-temple-400">{t("search.subtitle")}</p>
+        <p className="text-gray-500">{t("search.subtitle")}</p>
       </div>
 
       {/* Search Input */}
       <div className="relative mb-6">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <svg className="w-5 h-5 text-temple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -146,13 +146,13 @@ export default function SearchPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("search.placeholder")}
-          className="w-full pl-12 pr-4 py-3.5 bg-temple-800/50 border border-gold/20 rounded-xl text-temple-100 placeholder-temple-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-all text-lg"
+          className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF]/30 transition-all text-lg"
           autoFocus
         />
         {query && (
           <button
             onClick={() => { setQuery(""); setResults(null); setError(null); }}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-temple-400 hover:text-gold transition-colors"
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#0066FF] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -169,8 +169,8 @@ export default function SearchPage() {
             onClick={() => { setActiveType(key); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-all border ${
               activeType === key
-                ? "bg-gold/20 text-gold border-gold/40 font-semibold"
-                : "bg-temple-800/30 text-temple-400 border-temple-700/30 hover:text-gold hover:border-gold/20"
+                ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30 font-semibold"
+                : "bg-white text-gray-500 border-gray-200 hover:text-[#0066FF] hover:border-[#0066FF]/20"
             }`}
           >
             {t(TAB_I18N_KEYS[key])}
@@ -181,7 +181,7 @@ export default function SearchPage() {
       {/* Loading */}
       {loading && (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
         </div>
       )}
 
@@ -189,10 +189,10 @@ export default function SearchPage() {
       {!loading && error && (
         <div className="text-center py-20">
           <div className="text-6xl mb-4 opacity-30">&#x26A0;</div>
-          <p className="text-red-400 text-lg">{t("search.error")}</p>
+          <p className="text-red-500 text-lg">{t("search.error")}</p>
           <button
             onClick={() => doSearch(query, activeType, page)}
-            className="mt-4 px-6 py-2 rounded-lg border border-gold/30 text-gold hover:bg-gold/10 transition-all"
+            className="mt-4 px-6 py-2 rounded-lg border border-[#0066FF]/30 text-[#0066FF] hover:bg-[#0066FF]/10 transition-all"
           >
             {t("search.tab.all") === "全部" ? "重试" : "Retry"}
           </button>
@@ -203,7 +203,7 @@ export default function SearchPage() {
       {!loading && !error && !query.trim() && (
         <div className="text-center py-20">
           <div className="text-6xl mb-4 opacity-30">&#x1F50D;</div>
-          <p className="text-temple-400 text-lg">{t("search.emptyPrompt")}</p>
+          <p className="text-gray-500 text-lg">{t("search.emptyPrompt")}</p>
         </div>
       )}
 
@@ -211,17 +211,17 @@ export default function SearchPage() {
       {!loading && !error && query.trim() && results && results.results.length === 0 && (
         <div className="text-center py-20">
           <div className="text-6xl mb-4 opacity-30">&#x1F6AB;</div>
-          <p className="text-temple-400 text-lg">
+          <p className="text-gray-500 text-lg">
             {t("search.noResults").replace("{query}", query)}
           </p>
-          <p className="text-temple-500 text-sm mt-1">{t("search.noResultsHint")}</p>
+          <p className="text-gray-400 text-sm mt-1">{t("search.noResultsHint")}</p>
         </div>
       )}
 
       {/* Results */}
       {!loading && !error && results && results.results.length > 0 && (
         <>
-          <p className="text-temple-400 text-sm mb-4">
+          <p className="text-gray-500 text-sm mb-4">
             {t("search.resultCount").replace("{total}", String(results.total))}
           </p>
 
@@ -230,12 +230,12 @@ export default function SearchPage() {
               <Link
                 key={`${item.type}-${item.id}-${i}`}
                 href={getDetailHref(item)}
-                className="block bg-temple-800/30 border border-temple-700/30 rounded-xl p-4 hover:border-gold/30 hover:bg-temple-800/50 transition-all group"
+                className="block bg-white border border-gray-200 rounded-xl p-4 hover:border-[#0066FF]/30 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
                   {/* Image or placeholder */}
                   {item.image ? (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-temple-700/30">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
                       <img
                         src={item.image}
                         alt={item.title}
@@ -243,7 +243,7 @@ export default function SearchPage() {
                       />
                     </div>
                   ) : (
-                    <div className="w-16 h-16 rounded-lg shrink-0 bg-temple-700/30 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-lg shrink-0 bg-gray-100 flex items-center justify-center">
                       {item.religion?.symbol ? (
                         <span className="text-2xl opacity-60">{item.religion.symbol}</span>
                       ) : (
@@ -257,7 +257,7 @@ export default function SearchPage() {
                       {/* Type badge */}
                       <span
                         className={`px-2 py-0.5 text-xs rounded-full border ${
-                          TYPE_BADGE_STYLES[item.type] || "bg-temple-700/30 text-temple-300 border-temple-600/30"
+                          TYPE_BADGE_STYLES[item.type] || "bg-gray-100 text-gray-600 border-gray-200"
                         }`}
                       >
                         {t(TYPE_I18N_KEYS[item.type] || `search.type.${item.type}`)}
@@ -281,21 +281,21 @@ export default function SearchPage() {
                       )}
                     </div>
 
-                    <h3 className="text-temple-100 font-semibold group-hover:text-gold transition-colors truncate">
+                    <h3 className="text-gray-900 font-semibold group-hover:text-[#0066FF] transition-colors truncate">
                       {item.title}
                     </h3>
                     {item.subtitle && (
-                      <p className="text-temple-400 text-sm truncate">{item.subtitle}</p>
+                      <p className="text-gray-500 text-sm truncate">{item.subtitle}</p>
                     )}
                     {item.descriptionSnippet && (
-                      <p className="text-temple-500 text-sm mt-1 line-clamp-2">
+                      <p className="text-gray-400 text-sm mt-1 line-clamp-2">
                         {item.descriptionSnippet}
                       </p>
                     )}
                   </div>
 
                   {/* Arrow */}
-                  <div className="shrink-0 self-center text-temple-500 group-hover:text-gold transition-colors">
+                  <div className="shrink-0 self-center text-gray-400 group-hover:text-[#0066FF] transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -311,17 +311,17 @@ export default function SearchPage() {
               <button
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="px-4 py-2 rounded-lg border border-temple-700/30 text-temple-300 hover:border-gold/30 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-[#0066FF]/30 hover:text-[#0066FF] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 {t("search.prevPage")}
               </button>
-              <span className="text-temple-400 text-sm">
+              <span className="text-gray-500 text-sm">
                 {page} / {totalPages}
               </span>
               <button
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="px-4 py-2 rounded-lg border border-temple-700/30 text-temple-300 hover:border-gold/30 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-[#0066FF]/30 hover:text-[#0066FF] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 {t("search.nextPage")}
               </button>

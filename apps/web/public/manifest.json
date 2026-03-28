@@ -1,11 +1,11 @@
 {
-  "name": "全球祖庭旅行平台",
-  "short_name": "祖庭旅行",
-  "description": "Helping 1 million people walk the ancestral temples",
+  "name": "Joinus - 文化旅行平台",
+  "short_name": "Joinus",
+  "description": "Join Us, Explore the World — A global cultural travel platform",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#0f172a",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0066FF",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }

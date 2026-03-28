@@ -26,10 +26,10 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
               {t("section.allHolySites")}
             </h1>
           </div>
@@ -41,13 +41,13 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
             {t("section.allHolySites")}
           </h1>
-          <p className="text-temple-400 text-lg">
+          <p className="text-gray-500 text-lg">
             {filtered.length} {t("stats.holySites")}
           </p>
         </div>
@@ -59,13 +59,13 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             selectedId={filter}
             onChange={setFilter}
           />
-          <div className="flex items-center gap-2 bg-temple-800/60 rounded-lg p-1 border border-temple-600/30">
+          <div className="flex items-center gap-2 bg-white rounded-lg p-1 border border-gray-200">
             <button
               onClick={() => setViewMode("grid")}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
                 viewMode === "grid"
-                  ? "bg-gold/20 text-gold shadow-sm"
-                  : "text-temple-400 hover:text-temple-200"
+                  ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,8 +77,8 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
               onClick={() => setViewMode("map")}
               className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
                 viewMode === "map"
-                  ? "bg-gold/20 text-gold shadow-sm"
-                  : "text-temple-400 hover:text-temple-200"
+                  ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,12 +99,12 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             {filtered.length === 0 && (
               <div className="text-center py-16">
                 <span className="text-4xl block mb-4">🕌</span>
-                <p className="text-temple-400">{t("common.noResults") || "暂无数据"}</p>
+                <p className="text-gray-500">{t("common.noResults") || "暂无数据"}</p>
               </div>
             )}
           </>
         ) : (
-          <div className="rounded-xl overflow-hidden border border-gold/10">
+          <div className="rounded-xl overflow-hidden border border-gray-200">
             <WorldMapDynamic
               holySites={filtered}
               religions={religions}

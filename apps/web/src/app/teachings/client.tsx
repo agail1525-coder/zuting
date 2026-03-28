@@ -24,10 +24,10 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
               {t("section.allTeachings")}
             </h1>
           </div>
@@ -39,14 +39,14 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         {/* Hero Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
             {t("section.allTeachings")}
           </h1>
-          <p className="text-temple-400 text-lg">
+          <p className="text-gray-500 text-lg">
             {filtered.length} {t("stats.teachings")}
           </p>
         </div>
@@ -60,15 +60,15 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map((teaching) => (
             <Link key={teaching.id} href={`/teachings/${teaching.id}`}>
-              <div className="card-glow rounded-xl p-6 bg-temple-800/50 group cursor-pointer h-full flex flex-col">
-                <h3 className="font-serif font-bold text-white group-hover:text-gold transition-colors mb-3">
+              <div className="shadow-sm border border-gray-100 rounded-xl p-6 bg-white group cursor-pointer h-full flex flex-col hover:shadow-md transition-all">
+                <h3 className="font-serif font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors mb-3">
                   {teaching.name}
                 </h3>
-                <p className="text-temple-300 text-sm font-serif leading-relaxed line-clamp-4 flex-1">
+                <p className="text-gray-600 text-sm font-serif leading-relaxed line-clamp-4 flex-1">
                   {teaching.originalText}
                 </p>
                 {teaching.sourceText && (
-                  <p className="text-temple-500 text-xs mt-3">— {teaching.sourceText}</p>
+                  <p className="text-gray-400 text-xs mt-3">— {teaching.sourceText}</p>
                 )}
               </div>
             </Link>
@@ -78,7 +78,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-4xl block mb-4">📜</span>
-            <p className="text-temple-400">{t("common.noResults") || "暂无数据"}</p>
+            <p className="text-gray-500">{t("common.noResults") || "暂无数据"}</p>
           </div>
         )}
       </div>

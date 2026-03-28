@@ -30,10 +30,10 @@ export default function SocialLoginButtons() {
       {/* Divider */}
       <div className="relative mb-5">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-temple-600/30" />
+          <div className="w-full border-t border-gray-200" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-3 bg-temple-800/60 text-temple-500">
+          <span className="px-3 bg-white text-gray-400">
             or continue with
           </span>
         </div>

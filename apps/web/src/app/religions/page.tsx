@@ -30,13 +30,13 @@ export default async function ReligionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-temple-800 via-temple-900 to-temple-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-24">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gradient-gold mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-4">
             十二大信仰
           </h1>
-          <p className="text-temple-400 text-lg">Twelve Great Faiths of the World</p>
+          <p className="text-gray-500 text-lg">Twelve Great Faiths of the World</p>
         </div>
 
         {error ? (
