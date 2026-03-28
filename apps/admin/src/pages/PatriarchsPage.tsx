@@ -86,6 +86,19 @@ export default function PatriarchsPage() {
 
   const columns: ColumnsType<Patriarch> = [
     {
+      title: '图片',
+      dataIndex: 'imageUrl',
+      key: 'imageUrl',
+      width: 80,
+      render: (url: string) => url ? (
+        <img src={url} alt="" style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+      ) : (
+        <div style={{ width: 60, height: 40, background: '#1a1a2e', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: 16, opacity: 0.3 }}>🖼</span>
+        </div>
+      ),
+    },
+    {
       title: '祖师名称',
       dataIndex: 'name',
       key: 'name',

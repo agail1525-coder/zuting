@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
+  Image,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -259,9 +260,13 @@ function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
       onPress={onPress}
     >
       <View style={styles.routeCardImage}>
-        <Text style={styles.routeCardEmoji}>
-          {route.category === 'ZEN' ? '🏯' : route.category === 'BUDDHIST' ? '☸' : route.category === 'TAOIST' ? '☯' : route.category === 'CHRISTIAN' ? '⛪' : route.category === 'ISLAMIC' ? '🕌' : '🌏'}
-        </Text>
+        {route.coverImage ? (
+          <Image source={{ uri: route.coverImage }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+        ) : (
+          <Text style={styles.routeCardEmoji}>
+            {route.category === 'ZEN' ? '🏯' : route.category === 'BUDDHIST' ? '☸' : route.category === 'TAOIST' ? '☯' : route.category === 'CHRISTIAN' ? '⛪' : route.category === 'ISLAMIC' ? '🕌' : '🌏'}
+          </Text>
+        )}
         <View style={styles.routeCardBadge}>
           <Text style={styles.routeCardBadgeText}>{route.duration}天{route.nights}晚</Text>
         </View>
@@ -461,7 +466,7 @@ const styles = StyleSheet.create({
   routeCardPrice: {
     fontSize: fontSize.lg,
     fontWeight: '700',
-    color: '#EF4444',
+    color: colors.gold,
   },
   routeCardPriceUnit: {
     fontSize: fontSize.xs,

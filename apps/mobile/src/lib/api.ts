@@ -78,6 +78,7 @@ export interface HolySite {
   longitude: number;
   utcOffset: number;
   description: string;
+  imageUrl?: string;
   religionId: string;
   religion?: Religion;
 }
@@ -89,6 +90,7 @@ export interface Temple {
   country: string;
   city?: string;
   description: string;
+  imageUrl?: string;
   religionId: string;
   religion?: Religion;
 }
@@ -100,6 +102,7 @@ export interface Patriarch {
   era: string;
   title: string;
   biography: string;
+  imageUrl?: string;
   religionId: string;
   religion?: Religion;
 }

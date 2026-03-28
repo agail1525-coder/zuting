@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Religion, Route, HolySite, fetchReligions, fetchFeaturedRoutes, fetchHolySites } from '../../lib/api'
 import ReligionCard from '../../components/ReligionCard'
@@ -143,9 +143,13 @@ export default function IndexPage() {
               onClick={() => Taro.navigateTo({ url: `/pages/route-detail/index?slug=${route.slug}` })}
             >
               <View className='route-card__image'>
-                <Text className='route-card__emoji'>
-                  {route.category === 'ZEN' ? '\u{1F3EF}' : route.category === 'BUDDHIST' ? '\u2638' : route.category === 'TAOIST' ? '\u262F' : route.category === 'CHRISTIAN' ? '\u26EA' : route.category === 'ISLAMIC' ? '\u{1F54C}' : '\u{1F30F}'}
-                </Text>
+                {route.coverImage ? (
+                  <Image className='route-card__cover' src={route.coverImage} mode='aspectFill' lazyLoad />
+                ) : (
+                  <Text className='route-card__emoji'>
+                    {route.category === 'ZEN' ? '\u{1F3EF}' : route.category === 'BUDDHIST' ? '\u2638' : route.category === 'TAOIST' ? '\u262F' : route.category === 'CHRISTIAN' ? '\u26EA' : route.category === 'ISLAMIC' ? '\u{1F54C}' : '\u{1F30F}'}
+                  </Text>
+                )}
                 <View className='route-card__badge'>
                   <Text className='route-card__badge-text'>{route.duration}天{route.nights}晚</Text>
                 </View>

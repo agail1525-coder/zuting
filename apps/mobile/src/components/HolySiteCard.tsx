@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { HolySite } from '../lib/api';
@@ -17,9 +17,13 @@ export function HolySiteCard({ site }: HolySiteCardProps) {
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       onPress={() => router.push({ pathname: '/holy-sites/[id]', params: { id: site.id } })}
     >
-      <View style={styles.gradientBg}>
-        <Ionicons name="location" size={32} color={colors.gold} />
-      </View>
+      {site.imageUrl ? (
+        <Image source={{ uri: site.imageUrl }} style={styles.image} />
+      ) : (
+        <View style={styles.gradientBg}>
+          <Ionicons name="location" size={32} color={colors.gold} />
+        </View>
+      )}
       <View style={styles.content}>
         <Text style={styles.nameZh} numberOfLines={1}>
           {site.nameZh}
@@ -53,6 +57,11 @@ const styles = StyleSheet.create({
   },
   cardPressed: {
     opacity: 0.8,
+  },
+  image: {
+    width: 80,
+    height: '100%',
+    minHeight: 80,
   },
   gradientBg: {
     width: 80,
