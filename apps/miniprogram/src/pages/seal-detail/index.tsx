@@ -5,17 +5,17 @@ import { Seal, fetchSealById } from '../../lib/api'
 import './index.scss'
 
 const SERIES_COLORS: Record<string, string> = {
-  '初印系': '#60a5fa',
-  '中印系': '#a78bfa',
-  '印果印': '#f472b6',
-  '成道印': '#f59e0b',
-  '归源印': '#34d399',
+  '初印系': '#6366F1',
+  '中印系': '#8B5CF6',
+  '印果印': '#EC4899',
+  '成道印': '#F59E0B',
+  '归源印': '#22C55E',
 }
 
 export default function SealDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [seal, setSeal] = useState<Seal | null>(null)
+  const [seal, setSeal] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useShareAppMessage(() => ({
@@ -47,72 +47,65 @@ export default function SealDetailPage() {
     }
   }
 
-  if (loading) {
-    return (
-      <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
-      </View>
-    )
-  }
-
-  if (!seal) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>印不存在</Text>
-      </View>
-    )
-  }
+  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
+  if (!seal) return <View className='container'><Text className='empty-text'>印不存在</Text></View>
 
   const seriesColor = SERIES_COLORS[seal.series] || '#0066FF'
 
   return (
-    <ScrollView className='seal-detail' scrollY>
-      {/* Header */}
-      <View className='seal-detail__header'>
-        <View className='seal-detail__number' style={{ borderColor: seriesColor }}>
-          <Text className='seal-detail__number-text' style={{ color: seriesColor }}>
-            {seal.number}
-          </Text>
+    <ScrollView className='detail-page' scrollY>
+      {/* Hero with series gradient */}
+      <View className='seal-hero' style={{ background: `linear-gradient(135deg, ${seriesColor}, #003D99)` }}>
+        <View className='seal-hero__overlay'>
+          <View className='seal-hero__number'>
+            <Text className='seal-hero__number-text'>{seal.number}</Text>
+          </View>
+          <Text className='seal-hero__title'>{seal.name}</Text>
+          <Text className='seal-hero__subtitle'>{seal.nameEn}</Text>
+          <View className='seal-hero__series'>
+            <View className='seal-hero__series-dot' />
+            <Text className='seal-hero__series-text'>{seal.series}</Text>
+          </View>
         </View>
-        <Text className='seal-detail__name'>{seal.name}</Text>
-        <Text className='seal-detail__name-en'>{seal.nameEn}</Text>
-        <Text className='seal-detail__series' style={{ color: seriesColor, borderColor: seriesColor }}>
-          {seal.series}
-        </Text>
       </View>
 
-      {/* Verse */}
-      {seal.verse && (
-        <View className='content-card'>
-          <View className='content-card__header'>
-            <View className='content-card__dot' style={{ backgroundColor: seriesColor }} />
-            <Text className='content-card__title'>偈颂</Text>
-          </View>
-          <View className='verse-box'>
-            <Text className='verse-box__text'>{seal.verse}</Text>
+      {/* Poem/Verse */}
+      {(seal.verse || seal.poem) && (
+        <View className='section'>
+          <Text className='section__title'>偈颂</Text>
+          <View className='poem-card'>
+            <Text className='poem-card__text'>{seal.verse || seal.poem}</Text>
           </View>
         </View>
       )}
 
-      {/* Meaning */}
-      {seal.meaning && (
-        <View className='content-card'>
-          <View className='content-card__header'>
-            <View className='content-card__dot' style={{ backgroundColor: seriesColor }} />
-            <Text className='content-card__title'>含义</Text>
+      {/* Essence/Meaning */}
+      {(seal.essence || seal.meaning) && (
+        <View className='section'>
+          <Text className='section__title'>要义</Text>
+          <View className='card'>
+            <Text className='card__text'>{seal.essence || seal.meaning}</Text>
           </View>
-          <Text className='content-card__body'>{seal.meaning}</Text>
         </View>
       )}
 
       {/* Practice */}
       {seal.practice && (
-        <View className='content-card'>
-          <View className='content-card__header'>
-            <View className='content-card__dot' style={{ backgroundColor: seriesColor }} />
-            <Text className='content-card__title'>修行方法</Text>
+        <View className='section'>
+          <Text className='section__title'>修行方法</Text>
+          <View className='card'>
+            <Text className='card__text'>{seal.practice}</Text>
           </View>
-          <Text className='content-card__body'>{seal.practice}</Text>
+        </View>
+      )}
+
+      {/* Vow */}
+      {seal.vow && (
+        <View className='section'>
+          <Text className='section__title'>愿文</Text>
+          <View className='vow-card' style={{ borderLeftColor: seriesColor }}>
+            <Text className='vow-card__text'>{seal.vow}</Text>
+          </View>
         </View>
       )}
 

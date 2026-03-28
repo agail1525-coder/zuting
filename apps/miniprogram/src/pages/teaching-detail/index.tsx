@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import { useRouter } from '@tarojs/taro'
+import Taro, { useRouter } from '@tarojs/taro'
 import { Teaching, fetchTeachingById } from '../../lib/api'
 import './index.scss'
 
 export default function TeachingDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [teaching, setTeaching] = useState<Teaching | null>(null)
+  const [teaching, setTeaching] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,80 +29,72 @@ export default function TeachingDetailPage() {
     }
   }
 
-  if (loading) {
-    return (
-      <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
-      </View>
-    )
-  }
-
-  if (error) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>{error}</Text>
-        <Text className='retry-btn' onClick={loadTeaching}>点击重试</Text>
-      </View>
-    )
-  }
-
-  if (!teaching) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>祖训不存在</Text>
-      </View>
-    )
-  }
+  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
+  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadTeaching}>点击重试</Text></View>
+  if (!teaching) return <View className='container'><Text className='empty-text'>祖训不存在</Text></View>
 
   const originalText = teaching.originalText || teaching.content || ''
   const source = teaching.sourceText || teaching.source || ''
+  const religionName = teaching.religion?.name ?? teaching.religion?.nameZh ?? ''
 
   return (
-    <ScrollView className='teaching-detail' scrollY>
-      {/* Header */}
-      <View className='teaching-detail__header'>
-        <View className='teaching-detail__icon'>
-          <Text className='teaching-detail__icon-text'>{'\u{1F4DC}'}</Text>
+    <ScrollView className='detail-page' scrollY>
+      {/* Hero */}
+      <View className='detail-hero detail-hero--short'>
+        <View className='detail-hero__image detail-hero__image--gradient' />
+        <View className='detail-hero__overlay'>
+          {religionName && (
+            <View className='detail-hero__badge'>
+              <Text className='detail-hero__badge-text'>{religionName}</Text>
+            </View>
+          )}
+          <Text className='detail-hero__title'>{teaching.title || teaching.name}</Text>
+          {source && (
+            <Text className='detail-hero__subtitle'>📖 {source}</Text>
+          )}
         </View>
-        {teaching.religion && (
-          <Text className='teaching-detail__religion'>
-            {teaching.religion.emoji} {teaching.religion.name}
-          </Text>
-        )}
-        {teaching.name && (
-          <Text className='teaching-detail__name'>{teaching.name}</Text>
-        )}
       </View>
 
       {/* Original Text */}
       {originalText && (
-        <View className='quote-card'>
-          <Text className='quote-card__mark'>{'\u{201C}'}</Text>
-          <Text className='quote-card__title'>原文</Text>
-          <Text className='quote-card__text'>{originalText}</Text>
-        </View>
-      )}
-
-      {/* Source */}
-      {source && (
-        <View className='info-card'>
-          <View className='info-card__row'>
-            <Text className='info-card__icon'>{'\u{1F4D6}'}</Text>
-            <View className='info-card__content'>
-              <Text className='info-card__label'>出处</Text>
-              <Text className='info-card__value'>{source}</Text>
-            </View>
+        <View className='section'>
+          <Text className='section__title'>原文</Text>
+          <View className='quote-card'>
+            <View className='quote-card__bar' />
+            <Text className='quote-card__text'>{originalText}</Text>
           </View>
         </View>
       )}
 
       {/* Translation */}
       {teaching.translationCn && (
-        <View className='translation-card'>
-          <Text className='translation-card__title'>白话译文</Text>
-          <Text className='translation-card__content'>{teaching.translationCn}</Text>
+        <View className='section'>
+          <Text className='section__title'>白话译文</Text>
+          <View className='card'>
+            <Text className='card__text'>{teaching.translationCn}</Text>
+          </View>
         </View>
       )}
+
+      {/* Religion */}
+      {religionName && (
+        <View className='section'>
+          <Text className='section__title'>所属信仰</Text>
+          <View className='card'>
+            <Text className='card__text'>{religionName}</Text>
+          </View>
+        </View>
+      )}
+
+      {/* CTA */}
+      <View className='cta-row'>
+        <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
+          <Text className='cta-row__btn-text'>规划行程</Text>
+        </View>
+        <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
+          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+        </View>
+      </View>
 
       <View style={{ height: '80rpx' }} />
     </ScrollView>

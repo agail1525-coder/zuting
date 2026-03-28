@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Route, ItineraryDay, fetchRouteBySlug } from '../../lib/api'
 import './index.scss'
@@ -41,17 +41,17 @@ export default function RouteDetailPage() {
 
   if (loading) {
     return (
-      <View className='route-detail loading'>
-        <Text className='loading__text'>加载中...</Text>
+      <View className='container'>
+        <Text className='loading-text'>加载中...</Text>
       </View>
     )
   }
 
   if (error || !route) {
     return (
-      <View className='route-detail error'>
-        <Text className='error__text'>路线不存在或加载失败</Text>
-        <Text className='error__back' onClick={() => Taro.navigateBack()}>返回</Text>
+      <View className='container'>
+        <Text className='empty-text'>路线不存在或加载失败</Text>
+        <Text className='retry-btn' onClick={() => Taro.navigateBack()}>返回</Text>
       </View>
     )
   }
@@ -59,27 +59,37 @@ export default function RouteDetailPage() {
   const price = (route.priceFrom / 100).toLocaleString()
 
   return (
-    <ScrollView className='route-detail' scrollY>
-      {/* Hero */}
-      <View className='hero'>
-        <View className='hero__badges'>
-          <Text className='hero__badge hero__badge--category'>
-            {CATEGORY_LABELS[route.category] ?? route.category}
-          </Text>
-          <Text className='hero__badge hero__badge--difficulty'>
-            {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
-          </Text>
-        </View>
-        <Text className='hero__title'>{route.title}</Text>
-        <Text className='hero__subtitle'>{route.subtitle}</Text>
-        <Text className='hero__title-en'>{route.titleEn}</Text>
-        <View className='hero__meta'>
-          <Text className='hero__meta-item'>{'\u{1F4C5}'} {route.duration}天{route.nights}晚</Text>
-          <Text className='hero__meta-item'>{'\u{1F324}'} {route.season}</Text>
-          <Text className='hero__meta-item'>{'\u{1F465}'} {route.groupSize}</Text>
-          {route.rating && (
-            <Text className='hero__meta-item'>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
-          )}
+    <ScrollView className='detail-page' scrollY>
+      {/* Hero with Cover Image */}
+      <View className='detail-hero'>
+        {route.coverImage ? (
+          <Image className='detail-hero__image' src={route.coverImage} mode='aspectFill' />
+        ) : (
+          <View className='detail-hero__image detail-hero__image--gradient' />
+        )}
+        <View className='detail-hero__overlay'>
+          <View className='detail-hero__badges'>
+            <View className='detail-hero__badge'>
+              <Text className='detail-hero__badge-text'>
+                {CATEGORY_LABELS[route.category] ?? route.category}
+              </Text>
+            </View>
+            <View className='detail-hero__badge'>
+              <Text className='detail-hero__badge-text'>
+                {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
+              </Text>
+            </View>
+          </View>
+          <Text className='detail-hero__title'>{route.title}</Text>
+          <Text className='detail-hero__subtitle'>{route.subtitle}</Text>
+          <View className='detail-hero__meta'>
+            <Text className='detail-hero__meta-item'>📅 {route.duration}天{route.nights}晚</Text>
+            <Text className='detail-hero__meta-item'>🌤 {route.season}</Text>
+            <Text className='detail-hero__meta-item'>👥 {route.groupSize}</Text>
+            {route.rating && (
+              <Text className='detail-hero__meta-item'>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
+            )}
+          </View>
         </View>
       </View>
 
@@ -87,13 +97,6 @@ export default function RouteDetailPage() {
       <View className='price-card'>
         <Text className='price-card__label'>起价</Text>
         <Text className='price-card__value'>¥{price}<Text className='price-card__unit'>/人</Text></Text>
-        <View
-          className='price-card__btn'
-          hoverClass='price-card__btn--hover'
-          onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}
-        >
-          <Text className='price-card__btn-text'>AI规划师咨询</Text>
-        </View>
         <Text className='price-card__book-count'>已有 {route.bookCount} 人预订</Text>
       </View>
 
@@ -107,7 +110,9 @@ export default function RouteDetailPage() {
       {/* Description */}
       <View className='section'>
         <Text className='section__title'>路线介绍</Text>
-        <Text className='section__text'>{route.description}</Text>
+        <View className='card'>
+          <Text className='card__text'>{route.description}</Text>
+        </View>
       </View>
 
       {/* Itinerary */}
@@ -129,10 +134,10 @@ export default function RouteDetailPage() {
               </View>
             )}
             {day.meals && day.meals.length > 0 && (
-              <Text className='day-card__meta'>{'\u{1F37D}'} {day.meals.join(' | ')}</Text>
+              <Text className='day-card__meta'>🍽 {day.meals.join(' | ')}</Text>
             )}
             {day.accommodation && (
-              <Text className='day-card__meta'>{'\u{1F3E8}'} {day.accommodation}</Text>
+              <Text className='day-card__meta'>🏨 {day.accommodation}</Text>
             )}
           </View>
         ))}
@@ -155,24 +160,30 @@ export default function RouteDetailPage() {
 
       {/* Tips */}
       {route.tips.length > 0 && (
-        <View className='tips-section'>
+        <View className='section'>
           <Text className='section__title'>出行贴士</Text>
-          {route.tips.map((tip, i) => (
-            <Text key={i} className='tip-item'>{'\u{1F4A1}'} {tip}</Text>
-          ))}
+          <View className='card'>
+            {route.tips.map((tip, i) => (
+              <View key={i} className='tip-row'>
+                <Text className='tip-row__icon'>💡</Text>
+                <Text className='tip-row__text'>{tip}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
 
-      {/* Bottom CTA */}
-      <View
-        className='bottom-cta'
-        hoverClass='bottom-cta--hover'
-        onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}
-      >
-        <Text className='bottom-cta__text'>{'\u{1F916}'} 让AI规划师为你定制行程</Text>
+      {/* CTA */}
+      <View className='cta-row'>
+        <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
+          <Text className='cta-row__btn-text'>立即预订</Text>
+        </View>
+        <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
+          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+        </View>
       </View>
 
-      <View style={{ height: '120rpx' }} />
+      <View style={{ height: '80rpx' }} />
     </ScrollView>
   )
 }

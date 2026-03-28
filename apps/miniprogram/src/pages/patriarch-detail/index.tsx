@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
-import { useRouter } from '@tarojs/taro'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
+import Taro, { useRouter } from '@tarojs/taro'
 import { Patriarch, fetchPatriarchById } from '../../lib/api'
 import './index.scss'
 
 export default function PatriarchDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [patriarch, setPatriarch] = useState<Patriarch | null>(null)
+  const [patriarch, setPatriarch] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,70 +29,76 @@ export default function PatriarchDetailPage() {
     }
   }
 
-  if (loading) {
-    return (
-      <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
-      </View>
-    )
-  }
+  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
+  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadPatriarch}>点击重试</Text></View>
+  if (!patriarch) return <View className='container'><Text className='empty-text'>祖师不存在</Text></View>
 
-  if (error) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>{error}</Text>
-        <Text className='retry-btn' onClick={loadPatriarch}>点击重试</Text>
-      </View>
-    )
-  }
-
-  if (!patriarch) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>祖师不存在</Text>
-      </View>
-    )
-  }
+  const hasImage = !!patriarch.imageUrl
+  const era = patriarch.dates ?? patriarch.era ?? ''
+  const coreTeaching = patriarch.coreTeaching ?? ''
 
   return (
-    <ScrollView className='patriarch-detail' scrollY>
-      {/* Header */}
-      <View className='patriarch-detail__header'>
-        <View className='patriarch-detail__avatar'>
-          <Text className='patriarch-detail__avatar-text'>{'\u{1F9D8}'}</Text>
+    <ScrollView className='detail-page' scrollY>
+      {/* Hero */}
+      <View className='detail-hero'>
+        {hasImage ? (
+          <Image className='detail-hero__image' src={patriarch.imageUrl} mode='aspectFill' />
+        ) : (
+          <View className='detail-hero__image detail-hero__image--gradient' />
+        )}
+        <View className='detail-hero__overlay'>
+          {patriarch.religion && (
+            <View className='detail-hero__badge'>
+              <Text className='detail-hero__badge-text'>{patriarch.religion.name}</Text>
+            </View>
+          )}
+          <Text className='detail-hero__title'>{patriarch.name}</Text>
+          <Text className='detail-hero__subtitle'>{patriarch.nameEn}</Text>
+          <View className='detail-hero__tags'>
+            {patriarch.title && (
+              <View className='detail-hero__tag'>
+                <Text className='detail-hero__tag-text'>{patriarch.title}</Text>
+              </View>
+            )}
+            {era && (
+              <View className='detail-hero__tag'>
+                <Text className='detail-hero__tag-text'>{era}</Text>
+              </View>
+            )}
+          </View>
         </View>
-        {patriarch.religion && (
-          <Text className='patriarch-detail__religion'>
-            {patriarch.religion.emoji} {patriarch.religion.name}
-          </Text>
-        )}
-        <Text className='patriarch-detail__name'>{patriarch.name}</Text>
-        <Text className='patriarch-detail__name-en'>{patriarch.nameEn}</Text>
-        {patriarch.title && (
-          <Text className='patriarch-detail__title'>{patriarch.title}</Text>
-        )}
       </View>
 
-      {/* Info Card */}
-      {patriarch.era && (
-        <View className='info-card'>
-          <View className='info-card__row'>
-            <Text className='info-card__icon'>{'\u{1F4C5}'}</Text>
-            <View className='info-card__content'>
-              <Text className='info-card__label'>年代</Text>
-              <Text className='info-card__value'>{patriarch.era}</Text>
-            </View>
+      {/* Core Teaching */}
+      {coreTeaching && (
+        <View className='section'>
+          <Text className='section__title'>核心教义</Text>
+          <View className='teaching-card'>
+            <Text className='teaching-card__icon'>📖</Text>
+            <Text className='teaching-card__text'>{coreTeaching}</Text>
           </View>
         </View>
       )}
 
       {/* Biography */}
       {patriarch.biography && (
-        <View className='bio-card'>
-          <Text className='bio-card__title'>生平</Text>
-          <Text className='bio-card__content'>{patriarch.biography}</Text>
+        <View className='section'>
+          <Text className='section__title'>传记</Text>
+          <View className='card'>
+            <Text className='card__text'>{patriarch.biography}</Text>
+          </View>
         </View>
       )}
+
+      {/* CTA */}
+      <View className='cta-row'>
+        <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
+          <Text className='cta-row__btn-text'>规划行程</Text>
+        </View>
+        <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
+          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+        </View>
+      </View>
 
       <View style={{ height: '80rpx' }} />
     </ScrollView>

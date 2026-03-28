@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Temple, fetchTempleById } from '../../lib/api'
 import './index.scss'
@@ -7,7 +7,7 @@ import './index.scss'
 export default function TempleDetailPage() {
   const router = useRouter()
   const { id } = router.params
-  const [temple, setTemple] = useState<Temple | null>(null)
+  const [temple, setTemple] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -18,7 +18,7 @@ export default function TempleDetailPage() {
   }))
 
   useShareTimeline(() => ({
-    title: temple ? `${temple.name} | ${temple.city}, ${temple.country}` : '探索祖庭 — 全球祖庭之旅',
+    title: temple ? `${temple.name} | ${temple.city}, ${temple.country}` : '探索祖庭',
     query: `id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
@@ -51,80 +51,85 @@ export default function TempleDetailPage() {
     })
   }
 
-  if (loading) {
-    return (
-      <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
-      </View>
-    )
-  }
+  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
+  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadTemple}>点击重试</Text></View>
+  if (!temple) return <View className='container'><Text className='empty-text'>祖庭不存在</Text></View>
 
-  if (error) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>{error}</Text>
-        <Text className='retry-btn' onClick={loadTemple}>点击重试</Text>
-      </View>
-    )
-  }
-
-  if (!temple) {
-    return (
-      <View className='container'>
-        <Text className='empty-text'>祖庭不存在</Text>
-      </View>
-    )
-  }
+  const hasImage = !!temple.imageUrl
 
   return (
-    <ScrollView className='temple-detail' scrollY>
-      {/* Header */}
-      <View className='temple-detail__header'>
-        <Text className='temple-detail__icon'>{'\u{1F3EF}'}</Text>
-        {temple.religion && (
-          <Text className='temple-detail__religion'>{temple.religion.emoji} {temple.religion.name}</Text>
+    <ScrollView className='detail-page' scrollY>
+      {/* Hero */}
+      <View className='detail-hero'>
+        {hasImage ? (
+          <Image className='detail-hero__image' src={temple.imageUrl} mode='aspectFill' />
+        ) : (
+          <View className='detail-hero__image detail-hero__image--gradient' />
         )}
-        <Text className='temple-detail__name'>{temple.name}</Text>
-        <Text className='temple-detail__name-en'>{temple.nameEn}</Text>
+        <View className='detail-hero__overlay'>
+          {temple.religion && (
+            <View className='detail-hero__badge'>
+              <Text className='detail-hero__badge-text'>{temple.religion.name}</Text>
+            </View>
+          )}
+          <Text className='detail-hero__title'>{temple.name}</Text>
+          <Text className='detail-hero__subtitle'>{temple.nameEn}</Text>
+        </View>
       </View>
 
-      {/* Info Card */}
-      <View className='info-card'>
-        <View className='info-card__row'>
-          <Text className='info-card__icon'>{'\u{1F4CD}'}</Text>
-          <View className='info-card__content'>
-            <Text className='info-card__label'>位置</Text>
-            <Text className='info-card__value'>{temple.city}, {temple.country}</Text>
-          </View>
+      {/* Info Grid */}
+      <View className='info-grid'>
+        <View className='info-grid__cell'>
+          <Text className='info-grid__icon'>🌍</Text>
+          <Text className='info-grid__label'>国家</Text>
+          <Text className='info-grid__value'>{temple.country}</Text>
         </View>
-        {temple.founded && (
-          <View className='info-card__row'>
-            <Text className='info-card__icon'>{'\u{1F4C5}'}</Text>
-            <View className='info-card__content'>
-              <Text className='info-card__label'>创建</Text>
-              <Text className='info-card__value'>{temple.founded}</Text>
-            </View>
+        {temple.city && (
+          <View className='info-grid__cell'>
+            <Text className='info-grid__icon'>🏙</Text>
+            <Text className='info-grid__label'>城市</Text>
+            <Text className='info-grid__value'>{temple.city}</Text>
           </View>
         )}
-        <View className='info-card__row'>
-          <Text className='info-card__icon'>{'\u{1F30D}'}</Text>
-          <View className='info-card__content'>
-            <Text className='info-card__label'>坐标</Text>
-            <Text className='info-card__value'>{temple.latitude.toFixed(4)}, {temple.longitude.toFixed(4)}</Text>
+        {temple.foundingDate && (
+          <View className='info-grid__cell'>
+            <Text className='info-grid__icon'>📅</Text>
+            <Text className='info-grid__label'>建立</Text>
+            <Text className='info-grid__value'>{temple.foundingDate}</Text>
           </View>
-        </View>
-        <View className='info-card__action' onClick={openLocation}>
-          <Text className='info-card__action-text'>打开地图导航</Text>
+        )}
+        <View className='info-grid__cell'>
+          <Text className='info-grid__icon'>📍</Text>
+          <Text className='info-grid__label'>坐标</Text>
+          <Text className='info-grid__value'>{temple.latitude?.toFixed(4)}, {temple.longitude?.toFixed(4)}</Text>
         </View>
       </View>
 
       {/* Description */}
-      {temple.description && (
-        <View className='desc-card'>
-          <Text className='desc-card__title'>简介</Text>
-          <Text className='desc-card__content'>{temple.description}</Text>
+      <View className='section'>
+        <Text className='section__title'>介绍</Text>
+        <View className='card'>
+          <Text className='card__text'>{temple.description}</Text>
         </View>
-      )}
+      </View>
+
+      {/* Map Action */}
+      <View className='section'>
+        <View className='map-action' onClick={openLocation}>
+          <Text className='map-action__icon'>📍</Text>
+          <Text className='map-action__text'>打开地图导航</Text>
+        </View>
+      </View>
+
+      {/* CTA */}
+      <View className='cta-row'>
+        <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
+          <Text className='cta-row__btn-text'>加入行程</Text>
+        </View>
+        <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
+          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+        </View>
+      </View>
 
       <View style={{ height: '80rpx' }} />
     </ScrollView>

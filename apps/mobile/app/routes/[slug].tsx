@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -7,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { api, Route, ItineraryDay } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
@@ -64,28 +66,35 @@ export default function RouteDetailScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Stack.Screen options={{ title: route.title, headerStyle: { backgroundColor: '#FFFFFF' }, headerTintColor: colors.gold }} />
 
-      {/* Hero */}
+      {/* Hero with Cover Image */}
       <View style={styles.hero}>
-        <View style={styles.badges}>
-          <Text style={styles.categoryBadge}>
-            {CATEGORY_LABELS[route.category] ?? route.category}
-          </Text>
-          <Text style={styles.difficultyBadge}>
-            {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
-          </Text>
-        </View>
-        <Text style={styles.title}>{route.title}</Text>
-        <Text style={styles.subtitle}>{route.subtitle}</Text>
-        <Text style={styles.titleEn}>{route.titleEn}</Text>
+        {route.coverImage ? (
+          <Image source={{ uri: route.coverImage }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+        ) : (
+          <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+        )}
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={styles.heroOverlay}>
+          <View style={styles.badges}>
+            <Text style={styles.categoryBadge}>
+              {CATEGORY_LABELS[route.category] ?? route.category}
+            </Text>
+            <Text style={styles.difficultyBadge}>
+              {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
+            </Text>
+          </View>
+          <Text style={styles.title}>{route.title}</Text>
+          <Text style={styles.subtitle}>{route.subtitle}</Text>
+          <Text style={styles.titleEn}>{route.titleEn}</Text>
 
-        <View style={styles.metaRow}>
-          <Text style={styles.metaItem}>📅 {route.duration}天{route.nights}晚</Text>
-          <Text style={styles.metaItem}>🌤 {route.season}</Text>
-          <Text style={styles.metaItem}>👥 {route.groupSize}</Text>
-          {route.rating && (
-            <Text style={styles.metaItem}>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
-          )}
-        </View>
+          <View style={styles.metaRow}>
+            <Text style={styles.metaItem}>📅 {route.duration}天{route.nights}晚</Text>
+            <Text style={styles.metaItem}>🌤 {route.season}</Text>
+            <Text style={styles.metaItem}>👥 {route.groupSize}</Text>
+            {route.rating && (
+              <Text style={styles.metaItem}>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
+            )}
+          </View>
+        </LinearGradient>
       </View>
 
       {/* Price Card */}
@@ -171,12 +180,22 @@ export default function RouteDetailScreen() {
       )}
 
       {/* Bottom CTA */}
-      <Pressable
-        style={({ pressed }) => [styles.bottomCta, pressed && { opacity: 0.8 }]}
-        onPress={() => router.push('/(tabs)/chat')}
-      >
-        <Text style={styles.bottomCtaText}>🤖 让AI规划师为你定制行程</Text>
-      </Pressable>
+      <View style={styles.ctaRow}>
+        <Pressable
+          style={({ pressed }) => [styles.ctaBtn, pressed && { opacity: 0.8 }]}
+          onPress={() => router.push('/trips/create' as never)}
+        >
+          <Ionicons name="calendar" size={18} color="#FFFFFF" />
+          <Text style={styles.ctaBtnText}>立即预订</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.ctaBtnOutline, pressed && { opacity: 0.8 }]}
+          onPress={() => router.push('/(tabs)/chat')}
+        >
+          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Text style={styles.ctaBtnOutlineText}>AI规划</Text>
+        </Pressable>
+      </View>
 
       <View style={{ height: spacing.xxl }} />
     </ScrollView>
@@ -213,9 +232,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   hero: {
+    height: 280,
+    position: 'relative' as const,
+  },
+  heroOverlay: {
+    position: 'absolute' as const,
+    bottom: 0,
+    left: 0,
+    right: 0,
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.lg,
+    paddingTop: 80,
   },
   badges: {
     flexDirection: 'row',
@@ -223,17 +250,18 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   categoryBadge: {
-    backgroundColor: 'rgba(0, 102, 255, 0.1)',
-    color: colors.gold,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: '#FFFFFF',
     fontSize: fontSize.xs,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: borderRadius.full,
     overflow: 'hidden',
+    fontWeight: '600',
   },
   difficultyBadge: {
-    backgroundColor: 'rgba(100, 116, 139, 0.2)',
-    color: colors.textSecondary,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: '#FFFFFF',
     fontSize: fontSize.xs,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
@@ -243,16 +271,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.xxl,
     fontWeight: '800',
-    color: colors.textPrimary,
+    color: '#FFFFFF',
   },
   subtitle: {
     fontSize: fontSize.lg,
-    color: colors.textSecondary,
+    color: 'rgba(255,255,255,0.85)',
     marginTop: spacing.xs,
   },
   titleEn: {
     fontSize: fontSize.sm,
-    color: colors.textMuted,
+    color: 'rgba(255,255,255,0.7)',
     marginTop: 2,
   },
   metaRow: {
@@ -263,7 +291,7 @@ const styles = StyleSheet.create({
   },
   metaItem: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: 'rgba(255,255,255,0.9)',
   },
   priceCard: {
     backgroundColor: colors.backgroundCardSolid,
@@ -418,17 +446,41 @@ const styles = StyleSheet.create({
     color: colors.gold,
     marginBottom: spacing.xs,
   },
-  bottomCta: {
-    backgroundColor: colors.gold,
-    marginHorizontal: spacing.md,
+  ctaRow: {
+    flexDirection: 'row',
+    paddingHorizontal: spacing.md,
     marginTop: spacing.xl,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    alignItems: 'center',
+    gap: spacing.md,
   },
-  bottomCtaText: {
-    color: colors.backgroundDark,
+  ctaBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: '#0066FF',
+    paddingVertical: 12,
+    borderRadius: 999,
+  },
+  ctaBtnText: {
+    color: '#FFFFFF',
     fontSize: fontSize.lg,
-    fontWeight: '700',
+    fontWeight: '600',
+  },
+  ctaBtnOutline: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#0066FF',
+    paddingVertical: 12,
+    borderRadius: 999,
+  },
+  ctaBtnOutlineText: {
+    color: '#0066FF',
+    fontSize: fontSize.lg,
+    fontWeight: '600',
   },
 });

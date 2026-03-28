@@ -1,155 +1,159 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { api, Teaching } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
-import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
 export default function TeachingDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
-  const [teaching, setTeaching] = useState<Teaching | null>(null);
+  const router = useRouter();
+  const [teaching, setTeaching] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
-    async function fetchData() {
+    (async () => {
       try {
         setError(null);
         const found = await api.getTeachingById(id);
         setTeaching(found);
-        navigation.setOptions({ title: found.title });
+        navigation.setOptions({ title: (found as any).title ?? '' });
       } catch (err) {
         console.error('Failed to fetch teaching detail:', err);
         setError('加载祖训详情失败');
       } finally {
         setLoading(false);
       }
-    }
-    fetchData();
+    })();
   }, [id, navigation]);
 
   if (loading) return <LoadingView />;
   if (error || !teaching) {
     return (
-      <View style={styles.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
-        <Text style={styles.errorText}>{error ?? '祖训不存在'}</Text>
+      <View style={s.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Text style={s.errorText}>{error ?? '祖训不存在'}</Text>
       </View>
     );
   }
 
+  const religionName = teaching.religion?.name ?? teaching.religion?.nameZh ?? '';
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.hero}>
-        <View style={styles.iconCircle}>
-          <Ionicons name="book" size={64} color={colors.gold} />
-        </View>
-        <Text style={styles.heroTitle}>{teaching.title}</Text>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{teaching.source}</Text>
+    <ScrollView style={s.container} contentContainerStyle={s.content}>
+      {/* Hero */}
+      <View style={s.hero}>
+        <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.5)']} style={s.heroOverlay}>
+          {religionName ? (
+            <View style={s.religionBadge}>
+              <Text style={s.religionBadgeText}>{religionName}</Text>
+            </View>
+          ) : null}
+          <Text style={s.heroTitle}>{teaching.title}</Text>
+          {teaching.source ? (
+            <View style={s.sourceBadge}>
+              <Ionicons name="book-outline" size={12} color="rgba(255,255,255,0.8)" />
+              <Text style={s.sourceText}>{teaching.source}</Text>
+            </View>
+          ) : null}
+        </LinearGradient>
+      </View>
+
+      {/* Original Text */}
+      <View style={s.section}>
+        <Text style={s.sectionTitle}>原文</Text>
+        <View style={s.quoteCard}>
+          <View style={s.quoteBar} />
+          <Text style={s.quoteText}>{teaching.originalText}</Text>
         </View>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>原文</Text>
-        <Text style={styles.originalText}>{teaching.originalText}</Text>
-      </View>
-
-      {teaching.religion && (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>所属信仰</Text>
-          <Text style={styles.religionText}>{teaching.religion.nameZh}</Text>
+      {/* Translation */}
+      {teaching.translation ? (
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>译文</Text>
+          <View style={s.card}>
+            <Text style={s.cardText}>{teaching.translation}</Text>
+          </View>
         </View>
-      )}
+      ) : null}
+
+      {/* Religion */}
+      {religionName ? (
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>所属信仰</Text>
+          <View style={s.card}>
+            <Text style={s.cardText}>{religionName}</Text>
+          </View>
+        </View>
+      ) : null}
+
+      {/* CTA */}
+      <View style={s.ctaRow}>
+        <Pressable style={s.ctaBtn} onPress={() => router.push('/trips/create' as never)}>
+          <Ionicons name="add-circle" size={18} color="#FFFFFF" />
+          <Text style={s.ctaBtnText}>规划行程</Text>
+        </Pressable>
+        <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
+          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Text style={s.ctaBtnOutlineText}>AI规划</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  errorContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: spacing.md,
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  content: { paddingBottom: 40 },
+  errorContainer: { flex: 1, backgroundColor: '#F5F5F5', justifyContent: 'center', alignItems: 'center', gap: 12 },
+  errorText: { color: '#6B7280', fontSize: 16 },
+  hero: { height: 240, position: 'relative' },
+  heroOverlay: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    paddingHorizontal: 16, paddingBottom: 20, paddingTop: 60,
   },
-  errorText: {
-    color: colors.textSecondary,
-    fontSize: fontSize.lg,
+  religionBadge: {
+    backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start',
+    paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, marginBottom: 8,
   },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
+  religionBadgeText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
+  heroTitle: { fontSize: 26, fontWeight: '800', color: '#FFFFFF' },
+  sourceBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8,
   },
-  content: {
-    paddingBottom: spacing.xxl,
+  sourceText: { fontSize: 13, color: 'rgba(255,255,255,0.8)' },
+  section: { paddingHorizontal: 16, marginTop: 20 },
+  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#1A1A1A', marginBottom: 10 },
+  quoteCard: {
+    backgroundColor: '#FFFFFF', borderRadius: 12, padding: 20,
+    borderWidth: 1, borderColor: '#E5E7EB', flexDirection: 'row',
   },
-  hero: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(0, 102, 255, 0.05)',
+  quoteBar: {
+    width: 3, backgroundColor: '#0066FF', borderRadius: 2, marginRight: 14,
   },
-  iconCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: colors.backgroundCardSolid,
-    borderWidth: 3,
-    borderColor: colors.gold,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  heroTitle: {
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-    color: colors.gold,
-    textAlign: 'center',
-    paddingHorizontal: spacing.lg,
-  },
-  badge: {
-    backgroundColor: colors.backgroundCardSolid,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    marginTop: spacing.md,
-  },
-  badgeText: {
-    color: colors.goldLight,
-    fontSize: fontSize.sm,
-    fontWeight: '600',
+  quoteText: {
+    flex: 1, fontSize: 16, color: '#374151', lineHeight: 28, fontStyle: 'italic',
   },
   card: {
-    margin: spacing.md,
-    padding: spacing.lg,
-    backgroundColor: colors.backgroundCardSolid,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 1,
-    elevation: 1,
+    backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16,
+    borderWidth: 1, borderColor: '#E5E7EB',
   },
-  sectionTitle: {
-    fontSize: fontSize.xl,
-    fontWeight: '700',
-    color: colors.gold,
-    marginBottom: spacing.md,
+  cardText: { fontSize: 14, color: '#4B5563', lineHeight: 24 },
+  ctaRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 24, gap: 12 },
+  ctaBtn: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 6, backgroundColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
   },
-  originalText: {
-    color: colors.textSecondary,
-    fontSize: fontSize.md,
-    lineHeight: 28,
+  ctaBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
+  ctaBtnOutline: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    gap: 6, borderWidth: 1, borderColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
   },
-  religionText: {
-    color: colors.textSecondary,
-    fontSize: fontSize.md,
-  },
+  ctaBtnOutlineText: { color: '#0066FF', fontSize: 15, fontWeight: '600' },
 });

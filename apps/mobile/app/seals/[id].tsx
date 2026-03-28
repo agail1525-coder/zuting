@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { api, Seal } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
-import { colors, fontSize, spacing, borderRadius, seriesColors } from '../../src/lib/theme';
+import { seriesColors } from '../../src/lib/theme';
 
 export default function SealDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -17,7 +18,7 @@ export default function SealDetailScreen() {
 
   useEffect(() => {
     if (!id) return;
-    async function fetchData() {
+    (async () => {
       try {
         setError(null);
         const [found, seals] = await Promise.all([
@@ -25,9 +26,7 @@ export default function SealDetailScreen() {
           api.getSeals(),
         ]);
         setSeal(found);
-        navigation.setOptions({
-          title: `第${found.number}印 · ${found.nameZh}`,
-        });
+        navigation.setOptions({ title: `第${found.number}印 · ${found.nameZh}` });
         setAllSeals(seals.sort((a, b) => a.number - b.number));
       } catch (err) {
         console.error('Failed to fetch seal detail:', err);
@@ -35,254 +34,161 @@ export default function SealDetailScreen() {
       } finally {
         setLoading(false);
       }
-    }
-    fetchData();
+    })();
   }, [id, navigation]);
 
   if (loading) return <LoadingView />;
   if (error || !seal) {
     return (
-      <View style={styles.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color={colors.gold} />
-        <Text style={styles.errorText}>{error ?? '印不存在'}</Text>
+      <View style={s.errorContainer}>
+        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Text style={s.errorText}>{error ?? '印不存在'}</Text>
       </View>
     );
   }
 
-  const seriesColor = seriesColors[seal.series] || colors.gold;
-  const currentIndex = allSeals.findIndex((s) => s.id === id);
+  const seriesColor = seriesColors[seal.series] || '#0066FF';
+  const currentIndex = allSeals.findIndex((item) => item.id === id);
   const prevSeal = currentIndex > 0 ? allSeals[currentIndex - 1] : null;
-  const nextSeal =
-    currentIndex < allSeals.length - 1 ? allSeals[currentIndex + 1] : null;
+  const nextSeal = currentIndex < allSeals.length - 1 ? allSeals[currentIndex + 1] : null;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Header */}
-      <View style={styles.hero}>
-        <View style={[styles.numberCircle, { backgroundColor: seriesColor }]}>
-          <Text style={styles.numberText}>{seal.number}</Text>
-        </View>
-        <Text style={styles.heroTitle}>{seal.nameZh}</Text>
-        <Text style={styles.heroSubtitle}>{seal.nameEn}</Text>
-        <View style={[styles.seriesBadge, { borderColor: seriesColor }]}>
-          <View
-            style={[styles.seriesDot, { backgroundColor: seriesColor }]}
-          />
-          <Text style={[styles.seriesText, { color: seriesColor }]}>
-            {seal.series}
-          </Text>
-        </View>
+    <ScrollView style={s.container} contentContainerStyle={s.content}>
+      {/* Hero with gradient */}
+      <View style={s.hero}>
+        <LinearGradient colors={[seriesColor, '#003D99']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,0.5)']} style={s.heroOverlay}>
+          <View style={s.numberCircle}>
+            <Text style={s.numberText}>{seal.number}</Text>
+          </View>
+          <Text style={s.heroTitle}>{seal.nameZh}</Text>
+          <Text style={s.heroSubtitle}>{seal.nameEn}</Text>
+          <View style={s.seriesBadge}>
+            <View style={[s.seriesDot, { backgroundColor: '#FFFFFF' }]} />
+            <Text style={s.seriesText}>{seal.series}</Text>
+          </View>
+        </LinearGradient>
       </View>
 
       {/* Poem */}
-      <View style={styles.card}>
-        <Text style={styles.cardLabel}>偈颂</Text>
-        <Text style={styles.poemText}>{seal.poem}</Text>
+      <View style={s.section}>
+        <Text style={s.sectionTitle}>偈颂</Text>
+        <View style={s.poemCard}>
+          <Text style={s.poemText}>{seal.poem}</Text>
+        </View>
       </View>
 
       {/* Essence */}
       {seal.essence ? (
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>要义</Text>
-          <Text style={styles.cardText}>{seal.essence}</Text>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>要义</Text>
+          <View style={s.card}>
+            <Text style={s.cardText}>{seal.essence}</Text>
+          </View>
         </View>
       ) : null}
 
       {/* Practice */}
       {seal.practice ? (
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>修行</Text>
-          <Text style={styles.cardText}>{seal.practice}</Text>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>修行</Text>
+          <View style={s.card}>
+            <Text style={s.cardText}>{seal.practice}</Text>
+          </View>
         </View>
       ) : null}
 
       {/* Vow */}
       {seal.vow ? (
-        <View style={[styles.card, styles.vowCard]}>
-          <Text style={styles.cardLabel}>愿文</Text>
-          <Text style={styles.vowText}>{seal.vow}</Text>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>愿文</Text>
+          <View style={[s.card, { borderLeftWidth: 3, borderLeftColor: seriesColor }]}>
+            <Text style={[s.cardText, { color: '#1E40AF', fontWeight: '500' }]}>{seal.vow}</Text>
+          </View>
         </View>
       ) : null}
 
       {/* Prev / Next Navigation */}
-      <View style={styles.navRow}>
+      <View style={s.navRow}>
         {prevSeal ? (
           <Pressable
-            style={styles.navButton}
+            style={s.navButton}
             onPress={() => router.replace({ pathname: '/seals/[id]', params: { id: prevSeal.id } })}
           >
-            <Ionicons name="chevron-back" size={20} color={colors.gold} />
+            <Ionicons name="chevron-back" size={20} color="#0066FF" />
             <View>
-              <Text style={styles.navLabel}>上一印</Text>
-              <Text style={styles.navName}>{prevSeal.nameZh}</Text>
+              <Text style={s.navLabel}>上一印</Text>
+              <Text style={s.navName}>{prevSeal.nameZh}</Text>
             </View>
           </Pressable>
-        ) : (
-          <View style={styles.navSpacer} />
-        )}
+        ) : <View style={s.navSpacer} />}
         {nextSeal ? (
           <Pressable
-            style={[styles.navButton, styles.navButtonRight]}
+            style={[s.navButton, { justifyContent: 'flex-end' }]}
             onPress={() => router.replace({ pathname: '/seals/[id]', params: { id: nextSeal.id } })}
           >
-            <View style={styles.navTextRight}>
-              <Text style={styles.navLabel}>下一印</Text>
-              <Text style={styles.navName}>{nextSeal.nameZh}</Text>
+            <View style={{ alignItems: 'flex-end' }}>
+              <Text style={s.navLabel}>下一印</Text>
+              <Text style={s.navName}>{nextSeal.nameZh}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.gold} />
+            <Ionicons name="chevron-forward" size={20} color="#0066FF" />
           </Pressable>
-        ) : (
-          <View style={styles.navSpacer} />
-        )}
+        ) : <View style={s.navSpacer} />}
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  errorContainer: {
-    flex: 1,
-    backgroundColor: colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  errorText: {
-    color: colors.textSecondary,
-    fontSize: fontSize.lg,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    paddingBottom: spacing.xxl,
-  },
-  hero: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-    backgroundColor: 'rgba(0, 102, 255, 0.03)',
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  content: { paddingBottom: 40 },
+  errorContainer: { flex: 1, backgroundColor: '#F5F5F5', justifyContent: 'center', alignItems: 'center', gap: 12 },
+  errorText: { color: '#6B7280', fontSize: 16 },
+  hero: { height: 260, position: 'relative' },
+  heroOverlay: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    paddingHorizontal: 16, paddingBottom: 20, paddingTop: 60, alignItems: 'center',
   },
   numberCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
+    width: 64, height: 64, borderRadius: 32,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center', alignItems: 'center', marginBottom: 10,
   },
-  numberText: {
-    color: '#FFFFFF',
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-  },
-  heroTitle: {
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-    color: colors.gold,
-  },
-  heroSubtitle: {
-    fontSize: fontSize.lg,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
+  numberText: { color: '#FFFFFF', fontSize: 28, fontWeight: '800' },
+  heroTitle: { fontSize: 26, fontWeight: '800', color: '#FFFFFF' },
+  heroSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 2 },
   seriesBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    marginTop: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
+    flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10,
+    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)',
   },
-  seriesDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  seriesText: {
-    fontSize: fontSize.sm,
-    fontWeight: '600',
-  },
-  card: {
-    margin: spacing.md,
-    marginBottom: 0,
-    padding: spacing.lg,
-    backgroundColor: colors.backgroundCardSolid,
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  cardLabel: {
-    color: colors.gold,
-    fontSize: fontSize.sm,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    marginBottom: spacing.sm,
+  seriesDot: { width: 8, height: 8, borderRadius: 4 },
+  seriesText: { fontSize: 12, fontWeight: '600', color: '#FFFFFF' },
+  section: { paddingHorizontal: 16, marginTop: 20 },
+  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#1A1A1A', marginBottom: 10 },
+  poemCard: {
+    backgroundColor: '#EFF6FF', borderRadius: 12, padding: 24,
+    borderWidth: 1, borderColor: '#DBEAFE', alignItems: 'center',
   },
   poemText: {
-    color: colors.textPrimary,
-    fontSize: fontSize.xl,
-    lineHeight: 36,
-    fontStyle: 'italic',
-    textAlign: 'center',
+    fontSize: 18, color: '#1E40AF', lineHeight: 32,
+    fontStyle: 'italic', textAlign: 'center',
   },
-  cardText: {
-    color: colors.textSecondary,
-    fontSize: fontSize.md,
-    lineHeight: 26,
+  card: {
+    backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16,
+    borderWidth: 1, borderColor: '#E5E7EB',
   },
-  vowCard: {
-    borderLeftWidth: 3,
-    borderLeftColor: colors.gold,
-  },
-  vowText: {
-    color: colors.goldLight,
-    fontSize: fontSize.lg,
-    lineHeight: 28,
-    fontWeight: '500',
-  },
+  cardText: { fontSize: 14, color: '#4B5563', lineHeight: 24 },
   navRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.xl,
-    gap: spacing.sm,
+    flexDirection: 'row', justifyContent: 'space-between',
+    paddingHorizontal: 16, marginTop: 24, gap: 12,
   },
   navButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundCardSolid,
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    gap: spacing.sm,
+    flex: 1, flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#FFFFFF', padding: 14, borderRadius: 12,
+    borderWidth: 1, borderColor: '#E5E7EB', gap: 8,
   },
-  navButtonRight: {
-    justifyContent: 'flex-end',
-  },
-  navTextRight: {
-    alignItems: 'flex-end',
-  },
-  navLabel: {
-    color: colors.textMuted,
-    fontSize: fontSize.xs,
-  },
-  navName: {
-    color: colors.textPrimary,
-    fontSize: fontSize.md,
-    fontWeight: '600',
-  },
-  navSpacer: {
-    flex: 1,
-  },
+  navLabel: { color: '#9CA3AF', fontSize: 11 },
+  navName: { color: '#1A1A1A', fontSize: 14, fontWeight: '600' },
+  navSpacer: { flex: 1 },
 });
