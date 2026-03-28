@@ -4,6 +4,7 @@ import type {
   Trip, Order, Journal, Review, Coupon, CreateCouponDto,
   Report, ReportStats, Upload, DeleteResponse, User,
   XiaohongChatResponse, NotificationSendResponse,
+  AdminRoute, AdminBooking,
 } from '../types';
 
 // ---- DTO Interfaces (R-01: 严禁any) ----
@@ -315,6 +316,30 @@ export const getUsers = (params?: { page?: number; limit?: number; search?: stri
 };
 export const updateUser = (id: string, data: { role?: string; isActive?: boolean }) =>
   fetchJson<User>(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+
+// ---- Routes ----
+export const getRoutes = (page = 1, pageSize = 20, category?: string) => {
+  const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+  if (category) params.set('category', category);
+  return fetchJson<{ items: AdminRoute[]; total: number; page: number; pageSize: number }>(
+    `/routes?${params.toString()}`,
+  );
+};
+export const createRoute = (data: Record<string, unknown>) =>
+  fetchJson<AdminRoute>('/routes', { method: 'POST', body: JSON.stringify(data) });
+export const updateRoute = (id: string, data: Record<string, unknown>) =>
+  fetchJson<AdminRoute>(`/routes/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+export const deleteRoute = (id: string) =>
+  fetchJson<DeleteResponse>(`/routes/${id}`, { method: 'DELETE' });
+
+// ---- Bookings ----
+export const getBookings = (page = 1, limit = 20, status?: string) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  if (status) params.set('status', status);
+  return fetchJson<{ items: AdminBooking[]; total: number }>(
+    `/bookings/admin?${params.toString()}`,
+  );
+};
 
 // ---- Dashboard stats helper ----
 // [R-64] Explicit take limits to prevent OOM as data grows

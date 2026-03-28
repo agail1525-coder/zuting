@@ -240,6 +240,47 @@ export interface User {
   _count?: { trips: number; orders: number; journals: number };
 }
 
+export interface AdminRoute {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string;
+  subtitle: string;
+  category: string;
+  difficulty: string;
+  status: string;
+  duration: number;
+  nights: number;
+  season: string;
+  groupSize: string;
+  priceFrom: number;
+  coverImage: string | null;
+  highlights: string[];
+  description: string;
+  rating: number | null;
+  reviewCount: number;
+  bookCount: number;
+  religionId: string | null;
+  createdAt: string;
+  religion?: { id: string; name: string };
+}
+
+export interface AdminBooking {
+  id: string;
+  routeId: string;
+  userId: string;
+  startDate: string;
+  persons: number;
+  totalPrice: number;
+  status: string;
+  contactName: string | null;
+  contactPhone: string | null;
+  note: string | null;
+  createdAt: string;
+  route?: { id: string; title: string };
+  user?: { id: string; nickname: string };
+}
+
 export interface Trip {
   id: string;
   title: string;
