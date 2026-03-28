@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { getAccessToken } from "../../lib/auth";
 import {
   chatWithXiaohong,
   chatStreamXiaohong,
   fetchXiaohongSuggestions,
 } from "../../lib/api";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 interface Message {
   id: string;
@@ -39,7 +39,6 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>(DEFAULT_SUGGESTIONS);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [conversationId, setConversationId] = useState<string | undefined>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,20 +52,14 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Check auth status and fetch suggestions on mount
   useEffect(() => {
-    const token = getAccessToken();
-    setIsLoggedIn(!!token);
-
     fetchXiaohongSuggestions()
       .then((data) => {
         if (data.suggestions && data.suggestions.length > 0) {
           setSuggestions(data.suggestions);
         }
       })
-      .catch(() => {
-        // Keep default suggestions on error
-      });
+      .catch(() => {});
   }, []);
 
   const handleSend = useCallback(
@@ -74,13 +67,6 @@ export default function ChatPage() {
       const msg = (text || input).trim();
       if (!msg || isStreaming) return;
 
-      const token = getAccessToken();
-      if (!token) {
-        setIsLoggedIn(false);
-        return;
-      }
-
-      // Add user message
       setMessages((prev) => [
         ...prev,
         {
@@ -93,7 +79,6 @@ export default function ChatPage() {
       setInput("");
       setIsStreaming(true);
 
-      // Create assistant message placeholder
       const assistantMsgId = `assistant-${Date.now()}`;
       setMessages((prev) => [
         ...prev,
@@ -105,7 +90,6 @@ export default function ChatPage() {
         },
       ]);
 
-      // Try SSE streaming first
       try {
         let streamFailed = false;
         const controller = chatStreamXiaohong(
@@ -119,7 +103,6 @@ export default function ChatPage() {
               setIsStreaming(false);
               return;
             }
-            // Append chunk to assistant message
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === assistantMsgId
@@ -131,14 +114,11 @@ export default function ChatPage() {
         );
         streamControllerRef.current = controller;
 
-        // Set a timeout — if SSE fails within 10s with no data, fall back
         const timeout = setTimeout(async () => {
-          // Check if we got any content
           const currentMsg = messages.find((m) => m.id === assistantMsgId);
           if (!currentMsg?.content && !streamFailed) {
             streamFailed = true;
             controller.abort();
-            // Fallback to non-streaming
             try {
               const data = await chatWithXiaohong(msg, conversationId);
               const reply = data.content || data.reply || t("chat.fallbackReply");
@@ -161,10 +141,8 @@ export default function ChatPage() {
           }
         }, 10000);
 
-        // Clean up timeout if stream completes normally
         return () => clearTimeout(timeout);
-      } catch (err) {
-        // Fallback to regular chat
+      } catch {
         try {
           const data = await chatWithXiaohong(msg, conversationId);
           const reply = data.content || data.reply || t("chat.fallbackReply");
@@ -174,32 +152,19 @@ export default function ChatPage() {
               m.id === assistantMsgId ? { ...m, content: reply } : m
             )
           );
-        } catch (innerErr) {
-          const isAuthError =
-            innerErr instanceof Error && innerErr.message.includes("401");
-          if (isAuthError) {
-            setIsLoggedIn(false);
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantMsgId
-                  ? { ...m, content: t("chat.authExpired") }
-                  : m
-              )
-            );
-          } else {
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantMsgId
-                  ? { ...m, content: t("chat.networkError") }
-                  : m
-              )
-            );
-          }
+        } catch {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMsgId
+                ? { ...m, content: t("chat.networkError") }
+                : m
+            )
+          );
         }
         setIsStreaming(false);
       }
     },
-    [input, isStreaming, conversationId, t]
+    [input, isStreaming, conversationId, t, messages]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -210,61 +175,48 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-white">
       {/* Chat Header */}
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-gold/10">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 flex items-center justify-center text-lg border border-gold/20">
-          🏛
+      <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-200">
+        <div className="w-10 h-10 rounded-full bg-[#0066FF] flex items-center justify-center text-lg text-white">
+          💬
         </div>
         <div>
-          <h1 className="text-lg font-serif font-bold text-gradient-gold">
+          <h1 className="text-lg font-bold text-gray-900">
             {t("chat.title")}
           </h1>
-          <p className="text-xs text-temple-400">
+          <p className="text-xs text-gray-500">
             {t("chat.subtitle")}
           </p>
         </div>
         <div className="ml-auto flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-jade animate-glow" />
-          <span className="text-xs text-jade">{t("chat.online")}</span>
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-glow" />
+          <span className="text-xs text-green-600">{t("chat.online")}</span>
         </div>
       </div>
 
-      {/* Login prompt */}
-      {!isLoggedIn && (
-        <div className="mx-4 mt-4 px-4 py-3 rounded-xl border border-gold/20 bg-gold/5 text-sm text-temple-200">
-          {t("chat.loginPromptPrefix")}{" "}
-          <a href="/login" className="text-gold underline hover:text-gold/80">
-            {t("chat.loginPromptLink")}
-          </a>{" "}
-          {t("chat.loginPromptSuffix")}
-        </div>
-      )}
-
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 bg-gray-50">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
           >
-            {/* Avatar */}
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${
                 msg.role === "assistant"
-                  ? "bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20"
-                  : "bg-temple-700 border border-temple-600"
+                  ? "bg-[#0066FF] text-white"
+                  : "bg-gray-200 text-gray-600"
               }`}
             >
-              {msg.role === "assistant" ? "🏛" : "👤"}
+              {msg.role === "assistant" ? "💬" : "👤"}
             </div>
 
-            {/* Bubble */}
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                 msg.role === "assistant"
-                  ? "bg-temple-800/80 border border-gold/15 text-temple-100"
-                  : "bg-gold/15 border border-gold/20 text-temple-100"
+                  ? "bg-white border border-gray-200 text-gray-800 shadow-sm"
+                  : "bg-[#0066FF] text-white"
               }`}
             >
               {msg.content}
@@ -272,7 +224,7 @@ export default function ChatPage() {
                 msg.role === "assistant" &&
                 isStreaming &&
                 msg === messages[messages.length - 1] && (
-                  <span className="inline-block w-1.5 h-4 bg-gold/60 ml-0.5 animate-pulse" />
+                  <span className="inline-block w-1.5 h-4 bg-[#0066FF]/60 ml-0.5 animate-pulse" />
                 )}
             </div>
           </div>
@@ -282,13 +234,12 @@ export default function ChatPage() {
 
       {/* Suggestions */}
       {messages.length <= 1 && (
-        <div className="px-4 pb-3 flex flex-wrap gap-2">
+        <div className="px-4 pb-3 pt-2 bg-gray-50 flex flex-wrap gap-2">
           {suggestions.map((s) => (
             <button
               key={s}
               onClick={() => handleSend(s)}
-              disabled={!isLoggedIn}
-              className="px-3 py-1.5 text-xs rounded-full border border-gold/20 text-gold/80 hover:bg-gold/10 hover:border-gold/40 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-xs rounded-full border border-gray-300 text-gray-600 hover:bg-[#0066FF] hover:text-white hover:border-[#0066FF] transition-all"
             >
               {s}
             </button>
@@ -297,25 +248,25 @@ export default function ChatPage() {
       )}
 
       {/* Input Bar */}
-      <div className="px-4 pb-4 pt-2 border-t border-gold/10">
-        <div className="flex items-center gap-2 bg-temple-800/60 border border-gold/10 rounded-2xl px-4 py-2 focus-within:border-gold/30 transition-colors">
+      <div className="px-4 pb-20 md:pb-4 pt-2 border-t border-gray-200 bg-white">
+        <div className="flex items-center gap-2 bg-gray-50 border border-gray-300 rounded-2xl px-4 py-2 focus-within:border-[#0066FF] focus-within:ring-2 focus-within:ring-[#0066FF]/20 transition-all">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isLoggedIn ? t("chat.placeholder") : t("chat.loginRequired")}
-            disabled={isStreaming || !isLoggedIn}
-            className="flex-1 bg-transparent text-temple-100 placeholder:text-temple-500 outline-none text-sm py-1"
+            placeholder={t("chat.placeholder")}
+            disabled={isStreaming}
+            className="flex-1 bg-transparent text-gray-900 placeholder:text-gray-400 outline-none text-sm py-1"
           />
           <button
             onClick={() => handleSend()}
-            disabled={!input.trim() || isStreaming || !isLoggedIn}
-            className="w-8 h-8 rounded-full bg-gold/20 hover:bg-gold/30 flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            disabled={!input.trim() || isStreaming}
+            className="w-8 h-8 rounded-full bg-[#0066FF] hover:bg-[#0052CC] flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg
-              className="w-4 h-4 text-gold"
+              className="w-4 h-4 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -329,10 +280,12 @@ export default function ChatPage() {
             </svg>
           </button>
         </div>
-        <p className="text-center text-[10px] text-temple-600 mt-2">
+        <p className="text-center text-[10px] text-gray-400 mt-2">
           {t("chat.disclaimer")}
         </p>
       </div>
+
+      <MobileNav />
     </div>
   );
 }

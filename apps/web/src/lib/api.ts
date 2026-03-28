@@ -373,6 +373,38 @@ async function fetchAuthed<T>(
   }
 }
 
+async function fetchOptionalAuth<T>(
+  url: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const { getAccessToken } = await import("./auth");
+  const token = getAccessToken();
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      signal: controller.signal,
+      headers: { ...headers, ...options.headers },
+    });
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function fetchNotifications(
   page = 1,
   limit = 20,
@@ -623,7 +655,7 @@ export async function chatWithXiaohong(
   message: string,
   conversationId?: string
 ): Promise<ChatResponse> {
-  return fetchAuthed<ChatResponse>("/api/xiaohong/chat", {
+  return fetchOptionalAuth<ChatResponse>("/api/xiaohong/chat", {
     method: "POST",
     body: JSON.stringify({ message, conversationId }),
   });

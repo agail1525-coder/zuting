@@ -17,12 +17,12 @@ const shimmerSvg = (w: number, h: number) => `
 <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="g">
-      <stop stop-color="#0f172a" offset="20%" />
-      <stop stop-color="#1e293b" offset="50%" />
-      <stop stop-color="#0f172a" offset="80%" />
+      <stop stop-color="#F0F0F0" offset="20%" />
+      <stop stop-color="#E0E0E0" offset="50%" />
+      <stop stop-color="#F0F0F0" offset="80%" />
     </linearGradient>
   </defs>
-  <rect width="${w}" height="${h}" fill="#0f172a" />
+  <rect width="${w}" height="${h}" fill="#F0F0F0" />
   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
   <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1.5s" repeatCount="indefinite" />
 </svg>`;
@@ -47,7 +47,7 @@ export default function OptimizedImage({
   if (hasError) {
     return (
       <div
-        className={`flex items-center justify-center bg-temple-800/50 text-temple-500 ${className}`}
+        className={`flex items-center justify-center bg-gray-100 text-gray-400 ${className}`}
         style={!fill ? { width, height } : undefined}
         role="img"
         aria-label={alt}
@@ -63,7 +63,7 @@ export default function OptimizedImage({
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={1.5}
-            d="M8 14s1.5 2 4 2 4-2 4-2M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"
+            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V4.5a1.5 1.5 0 00-1.5-1.5H3.75a1.5 1.5 0 00-1.5 1.5v15a1.5 1.5 0 001.5 1.5z"
           />
         </svg>
       </div>

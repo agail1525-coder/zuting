@@ -4,61 +4,53 @@ import ClientProviders from "./providers";
 import RootJsonLd from "@/components/JsonLd";
 import CookieConsent from "@/components/CookieConsent";
 
-const BASE_URL = "https://zuting.fszyl.top";
+const BASE_URL = "https://joinus.com";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-    { media: "(prefers-color-scheme: light)", color: "#0f172a" },
+    { media: "(prefers-color-scheme: dark)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
   ],
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "祖庭之旅 - 全球宗教文化朝圣平台 | Global Ancestral Temple Travel",
-    template: "%s | 祖庭之旅 - 全球宗教文化朝圣平台",
+    default: "Joinus - 加入我们，探索世界 | 全球文化旅行平台",
+    template: "%s | Joinus - 全球文化旅行平台",
   },
   description:
-    "帮助100万人走祖庭，建立全球宗教文化和平使者网络。探索12大信仰、60圣地、27祖庭、28祖师、39祖训、30印。Helping 1 million people walk the ancestral temples — explore 12 faiths, 60 holy sites, 27 ancestral temples, 28 patriarchs, 39 teachings, and 30 seals.",
+    "加入我们，探索世界。Joinus是全球领先的文化旅行平台，精选12大文化传统、60+圣地目的地、专业路线规划、AI旅行顾问。Join us, explore the world — the leading cultural travel platform with curated routes, 60+ destinations, and AI trip planning.",
   keywords: [
-    "祖庭",
-    "朝圣",
-    "宗教旅行",
+    "文化旅行",
+    "深度旅游",
     "圣地",
-    "佛教",
-    "道教",
-    "基督教",
-    "伊斯兰教",
-    "印度教",
-    "犹太教",
-    "儒教",
-    "锡克教",
-    "神道教",
-    "藏传佛教",
-    "巴哈伊教",
-    "祖师",
-    "祖训",
-    "曹溪愿命三十印",
-    "pilgrimage",
+    "朝圣旅行",
+    "佛教旅行",
+    "丝绸之路",
+    "文化遗产",
+    "祖庭",
+    "宗教文化",
+    "旅行规划",
+    "AI旅行",
+    "cultural travel",
+    "heritage tourism",
     "holy sites",
-    "ancestral temple",
-    "religious travel",
-    "Buddhism",
-    "Taoism",
-    "Christianity",
-    "Islam",
-    "Hinduism",
-    "interfaith",
-    "cultural heritage",
+    "pilgrimage",
     "spiritual journey",
+    "Buddhism travel",
+    "Silk Road",
+    "cultural heritage",
+    "trip planner",
+    "AI travel",
+    "Joinus",
   ],
-  authors: [{ name: "祖庭之旅", url: BASE_URL }],
-  creator: "祖庭之旅 - Global Ancestral Temple Travel Platform",
-  publisher: "祖庭之旅",
+  authors: [{ name: "Joinus", url: BASE_URL }],
+  creator: "Joinus - Global Cultural Travel Platform",
+  publisher: "Joinus",
   formatDetection: {
     email: false,
     address: false,
@@ -69,27 +61,27 @@ export const metadata: Metadata = {
     locale: "zh_CN",
     alternateLocale: "en_US",
     url: BASE_URL,
-    siteName: "祖庭之旅 - Global Ancestral Temple Travel",
-    title: "祖庭之旅 - 全球宗教文化朝圣平台",
+    siteName: "Joinus - 全球文化旅行平台",
+    title: "Joinus - 加入我们，探索世界",
     description:
-      "帮助100万人走祖庭，建立全球宗教文化和平使者网络。探索12大信仰、60圣地、27祖庭。Helping 1 million people walk the ancestral temples.",
+      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、60+圣地目的地、AI旅行顾问。Join us, explore the world.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "祖庭之旅 - 全球宗教文化朝圣平台",
+        alt: "Joinus - 加入我们，探索世界",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "祖庭之旅 - 全球宗教文化朝圣平台",
+    title: "Joinus - 加入我们，探索世界",
     description:
-      "帮助100万人走祖庭，建立全球宗教文化和平使者网络。探索12大信仰、60圣地、27祖庭。",
+      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、60+目的地、AI旅行顾问。",
     images: ["/og-image.png"],
-    creator: "@zuting_travel",
+    creator: "@joinus_travel",
   },
   icons: {
     icon: [
@@ -129,7 +121,7 @@ export default function RootLayout({
     <html lang="zh" suppressHydrationWarning>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="font-sans antialiased">
         <RootJsonLd />

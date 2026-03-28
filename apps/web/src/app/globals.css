@@ -1,23 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-gold: #D4A855;
-  --color-gold-light: #E8C97A;
-  --color-gold-dark: #B8922E;
-  --color-temple-900: #020617;
-  --color-temple-800: #0f172a;
-  --color-temple-700: #1e293b;
-  --color-temple-600: #334155;
-  --color-temple-500: #475569;
-  --color-temple-400: #64748b;
-  --color-temple-300: #94a3b8;
-  --color-temple-200: #cbd5e1;
-  --color-temple-100: #e2e8f0;
+  /* V4.0 Joinus Light Theme — Trip.com inspired */
+  --color-gold: #0066FF;
+  --color-gold-light: #3385FF;
+  --color-gold-dark: #0052CC;
+  --color-temple-900: #FFFFFF;
+  --color-temple-800: #F7F8FA;
+  --color-temple-700: #E5E7EB;
+  --color-temple-600: #D1D5DB;
+  --color-temple-500: #9CA3AF;
+  --color-temple-400: #6B7280;
+  --color-temple-300: #4B5563;
+  --color-temple-200: #374151;
+  --color-temple-100: #1F2937;
   --color-incense: #f59e0b;
   --color-lotus: #ec4899;
   --color-jade: #10b981;
   --color-cinnabar: #ef4444;
-  /* Religion colors */
+  /* Religion colors — unchanged */
   --color-religion-buddhism: #F59E0B;
   --color-religion-taoism: #10B981;
   --color-religion-christianity: #3B82F6;
@@ -40,19 +41,14 @@ html {
 }
 
 body {
-  background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-  color: #e2e8f0;
+  background: #FFFFFF;
+  color: #1A1A1A;
   min-height: 100vh;
 }
 
-/* Hero background — dramatic temple atmosphere */
+/* Hero background — blue gradient banner (Trip.com style) */
 .hero-bg {
-  background:
-    radial-gradient(ellipse 120% 80% at 50% 60%, rgba(15, 23, 42, 0.3) 0%, rgba(2, 6, 23, 1) 70%),
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 30, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(139, 92, 30, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 0%, rgba(212, 168, 85, 0.05) 0%, transparent 60%),
-    linear-gradient(180deg, #020617 0%, #0a0e1a 30%, #0f172a 50%, #0a0e1a 70%, #020617 100%);
+  background: linear-gradient(135deg, #0066FF 0%, #0052CC 40%, #003D99 100%);
 }
 
 /* Animations */
@@ -134,21 +130,22 @@ body {
   animation: slideInRight 0.5s ease-out forwards;
 }
 
-/* Golden glow effect for cards */
+/* Card hover effect — subtle shadow (Trip.com style) */
 .card-glow {
   transition: all 0.3s ease;
-  border: 1px solid rgba(212, 168, 85, 0.1);
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .card-glow:hover {
-  border-color: rgba(212, 168, 85, 0.3);
-  box-shadow: 0 0 20px rgba(212, 168, 85, 0.15),
-              0 0 40px rgba(212, 168, 85, 0.05);
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
-/* Gold text gradient */
+/* Brand text gradient — blue */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #D4A855 0%, #E8C97A 50%, #D4A855 100%);
+  background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -157,7 +154,7 @@ body {
 /* Decorative divider */
 .divider-gold {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #D4A855, transparent);
+  background: linear-gradient(90deg, transparent, #E5E7EB, transparent);
 }
 
 /* Line clamp utility */
@@ -168,20 +165,20 @@ body {
   overflow: hidden;
 }
 
-/* Scrollbar */
+/* Scrollbar — light */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #F7F8FA;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #D1D5DB;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #9CA3AF;
 }

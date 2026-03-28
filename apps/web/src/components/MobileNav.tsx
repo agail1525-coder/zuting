@@ -5,10 +5,9 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   { href: "/", label: "首页", icon: "🏠", isCenter: false },
-  { href: "/holy-sites", label: "圣地", icon: "⛰", isCenter: false },
-  { href: "/chat", label: "AI助手", icon: "🏛", isCenter: true },
+  { href: "/holy-sites", label: "目的地", icon: "⛰", isCenter: false },
+  { href: "/chat", label: "AI助手", icon: "💬", isCenter: true },
   { href: "/trips", label: "行程", icon: "🗺", isCenter: false },
-  { href: "/orders", label: "订单", icon: "📋", isCenter: false },
   { href: "/profile", label: "我的", icon: "👤", isCenter: false },
 ];
 
@@ -16,7 +15,7 @@ export default function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-temple-900/95 backdrop-blur-xl border-t border-gold/10" role="navigation" aria-label="Mobile navigation">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" role="navigation" aria-label="Mobile navigation">
       <div className="flex items-end justify-around px-2 pb-[env(safe-area-inset-bottom)]">
         {NAV_ITEMS.map((item) => {
           const isActive =
@@ -34,17 +33,17 @@ export default function MobileNav() {
                 aria-label={item.label}
               >
                 <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center text-xl border-2 transition-all ${
+                  className={`w-14 h-14 rounded-full flex items-center justify-center text-xl border-2 transition-all shadow-lg ${
                     isActive
-                      ? "bg-gold/20 border-gold shadow-[0_0_20px_rgba(212,168,85,0.3)]"
-                      : "bg-temple-800 border-gold/20 hover:border-gold/40"
+                      ? "bg-[#0066FF] border-[#0066FF] text-white shadow-blue-200"
+                      : "bg-white border-gray-200 hover:border-[#0066FF]/40 shadow-gray-100"
                   }`}
                 >
                   <span aria-hidden="true">{item.icon}</span>
                 </div>
                 <span
                   className={`text-[10px] mt-1 pb-2 ${
-                    isActive ? "text-gold font-semibold" : "text-temple-500"
+                    isActive ? "text-[#0066FF] font-semibold" : "text-gray-400"
                   }`}
                 >
                   {item.label}
@@ -71,7 +70,7 @@ export default function MobileNav() {
               </span>
               <span
                 className={`text-[10px] mt-1 ${
-                  isActive ? "text-gold font-semibold" : "text-temple-500"
+                  isActive ? "text-[#0066FF] font-semibold" : "text-gray-400"
                 }`}
               >
                 {item.label}
