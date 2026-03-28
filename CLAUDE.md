@@ -6,6 +6,126 @@
 帮助100万人走祖庭，建立全球宗教文化和平使者网络。
 全平台应用: Web + Mobile APP + 微信小程序 + 管理后台。
 
+---
+
+## 🏛️ 最高宪法协议 (Supreme Constitutional Protocol)
+
+> **优先级: 绝对最高。所有人类工程师和AI智能体必须无条件遵守。违反即阻断。**
+> **本协议覆盖并统领以下所有铁律、宪法、防火墙规则。冲突时本协议优先。**
+
+### SCP-01 战略目标
+```
+JOINUS.COM = 全球祖庭文化旅行平台 NO.1
+目标: 拥有全球TOP10旅行网站的全部功能集合 + 宗教文化垂直深度
+```
+
+### SCP-02 竞品功能全吸收令
+```
+[SCP-02] 竞品功能全吸收令:
+  主动探索并发现以下10大旅行网站的全部优势功能，逐一植入JOINUS.COM:
+  1. Booking.com  — 目的地详情页/评价体系/预订流程/价格展示/搜索筛选/地图
+  2. Trip.com     — UI风格/大图卡片/搜索体验/套餐/攻略/社区/会员
+  3. Airbnb       — 沉浸式图片/体验产品/地图交互/社区感/Wishlist/分享
+  4. Agoda        — 亚洲本地化/优惠促销/移动端体验/闪购/积分
+  5. TripAdvisor  — UGC评价/目的地攻略/排行榜/旅行者社区/问答/照片墙
+  6. AmEx Travel  — 高端定位/会员体系/精选推荐/品质感/专属优惠
+  7. Expedia      — 套餐打包/交叉销售/行程管理/价格日历/比价
+  8. Skyscanner   — 搜索比价UI/数据可视化/极简设计/价格提醒/灵活日期
+  9. Kayak        — 筛选器设计/多维比较/数据密集展示/价格追踪/旅行Hack
+  10. Priceline   — 促销机制/限时优惠/用户激励/盲订/Express Deals
+
+  JOINUS.COM 必须集这10家之大成，同时发挥宗教文化垂直领域的差异化护城河。
+  每发现一个竞品优势功能，必须评估可行性并纳入PRD规划。
+```
+
+### SCP-03 PRD先行铁律
+```
+[SCP-03] PRD先行铁律 — 无PRD不动代码:
+  任何功能模块的开发/重构/升级，必须严格遵循以下流程:
+
+  STEP 1: 深度调研 — 打开对应竞品页面，逐一截图、记录功能点、交互细节
+  STEP 2: 撰写PRD — 在 docs/prd/ 下创建/更新对应PRD文档:
+          - 主模块PRD: docs/prd/M{XX}-PRD-{模块名}.md
+          - 子页面PRD: docs/prd/P{XX}-PRD-{页面名}.md
+          - 延伸功能PRD: docs/prd/F{XX}-PRD-{功能名}.md
+  STEP 3: PRD评审 — PRD必须包含: 竞品对标分析/用户故事/页面线框/API契约/验收标准
+  STEP 4: 方可编码 — PRD通过后才允许开始代码和UI/UX开发
+  STEP 5: 回溯验证 — 开发完成后对照PRD逐项验收
+
+  粒度要求:
+  - 每个功能模块 → 独立主PRD (如M01-PRD-宗教信仰与圣地.md)
+  - 每个子页面 → 独立子页面PRD (如P01-PRD-圣地详情页.md)
+  - 每个延伸功能 → 独立功能PRD (如F01-PRD-收藏夹系统.md)
+  - 绝不允许一个PRD涵盖超过一个页面的详细设计
+```
+
+### SCP-04 开发协议规则库
+```
+[SCP-04] 开发协议规则库 — 统一规范化:
+  路径: docs/protocols/
+
+  必须维护的协议文档:
+  - docs/protocols/00-最高宪法协议.md        ← 本协议的完整版
+  - docs/protocols/01-UI设计规范.md           ← 颜色/字体/间距/组件/响应式
+  - docs/protocols/02-API契约规范.md          ← 请求/响应/分页/错误/版本
+  - docs/protocols/03-组件开发规范.md         ← 命名/Props/状态/样式/测试
+  - docs/protocols/04-数据模型规范.md         ← Prisma/DTO/枚举/关系/迁移
+  - docs/protocols/05-安全规范.md             ← 认证/授权/输入校验/CORS/XSS
+  - docs/protocols/06-国际化规范.md           ← i18n键命名/翻译流程/RTL
+  - docs/protocols/07-Git与部署规范.md        ← 分支/Commit/PR/CI/CD/部署
+  - docs/protocols/08-PRD撰写规范.md          ← PRD模板/评审流程/验收标准
+  - docs/protocols/09-竞品分析规范.md         ← 竞品调研模板/功能对比矩阵
+  - docs/protocols/10-AI智能体协作规范.md     ← Agent任务分配/prompt标准/质量门禁
+
+  所有人类工程师和AI智能体在开发前必须阅读相关协议。
+  协议文档随项目演进持续更新，由CEO++指令触发升级。
+```
+
+### SCP-05 CLAUDE.md持续进化
+```
+[SCP-05] CLAUDE.md 持续进化令:
+  - CLAUDE.md 是全项目最高配置文件，等同于宪法
+  - 每次发现新的铁律/规范/最佳实践 → 评估后写入CLAUDE.md
+  - 每次重大版本迭代后 → 审查并更新CLAUDE.md
+  - 协议规则库(docs/protocols/)中的核心规则必须在CLAUDE.md有摘要引用
+  - AI智能体(Heartbeat/Agent)执行任务前必须先读取CLAUDE.md
+  - 禁止降级: 已有的铁律只能升级或废弃(标注废弃原因)，不能静默删除
+```
+
+### SCP-06 全功能集合路线图
+```
+[SCP-06] 全功能集合路线图 — JOINUS.COM必须具备:
+  Phase A (核心功能 — 当前):
+    ✓ 目的地(圣地/祖庭)浏览与详情
+    ✓ 行程规划与状态管理
+    ✓ AI聊天助手(小鸿)
+    ✓ 朝圣日志
+    ✓ 管理后台CRUD
+
+  Phase B (体验升级 — 对标Booking+Airbnb+TripAdvisor):
+    □ 搜索系统 — 全站搜索+筛选+排序+地图搜索 (对标Booking/Kayak)
+    □ 评价系统 — UGC评价+评分+照片+回复 (对标TripAdvisor)
+    □ 收藏系统 — Wishlist+收藏夹+分享 (对标Airbnb)
+    □ 推荐系统 — 个性化推荐+相关推荐+猜你喜欢 (对标Booking/Trip.com)
+    □ 攻略社区 — 游记+攻略+问答+照片墙 (对标TripAdvisor)
+
+  Phase C (商业闭环 — 对标Expedia+Agoda+Priceline):
+    □ 支付系统 — 在线支付+多币种+退款 (对标Booking/Agoda)
+    □ 促销系统 — 优惠券+限时折扣+早鸟价+闪购 (对标Priceline/Agoda)
+    □ 会员体系 — 等级+积分+专属权益 (对标AmEx Travel)
+    □ 套餐打包 — 行程+住宿+交通组合 (对标Expedia)
+    □ 价格工具 — 比价+价格日历+价格提醒 (对标Skyscanner/Kayak)
+
+  Phase D (生态扩展 — 全球NO.1):
+    □ 多语言 — 中/英/日/韩/泰/印/阿 (对标Booking全球化)
+    □ 社交分享 — 朋友圈/Instagram/Facebook (对标Airbnb)
+    □ 商家入驻 — 祖庭/导游/住宿供应商管理平台
+    □ 数据分析 — 用户行为/转化漏斗/热力图
+    □ 移动优先 — PWA+离线+推送 (对标Agoda移动体验)
+```
+
+---
+
 ## 技术栈
 - **Monorepo**: Turborepo + pnpm workspaces
 - **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7

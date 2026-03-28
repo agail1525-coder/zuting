@@ -1035,11 +1035,6 @@
         "completedAt":  "2026-03-28 10:22:22"
     },
     {
-        "id":  "miniprogram-add-trip-create-page",
-        "name":  "小程序缺少行程创建页面 — Web和Mobile都有但小程序用户无法创建行程",
-        "completedAt":  "2026-03-28 10:22:22"
-    },
-    {
         "id":  "web-fix-remaining-metadata-chinese-hardcoded",
         "name":  "Web多个页面metadata/SEO标题仍有中文硬编码 — 国际搜索引擎SEO失效",
         "completedAt":  "2026-03-28 10:23:18"
@@ -1138,5 +1133,125 @@
         "id":  "web-fix-error-page-i18n-hardcoded",
         "name":  "Web错误页面error.tsx仍有4处中文硬编码 — 国际用户遇错看到中文",
         "completedAt":  "2026-03-28 11:08:35"
+    },
+    {
+        "id":  "api-fix-report-dto-missing-validation",
+        "name":  "API CreateReportDto的targetId和description缺少校验 — 举报内容可注入超长字符串",
+        "completedAt":  "2026-03-28 11:27:27"
+    },
+    {
+        "id":  "web-fix-i18n-privacy-page",
+        "name":  "Web隐私政策页面全部内容中文硬编码 — 国际用户无法阅读隐私条款",
+        "completedAt":  "2026-03-28 11:27:27"
+    },
+    {
+        "id":  "api-fix-temple-teaching-dto-maxlength",
+        "name":  "API Temple/Teaching DTO字符串字段缺少@MaxLength — 可提交无限长度内容导致DoS",
+        "completedAt":  "2026-03-28 11:27:27"
+    },
+    {
+        "id":  "api-fix-aiconfig-findmany-missing-take",
+        "name":  "AI配置服务getAll()和getMap()的findMany缺少take限制 — 违反R-64可被DoS",
+        "completedAt":  "2026-03-28 11:27:27"
+    },
+    {
+        "id":  "api-fix-xiaohong-controller-any-types",
+        "name":  "XiaohongController两处@Req()参数使用any类型 — 违反R-01类型安全铁律",
+        "completedAt":  "2026-03-28 11:27:27"
+    },
+    {
+        "id":  "mobile-fix-home-missing-error-state",
+        "name":  "Mobile首页API加载失败只console.error — 用户看到空白内容无任何错误提示",
+        "completedAt":  "2026-03-28 11:28:13"
+    },
+    {
+        "id":  "web-fix-i18n-holy-sites-view-labels",
+        "name":  "Web圣地页面\u0027列表模式/地图模式\u0027按钮中文硬编码 — 国际用户看到中文切换按钮",
+        "completedAt":  "2026-03-28 11:28:13"
+    },
+    {
+        "id":  "miniprogram-fix-seal-interface-mismatch",
+        "name":  "小程序Seal接口字段与Mobile/API不一致 — verse/meaning vs poem/essence导致数据不显示",
+        "completedAt":  "2026-03-29 00:34:46"
+    },
+    {
+        "id":  "mobile-fix-notifications-orders-missing-auth-gate",
+        "name":  "Mobile通知和订单页缺少登录检查 — 未认证用户API调用静默失败显示空白",
+        "completedAt":  "2026-03-29 00:34:47"
+    },
+    {
+        "id":  "api-fix-swagger-exposed-production",
+        "name":  "API Swagger文档在生产环境公开暴露 — 攻击者可获取完整API结构进行侦察",
+        "completedAt":  "2026-03-29 00:34:47"
+    },
+    {
+        "id":  "admin-fix-routes-page-missing-crud",
+        "name":  "Admin路线管理页缺少创建和编辑功能 — 只能删除无法新增/修改路线数据",
+        "completedAt":  "2026-03-29 00:34:47"
+    },
+    {
+        "id":  "api-fix-cors-localhost-production-regression",
+        "name":  "API CORS白名单仍无条件包含localhost — 生产环境接受本地来源的跨域请求",
+        "completedAt":  "2026-03-29 00:34:47"
+    },
+    {
+        "id":  "web-fix-homepage-i18n-hardcoded",
+        "name":  "Web首页home-client.tsx 50+处中文硬编码 — 首页重构后i18n全面缺失",
+        "completedAt":  "2026-03-29 00:35:42"
+    },
+    {
+        "id":  "miniprogram-fix-detail-pages-any-types",
+        "name":  "小程序五个详情页useState\u003cany\u003e — 类型安全缺失违反R-01铁律",
+        "completedAt":  "2026-03-29 00:35:43"
+    },
+    {
+        "id":  "mobile-miniprogram-fix-homepage-mock-stories",
+        "name":  "Mobile和小程序首页PILGRIM_STORIES硬编码假数据 — 伪造用户评价违反HH-V02",
+        "completedAt":  "2026-03-29 00:35:43"
+    },
+    {
+        "id":  "mobile-fix-detail-pages-any-types",
+        "name":  "Mobile四个详情页useState\u003cany\u003e — 类型安全完全缺失导致运行时字段访问错误",
+        "completedAt":  "2026-03-29 00:35:43"
+    },
+    {
+        "id":  "web-fix-notifications-missing-auth-redirect",
+        "name":  "Web通知页面未登录显示内联UI而非跳转登录 — 与其他页面行为不一致",
+        "completedAt":  "2026-03-29 06:19:21"
+    },
+    {
+        "id":  "api-fix-religion-service-unbounded-includes",
+        "name":  "Religion详情查询include全部关联数据无take限制 — 潜在OOM风险",
+        "completedAt":  "2026-03-29 06:19:21"
+    },
+    {
+        "id":  "web-fix-payment-result-amount-unit-bug",
+        "name":  "Web支付结果页金额显示未除以100 — 金额单位错误(分vs元)",
+        "completedAt":  "2026-03-29 06:19:21"
+    },
+    {
+        "id":  "api-fix-route-dto-missing-validation",
+        "name":  "Route创建DTO的itinerary字段完全无校验 — 任意JSON注入风险",
+        "completedAt":  "2026-03-29 06:19:21"
+    },
+    {
+        "id":  "miniprogram-fix-journal-create-redirect-crash",
+        "name":  "小程序日志创建页面redirectTo导航到TabBar页面 — 微信运行时崩溃",
+        "completedAt":  "2026-03-29 06:19:21"
+    },
+    {
+        "id":  "web-fix-routes-pages-missing-i18n",
+        "name":  "Web路线列表和详情页完全硬编码中文 — 整页绕过i18n系统",
+        "completedAt":  "2026-03-29 06:20:06"
+    },
+    {
+        "id":  "miniprogram-fix-checkout-missing-validation",
+        "name":  "小程序结账页面表单无校验 — 可提交垃圾联系方式和无效人数",
+        "completedAt":  "2026-03-29 06:20:07"
+    },
+    {
+        "id":  "miniprogram-fix-route-detail-wrong-navigation",
+        "name":  "小程序路线详情页\u0027立即预订\u0027按钮导航到行程列表而非结账页 — 核心转化流程断裂",
+        "completedAt":  "2026-03-29 06:20:07"
     }
 ]

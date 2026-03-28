@@ -5,8 +5,9 @@ cd /d "E:\ZUTING"
 
 echo.
 echo   ============================================
-echo     ZUTING Heartbeat Daemon Launcher
-echo     Global Ancestral Temple Platform
+echo     ZUTING Heartbeat Daemon v4.2 Launcher
+echo     CEO++ Business-Driven Build Engine
+echo     JOINUS.COM = Global No.1 Temple Travel
 echo   ============================================
 echo.
 
