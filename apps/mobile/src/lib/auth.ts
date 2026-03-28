@@ -8,7 +8,7 @@ const REFRESH_KEY = 'zuting_refresh_token';
 declare const process: { env: Record<string, string | undefined> };
 
 export const API_URL =
-  process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3002/api';
+  process.env.EXPO_PUBLIC_API_URL || (__DEV__ ? 'http://192.168.1.22:3002/api' : 'https://zuting.fszyl.top/api');
 
 // In-memory fallback for web platform (SecureStore is native-only)
 const memoryStore: Record<string, string> = {};

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api } from '../../src/lib/api';
 import { useAuth } from '../../src/lib/auth-context';
@@ -24,35 +23,30 @@ export default function TripCreateScreen() {
   const { user, loading: authLoading } = useAuth();
 
   const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [persons, setPersons] = useState('1');
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [note, setNote] = useState('');
 
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
+  const [startDateStr, setStartDateStr] = useState('');
+  const [endDateStr, setEndDateStr] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const formatDate = (date: Date): string =>
-    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
-  const handleStartDateChange = (_event: DateTimePickerEvent, date?: Date) => {
-    setShowStartPicker(Platform.OS === 'ios');
-    if (date) setStartDate(date);
+  const parseDate = (str: string): Date | null => {
+    const match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (!match) return null;
+    const d = new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+    return isNaN(d.getTime()) ? null : d;
   };
 
-  const handleEndDateChange = (_event: DateTimePickerEvent, date?: Date) => {
-    setShowEndPicker(Platform.OS === 'ios');
-    if (date) setEndDate(date);
-  };
+  const startDate = parseDate(startDateStr);
+  const endDate = parseDate(endDateStr);
 
   const validate = (): string | null => {
     if (!title.trim()) return '请输入行程标题';
-    if (!startDate) return '请选择出发日期';
-    if (!endDate) return '请选择返程日期';
+    if (!startDate) return '请输入出发日期 (格式: 2026-04-01)';
+    if (!endDate) return '请输入返程日期 (格式: 2026-04-05)';
     if (endDate <= startDate) return '返程日期必须晚于出发日期';
     const p = parseInt(persons, 10);
     if (isNaN(p) || p < 1 || p > 20) return '出行人数需在 1-20 之间';
@@ -78,8 +72,8 @@ export default function TripCreateScreen() {
       const trip = await api.createTrip(
         {
           title: title.trim(),
-          startDate: formatDate(startDate!),
-          endDate: formatDate(endDate!),
+          startDate: startDateStr,
+          endDate: endDateStr,
           persons: parseInt(persons, 10),
           contactName: contactName.trim() || undefined,
           contactPhone: contactPhone.trim() || undefined,
@@ -159,40 +153,27 @@ export default function TripCreateScreen() {
         <View style={styles.row}>
           <View style={[styles.field, styles.fieldHalf]}>
             <Text style={styles.label}>出发日期 *</Text>
-            <Pressable style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
-              <Ionicons name="calendar-outline" size={16} color={colors.textMuted} />
-              <Text style={startDate ? styles.dateText : styles.datePlaceholder}>
-                {startDate ? formatDate(startDate) : '选择日期'}
-              </Text>
-            </Pressable>
+            <TextInput
+              style={styles.input}
+              value={startDateStr}
+              onChangeText={setStartDateStr}
+              placeholder="2026-04-01"
+              placeholderTextColor={colors.textMuted}
+              maxLength={10}
+            />
           </View>
           <View style={[styles.field, styles.fieldHalf]}>
             <Text style={styles.label}>返程日期 *</Text>
-            <Pressable style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
-              <Ionicons name="calendar-outline" size={16} color={colors.textMuted} />
-              <Text style={endDate ? styles.dateText : styles.datePlaceholder}>
-                {endDate ? formatDate(endDate) : '选择日期'}
-              </Text>
-            </Pressable>
+            <TextInput
+              style={styles.input}
+              value={endDateStr}
+              onChangeText={setEndDateStr}
+              placeholder="2026-04-05"
+              placeholderTextColor={colors.textMuted}
+              maxLength={10}
+            />
           </View>
         </View>
-
-        {showStartPicker && (
-          <DateTimePicker
-            value={startDate ?? new Date()}
-            mode="date"
-            minimumDate={new Date()}
-            onChange={handleStartDateChange}
-          />
-        )}
-        {showEndPicker && (
-          <DateTimePicker
-            value={endDate ?? startDate ?? new Date()}
-            mode="date"
-            minimumDate={startDate ?? new Date()}
-            onChange={handleEndDateChange}
-          />
-        )}
 
         {/* Persons & Phone */}
         <View style={styles.row}>
@@ -357,25 +338,6 @@ const styles = StyleSheet.create({
   textArea: {
     minHeight: 80,
     paddingTop: spacing.sm + 4,
-  },
-  dateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.backgroundCardSolid,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: borderRadius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 4,
-  },
-  dateText: {
-    color: colors.textPrimary,
-    fontSize: fontSize.md,
-  },
-  datePlaceholder: {
-    color: colors.textMuted,
-    fontSize: fontSize.md,
   },
   submitButton: {
     flexDirection: 'row',

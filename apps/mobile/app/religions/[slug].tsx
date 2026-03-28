@@ -17,6 +17,7 @@ import {
   Teaching,
 } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
+import { ErrorView } from '../../src/components/ErrorView';
 import {
   colors,
   fontSize,
@@ -37,10 +38,12 @@ export default function ReligionDetailScreen() {
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
   const [teachings, setTeachings] = useState<Teaching[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
         const religions = await api.getReligions(slug);
         const rel = religions[0];
         if (!rel) return;
@@ -59,16 +62,20 @@ export default function ReligionDetailScreen() {
         setTemples(templesData);
         setPatriarchs(patriarchsData);
         setTeachings(teachingsData);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Failed to fetch religion detail:', err);
+        setError('加载失败，请稍后重试');
       } finally {
         setLoading(false);
       }
-    }
-    fetchData();
+    };
+
+  useEffect(() => {
+    loadData();
   }, [slug, navigation]);
 
-  if (loading || !religion) return <LoadingView />;
+  if (loading) return <LoadingView />;
+  if (error || !religion) return <ErrorView message={error ?? undefined} onRetry={loadData} />;
 
   const emoji = religionEmojis[religion.slug] || '🙏';
   const gradient = religionGradients[religion.slug] || ['#6366F1', '#4F46E5'];

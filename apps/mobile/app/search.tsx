@@ -44,6 +44,8 @@ function getDetailRoute(item: SearchResultItem): string | null {
       return `/temples/${item.id}`;
     case 'patriarch':
       return `/patriarchs/${item.id}`;
+    case 'teaching':
+      return `/teachings/${item.id}`;
     case 'seal':
       return `/seals/${item.id}`;
     default:

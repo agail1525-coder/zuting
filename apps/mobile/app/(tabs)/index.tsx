@@ -61,7 +61,7 @@ export default function HomeScreen() {
     fetchData();
   }, [fetchData]);
 
-  if (loading) return <LoadingView />;
+  if (loading && religions.length === 0) return <LoadingView />;
 
   return (
     <ScrollView

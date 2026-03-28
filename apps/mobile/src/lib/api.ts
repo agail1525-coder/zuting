@@ -1,7 +1,7 @@
 import { getAccessToken } from './auth';
 
 const BASE_URL = __DEV__
-  ? 'http://localhost:3002/api'
+  ? 'http://192.168.1.22:3002/api'
   : 'https://zuting.fszyl.top/api';
 
 async function request<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
@@ -195,6 +195,9 @@ export const api = {
 
   getTeachings: (religionId?: string) =>
     request<Teaching[]>('/teachings', religionId ? { religionId } : undefined),
+
+  getTeachingById: (id: string) =>
+    request<Teaching>(`/teachings/${id}`),
 
   getSeals: (series?: string) =>
     request<Seal[]>('/seals', series ? { series } : undefined),

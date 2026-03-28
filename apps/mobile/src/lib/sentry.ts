@@ -10,7 +10,20 @@
 
 import Constants from 'expo-constants';
 
-let Sentry: any = null;
+interface SentryScope {
+  setExtras(extras: Record<string, unknown>): void;
+  setExtra(key: string, value: unknown): void;
+  setTag(key: string, value: string): void;
+}
+
+interface SentryModule {
+  init(options: Record<string, unknown>): void;
+  captureException(error: unknown): void;
+  withScope(callback: (scope: SentryScope) => void): void;
+  wrap<T>(component: T): T;
+}
+
+let Sentry: SentryModule | null = null;
 let initialized = false;
 
 function getDsn(): string | undefined {
@@ -25,9 +38,9 @@ export function initSentry() {
   if (!dsn) return;
 
   try {
-    Sentry = require('@sentry/react-native');
+    const mod: SentryModule = require('@sentry/react-native');
 
-    Sentry.init({
+    mod.init({
       dsn,
       environment: __DEV__ ? 'development' : 'production',
       release: `zuting-mobile@${Constants.expoConfig?.version || '0.0.0'}`,
@@ -43,6 +56,7 @@ export function initSentry() {
       enableNativeCrashHandling: true,
     });
 
+    Sentry = mod;
     console.log('[Sentry] Initialized for Mobile');
   } catch {
     // @sentry/react-native not installed
@@ -66,19 +80,20 @@ export function wrap<T>(component: T): T {
  */
 export function captureException(
   error: Error,
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
 ) {
   if (!Sentry) {
     console.error('[Sentry unavailable]', error);
     return;
   }
 
+  const s = Sentry;
   if (context) {
-    Sentry.withScope((scope: any) => {
+    s.withScope((scope: SentryScope) => {
       scope.setExtras(context);
-      Sentry.captureException(error);
+      s.captureException(error);
     });
   } else {
-    Sentry.captureException(error);
+    s.captureException(error);
   }
 }
