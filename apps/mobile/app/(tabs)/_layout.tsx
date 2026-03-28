@@ -41,7 +41,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: '首页',
-          headerTitle: '全球祖庭之旅',
+          headerTitle: '走祖庭，看世界',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
@@ -50,8 +50,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="holy-sites"
         options={{
-          title: '圣地',
-          headerTitle: '全球圣地',
+          title: '目的地',
+          headerTitle: '目的地',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map" size={size} color={color} />
           ),
@@ -60,8 +60,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: 'AI助手',
-          headerTitle: '小鸿 · AI助手',
+          title: 'AI规划',
+          headerTitle: 'AI旅行规划师',
           tabBarIcon: ({ color, focused }) => (
             <View
               style={[
@@ -86,10 +86,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="seals"
         options={{
-          title: '修行',
-          headerTitle: '曹溪愿命三十印',
+          title: '体验',
+          headerTitle: '文化体验',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="flame" size={size} color={color} />
+            <Ionicons name="sparkles" size={size} color={color} />
           ),
         }}
       />

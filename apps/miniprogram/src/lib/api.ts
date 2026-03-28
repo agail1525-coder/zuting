@@ -173,6 +173,75 @@ export function fetchSealById(id: string) {
   return request<Seal>(`/seals/${id}`)
 }
 
+// Route interfaces
+export interface Route {
+  id: string
+  slug: string
+  title: string
+  titleEn: string
+  subtitle: string
+  category: string
+  difficulty: string
+  status: string
+  duration: number
+  nights: number
+  season: string
+  groupSize: string
+  priceFrom: number
+  coverImage: string | null
+  highlights: string[]
+  description: string
+  itinerary: ItineraryDay[]
+  included: string[]
+  excluded: string[]
+  tips: string[]
+  rating: number | null
+  reviewCount: number
+  bookCount: number
+  religion?: Religion
+  sites: RouteSiteWithDetail[]
+}
+
+export interface ItineraryDay {
+  day: number
+  title: string
+  activities: string[]
+  meals: string[]
+  accommodation: string
+}
+
+export interface RouteSiteWithDetail {
+  id: string
+  day: number
+  order: number
+  duration: string | null
+  site: { id: string; name: string; country: string }
+}
+
+export interface PaginatedRoutes {
+  items: Route[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+// Route endpoints
+export function fetchRoutes(params?: { category?: string; difficulty?: string; sort?: string; page?: string; pageSize?: string }) {
+  return request<PaginatedRoutes>('/routes', params as Record<string, string>)
+}
+
+export function fetchFeaturedRoutes(limit = 8) {
+  return request<Route[]>('/routes/featured', { limit: String(limit) })
+}
+
+export function fetchRouteBySlug(slug: string) {
+  return request<Route>(`/routes/${slug}`)
+}
+
+export function fetchRoutesBySite(siteId: string) {
+  return request<Route[]>(`/routes/by-site/${siteId}`)
+}
+
 // Paginated response wrapper
 export interface PaginatedResponse<T> {
   data: T[]

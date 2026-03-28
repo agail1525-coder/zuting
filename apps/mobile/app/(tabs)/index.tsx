@@ -10,40 +10,38 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { api, Religion } from '../../src/lib/api';
-import { ReligionCard } from '../../src/components/ReligionCard';
+import { api, Religion, Route } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
-interface Stats {
-  religions: number;
-  holySites: number;
-  temples: number;
-  seals: number;
-}
+const CATEGORY_ICONS: { value: string; icon: string; label: string }[] = [
+  { value: 'ZEN', icon: '🏯', label: '禅宗' },
+  { value: 'BUDDHIST', icon: '☸', label: '佛教' },
+  { value: 'TAOIST', icon: '☯', label: '道教' },
+  { value: 'CHRISTIAN', icon: '⛪', label: '基督' },
+  { value: 'ISLAMIC', icon: '🕌', label: '丝路' },
+  { value: 'CROSS_CULTURAL', icon: '🌏', label: '跨文化' },
+  { value: 'HINDU', icon: '🕉', label: '印度教' },
+  { value: 'CULTURAL_HERITAGE', icon: '📖', label: '遗产' },
+];
+
+const HOT_TAGS = ['禅宗路线', '耶路撒冷', '丝绸之路', '朝圣之旅', '文化体验'];
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [featuredRoutes, setFeaturedRoutes] = useState<Route[]>([]);
   const [religions, setReligions] = useState<Religion[]>([]);
-  const [stats, setStats] = useState<Stats>({ religions: 0, holySites: 0, temples: 0, seals: 0 });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
-      const [religionsData, holySites, temples, seals] = await Promise.all([
+      const [routesData, religionsData] = await Promise.all([
+        api.getFeaturedRoutes(6),
         api.getReligions(),
-        api.getHolySites(),
-        api.getTemples(),
-        api.getSeals(),
       ]);
+      setFeaturedRoutes(routesData);
       setReligions(religionsData);
-      setStats({
-        religions: religionsData.length,
-        holySites: holySites.length,
-        temples: temples.length,
-        seals: seals.length,
-      });
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -61,7 +59,7 @@ export default function HomeScreen() {
     fetchData();
   }, [fetchData]);
 
-  if (loading && religions.length === 0) return <LoadingView />;
+  if (loading && featuredRoutes.length === 0) return <LoadingView />;
 
   return (
     <ScrollView
@@ -77,10 +75,9 @@ export default function HomeScreen() {
     >
       {/* Hero Section */}
       <View style={styles.hero}>
-        <Text style={styles.heroEmoji}>🙏</Text>
-        <Text style={styles.heroTitle}>全球祖庭之旅</Text>
+        <Text style={styles.heroTitle}>走祖庭，看世界</Text>
         <Text style={styles.heroSubtitle}>
-          帮助100万人走祖庭 · 建立全球宗教文化和平使者网络
+          探索全球文化圣地 · 深度旅行体验
         </Text>
       </View>
 
@@ -93,21 +90,65 @@ export default function HomeScreen() {
         onPress={() => router.push('/search')}
       >
         <Ionicons name="search" size={18} color={colors.textMuted} />
-        <Text style={styles.searchPlaceholder}>搜索圣地、祖庭、祖师...</Text>
+        <Text style={styles.searchPlaceholder}>搜路线、查目的地...</Text>
       </Pressable>
 
-      {/* Stats Row */}
-      <View style={styles.statsRow}>
-        <StatItem value={String(stats.religions)} label="信仰" />
-        <StatDivider />
-        <StatItem value={String(stats.holySites)} label="圣地" />
-        <StatDivider />
-        <StatItem value={String(stats.temples)} label="祖庭" />
-        <StatDivider />
-        <StatItem value={String(stats.seals)} label="印" />
+      {/* Hot Tags */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.tagsContainer}
+      >
+        {HOT_TAGS.map((tag) => (
+          <Pressable
+            key={tag}
+            style={styles.tag}
+            onPress={() => router.push('/search')}
+          >
+            <Text style={styles.tagText}>#{tag}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {/* Category Icons */}
+      <View style={styles.categoryGrid}>
+        {CATEGORY_ICONS.map((cat) => (
+          <Pressable
+            key={cat.value}
+            style={({ pressed }) => [
+              styles.categoryItem,
+              pressed && styles.categoryItemPressed,
+            ]}
+            onPress={() => router.push('/routes' as never)}
+          >
+            <View style={styles.categoryIcon}>
+              <Text style={styles.categoryEmoji}>{cat.icon}</Text>
+            </View>
+            <Text style={styles.categoryLabel}>{cat.label}</Text>
+          </Pressable>
+        ))}
       </View>
 
-      {/* AI Assistant Quick Entry */}
+      {/* Featured Routes */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>精选路线</Text>
+        <Pressable onPress={() => router.push('/routes' as never)}>
+          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+        </Pressable>
+      </View>
+
+      <FlatList
+        data={featuredRoutes}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.routeListContainer}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <RouteCard route={item} onPress={() => router.push(`/routes/${item.slug}` as never)} />
+        )}
+      />
+
+      {/* AI Planner Card */}
       <Pressable
         style={({ pressed }) => [
           styles.aiCard,
@@ -117,12 +158,12 @@ export default function HomeScreen() {
       >
         <View style={styles.aiCardLeft}>
           <View style={styles.aiAvatar}>
-            <Text style={styles.aiAvatarText}>🏛</Text>
+            <Text style={styles.aiAvatarText}>🤖</Text>
           </View>
           <View style={styles.aiCardContent}>
-            <Text style={styles.aiCardTitle}>小鸿 · AI助手</Text>
+            <Text style={styles.aiCardTitle}>AI旅行规划师</Text>
             <Text style={styles.aiCardSubtitle}>
-              问路线、查圣地、聊修行...
+              帮你定制专属文化旅行路线
             </Text>
           </View>
         </View>
@@ -131,45 +172,111 @@ export default function HomeScreen() {
         </View>
       </Pressable>
 
-      {/* Religion Grid */}
+      {/* Cultural Traditions */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>十二大信仰</Text>
-        <Text style={styles.sectionSubtitle}>Twelve World Faiths</Text>
-      </View>
-
-      <View style={styles.grid}>
-        {religions.map((religion) => (
-          <View key={religion.id} style={styles.gridItem}>
-            <ReligionCard religion={religion} />
-          </View>
-        ))}
-      </View>
-
-      {/* CTA Section */}
-      <View style={styles.ctaSection}>
-        <Text style={styles.ctaEmoji}>🙏</Text>
-        <Text style={styles.ctaTitle}>开始朝圣</Text>
-        <Text style={styles.ctaSubtitle}>
-          规划您的第一条朝圣路线，踏上心灵之旅
-        </Text>
-        <Pressable
-          style={({ pressed }) => [
-            styles.ctaButton,
-            pressed && styles.ctaButtonPressed,
-          ]}
-          onPress={() => router.push('/trips')}
-        >
-          <Ionicons name="airplane" size={18} color={colors.backgroundDark} />
-          <Text style={styles.ctaButtonText}>规划行程</Text>
+        <Text style={styles.sectionTitle}>文化百科</Text>
+        <Pressable onPress={() => router.push('/religions/buddhism' as never)}>
+          <Text style={styles.sectionMore}>探索 &gt;</Text>
         </Pressable>
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          世界本来同根生 · 万教归一
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.religionsContainer}
+      >
+        {religions.slice(0, 8).map((r) => (
+          <Pressable
+            key={r.id}
+            style={({ pressed }) => [
+              styles.religionChip,
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => router.push(`/religions/${r.slug}` as never)}
+          >
+            <Text style={styles.religionEmoji}>{r.symbol}</Text>
+            <Text style={styles.religionName}>{r.nameZh}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {/* Stats Row */}
+      <View style={styles.statsRow}>
+        <StatItem value="12" label="文化传统" />
+        <StatDivider />
+        <StatItem value="60+" label="圣地" />
+        <StatDivider />
+        <StatItem value="10+" label="路线" />
+        <StatDivider />
+        <StatItem value="50000+" label="旅行者" />
+      </View>
+
+      {/* Bottom CTA */}
+      <View style={styles.ctaSection}>
+        <Text style={styles.ctaTitle}>开启你的文化之旅</Text>
+        <Text style={styles.ctaSubtitle}>
+          精选深度路线，探访全球文化圣地
         </Text>
+        <View style={styles.ctaButtons}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && styles.ctaButtonPressed,
+            ]}
+            onPress={() => router.push('/routes' as never)}
+          >
+            <Ionicons name="compass" size={18} color={colors.backgroundDark} />
+            <Text style={styles.ctaButtonText}>浏览路线</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [
+              styles.ctaButtonOutline,
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => router.push('/(tabs)/chat')}
+          >
+            <Ionicons name="chatbubble-ellipses" size={18} color={colors.gold} />
+            <Text style={styles.ctaButtonOutlineText}>AI帮你规划</Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>走祖庭，看世界</Text>
       </View>
     </ScrollView>
+  );
+}
+
+function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
+  const price = (route.priceFrom / 100).toLocaleString();
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.routeCard,
+        pressed && { opacity: 0.9 },
+      ]}
+      onPress={onPress}
+    >
+      <View style={styles.routeCardImage}>
+        <Text style={styles.routeCardEmoji}>
+          {route.category === 'ZEN' ? '🏯' : route.category === 'BUDDHIST' ? '☸' : route.category === 'TAOIST' ? '☯' : route.category === 'CHRISTIAN' ? '⛪' : route.category === 'ISLAMIC' ? '🕌' : '🌏'}
+        </Text>
+        <View style={styles.routeCardBadge}>
+          <Text style={styles.routeCardBadgeText}>{route.duration}天{route.nights}晚</Text>
+        </View>
+      </View>
+      <View style={styles.routeCardBody}>
+        <Text style={styles.routeCardTitle} numberOfLines={1}>{route.title}</Text>
+        <Text style={styles.routeCardSubtitle} numberOfLines={1}>{route.subtitle}</Text>
+        <View style={styles.routeCardFooter}>
+          <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>/人</Text></Text>
+          {route.rating && (
+            <Text style={styles.routeCardRating}>★ {route.rating.toFixed(1)}</Text>
+          )}
+        </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -199,10 +306,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xl,
     paddingHorizontal: spacing.md,
   },
-  heroEmoji: {
-    fontSize: 48,
-    marginBottom: spacing.sm,
-  },
   heroTitle: {
     fontSize: fontSize.hero,
     fontWeight: '800',
@@ -214,14 +317,12 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: spacing.sm,
     textAlign: 'center',
-    lineHeight: 22,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundCardSolid,
     marginHorizontal: spacing.md,
-    marginTop: spacing.md,
     borderRadius: borderRadius.full,
     borderWidth: 1,
     borderColor: colors.border,
@@ -230,7 +331,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   searchBarPressed: {
-    backgroundColor: 'rgba(30, 41, 59, 1)',
     borderColor: colors.gold,
   },
   searchPlaceholder: {
@@ -238,38 +338,59 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     flex: 1,
   },
-  statsRow: {
+  tagsContainer: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    gap: spacing.sm,
+  },
+  tag: {
+    backgroundColor: 'rgba(212, 168, 85, 0.1)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 168, 85, 0.2)',
+  },
+  tagText: {
+    color: colors.gold,
+    fontSize: fontSize.sm,
+  },
+  categoryGrid: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    flexWrap: 'wrap',
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.lg,
+  },
+  categoryItem: {
+    width: '25%',
     alignItems: 'center',
-    backgroundColor: colors.backgroundCard,
-    marginHorizontal: spacing.md,
-    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.sm,
+  },
+  categoryItemPressed: {
+    opacity: 0.7,
+  },
+  categoryIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.backgroundCardSolid,
     borderWidth: 1,
     borderColor: colors.border,
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.md,
-  },
-  statItem: {
-    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  statValue: {
-    fontSize: fontSize.xxl,
-    fontWeight: '800',
-    color: colors.gold,
+  categoryEmoji: {
+    fontSize: 22,
   },
-  statLabel: {
-    fontSize: fontSize.sm,
+  categoryLabel: {
     color: colors.textSecondary,
-    marginTop: 2,
-  },
-  statDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: colors.border,
+    fontSize: fontSize.xs,
+    marginTop: spacing.xs,
   },
   sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingTop: spacing.xl,
     paddingBottom: spacing.md,
@@ -279,18 +400,77 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textPrimary,
   },
-  sectionSubtitle: {
+  sectionMore: {
+    fontSize: fontSize.sm,
+    color: colors.gold,
+  },
+  routeListContainer: {
+    paddingHorizontal: spacing.md,
+    gap: spacing.md,
+  },
+  routeCard: {
+    width: 240,
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  routeCardImage: {
+    height: 120,
+    backgroundColor: 'rgba(212, 168, 85, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  routeCardEmoji: {
+    fontSize: 40,
+    opacity: 0.5,
+  },
+  routeCardBadge: {
+    position: 'absolute',
+    top: spacing.sm,
+    left: spacing.sm,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: borderRadius.sm,
+  },
+  routeCardBadgeText: {
+    color: colors.white,
+    fontSize: fontSize.xs,
+  },
+  routeCardBody: {
+    padding: spacing.md,
+  },
+  routeCardTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  routeCardSubtitle: {
     fontSize: fontSize.sm,
     color: colors.textMuted,
     marginTop: 2,
   },
-  grid: {
+  routeCardFooter: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: spacing.sm,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing.sm,
   },
-  gridItem: {
-    width: '50%',
+  routeCardPrice: {
+    fontSize: fontSize.lg,
+    fontWeight: '700',
+    color: '#EF4444',
+  },
+  routeCardPriceUnit: {
+    fontSize: fontSize.xs,
+    fontWeight: '400',
+    color: colors.textMuted,
+  },
+  routeCardRating: {
+    fontSize: fontSize.sm,
+    color: colors.gold,
   },
   aiCard: {
     flexDirection: 'row',
@@ -298,7 +478,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'rgba(212, 168, 85, 0.08)',
     marginHorizontal: spacing.md,
-    marginTop: spacing.md,
+    marginTop: spacing.lg,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
     borderColor: 'rgba(212, 168, 85, 0.2)',
@@ -307,7 +487,6 @@ const styles = StyleSheet.create({
   },
   aiCardPressed: {
     opacity: 0.8,
-    backgroundColor: 'rgba(212, 168, 85, 0.15)',
   },
   aiCardLeft: {
     flexDirection: 'row',
@@ -320,8 +499,6 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     backgroundColor: 'rgba(212, 168, 85, 0.15)',
-    borderWidth: 1,
-    borderColor: colors.border,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -349,6 +526,60 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  religionsContainer: {
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+  },
+  religionChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: spacing.xs,
+  },
+  religionEmoji: {
+    fontSize: 16,
+  },
+  religionName: {
+    color: colors.textSecondary,
+    fontSize: fontSize.sm,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCard,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.xl,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: fontSize.xl,
+    fontWeight: '800',
+    color: colors.gold,
+  },
+  statLabel: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: colors.border,
+  },
   ctaSection: {
     alignItems: 'center',
     marginHorizontal: spacing.md,
@@ -359,10 +590,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     paddingVertical: spacing.xl,
     paddingHorizontal: spacing.md,
-  },
-  ctaEmoji: {
-    fontSize: 36,
-    marginBottom: spacing.sm,
   },
   ctaTitle: {
     fontSize: fontSize.xl,
@@ -376,11 +603,15 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     marginBottom: spacing.lg,
   },
+  ctaButtons: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
   ctaButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.gold,
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm + 4,
     borderRadius: borderRadius.full,
     gap: spacing.sm,
@@ -390,7 +621,22 @@ const styles = StyleSheet.create({
   },
   ctaButtonText: {
     color: colors.backgroundDark,
-    fontSize: fontSize.lg,
+    fontSize: fontSize.md,
+    fontWeight: '700',
+  },
+  ctaButtonOutline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.gold,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 4,
+    borderRadius: borderRadius.full,
+    gap: spacing.sm,
+  },
+  ctaButtonOutlineText: {
+    color: colors.gold,
+    fontSize: fontSize.md,
     fontWeight: '700',
   },
   footer: {
@@ -400,6 +646,5 @@ const styles = StyleSheet.create({
   footerText: {
     color: colors.textMuted,
     fontSize: fontSize.md,
-    fontStyle: 'italic',
   },
 });

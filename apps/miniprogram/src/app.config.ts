@@ -2,6 +2,8 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',
     'pages/holy-sites/index',
+    'pages/routes/index',
+    'pages/route-detail/index',
     'pages/temples/index',
     'pages/patriarchs/index',
     'pages/teachings/index',
@@ -35,13 +37,13 @@ export default defineAppConfig({
       },
       {
         pagePath: 'pages/holy-sites/index',
-        text: '圣地',
+        text: '目的地',
         iconPath: 'assets/tab-map.png',
         selectedIconPath: 'assets/tab-map-active.png'
       },
       {
         pagePath: 'pages/seals/index',
-        text: '修行',
+        text: '体验',
         iconPath: 'assets/tab-seal.png',
         selectedIconPath: 'assets/tab-seal-active.png'
       },

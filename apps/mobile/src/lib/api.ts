@@ -125,6 +125,57 @@ export interface Seal {
   vow: string;
 }
 
+export interface Route {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string;
+  subtitle: string;
+  category: string;
+  difficulty: string;
+  status: string;
+  duration: number;
+  nights: number;
+  season: string;
+  groupSize: string;
+  priceFrom: number;
+  coverImage: string | null;
+  highlights: string[];
+  description: string;
+  itinerary: ItineraryDay[];
+  included: string[];
+  excluded: string[];
+  tips: string[];
+  rating: number | null;
+  reviewCount: number;
+  bookCount: number;
+  religion?: Religion;
+  sites: RouteSiteWithDetail[];
+}
+
+export interface ItineraryDay {
+  day: number;
+  title: string;
+  activities: string[];
+  meals: string[];
+  accommodation: string;
+}
+
+export interface RouteSiteWithDetail {
+  id: string;
+  day: number;
+  order: number;
+  duration: string | null;
+  site: { id: string; name: string; country: string };
+}
+
+export interface PaginatedRoutes {
+  items: Route[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export type TripStatus =
   | 'DRAFT'
   | 'PLANNING'
@@ -237,6 +288,18 @@ export const api = {
     isPublic?: boolean;
     tripId?: string;
   }) => requestMutate<Journal>('/journals', 'POST', data),
+
+  getRoutes: (params?: { category?: string; difficulty?: string; sort?: string; page?: string; pageSize?: string }) =>
+    request<PaginatedRoutes>('/routes', params as Record<string, string>),
+
+  getFeaturedRoutes: (limit = 8) =>
+    request<Route[]>('/routes/featured', { limit: String(limit) }),
+
+  getRouteBySlug: (slug: string) =>
+    request<Route>(`/routes/${slug}`),
+
+  getRoutesBySite: (siteId: string) =>
+    request<Route[]>(`/routes/by-site/${siteId}`),
 
   search: (q: string, type = 'all', page = 1, limit = 20) =>
     request<SearchResponse>('/search', {
