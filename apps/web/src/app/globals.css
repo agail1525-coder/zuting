@@ -17,6 +17,19 @@
   --color-lotus: #ec4899;
   --color-jade: #10b981;
   --color-cinnabar: #ef4444;
+  /* Religion colors */
+  --color-religion-buddhism: #F59E0B;
+  --color-religion-taoism: #10B981;
+  --color-religion-christianity: #3B82F6;
+  --color-religion-islam: #059669;
+  --color-religion-hinduism: #F97316;
+  --color-religion-judaism: #6366F1;
+  --color-religion-confucianism: #DC2626;
+  --color-religion-sikhism: #EA580C;
+  --color-religion-shinto: #E11D48;
+  --color-religion-tibetan: #7C3AED;
+  --color-religion-indigenous: #78716C;
+  --color-religion-bahai: #0891B2;
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
   --font-serif: "Noto Serif SC", "Georgia", serif;
 }

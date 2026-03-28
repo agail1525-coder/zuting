@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="text-gold font-semibold mb-4">Explore</h3>
+            <h3 className="text-gold font-semibold mb-4">{t("footer.explore") || "探索"}</h3>
             <div className="flex flex-col gap-2">
               <Link href="/religions" className="text-temple-400 hover:text-gold text-sm transition-colors">{t("nav.religions")}</Link>
               <Link href="/holy-sites" className="text-temple-400 hover:text-gold text-sm transition-colors">{t("nav.holySites")}</Link>

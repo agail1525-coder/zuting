@@ -4,18 +4,18 @@ const prisma = new PrismaClient();
 
 // ── Religion data ──────────────────────────────────────
 const religions = [
-  { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#FFC300' },
-  { name: '道教', nameEn: 'Taoism', slug: 'taoism', symbol: '☯', color: '#64C8B4' },
-  { name: '基督教', nameEn: 'Christianity', slug: 'christianity', symbol: '✝', color: '#B43232' },
-  { name: '伊斯兰教', nameEn: 'Islam', slug: 'islam', symbol: '☪', color: '#008C46' },
-  { name: '印度教', nameEn: 'Hinduism', slug: 'hinduism', symbol: '🕉', color: '#E67814' },
-  { name: '犹太教', nameEn: 'Judaism', slug: 'judaism', symbol: '✡', color: '#3250B4' },
-  { name: '儒教', nameEn: 'Confucianism', slug: 'confucianism', symbol: '儒', color: '#A03232' },
-  { name: '锡克教', nameEn: 'Sikhism', slug: 'sikhism', symbol: '☬', color: '#E6961E' },
-  { name: '神道教', nameEn: 'Shinto', slug: 'shinto', symbol: '⛩', color: '#C83232' },
-  { name: '藏传佛教', nameEn: 'Tibetan Buddhism', slug: 'tibetan-buddhism', symbol: '☸', color: '#961E1E' },
-  { name: '原住民灵性', nameEn: 'Indigenous Spirituality', slug: 'indigenous', symbol: '◉', color: '#A06428' },
-  { name: '巴哈伊教', nameEn: 'Bahai', slug: 'bahai', symbol: '✦', color: '#643C8C' },
+  { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
+  { name: '道教', nameEn: 'Taoism', slug: 'taoism', symbol: '☯', color: '#10B981' },
+  { name: '基督教', nameEn: 'Christianity', slug: 'christianity', symbol: '✝', color: '#3B82F6' },
+  { name: '伊斯兰教', nameEn: 'Islam', slug: 'islam', symbol: '☪', color: '#059669' },
+  { name: '印度教', nameEn: 'Hinduism', slug: 'hinduism', symbol: '🕉', color: '#F97316' },
+  { name: '犹太教', nameEn: 'Judaism', slug: 'judaism', symbol: '✡', color: '#6366F1' },
+  { name: '儒教', nameEn: 'Confucianism', slug: 'confucianism', symbol: '儒', color: '#DC2626' },
+  { name: '锡克教', nameEn: 'Sikhism', slug: 'sikhism', symbol: '☬', color: '#EA580C' },
+  { name: '神道教', nameEn: 'Shinto', slug: 'shinto', symbol: '⛩', color: '#E11D48' },
+  { name: '藏传佛教', nameEn: 'Tibetan Buddhism', slug: 'tibetan-buddhism', symbol: '☸', color: '#7C3AED' },
+  { name: '原住民灵性', nameEn: 'Indigenous Spirituality', slug: 'indigenous', symbol: '◉', color: '#78716C' },
+  { name: '巴哈伊教', nameEn: 'Bahai', slug: 'bahai', symbol: '✦', color: '#0891B2' },
 ];
 
 // ── Holy Sites (60) ────────────────────────────────────
