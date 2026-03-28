@@ -736,11 +736,11 @@ EXTRA_SHINTO_TEMPLES = [
      "全日本约四万座八幡宫的总本社，武神信仰中心",
      "Usa Jingu Shrine Hachiman Oita Japan"),
 
-    ("�的场神社(高千穗)", "神道教", "日本", "远古",
+    ("高千穗神社", "神道教", "日本", "远古",
      "天�的降临传说之地，日本神话中天照大神之孙降临地上的圣地",
      "Takachiho Shrine Amano Iwato Miyazaki Japan mythology"),
 
-    ("�的罗之宫(金刀比罗宫)", "神道教", "日本", "远古",
+    ("金刀比罗宫", "神道教", "日本", "远古",
      "海上守护神社，需攀登1368级石阶，日本最著名的参拜阶梯",
      "Kotohiragu Shrine Kagawa 1368 steps Japan"),
 ]

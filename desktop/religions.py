@@ -1,6 +1,7 @@
 """
-全球宗教跨宗融合数据库 V5.0
-12大信仰 × 60圣地 × 祖庭 × 祖师 × 祖训 × 旅游攻略 × 14+12音效
+全球宗教跨宗融合数据库 V8.0
+12大信仰 × 200+圣地 × 120+祖庭 × 130+祖师 × 200+祖训 × 旅游攻略 × 音效
+数据源: 道德经81章·金刚经·圣经·古兰经·薄伽梵歌·吠陀经·论语·古鲁格兰特萨希卜 等核心经典
 """
 
 # ── 宗教配色 + 符号 ────────────────────────────────────
@@ -399,50 +400,113 @@ HOLY_SITES = [
 
 # ── 健康提醒（融入宗教智慧语境）────────────────────────
 HEALTH_REMINDERS = {
-    "喝水": [
-        "身体是灵魂的神殿，请以清水滋养它",
-        "水是生命之源，饮一杯，感恩大地的馈赠",
-        "上善若水——让身体像水一样流动起来",
-        "每一口水都是大自然的恩典，请接受它",
-        "古人云：饮水思源。喝一杯水，感恩当下",
-        "身体渴了，灵魂也需要滋养，先喝杯水吧",
+    # ── 颈椎保健 ──
+    "颈椎放松": [
+        "头缓慢向右倾斜，右手轻压左侧头部，保持15秒换边——办公族颈椎救星",
+        "下巴收紧贴向胸口，双手十指交叉放脑后轻压，拉伸颈后肌群15秒",
+        "头部画∞字：先向左画圈再向右画圈，各5次，速度要慢像打太极",
+        "耸肩运动：双肩用力耸到最高，保持3秒猛然放下，重复10次释放紧张",
+        "仰头望天花板5秒→低头看肚脐5秒→左转看肩膀5秒→右转5秒，循环3轮",
+        "颈椎米字操：用下巴在空中写'米'字，每笔到位，做完整个脖子都松了",
+        "双手握拳放下巴下方，下巴用力往下压拳头，拳头顶住不动，对抗10秒×5组",
+        "转头看身后：身体不动，头慢慢转向右后方看墙角，保持10秒换边",
     ],
-    "站起来走走": [
-        "行走本身就是一种修行，起身走几步吧",
-        "身体是心灵的载体，让它活动起来",
-        "行亦禅——站起来，感受每一步的觉知",
-        "久坐不动违背自然之道，起身活动一下",
-        "朝圣者从不停下脚步，你也站起来走走",
-        "静极而动，动中生慧——起来走两圈吧",
+    # ── 肩背运动 ──
+    "肩背舒展": [
+        "扩胸运动：双臂向后展开如雄鹰展翅，肩胛骨夹紧保持5秒，做10次",
+        "猫牛式：坐在椅子上，吸气挺胸抬头(牛式)→呼气弓背低头(猫式)，做8次",
+        "肩膀画圈：双肩同时向前画大圈10次→向后画大圈10次，幅度越大越好",
+        "背后握手：右手从上方、左手从下方在背后尝试握手，保持15秒换边",
+        "门框拉伸：双手撑住门框两侧，身体前倾，拉伸胸肌和前肩，保持20秒",
+        "蝴蝶展翅：双手放耳后，手肘尽量往后打开→再合拢碰到一起，做15次",
+        "耸肩画圈：肩膀耸起→向后→放下→向前，画完整的圆，正反各10圈",
+        "天使翅膀：背靠墙站立，双臂贴墙做投降姿势，上下滑动像雪地天使10次",
     ],
-    "休息眼睛": [
-        "闭上双眼，向内观照片刻",
-        "眼睛是心灵之窗，让窗户休息一下",
-        "远眺天际，让目光回归自然的辽阔",
-        "闭目养神20秒，感受内在的宁静",
-        "转动眼球，上下左右，缓解疲劳",
+    # ── 腰部运动 ──
+    "腰部活力": [
+        "坐姿转体：双手抱头，上身向右旋转到极限保持5秒→向左，各做8次",
+        "骨盆前后倾：坐椅子上，骨盆前倾挺腰→后倾弓背，有节奏地做20次",
+        "坐姿侧弯：右手举过头顶向左侧弯，拉伸右侧腰，保持15秒换边",
+        "站立体前屈：双脚与肩同宽，缓慢弯腰手碰脚尖(碰不到没关系)，保持20秒",
+        "腰部画圈：双手叉腰，骨盆画大圈，顺时针10圈→逆时针10圈",
+        "椅子扭腰：坐稳后双手抓椅背右侧，身体尽量向右转看后面，保持15秒换边",
+        "站姿挺腰：双手撑腰后方，缓慢向后仰，拉伸腹部和腰前肌群，保持10秒×3",
+        "婴儿式放松：跪坐在地上(或趴在桌上)，额头贴地/桌面，双手前伸放松30秒",
     ],
-    "伸展运动": [
-        "舒展身体，如同莲花绽放",
-        "瑜伽源于灵修——伸展身体即是修行",
-        "抬头挺胸，感受天地之间的力量",
-        "双手合十向上伸展，连接天与地",
-        "扭扭腰，转转脖，让气血流通起来",
-        "五禽戏、八段锦——古人的智慧运动",
+    # ── 手腕手指 ──
+    "手腕护理": [
+        "腕部画圈：双手握拳，手腕顺时针画圈20次→逆时针20次，防鼠标手",
+        "手指钢琴操：十指在桌面上快速弹击如弹钢琴，从小指到拇指来回10轮",
+        "祈祷拉伸：双手合十放胸前，手肘慢慢抬高让手腕弯到90°，保持15秒",
+        "反向祈祷：双手手背相对放胸前，向下压拉伸手腕外侧，保持15秒",
+        "握力训练：用力握拳5秒→猛然张开手指伸到最大5秒，重复15次",
+        "拇指对指：拇指依次轻触食指→中指→无名指→小指→再倒回来，做10轮",
+        "手臂翻转：手臂前伸，掌心朝上→翻转朝下→再翻回来，连续做20次",
+        "橡皮筋训练：五指撑开套着的橡皮筋，张合10次——预防腱鞘炎利器",
     ],
-    "深呼吸": [
-        "吸气——宇宙的能量进入身体；呼气——释放一切烦恼",
-        "安般守意：觉知每一次呼吸的进出",
-        "4-7-8呼吸法：吸气4秒，屏息7秒，呼气8秒",
-        "呼吸是连接身体与灵魂的桥梁",
-        "放松你的肩膀，深深地呼吸三次",
+    # ── 腿部运动 ──
+    "腿部激活": [
+        "坐姿抬腿：坐在椅子上，伸直右腿平举保持10秒→放下换左腿，各做8次",
+        "脚踝画圈：抬起一只脚，脚踝顺时针画圈15次→逆时针15次，换脚",
+        "原地高抬腿：站起来原地高抬腿跑30秒，心率马上上来，醒神利器",
+        "椅子深蹲：站到椅子前，臀部慢慢下坐直到碰到椅面→站起来，做15次",
+        "小腿拉伸：面对墙壁弓步站立，后脚跟踩实拉伸小腿，每侧保持20秒",
+        "坐姿踮脚：脚尖踮起保持3秒→脚跟踮起保持3秒→交替做20次",
+        "靠墙静蹲：背靠墙滑下至大腿平行地面，坚持30秒——腿抖了就对了",
+        "单腿站立：闭眼单脚站立30秒(扶墙也行)，锻炼平衡力和核心",
     ],
-    "微运动": [
-        "做5个深蹲，让血液循环到大脑",
-        "原地踏步30秒，唤醒沉睡的身体",
-        "靠墙静蹲20秒，感受身体的力量",
-        "双手画圈，大圈小圈各10个",
-        "来几个开合跳，让心脏活跃起来",
+    # ── 全身运动 ──
+    "全身唤醒": [
+        "八段锦第一式'两手托天理三焦'：双手交叉上托过头顶，脚跟踮起，做8次",
+        "开合跳30秒：双脚跳开双手举过头→跳回双手放下，简单有效全身热身",
+        "波比跳5个：站立→蹲下撑地→跳脚向后→跳脚收回→站起跳起——全身燃脂王",
+        "俯卧撑10个：标准版或跪姿版都行，激活胸肌手臂核心",
+        "平板支撑30秒：手肘撑地全身绷直像一块木板，核心力量之王",
+        "太极云手：双脚与肩同宽微蹲，双手在身前缓慢画圆，重心左右移动，做2分钟",
+        "拉伸下犬式：双手双脚撑地臀部抬高，身体呈倒V字形，保持30秒拉伸全身",
+        "弹力带划船：把弹力带挂门把手上，坐着做划船动作，练背防驼背",
+    ],
+    # ── 眼部保健 ──
+    "眼部保健": [
+        "20-20-20法则：每20分钟看20英尺(6米)外的东西20秒，缓解眼疲劳",
+        "眼球运动：眼睛向上看→右看→下看→左看→画完整圆圈，正反各5圈",
+        "远近交替：看远处10秒→看手指(30cm)10秒→交替做10次，锻炼睫状肌",
+        "手掌温敷：双手搓热后轻轻覆盖闭合的眼睛，感受温暖，保持30秒",
+        "眨眼操：快速眨眼20次→紧闭双眼5秒→睁开，重复3组——干眼症克星",
+        "眼保健操：按揉太阳穴→刮上眼眶→按压四白穴→揉天应穴，经典永不过时",
+        "看绿色植物1分钟：把目光投向窗外的树木或桌上的绿植，放松视神经",
+        "闭目养神：闭上眼睛，想象自己站在广阔的草原上眺望远方，保持1分钟",
+    ],
+    # ── 办公桌微健身 ──
+    "桌边健身": [
+        "桌面俯卧撑：双手撑桌边与肩同宽，做倾斜俯卧撑15个，简单但有效",
+        "椅子臂屈伸：双手撑椅子边缘，臀部悬空，手臂弯曲下沉→撑起，做10个",
+        "坐姿提踵：坐着双脚平放地面，脚后跟用力抬起→放下，连续做30次",
+        "坐姿夹纸：双膝之间夹一张A4纸(或书本)，大腿内侧用力夹紧15秒×5组",
+        "桌下踢腿：坐着把腿在桌下交替踢出伸直，像骑自行车一样，做30秒",
+        "坐姿收腹：坐直，吸气收紧腹部保持10秒→呼气放松，做15次练核心",
+        "手臂弯举：拿起水瓶当哑铃，做二头肌弯举15次×3组，左右手都练",
+        "等距推墙：双手推墙用力10秒→放松5秒，重复8次，激活胸肌和手臂",
+    ],
+    # ── 放松与冥想 ──
+    "正念放松": [
+        "身体扫描：从脚趾开始往上觉察每个部位有没有紧张，一一放松它",
+        "渐进式放松：握紧右拳5秒→松开感受放松→左拳→双脚→全身，逐个部位",
+        "5-4-3-2-1着陆法：看5样东西→摸4样→听3种声音→闻2种气味→尝1种味道",
+        "正念饮水：端起水杯，感受杯子的温度、水的重量，慢慢喝一口专注品味",
+        "3分钟冥想：闭眼坐正，只关注呼吸，杂念来了不理它让它飘走",
+        "感恩练习：闭上眼想3件今天值得感恩的事，哪怕很小——重塑正向神经回路",
+        "肩颈自我按摩：右手搓揉左肩斜方肌30秒→换边，遇到硬结多按几下",
+        "百会穴点按：头顶正中百会穴用中指按压旋转30秒，提神醒脑通气血",
+    ],
+    # ── 喝水提醒 ──
+    "喝水时间": [
+        "身体是灵魂的神殿，请以清水滋养它——现在就喝一杯",
+        "你已经多久没喝水了？起身倒杯温水，边走边喝一举两得",
+        "中医说'晨起一杯水胜过十副药'——不管几点先喝一杯再说",
+        "脱水会让专注力下降12%——喝杯水，大脑会感谢你的",
+        "泡杯绿茶或花茶，茶香本身就是一种疗愈",
+        "柠檬水、蜂蜜水、淡盐水——给白水加点变化今天换个口味吧",
     ],
 }
 
@@ -926,6 +990,40 @@ CHANT_SOUNDS = {
 
 
 # ══════════════════════════════════════════════════════
+#  V7.0 宗教经典语录池 — 从12部核心经典扩充，每次随机展示
+# ══════════════════════════════════════════════════════
+# religion → [(orig, source, cn), ...]
+# 主数据源: scripture_quotes.py (道德经81章/金刚经/圣经/古兰经/吠陀经 等)
+# 补充源: HOLY_SITES 圣地语句 + ANCESTRAL_TEACHINGS 祖训
+
+from scripture_quotes import SCRIPTURE_QUOTES
+
+def _build_religion_quotes():
+    """合并经典语录 + 圣地语句 + 祖训，构建每个宗教的完整语录池"""
+    pool = {}
+    # 主数据源: 经典语录 (每宗教 15-50 条)
+    for religion, quotes in SCRIPTURE_QUOTES.items():
+        pool[religion] = list(quotes)
+    # 补充: 圣地数据中的语句 (去重)
+    for site in HOLY_SITES:
+        religion = site[1]
+        quote = (site[5], site[6], site[7])
+        existing_origs = {q[0][:20] for q in pool.get(religion, [])}
+        if site[5][:20] not in existing_origs:
+            pool.setdefault(religion, []).append(quote)
+    # 补充: 祖训数据 (去重)
+    for t in ANCESTRAL_TEACHINGS:
+        religion = t[1]
+        quote = (t[3], f"——{t[2]}", t[4])
+        existing_origs = {q[0][:20] for q in pool.get(religion, [])}
+        if t[3][:20] not in existing_origs:
+            pool.setdefault(religion, []).append(quote)
+    return pool
+
+RELIGION_QUOTES = _build_religion_quotes()
+
+
+# ══════════════════════════════════════════════════════
 #  V5.1 新增: 圣地/祖庭 GPS坐标 + UTC时区偏移
 # ══════════════════════════════════════════════════════
 # site_name → (纬度, 经度, UTC偏移小时)
@@ -1231,3 +1329,117 @@ GOD_PERSPECTIVES = [
     ("琐罗亚斯德教", "智慧之神阿胡拉·马兹达，善恶二元论"),
     ("AI的视角", "人类对神的渴望，本质上是对自身局限性的超越欲"),
 ]
+
+
+# ══════════════════════════════════════════════════════
+#  V8.0 数据大扩充 — 合并12大信仰深度研究数据
+#  佛教49祖师+道教43祖师+儒家30祖师+基督教30+伊斯兰22+...
+# ══════════════════════════════════════════════════════
+
+from data_buddhism import (
+    EXTRA_BUDDHISM_SITES, EXTRA_BUDDHISM_TEMPLES, EXTRA_BUDDHISM_PATRIARCHS, EXTRA_BUDDHISM_TEACHINGS,
+    EXTRA_TIBETAN_SITES, EXTRA_TIBETAN_TEMPLES, EXTRA_TIBETAN_PATRIARCHS, EXTRA_TIBETAN_TEACHINGS,
+)
+from data_taoism_confucianism import (
+    EXTRA_TAOISM_SITES, EXTRA_TAOISM_TEMPLES, EXTRA_TAOISM_PATRIARCHS, EXTRA_TAOISM_TEACHINGS,
+    EXTRA_CONFUCIANISM_SITES, EXTRA_CONFUCIANISM_TEMPLES, EXTRA_CONFUCIANISM_PATRIARCHS, EXTRA_CONFUCIANISM_TEACHINGS,
+)
+from data_abrahamic import (
+    EXTRA_CHRISTIANITY_SITES, EXTRA_CHRISTIANITY_TEMPLES, EXTRA_CHRISTIANITY_PATRIARCHS, EXTRA_CHRISTIANITY_TEACHINGS,
+    EXTRA_ISLAM_SITES, EXTRA_ISLAM_TEMPLES, EXTRA_ISLAM_PATRIARCHS, EXTRA_ISLAM_TEACHINGS,
+    EXTRA_JUDAISM_SITES, EXTRA_JUDAISM_TEMPLES, EXTRA_JUDAISM_PATRIARCHS, EXTRA_JUDAISM_TEACHINGS,
+)
+from data_other_religions import (
+    EXTRA_HINDUISM_SITES, EXTRA_HINDUISM_TEMPLES, EXTRA_HINDUISM_PATRIARCHS, EXTRA_HINDUISM_TEACHINGS,
+    EXTRA_SIKHISM_SITES, EXTRA_SIKHISM_TEMPLES, EXTRA_SIKHISM_PATRIARCHS, EXTRA_SIKHISM_TEACHINGS,
+    EXTRA_SHINTO_SITES, EXTRA_SHINTO_TEMPLES, EXTRA_SHINTO_PATRIARCHS, EXTRA_SHINTO_TEACHINGS,
+    EXTRA_INDIGENOUS_SITES, EXTRA_INDIGENOUS_TEMPLES, EXTRA_INDIGENOUS_PATRIARCHS, EXTRA_INDIGENOUS_TEACHINGS,
+    EXTRA_BAHAI_SITES, EXTRA_BAHAI_TEMPLES, EXTRA_BAHAI_PATRIARCHS, EXTRA_BAHAI_TEACHINGS,
+)
+
+
+def _dedupe_by_name(existing, new_items):
+    """按第一个字段(名称)去重合并"""
+    existing_names = {item[0] for item in existing}
+    for item in new_items:
+        if item[0] not in existing_names:
+            existing.append(item)
+            existing_names.add(item[0])
+
+
+# ── 合并圣地 ──
+_dedupe_by_name(HOLY_SITES, EXTRA_BUDDHISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_TIBETAN_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_TAOISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_CONFUCIANISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_CHRISTIANITY_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_ISLAM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_JUDAISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_HINDUISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_SIKHISM_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_SHINTO_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_INDIGENOUS_SITES)
+_dedupe_by_name(HOLY_SITES, EXTRA_BAHAI_SITES)
+
+# ── 合并祖庭 ──
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_BUDDHISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_TIBETAN_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_TAOISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_CONFUCIANISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_CHRISTIANITY_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_ISLAM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_JUDAISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_HINDUISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_SIKHISM_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_SHINTO_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_INDIGENOUS_TEMPLES)
+_dedupe_by_name(ANCESTRAL_TEMPLES, EXTRA_BAHAI_TEMPLES)
+
+# ── 合并祖师 ──
+_dedupe_by_name(PATRIARCHS, EXTRA_BUDDHISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_TIBETAN_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_TAOISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_CONFUCIANISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_CHRISTIANITY_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_ISLAM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_JUDAISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_HINDUISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_SIKHISM_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_SHINTO_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_INDIGENOUS_PATRIARCHS)
+_dedupe_by_name(PATRIARCHS, EXTRA_BAHAI_PATRIARCHS)
+
+# ── 合并祖训 ──
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_BUDDHISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_TIBETAN_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_TAOISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_CONFUCIANISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_CHRISTIANITY_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_ISLAM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_JUDAISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_HINDUISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_SIKHISM_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_SHINTO_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_INDIGENOUS_TEACHINGS)
+_dedupe_by_name(ANCESTRAL_TEACHINGS, EXTRA_BAHAI_TEACHINGS)
+
+# ── 合并深度旅游攻略 (367条新增) ──
+from travel_buddhism import TRAVEL_GUIDES_BUDDHISM
+from travel_taoism_confucianism import TRAVEL_GUIDES_TAOISM_CONFUCIANISM
+from travel_abrahamic import TRAVEL_GUIDES_ABRAHAMIC
+from travel_other import TRAVEL_GUIDES_OTHER
+
+import re as _re
+def _strip_country(name):
+    """去除攻略key中的国家后缀: '三清山(中国)' → '三清山'"""
+    return _re.sub(r'\([^)]*\)$', '', name).strip()
+
+for _guide_dict in [TRAVEL_GUIDES_BUDDHISM, TRAVEL_GUIDES_TAOISM_CONFUCIANISM,
+                     TRAVEL_GUIDES_ABRAHAMIC, TRAVEL_GUIDES_OTHER]:
+    for _site, _info in _guide_dict.items():
+        # 同时用原始key和去国家后缀的key注册，确保匹配
+        _bare = _strip_country(_site)
+        if _bare not in TRAVEL_GUIDES:
+            TRAVEL_GUIDES[_bare] = _info
+        if _site not in TRAVEL_GUIDES:
+            TRAVEL_GUIDES[_site] = _info

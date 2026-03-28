@@ -1,6 +1,6 @@
 """
-全球祖庭之旅 v1.0 — 修行桌面助手
-12大信仰 × 60圣地 × 36祖庭 × 40祖师 × 50祖训
+全球祖庭之旅 v2.0 — 修行桌面助手
+12大信仰 × 200+圣地 × 260+祖庭 × 290+祖师 × 190+祖训 × 370+经典语录
 × 曹溪祖师印偈三十篇 × 愿命三十印修炼体系
 × 旅游攻略 × GPS坐标 × 当地天气/时间
 × 12原语言吟诵MP3 × 5系修炼吟诵 × 男女交替播报 + 当地语言
@@ -31,7 +31,7 @@ except ImportError:
 from religions import (
     HOLY_SITES, RELIGION_STYLES, HEALTH_REMINDERS, UNIVERSAL_WISDOM,
     ANCESTRAL_TEMPLES, PATRIARCHS, ANCESTRAL_TEACHINGS, TRAVEL_GUIDES,
-    CHANT_SOUNDS, SITE_COORDS,
+    CHANT_SOUNDS, SITE_COORDS, RELIGION_QUOTES,
     CAOXI_SEALS, SEAL_SERIES_COLORS, CAOXI_POEMS, MINDFUL_REMINDERS,
     GOD_PERSPECTIVES,
 )
@@ -945,7 +945,12 @@ def show_popup():
     # 基础数据 (始终从圣地轮换中获取宗教)
     site = next_site()
     site_name, religion, country, ambient_sound = site[0], site[1], site[2], site[3]
-    poem_orig, poem_src, poem_cn = site[5], site[6], site[7]
+    # V7.0: 从宗教语录池随机选取，不再固定显示同一句
+    quotes_pool = RELIGION_QUOTES.get(religion, [])
+    if quotes_pool:
+        poem_orig, poem_src, poem_cn = random.choice(quotes_pool)
+    else:
+        poem_orig, poem_src, poem_cn = site[5], site[6], site[7]
 
     cat = random.choice(list(HEALTH_REMINDERS.keys()))
     msg = random.choice(HEALTH_REMINDERS[cat])
@@ -1124,7 +1129,7 @@ def create_tray():
             pystray.MenuItem("退出", lambda i, it: (
                 setattr(st, 'running', False), stop_ambient(), i.stop(), st.root.after(0, st.root.quit))),
         )
-        st.tray = pystray.Icon("zuting", img, "全球祖庭之旅 v1.0 — 修行桌面助手", menu)
+        st.tray = pystray.Icon("zuting", img, "全球祖庭之旅 v2.0 — 修行桌面助手", menu)
         threading.Thread(target=st.tray.run, daemon=True).start()
     except Exception:
         pass
@@ -1132,13 +1137,13 @@ def create_tray():
 
 def create_panel():
     root = tk.Tk()
-    root.title("全球祖庭之旅 v1.0")
+    root.title("全球祖庭之旅 v2.0")
     root.geometry("480x380")
     root.configure(bg="#1a1a2e")
     root.resizable(False, False)
     st.root = root
 
-    tk.Label(root, text="全球祖庭之旅 v1.0",
+    tk.Label(root, text="全球祖庭之旅 v2.0",
              font=("Microsoft YaHei UI", 16, "bold"),
              fg="#43e97b", bg="#1a1a2e").pack(pady=(16, 2))
     tk.Label(root, text="修行桌面助手 · 小鸿陪你走祖庭",
@@ -1219,7 +1224,7 @@ def loop():
 
 
 def main():
-    print("全球祖庭之旅 v1.0 — 修行桌面助手 · 小鸿陪你走祖庭")
+    print("全球祖庭之旅 v2.0 — 修行桌面助手 · 小鸿陪你走祖庭")
 
     miss = []
     for p, i in [("edge-tts", "edge_tts"), ("pygame", "pygame"), ("pystray", "pystray"), ("Pillow", "PIL")]:
