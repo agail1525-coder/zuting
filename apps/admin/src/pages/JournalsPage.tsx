@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Switch, message } from 'antd';
+import { Table, Card, Typography, Tag, Switch, Input, Select, Space, message } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getJournals, updateJournal } from '../lib/api';
 import type { Journal } from '../types';
@@ -9,23 +10,28 @@ const { Title, Paragraph } = Typography;
 
 export default function JournalsPage() {
   const [data, setData] = useState<Journal[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [publicFilter, setPublicFilter] = useState<string>('all');
 
-  const fetchJournals = () => {
+  const fetchJournals = (p = page, ps = pageSize) => {
     setLoading(true);
-    getJournals()
-      .then(setData)
-      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
+    getJournals(p, ps)
+      .then((res) => { setData(res.data); setTotal(res.total); })
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); setTotal(0); })
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchJournals(); }, []);
+  useEffect(() => { fetchJournals(page, pageSize); }, [page, pageSize]);
 
   const handleTogglePublic = async (id: string, currentValue: boolean) => {
     try {
       await updateJournal(id, { isPublic: !currentValue });
       message.success(currentValue ? '已设为私密' : '已设为公开');
-      fetchJournals();
+      fetchJournals(page, pageSize);
     } catch {
       message.error('操作失败');
     }
@@ -91,19 +97,60 @@ export default function JournalsPage() {
     },
   ];
 
+  const filteredData = data.filter((item) => {
+    const keyword = searchText.toLowerCase();
+    const matchesSearch = !searchText ||
+      item.title?.toLowerCase().includes(keyword) ||
+      item.content?.toLowerCase().includes(keyword) ||
+      (item.user?.name || item.author || '').toLowerCase().includes(keyword);
+    const matchesPublic = publicFilter === 'all' ||
+      (publicFilter === 'public' && item.isPublic) ||
+      (publicFilter === 'private' && !item.isPublic);
+    return matchesSearch && matchesPublic;
+  });
+
   return (
     <>
-      <Title level={4} style={{ color: '#D4A855', marginBottom: 16 }}>
-        朝圣日记
-      </Title>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+          朝圣日记
+        </Title>
+        <Space>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="搜索标题/内容/作者..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            allowClear
+            style={{ width: 240 }}
+          />
+          <Select
+            value={publicFilter}
+            onChange={setPublicFilter}
+            style={{ width: 120 }}
+            options={[
+              { value: 'all', label: '全部状态' },
+              { value: 'public', label: '公开' },
+              { value: 'private', label: '私密' },
+            ]}
+          />
+        </Space>
+      </div>
       <Card>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
           locale={{ emptyText: '暂无数据' }}
-          pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `共 ${t} 条` }}
+          pagination={{
+            current: page,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
           size="middle"
         />
       </Card>

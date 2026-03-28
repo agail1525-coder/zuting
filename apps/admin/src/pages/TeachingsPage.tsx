@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Select, Space, Tag, Tooltip, Button, Modal, Form, Input, Popconfirm, message } from 'antd';
+import { Table, Card, Typography, Select, Space, Tag, Tooltip, Button, Modal, Form, Input, Popconfirm, message, Alert } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getTeachings, getReligions, createTeaching, updateTeaching, deleteTeaching } from '../lib/api';
@@ -15,15 +15,17 @@ export default function TeachingsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Teaching | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getReligions().then(setReligions);
+    getReligions().then(setReligions).catch(() => message.error('信仰列表加载失败'));
   }, []);
 
   const load = () => {
     setLoading(true);
-    getTeachings(religionFilter).then(setData).finally(() => setLoading(false));
+    setError(null);
+    getTeachings(religionFilter).then(setData).catch((e: Error) => { setError(e.message || '加载失败'); message.error('数据加载失败'); }).finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, [religionFilter]);
@@ -161,6 +163,7 @@ export default function TeachingsPage() {
           </Button>
         </Space>
       </div>
+      {error && <Alert type="error" message={error} closable onClose={() => setError(null)} style={{ marginBottom: 16 }} />}
       <Card>
         <Table
           columns={columns}

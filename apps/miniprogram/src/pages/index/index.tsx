@@ -46,18 +46,10 @@ export default function IndexPage() {
       setFeaturedSites(siteList.slice(0, 6))
     } catch (err) {
       console.error('Failed to load data:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
     } finally {
       setLoading(false)
     }
-  }
-
-  if (loading) {
-    return (
-      <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
-      </View>
-    )
   }
 
   return (
@@ -110,6 +102,40 @@ export default function IndexPage() {
           {religions.map(r => (
             <ReligionCard key={r.id} religion={r} />
           ))}
+        </View>
+      </View>
+
+      {/* Content Entry Cards */}
+      <View className='section'>
+        <Text className='section-title'>核心内容</Text>
+        <View className='entry-grid'>
+          <View
+            className='entry-card entry-card--temple'
+            hoverClass='entry-card--hover'
+            onClick={() => Taro.navigateTo({ url: '/pages/temples/index' })}
+          >
+            <Text className='entry-card__icon'>{'\u{1F3DB}'}</Text>
+            <Text className='entry-card__title'>祖庭</Text>
+            <Text className='entry-card__desc'>{templeCount ?? '--'} 座祖庭</Text>
+          </View>
+          <View
+            className='entry-card entry-card--patriarch'
+            hoverClass='entry-card--hover'
+            onClick={() => Taro.navigateTo({ url: '/pages/patriarchs/index' })}
+          >
+            <Text className='entry-card__icon'>{'\u{1F9D8}'}</Text>
+            <Text className='entry-card__title'>祖师</Text>
+            <Text className='entry-card__desc'>历代祖师大德</Text>
+          </View>
+          <View
+            className='entry-card entry-card--teaching'
+            hoverClass='entry-card--hover'
+            onClick={() => Taro.navigateTo({ url: '/pages/teachings/index' })}
+          >
+            <Text className='entry-card__icon'>{'\u{1F4DC}'}</Text>
+            <Text className='entry-card__title'>祖训</Text>
+            <Text className='entry-card__desc'>传世经典语录</Text>
+          </View>
         </View>
       </View>
 

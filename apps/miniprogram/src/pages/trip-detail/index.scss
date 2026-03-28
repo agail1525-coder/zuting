@@ -4,6 +4,47 @@
   padding: 24rpx 32rpx;
 }
 
+/* Auth Gate */
+.auth-gate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx;
+
+  &__icon {
+    font-size: 96rpx;
+    margin-bottom: 32rpx;
+  }
+
+  &__title {
+    font-size: 40rpx;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 16rpx;
+  }
+
+  &__desc {
+    font-size: 28rpx;
+    color: #94a3b8;
+    margin-bottom: 48rpx;
+    text-align: center;
+  }
+
+  &__btn {
+    background: linear-gradient(135deg, #D4A855, #b8922e);
+    border-radius: 40rpx;
+    padding: 20rpx 64rpx;
+  }
+
+  &__btn-text {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
 /* Progress Steps */
 .progress {
   display: flex;

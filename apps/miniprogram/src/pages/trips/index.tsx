@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { fetchTrips, Trip } from '../../lib/api'
+import { isLoggedIn } from '../../lib/auth'
 import './index.scss'
 
 type StatusFilter = '全部' | 'DRAFT' | 'PLANNING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED'
@@ -45,12 +46,18 @@ const FILTER_LIST: { key: StatusFilter; label: string }[] = [
 ]
 
 export default function TripsPage() {
+  const [authed, setAuthed] = useState(false)
   const [activeStatus, setActiveStatus] = useState<StatusFilter>('全部')
   const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  useDidShow(() => {
+    setAuthed(isLoggedIn())
+  })
+
   useEffect(() => {
+    if (!authed) return
     setLoading(true)
     setError(null)
     const statusParam = activeStatus === '全部' ? undefined : activeStatus
@@ -63,10 +70,28 @@ export default function TripsPage() {
         setError(err instanceof Error ? err.message : String(err))
         setLoading(false)
       })
-  }, [activeStatus])
+  }, [activeStatus, authed])
 
   const handleTripTap = (tripId: string) => {
     Taro.navigateTo({ url: `/pages/trip-detail/index?id=${tripId}` })
+  }
+
+  if (!authed) {
+    return (
+      <View className='trips-page'>
+        <View className='auth-gate'>
+          <Text className='auth-gate__icon'>{'\u{1F9ED}'}</Text>
+          <Text className='auth-gate__title'>我的行程</Text>
+          <Text className='auth-gate__desc'>请先登录后查看您的行程</Text>
+          <View
+            className='auth-gate__btn'
+            onClick={() => Taro.switchTab({ url: '/pages/profile/index' })}
+          >
+            <Text className='auth-gate__btn-text'>去登录</Text>
+          </View>
+        </View>
+      </View>
+    )
   }
 
   return (

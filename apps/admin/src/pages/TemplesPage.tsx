@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input, Popconfirm, message } from 'antd';
+import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input, InputNumber, Popconfirm, message, Alert } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getTemples, getReligions, createTemple, updateTemple, deleteTemple } from '../lib/api';
@@ -15,15 +15,17 @@ export default function TemplesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Temple | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getReligions().then(setReligions);
+    getReligions().then(setReligions).catch(() => message.error('信仰列表加载失败'));
   }, []);
 
   const load = () => {
     setLoading(true);
-    getTemples(religionFilter).then(setData).finally(() => setLoading(false));
+    setError(null);
+    getTemples(religionFilter).then(setData).catch((e: Error) => { setError(e.message || '加载失败'); message.error('数据加载失败'); }).finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, [religionFilter]);
@@ -46,6 +48,8 @@ export default function TemplesPage() {
       foundingDate: record.foundingDate,
       description: record.description,
       imageUrl: record.imageUrl,
+      latitude: record.latitude,
+      longitude: record.longitude,
       religionId: record.religionId,
     });
     setModalOpen(true);
@@ -109,6 +113,15 @@ export default function TemplesPage() {
       key: 'country',
     },
     {
+      title: '坐标',
+      key: 'coordinates',
+      width: 160,
+      render: (_: unknown, r: Temple) =>
+        r.latitude != null && r.longitude != null
+          ? `${r.latitude.toFixed(4)}, ${r.longitude.toFixed(4)}`
+          : <span style={{ color: '#999' }}>未设置</span>,
+    },
+    {
       title: '所属信仰',
       dataIndex: 'religionId',
       key: 'religionId',
@@ -168,6 +181,7 @@ export default function TemplesPage() {
           </Button>
         </Space>
       </div>
+      {error && <Alert type="error" message={error} closable onClose={() => setError(null)} style={{ marginBottom: 16 }} />}
       <Card>
         <Table
           columns={columns}
@@ -212,6 +226,14 @@ export default function TemplesPage() {
           <Form.Item name="imageUrl" label="图片URL" rules={[{ type: 'url', message: '请输入有效的URL' }]}>
             <Input placeholder="https://..." />
           </Form.Item>
+          <Space size="middle" style={{ display: 'flex' }}>
+            <Form.Item name="latitude" label="纬度" style={{ flex: 1 }} rules={[{ type: 'number', min: -90, max: 90, message: '纬度范围 -90 ~ 90' }]}>
+              <InputNumber style={{ width: '100%' }} step={0.000001} precision={6} placeholder="例: 34.5075" min={-90} max={90} />
+            </Form.Item>
+            <Form.Item name="longitude" label="经度" style={{ flex: 1 }} rules={[{ type: 'number', min: -180, max: 180, message: '经度范围 -180 ~ 180' }]}>
+              <InputNumber style={{ width: '100%' }} step={0.000001} precision={6} placeholder="例: 112.9372" min={-180} max={180} />
+            </Form.Item>
+          </Space>
           <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>
             <Select
               placeholder="选择信仰"

@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 import { getAccessToken } from './auth'
 
 const BASE_URL = process.env.TARO_APP_API_URL
-  || (process.env.NODE_ENV === 'development' ? 'http://localhost:3002/api' : 'https://zuting.fszyl.top/api')
+  || (process.env.NODE_ENV === 'development' ? 'http://192.168.1.22:3002/api' : 'https://zuting.fszyl.top/api')
 
 export interface Religion {
   id: string
@@ -66,6 +66,10 @@ export interface Patriarch {
 
 export interface Teaching {
   id: string
+  name: string
+  originalText: string
+  sourceText?: string
+  translationCn?: string
   content: string
   source: string
   religion?: Religion
@@ -154,6 +158,10 @@ export function fetchPatriarchById(id: string) {
 // Teaching endpoints
 export function fetchTeachings(religionId?: string) {
   return request<Teaching[]>('/teachings', religionId ? { religionId } : undefined)
+}
+
+export function fetchTeachingById(id: string) {
+  return request<Teaching>(`/teachings/${id}`)
 }
 
 // Seal endpoints
@@ -245,7 +253,7 @@ export interface Journal {
   createdAt: string
 }
 
-export function fetchJournals(params?: { page?: string; limit?: string; isPublic?: string }) {
+export function fetchJournals(params?: { page?: string; limit?: string; isPublic?: string; userId?: string }) {
   return request<PaginatedResponse<Journal>>('/journals', params)
 }
 

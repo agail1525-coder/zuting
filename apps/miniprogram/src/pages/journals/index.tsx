@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { fetchJournals, Journal } from '../../lib/api'
+import { isLoggedIn, getCachedUser } from '../../lib/auth'
 import './index.scss'
 
 const MOOD_EMOJI: Record<string, string> = {
@@ -13,13 +14,37 @@ const MOOD_EMOJI: Record<string, string> = {
   '\u5B81\u9759': '\u{1F343}',
 }
 
+type TabKey = 'mine' | 'community'
+
 export default function JournalsPage() {
+  const [authed, setAuthed] = useState(isLoggedIn())
+  const [tab, setTab] = useState<TabKey>(isLoggedIn() ? 'mine' : 'community')
   const [journals, setJournals] = useState<Journal[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchJournals({ isPublic: 'true', limit: '50' })
+  // Re-check auth on page show (e.g. returning from login)
+  Taro.useDidShow(() => {
+    const nowLoggedIn = isLoggedIn()
+    setAuthed(nowLoggedIn)
+    if (!nowLoggedIn && tab === 'mine') {
+      setTab('community')
+    }
+  })
+
+  const loadJournals = useCallback((activeTab: TabKey) => {
+    setLoading(true)
+    setError(null)
+    const params: Record<string, string> = { limit: '50' }
+    if (activeTab === 'mine') {
+      const user = getCachedUser()
+      if (user) {
+        params.userId = user.id
+      }
+    } else {
+      params.isPublic = 'true'
+    }
+    fetchJournals(params)
       .then(res => {
         setJournals(res.data)
         setLoading(false)
@@ -29,6 +54,15 @@ export default function JournalsPage() {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    loadJournals(tab)
+  }, [tab, loadJournals])
+
+  const handleTabChange = (newTab: TabKey) => {
+    if (newTab === tab) return
+    setTab(newTab)
+  }
 
   const handleJournalTap = (id: string) => {
     Taro.navigateTo({ url: `/pages/journal-detail/index?id=${id}` })
@@ -56,15 +90,40 @@ export default function JournalsPage() {
   }
 
   const handleCreateJournal = () => {
+    if (!authed) {
+      Taro.showToast({ title: '请先登录', icon: 'none', duration: 2000 })
+      Taro.switchTab({ url: '/pages/profile/index' })
+      return
+    }
     Taro.navigateTo({ url: '/pages/journal-create/index' })
   }
+
+  const tabBar = authed ? (
+    <View className='journal-tabs'>
+      <View
+        className={`journal-tabs__item${tab === 'mine' ? ' journal-tabs__item--active' : ''}`}
+        onClick={() => handleTabChange('mine')}
+      >
+        <Text className='journal-tabs__text'>我的日记</Text>
+      </View>
+      <View
+        className={`journal-tabs__item${tab === 'community' ? ' journal-tabs__item--active' : ''}`}
+        onClick={() => handleTabChange('community')}
+      >
+        <Text className='journal-tabs__text'>社区日记</Text>
+      </View>
+    </View>
+  ) : null
 
   if (journals.length === 0) {
     return (
       <View className='journals-page'>
+        {tabBar}
         <View className='empty'>
           <Text className='empty__icon'>{'\u{1F4DD}'}</Text>
-          <Text className='empty__text'>暂无朝圣日记</Text>
+          <Text className='empty__text'>
+            {tab === 'mine' ? '你还没有写过日记' : '暂无朝圣日记'}
+          </Text>
           <Text className='empty__sub'>记录你的第一次朝圣之旅吧</Text>
         </View>
         <View className='fab' onClick={handleCreateJournal}>
@@ -77,6 +136,7 @@ export default function JournalsPage() {
 
   return (
     <View className='journals-page'>
+      {tabBar}
       <ScrollView className='journal-list' scrollY>
         {journals.map(journal => (
           <View

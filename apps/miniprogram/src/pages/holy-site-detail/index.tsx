@@ -9,6 +9,7 @@ export default function HolySiteDetailPage() {
   const { id } = router.params
   const [site, setSite] = useState<HolySite | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useShareAppMessage(() => ({
     title: site ? `${site.name} — 全球祖庭之旅` : '探索圣地 — 全球祖庭之旅',
@@ -29,11 +30,12 @@ export default function HolySiteDetailPage() {
   const loadSite = async () => {
     try {
       setLoading(true)
+      setError(null)
       const data = await fetchHolySiteById(id!)
       setSite(data)
     } catch (err) {
       console.error('Failed to load site:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      setError('网络错误，请稍后重试')
     } finally {
       setLoading(false)
     }
@@ -53,6 +55,15 @@ export default function HolySiteDetailPage() {
     return (
       <View className='container'>
         <Text className='loading-text'>正在加载...</Text>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View className='container'>
+        <Text className='empty-text'>{error}</Text>
+        <Text className='retry-btn' onClick={loadSite}>点击重试</Text>
       </View>
     )
   }

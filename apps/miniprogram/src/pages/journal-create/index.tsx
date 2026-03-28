@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { View, Text, Input, Textarea, Switch } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { createJournal } from '../../lib/api'
+import { isLoggedIn } from '../../lib/auth'
 import './index.scss'
 
 const MOODS = [
@@ -14,6 +15,13 @@ const MOODS = [
 ]
 
 export default function JournalCreatePage() {
+  useDidShow(() => {
+    if (!isLoggedIn()) {
+      Taro.showToast({ title: '请先登录', icon: 'none' })
+      Taro.redirectTo({ url: '/pages/profile/index' })
+    }
+  })
+
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [mood, setMood] = useState('')

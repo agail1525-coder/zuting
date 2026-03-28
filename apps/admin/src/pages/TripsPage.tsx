@@ -48,29 +48,30 @@ const ADMIN_ACTIONS: Record<string, { action: string; label: string; icon: React
 
 export default function TripsPage() {
   const [data, setData] = useState<Trip[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<Trip | null>(null);
   const [activeTab, setActiveTab] = useState('all');
   const [rejectModal, setRejectModal] = useState<{ id: string; action: string } | null>(null);
   const [reason, setReason] = useState('');
 
-  const load = () => {
+  const load = (p = page, ps = pageSize, status?: string) => {
     setLoading(true);
-    getTrips()
-      .then(setData)
-      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
+    getTrips(p, ps, status === 'all' ? undefined : status)
+      .then((res) => { setData(res.data); setTotal(res.total); })
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); setTotal(0); })
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
-
-  const filteredData = activeTab === 'all' ? data : data.filter((t) => t.status === activeTab);
+  useEffect(() => { load(page, pageSize, activeTab); }, [page, pageSize, activeTab]);
 
   const handleTransition = async (id: string, action: string, transitionReason?: string) => {
     try {
       await transitionTrip(id, action, transitionReason);
       message.success('状态转换成功');
-      load();
+      load(page, pageSize, activeTab);
     } catch {
       message.error('状态转换失败');
     }
@@ -80,7 +81,7 @@ export default function TripsPage() {
     try {
       await transitionTrip(id, 'cancel');
       message.success('已取消行程');
-      load();
+      load(page, pageSize, activeTab);
     } catch {
       message.error('取消失败');
     }
@@ -176,11 +177,8 @@ export default function TripsPage() {
   ];
 
   const tabItems = [
-    { key: 'all', label: `全部 (${data.length})` },
-    ...Object.entries(STATUS_MAP).map(([key, val]) => {
-      const count = data.filter((t) => t.status === key).length;
-      return count > 0 ? { key, label: `${val.label} (${count})` } : null;
-    }).filter((item): item is { key: string; label: string } => item !== null),
+    { key: 'all', label: '全部' },
+    ...Object.entries(STATUS_MAP).map(([key, val]) => ({ key, label: val.label })),
   ];
 
   return (
@@ -189,14 +187,21 @@ export default function TripsPage() {
         行程管理
       </Title>
       <Card>
-        <Tabs items={tabItems} activeKey={activeTab} onChange={setActiveTab} style={{ marginBottom: 16 }} />
+        <Tabs items={tabItems} activeKey={activeTab} onChange={(key) => { setActiveTab(key); setPage(1); }} style={{ marginBottom: 16 }} />
         <Table
           columns={columns}
-          dataSource={filteredData}
+          dataSource={data}
           rowKey="id"
           loading={loading}
           locale={{ emptyText: '暂无数据' }}
-          pagination={{ pageSize: 10, showTotal: (t) => `共 ${t} 条` }}
+          pagination={{
+            current: page,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
           size="middle"
         />
       </Card>

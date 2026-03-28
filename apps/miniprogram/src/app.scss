@@ -69,6 +69,17 @@ page {
   font-size: 28rpx;
 }
 
+.retry-btn {
+  display: block;
+  margin-top: 24rpx;
+  padding: 16rpx 48rpx;
+  font-size: 28rpx;
+  color: #D4A855;
+  border: 1px solid #D4A855;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
 /* Badge */
 .badge {
   display: inline-block;

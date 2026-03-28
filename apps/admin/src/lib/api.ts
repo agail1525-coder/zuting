@@ -2,7 +2,7 @@ import { getToken, logout } from './auth';
 import type {
   Religion, HolySite, Temple, Patriarch, Teaching, Seal,
   Trip, Order, Journal, Review, Coupon, CreateCouponDto,
-  Report, ReportStats, Upload, DeleteResponse,
+  Report, ReportStats, Upload, DeleteResponse, User,
   XiaohongChatResponse, NotificationSendResponse,
 } from '../types';
 
@@ -91,7 +91,14 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
     throw new Error('Session expired');
   }
   if (!res.ok) {
-    throw new Error(`API ${res.status}: ${res.statusText}`);
+    let detail = '';
+    try {
+      const body = await res.json();
+      detail = Array.isArray(body.message) ? body.message.join('; ') : body.message;
+    } catch {
+      // non-JSON response, fall through
+    }
+    throw new Error(detail || `API ${res.status}: ${res.statusText}`);
   }
   return res.json();
 }
@@ -157,7 +164,13 @@ export const deleteSeal = (id: number) =>
   fetchJson<Seal>(`/seals/${id}`, { method: 'DELETE' });
 
 // ---- Trips ----
-export const getTrips = () => fetchJson<Trip[]>('/trips');
+export const getTrips = (page = 1, limit = 20, status?: string) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  if (status) params.set('status', status);
+  return fetchJson<{ data: Trip[]; total: number; page: number; limit: number }>(
+    `/trips?${params.toString()}`,
+  );
+};
 export const getTrip = (id: string) => fetchJson<Trip>(`/trips/${id}`);
 export const updateTripStatus = (id: string, status: string) =>
   fetchJson<Trip>(`/trips/${id}`, {
@@ -171,18 +184,25 @@ export const transitionTrip = (id: string, action: string, reason?: string) =>
   });
 
 // ---- Orders ----
-export const getOrders = () => fetchJson<Order[]>('/orders');
+export const getOrders = (page = 1, limit = 20, status?: string) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  if (status) params.set('status', status);
+  return fetchJson<{ data: Order[]; total: number; page: number; limit: number }>(
+    `/orders?${params.toString()}`,
+  );
+};
 export const getOrder = (id: string) => fetchJson<Order>(`/orders/${id}`);
 export const refundOrder = (id: string) =>
   fetchJson<Order>(`/orders/${id}/refund`, { method: 'POST' });
 
 // ---- Reviews ----
-export const getReviews = (targetType?: string, targetId?: string) => {
-  const params = new URLSearchParams();
+export const getReviews = (page = 1, limit = 20, targetType?: string, targetId?: string) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
   if (targetType) params.set('targetType', targetType);
   if (targetId) params.set('targetId', targetId);
-  const qs = params.toString();
-  return fetchJson<Review[]>(qs ? `/reviews?${qs}` : '/reviews');
+  return fetchJson<{ data: Review[]; total: number; page: number; limit: number }>(
+    `/reviews?${params.toString()}`,
+  );
 };
 export const deleteReview = (id: string) =>
   fetchJson<DeleteResponse>(`/reviews/${id}`, { method: 'DELETE' });
@@ -198,12 +218,52 @@ export const sendNotification = (userIds: string[], title: string, content: stri
 export const getUploads = () => fetchJson<Upload[]>('/uploads').catch((): Upload[] => []);
 
 // ---- Journals ----
-export const getJournals = () => fetchJson<Journal[]>('/journals');
+export const getJournals = (page = 1, limit = 20) => {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  return fetchJson<{ data: Journal[]; total: number; page: number; limit: number }>(
+    `/journals?${params.toString()}`,
+  );
+};
 export const updateJournal = (id: string, data: { isPublic?: boolean }) =>
   fetchJson<{ id: string }>(`/journals/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
+// ---- AI Config ----
+export interface AiConfig {
+  id: string;
+  key: string;
+  value: string;
+  label: string;
+  description: string | null;
+  category: string;
+  updatedAt: string;
+}
+export const getAiConfigs = () =>
+  fetchJson<AiConfig[]>('/ai-config');
+export const updateAiConfig = (key: string, value: string) =>
+  fetchJson<AiConfig>(`/ai-config/${key}`, {
+    method: 'PUT',
+    body: JSON.stringify({ value }),
+  });
+
 // ---- Xiaohong (AI) ----
-export const getXiaohongSuggestions = () => fetchJson<string[]>('/xiaohong/suggestions').catch((): string[] => []);
+export interface XiaohongSuggestion {
+  text: string;
+  category: string;
+}
+export const getXiaohongSuggestions = () =>
+  fetchJson<XiaohongSuggestion[]>('/xiaohong/suggestions').catch((): XiaohongSuggestion[] => []);
+export const createXiaohongSuggestion = (data: { text: string; category?: string }) =>
+  fetchJson<XiaohongSuggestion>('/xiaohong/suggestions', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+export const updateXiaohongSuggestion = (index: number, data: { text?: string; category?: string }) =>
+  fetchJson<XiaohongSuggestion>(`/xiaohong/suggestions/${index}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+export const deleteXiaohongSuggestion = (index: number) =>
+  fetchJson<{ message: string }>(`/xiaohong/suggestions/${index}`, { method: 'DELETE' });
 export const chatWithXiaohong = (message: string) =>
   fetchJson<XiaohongChatResponse>('/xiaohong/chat', {
     method: 'POST',
@@ -239,6 +299,22 @@ export const updateCoupon = (id: string, data: Partial<CreateCouponDto>) =>
   fetchJson<Coupon>(`/coupons/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deactivateCoupon = (id: string) =>
   fetchJson<Coupon>(`/coupons/${id}`, { method: 'DELETE' });
+
+// ---- Users (Admin) ----
+export const getUsers = (params?: { page?: number; limit?: number; search?: string; role?: string; isActive?: string }) => {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  if (params?.search) qs.set('search', params.search);
+  if (params?.role) qs.set('role', params.role);
+  if (params?.isActive !== undefined) qs.set('isActive', params.isActive);
+  const query = qs.toString();
+  return fetchJson<{ data: User[]; total: number; page: number; limit: number }>(
+    query ? `/users?${query}` : '/users',
+  );
+};
+export const updateUser = (id: string, data: { role?: string; isActive?: boolean }) =>
+  fetchJson<User>(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 
 // ---- Dashboard stats helper ----
 // [R-64] Explicit take limits to prevent OOM as data grows

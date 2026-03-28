@@ -9,6 +9,7 @@ export default function TempleDetailPage() {
   const { id } = router.params
   const [temple, setTemple] = useState<Temple | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useShareAppMessage(() => ({
     title: temple ? `${temple.name} — 全球祖庭之旅` : '探索祖庭 — 全球祖庭之旅',
@@ -29,11 +30,12 @@ export default function TempleDetailPage() {
   const loadTemple = async () => {
     try {
       setLoading(true)
+      setError(null)
       const data = await fetchTempleById(id!)
       setTemple(data)
     } catch (err) {
       console.error('Failed to load temple:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      setError('网络错误，请稍后重试')
     } finally {
       setLoading(false)
     }
@@ -53,6 +55,15 @@ export default function TempleDetailPage() {
     return (
       <View className='container'>
         <Text className='loading-text'>正在加载...</Text>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View className='container'>
+        <Text className='empty-text'>{error}</Text>
+        <Text className='retry-btn' onClick={loadTemple}>点击重试</Text>
       </View>
     )
   }

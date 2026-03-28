@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
-import Taro, { useRouter } from '@tarojs/taro'
+import { useRouter } from '@tarojs/taro'
 import { Patriarch, fetchPatriarchById } from '../../lib/api'
 import './index.scss'
 
@@ -9,6 +9,7 @@ export default function PatriarchDetailPage() {
   const { id } = router.params
   const [patriarch, setPatriarch] = useState<Patriarch | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (id) loadPatriarch()
@@ -17,11 +18,12 @@ export default function PatriarchDetailPage() {
   const loadPatriarch = async () => {
     try {
       setLoading(true)
+      setError(null)
       const data = await fetchPatriarchById(id!)
       setPatriarch(data)
     } catch (err) {
       console.error('Failed to load patriarch:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      setError('网络错误，请稍后重试')
     } finally {
       setLoading(false)
     }
@@ -31,6 +33,15 @@ export default function PatriarchDetailPage() {
     return (
       <View className='container'>
         <Text className='loading-text'>正在加载...</Text>
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View className='container'>
+        <Text className='empty-text'>{error}</Text>
+        <Text className='retry-btn' onClick={loadPatriarch}>点击重试</Text>
       </View>
     )
   }

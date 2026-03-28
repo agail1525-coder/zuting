@@ -17,6 +17,7 @@ const JournalsPage = lazy(() => import('./pages/JournalsPage'));
 const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
 const ModerationPage = lazy(() => import('./pages/ModerationPage'));
 const CouponsPage = lazy(() => import('./pages/CouponsPage'));
+const UsersPage = lazy(() => import('./pages/UsersPage'));
 const AIConfigPage = lazy(() => import('./pages/AIConfigPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="coupons" element={<CouponsPage />} />
           <Route path="journals" element={<JournalsPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="users" element={<UsersPage />} />
           <Route path="moderation" element={<ModerationPage />} />
           <Route path="ai-config" element={<AIConfigPage />} />
         </Route>

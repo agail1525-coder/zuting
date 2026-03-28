@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Button, Space, Popconfirm, Drawer, Descriptions, message } from 'antd';
-import { EyeOutlined, RollbackOutlined } from '@ant-design/icons';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
+import { Table, Card, Typography, Tag, Button, Space, Popconfirm, Drawer, Descriptions, message, Input, Select, Row, Col } from 'antd';
+import { EyeOutlined, RollbackOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getOrders, getOrder, refundOrder } from '../lib/api';
 import type { Order } from '../types';
@@ -17,27 +17,60 @@ const STATUS_MAP: Record<string, { color: string; label: string }> = {
   COMPLETED: { color: 'default', label: '已完成' },
 };
 
+type StatusFilter = 'ALL' | 'PENDING' | 'PAID' | 'REFUNDING' | 'REFUNDED' | 'CANCELLED' | 'COMPLETED';
+
 export default function OrdersPage() {
   const [data, setData] = useState<Order[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState<Order | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
-  const load = () => {
-    setLoading(true);
-    getOrders()
-      .then(setData)
-      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); })
-      .finally(() => setLoading(false));
+  // Search & filter state
+  const [searchText, setSearchText] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const handleSearchChange = (value: string) => {
+    setSearchText(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(value);
+      setPage(1);
+    }, 300);
   };
 
-  useEffect(() => { load(); }, []);
+  const load = useCallback((p = page, ps = pageSize, status?: string) => {
+    setLoading(true);
+    const apiStatus = status !== undefined ? status : (statusFilter === 'ALL' ? undefined : statusFilter);
+    getOrders(p, ps, apiStatus)
+      .then((res) => { setData(res.data); setTotal(res.total); })
+      .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); setTotal(0); })
+      .finally(() => setLoading(false));
+  }, [page, pageSize, statusFilter]);
+
+  useEffect(() => { load(page, pageSize); }, [page, pageSize, statusFilter, load]);
+
+  // Client-side text search on loaded data
+  const filteredData = useMemo(() => {
+    if (!debouncedSearch) return data;
+    const q = debouncedSearch.toLowerCase();
+    return data.filter((item) => {
+      const orderNo = (item.orderNo || item.id || '').toLowerCase();
+      const userName = (item.user?.name || item.userName || '').toLowerCase();
+      const tripTitle = (item.trip?.title || item.tripTitle || '').toLowerCase();
+      return orderNo.includes(q) || userName.includes(q) || tripTitle.includes(q);
+    });
+  }, [data, debouncedSearch]);
 
   const handleRefund = async (id: string) => {
     try {
       await refundOrder(id);
       message.success('退款操作成功');
-      load();
+      load(page, pageSize);
     } catch {
       message.error('退款操作失败');
     }
@@ -129,14 +162,51 @@ export default function OrdersPage() {
       <Title level={4} style={{ color: '#D4A855', marginBottom: 16 }}>
         订单管理
       </Title>
+      <Card style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 12]} align="middle">
+          <Col flex="auto">
+            <Input
+              prefix={<SearchOutlined />}
+              placeholder="搜索订单号/用户/行程..."
+              value={searchText}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              allowClear
+              style={{ maxWidth: 320 }}
+            />
+          </Col>
+          <Col>
+            <Select
+              value={statusFilter}
+              onChange={(v) => { setStatusFilter(v); setPage(1); }}
+              style={{ width: 130 }}
+            >
+              <Select.Option value="ALL">全部状态</Select.Option>
+              <Select.Option value="PENDING">待支付</Select.Option>
+              <Select.Option value="PAID">已支付</Select.Option>
+              <Select.Option value="REFUNDING">退款中</Select.Option>
+              <Select.Option value="REFUNDED">已退款</Select.Option>
+              <Select.Option value="CANCELLED">已取消</Select.Option>
+              <Select.Option value="COMPLETED">已完成</Select.Option>
+            </Select>
+          </Col>
+        </Row>
+      </Card>
+
       <Card>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
-          locale={{ emptyText: '暂无数据' }}
-          pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `共 ${t} 条` }}
+          locale={{ emptyText: debouncedSearch || statusFilter !== 'ALL' ? '无匹配结果' : '暂无数据' }}
+          pagination={{
+            current: page,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
           size="middle"
         />
       </Card>

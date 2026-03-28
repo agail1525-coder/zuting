@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { fetchTrip, transitionTrip, TripDetail } from '../../lib/api'
+import { isLoggedIn } from '../../lib/auth'
 import './index.scss'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -25,11 +26,17 @@ const STATUS_STEP_LABELS = ['规划中', '已确认', '朝圣中', '已完成']
 export default function TripDetailPage() {
   const router = useRouter()
   const tripId = router.params.id ?? ''
+  const [authed, setAuthed] = useState(false)
   const [trip, setTrip] = useState<TripDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    setAuthed(isLoggedIn())
+  }, [])
+
+  useEffect(() => {
+    if (!authed) return
     if (!tripId) {
       setError('缺少行程ID')
       setLoading(false)
@@ -44,7 +51,25 @@ export default function TripDetailPage() {
         setError(err instanceof Error ? err.message : String(err))
         setLoading(false)
       })
-  }, [tripId])
+  }, [tripId, authed])
+
+  if (!authed) {
+    return (
+      <View className='trip-detail-page'>
+        <View className='auth-gate'>
+          <Text className='auth-gate__icon'>{'\u{1F9ED}'}</Text>
+          <Text className='auth-gate__title'>行程详情</Text>
+          <Text className='auth-gate__desc'>请先登录后查看行程详情</Text>
+          <View
+            className='auth-gate__btn'
+            onClick={() => Taro.switchTab({ url: '/pages/profile/index' })}
+          >
+            <Text className='auth-gate__btn-text'>去登录</Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { View, Text, ScrollView, Input } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { getAccessToken, isLoggedIn, API_URL } from '../../lib/auth'
 import './index.scss'
 
@@ -36,11 +36,12 @@ export default function ChatPage() {
   ])
   const [inputValue, setInputValue] = useState('')
   const [scrollId, setScrollId] = useState('')
+  const [conversationId, setConversationId] = useState<string | undefined>()
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
+  useDidShow(() => {
     setAuthed(isLoggedIn())
-  }, [])
+  })
 
   const scrollToBottom = useCallback((id: string) => {
     setTimeout(() => setScrollId(id), 100)
@@ -77,10 +78,13 @@ export default function ChatPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        data: { message: text },
+        data: { message: text, conversationId },
       })
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        const reply = res.data?.reply || res.data?.content || res.data?.message
+        if (res.data?.conversationId) {
+          setConversationId(res.data.conversationId)
+        }
+        const reply = res.data?.content || res.data?.reply || res.data?.message
         if (reply) return reply
         return '抱歉，小鸿暂时无法回答这个问题，请稍后重试'
       }

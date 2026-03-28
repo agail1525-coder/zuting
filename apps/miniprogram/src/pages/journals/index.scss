@@ -4,6 +4,37 @@
   position: relative;
 }
 
+/* Tab Bar */
+.journal-tabs {
+  display: flex;
+  padding: 20rpx 32rpx 0;
+  gap: 8rpx;
+
+  &__item {
+    flex: 1;
+    text-align: center;
+    padding: 16rpx 0;
+    border-radius: 12rpx;
+    background: rgba(30, 41, 59, 0.6);
+    transition: all 0.2s;
+
+    &--active {
+      background: rgba(212, 168, 85, 0.15);
+      border-bottom: 4rpx solid #D4A855;
+    }
+  }
+
+  &__text {
+    font-size: 28rpx;
+    color: #94a3b8;
+  }
+
+  &__item--active &__text {
+    color: #D4A855;
+    font-weight: 600;
+  }
+}
+
 .journal-list {
   padding: 24rpx 32rpx;
   height: 100vh;

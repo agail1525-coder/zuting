@@ -69,7 +69,7 @@ export default function TeachingsPage() {
           <Text className='empty-text'>暂无祖训数据</Text>
         ) : (
           teachings.map(teaching => (
-            <View key={teaching.id} className='teaching-card'>
+            <View key={teaching.id} className='teaching-card' onClick={() => Taro.navigateTo({ url: `/pages/teaching-detail/index?id=${teaching.id}` })}>
               <View className='teaching-card__content-wrap'>
                 <Text className='teaching-card__quote'>{'\u{201C}'}</Text>
                 <Text className='teaching-card__content'>{teaching.content}</Text>

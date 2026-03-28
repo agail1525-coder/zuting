@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Modal, Descriptions, Button, Space, Form, Input, Popconfirm, message } from 'antd';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Card, Typography, Tag, Modal, Descriptions, Button, Space, Form, Input, Popconfirm, message, Alert } from 'antd';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getReligions, createReligion, updateReligion, deleteReligion } from '../lib/api';
 import type { Religion } from '../types';
@@ -10,15 +10,18 @@ const { Title } = Typography;
 export default function ReligionsPage() {
   const [data, setData] = useState<Religion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
   const [detail, setDetail] = useState<Religion | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Religion | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
 
   const load = () => {
     setLoading(true);
-    getReligions().then(setData).finally(() => setLoading(false));
+    setError(null);
+    getReligions().then(setData).catch((e: Error) => { setError(e.message || '加载失败'); message.error('数据加载失败'); }).finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
@@ -129,23 +132,45 @@ export default function ReligionsPage() {
     },
   ];
 
+  const filteredData = searchText
+    ? data.filter((r) => {
+        const keyword = searchText.toLowerCase();
+        return (
+          r.name?.toLowerCase().includes(keyword) ||
+          r.nameEn?.toLowerCase().includes(keyword) ||
+          r.slug?.toLowerCase().includes(keyword)
+        );
+      })
+    : data;
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
           信仰管理
         </Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-          新增
-        </Button>
+        <Space>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="搜索名称/英文名/Slug..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            allowClear
+            style={{ width: 240 }}
+          />
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+            新增
+          </Button>
+        </Space>
       </div>
+      {error && <Alert type="error" message={error} closable onClose={() => setError(null)} style={{ marginBottom: 16 }} />}
       <Card>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
-          pagination={false}
+          pagination={{ pageSize: 20, showTotal: (t) => `共 ${t} 条` }}
           size="middle"
         />
       </Card>

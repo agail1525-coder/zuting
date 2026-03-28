@@ -2,6 +2,9 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',
     'pages/holy-sites/index',
+    'pages/temples/index',
+    'pages/patriarchs/index',
+    'pages/teachings/index',
     'pages/seals/index',
     'pages/profile/index',
     'pages/religion-detail/index',
@@ -9,6 +12,7 @@ export default defineAppConfig({
     'pages/temple-detail/index',
     'pages/patriarch-detail/index',
     'pages/seal-detail/index',
+    'pages/teaching-detail/index',
     'pages/chat/index',
     'pages/trips/index',
     'pages/trip-detail/index',

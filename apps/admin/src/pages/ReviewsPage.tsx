@@ -23,27 +23,30 @@ const targetTypeLabels: Record<string, { text: string; color: string }> = {
 
 export default function ReviewsPage() {
   const [data, setData] = useState<Review[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('');
 
-  const fetchReviews = () => {
+  const fetchReviews = (p = page, ps = pageSize) => {
     setLoading(true);
-    getReviews(filterType || undefined)
-      .then(setData)
+    getReviews(p, ps, filterType || undefined)
+      .then((res) => { setData(res.data); setTotal(res.total); })
       .catch((err: unknown) => {
         message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误'));
-        setData([]);
+        setData([]); setTotal(0);
       })
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchReviews(); }, [filterType]);
+  useEffect(() => { fetchReviews(page, pageSize); }, [page, pageSize, filterType]);
 
   const handleDelete = async (id: string) => {
     try {
       await deleteReview(id);
       message.success('已删除评价');
-      fetchReviews();
+      fetchReviews(page, pageSize);
     } catch {
       message.error('删除失败');
     }
@@ -147,7 +150,7 @@ export default function ReviewsPage() {
         </Title>
         <Select
           value={filterType}
-          onChange={setFilterType}
+          onChange={(v) => { setFilterType(v); setPage(1); }}
           options={TARGET_TYPE_OPTIONS}
           style={{ width: 140 }}
           placeholder="筛选类型"
@@ -160,7 +163,14 @@ export default function ReviewsPage() {
           rowKey="id"
           loading={loading}
           locale={{ emptyText: '暂无评价数据' }}
-          pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (t) => `共 ${t} 条` }}
+          pagination={{
+            current: page,
+            pageSize,
+            total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
           size="middle"
           scroll={{ x: 1100 }}
         />

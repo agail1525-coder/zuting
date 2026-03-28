@@ -224,6 +224,22 @@ export interface ReportStats {
   byReason: Record<string, number>;
 }
 
+export interface User {
+  id: string;
+  nickname: string;
+  email: string | null;
+  phone: string | null;
+  avatar: string | null;
+  role: string;
+  isActive: boolean;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  lastLoginAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { trips: number; orders: number; journals: number };
+}
+
 export interface Trip {
   id: string;
   title: string;
