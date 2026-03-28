@@ -23,6 +23,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
+import { RouteModule } from './modules/route/route.module';
+import { BookingModule } from './modules/booking/booking.module';
 import { SearchModule } from './modules/search/search.module';
 import { UserModule } from './modules/user/user.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
@@ -52,6 +54,8 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     UploadModule,
     PaymentModule,
     CouponModule,
+    RouteModule,
+    BookingModule,
     ModerationModule,
     SearchModule,
     UserModule,

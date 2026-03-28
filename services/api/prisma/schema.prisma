@@ -42,6 +42,7 @@ model User {
   reportsMade     ContentReport[] @relation("ReportsMade")
   reportsReviewed ContentReport[] @relation("ReportsReviewed")
   conversations   Conversation[]
+  routeBookings   RouteBooking[]
 }
 
 model Session {
@@ -91,6 +92,7 @@ model Religion {
   temples    Temple[]
   patriarchs Patriarch[]
   teachings  Teaching[]
+  routes     Route[]
 }
 
 model HolySite {
@@ -105,9 +107,24 @@ model HolySite {
   imageUrl    String?
   soundEffect String?
 
+  // 旅行信息扩展
+  openingHours  String?   // "8:00-17:00"
+  ticketPrice   String?   // "免费" / "80元"
+  bestSeason    String?   // "春秋两季"
+  visitDuration String?   // "建议2-3小时"
+  transport     String?   // 交通指南
+  tips          String[]  // 参观贴士
+
+  // 周边信息
+  nearbyFood       Json?  // [{name, type, rating, distance}]
+  nearbyStay       Json?  // [{name, type, price, distance}]
+  nearbyExperience Json?  // [{name, duration, price}]
+  nearbySights     Json?  // [{name, distance, description}]
+
   religionId String
-  religion   Religion   @relation(fields: [religionId], references: [id])
+  religion   Religion    @relation(fields: [religionId], references: [id])
   tripSites  TripSite[]
+  routeSites RouteSite[]
 
   @@index([religionId])
 }
@@ -448,6 +465,117 @@ model ContentReport {
 
   @@index([status])
   @@index([targetType, targetId])
+}
+
+// ========== 路线产品 ==========
+
+model Route {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String          // 六祖慧能路线
+  titleEn     String          // Sixth Patriarch Huineng Route
+  subtitle    String          // "追随六祖足迹，体验禅宗精髓"
+  category    RouteCategory
+  difficulty  RouteDifficulty
+  duration    Int             // 天数
+  nights      Int             // 住宿晚数
+  coverImage  String?         // 封面图
+  images      String[]        // 图片集
+  highlights  String[]        // 亮点标签
+  description String          @db.Text  // 详细介绍
+  itinerary   Json            // 逐日行程JSON
+  priceFrom   Int             // 起价(分)
+  included    String[]        // 包含项
+  excluded    String[]        // 不含项
+  tips        String[]        // 贴士
+  season      String          // 最佳季节
+  groupSize   String          // 建议人数
+  status      RouteStatus     @default(DRAFT)
+  rating      Float?
+  reviewCount Int             @default(0)
+  bookCount   Int             @default(0)
+
+  religionId  String?
+  religion    Religion?       @relation(fields: [religionId], references: [id])
+  sites       RouteSite[]
+  bookings    RouteBooking[]
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@index([religionId])
+}
+
+model RouteSite {
+  id       String   @id @default(cuid())
+  routeId  String
+  route    Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  siteId   String
+  site     HolySite @relation(fields: [siteId], references: [id])
+  day      Int      // 第几天到达
+  order    Int      // 当天顺序
+  duration String?  // 建议停留时间
+  note     String?  // 该站点特别说明
+
+  @@index([routeId])
+  @@index([siteId])
+}
+
+model RouteBooking {
+  id           String        @id @default(cuid())
+  routeId      String
+  route        Route         @relation(fields: [routeId], references: [id])
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  startDate    DateTime
+  persons      Int           @default(1)
+  contactName  String?
+  contactPhone String?
+  note         String?
+  totalPrice   Int           // 分
+  status       BookingStatus @default(PENDING)
+  orderId      String?       // 关联订单
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([routeId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum RouteCategory {
+  ZEN
+  BUDDHIST
+  TAOIST
+  CHRISTIAN
+  ISLAMIC
+  HINDU
+  JEWISH
+  CROSS_CULTURAL
+  CULTURAL_HERITAGE
+}
+
+enum RouteDifficulty {
+  EASY
+  MODERATE
+  CHALLENGING
+}
+
+enum RouteStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  CANCELLED
+  COMPLETED
 }
 
 // ========== AI 配置 + 对话历史 ==========

@@ -5,6 +5,7 @@ import type {
   Patriarch,
   Teaching,
   Seal,
+  Route,
 } from '@prisma/client';
 
 // ── Related data types returned by fetchRelatedData ──
@@ -39,6 +40,7 @@ export type RelatedData =
   | PatriarchWithReligion[]
   | TeachingWithReligion[]
   | Seal[]
+  | Route[]
   | null;
 
 export interface SummarizedItem {
@@ -67,6 +69,8 @@ export enum ChatIntent {
   PATRIARCH_INFO = 'PATRIARCH_INFO',
   TEACHING_INFO = 'TEACHING_INFO',
   SEAL_INFO = 'SEAL_INFO',
+  ROUTE_RECOMMEND = 'ROUTE_RECOMMEND',
+  DESTINATION_GUIDE = 'DESTINATION_GUIDE',
   TRIP_PLANNING = 'TRIP_PLANNING',
   PRACTICE_GUIDE = 'PRACTICE_GUIDE',
   GENERAL = 'GENERAL',
@@ -109,9 +113,20 @@ export const INTENT_KEYWORDS: Record<ChatIntent, string[]> = {
     '印', '修炼', '修行', '曹溪', '愿命', 'seal', 'practice',
     '三十印', '初印', '中印', '印果', '成道', '归源',
   ],
+  [ChatIntent.ROUTE_RECOMMEND]: [
+    '路线', '推荐路线', '线路', '几天', '几晚', '预算', '出发',
+    'route', 'recommend', '跟团', '自由行', '行程推荐',
+    '禅宗路线', '佛教路线', '道教路线', '基督教路线', '伊斯兰路线',
+    '六祖路线', '达摩路线', '虚云路线', '丝路', '跨文化',
+  ],
+  [ChatIntent.DESTINATION_GUIDE]: [
+    '目的地', '攻略', '什么季节', '门票', '交通', '美食', '住宿',
+    '周边', '好吃的', '怎么去', '开放时间', '注意事项',
+    'destination', 'guide', 'food', 'hotel', 'transport',
+  ],
   [ChatIntent.TRIP_PLANNING]: [
-    '路线', '行程', '旅行', '规划', '朝圣', 'trip', 'plan',
-    'pilgrimage', '旅游', '出发', '签证', '机票',
+    '行程', '旅行', '规划', '朝圣', 'trip', 'plan',
+    'pilgrimage', '旅游', '签证', '机票', '定制',
   ],
   [ChatIntent.PRACTICE_GUIDE]: [
     '冥想', '打坐', '禅修', '修行方法', 'meditation', 'practice',

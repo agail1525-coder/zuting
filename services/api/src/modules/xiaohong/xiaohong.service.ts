@@ -50,17 +50,25 @@ const GREETINGS: Record<ChatIntent, string[]> = {
     '曹溪愿命三十印，印印相连，层层深入。',
     '修行从发愿开始，每一印都是一次生命的蜕变。',
   ],
+  [ChatIntent.ROUTE_RECOMMEND]: [
+    '让我为你推荐一条精彩的文化之旅路线！',
+    '我们有多条深度路线可以选择，让我帮你找到最合适的。',
+  ],
+  [ChatIntent.DESTINATION_GUIDE]: [
+    '让我为你介绍这个目的地的实用攻略。',
+    '好的，关于这个目的地我来给你详细说说。',
+  ],
   [ChatIntent.TRIP_PLANNING]: [
-    '朝圣之旅，是身体和灵魂同时出发的旅程。',
-    '让我帮你规划一条有意义的祖庭之路。',
+    '文化之旅，是身体和心灵同时出发的旅程。',
+    '让我帮你规划一条精彩的文化路线。',
   ],
   [ChatIntent.PRACTICE_GUIDE]: [
     '修行不在远方，就在当下这一刻。',
     '静下心来，让我们一起感受内在的宁静。',
   ],
   [ChatIntent.GENERAL]: [
-    '你好！我是小鸿，你的祖庭旅行与修行伙伴。有什么我能帮你的吗？',
-    '你好！小鸿在这里，随时为你的灵性之旅提供指引。',
+    '你好！我是小鸿，你的AI旅行规划师。想去哪里探索文化之旅？',
+    '你好！小鸿在这里，随时为你规划精彩的文化旅行路线。',
   ],
 };
 
@@ -153,6 +161,42 @@ export class XiaohongService {
         }
         return seals;
       }
+      case ChatIntent.ROUTE_RECOMMEND: {
+        const routes = await this.prisma.route.findMany({
+          where: { status: 'PUBLISHED' },
+          include: { religion: { select: { name: true, nameEn: true } } },
+          take: 20,
+          orderBy: { bookCount: 'desc' },
+        });
+        // Try to match specific category or keyword
+        const categoryKeywords: Record<string, string> = {
+          禅宗: 'ZEN', 佛教: 'BUDDHIST', 道教: 'TAOIST', 基督: 'CHRISTIAN',
+          伊斯兰: 'ISLAMIC', 印度: 'HINDU', 犹太: 'JEWISH', 跨文化: 'CROSS_CULTURAL',
+        };
+        for (const [keyword, cat] of Object.entries(categoryKeywords)) {
+          if (message.includes(keyword)) return routes.filter((r) => r.category === cat);
+        }
+        return routes;
+      }
+      case ChatIntent.DESTINATION_GUIDE: {
+        const sites = await this.prisma.holySite.findMany({
+          take: 100,
+          include: { religion: true },
+          orderBy: { name: 'asc' },
+        });
+        const matched = sites.filter((s) => message.includes(s.name) || message.includes(s.nameEn));
+        return matched.length > 0 ? matched : sites.slice(0, 10);
+      }
+      case ChatIntent.TRIP_PLANNING: {
+        // For trip planning, fetch routes as context
+        const routes = await this.prisma.route.findMany({
+          where: { status: 'PUBLISHED' },
+          include: { religion: { select: { name: true } } },
+          take: 10,
+          orderBy: { bookCount: 'desc' },
+        });
+        return routes;
+      }
       default:
         return null;
     }
@@ -188,6 +232,26 @@ export class XiaohongService {
       case ChatIntent.SEAL_INFO: {
         const names: Record<string, string> = { CHUYIN: '初印系', ZHONGYIN: '中印系', YINGUOYIN: '印果印', CHENGDAOYIN: '成道印', GUIYUANYIN: '归源印' };
         return `\n\n## 曹溪三十印\n${(data as Seal[]).slice(0, 10).map((s) => `- **第${s.id}印·${s.name}**（${names[s.series]}）\n  诗偈：${s.poem.substring(0, 100)}\n  修行：${s.practice.substring(0, 100)}`).join('\n')}`;
+      }
+      case ChatIntent.ROUTE_RECOMMEND:
+      case ChatIntent.TRIP_PLANNING: {
+        const routeData = data as any[];
+        if (!routeData?.length) return '';
+        return `\n\n## 平台路线产品\n${routeData.slice(0, 10).map((r) => {
+          const price = (r.priceFrom / 100).toLocaleString();
+          return `- **${r.title}**（${r.titleEn}）${r.duration}天${r.nights}晚 ¥${price}起/人\n  ${r.subtitle}\n  难度：${r.difficulty} | 分类：${r.category} | 最佳季节：${r.season}\n  亮点：${(r.highlights || []).join('、')}`;
+        }).join('\n')}`;
+      }
+      case ChatIntent.DESTINATION_GUIDE: {
+        return `\n\n## 相关目的地\n${(data as HolySiteWithReligion[]).slice(0, 8).map((s) => {
+          let info = `- **${s.name}**（${s.nameEn}），${s.country}，${s.religion.name}\n  ${s.description.substring(0, 200)}`;
+          if ((s as any).openingHours) info += `\n  开放时间：${(s as any).openingHours}`;
+          if ((s as any).ticketPrice) info += ` | 门票：${(s as any).ticketPrice}`;
+          if ((s as any).bestSeason) info += ` | 最佳季节：${(s as any).bestSeason}`;
+          if ((s as any).visitDuration) info += ` | 建议时长：${(s as any).visitDuration}`;
+          if ((s as any).transport) info += `\n  交通：${(s as any).transport}`;
+          return info;
+        }).join('\n')}`;
       }
       default:
         return '';
@@ -560,12 +624,17 @@ export class XiaohongService {
   private summarizeData(data: RelatedData): SummarizedData | undefined {
     if (!data) return undefined;
     if (Array.isArray(data)) {
-      return data.slice(0, 10).map((item): SummarizedItem => ({
-        id: item.id, name: item.name,
-        ...('nameEn' in item && item.nameEn ? { nameEn: item.nameEn } : {}),
-        ...('country' in item && item.country ? { country: item.country } : {}),
-        ...('series' in item && item.series ? { series: item.series } : {}),
-      }));
+      return data.slice(0, 10).map((item): SummarizedItem => {
+        // Route has 'title' not 'name'
+        const name = 'name' in item ? (item as any).name : 'title' in item ? (item as any).title : '';
+        return {
+          id: item.id, name,
+          ...('nameEn' in item && (item as any).nameEn ? { nameEn: (item as any).nameEn } : {}),
+          ...('titleEn' in item && (item as any).titleEn ? { nameEn: (item as any).titleEn } : {}),
+          ...('country' in item && (item as any).country ? { country: (item as any).country } : {}),
+          ...('series' in item && (item as any).series ? { series: (item as any).series } : {}),
+        };
+      });
     }
     const d = data as ReligionWithRelations;
     return { id: d.id, name: d.name, nameEn: d.nameEn, holySites: d.holySites?.length, temples: d.temples?.length, patriarchs: d.patriarchs?.length };

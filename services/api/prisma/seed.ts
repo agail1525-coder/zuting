@@ -1,4 +1,4 @@
-import { PrismaClient, SealSeries } from '@prisma/client';
+import { PrismaClient, SealSeries, RouteCategory, RouteDifficulty, RouteStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -1288,6 +1288,336 @@ const seals: SealData[] = [
   },
 ];
 
+// ── Route data (10条示范路线) ──────────────────────────
+
+interface RouteData {
+  slug: string;
+  title: string;
+  titleEn: string;
+  subtitle: string;
+  category: RouteCategory;
+  difficulty: RouteDifficulty;
+  duration: number;
+  nights: number;
+  highlights: string[];
+  description: string;
+  itinerary: object[];
+  priceFrom: number;
+  included: string[];
+  excluded: string[];
+  tips: string[];
+  season: string;
+  groupSize: string;
+  religionSlug: string | null;
+  // holy site names to link (in order)
+  siteLinks: { siteName: string; day: number; order: number; duration: string; note?: string }[];
+}
+
+const routes: RouteData[] = [
+  // ═══ 1. 禅宗：六祖慧能路线 ═══
+  {
+    slug: 'sixth-patriarch-huineng',
+    title: '六祖慧能路线',
+    titleEn: 'Sixth Patriarch Huineng Route',
+    subtitle: '追随六祖足迹，体验禅宗精髓',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.EASY,
+    duration: 5, nights: 4,
+    highlights: ['禅宗文化', '素斋体验', '山居生活', '南华寺朝拜'],
+    description: '沿着六祖慧能的足迹，从新兴国恩寺到韶关南华寺，再到广州光孝寺，深度体验禅宗发源地的文化魅力。品尝百年素斋，参与晨钟暮鼓，感受"菩提本无树"的智慧。',
+    itinerary: [
+      { day: 1, title: '抵达广州·光孝寺', activities: ['光孝寺参观', '六祖剃度处', '菩提树下品茶'], meals: ['午餐：光孝寺素斋'], accommodation: '广州市区酒店' },
+      { day: 2, title: '广州→新兴·国恩寺', activities: ['驱车前往新兴', '国恩寺朝拜', '六祖故里探访'], meals: ['午餐：新兴竹笋宴', '晚餐：温泉酒店'], accommodation: '新兴温泉度假酒店' },
+      { day: 3, title: '新兴→韶关', activities: ['晨起禅修体验', '驱车前往韶关', '丹霞山观景'], meals: ['午餐：丹霞山农家菜'], accommodation: '韶关市区酒店' },
+      { day: 4, title: '南华寺全日', activities: ['南华寺朝拜', '六祖真身瞻仰', '抄经体验', '素斋午餐'], meals: ['午餐：南华寺百年素斋', '晚餐：韶关特色菜'], accommodation: '韶关市区酒店' },
+      { day: 5, title: '返程', activities: ['曹溪讲坛参观', '购买纪念品', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 328000, // ¥3,280
+    included: ['全程交通', '4晚住宿', '景点门票', '专业导游', '6正餐'],
+    excluded: ['往返大交通', '个人消费', '旅行保险'],
+    tips: ['建议穿舒适步行鞋', '南华寺内请保持安静', '素斋需提前预约'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '2-8人小团',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 2. 禅宗：达摩祖师路线 ═══
+  {
+    slug: 'bodhidharma-route',
+    title: '达摩祖师路线',
+    titleEn: 'Bodhidharma Route',
+    subtitle: '从广州到嵩山，追寻达摩东渡足迹',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 4, nights: 3,
+    highlights: ['少林功夫', '嵩山风光', '达摩面壁洞', '白马寺'],
+    description: '从达摩东渡登岸的广州出发，一路北上至嵩山少林寺，探访达摩面壁九年的洞穴，感受"一苇渡江"的传奇。途经中国第一座佛教寺院白马寺，领略禅武合一的独特文化。',
+    itinerary: [
+      { day: 1, title: '广州·西来初地', activities: ['华林寺参观(达摩登岸处)', '西关文化区漫步'], meals: ['午餐：广州早茶'], accommodation: '广州市区' },
+      { day: 2, title: '飞往洛阳·白马寺', activities: ['白马寺参观', '洛阳龙门石窟'], meals: ['午餐：洛阳水席'], accommodation: '洛阳市区' },
+      { day: 3, title: '嵩山少林寺', activities: ['少林寺朝拜', '达摩面壁洞', '武术表演观摩', '塔林'], meals: ['午餐：少林素斋'], accommodation: '登封市区' },
+      { day: 4, title: '嵩山日出·返程', activities: ['嵩山日出', '嵩阳书院', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 298000,
+    included: ['广州→洛阳机票', '全程交通', '3晚住宿', '景点门票', '导游'],
+    excluded: ['往返广州大交通', '个人消费'],
+    tips: ['少林寺山路较多，注意体力分配', '龙门石窟建议租讲解器'],
+    season: '四季皆宜，春秋最佳',
+    groupSize: '2-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 3. 佛教：印度佛陀足迹 ═══
+  {
+    slug: 'buddha-footsteps-india',
+    title: '印度佛陀足迹',
+    titleEn: 'Buddha Footsteps in India',
+    subtitle: '走访佛教四大圣地，重温佛陀一生',
+    category: RouteCategory.BUDDHIST,
+    difficulty: RouteDifficulty.CHALLENGING,
+    duration: 8, nights: 7,
+    highlights: ['菩提伽耶', '鹿野苑', '印度文化', '佛教四大圣地'],
+    description: '从佛陀诞生地蓝毗尼到成道地菩提伽耶，从初转法轮的鹿野苑到涅槃地拘尸那罗，完整重走佛陀一生的关键圣地。深度体验印度文化，品尝当地美食，与僧侣交流。',
+    itinerary: [
+      { day: 1, title: '抵达德里', activities: ['接机', '德里印度门', '甘地纪念馆'], meals: ['晚餐：北印度料理'], accommodation: '德里五星酒店' },
+      { day: 2, title: '德里→瓦拉纳西', activities: ['飞往瓦拉纳西', '恒河泛舟', '恒河夜祭'], meals: ['全餐'], accommodation: '瓦拉纳西' },
+      { day: 3, title: '鹿野苑', activities: ['鹿野苑遗址', '考古博物馆', '达美克佛塔'], meals: ['全餐'], accommodation: '瓦拉纳西' },
+      { day: 4, title: '瓦拉纳西→菩提伽耶', activities: ['驱车前往菩提伽耶', '摩诃菩提寺'], meals: ['全餐'], accommodation: '菩提伽耶' },
+      { day: 5, title: '菩提伽耶全日', activities: ['菩提树冥想', '各国寺院参观', '苦行林'], meals: ['全餐'], accommodation: '菩提伽耶' },
+      { day: 6, title: '菩提伽耶→拘尸那罗', activities: ['驱车前往拘尸那罗', '涅槃寺'], meals: ['全餐'], accommodation: '拘尸那罗' },
+      { day: 7, title: '拘尸那罗→蓝毗尼', activities: ['跨境前往尼泊尔蓝毗尼', '佛陀诞生地'], meals: ['全餐'], accommodation: '蓝毗尼' },
+      { day: 8, title: '返程', activities: ['蓝毗尼→加德满都/德里', '返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 1280000,
+    included: ['国内段交通', '7晚住宿', '全程导游(中文)', '景点门票', '21餐'],
+    excluded: ['国际机票', '签证费', '个人消费', '旅行保险'],
+    tips: ['需办理印度签证', '建议接种相关疫苗', '注意饮食卫生', '携带驱蚊用品'],
+    season: '10月-3月(避开酷暑和雨季)',
+    groupSize: '4-12人',
+    religionSlug: 'buddhism',
+    siteLinks: [
+      { siteName: '菩提伽耶', day: 4, order: 1, duration: '全天', note: '佛陀成道处' },
+      { siteName: '鹿野苑', day: 3, order: 1, duration: '半天', note: '初转法轮处' },
+    ],
+  },
+  // ═══ 4. 道教：武当问道 ═══
+  {
+    slug: 'wudang-taoist-heritage',
+    title: '武当问道',
+    titleEn: 'Wudang Taoist Heritage',
+    subtitle: '问道武当，寻访三大道教名山',
+    category: RouteCategory.TAOIST,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['武当太极', '道教养生', '名山胜景', '道教宫观'],
+    description: '武当山→龙虎山→青城山，走访中国三大道教名山。学习太极拳，品尝道教养生膳食，体验道教文化的天人合一理念。从张三丰到张道陵，从太极到天师道，全方位感受道教文化。',
+    itinerary: [
+      { day: 1, title: '抵达武当山', activities: ['紫霄宫', '南岩宫', '金顶远眺'], meals: ['午餐：武当道膳'], accommodation: '武当山脚' },
+      { day: 2, title: '武当山全日', activities: ['金顶日出', '太极拳晨练', '太和宫', '逍遥谷'], meals: ['全餐'], accommodation: '武当山脚' },
+      { day: 3, title: '飞往龙虎山', activities: ['天师府参观', '泸溪河竹筏漂流', '悬棺之谜'], meals: ['午餐：鹰潭特色菜'], accommodation: '鹰潭市区' },
+      { day: 4, title: '飞往青城山', activities: ['青城山前山', '天师洞', '上清宫'], meals: ['午餐：青城四绝'], accommodation: '都江堰市区' },
+      { day: 5, title: '都江堰·返程', activities: ['都江堰水利工程', '返程送站'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 458000,
+    included: ['内段机票', '全程交通', '4晚住宿', '景点门票', '导游', '太极课'],
+    excluded: ['往返大交通', '个人消费', '缆车费用'],
+    tips: ['武当山山路陡峭，建议带登山杖', '龙虎山有蛇出没注意安全', '青城山注意防雨'],
+    season: '春秋两季最佳',
+    groupSize: '2-8人',
+    religionSlug: 'taoism',
+    siteLinks: [
+      { siteName: '武当山', day: 1, order: 1, duration: '2天', note: '道教第一名山' },
+      { siteName: '龙虎山', day: 3, order: 1, duration: '全天', note: '天师道发源地' },
+      { siteName: '青城山', day: 4, order: 1, duration: '全天', note: '道教四大名山' },
+    ],
+  },
+  // ═══ 5. 基督教：耶路撒冷朝圣 ═══
+  {
+    slug: 'jerusalem-pilgrimage',
+    title: '耶路撒冷朝圣之旅',
+    titleEn: 'Jerusalem Pilgrimage',
+    subtitle: '走进圣城，感受三大宗教交汇',
+    category: RouteCategory.CHRISTIAN,
+    difficulty: RouteDifficulty.EASY,
+    duration: 5, nights: 4,
+    highlights: ['圣墓教堂', '苦路十四站', '哭墙', '橄榄山'],
+    description: '深入耶路撒冷老城，走访基督教、犹太教、伊斯兰教三大宗教的神圣之地。从苦路十四站到圣墓教堂，从哭墙到圆顶清真寺，感受这座永恒之城的千年历史与信仰力量。',
+    itinerary: [
+      { day: 1, title: '抵达特拉维夫→耶路撒冷', activities: ['接机', '橄榄山远眺圣城', '客西马尼园'], meals: ['晚餐'], accommodation: '耶路撒冷老城酒店' },
+      { day: 2, title: '耶路撒冷老城·基督教区', activities: ['苦路十四站', '圣墓教堂', '最后晚餐厅'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 3, title: '耶路撒冷·犹太区+伊斯兰区', activities: ['哭墙', '圣殿山远观', '圆顶清真寺', '大卫城'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 4, title: '伯利恒+死海', activities: ['伯利恒主诞堂', '牧羊人田野', '死海漂浮体验'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 5, title: '返程', activities: ['雅法老城', '特拉维夫送机'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 880000,
+    included: ['全程交通', '4晚住宿', '景点门票', '中文导游', '12餐'],
+    excluded: ['国际机票', '签证费', '个人消费'],
+    tips: ['圣地着装要求：遮盖膝盖和肩膀', '安检较多请耐心', '老城石板路注意防滑'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '4-12人',
+    religionSlug: 'christianity',
+    siteLinks: [
+      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '半天', note: '基督教最神圣地点' },
+      { siteName: '耶路撒冷哭墙', day: 3, order: 1, duration: '1小时', note: '犹太教圣地' },
+      { siteName: '圆顶清真寺', day: 3, order: 2, duration: '1小时', note: '伊斯兰教圣地' },
+    ],
+  },
+  // ═══ 6. 伊斯兰：丝绸之路清真寺 ═══
+  {
+    slug: 'silk-road-mosques',
+    title: '丝绸之路清真寺之旅',
+    titleEn: 'Silk Road Mosques',
+    subtitle: '沿丝路探访伊斯兰建筑瑰宝',
+    category: RouteCategory.ISLAMIC,
+    difficulty: RouteDifficulty.CHALLENGING,
+    duration: 10, nights: 9,
+    highlights: ['丝路文化', '清真寺建筑', '多元美食', '历史交融'],
+    description: '从西安大清真寺出发，沿古丝绸之路西行，经喀什、撒马尔罕，最终抵达伊斯坦布尔。10天深度体验丝路沿线的伊斯兰文化，欣赏世界最美清真寺建筑，品尝丝路美食。',
+    itinerary: [
+      { day: 1, title: '西安', activities: ['化觉巷大清真寺', '回民街美食', '碑林博物馆'], meals: ['全餐'], accommodation: '西安' },
+      { day: 2, title: '西安→敦煌', activities: ['飞往敦煌', '莫高窟', '鸣沙山月牙泉'], meals: ['全餐'], accommodation: '敦煌' },
+      { day: 3, title: '敦煌→喀什', activities: ['飞往喀什', '艾提尕尔清真寺', '喀什老城'], meals: ['全餐'], accommodation: '喀什' },
+      { day: 4, title: '喀什全日', activities: ['高台民居', '手工艺巴扎', '维吾尔族家访'], meals: ['全餐'], accommodation: '喀什' },
+      { day: 5, title: '喀什→撒马尔罕', activities: ['飞往乌兹别克斯坦', '雷吉斯坦广场'], meals: ['全餐'], accommodation: '撒马尔罕' },
+      { day: 6, title: '撒马尔罕全日', activities: ['比比哈努姆清真寺', '沙赫静达陵墓群', '乌鲁别克天文台'], meals: ['全餐'], accommodation: '撒马尔罕' },
+      { day: 7, title: '撒马尔罕→布哈拉', activities: ['波伊卡扬建筑群', '布哈拉老城', '弥尔阿拉伯神学院'], meals: ['全餐'], accommodation: '布哈拉' },
+      { day: 8, title: '布哈拉→伊斯坦布尔', activities: ['飞往伊斯坦布尔', '加拉塔桥日落'], meals: ['晚餐'], accommodation: '伊斯坦布尔' },
+      { day: 9, title: '伊斯坦布尔', activities: ['蓝色清真寺', '圣索菲亚大教堂', '托普卡帕宫', '大巴扎'], meals: ['全餐'], accommodation: '伊斯坦布尔' },
+      { day: 10, title: '返程', activities: ['博斯普鲁斯海峡游船', '送机'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 1580000,
+    included: ['全程内段交通', '9晚住宿', '景点门票', '导游', '27餐'],
+    excluded: ['国际机票', '签证费', '个人消费'],
+    tips: ['需提前办理中亚和土耳其签证', '女性参观清真寺需戴头巾', '携带舒适步行鞋'],
+    season: '春秋两季(4-6月/9-10月)',
+    groupSize: '4-10人',
+    religionSlug: 'islam',
+    siteLinks: [
+      { siteName: '蓝色清真寺', day: 9, order: 1, duration: '2小时', note: '伊斯坦布尔标志' },
+    ],
+  },
+  // ═══ 7. 跨文化：耶路撒冷三教共存 ═══
+  {
+    slug: 'jerusalem-three-faiths',
+    title: '耶路撒冷三教共存之旅',
+    titleEn: 'Jerusalem Three Faiths Coexistence',
+    subtitle: '一座城市，三大文明，千年对话',
+    category: RouteCategory.CROSS_CULTURAL,
+    difficulty: RouteDifficulty.EASY,
+    duration: 4, nights: 3,
+    highlights: ['三教圣地', '文化对话', '美食融合', '历史纵深'],
+    description: '在耶路撒冷这座独特的城市中，同时体验犹太教、基督教、伊斯兰教的圣地与文化。理解三大文明如何在同一空间中共存千年，感受人类信仰的多样性与统一性。',
+    itinerary: [
+      { day: 1, title: '抵达·犹太教日', activities: ['哭墙祈祷', '犹太区漫步', '大卫城地下隧道'], meals: ['晚餐：犹太安息日晚餐体验'], accommodation: '耶路撒冷' },
+      { day: 2, title: '基督教日', activities: ['苦路十四站', '圣墓教堂', '橄榄山', '客西马尼园'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 3, title: '伊斯兰教日', activities: ['圣殿山(远观)', '阿克萨清真寺区域', '穆斯林区', '以色列博物馆'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 4, title: '融合与反思·返程', activities: ['锡安山(三教交汇)', '雅法门集市', '送机'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 680000,
+    included: ['全程交通', '3晚住宿', '景点门票', '三教专业导游', '8餐'],
+    excluded: ['国际机票', '签证费', '个人消费'],
+    tips: ['尊重每个宗教的习俗和禁忌', '安息日(周五日落-周六日落)部分设施关闭', '保持开放包容的心态'],
+    season: '全年适宜，春秋最佳',
+    groupSize: '4-12人',
+    religionSlug: null,
+    siteLinks: [
+      { siteName: '耶路撒冷哭墙', day: 1, order: 1, duration: '2小时', note: '犹太教最神圣之地' },
+      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '2小时', note: '基督教最神圣之地' },
+      { siteName: '圆顶清真寺', day: 3, order: 1, duration: '1小时', note: '伊斯兰教圣地' },
+    ],
+  },
+  // ═══ 8. 跨文化：日本神佛习合 ═══
+  {
+    slug: 'japan-shinbutsu',
+    title: '日本神佛习合之旅',
+    titleEn: 'Japan Shinbutsu Shūgō',
+    subtitle: '神道与佛教交融的千年美学',
+    category: RouteCategory.CROSS_CULTURAL,
+    difficulty: RouteDifficulty.EASY,
+    duration: 6, nights: 5,
+    highlights: ['京都古寺', '奈良大佛', '高野山宿坊', '伊势神宫'],
+    description: '深度体验日本独特的"神佛习合"文化——神道教与佛教千年共存的智慧。从京都的金阁寺到高野山的宿坊住宿，从奈良大佛到伊势神宫，领略东方美学的极致。',
+    itinerary: [
+      { day: 1, title: '大阪→京都', activities: ['金阁寺', '龙安寺枯山水', '祇园漫步'], meals: ['晚餐：京都怀石料理'], accommodation: '京都' },
+      { day: 2, title: '京都全日', activities: ['清水寺', '伏见稻荷大社', '东福寺禅修体验'], meals: ['午餐：汤豆腐'], accommodation: '京都' },
+      { day: 3, title: '京都→奈良', activities: ['东大寺(大佛)', '春日大社', '奈良公园鹿群'], meals: ['全餐'], accommodation: '奈良' },
+      { day: 4, title: '奈良→高野山', activities: ['金刚峰寺', '奥之院夜间参拜', '宿坊住宿'], meals: ['晚餐：精进料理'], accommodation: '高野山宿坊' },
+      { day: 5, title: '高野山→伊势', activities: ['高野山晨课', '伊势神宫外宫+内宫', '托福横丁'], meals: ['午餐：伊势乌冬'], accommodation: '伊势/名古屋' },
+      { day: 6, title: '返程', activities: ['热田神宫(名古屋)', '送站'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 998000,
+    included: ['全程JR Pass', '5晚住宿(含1晚宿坊)', '导游', '景点门票'],
+    excluded: ['国际机票', '个人消费', '部分餐食'],
+    tips: ['高野山宿坊需提前1个月预约', '寺院内需脱鞋', '奈良鹿会抢食物注意安全'],
+    season: '春(樱花3-4月)或秋(红叶11月)',
+    groupSize: '2-8人',
+    religionSlug: null,
+    siteLinks: [
+      { siteName: '伊势神宫', day: 5, order: 1, duration: '半天', note: '神道教最高圣地' },
+      { siteName: '法隆寺', day: 3, order: 1, duration: '2小时', note: '世界最古老木构建筑' },
+    ],
+  },
+  // ═══ 9. 印度教：恒河圣城 ═══
+  {
+    slug: 'ganges-holy-cities',
+    title: '恒河圣城文化之旅',
+    titleEn: 'Ganges Holy Cities Cultural Journey',
+    subtitle: '沿恒河探访印度教圣城与文明',
+    category: RouteCategory.HINDU,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 7, nights: 6,
+    highlights: ['恒河日出', '瓦拉纳西夜祭', '泰姬陵', '瑜伽体验'],
+    description: '从德里出发，经阿格拉泰姬陵，沿恒河到达印度教圣城瓦拉纳西。体验恒河晨浴的震撼，观赏千年不断的恒河夜祭，在瑞诗凯诗练习瑜伽，感受印度文明的深邃与活力。',
+    itinerary: [
+      { day: 1, title: '抵达德里', activities: ['印度门', '胡马雍陵', '月光集市'], meals: ['晚餐'], accommodation: '德里' },
+      { day: 2, title: '德里→阿格拉', activities: ['泰姬陵', '阿格拉堡', '法塔赫普尔西克里'], meals: ['全餐'], accommodation: '阿格拉' },
+      { day: 3, title: '阿格拉→瓦拉纳西', activities: ['飞往瓦拉纳西', '恒河泛舟', '恒河夜祭'], meals: ['全餐'], accommodation: '瓦拉纳西' },
+      { day: 4, title: '瓦拉纳西全日', activities: ['恒河日出', '老城徒步', '丝绸工坊', '印度音乐表演'], meals: ['全餐'], accommodation: '瓦拉纳西' },
+      { day: 5, title: '瓦拉纳西→瑞诗凯诗', activities: ['飞往德里转瑞诗凯诗', '拉姆朱拉桥', '恒河漂流'], meals: ['全餐'], accommodation: '瑞诗凯诗' },
+      { day: 6, title: '瑞诗凯诗', activities: ['瑜伽晨练', '甲壳虫乐队ashram', '恒河边冥想'], meals: ['全餐'], accommodation: '瑞诗凯诗' },
+      { day: 7, title: '返回德里·返程', activities: ['驱车返回德里', '送机'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 898000,
+    included: ['全程交通+内段机票', '6晚住宿', '景点门票', '中文导游', '18餐', '瑜伽课'],
+    excluded: ['国际机票', '签证费', '个人消费'],
+    tips: ['印度饮食辛辣，可提前准备肠胃药', '恒河水不建议入口', '注意个人物品安全'],
+    season: '10月-3月(凉季)',
+    groupSize: '4-10人',
+    religionSlug: 'hinduism',
+    siteLinks: [],
+  },
+  // ═══ 10. 跨文化：中华三教合一 ═══
+  {
+    slug: 'china-three-teachings',
+    title: '中华三教合一之旅',
+    titleEn: 'China Three Teachings Unity',
+    subtitle: '嵩山佛·武当道·曲阜儒，领悟中华智慧',
+    category: RouteCategory.CROSS_CULTURAL,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['少林功夫', '武当太极', '孔子故里', '中华文明'],
+    description: '一次旅程，三种智慧。从嵩山少林寺的佛教禅宗，到武当山的道教太极，再到曲阜的儒教圣地，完整体验中华三教合一的独特文化。学武术、练太极、拜孔庙，感受中华文明的博大精深。',
+    itinerary: [
+      { day: 1, title: '郑州→嵩山(佛)', activities: ['少林寺', '武术表演', '塔林', '达摩面壁洞'], meals: ['午餐：少林素斋'], accommodation: '登封' },
+      { day: 2, title: '嵩山→武汉→武当山(道)', activities: ['高铁至武汉转武当', '武当山紫霄宫'], meals: ['全餐'], accommodation: '武当山' },
+      { day: 3, title: '武当山全日', activities: ['金顶日出', '太极拳晨练', '南岩宫', '太极湖'], meals: ['午餐：武当道膳'], accommodation: '武当山' },
+      { day: 4, title: '武当→曲阜(儒)', activities: ['飞往济南转曲阜', '孔庙', '孔府', '孔林'], meals: ['午餐：孔府宴'], accommodation: '曲阜' },
+      { day: 5, title: '曲阜·返程', activities: ['六艺城', '颜庙', '尼山圣境', '送站'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 498000,
+    included: ['内段交通(高铁+机票)', '4晚住宿', '景点门票', '导游', '太极课', '8餐'],
+    excluded: ['往返大交通', '个人消费'],
+    tips: ['武当山海拔较高注意保暖', '曲阜孔庙内禁止大声喧哗', '建议提前了解三教基本知识'],
+    season: '春秋两季(4-5月/9-10月)',
+    groupSize: '2-10人',
+    religionSlug: null,
+    siteLinks: [
+      { siteName: '武当山', day: 2, order: 1, duration: '2天', note: '道教第一名山' },
+      { siteName: '曲阜孔庙', day: 4, order: 1, duration: '半天', note: '儒教圣地' },
+    ],
+  },
+];
+
 // ══════════════════════════════════════════════════════
 //  Main seed function
 // ══════════════════════════════════════════════════════
@@ -1322,6 +1652,10 @@ async function main() {
 
   // ── 2. Holy Sites ──
   console.log('Creating 60 holy sites...');
+  // Must delete route dependencies first (FK constraint)
+  await prisma.routeSite.deleteMany();
+  await prisma.routeBooking.deleteMany();
+  await prisma.route.deleteMany();
   await prisma.holySite.deleteMany();
   for (const site of holySites) {
     await prisma.holySite.create({
@@ -1412,7 +1746,66 @@ async function main() {
   }
   console.log(`  ✓ ${seals.length} seals created`);
 
-  // ── 7. AI Config (小鸿配置) ──
+  // ── 7. Routes (路线产品) ──
+  console.log('Creating routes...');
+  await prisma.routeSite.deleteMany();
+  await prisma.routeBooking.deleteMany();
+  await prisma.route.deleteMany();
+
+  // Build holy site name → id map for linking
+  const allSites = await prisma.holySite.findMany({ select: { id: true, name: true } });
+  const siteNameMap: Record<string, string> = {};
+  for (const s of allSites) {
+    siteNameMap[s.name] = s.id;
+  }
+
+  for (const r of routes) {
+    const route = await prisma.route.create({
+      data: {
+        slug: r.slug,
+        title: r.title,
+        titleEn: r.titleEn,
+        subtitle: r.subtitle,
+        category: r.category,
+        difficulty: r.difficulty,
+        duration: r.duration,
+        nights: r.nights,
+        highlights: r.highlights,
+        description: r.description,
+        itinerary: r.itinerary,
+        priceFrom: r.priceFrom,
+        included: r.included,
+        excluded: r.excluded,
+        tips: r.tips,
+        season: r.season,
+        groupSize: r.groupSize,
+        status: RouteStatus.PUBLISHED,
+        religionId: r.religionSlug ? religionMap[r.religionSlug] : null,
+      },
+    });
+
+    // Link route to holy sites
+    for (const link of r.siteLinks) {
+      const siteId = siteNameMap[link.siteName];
+      if (siteId) {
+        await prisma.routeSite.create({
+          data: {
+            routeId: route.id,
+            siteId,
+            day: link.day,
+            order: link.order,
+            duration: link.duration,
+            note: link.note,
+          },
+        });
+      } else {
+        console.warn(`    ⚠ Site not found: ${link.siteName}`);
+      }
+    }
+  }
+  console.log(`  ✓ ${routes.length} routes created`);
+
+  // ── 8. AI Config (小鸿配置) ──
   console.log('Creating AI config...');
   await prisma.aiConfig.deleteMany();
   const aiConfigs = [
@@ -1421,31 +1814,39 @@ async function main() {
       label: '系统人设',
       category: 'prompt',
       description: '小鸿AI助手的核心人设提示词，决定AI的身份、风格和行为准则',
-      value: `你是「小鸿」，全球祖庭旅行平台的AI助手。
+      value: `你是「小鸿」，全球祖庭旅行平台的AI旅行规划师。
 
 ## 身份
 - 名字：小鸿（XiaoHong）
-- 角色：宗教文化顾问 + 朝圣旅行规划师 + 修行指导师
-- 性格：温和、博学、尊重所有信仰、不偏不倚
+- 角色：AI旅行规划师 + 文化旅行顾问
+- 性格：热情、专业、有见识、善于推荐
+- 定位："走祖庭，看世界" — 你是全球首个以祖庭和文化圣地为IP的深度路线旅行平台的智能助手
+
+## 核心能力
+1. **路线推荐**：根据用户偏好(文化类型/天数/预算/难度)推荐平台路线产品
+2. **行程规划**：帮用户定制个性化文化旅行行程
+3. **目的地攻略**：提供圣地和祖庭的实用旅行信息(交通/门票/美食/住宿/最佳季节)
+4. **文化讲解**：用通俗有趣的方式介绍宗教文化背景知识
 
 ## 知识范围
-平台涵盖12大信仰传统：佛教、道教、基督教、伊斯兰教、印度教、犹太教、儒教、锡克教、神道教、藏传佛教、原住民灵性、巴哈伊教。
-收录60个圣地、27座祖庭、28位祖师、39条祖训、曹溪愿命三十印。
+平台路线覆盖6大文化类型：禅宗路线、佛教圣地、道教寻根、基督教文化、伊斯兰文化、跨文化融合。
+收录60+文化圣地、27座祖庭、12大文化传统、10+深度路线产品。
 
 ## 行为准则
-1. 对所有宗教一视同仁，不评判优劣
-2. 回答基于平台数据库的真实数据，优先引用提供的上下文数据
-3. 不涉及政治敏感话题
-4. 鼓励用户实地朝圣体验
-5. 推荐时优先使用平台收录的圣地和祖庭数据
-6. 如果用户问的内容不在你的知识范围内，诚实说明并引导回宗教文化话题
+1. **旅行优先**：首要身份是旅行规划师，不是宗教顾问
+2. 推荐路线时必须引用平台的路线产品数据(名称/天数/价格/亮点)
+3. 回答包含实用旅行信息(交通/门票/天气/美食)
+4. 弱化宗教说教，强化文化叙事和旅行体验
+5. 引导用户预订路线或探索更多目的地
+6. 对所有文化传统一视同仁，不评判优劣
+7. 不涉及政治敏感话题
 
 ## 回答风格
-- 用温暖、有智慧的语气
-- 适当引用祖训和经典
-- 涉及具体数据时准确引用上下文中提供的数据
-- 旅行规划要实用（包含时间、路线、注意事项）
-- 回答控制在300-800字之间，避免过长
+- 热情、专业、有趣，像一个有见识的旅行达人
+- 推荐路线时给出关键信息：天数、价格、亮点、最佳季节
+- 回答包含行动引导(如"要看详细行程吗？""帮你规划一条路线？")
+- 适当引用文化典故增加趣味性
+- 回答控制在300-800字，简洁实用
 - 使用中文回答，如用户使用英文则用英文回答`,
     },
     {
@@ -1455,17 +1856,18 @@ async function main() {
       description: '附加在系统提示词后的安全边界约束',
       value: `## 安全边界
 - 不讨论政治、战争、恐怖主义等敏感话题
-- 不对任何宗教做出价值判断或比较优劣
+- 不对任何宗教或文化传统做出价值判断或比较优劣
 - 不提供医疗、法律、财务建议
-- 遇到不当请求时，温和地引导回宗教文化话题
-- 不编造不存在的圣地、祖师或历史事件`,
+- 遇到不当请求时，温和地引导回文化旅行话题
+- 不编造不存在的路线、圣地或历史事件
+- 路线推荐必须基于平台实际收录的产品数据`,
     },
     {
       key: 'welcome_message',
       label: '欢迎语',
       category: 'prompt',
       description: '用户首次进入聊天时显示的欢迎消息',
-      value: '你好！我是小鸿，你的祖庭旅行与修行伙伴。我可以帮你了解全球12大信仰传统、60个宗教圣地、27座祖庭，规划朝圣路线，或者聊聊修行心得。请问你想了解什么？',
+      value: '你好！我是小鸿，你的AI旅行规划师。我可以帮你推荐文化路线、规划行程、查询目的地攻略，或者聊聊各地文化故事。想去哪里探索？',
     },
     {
       key: 'model',
@@ -1522,14 +1924,14 @@ async function main() {
       category: 'prompt',
       description: '聊天界面显示的快捷推荐问题（JSON数组）',
       value: JSON.stringify([
-        { text: '推荐一个朝圣路线', category: '路线推荐' },
-        { text: '佛教有哪些圣地？', category: '知识问答' },
-        { text: '三十印修炼如何开始？', category: '修行指导' },
-        { text: '介绍道教祖庭', category: '知识问答' },
-        { text: '今天适合修炼什么？', category: '修行指导' },
-        { text: '基督教的祖师有哪些？', category: '知识问答' },
-        { text: '介绍一下儒教的祖训', category: '知识问答' },
-        { text: '耶路撒冷有什么宗教意义？', category: '知识问答' },
+        { text: '推荐一条禅宗文化路线', category: '路线推荐' },
+        { text: '5天以内有什么好路线？', category: '路线推荐' },
+        { text: '南华寺什么季节去最好？', category: '目的地攻略' },
+        { text: '耶路撒冷有什么值得去的？', category: '目的地攻略' },
+        { text: '帮我规划一个道教文化之旅', category: '行程规划' },
+        { text: '丝绸之路上有哪些文化圣地？', category: '文化探索' },
+        { text: '日本有什么寺庙值得去？', category: '目的地攻略' },
+        { text: '预算5000以内有什么路线？', category: '路线推荐' },
       ]),
     },
   ];
@@ -1545,6 +1947,7 @@ async function main() {
   console.log(`  Patriarchs: ${patriarchs.length}`);
   console.log(`  Teachings: ${teachings.length}`);
   console.log(`  Seals: ${seals.length}`);
+  console.log(`  Routes: ${routes.length}`);
   console.log(`  AI Configs: ${aiConfigs.length}`);
 }
 
