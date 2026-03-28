@@ -112,10 +112,10 @@ export default function HomeScreen() {
   };
 
   const recData = activeRecTab === 'temples'
-    ? temples.slice(0, 6).map(t => ({ id: t.id, name: t.nameZh, sub: t.country, image: t.imageUrl }))
+    ? temples.slice(0, 6).map(t => ({ id: t.id, name: (t as any).name ?? t.nameZh, sub: t.country, image: t.imageUrl }))
     : activeRecTab === 'patriarchs'
-    ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.nameZh, sub: p.era, image: p.imageUrl }))
-    : holySites.slice(0, 6).map(s => ({ id: s.id, name: s.nameZh, sub: s.country, image: s.imageUrl }));
+    ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: (p as any).name ?? p.nameZh, sub: (p as any).dates ?? p.era, image: p.imageUrl }))
+    : holySites.slice(0, 6).map(s => ({ id: s.id, name: (s as any).name ?? s.nameZh, sub: s.country, image: s.imageUrl }));
 
   return (
     <ScrollView
@@ -220,7 +220,7 @@ export default function HomeScreen() {
         contentContainerStyle={styles.storyList}
         keyExtractor={item => item.siteName}
         renderItem={({ item }) => {
-          const matchedSite = holySites.find(s => s.nameZh.includes(item.siteName));
+          const matchedSite = holySites.find(s => ((s as any).name ?? s.nameZh ?? '').includes(item.siteName));
           return (
             <Pressable style={styles.storyCard} onPress={() => router.push('/journals' as never)}>
               {matchedSite?.imageUrl ? (
@@ -307,7 +307,7 @@ export default function HomeScreen() {
               </View>
             )}
             <LinearGradient colors={['transparent', 'rgba(0,0,0,0.6)']} style={styles.destOverlay}>
-              <Text style={styles.destName}>{site.nameZh}</Text>
+              <Text style={styles.destName}>{(site as any).name ?? site.nameZh}</Text>
               <Text style={styles.destCountry}>{site.country}</Text>
             </LinearGradient>
           </Pressable>
