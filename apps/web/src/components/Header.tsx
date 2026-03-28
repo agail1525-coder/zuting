@@ -9,15 +9,12 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import NotificationBell from "./NotificationBell";
 
 const navLinks = [
-  { key: "nav.religions", href: "/religions", highlight: false },
-  { key: "nav.holySites", href: "/holy-sites", highlight: false },
+  { key: "nav.routes", href: "/routes", highlight: false },
+  { key: "nav.destinations", href: "/holy-sites", highlight: false },
   { key: "nav.map", href: "/map", highlight: false },
-  { key: "nav.temples", href: "/temples", highlight: false },
-  { key: "nav.patriarchs", href: "/patriarchs", highlight: false },
-  { key: "nav.teachings", href: "/teachings", highlight: false },
-  { key: "nav.seals", href: "/seals", highlight: false },
-  { key: "nav.chat", href: "/chat", highlight: true },
-  { key: "nav.trips", href: "/trips", highlight: false },
+  { key: "nav.wiki", href: "/religions", highlight: false },
+  { key: "nav.aiPlanner", href: "/chat", highlight: true },
+  { key: "nav.myTrips", href: "/trips", highlight: false },
 ];
 
 export default function Header() {

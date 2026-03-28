@@ -957,3 +957,103 @@ export interface OAuthProviders {
 export async function fetchAuthProviders(): Promise<OAuthProviders> {
   return fetchJson<OAuthProviders>("/api/auth/providers");
 }
+
+// --- Route (路线产品) ---
+
+export interface Route {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string;
+  subtitle: string;
+  category: string;
+  difficulty: string;
+  duration: number;
+  nights: number;
+  coverImage: string | null;
+  images: string[];
+  highlights: string[];
+  description: string;
+  itinerary: ItineraryDay[];
+  priceFrom: number;
+  included: string[];
+  excluded: string[];
+  tips: string[];
+  season: string;
+  groupSize: string;
+  status: string;
+  rating: number | null;
+  reviewCount: number;
+  bookCount: number;
+  religionId: string | null;
+  religion?: Religion | null;
+  sites?: RouteSiteWithDetail[];
+  _count?: { bookings: number };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ItineraryDay {
+  day: number;
+  title: string;
+  activities?: string[];
+  meals?: string[];
+  accommodation?: string;
+}
+
+export interface RouteSiteWithDetail {
+  id: string;
+  day: number;
+  order: number;
+  duration: string | null;
+  note: string | null;
+  site: {
+    id: string;
+    name: string;
+    nameEn: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    imageUrl: string | null;
+  };
+}
+
+export interface PaginatedRoutes {
+  items: Route[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export async function fetchRoutes(params?: {
+  category?: string;
+  difficulty?: string;
+  minDuration?: number;
+  maxDuration?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: string;
+}): Promise<PaginatedRoutes> {
+  const searchParams = new URLSearchParams();
+  if (params?.category) searchParams.set("category", params.category);
+  if (params?.difficulty) searchParams.set("difficulty", params.difficulty);
+  if (params?.minDuration) searchParams.set("minDuration", String(params.minDuration));
+  if (params?.maxDuration) searchParams.set("maxDuration", String(params.maxDuration));
+  if (params?.page) searchParams.set("page", String(params.page));
+  if (params?.pageSize) searchParams.set("pageSize", String(params.pageSize));
+  if (params?.sort) searchParams.set("sort", params.sort);
+  const qs = searchParams.toString();
+  return fetchJson<PaginatedRoutes>(`/api/routes${qs ? `?${qs}` : ""}`);
+}
+
+export async function fetchRouteBySlug(slug: string): Promise<Route> {
+  return fetchJson<Route>(`/api/routes/${slug}`);
+}
+
+export async function fetchFeaturedRoutes(limit = 8): Promise<Route[]> {
+  return fetchJson<Route[]>(`/api/routes/featured?limit=${limit}`);
+}
+
+export async function fetchRoutesBySite(siteId: string): Promise<Route[]> {
+  return fetchJson<Route[]>(`/api/routes/by-site/${siteId}`);
+}

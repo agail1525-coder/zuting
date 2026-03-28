@@ -1,14 +1,10 @@
 import {
   fetchReligions,
   fetchHolySites,
-  fetchTemples,
-  fetchPatriarchs,
-  fetchSeals,
+  fetchFeaturedRoutes,
   type Religion,
   type HolySite,
-  type Temple,
-  type Patriarch,
-  type Seal,
+  type Route,
 } from "@/lib/api";
 import HomeClient from "./home-client";
 
@@ -17,32 +13,23 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   let religions: Religion[] = [];
   let holySites: HolySite[] = [];
-  let temples: Temple[] = [];
-  let patriarchs: Patriarch[] = [];
-  let seals: Seal[] = [];
+  let featuredRoutes: Route[] = [];
   let error = false;
   try {
-    [religions, holySites, temples, patriarchs, seals] = await Promise.all([
+    [religions, holySites, featuredRoutes] = await Promise.all([
       fetchReligions(),
       fetchHolySites(),
-      fetchTemples(),
-      fetchPatriarchs(),
-      fetchSeals(),
+      fetchFeaturedRoutes(8),
     ]);
   } catch {
     error = true;
   }
 
-  const featured = holySites.slice(0, 6);
-
   return (
     <HomeClient
       religions={religions}
-      featuredSites={featured}
-      allSites={holySites}
-      temples={temples}
-      patriarchs={patriarchs}
-      seals={seals}
+      holySites={holySites}
+      featuredRoutes={featuredRoutes}
       error={error}
     />
   );
