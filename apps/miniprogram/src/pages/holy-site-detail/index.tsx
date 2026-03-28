@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { HolySite, Route, fetchHolySiteById, fetchRoutesBySite } from '../../lib/api'
 import ReviewSection from '../../components/ReviewSection'
+import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
 export default function HolySiteDetailPage() {
@@ -78,6 +79,9 @@ export default function HolySiteDetailPage() {
           )}
           <Text className='detail-hero__title'>{site.name}</Text>
           <Text className='detail-hero__subtitle'>{site.nameEn}</Text>
+        </View>
+        <View className='detail-hero__save'>
+          <SaveButton entityType='HOLY_SITE' entityId={id!} size='small' />
         </View>
       </View>
 

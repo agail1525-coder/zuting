@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Temple, fetchTempleById } from '../../lib/api'
+import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
 export default function TempleDetailPage() {
@@ -74,6 +75,9 @@ export default function TempleDetailPage() {
           )}
           <Text className='detail-hero__title'>{temple.name}</Text>
           <Text className='detail-hero__subtitle'>{temple.nameEn}</Text>
+        </View>
+        <View className='detail-hero__save'>
+          <SaveButton entityType='TEMPLE' entityId={id!} size='small' />
         </View>
       </View>
 

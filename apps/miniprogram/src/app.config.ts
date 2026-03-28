@@ -25,7 +25,9 @@ export default defineAppConfig({
     'pages/search/index',
     'pages/orders/index',
     'pages/notifications/index',
-    'pages/checkout/index'
+    'pages/checkout/index',
+    'pages/collections/index',
+    'pages/collection-detail/index'
   ],
   tabBar: {
     color: '#9CA3AF',

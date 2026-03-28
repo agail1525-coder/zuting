@@ -1,0 +1,274 @@
+.collections-page {
+  min-height: 100vh;
+  background: #F5F5F5;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 20rpx;
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #E5E7EB;
+
+  &__title {
+    font-size: 34rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  &__btn {
+    background: linear-gradient(135deg, #0066FF, #0052CC);
+    border-radius: 32rpx;
+    padding: 12rpx 28rpx;
+  }
+
+  &__btn-text {
+    font-size: 26rpx;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+}
+
+/* Loading */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 32rpx;
+
+  &__text {
+    font-size: 28rpx;
+    color: #9CA3AF;
+
+    &--error {
+      color: #EF4444;
+    }
+  }
+
+  &__retry {
+    font-size: 26rpx;
+    color: #0066FF;
+    margin-top: 16rpx;
+  }
+}
+
+/* Collections List */
+.collections-list {
+  flex: 1;
+  padding: 24rpx 32rpx 0;
+}
+
+/* Collection Card */
+.collection-card {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #E5E7EB;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+
+  &--hover {
+    opacity: 0.85;
+  }
+
+  &__cover {
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 16rpx;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-right: 20rpx;
+  }
+
+  &__cover-img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  &__cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__cover-icon {
+    font-size: 48rpx;
+  }
+
+  &__info {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__name {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 24rpx;
+    color: #9CA3AF;
+    margin-top: 6rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__count {
+    display: block;
+    font-size: 22rpx;
+    color: #0066FF;
+    margin-top: 8rpx;
+  }
+
+  &__delete {
+    padding: 16rpx;
+    flex-shrink: 0;
+  }
+
+  &__delete-icon {
+    font-size: 36rpx;
+    color: #9CA3AF;
+  }
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 32rpx;
+
+  &__icon {
+    font-size: 80rpx;
+    margin-bottom: 24rpx;
+    color: #E5E7EB;
+  }
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #4B5563;
+    margin-bottom: 12rpx;
+  }
+
+  &__desc {
+    font-size: 26rpx;
+    color: #9CA3AF;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 32rpx;
+    max-width: 480rpx;
+  }
+
+  &__btn {
+    background: linear-gradient(135deg, #0066FF, #0052CC);
+    border-radius: 999rpx;
+    padding: 20rpx 48rpx;
+  }
+
+  &__btn-text {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #FFFFFF;
+  }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx 32rpx;
+  width: 560rpx;
+
+  &__title {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    text-align: center;
+    margin-bottom: 32rpx;
+  }
+
+  &__input {
+    background: #F3F4F6;
+    border-radius: 16rpx;
+    padding: 20rpx 24rpx;
+    font-size: 28rpx;
+    color: #1A1A1A;
+    margin-bottom: 16rpx;
+    border: 1rpx solid #E5E7EB;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  &__placeholder {
+    color: #9CA3AF;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 16rpx;
+    margin-top: 24rpx;
+  }
+
+  &__btn {
+    flex: 1;
+    text-align: center;
+    padding: 20rpx 0;
+    border-radius: 999rpx;
+
+    &--cancel {
+      background: #F3F4F6;
+      border: 1rpx solid #E5E7EB;
+    }
+
+    &--confirm {
+      background: linear-gradient(135deg, #0066FF, #0052CC);
+    }
+
+    &--disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__btn-text--cancel {
+    font-size: 28rpx;
+    color: #6B7280;
+    font-weight: 500;
+  }
+
+  &__btn-text--confirm {
+    font-size: 28rpx;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+}

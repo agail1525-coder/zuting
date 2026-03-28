@@ -325,6 +325,69 @@ export const api = {
       limit: String(limit),
     }),
 
+  // Search suggestions & hot keywords
+  fetchSearchSuggestions: (q: string) =>
+    request<SearchSuggestion[]>('/search/suggestions', { q }),
+
+  fetchHotKeywords: () =>
+    request<HotKeyword[]>('/search/hot'),
+
+  // Collections
+  fetchCollections: async () => {
+    const token = await getAccessToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/collections`, { headers });
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    return response.json() as Promise<Collection[]>;
+  },
+
+  fetchCollection: async (id: string) => {
+    const token = await getAccessToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/collections/${id}`, { headers });
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    return response.json() as Promise<Collection>;
+  },
+
+  createCollection: (data: { name: string; description?: string; isPublic?: boolean }) =>
+    requestMutate<Collection>('/collections', 'POST', data as Record<string, unknown>),
+
+  deleteCollection: async (id: string) => {
+    const token = await getAccessToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/collections/${id}`, { method: 'DELETE', headers });
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+  },
+
+  quickSave: (entityType: CollectionEntityType, entityId: string) =>
+    requestMutate<{ collectionId: string; itemId: string }>('/collections/quick-save', 'POST', { entityType, entityId }),
+
+  checkSaved: async (entityType: CollectionEntityType, entityId: string) => {
+    const token = await getAccessToken();
+    const url = new URL(`${BASE_URL}/collections/check`);
+    url.searchParams.set('entityType', entityType);
+    url.searchParams.set('entityId', entityId);
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(url.toString(), { headers });
+    if (!response.ok) return { saved: false, itemId: null as string | null, collectionId: null as string | null };
+    return response.json() as Promise<{ saved: boolean; itemId: string | null; collectionId: string | null }>;
+  },
+
+  removeFromCollection: async (collectionId: string, itemId: string) => {
+    const token = await getAccessToken();
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${BASE_URL}/collections/${collectionId}/items/${itemId}`, {
+      method: 'DELETE',
+      headers,
+    });
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+  },
+
   getReviewStats: (targetType: string, targetId: string) =>
     request<ReviewStats>(`/reviews/stats/${targetType}/${targetId}`),
 
@@ -464,6 +527,44 @@ export interface NotificationListResponse {
   total: number;
   page: number;
   limit: number;
+}
+
+// --- Search Suggestions ---
+
+export interface SearchSuggestion {
+  text: string;
+  type: string;
+  id?: string;
+}
+
+export interface HotKeyword {
+  text: string;
+  count?: number;
+}
+
+// --- Collections ---
+
+export type CollectionEntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'ROUTE' | 'JOURNAL';
+
+export interface CollectionItem {
+  id: string;
+  collectionId: string;
+  entityType: CollectionEntityType;
+  entityId: string;
+  note: string | null;
+  createdAt: string;
+}
+
+export interface Collection {
+  id: string;
+  userId: string;
+  name: string;
+  description: string | null;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  items: CollectionItem[];
+  _count?: { items: number };
 }
 
 export interface SearchResultItem {

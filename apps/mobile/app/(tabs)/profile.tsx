@@ -93,6 +93,12 @@ export default function ProfileScreen() {
           label="我的足迹"
           onPress={() => router.push('/trips')}
         />
+        <MenuItem
+          icon="heart"
+          label="我的收藏"
+          subtitle="收藏的圣地、祖庭、祖师"
+          onPress={() => router.push('/collections' as never)}
+        />
       </Animated.View>
 
       {/* About */}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, Typography, Spin, Result } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List } from 'antd';
 import {
   GlobalOutlined,
   EnvironmentOutlined,
@@ -7,12 +7,29 @@ import {
   CarOutlined,
   UserOutlined,
   BookOutlined,
+  SearchOutlined,
+  FireOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
 import { getDashboardStats } from '../lib/api';
+
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+interface HotKeyword { keyword: string; count: number; }
+
+async function fetchHotKeywords(): Promise<HotKeyword[]> {
+  try {
+    const res = await fetch(`${API_BASE}/search/hot`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : (Array.isArray(data?.items) ? data.items : []);
+  } catch {
+    return [];
+  }
+}
 import { CHART_COLORS, SERIES_COLORS } from '../lib/theme';
 import type { Religion, HolySite, Temple, Patriarch, Teaching, Seal } from '../types';
 
@@ -32,12 +49,14 @@ export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
 
   useEffect(() => {
     getDashboardStats()
       .then(setStats)
       .catch((e: unknown) => setError(e instanceof Error ? e.message : '加载失败'))
       .finally(() => setLoading(false));
+    fetchHotKeywords().then((kws) => setHotKeywords(kws.slice(0, 5)));
   }, []);
 
   if (loading) {
@@ -223,26 +242,78 @@ export default function Dashboard() {
           </Card>
         </Col>
         <Col xs={24} lg={10}>
-          <Card title="更多统计" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Statistic
-                  title={<span style={{ color: '#999' }}>祖训</span>}
-                  value={s.teachings.length}
-                  prefix={<BookOutlined />}
-                  valueStyle={{ color: '#E87040' }}
-                />
-              </Col>
-              <Col span={12}>
-                <Statistic
-                  title={<span style={{ color: '#999' }}>三十印</span>}
-                  value={s.seals.length}
-                  prefix={<CarOutlined />}
-                  valueStyle={{ color: '#52C41A' }}
-                />
-              </Col>
-            </Row>
-          </Card>
+          <Row gutter={[0, 16]}>
+            <Col span={24}>
+              <Card title="更多统计" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Statistic
+                      title={<span style={{ color: '#999' }}>祖训</span>}
+                      value={s.teachings.length}
+                      prefix={<BookOutlined />}
+                      valueStyle={{ color: '#E87040' }}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Statistic
+                      title={<span style={{ color: '#999' }}>三十印</span>}
+                      value={s.seals.length}
+                      prefix={<CarOutlined />}
+                      valueStyle={{ color: '#52C41A' }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col span={24}>
+              <Card
+                title={
+                  <span>
+                    <FireOutlined style={{ color: '#FF4D4F', marginRight: 8 }} />
+                    热门搜索 Top 5
+                  </span>
+                }
+                extra={
+                  <a href="/search-stats" style={{ color: '#D4A855', fontSize: 12 }}>
+                    <SearchOutlined style={{ marginRight: 4 }} />
+                    查看全部
+                  </a>
+                }
+                styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+              >
+                {hotKeywords.length === 0 ? (
+                  <span style={{ color: '#666', fontSize: 13 }}>暂无搜索数据</span>
+                ) : (
+                  <List
+                    size="small"
+                    dataSource={hotKeywords}
+                    renderItem={(item, index) => {
+                      const medalColor = index === 0 ? 'gold' : index === 1 ? 'default' : index === 2 ? 'orange' : undefined;
+                      return (
+                        <List.Item
+                          style={{ padding: '6px 0', borderBottom: '1px solid #1a1a1a' }}
+                          extra={
+                            <span style={{ color: '#D4A855', fontWeight: 600, fontSize: 13 }}>
+                              {(item.count ?? 0).toLocaleString()}
+                            </span>
+                          }
+                        >
+                          <span style={{ marginRight: 8, color: '#555', minWidth: 20, display: 'inline-block' }}>
+                            {index + 1}.
+                          </span>
+                          {medalColor ? (
+                            <Tag color={medalColor} style={{ fontWeight: 600 }}>{item.keyword}</Tag>
+                          ) : (
+                            <span style={{ color: '#d4d4d4' }}>{item.keyword}</span>
+                          )}
+                        </List.Item>
+                      );
+                    }}
+                  />
+                )}
+              </Card>
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>

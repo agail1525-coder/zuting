@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Patriarch, fetchPatriarchById } from '../../lib/api'
+import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
 export default function PatriarchDetailPage() {
@@ -66,6 +67,9 @@ export default function PatriarchDetailPage() {
               </View>
             )}
           </View>
+        </View>
+        <View className='detail-hero__save'>
+          <SaveButton entityType='PATRIARCH' entityId={id!} size='small' />
         </View>
       </View>
 

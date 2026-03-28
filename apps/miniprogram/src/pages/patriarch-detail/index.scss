@@ -22,6 +22,12 @@
     }
   }
 
+  &__save {
+    position: absolute;
+    top: 24rpx;
+    right: 24rpx;
+  }
+
   &__overlay {
     position: absolute;
     bottom: 0;

@@ -31,6 +31,12 @@
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
   }
 
+  &__save {
+    position: absolute;
+    top: 24rpx;
+    right: 24rpx;
+  }
+
   &__badge {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);

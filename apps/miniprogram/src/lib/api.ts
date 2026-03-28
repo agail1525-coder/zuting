@@ -561,3 +561,106 @@ export function markNotificationRead(id: string) {
 export function markAllNotificationsRead() {
   return postRequest<void>('/notifications/read-all', {})
 }
+
+// --- Search Suggestions & Hot Keywords ---
+
+export interface SearchSuggestion {
+  text: string
+  type: string
+}
+
+export interface HotKeyword {
+  keyword: string
+  count: number
+}
+
+export function fetchSearchSuggestions(q: string) {
+  return request<SearchSuggestion[]>('/search/suggestions', { q })
+}
+
+export function fetchHotKeywords() {
+  return request<HotKeyword[]>('/search/hot')
+}
+
+// --- Collections ---
+
+export interface CollectionItem {
+  id: string
+  entityType: string
+  entityId: string
+  title: string
+  image: string | null
+  subtitle: string | null
+  createdAt: string
+}
+
+export interface Collection {
+  id: string
+  name: string
+  description: string | null
+  isPublic: boolean
+  coverImage: string | null
+  itemCount: number
+  items: CollectionItem[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateCollectionData {
+  name: string
+  description?: string
+  isPublic?: boolean
+}
+
+export interface SavedStatus {
+  saved: boolean
+  collectionId: string | null
+  itemId: string | null
+}
+
+export function fetchCollections() {
+  return request<Collection[]>('/collections')
+}
+
+export function fetchCollectionById(id: string) {
+  return request<Collection>(`/collections/${id}`)
+}
+
+export function createCollection(data: CreateCollectionData) {
+  return postRequest<Collection>('/collections', data)
+}
+
+export function deleteCollection(id: string) {
+  return deleteRequest<void>(`/collections/${id}`)
+}
+
+export function quickSave(entityType: string, entityId: string) {
+  return postRequest<{ collectionId: string; itemId: string }>('/collections/quick-save', { entityType, entityId })
+}
+
+export function checkSaved(entityType: string, entityId: string) {
+  return request<SavedStatus>('/collections/check-saved', { entityType, entityId })
+}
+
+export function removeFromCollection(collectionId: string, itemId: string) {
+  return deleteRequest<void>(`/collections/${collectionId}/items/${itemId}`)
+}
+
+async function deleteRequest<T>(path: string): Promise<T> {
+  const url = `${BASE_URL}${path}`
+  const token = getAccessToken()
+  const header: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (token) {
+    header['Authorization'] = `Bearer ${token}`
+  }
+  try {
+    const res = await Taro.request({ url, method: 'DELETE', header })
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      return res.data as T
+    }
+    throw new Error(`API Error: ${res.statusCode}`)
+  } catch (err) {
+    console.error(`[API] DELETE ${path} failed:`, err)
+    throw err
+  }
+}

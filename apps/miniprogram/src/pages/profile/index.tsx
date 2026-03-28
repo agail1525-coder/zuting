@@ -18,6 +18,7 @@ const APP_VERSION = '0.2.0'
 const MENU_ITEMS = [
   { icon: '\u{1F9ED}', label: '我的行程', desc: '管理朝圣行程', action: 'trips', url: '/pages/trips/index' },
   { icon: '\u{1F4D6}', label: '朝圣日记', desc: '记录修行感悟', action: 'journals', url: '/pages/journals/index' },
+  { icon: '\u2665', label: '我的收藏', desc: '收藏的圣地与祖庭', action: 'collections', url: '/pages/collections/index' },
   { icon: '\u{1F5FA}', label: '圣地地图', desc: '全球圣地分布', action: 'map', url: '/pages/map/index' },
   { icon: '\u{1F30F}', label: '语言设置', desc: '简体中文', action: 'language' },
   { icon: '\u{1F514}', label: '通知设置', desc: '管理推送通知', action: 'notifications' },

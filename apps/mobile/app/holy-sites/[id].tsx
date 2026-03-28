@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { api, HolySite, Route } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import ReviewSection from '../../src/components/ReviewSection';
+import SaveButton from '../../src/components/SaveButton';
 
 export default function HolySiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -67,7 +68,10 @@ export default function HolySiteDetailScreen() {
               <Text style={s.religionBadgeText}>{religion.name}</Text>
             </View>
           )}
-          <Text style={s.heroTitle}>{name}</Text>
+          <View style={s.heroTitleRow}>
+            <Text style={[s.heroTitle, { flex: 1 }]}>{name}</Text>
+            <SaveButton entityType="HOLY_SITE" entityId={id!} size={26} />
+          </View>
           <Text style={s.heroSubtitle}>{nameEn}</Text>
         </LinearGradient>
       </View>
@@ -210,6 +214,7 @@ const s = StyleSheet.create({
   heroOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: 16, paddingBottom: 20, paddingTop: 60 },
   religionBadge: { backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12, marginBottom: 8 },
   religionBadgeText: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
+  heroTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 2 },
   heroTitle: { fontSize: 26, fontWeight: '800', color: '#FFFFFF' },
   heroSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 2 },
 

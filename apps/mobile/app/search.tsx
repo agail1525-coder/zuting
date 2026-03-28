@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { api, SearchResultItem, SearchResponse } from '../src/lib/api';
+import { api, SearchResultItem, SearchResponse, HotKeyword, SearchSuggestion } from '../src/lib/api';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 
 const TYPE_TABS = [
@@ -53,18 +53,77 @@ function getDetailRoute(item: SearchResultItem): string | null {
   }
 }
 
+function getSuggestionRoute(s: SearchSuggestion): string | null {
+  if (!s.id) return null;
+  switch (s.type) {
+    case 'holy-site': return `/holy-sites/${s.id}`;
+    case 'temple': return `/temples/${s.id}`;
+    case 'patriarch': return `/patriarchs/${s.id}`;
+    case 'religion': return `/religions/${s.id}`;
+    case 'teaching': return `/teachings/${s.id}`;
+    case 'seal': return `/seals/${s.id}`;
+    default: return null;
+  }
+}
+
 export default function SearchScreen() {
   const router = useRouter();
   const inputRef = useRef<TextInput>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suggDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [query, setQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const [activeType, setActiveType] = useState('all');
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  // Hot keywords & suggestions state
+  const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+
+  // Fetch hot keywords on mount
+  useEffect(() => {
+    api.fetchHotKeywords()
+      .then(setHotKeywords)
+      .catch(() => {
+        // Fallback hot keywords
+        setHotKeywords([
+          { text: '耶路撒冷' },
+          { text: '麦加' },
+          { text: '菩提伽耶' },
+          { text: '梵蒂冈' },
+          { text: '少林寺' },
+        ]);
+      });
+  }, []);
+
+  // Fetch suggestions when query >= 2 chars
+  useEffect(() => {
+    if (suggDebounceRef.current) clearTimeout(suggDebounceRef.current);
+    if (query.trim().length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    suggDebounceRef.current = setTimeout(async () => {
+      setLoadingSuggestions(true);
+      try {
+        const data = await api.fetchSearchSuggestions(query.trim());
+        setSuggestions(Array.isArray(data) ? data : []);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    }, 200);
+    return () => {
+      if (suggDebounceRef.current) clearTimeout(suggDebounceRef.current);
+    };
+  }, [query]);
 
   const doSearch = useCallback(async (q: string, type: string, p: number, append = false) => {
     if (!q.trim()) {
@@ -121,6 +180,23 @@ export default function SearchScreen() {
     if (route) router.push(route as never);
   }, [router]);
 
+  const handleHotKeyword = useCallback((keyword: string) => {
+    setQuery(keyword);
+    setIsFocused(false);
+    inputRef.current?.blur();
+  }, []);
+
+  const handleSuggestion = useCallback((s: SearchSuggestion) => {
+    const route = getSuggestionRoute(s);
+    if (route) {
+      router.push(route as never);
+    } else {
+      setQuery(s.text);
+      setIsFocused(false);
+      inputRef.current?.blur();
+    }
+  }, [router]);
+
   const renderItem = useCallback(({ item }: { item: SearchResultItem }) => (
     <Pressable
       style={({ pressed }) => [styles.resultCard, pressed && styles.resultCardPressed]}
@@ -169,17 +245,24 @@ export default function SearchScreen() {
 
   const hasMore = results ? results.results.length < results.total : false;
 
+  // Show suggestions overlay when focused and query >= 2 chars
+  const showSuggestions = isFocused && query.trim().length >= 2;
+  // Show hot keywords when focused and query is empty
+  const showHotKeywords = isFocused && query.trim().length === 0 && hotKeywords.length > 0;
+
   return (
     <View style={styles.container}>
       {/* Search Input */}
       <View style={styles.searchInputRow}>
-        <View style={styles.searchInputContainer}>
-          <Ionicons name="search" size={18} color={colors.textMuted} style={styles.searchIcon} />
+        <View style={[styles.searchInputContainer, isFocused && styles.searchInputContainerFocused]}>
+          <Ionicons name="search" size={18} color={isFocused ? colors.gold : colors.textMuted} style={styles.searchIcon} />
           <TextInput
             ref={inputRef}
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 150)}
             placeholder="搜索圣地、祖庭、祖师..."
             placeholderTextColor={colors.textMuted}
             autoFocus
@@ -187,42 +270,95 @@ export default function SearchScreen() {
             selectionColor={colors.gold}
           />
           {query.length > 0 && (
-            <Pressable onPress={() => { setQuery(''); setResults(null); }} hitSlop={8}>
+            <Pressable onPress={() => { setQuery(''); setResults(null); setSuggestions([]); }} hitSlop={8}>
               <Ionicons name="close-circle" size={18} color={colors.textMuted} />
             </Pressable>
           )}
         </View>
       </View>
 
+      {/* Hot Keywords */}
+      {showHotKeywords && (
+        <View style={styles.hotSection}>
+          <Text style={styles.hotTitle}>热门搜索</Text>
+          <View style={styles.hotChips}>
+            {hotKeywords.map((kw, i) => (
+              <Pressable
+                key={i}
+                style={styles.hotChip}
+                onPress={() => handleHotKeyword(kw.text)}
+              >
+                <Ionicons name="flame-outline" size={12} color="#EF4444" style={{ marginRight: 4 }} />
+                <Text style={styles.hotChipText}>{kw.text}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Suggestions Dropdown */}
+      {showSuggestions && (
+        <View style={styles.suggestionsBox}>
+          {loadingSuggestions ? (
+            <View style={styles.suggestionsLoading}>
+              <ActivityIndicator size="small" color={colors.gold} />
+            </View>
+          ) : suggestions.length > 0 ? (
+            <ScrollView keyboardShouldPersistTaps="handled" style={{ maxHeight: 240 }}>
+              {suggestions.map((s, i) => (
+                <Pressable
+                  key={i}
+                  style={({ pressed }) => [styles.suggestionRow, pressed && styles.suggestionRowPressed]}
+                  onPress={() => handleSuggestion(s)}
+                >
+                  <Ionicons name="search-outline" size={14} color={colors.textMuted} />
+                  <Text style={styles.suggestionText} numberOfLines={1}>{s.text}</Text>
+                  {s.type && (
+                    <Text style={styles.suggestionType}>{TYPE_LABELS[s.type] ?? s.type}</Text>
+                  )}
+                  <Ionicons name="arrow-forward-outline" size={14} color={colors.textMuted} />
+                </Pressable>
+              ))}
+            </ScrollView>
+          ) : (
+            <View style={styles.suggestionsLoading}>
+              <Text style={styles.noSuggestionsText}>无匹配建议</Text>
+            </View>
+          )}
+        </View>
+      )}
+
       {/* Type Tabs */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.tabsContainer}
-        style={styles.tabsScroll}
-      >
-        {TYPE_TABS.map((tab) => (
-          <Pressable
-            key={tab.key}
-            style={[styles.tab, activeType === tab.key && styles.tabActive]}
-            onPress={() => { setActiveType(tab.key); setPage(1); }}
-          >
-            <Text style={[styles.tabText, activeType === tab.key && styles.tabTextActive]}>
-              {tab.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+      {!showHotKeywords && !showSuggestions && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsContainer}
+          style={styles.tabsScroll}
+        >
+          {TYPE_TABS.map((tab) => (
+            <Pressable
+              key={tab.key}
+              style={[styles.tab, activeType === tab.key && styles.tabActive]}
+              onPress={() => { setActiveType(tab.key); setPage(1); }}
+            >
+              <Text style={[styles.tabText, activeType === tab.key && styles.tabTextActive]}>
+                {tab.label}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      )}
 
       {/* Loading */}
-      {loading && (
+      {!showHotKeywords && !showSuggestions && loading && (
         <View style={styles.centerState}>
           <ActivityIndicator size="large" color={colors.gold} />
         </View>
       )}
 
       {/* Error */}
-      {!loading && error && (
+      {!showHotKeywords && !showSuggestions && !loading && error && (
         <View style={styles.centerState}>
           <Ionicons name="cloud-offline" size={48} color={colors.textMuted} />
           <Text style={styles.emptyText}>{error}</Text>
@@ -236,7 +372,7 @@ export default function SearchScreen() {
       )}
 
       {/* Empty - no query */}
-      {!loading && !error && !query.trim() && (
+      {!showHotKeywords && !showSuggestions && !loading && !error && !query.trim() && (
         <View style={styles.centerState}>
           <Ionicons name="search" size={48} color={colors.textMuted} />
           <Text style={styles.emptyText}>输入关键词开始搜索</Text>
@@ -245,7 +381,7 @@ export default function SearchScreen() {
       )}
 
       {/* Empty - no results */}
-      {!loading && !error && query.trim() && results && results.results.length === 0 && (
+      {!showHotKeywords && !showSuggestions && !loading && !error && query.trim() && results && results.results.length === 0 && (
         <View style={styles.centerState}>
           <Ionicons name="file-tray-outline" size={48} color={colors.textMuted} />
           <Text style={styles.emptyText}>未找到相关内容</Text>
@@ -254,12 +390,13 @@ export default function SearchScreen() {
       )}
 
       {/* Results */}
-      {!loading && !error && results && results.results.length > 0 && (
+      {!showHotKeywords && !showSuggestions && !loading && !error && results && results.results.length > 0 && (
         <FlatList
           data={results.results}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           contentContainerStyle={styles.listContent}
+          keyboardShouldPersistTaps="handled"
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.3}
           ListHeaderComponent={
@@ -302,6 +439,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     height: 44,
   },
+  searchInputContainerFocused: {
+    borderColor: colors.gold,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   searchIcon: {
     marginRight: spacing.sm,
   },
@@ -310,6 +455,86 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontSize: fontSize.md,
     paddingVertical: 0,
+  },
+  // Hot Keywords
+  hotSection: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.backgroundCardSolid,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  hotTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+    color: colors.textMuted,
+    marginBottom: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  hotChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  hotChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: borderRadius.full,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+  },
+  hotChipText: {
+    fontSize: fontSize.sm,
+    color: '#EF4444',
+    fontWeight: '500',
+  },
+  // Suggestions
+  suggestionsBox: {
+    backgroundColor: colors.backgroundCardSolid,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  suggestionsLoading: {
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  noSuggestionsText: {
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
+  },
+  suggestionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 2,
+    gap: spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F3F4F6',
+  },
+  suggestionRowPressed: {
+    backgroundColor: '#F9FAFB',
+  },
+  suggestionText: {
+    flex: 1,
+    fontSize: fontSize.md,
+    color: colors.textPrimary,
+  },
+  suggestionType: {
+    fontSize: fontSize.xs,
+    color: colors.gold,
+    backgroundColor: 'rgba(0, 102, 255, 0.08)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: borderRadius.full,
   },
   tabsScroll: {
     maxHeight: 44,

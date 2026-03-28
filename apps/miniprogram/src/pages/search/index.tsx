@@ -1,7 +1,11 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { searchAll, SearchResultItem } from '../../lib/api'
+import {
+  searchAll, SearchResultItem,
+  fetchSearchSuggestions, fetchHotKeywords,
+  SearchSuggestion, HotKeyword,
+} from '../../lib/api'
 import './index.scss'
 
 type SearchType = 'all' | 'religion' | 'holy-site' | 'temple' | 'patriarch' | 'teaching' | 'seal'
@@ -53,7 +57,17 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
+  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([])
+  const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const suggestTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    fetchHotKeywords()
+      .then(setHotKeywords)
+      .catch(() => {})
+  }, [])
 
   const doSearch = useCallback(async (q: string, type: SearchType) => {
     if (!q.trim()) {
@@ -65,6 +79,7 @@ export default function SearchPage() {
     setLoading(true)
     setError('')
     setSearched(true)
+    setShowSuggestions(false)
     try {
       const res = await searchAll(q.trim(), type)
       setResults(res.results)
@@ -78,14 +93,39 @@ export default function SearchPage() {
     }
   }, [])
 
+  const loadSuggestions = useCallback((q: string) => {
+    if (!q.trim()) {
+      setSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
+    if (suggestTimerRef.current) clearTimeout(suggestTimerRef.current)
+    suggestTimerRef.current = setTimeout(async () => {
+      try {
+        const list = await fetchSearchSuggestions(q)
+        setSuggestions(list)
+        setShowSuggestions(list.length > 0)
+      } catch {
+        setSuggestions([])
+        setShowSuggestions(false)
+      }
+    }, 200)
+  }, [])
+
   const handleInput = useCallback((e: { detail: { value: string } }) => {
     const val = e.detail.value
     setQuery(val)
+    loadSuggestions(val)
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
       doSearch(val, activeType)
-    }, 300)
-  }, [activeType, doSearch])
+    }, 500)
+  }, [activeType, doSearch, loadSuggestions])
+
+  const handleConfirm = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    doSearch(query, activeType)
+  }, [query, activeType, doSearch])
 
   const handleTabChange = useCallback((type: SearchType) => {
     setActiveType(type)
@@ -101,6 +141,29 @@ export default function SearchPage() {
     }
   }, [])
 
+  const handleSuggestionClick = useCallback((text: string) => {
+    setQuery(text)
+    setSuggestions([])
+    setShowSuggestions(false)
+    doSearch(text, activeType)
+  }, [activeType, doSearch])
+
+  const handleHotKeywordClick = useCallback((keyword: string) => {
+    setQuery(keyword)
+    doSearch(keyword, activeType)
+  }, [activeType, doSearch])
+
+  const handleClear = useCallback(() => {
+    setQuery('')
+    setResults([])
+    setTotal(0)
+    setSearched(false)
+    setSuggestions([])
+    setShowSuggestions(false)
+  }, [])
+
+  const showEmpty = !query && !searched
+
   return (
     <View className='search-page'>
       {/* Search Bar */}
@@ -113,22 +176,13 @@ export default function SearchPage() {
             placeholderClass='search-bar__placeholder'
             value={query}
             onInput={handleInput}
+            onConfirm={handleConfirm}
             confirmType='search'
             focus
           />
-          {query && (
-            <Text
-              className='search-bar__clear'
-              onClick={() => {
-                setQuery('')
-                setResults([])
-                setTotal(0)
-                setSearched(false)
-              }}
-            >
-              &#x2715;
-            </Text>
-          )}
+          {query ? (
+            <Text className='search-bar__clear' onClick={handleClear}>&#x2715;</Text>
+          ) : null}
         </View>
       </View>
 
@@ -145,8 +199,43 @@ export default function SearchPage() {
         ))}
       </ScrollView>
 
+      {/* Suggestions Dropdown */}
+      {showSuggestions && suggestions.length > 0 && (
+        <View className='suggestions'>
+          {suggestions.map((s, i) => (
+            <View
+              key={i}
+              className='suggestions__item'
+              onClick={() => handleSuggestionClick(s.text)}
+            >
+              <Text className='suggestions__icon'>&#x1F50D;</Text>
+              <Text className='suggestions__text'>{s.text}</Text>
+              <Text className='suggestions__type'>{getTypeLabel(s.type)}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
       {/* Results Area */}
       <ScrollView className='search-results' scrollY>
+        {/* Hot Keywords — shown when input is empty */}
+        {showEmpty && hotKeywords.length > 0 && (
+          <View className='hot-section'>
+            <Text className='hot-section__title'>&#x1F525; 热门搜索</Text>
+            <View className='hot-keywords'>
+              {hotKeywords.map((kw, i) => (
+                <View
+                  key={i}
+                  className='hot-keywords__tag'
+                  onClick={() => handleHotKeywordClick(kw.keyword)}
+                >
+                  <Text className='hot-keywords__text'>{kw.keyword}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
         {loading && (
           <View className='search-status'>
             <Text className='search-status__text'>正在搜索...</Text>
@@ -167,7 +256,7 @@ export default function SearchPage() {
           </View>
         )}
 
-        {!loading && !error && !searched && (
+        {!loading && !error && !searched && !showEmpty && (
           <View className='search-status'>
             <Text className='search-status__icon'>&#x1F50D;</Text>
             <Text className='search-status__text'>输入关键词开始搜索</Text>
