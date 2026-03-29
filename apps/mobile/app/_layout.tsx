@@ -71,6 +71,22 @@ function RootLayout() {
           name="search"
           options={{ title: '搜索' }}
         />
+        <Stack.Screen
+          name="checkout"
+          options={{ title: '确认支付' }}
+        />
+        <Stack.Screen
+          name="payment-result"
+          options={{ title: '支付结果', headerBackVisible: false }}
+        />
+        <Stack.Screen
+          name="coupons"
+          options={{ title: '优惠券中心' }}
+        />
+        <Stack.Screen
+          name="promotions"
+          options={{ title: '促销活动' }}
+        />
       </Stack>
     </AuthProvider>
   );

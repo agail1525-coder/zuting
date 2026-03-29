@@ -105,6 +105,18 @@ export default function ProfileScreen() {
           subtitle="游记 · 问答 · 排行"
           onPress={() => router.push('/community' as never)}
         />
+        <MenuItem
+          icon="pricetag"
+          label="优惠券"
+          subtitle="领取并使用优惠券"
+          onPress={() => router.push('/coupons' as never)}
+        />
+        <MenuItem
+          icon="gift"
+          label="促销活动"
+          subtitle="闪购 · 早鸟价 · 限时折扣"
+          onPress={() => router.push('/promotions' as never)}
+        />
       </Animated.View>
 
       {/* About */}

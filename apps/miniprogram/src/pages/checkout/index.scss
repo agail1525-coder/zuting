@@ -99,6 +99,157 @@
   box-sizing: border-box;
 }
 
+/* Coupon Section */
+.coupon-section {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #E5E7EB;
+
+  &__title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 20rpx;
+  }
+
+  &__input-row {
+    display: flex;
+    gap: 16rpx;
+    align-items: center;
+  }
+
+  &__input {
+    flex: 1;
+    background: #F9FAFB;
+    border: 1rpx solid #E5E7EB;
+    border-radius: 12rpx;
+    padding: 16rpx 20rpx;
+    font-size: 28rpx;
+    color: #1A1A1A;
+  }
+
+  &__apply-btn {
+    background: #0066FF;
+    border-radius: 12rpx;
+    padding: 16rpx 28rpx;
+    flex-shrink: 0;
+  }
+
+  &__apply-text {
+    font-size: 26rpx;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+
+  &__applied {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFF7ED;
+    border-radius: 12rpx;
+    padding: 16rpx 20rpx;
+    border: 1rpx solid #FED7AA;
+  }
+
+  &__applied-info {
+    display: flex;
+    gap: 20rpx;
+    align-items: center;
+  }
+
+  &__applied-code {
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #92400E;
+    font-family: monospace;
+  }
+
+  &__applied-discount {
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #EF4444;
+  }
+
+  &__remove {
+    font-size: 24rpx;
+    color: #9CA3AF;
+  }
+
+  &__link {
+    display: block;
+    font-size: 24rpx;
+    color: #0066FF;
+    margin-top: 16rpx;
+  }
+}
+
+/* Payment Method Section */
+.pay-method-section {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #E5E7EB;
+
+  &__title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 16rpx;
+  }
+}
+
+.pay-method-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--active {
+    // Highlighted row
+  }
+
+  &__icon {
+    font-size: 36rpx;
+    margin-right: 20rpx;
+  }
+
+  &__label {
+    flex: 1;
+    font-size: 28rpx;
+    color: #1A1A1A;
+  }
+
+  &__radio {
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    border: 3rpx solid #D1D5DB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .pay-method-item--active & {
+      border-color: #0066FF;
+    }
+  }
+
+  &__radio-dot {
+    width: 20rpx;
+    height: 20rpx;
+    border-radius: 50%;
+    background: #0066FF;
+  }
+}
+
 /* Price Card */
 .price-card {
   background: #FFFFFF;
@@ -119,16 +270,29 @@
       margin-top: 8rpx;
       margin-bottom: 0;
     }
+
+    &--discount {
+      // no extra style needed
+    }
   }
 
   &__label {
     font-size: 26rpx;
     color: #6B7280;
+
+    &--discount {
+      color: #10B981;
+    }
   }
 
   &__value {
     font-size: 26rpx;
     color: #374151;
+
+    &--discount {
+      color: #10B981;
+      font-weight: 700;
+    }
   }
 
   &__total-label {
@@ -138,7 +302,7 @@
   }
 
   &__total-value {
-    font-size: 36rpx;
+    font-size: 40rpx;
     font-weight: 800;
     color: #EF4444;
   }
@@ -146,19 +310,43 @@
 
 /* Submit Button */
 .submit-btn {
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #07C160, #06AE56);
   border-radius: 999rpx;
   padding: 24rpx;
   text-align: center;
-  box-shadow: 0 4rpx 16rpx rgba(0, 102, 255, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.35);
+  margin-bottom: 24rpx;
 
   &--disabled {
-    opacity: 0.5;
+    opacity: 0.55;
   }
 
   &__text {
     font-size: 32rpx;
     font-weight: 700;
     color: #FFFFFF;
+  }
+}
+
+/* Promo Entry */
+.promo-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFF7ED;
+  border-radius: 16rpx;
+  padding: 20rpx 28rpx;
+  border: 1rpx solid #FED7AA;
+  margin-bottom: 24rpx;
+
+  &__text {
+    font-size: 26rpx;
+    color: #92400E;
+    font-weight: 500;
+  }
+
+  &__arrow {
+    font-size: 24rpx;
+    color: #D97706;
   }
 }

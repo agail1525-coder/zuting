@@ -1,0 +1,211 @@
+.promotions-page {
+  min-height: 100vh;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tabs */
+.tabs {
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #E5E7EB;
+
+  &__scroll {
+    white-space: nowrap;
+    padding: 0 16rpx;
+  }
+
+  &__item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28rpx 24rpx 20rpx;
+    position: relative;
+  }
+
+  &__text {
+    font-size: 30rpx;
+    color: #6B7280;
+    white-space: nowrap;
+
+    &--active {
+      color: #0066FF;
+      font-weight: 700;
+    }
+  }
+
+  &__indicator {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48rpx;
+    height: 6rpx;
+    background: #0066FF;
+    border-radius: 3rpx;
+  }
+}
+
+/* List scroll */
+.promotions-list {
+  flex: 1;
+  padding: 24rpx 32rpx 0;
+  height: calc(100vh - 120rpx);
+}
+
+/* Promotion Card */
+.promo-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  margin-bottom: 28rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.07);
+
+  &__cover-wrap {
+    position: relative;
+    height: 320rpx;
+  }
+
+  &__cover {
+    width: 100%;
+    height: 100%;
+
+    &--placeholder {
+      background: linear-gradient(135deg, #E5E7EB, #D1D5DB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__cover-icon {
+    font-size: 80rpx;
+  }
+
+  &__type-badge {
+    position: absolute;
+    top: 20rpx;
+    left: 20rpx;
+    border-radius: 20rpx;
+    padding: 6rpx 18rpx;
+  }
+
+  &__type-text {
+    font-size: 22rpx;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+
+  &__discount-badge {
+    position: absolute;
+    top: 20rpx;
+    right: 20rpx;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 20rpx;
+    padding: 6rpx 20rpx;
+  }
+
+  &__discount-text {
+    font-size: 28rpx;
+    color: #FFFFFF;
+    font-weight: 800;
+  }
+
+  &__body {
+    padding: 28rpx 32rpx 24rpx;
+  }
+
+  &__name {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 16rpx;
+  }
+
+  &__countdown {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+
+  &__countdown-label {
+    font-size: 24rpx;
+    color: #6B7280;
+  }
+
+  &__countdown-value {
+    font-size: 26rpx;
+    font-weight: 700;
+    color: #EF4444;
+    font-family: monospace;
+  }
+
+  &__ended {
+    font-size: 24rpx;
+    color: #9CA3AF;
+    display: block;
+    margin-bottom: 20rpx;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20rpx;
+  }
+
+  &__btn {
+    border-radius: 999rpx;
+    padding: 16rpx 40rpx;
+
+    &--disabled {
+      background: #9CA3AF !important;
+    }
+
+    &-text {
+      font-size: 26rpx;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+  }
+}
+
+/* Quota Bar */
+.quota-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-bottom: 4rpx;
+
+  &__track {
+    height: 12rpx;
+    background: #E5E7EB;
+    border-radius: 6rpx;
+    overflow: hidden;
+  }
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, #EF4444, #F97316);
+    border-radius: 6rpx;
+    transition: width 0.3s ease;
+  }
+
+  &__text {
+    font-size: 22rpx;
+    color: #6B7280;
+  }
+}
+
+/* Empty */
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+
+  &__text {
+    font-size: 30rpx;
+    color: #6B7280;
+  }
+}

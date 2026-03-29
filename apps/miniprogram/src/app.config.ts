@@ -31,7 +31,9 @@ export default defineAppConfig({
     'pages/write-review/index',
     'pages/community/index',
     'pages/guide-detail/index',
-    'pages/question-detail/index'
+    'pages/question-detail/index',
+    'pages/coupons/index',
+    'pages/promotions/index'
   ],
   tabBar: {
     color: '#9CA3AF',

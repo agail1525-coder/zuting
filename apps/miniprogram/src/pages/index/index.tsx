@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import {
-  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem, GuideItem,
+  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem, GuideItem, PromotionItem,
   fetchReligions, fetchFeaturedRoutes, fetchHolySites, fetchTemples, fetchPatriarchs,
-  fetchPopularItems, fetchTrending,
+  fetchPopularItems, fetchTrending, fetchPromotions,
 } from '../../lib/api'
 import './index.scss'
 
@@ -60,6 +60,7 @@ export default function IndexPage() {
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([])
   const [popularItems, setPopularItems] = useState<RecommendedItem[]>([])
   const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([])
+  const [activePromotions, setActivePromotions] = useState<PromotionItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSearchTab, setActiveSearchTab] = useState('sites')
   const [activeRecTab, setActiveRecTab] = useState('temples')
@@ -80,7 +81,7 @@ export default function IndexPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [religionList, routeList, siteList, templeList, patriarchList, popularList, trendingData] = await Promise.all([
+      const [religionList, routeList, siteList, templeList, patriarchList, popularList, trendingData, promoData] = await Promise.all([
         fetchReligions(),
         fetchFeaturedRoutes(6),
         fetchHolySites(),
@@ -88,6 +89,7 @@ export default function IndexPage() {
         fetchPatriarchs(),
         fetchPopularItems(undefined, 8).catch(() => [] as RecommendedItem[]),
         fetchTrending().catch(() => ({ hotGuides: [] as GuideItem[], hotQuestions: [] })),
+        fetchPromotions().catch(() => ({ data: [] as PromotionItem[], total: 0, page: 1, limit: 20 })),
       ])
       setReligions(religionList)
       setFeaturedRoutes(routeList)
@@ -96,6 +98,7 @@ export default function IndexPage() {
       setPatriarchs(patriarchList)
       setPopularItems(popularList)
       setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : [])
+      setActivePromotions(Array.isArray(promoData?.data) ? promoData.data.slice(0, 3) : [])
     } catch (err) {
       console.error('Failed to load data:', err)
       Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
@@ -183,6 +186,94 @@ export default function IndexPage() {
           </View>
         ))}
       </View>
+
+      {/* ── 2.5 Quick Actions (Coupon Entry) ── */}
+      <View className='quick-actions'>
+        <View
+          className='quick-action-item'
+          onClick={() => Taro.navigateTo({ url: '/pages/coupons/index' })}
+        >
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--red'>
+            <Text className='quick-action-item__icon'>🎫</Text>
+          </View>
+          <Text className='quick-action-item__label'>优惠券</Text>
+        </View>
+        <View
+          className='quick-action-item'
+          onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
+        >
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--orange'>
+            <Text className='quick-action-item__icon'>⚡</Text>
+          </View>
+          <Text className='quick-action-item__label'>限时活动</Text>
+        </View>
+        <View
+          className='quick-action-item'
+          onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}
+        >
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
+            <Text className='quick-action-item__icon'>📋</Text>
+          </View>
+          <Text className='quick-action-item__label'>我的行程</Text>
+        </View>
+        <View
+          className='quick-action-item'
+          onClick={() => Taro.navigateTo({ url: '/pages/orders/index' })}
+        >
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--green'>
+            <Text className='quick-action-item__icon'>📦</Text>
+          </View>
+          <Text className='quick-action-item__label'>我的订单</Text>
+        </View>
+      </View>
+
+      {/* ── 2.8 限时优惠 Section ── */}
+      {activePromotions.length > 0 && (
+        <>
+          <View className='section-header'>
+            <Text className='section-title'>🔥 限时优惠</Text>
+            <Text
+              className='section-more'
+              onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
+            >
+              查看全部 &gt;
+            </Text>
+          </View>
+          <ScrollView className='promo-scroll' scrollX>
+            {activePromotions.map(promo => {
+              const accentColors: Record<string, string> = {
+                FLASH_SALE: '#EF4444',
+                EARLY_BIRD: '#F59E0B',
+                LIMITED_TIME: '#8B5CF6',
+              }
+              const accent = accentColors[promo.type] || '#0066FF'
+              const discountLabel = promo.discountType === 'PERCENT'
+                ? `${promo.discountValue}折`
+                : `¥${promo.discountValue}OFF`
+              return (
+                <View
+                  key={promo.id}
+                  className='promo-mini-card'
+                  onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
+                >
+                  <View className='promo-mini-card__header' style={{ backgroundColor: accent }}>
+                    <Text className='promo-mini-card__discount'>{discountLabel}</Text>
+                    <Text className='promo-mini-card__type'>{promo.type === 'FLASH_SALE' ? '⚡闪购' : promo.type === 'EARLY_BIRD' ? '🐦早鸟' : '⏰限时'}</Text>
+                  </View>
+                  <View className='promo-mini-card__body'>
+                    <Text className='promo-mini-card__name'>{promo.name}</Text>
+                    {promo.totalQuota > 0 && (
+                      <Text className='promo-mini-card__quota'>
+                        剩 {promo.totalQuota - promo.usedQuota} 个名额
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              )
+            })}
+          </ScrollView>
+        </>
+      )}
 
       {/* ── 3. Platform Highlights ── */}
       <View className='section-header'>

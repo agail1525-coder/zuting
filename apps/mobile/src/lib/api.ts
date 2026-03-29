@@ -813,3 +813,99 @@ export async function fetchUserProfile(userId: string): Promise<UserProfileData>
 export async function fetchMyProfile(): Promise<UserProfileData> {
   return fetchAuthed('/api/users/me/profile', { method: 'GET' });
 }
+
+// --- Payment & Checkout ---
+
+export interface CouponItem {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  value: number;
+  minAmount: number | null;
+  maxDiscount: number | null;
+  startAt: string;
+  endAt: string;
+  isActive: boolean;
+}
+
+export interface UserCouponItem {
+  id: string;
+  couponId: string;
+  status: string;
+  coupon: CouponItem;
+  createdAt: string;
+}
+
+export interface PromotionItem {
+  id: string;
+  name: string;
+  description: string | null;
+  type: string;
+  discountType: string;
+  discountValue: number;
+  minAmount: number | null;
+  maxDiscount: number | null;
+  startAt: string;
+  endAt: string;
+  totalQuota: number;
+  usedQuota: number;
+  coverImage: string | null;
+}
+
+export interface OrderItem {
+  id: string;
+  orderNo: string;
+  tripId: string;
+  userId: string;
+  totalAmount: number;
+  paidAmount: number | null;
+  paymentMethod: string | null;
+  status: string;
+  couponCode: string | null;
+  promotionId: string | null;
+  discountAmount: number | null;
+  createdAt: string;
+  paidAt: string | null;
+  cancelledAt: string | null;
+  refundedAt: string | null;
+  trip?: { id: string; title: string; status: string };
+}
+
+export async function createOrder(data: {
+  tripId: string;
+  totalAmount: number;
+  paymentMethod?: string;
+  couponCode?: string;
+  promotionId?: string;
+}): Promise<OrderItem> {
+  return fetchAuthed('/api/orders', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function payOrder(orderId: string, data: { paidAmount?: number; paymentMethod?: string }): Promise<OrderItem> {
+  return fetchAuthed(`/api/orders/${orderId}/pay`, { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchAvailableCoupons(page = 1): Promise<{ items: CouponItem[]; total: number }> {
+  return fetchJson(`/api/coupons/available?page=${page}`);
+}
+
+export async function claimCoupon(couponId: string): Promise<UserCouponItem> {
+  return fetchAuthed(`/api/coupons/${couponId}/claim`, { method: 'POST' });
+}
+
+export async function fetchMyCoupons(status?: string): Promise<{ items: UserCouponItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (status) p.set('status', status);
+  return fetchAuthed(`/api/coupons/my/claimed?${p}`, { method: 'GET' });
+}
+
+export async function verifyCoupon(code: string, orderAmount: number): Promise<{ valid: boolean; discount?: number; reason?: string }> {
+  return fetchAuthed('/api/coupons/verify', { method: 'POST', body: JSON.stringify({ code, orderAmount }) });
+}
+
+export async function fetchPromotions(type?: string): Promise<{ items: PromotionItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (type) p.set('type', type);
+  return fetchJson(`/api/promotions?${p}`);
+}

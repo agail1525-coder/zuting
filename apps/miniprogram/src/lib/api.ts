@@ -781,6 +781,103 @@ export async function fetchTrending(): Promise<{ hotGuides: GuideItem[]; hotQues
   return request<{ hotGuides: GuideItem[]; hotQuestions: QuestionItem[] }>('/community/trending')
 }
 
+// --- Checkout & Coupons ---
+
+export interface CouponItem {
+  id: string
+  code: string
+  name: string
+  type: string
+  value: number
+  minAmount: number | null
+  maxDiscount: number | null
+  startAt: string
+  endAt: string
+}
+
+export interface PromotionItem {
+  id: string
+  name: string
+  type: string
+  discountType: string
+  discountValue: number
+  startAt: string
+  endAt: string
+  totalQuota: number
+  usedQuota: number
+  coverImage: string | null
+}
+
+export interface UserCoupon {
+  id: string
+  status: string
+  claimedAt: string
+  usedAt: string | null
+  coupon: CouponItem
+}
+
+export interface UserCouponListResponse {
+  data: UserCoupon[]
+  total: number
+  page: number
+  limit: number
+}
+
+export interface AvailableCouponListResponse {
+  data: CouponItem[]
+  total: number
+  page: number
+  limit: number
+}
+
+export interface PromotionListResponse {
+  data: PromotionItem[]
+  total: number
+  page: number
+  limit: number
+}
+
+export function fetchAvailableCoupons(page = 1) {
+  return request<AvailableCouponListResponse>('/coupons/available', { page: String(page) })
+}
+
+export function claimCoupon(couponId: string) {
+  return postRequest<{ success: boolean; userCouponId: string }>(`/coupons/${couponId}/claim`, {})
+}
+
+export function fetchMyCoupons(status?: string) {
+  return request<UserCouponListResponse>('/coupons/my/claimed', status ? { status } : undefined)
+}
+
+export function fetchPromotions(type?: string) {
+  return request<PromotionListResponse>('/promotions', type ? { type } : undefined)
+}
+
+export interface CreateOrderInput {
+  tripId: string
+  amount: number
+  couponCode?: string
+  paymentMethod?: string
+  note?: string
+}
+
+export interface CreateOrderResult {
+  id: string
+  orderNo: string
+  totalAmount: number
+  discountAmount: number
+  payableAmount: number
+  status: string
+}
+
+export function createOrder(input: CreateOrderInput) {
+  return postRequest<CreateOrderResult>('/orders', input)
+}
+
+export function payOrder(orderId: string, paymentMethod: string) {
+  return postRequest<OrderDetail>(`/orders/${orderId}/pay`, { paymentMethod })
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

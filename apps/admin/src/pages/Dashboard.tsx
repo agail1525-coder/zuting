@@ -13,6 +13,8 @@ import {
   StarOutlined,
   ReadOutlined,
   QuestionCircleOutlined,
+  GiftOutlined,
+  ShoppingCartOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -59,6 +61,35 @@ async function fetchCommunityStats(): Promise<CommunityStats> {
   }
 }
 
+interface PromotionOverview {
+  activePromotions: number;
+  totalCoupons: number;
+  todayOrders: number;
+}
+
+async function fetchPromotionOverview(): Promise<PromotionOverview> {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const token = localStorage.getItem('token');
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    const [promoRes, couponRes, ordersRes] = await Promise.all([
+      fetch(`${base}/promotions?page=1&limit=1&status=ACTIVE`, { headers }),
+      fetch(`${base}/coupons?page=1&limit=1`, { headers }),
+      fetch(`${base}/orders?page=1&limit=1`, { headers }),
+    ]);
+    const promoData = promoRes.ok ? await promoRes.json() : null;
+    const couponData = couponRes.ok ? await couponRes.json() : null;
+    const ordersData = ordersRes.ok ? await ordersRes.json() : null;
+    return {
+      activePromotions: promoData?.total ?? 0,
+      totalCoupons: couponData?.total ?? 0,
+      todayOrders: ordersData?.todayCount ?? ordersData?.total ?? 0,
+    };
+  } catch {
+    return { activePromotions: 0, totalCoupons: 0, todayOrders: 0 };
+  }
+}
+
 async function fetchHotKeywords(): Promise<HotKeyword[]> {
   try {
     const res = await fetch(`${API_BASE}/search/hot`);
@@ -93,6 +124,9 @@ export default function Dashboard() {
   const [communityStats, setCommunityStats] = useState<CommunityStats>({
     guideTotal: 0, questionTotal: 0, guidesToday: 0, questionsToday: 0, topGuides: [],
   });
+  const [promotionOverview, setPromotionOverview] = useState<PromotionOverview>({
+    activePromotions: 0, totalCoupons: 0, todayOrders: 0,
+  });
 
   useEffect(() => {
     getDashboardStats()
@@ -104,6 +138,7 @@ export default function Dashboard() {
       .then((res) => setRecentReviews(res.data))
       .catch(() => setRecentReviews([]));
     fetchCommunityStats().then(setCommunityStats);
+    fetchPromotionOverview().then(setPromotionOverview);
   }, []);
 
   if (loading) {
@@ -375,6 +410,53 @@ export default function Dashboard() {
                 ] as ColumnsType<TopGuide>}
               />
             )}
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 促销概览 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24}>
+          <Card
+            title={
+              <span>
+                <GiftOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                促销概览
+              </span>
+            }
+            extra={
+              <a href="/promotions" style={{ color: '#D4A855', fontSize: 12 }}>
+                促销管理
+              </a>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={8}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>进行中促销活动</span>}
+                  value={promotionOverview.activePromotions}
+                  prefix={<GiftOutlined />}
+                  valueStyle={{ color: '#52C41A', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={8}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>优惠券总数</span>}
+                  value={promotionOverview.totalCoupons}
+                  prefix={<GiftOutlined />}
+                  valueStyle={{ color: '#D4A855', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={8}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>今日订单数</span>}
+                  value={promotionOverview.todayOrders}
+                  prefix={<ShoppingCartOutlined />}
+                  valueStyle={{ color: '#1890FF', fontWeight: 700 }}
+                />
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
