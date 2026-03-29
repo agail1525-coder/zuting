@@ -1,0 +1,13 @@
+{
+  "interval_minutes": 15,
+  "popup_duration_sec": 40,
+  "voice_enabled": true,
+  "popup_width": 1000,
+  "popup_height": 700,
+  "api_url": "http://localhost:3002/api",
+  "language": "zh-CN",
+  "device_id": "70f2e57a-9169-4ac3-b929-90492767b353",
+  "voice_volume": 0.85,
+  "ambient_volume": 0.15,
+  "chant_volume": 0.55
+}
