@@ -86,7 +86,7 @@ export default function MembershipPage() {
     if (action.url) {
       Taro.navigateTo({ url: action.url })
     } else if (action.label === '签到日历') {
-      Taro.showToast({ title: '签到日历即将上线', icon: 'none' })
+      handleCheckin()
     }
   }
 

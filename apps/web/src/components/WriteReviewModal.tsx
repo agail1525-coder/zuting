@@ -3,6 +3,24 @@
 import { useState, useEffect } from "react";
 import StarRating from "@/components/StarRating";
 import { createReview, type CreateReviewData } from "@/lib/api";
+import { getAccessToken } from "@/lib/auth";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "";
+
+async function uploadReviewImage(file: File): Promise<string> {
+  const token = getAccessToken();
+  if (!token) throw new Error("请先登录");
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${API}/api/uploads/image`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+  if (!res.ok) throw new Error("图片上传失败");
+  const data = await res.json();
+  return data.url;
+}
 
 interface WriteReviewModalProps {
   targetType: string;
@@ -22,6 +40,8 @@ export default function WriteReviewModal({
   const [rating, setRating] = useState(0);
   const [subScores, setSubScores] = useState<Record<string, number>>({});
   const [content, setContent] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toastVisible, setToastVisible] = useState(false);
@@ -40,6 +60,7 @@ export default function WriteReviewModal({
       setRating(0);
       setSubScores({});
       setContent("");
+      setImages([]);
       setError(null);
     }
   }, [isOpen]);
@@ -76,6 +97,7 @@ export default function WriteReviewModal({
         rating,
         subScores: Object.keys(subScores).length > 0 ? subScores : undefined,
         content: content.trim() || undefined,
+        images: images.length > 0 ? images : undefined,
       };
       await createReview(data);
       setToastVisible(true);
@@ -171,12 +193,64 @@ export default function WriteReviewModal({
               </div>
             </div>
 
-            {/* Image upload placeholder */}
-            <div className="border border-dashed border-gray-200 rounded-xl p-4 text-center text-sm text-gray-400">
-              <svg className="w-6 h-6 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              图片上传功能即将上线
+            {/* Image upload */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                添加照片 <span className="text-gray-400 font-normal">（最多3张）</span>
+              </label>
+              <div className="flex gap-3 flex-wrap">
+                {images.map((url, i) => (
+                  <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setImages(prev => prev.filter((_, idx) => idx !== i))}
+                      className="absolute top-0.5 right-0.5 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center text-white text-xs"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {images.length < 3 && (
+                  <label className="w-20 h-20 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#0066FF]/40 hover:bg-[#0066FF]/5 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        if (file.size > 5 * 1024 * 1024) {
+                          setError("图片不能超过5MB");
+                          return;
+                        }
+                        setUploading(true);
+                        setError(null);
+                        try {
+                          const url = await uploadReviewImage(file);
+                          setImages(prev => [...prev, url]);
+                        } catch {
+                          setError("图片上传失败，请重试");
+                        } finally {
+                          setUploading(false);
+                          e.target.value = "";
+                        }
+                      }}
+                    />
+                    {uploading ? (
+                      <div className="w-5 h-5 border-2 border-gray-300 border-t-[#0066FF] rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span className="text-xs text-gray-400 mt-1">上传</span>
+                      </>
+                    )}
+                  </label>
+                )}
+              </div>
             </div>
 
             {error && (

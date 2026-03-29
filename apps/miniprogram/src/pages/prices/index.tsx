@@ -88,10 +88,12 @@ export default function PricesPage() {
       } else {
         Taro.showToast({ title: '请先选择路线', icon: 'none' })
       }
+    } else if (key === 'compare') {
+      Taro.navigateTo({ url: '/pages/price-compare/index' })
     } else if (key === 'alert') {
       Taro.showToast({ title: '请在路线详情页设置价格提醒', icon: 'none', duration: 2000 })
-    } else {
-      Taro.showToast({ title: '功能即将上线', icon: 'none' })
+    } else if (key === 'hack') {
+      Taro.pageScrollTo({ scrollTop: 9999, duration: 300 })
     }
   }
 

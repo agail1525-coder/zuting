@@ -102,10 +102,39 @@ function SnapshotsTab() {
           </Select>
         </Space>
         <Upload
-          accept=".csv,.xlsx,.json"
+          accept=".csv,.json"
           showUploadList={false}
-          beforeUpload={() => {
-            message.info('价格数据导入功能即将上线');
+          beforeUpload={(file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const text = e.target?.result as string;
+                let rows: PriceSnapshot[] = [];
+                if (file.name.endsWith('.json')) {
+                  rows = JSON.parse(text);
+                } else {
+                  const lines = text.split('\n').filter(Boolean);
+                  const header = lines[0].split(',');
+                  rows = lines.slice(1).map(line => {
+                    const cols = line.split(',');
+                    const obj: Record<string, string> = {};
+                    header.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').trim(); });
+                    return {
+                      id: obj.id || `import-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                      entityType: obj.entityType || 'ROUTE',
+                      entityId: obj.entityId || '',
+                      date: obj.date || new Date().toISOString().slice(0, 10),
+                      price: Number(obj.price) || 0,
+                      currency: obj.currency || 'CNY',
+                    };
+                  });
+                }
+                message.success(`已解析 ${rows.length} 条价格记录（前端预览，需后端API持久化）`);
+              } catch {
+                message.error('文件解析失败，请检查格式');
+              }
+            };
+            reader.readAsText(file);
             return false;
           }}
         >
