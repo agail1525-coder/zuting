@@ -1,8 +1,9 @@
 """
-修行桌面助手 v3.0 — customtkinter 现代化主面板
-4 标签页: 仪表盘 / AI聊天 / 设置 / 关于
+修行桌面助手 v4.0 — customtkinter 现代化主面板
+5 标签页: 仪表盘 / AI聊天 / 平台入口 / 设置 / 关于
 """
 
+import webbrowser
 import threading
 import time
 import json
@@ -58,6 +59,7 @@ def create_panel(show_popup_fn):
 
     tab_dash = tabview.add("仪表盘")
     tab_chat = tabview.add("AI 小鸿")
+    tab_platform = tabview.add("平台入口")
     tab_settings = tabview.add("设置")
     tab_about = tabview.add("关于")
 
@@ -74,13 +76,19 @@ def create_panel(show_popup_fn):
     _build_chat(tab_chat)
 
     # ═══════════════════════════════════════════════
-    #  TAB 3: 设置
+    #  TAB 3: 平台入口
+    # ═══════════════════════════════════════════════
+
+    _build_platform(tab_platform)
+
+    # ═══════════════════════════════════════════════
+    #  TAB 4: 设置
     # ═══════════════════════════════════════════════
 
     _build_settings(tab_settings)
 
     # ═══════════════════════════════════════════════
-    #  TAB 4: 关于
+    #  TAB 5: 关于
     # ═══════════════════════════════════════════════
 
     _build_about(tab_about)
@@ -241,6 +249,88 @@ def _get_streak():
         return streak
     except Exception:
         return 0
+
+
+# ═══════════════════════════════════════════════════════
+#  平台入口 (JOINUS.COM 深度捆绑)
+# ═══════════════════════════════════════════════════════
+
+def _build_platform(parent):
+    scroll = ctk.CTkScrollableFrame(parent, width=520, height=280)
+    scroll.pack(fill="both", expand=True, padx=5, pady=5)
+
+    # 大入口按钮
+    ctk.CTkButton(scroll, text="JOINUS.COM — 加入我们，探索世界",
+                  font=ctk.CTkFont(size=16, weight="bold"),
+                  fg_color="#D4A855", text_color="#1a1a2e",
+                  hover_color="#c49a4a", height=50,
+                  command=lambda: webbrowser.open(config.PLATFORM_URLS["website"])
+                  ).pack(fill="x", padx=10, pady=(10, 15))
+
+    # 6 个功能快捷入口 (2x3 网格)
+    grid_frame = ctk.CTkFrame(scroll, fg_color="transparent")
+    grid_frame.pack(fill="x", padx=10)
+
+    entries = [
+        ("圣地探索", "holy_sites", "#43e97b"),
+        ("攻略社区", "community", "#667eea"),
+        ("消息中心", "messages", "#ff6b6b"),
+        ("行程规划", "trips", "#ffa500"),
+        ("积分商城", "points_mall", "#e056a0"),
+        ("个人中心", "profile", "#56c8e0"),
+    ]
+
+    for i, (label, key, color) in enumerate(entries):
+        row = i // 3
+        col = i % 3
+        btn = ctk.CTkButton(grid_frame, text=label,
+                            font=ctk.CTkFont(size=13, weight="bold"),
+                            fg_color=color, text_color="#1a1a2e",
+                            hover_color="#aaa", width=160, height=45,
+                            command=lambda u=config.PLATFORM_URLS[key]: webbrowser.open(u))
+        btn.grid(row=row, column=col, padx=5, pady=5, sticky="ew")
+
+    grid_frame.columnconfigure((0, 1, 2), weight=1)
+
+    # APP 下载区
+    app_frame = ctk.CTkFrame(scroll)
+    app_frame.pack(fill="x", padx=10, pady=(15, 5))
+
+    ctk.CTkLabel(app_frame, text="APP 下载",
+                 font=ctk.CTkFont(size=13, weight="bold"),
+                 text_color="#D4A855").pack(anchor="w", padx=10, pady=(8, 5))
+
+    app_btn_row = ctk.CTkFrame(app_frame, fg_color="transparent")
+    app_btn_row.pack(fill="x", padx=10, pady=(0, 8))
+
+    ctk.CTkButton(app_btn_row, text="Android APK 下载",
+                  fg_color="#43e97b", text_color="#1a1a2e",
+                  hover_color="#38d974", width=200,
+                  command=lambda: webbrowser.open(config.PLATFORM_URLS["app_android"])
+                  ).pack(side="left", padx=(0, 10))
+
+    ctk.CTkButton(app_btn_row, text="iOS App Store",
+                  fg_color="#667eea", text_color="white",
+                  hover_color="#5568d0", width=200,
+                  command=lambda: webbrowser.open(config.PLATFORM_URLS["app_ios"])
+                  ).pack(side="left")
+
+    # 微信小程序区
+    mini_frame = ctk.CTkFrame(scroll)
+    mini_frame.pack(fill="x", padx=10, pady=5)
+
+    ctk.CTkLabel(mini_frame, text="微信小程序",
+                 font=ctk.CTkFont(size=13, weight="bold"),
+                 text_color="#D4A855").pack(anchor="w", padx=10, pady=(8, 2))
+
+    ctk.CTkLabel(mini_frame, text="微信搜索「全球祖庭之旅」或扫描小程序码使用",
+                 font=ctk.CTkFont(size=12),
+                 text_color="#aaa").pack(anchor="w", padx=10, pady=(0, 8))
+
+    # 底部品牌
+    ctk.CTkLabel(scroll, text="JOINUS.COM — 帮助100万人走祖庭",
+                 font=ctk.CTkFont(size=11),
+                 text_color="#667eea").pack(pady=(10, 5))
 
 
 # ═══════════════════════════════════════════════════════
@@ -520,16 +610,15 @@ def _build_about(parent):
                  font=ctk.CTkFont(size=13),
                  text_color="#D4A855").pack()
 
-    about_text = """
-12大信仰 × 200+圣地 × 260+祖庭 × 290+祖师 × 190+祖训
+    about_text = """12大信仰 × 200+圣地 × 260+祖庭 × 290+祖师 × 190+祖训
 × 370+经典语录 × 曹溪愿命三十印修炼体系
 × 旅游攻略 × GPS坐标 × 实时天气 × 多语言吟诵
 × AI 小鸿修行智能体 × 多媒体导览
+× 深度捆绑: 网站 + APP + 微信小程序
 
 五模式轮播: 圣地 → 祖师 → 祖庭 → 愿命印修 → 多媒体导览
 
-大愿: 帮助100万人走祖庭，建立全球宗教文化和平使者网络
-"""
+大愿: 帮助100万人走祖庭，建立全球宗教文化和平使者网络"""
     ctk.CTkLabel(parent, text=about_text,
                  font=ctk.CTkFont(size=11),
                  text_color="#aaa", justify="center").pack(pady=5)
@@ -538,6 +627,10 @@ def _build_about(parent):
                  font=ctk.CTkFont(size=10),
                  text_color="#666").pack(pady=(10, 0))
 
-    ctk.CTkLabel(parent, text="JOINUS.COM — 加入我们，探索世界",
-                 font=ctk.CTkFont(size=12, weight="bold"),
-                 text_color="#667eea").pack(pady=(5, 0))
+    # 网站链接按钮
+    ctk.CTkButton(parent, text="访问 JOINUS.COM",
+                  font=ctk.CTkFont(size=13, weight="bold"),
+                  fg_color="#667eea", text_color="white",
+                  hover_color="#5568d0", width=200, height=35,
+                  command=lambda: webbrowser.open(config.PLATFORM_URLS["website"])
+                  ).pack(pady=(8, 5))

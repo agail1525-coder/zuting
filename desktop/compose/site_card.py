@@ -79,6 +79,9 @@ def compose_site(site_name, religion, country, poem_orig, poem_src, poem_cn,
 
     # 底部
     draw.text((20, h - 82), f"  {wisdom}", fill=(200, 200, 200), font=f13)
+    # 平台链接
+    link_text = f"查看详情 → joinus.com/holy-sites"
+    draw.text((20, h - 100), link_text, fill=(100, 160, 255), font=f11)
     bt = "知道了，马上动！"
     bb = draw.textbbox((0, 0), bt, font=f20)
     draw.text(((w - (bb[2] - bb[0])) // 2, h - 48), bt, fill=(30, 30, 46), font=font(18, True))

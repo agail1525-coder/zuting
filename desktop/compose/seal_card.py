@@ -102,6 +102,9 @@ def compose_seal(seal, health_key, health_val, mindful_text, wisdom, count):
             draw_wrapped(draw, f"~ {mindful_text}", 30, ey, w - 60, f11, (180, 190, 200))
         ey += 18
 
+    # 平台链接
+    link_text = "更多修行功能 → joinus.com/seals"
+    draw.text((30, h - 58), link_text, fill=(100, 160, 255), font=f11)
     bt = "知道了，继续修行！"
     bb = draw.textbbox((0, 0), bt, font=f17)
     draw.text(((w - (bb[2] - bb[0])) // 2, h - 40), bt, fill=sc, font=f17)

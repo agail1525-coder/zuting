@@ -1,18 +1,38 @@
 """
-修行桌面助手 v3.0 — 全局配置
+修行桌面助手 v4.0 — 全局配置
 """
 
+import sys
 import json
 import uuid
 from pathlib import Path
 
 # ── 版本 ──
-VERSION = "3.0"
+VERSION = "4.0"
 APP_TITLE = f"全球祖庭之旅 v{VERSION}"
-APP_SUBTITLE = "修行桌面助手 · 小鸿陪你走祖庭"
+APP_SUBTITLE = "修行桌面助手 · JOINUS.COM · 小鸿陪你走祖庭"
 
-# ── 路径 ──
-APP_DIR = Path(__file__).parent
+# ── 路径 (支持 PyInstaller frozen) ──
+if getattr(sys, 'frozen', False):
+    APP_DIR = Path(sys.executable).parent
+else:
+    APP_DIR = Path(__file__).parent
+
+# ── 平台 URL ──
+PLATFORM_URLS = {
+    "website": "https://joinus.com",
+    "holy_sites": "https://joinus.com/holy-sites",
+    "temples": "https://joinus.com/temples",
+    "patriarchs": "https://joinus.com/patriarchs",
+    "community": "https://joinus.com/community",
+    "messages": "https://joinus.com/messages",
+    "trips": "https://joinus.com/trips",
+    "points_mall": "https://joinus.com/points-mall",
+    "profile": "https://joinus.com/profile",
+    "app_android": "https://joinus.com/download/android",
+    "app_ios": "https://joinus.com/download/ios",
+    "seals": "https://joinus.com/seals",
+}
 BG_DIR = APP_DIR / "backgrounds"
 TEMPLES_DIR = BG_DIR / "temples"
 PATRIARCHS_DIR = BG_DIR / "patriarchs"
