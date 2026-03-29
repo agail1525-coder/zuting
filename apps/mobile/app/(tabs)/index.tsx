@@ -52,6 +52,22 @@ const PILGRIM_STORIES = [
   { siteName: '菩提伽耶', author: 'Ananda', title: '菩提树下的觉悟', excerpt: '佛陀成道之地，感受最纯粹的宁静...' },
 ];
 
+const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; label: string; route: string }[] = [
+  { key: 'journals', icon: 'journal', label: '朝圣日志', route: '/journals' },
+  { key: 'questions', icon: 'help-circle', label: '问答广场', route: '/community/questions' },
+  { key: 'leaderboard', icon: 'trophy', label: '排行榜', route: '/community/leaderboard' },
+];
+
+// TODO: Replace with real API data when fetchPopularGuides is available
+const MOCK_GUIDES = [
+  { id: 'g1', title: '禅宗祖庭巡礼攻略', author: '慧明', views: 3280, coverImage: '' },
+  { id: 'g2', title: '耶路撒冷朝圣必读', author: 'David', views: 2150, coverImage: '' },
+  { id: 'g3', title: '武当山问道全攻略', author: '清风', views: 1890, coverImage: '' },
+  { id: 'g4', title: '菩提伽耶深度游记', author: 'Ananda', views: 1560, coverImage: '' },
+  { id: 'g5', title: '丝绸之路文化之旅', author: '行者', views: 1340, coverImage: '' },
+  { id: 'g6', title: '南华寺禅修体验分享', author: '净心', views: 1120, coverImage: '' },
+];
+
 const REC_TABS = [
   { key: 'temples', label: '祖庭' },
   { key: 'patriarchs', label: '祖师' },
@@ -269,6 +285,69 @@ export default function HomeScreen() {
         )}
       />
 
+      {/* ── 5.5 Community Hub Entry ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>社区入口</Text>
+        <Pressable onPress={() => router.push('/community' as never)}>
+          <Text style={styles.sectionMore}>进入社区 &gt;</Text>
+        </Pressable>
+      </View>
+      <View style={styles.communityHub}>
+        {COMMUNITY_ACTIONS.map(action => (
+          <Pressable
+            key={action.key}
+            style={styles.communityHubItem}
+            onPress={() => router.push(action.route as never)}
+          >
+            <View style={styles.communityHubIcon}>
+              <Ionicons name={action.icon} size={22} color="#0066FF" />
+            </View>
+            <Text style={styles.communityHubLabel}>{action.label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ── 5.6 Trending Guides ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>热门攻略</Text>
+        <Pressable onPress={() => router.push('/community' as never)}>
+          <Text style={styles.sectionMore}>查看更多 &gt;</Text>
+        </Pressable>
+      </View>
+      <FlatList
+        data={MOCK_GUIDES}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.guideList}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <Pressable
+            style={styles.guideCard}
+            onPress={() => router.push('/community' as never)}
+          >
+            <View style={styles.guideCardCover}>
+              {item.coverImage ? (
+                <Image source={{ uri: item.coverImage }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+              ) : (
+                <View style={[StyleSheet.absoluteFillObject, styles.guideCardPlaceholder]}>
+                  <Ionicons name="document-text" size={28} color="#93C5FD" />
+                </View>
+              )}
+            </View>
+            <View style={styles.guideCardBody}>
+              <Text style={styles.guideCardTitle} numberOfLines={2}>{item.title}</Text>
+              <View style={styles.guideCardMeta}>
+                <Text style={styles.guideCardAuthor}>{item.author}</Text>
+                <View style={styles.guideCardViews}>
+                  <Ionicons name="eye-outline" size={11} color="#9CA3AF" />
+                  <Text style={styles.guideCardViewsText}>{item.views}</Text>
+                </View>
+              </View>
+            </View>
+          </Pressable>
+        )}
+      />
+
       {/* ── 6. AI Planner Banner ── */}
       <Pressable onPress={() => router.push('/(tabs)/chat')} style={styles.aiBannerWrap}>
         <LinearGradient colors={['#0066FF', '#0052CC']} style={styles.aiBanner}>
@@ -439,14 +518,14 @@ export default function HomeScreen() {
             <Text style={styles.statLabel}>祖庭</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>50000+</Text>
-            <Text style={styles.statLabel}>旅行者</Text>
+            <Text style={styles.statValue}>7</Text>
+            <Text style={styles.statLabel}>语言</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.ctaSection}>
-        <Text style={styles.ctaTitle}>开启你的文化之旅</Text>
+        <Text style={styles.ctaTitle}>开始你的朝圣之旅</Text>
         <Text style={styles.ctaSubtitle}>精选深度路线，探访全球文化圣地</Text>
         <View style={styles.ctaButtons}>
           <Pressable
@@ -778,4 +857,35 @@ const styles = StyleSheet.create({
   trendingGuideTitle: { fontSize: 13, fontWeight: '700', color: '#FFFFFF', lineHeight: 18, marginBottom: 4 },
   trendingGuideMeta: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   trendingGuideMetaText: { fontSize: 11, color: 'rgba(255,255,255,0.85)', marginRight: 8 },
+
+  // Community Hub Entry
+  communityHub: {
+    flexDirection: 'row', justifyContent: 'space-around',
+    marginHorizontal: spacing.md, backgroundColor: '#FFFFFF',
+    borderRadius: 12, paddingVertical: 16, paddingHorizontal: 8,
+    borderWidth: 1, borderColor: '#E5E7EB',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1,
+  },
+  communityHubItem: { alignItems: 'center', flex: 1 },
+  communityHubIcon: {
+    width: 48, height: 48, borderRadius: 24, backgroundColor: '#EFF6FF',
+    justifyContent: 'center', alignItems: 'center', marginBottom: 6,
+  },
+  communityHubLabel: { fontSize: 12, fontWeight: '600', color: '#374151' },
+
+  // Trending Guides (Mock)
+  guideList: { paddingHorizontal: spacing.md, gap: 10 },
+  guideCard: {
+    width: 160, backgroundColor: '#FFFFFF', borderRadius: 12, overflow: 'hidden',
+    borderWidth: 1, borderColor: '#E5E7EB',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  guideCardCover: { height: 90, backgroundColor: '#EFF6FF' },
+  guideCardPlaceholder: { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' },
+  guideCardBody: { padding: 10, gap: 4 },
+  guideCardTitle: { fontSize: 13, fontWeight: '600', color: '#1A1A1A', lineHeight: 18 },
+  guideCardMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 },
+  guideCardAuthor: { fontSize: 11, color: '#6B7280' },
+  guideCardViews: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  guideCardViewsText: { fontSize: 10, color: '#9CA3AF' },
 });

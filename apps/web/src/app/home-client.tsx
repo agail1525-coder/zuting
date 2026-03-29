@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import HomepageRecommendations from "@/components/HomepageRecommendations";
-import type { Religion, HolySite, Temple, Patriarch, Route } from "@/lib/api";
+import type { Religion, HolySite, Temple, Patriarch, Route, GuideItem } from "@/lib/api";
+import { fetchTrending } from "@/lib/api";
 
 interface Props {
   religions: Religion[];
@@ -67,6 +68,28 @@ const PLATFORM_HIGHLIGHTS = [
   { svg: HighlightSvg.pin, title: "60+圣地", subtitle: "精选全球文化朝圣目的地", href: "/holy-sites", cta: "立即探索" },
   { svg: HighlightSvg.chat, title: "AI规划师", subtitle: "智能推荐个性化朝圣路线", href: "/chat", cta: "开始对话" },
   { svg: HighlightSvg.edit, title: "朝圣日志", subtitle: "记录你的文化旅行感悟", href: "/journals/create", cta: "写日志" },
+];
+
+const QUICK_ACTIONS = [
+  { label: "优惠券", href: "/coupons", color: "from-red-500 to-rose-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /> },
+  { label: "限时促销", href: "/promotions", color: "from-orange-500 to-amber-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /> },
+  { label: "会员中心", href: "/membership", color: "from-purple-500 to-violet-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3l3.057 6.192L15 10.35 10 15.2l1.18 6.8L5 18.9.82 22l1.18-6.8-5-4.85 6.943-1.158L5 3zM19 7v4m-2-2h4" /> },
+  { label: "套餐路线", href: "/packages", color: "from-blue-500 to-cyan-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /> },
+  { label: "价格工具", href: "/prices", color: "from-green-500 to-emerald-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /> },
+  { label: "商家入驻", href: "/merchants", color: "from-indigo-500 to-blue-500",
+    svg: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /> },
+];
+
+const TRENDING_GUIDES_STATIC = [
+  { id: "g1", title: "六祖故里三日行：从新兴到韶关", author: "慧行者", views: 12800, coverColor: "from-amber-600 to-yellow-500" },
+  { id: "g2", title: "丝绸之路西段：敦煌到喀什深度体验", author: "丝路客", views: 9400, coverColor: "from-orange-600 to-red-500" },
+  { id: "g3", title: "京都禅寺巡礼：龙安寺到金阁寺", author: "禅旅人", views: 7600, coverColor: "from-emerald-600 to-teal-500" },
+  { id: "g4", title: "耶路撒冷三教圣城朝圣攻略", author: "Peter W.", views: 6200, coverColor: "from-blue-600 to-indigo-500" },
 ];
 
 const PILGRIM_STORIES = [
@@ -168,6 +191,17 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearchTab, setActiveSearchTab] = useState<string>("sites");
   const [activeRecTab, setActiveRecTab] = useState<typeof REC_TABS[number]>("祖庭");
+  const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([]);
+
+  useEffect(() => {
+    fetchTrending()
+      .then((data) => {
+        if (Array.isArray(data?.hotGuides)) {
+          setTrendingGuides(data.hotGuides.slice(0, 4));
+        }
+      })
+      .catch(() => { /* ignore — will fall back to static content */ });
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -299,6 +333,24 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                   {item.cta} →
                 </span>
               </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════ Section 3.5: Quick Actions Row (快捷入口) ══════ */}
+      <section className="mt-8 max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          {QUICK_ACTIONS.map((action) => (
+            <Link key={action.label} href={action.href} className="group flex flex-col items-center gap-2 py-3">
+              <span className={`w-12 h-12 flex items-center justify-center rounded-full bg-gradient-to-br ${action.color} shadow-md group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {action.svg}
+                </svg>
+              </span>
+              <span className="text-xs text-gray-600 group-hover:text-[#0066FF] font-medium transition-colors">
+                {action.label}
+              </span>
             </Link>
           ))}
         </div>
@@ -507,6 +559,89 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
 
       {/* ══════ Section 8.5: Homepage Recommendations ══════ */}
       <HomepageRecommendations />
+
+      {/* ══════ Section 8.8: Trending Guides (热门攻略) ══════ */}
+      <section className="mt-14 md:mt-20 max-w-6xl mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">热门攻略</h2>
+            <p className="text-gray-500 text-sm mt-1">旅行者的深度游记与实用指南</p>
+          </div>
+          <Link href="/community" className="text-[#0066FF] hover:text-[#0052CC] text-sm font-medium flex items-center gap-1 transition-colors">
+            查看更多 <span>→</span>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {(trendingGuides.length > 0 ? trendingGuides : []).map((guide) => (
+            <Link key={guide.id} href={`/guides/${guide.id}`} className="group">
+              <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                <div className="relative h-40 overflow-hidden">
+                  {guide.coverImage ? (
+                    <OptimizedImage src={guide.coverImage} alt={guide.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                      <svg className="w-10 h-10 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-2 left-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-[#0066FF] flex items-center justify-center text-white text-[10px] font-bold shadow-sm border border-white/50">
+                      {(guide.user?.nickname || "U")[0]}
+                    </div>
+                    <span className="text-xs text-white font-medium drop-shadow-sm">
+                      {guide.user?.nickname || "旅行者"}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-3">
+                  <h3 className="font-bold text-gray-900 text-sm line-clamp-1 group-hover:text-[#0066FF] transition-colors">{guide.title}</h3>
+                  <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      {guide.viewCount.toLocaleString()}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                      {guide.likeCount}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+          {trendingGuides.length === 0 && TRENDING_GUIDES_STATIC.map((guide) => (
+            <Link key={guide.id} href="/community" className="group">
+              <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                <div className="relative h-40 overflow-hidden">
+                  <div className={`w-full h-full bg-gradient-to-br ${guide.coverColor} flex items-center justify-center`}>
+                    <svg className="w-10 h-10 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-2 left-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">
+                      {guide.author[0]}
+                    </div>
+                    <span className="text-xs text-white font-medium drop-shadow-sm">{guide.author}</span>
+                  </div>
+                </div>
+                <div className="p-3">
+                  <h3 className="font-bold text-gray-900 text-sm line-clamp-1 group-hover:text-[#0066FF] transition-colors">{guide.title}</h3>
+                  <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      {guide.views.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* ══════ Section 9: Cultural Traditions ══════ */}
       {religions.length > 0 && (

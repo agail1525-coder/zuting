@@ -55,6 +55,13 @@ const TYPE_LABEL_ZH: Record<string, string> = {
   seal: "印",
 };
 
+const COUNTRY_OPTIONS = [
+  "中国", "印度", "日本", "以色列", "沙特", "土耳其",
+  "意大利", "西班牙", "法国", "德国", "英国", "柬埔寨",
+  "缅甸", "印尼", "尼泊尔", "不丹", "澳大利亚", "秘鲁",
+  "墨西哥", "美国", "巴勒斯坦", "巴基斯坦", "伊拉克",
+] as const;
+
 function getDetailHref(item: SearchResultItem | SearchSuggestion): string {
   const asResult = item as SearchResultItem;
   switch (item.type) {
@@ -89,8 +96,10 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<"relevance" | "name">("relevance");
+  const [sort, setSort] = useState<"relevance" | "name" | "popular">("relevance");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [religionId, setReligionId] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
 
   // Hot keywords
   const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
@@ -128,7 +137,7 @@ export default function SearchPage() {
   }, []);
 
   const doSearch = useCallback(
-    async (q: string, type: string, p: number, rid: string, s: string) => {
+    async (q: string, type: string, p: number, rid: string, s: string, ctry: string, sOrder: string) => {
       if (!q.trim()) {
         setResults(null);
         setError(null);
@@ -137,7 +146,13 @@ export default function SearchPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchSearch(q.trim(), type, p, 20, rid || undefined, s !== "relevance" ? s : undefined);
+        const data = await fetchSearch(
+          q.trim(), type, p, 20,
+          rid || undefined,
+          s !== "relevance" ? s : undefined,
+          ctry || undefined,
+          sOrder !== "asc" ? sOrder : undefined
+        );
         setResults(data);
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : String(e);
@@ -182,26 +197,28 @@ export default function SearchPage() {
       if (page > 1) params.set("page", String(page));
       if (religionId) params.set("religionId", religionId);
       if (sort !== "relevance") params.set("sort", sort);
+      if (sortOrder !== "asc") params.set("sortOrder", sortOrder);
+      if (country) params.set("country", country);
       router.replace(`/search?${params.toString()}`, { scroll: false });
     }
-  }, [query, activeType, page, religionId, sort, router]);
+  }, [query, activeType, page, religionId, sort, sortOrder, country, router]);
 
   // Debounced search on query/filter/sort change
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setPage(1);
-      doSearch(query, activeType, 1, religionId, sort);
+      doSearch(query, activeType, 1, religionId, sort, country, sortOrder);
     }, 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, activeType, religionId, sort, doSearch]);
+  }, [query, activeType, religionId, sort, country, sortOrder, doSearch]);
 
   // Search on page change
   useEffect(() => {
-    if (page > 1) doSearch(query, activeType, page, religionId, sort);
-  }, [page, query, activeType, religionId, sort, doSearch]);
+    if (page > 1) doSearch(query, activeType, page, religionId, sort, country, sortOrder);
+  }, [page, query, activeType, religionId, sort, country, sortOrder, doSearch]);
 
   // Update suggestions as user types
   useEffect(() => {
@@ -406,8 +423,8 @@ export default function SearchPage() {
           ))}
         </div>
 
-        {/* Religion filter + Sort */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Religion filter + Country filter + Sort */}
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* Religion filter */}
           <select
             value={religionId}
@@ -419,6 +436,18 @@ export default function SearchPage() {
               <option key={r.id} value={r.id}>
                 {r.symbol ? `${r.symbol} ` : ""}{r.name}
               </option>
+            ))}
+          </select>
+
+          {/* Country filter */}
+          <select
+            value={country}
+            onChange={(e) => { setCountry(e.target.value); setPage(1); }}
+            className="px-3 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#0066FF]/50 transition-colors"
+          >
+            <option value="">全部国家 / Country</option>
+            {COUNTRY_OPTIONS.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
 
@@ -445,7 +474,35 @@ export default function SearchPage() {
             >
               名称
             </button>
+            <div className="w-px bg-gray-200" />
+            <button
+              onClick={() => { setSort("popular"); setPage(1); }}
+              className={`px-3 py-2 text-sm transition-colors ${
+                sort === "popular"
+                  ? "bg-[#0066FF]/10 text-[#0066FF] font-medium"
+                  : "bg-white text-gray-500 hover:text-[#0066FF]"
+              }`}
+            >
+              热门
+            </button>
           </div>
+
+          {/* Sort direction toggle */}
+          <button
+            onClick={() => { setSortOrder((prev) => prev === "asc" ? "desc" : "asc"); setPage(1); }}
+            className="px-2.5 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-500 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors"
+            title={sortOrder === "asc" ? "升序 / Ascending" : "降序 / Descending"}
+          >
+            {sortOrder === "asc" ? (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9M3 12h5m8-8v16m0 0l-4-4m4 4l4-4" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9M3 12h9m8-8v16m0 0l-4-4m4 4l4-4" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
@@ -462,7 +519,7 @@ export default function SearchPage() {
           <div className="text-6xl mb-4 opacity-30">&#x26A0;</div>
           <p className="text-red-500 text-lg">{t("search.error")}</p>
           <button
-            onClick={() => doSearch(query, activeType, page, religionId, sort)}
+            onClick={() => doSearch(query, activeType, page, religionId, sort, country, sortOrder)}
             className="mt-4 px-6 py-2 rounded-lg border border-[#0066FF]/30 text-[#0066FF] hover:bg-[#0066FF]/10 transition-all"
           >
             重试 / Retry

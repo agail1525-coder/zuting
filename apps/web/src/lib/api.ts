@@ -192,11 +192,15 @@ export async function fetchSearch(
   page = 1,
   limit = 20,
   religionId?: string,
-  sort?: string
+  sort?: string,
+  country?: string,
+  sortOrder?: string
 ): Promise<SearchResponse> {
   const params = new URLSearchParams({ q, type, page: String(page), limit: String(limit) });
   if (religionId) params.set("religionId", religionId);
   if (sort) params.set("sort", sort);
+  if (country) params.set("country", country);
+  if (sortOrder) params.set("sortOrder", sortOrder);
   return fetchJson<SearchResponse>(`/api/search?${params}`);
 }
 
