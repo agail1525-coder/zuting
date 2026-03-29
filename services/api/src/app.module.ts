@@ -37,6 +37,7 @@ import { MembershipModule } from './modules/membership/membership.module';
 import { ReferralModule } from './modules/referral/referral.module';
 import { PointsMallModule } from './modules/points-mall/points-mall.module';
 import { PackageModule } from './modules/package/package.module';
+import { PriceModule } from './modules/price/price.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -79,6 +80,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     ReferralModule,
     PointsMallModule,
     PackageModule,
+    PriceModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

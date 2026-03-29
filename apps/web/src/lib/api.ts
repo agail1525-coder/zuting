@@ -1782,3 +1782,34 @@ export async function generateShareLink(id: string): Promise<{ shareToken: strin
     method: "POST",
   });
 }
+
+// --- Price Tools ---
+export interface PriceCalendarItem { date: string; price: number }
+export interface PriceCompareItem {
+  entityId: string; name: string; currentPrice: number; minPrice: number; maxPrice: number; avgPrice: number;
+  memberPrice: number | null; duration: number; trend: { date: string; price: number }[];
+}
+export interface PriceTrendPoint { date: string; price: number }
+export interface PriceAlertItem {
+  id: string; entityType: string; entityId: string; entityName: string;
+  targetPrice: number; currentPrice: number; isTriggered: boolean; isActive: boolean; createdAt: string;
+}
+
+export async function fetchPriceCalendar(entityType: string, entityId: string, startDate: string, endDate: string): Promise<PriceCalendarItem[]> {
+  return fetchJson<PriceCalendarItem[]>(`/api/prices/calendar?entityType=${entityType}&entityId=${entityId}&startDate=${startDate}&endDate=${endDate}`);
+}
+export async function fetchPriceCompare(entityType: string, entityIds: string[]): Promise<PriceCompareItem[]> {
+  return fetchJson<PriceCompareItem[]>(`/api/prices/compare?entityType=${entityType}&entityIds=${entityIds.join(",")}`);
+}
+export async function fetchPriceTrend(entityType: string, entityId: string, days = 30): Promise<PriceTrendPoint[]> {
+  return fetchJson<PriceTrendPoint[]>(`/api/prices/trend?entityType=${entityType}&entityId=${entityId}&days=${days}`);
+}
+export async function createPriceAlert(data: { entityType: string; entityId: string; entityName: string; targetPrice: number; currentPrice: number }): Promise<PriceAlertItem> {
+  return fetchAuthed<PriceAlertItem>("/api/price-alerts", { method: "POST", body: JSON.stringify(data) });
+}
+export async function fetchMyPriceAlerts(): Promise<{ items: PriceAlertItem[] }> {
+  return fetchAuthed<{ items: PriceAlertItem[] }>("/api/price-alerts/my");
+}
+export async function deletePriceAlert(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/price-alerts/${id}`, { method: "DELETE" });
+}

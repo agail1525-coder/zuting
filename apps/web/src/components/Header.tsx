@@ -12,6 +12,7 @@ const navLinks = [
   { key: "nav.routes", href: "/routes", highlight: false },
   { key: "nav.destinations", href: "/holy-sites", highlight: false },
   { key: "nav.packages", href: "/packages", highlight: false },
+  { key: "nav.prices", href: "/prices", highlight: false },
   { key: "nav.map", href: "/map", highlight: false },
   { key: "nav.wiki", href: "/religions", highlight: false },
   { key: "nav.community", href: "/community", highlight: false },

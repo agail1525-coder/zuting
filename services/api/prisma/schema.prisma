@@ -1047,6 +1047,38 @@ model PointsExchange {
   @@index([productId])
 }
 
+// ========== 价格工具 ==========
+
+model PriceSnapshot {
+  id         String   @id @default(cuid())
+  entityType String   // PACKAGE / ROUTE
+  entityId   String
+  date       DateTime @db.Date
+  price      Int      // cents
+  currency   String   @default("CNY")
+  createdAt  DateTime @default(now())
+
+  @@unique([entityType, entityId, date])
+  @@index([entityType, entityId])
+}
+
+model PriceAlert {
+  id           String    @id @default(cuid())
+  userId       String
+  entityType   String
+  entityId     String
+  entityName   String
+  targetPrice  Int       // cents
+  currentPrice Int       // cents
+  isTriggered  Boolean   @default(false)
+  triggeredAt  DateTime?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, isActive])
+  @@index([entityType, entityId])
+}
+
 // ========== 套餐打包 ==========
 
 model TravelPackage {
