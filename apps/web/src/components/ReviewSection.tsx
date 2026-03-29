@@ -1,143 +1,119 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n";
+import StarRating from "@/components/StarRating";
+import RatingSummary from "@/components/RatingSummary";
+import WriteReviewModal from "@/components/WriteReviewModal";
 import {
   fetchReviewStats,
-  fetchReviews,
-  createReview,
+  fetchReviewsWithSort,
+  voteReview,
+  unvoteReview,
   type Review,
   type ReviewStats,
-  type CreateReviewData,
 } from "@/lib/api";
 
-// --- Stars Component ---
+// --- Review Card ---
 
-function Stars({
-  rating,
-  interactive,
-  onSelect,
-}: {
-  rating: number;
-  interactive?: boolean;
-  onSelect?: (star: number) => void;
-}) {
-  const [hover, setHover] = useState(0);
-
-  return (
-    <span className="inline-flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`${
-            star <= (hover || Math.round(rating))
-              ? "text-[#0066FF]"
-              : "text-gray-300"
-          } ${interactive ? "cursor-pointer" : ""}`}
-          onClick={interactive ? () => onSelect?.(star) : undefined}
-          onMouseEnter={interactive ? () => setHover(star) : undefined}
-          onMouseLeave={interactive ? () => setHover(0) : undefined}
-        >
-          ★
-        </span>
-      ))}
-    </span>
-  );
-}
-
-// --- Review Form ---
-
-function ReviewForm({
-  targetType,
-  targetId,
-  onSubmitted,
-}: {
-  targetType: string;
-  targetId: string;
-  onSubmitted: () => void;
-}) {
+function ReviewCard({ review }: { review: Review }) {
   const { t } = useTranslation();
-  const [rating, setRating] = useState(0);
-  const [content, setContent] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [voted, setVoted] = useState(false);
+  const [voteCount, setVoteCount] = useState(0);
+  const [voteLoading, setVoteLoading] = useState(false);
 
-  if (!expanded) {
-    return (
-      <button
-        onClick={() => setExpanded(true)}
-        className="w-full py-3 rounded-xl border border-dashed border-[#0066FF]/30 text-[#0066FF]/70 hover:text-[#0066FF] hover:border-[#0066FF]/50 transition-colors text-sm"
-      >
-        {t("review.write")}
-      </button>
-    );
-  }
-
-  const handleSubmit = async () => {
-    if (rating === 0) {
-      setError(t("review.ratingRequired"));
-      return;
-    }
-    setSubmitting(true);
-    setError(null);
+  const handleVote = async () => {
+    if (voteLoading) return;
+    setVoteLoading(true);
     try {
-      const data: CreateReviewData = {
-        targetType: targetType as CreateReviewData["targetType"],
-        targetId,
-        rating,
-        content: content.trim() || undefined,
-      };
-      await createReview(data);
-      setRating(0);
-      setContent("");
-      setExpanded(false);
-      onSubmitted();
-    } catch (e) {
-      setError(
-        e instanceof Error ? e.message : t("review.submitFailed")
-      );
+      if (voted) {
+        await unvoteReview(review.id);
+        setVoted(false);
+        setVoteCount((n) => Math.max(0, n - 1));
+      } else {
+        await voteReview(review.id);
+        setVoted(true);
+        setVoteCount((n) => n + 1);
+      }
+    } catch {
+      // silent fail — user may not be authenticated
     } finally {
-      setSubmitting(false);
+      setVoteLoading(false);
     }
   };
 
   return (
-    <div className="p-4 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-600">{t("review.ratingLabel")}</span>
-        <Stars rating={rating} interactive onSelect={setRating} />
-        {rating > 0 && (
-          <span className="text-xs text-gray-500">{rating} {t("review.stars")}</span>
-        )}
-      </div>
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder={t("review.contentPlaceholder")}
-        rows={3}
-        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-[#0066FF]/40 resize-none"
-      />
-      {error && <p className="text-xs text-red-400">{error}</p>}
-      <div className="flex justify-end gap-2">
+    <div className="p-5 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
+      {/* User row */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {review.user.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={review.user.avatar}
+              alt={review.user.nickname ?? "用户"}
+              className="w-9 h-9 rounded-full object-cover border border-gray-200"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-sm font-medium text-[#0066FF]">
+              {(review.user.nickname ?? t("review.anonymous")).charAt(0)}
+            </div>
+          )}
+          <div>
+            <p className="text-sm font-medium text-gray-800">
+              {review.user.nickname ?? t("review.anonymousPilgrim")}
+            </p>
+            <p className="text-xs text-gray-400">{review.createdAt.slice(0, 10)}</p>
+          </div>
+        </div>
+
+        {/* Vote button */}
         <button
-          onClick={() => setExpanded(false)}
-          className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-          disabled={submitting}
+          onClick={handleVote}
+          disabled={voteLoading}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border transition-all ${
+            voted
+              ? "bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]"
+              : "bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          } disabled:opacity-50`}
+          title={voted ? "取消有用" : "标记为有用"}
         >
-          {t("common.cancel")}
-        </button>
-        <button
-          onClick={handleSubmit}
-          disabled={submitting || rating === 0}
-          className="px-4 py-1.5 text-xs rounded-lg bg-[#0066FF] text-white hover:bg-[#0052CC] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {submitting ? t("review.submitting") : t("review.submitReview")}
+          <svg className="w-3.5 h-3.5" fill={voted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+          </svg>
+          有用{voteCount > 0 && ` · ${voteCount}`}
         </button>
       </div>
+
+      {/* Stars */}
+      <StarRating value={review.rating} size="sm" readonly />
+
+      {/* Content */}
+      {review.content && (
+        <p className="text-sm text-gray-600 leading-relaxed">{review.content}</p>
+      )}
+
+      {/* Images placeholder */}
+      {review.images && review.images.length > 0 && (
+        <div className="flex gap-2 flex-wrap">
+          {review.images.map((img, idx) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={idx}
+              src={img}
+              alt={`评价图片 ${idx + 1}`}
+              className="w-20 h-20 rounded-lg object-cover border border-gray-200"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+// --- Sort Button ---
+
+type SortType = "latest" | "helpful";
 
 // --- ReviewSection ---
 
@@ -146,39 +122,79 @@ interface ReviewSectionProps {
   targetId: string;
 }
 
-export default function ReviewSection({
-  targetType,
-  targetId,
-}: ReviewSectionProps) {
+export default function ReviewSection({ targetType, targetId }: ReviewSectionProps) {
   const { t } = useTranslation();
   const [stats, setStats] = useState<ReviewStats | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sort, setSort] = useState<SortType>("latest");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const loadData = () => {
+  const PAGE_SIZE = 5;
+
+  const loadStats = useCallback(() => {
     if (!targetId) return;
-    setLoading(true);
-    setError(null);
+    fetchReviewStats(targetType, targetId)
+      .then(setStats)
+      .catch(() => {});
+  }, [targetType, targetId]);
 
-    Promise.all([
-      fetchReviewStats(targetType, targetId),
-      fetchReviews(targetType, targetId, 5),
-    ])
-      .then(([statsData, reviewsData]) => {
-        setStats(statsData);
-        setReviews(reviewsData.data);
-      })
-      .catch((e) =>
-        setError(e instanceof Error ? e.message : t("review.loadFailed"))
-      )
-      .finally(() => setLoading(false));
-  };
+  const loadReviews = useCallback(
+    (currentPage: number, currentSort: SortType, append = false) => {
+      if (!targetId) return;
+      if (!append) setLoading(true);
+      else setLoadingMore(true);
+      setError(null);
+
+      fetchReviewsWithSort(targetType, targetId, currentPage, PAGE_SIZE, currentSort)
+        .then((res) => {
+          setTotal(res.total);
+          if (append) {
+            setReviews((prev) => [...prev, ...res.data]);
+          } else {
+            setReviews(res.data);
+          }
+        })
+        .catch((e) => setError(e instanceof Error ? e.message : t("review.loadFailed")))
+        .finally(() => {
+          setLoading(false);
+          setLoadingMore(false);
+        });
+    },
+    [targetType, targetId, t]
+  );
 
   useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetType, targetId]);
+    loadStats();
+    loadReviews(1, "latest", false);
+    setPage(1);
+    setSort("latest");
+  }, [targetType, targetId, loadStats, loadReviews]);
+
+  const handleSortChange = (newSort: SortType) => {
+    if (newSort === sort) return;
+    setSort(newSort);
+    setPage(1);
+    loadReviews(1, newSort, false);
+  };
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    loadReviews(nextPage, sort, true);
+  };
+
+  const handleReviewSuccess = () => {
+    loadStats();
+    setPage(1);
+    loadReviews(1, sort, false);
+  };
+
+  const hasMore = reviews.length < total;
 
   if (loading) {
     return (
@@ -186,8 +202,10 @@ export default function ReviewSection({
         <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("review.pilgrimageReviews")}
         </h2>
-        <div className="flex items-center justify-center py-8">
-          <span className="text-gray-400 animate-pulse">{t("review.loadingReviews")}</span>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse rounded-xl bg-gray-100 h-24" />
+          ))}
         </div>
       </div>
     );
@@ -199,8 +217,14 @@ export default function ReviewSection({
         <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
           {t("review.pilgrimageReviews")}
         </h2>
-        <div className="flex items-center justify-center py-8">
+        <div className="flex flex-col items-center justify-center py-8 text-center">
           <span className="text-red-400 text-sm">{t("review.loadFailed")}</span>
+          <button
+            onClick={() => loadReviews(1, sort, false)}
+            className="mt-3 text-xs text-[#0066FF] hover:underline"
+          >
+            重试
+          </button>
         </div>
       </div>
     );
@@ -209,109 +233,98 @@ export default function ReviewSection({
   const isEmpty = !stats || stats.totalCount === 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-lg font-serif font-semibold text-gray-900 mb-4">
-        {t("review.pilgrimageReviews")}
-      </h2>
+    <>
+      <WriteReviewModal
+        targetType={targetType}
+        targetId={targetId}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={handleReviewSuccess}
+      />
 
-      {isEmpty ? (
-        <div className="space-y-4">
-          <div className="flex flex-col items-center justify-center py-8 text-gray-400">
-            <span className="text-3xl mb-2">📝</span>
-            <span className="text-sm">{t("review.noReviews")}</span>
-          </div>
-          <ReviewForm
-            targetType={targetType}
-            targetId={targetId}
-            onSubmitted={loadData}
-          />
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-serif font-semibold text-gray-900">
+            {t("review.pilgrimageReviews")}
+            {stats && stats.totalCount > 0 && (
+              <span className="ml-2 text-sm font-normal text-gray-400">
+                ({stats.totalCount})
+              </span>
+            )}
+          </h2>
+          <button
+            onClick={() => setModalOpen(true)}
+            className="px-4 py-2 text-sm font-medium bg-[#0066FF] hover:bg-[#0052CC] text-white rounded-xl transition-colors shadow-sm"
+          >
+            写评价
+          </button>
         </div>
-      ) : (
-        <>
-          {/* Stats Summary */}
-          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-gray-50 border border-gray-200">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-[#0066FF]">
-                {stats.averageRating.toFixed(1)}
-              </div>
-              <Stars rating={stats.averageRating} />
-            </div>
-            <div className="flex-1">
-              <div className="text-sm text-gray-500 mb-2">
-                {stats.totalCount} {t("review.totalReviews")}
-              </div>
-              <div className="space-y-1">
-                {[5, 4, 3, 2, 1].map((star) => {
-                  const count = stats.distribution[star] ?? 0;
-                  const pct =
-                    stats.totalCount > 0
-                      ? (count / stats.totalCount) * 100
-                      : 0;
-                  return (
-                    <div
-                      key={star}
-                      className="flex items-center gap-2 text-xs"
-                    >
-                      <span className="text-gray-500 w-4 text-right">
-                        {star}
-                      </span>
-                      <span className="text-[#0066FF] text-[10px]">★</span>
-                      <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#0066FF]/60 rounded-full"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="text-gray-400 w-6 text-right">
-                        {count}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
 
-          {/* Reviews List */}
-          <div className="space-y-4 mb-4">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="p-4 rounded-xl bg-gray-50 border border-gray-200"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-[#0066FF]/10 border border-[#0066FF]/20 flex items-center justify-center text-xs text-[#0066FF]">
-                      {(review.user.nickname ?? t("review.anonymous")).charAt(0)}
-                    </div>
-                    <span className="text-sm text-gray-700">
-                      {review.user.nickname ?? t("review.anonymousPilgrim")}
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-400">
-                    {review.createdAt.slice(0, 10)}
-                  </span>
-                </div>
-                <div className="mb-2">
-                  <Stars rating={review.rating} />
-                </div>
-                {review.content && (
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {review.content}
-                  </p>
-                )}
-              </div>
-            ))}
+        {isEmpty ? (
+          <div className="flex flex-col items-center justify-center py-10 text-gray-400 space-y-3">
+            <span className="text-4xl">📝</span>
+            <span className="text-sm">{t("review.noReviews")}</span>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="mt-1 px-5 py-2 text-sm font-medium bg-[#0066FF] hover:bg-[#0052CC] text-white rounded-xl transition-colors"
+            >
+              成为第一个评价的人
+            </button>
           </div>
+        ) : (
+          <>
+            {/* Rating Summary */}
+            {stats && (
+              <div className="mb-6">
+                <RatingSummary
+                  averageRating={stats.averageRating}
+                  totalCount={stats.totalCount}
+                  distribution={stats.distribution}
+                />
+              </div>
+            )}
 
-          {/* Write Review */}
-          <ReviewForm
-            targetType={targetType}
-            targetId={targetId}
-            onSubmitted={loadData}
-          />
-        </>
-      )}
-    </div>
+            {/* Sort Toggle */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs text-gray-400">排序：</span>
+              {(["latest", "helpful"] as SortType[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => handleSortChange(s)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                    sort === s
+                      ? "bg-[#0066FF] text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {s === "latest" ? "最新" : "最有用"}
+                </button>
+              ))}
+            </div>
+
+            {/* Reviews List */}
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
+
+            {/* Load More */}
+            {hasMore && (
+              <div className="mt-5 text-center">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
+                >
+                  {loadingMore ? "加载中..." : `加载更多 (${total - reviews.length} 条)`}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }

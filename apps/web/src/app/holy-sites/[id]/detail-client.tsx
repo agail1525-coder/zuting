@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
+import { recordView } from "@/lib/api";
 import type { HolySite } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -27,6 +30,10 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
   const { t } = useTranslation();
   const gradient = RELIGION_GRADIENT[site.religion?.slug || ""] || "from-gray-700 to-gray-800";
   const religionColor = site.religion?.color ?? '#0066FF';
+
+  useEffect(() => {
+    recordView("HOLY_SITE", site.id);
+  }, [site.id]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -166,6 +173,11 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
         {/* Reviews Section */}
         <ReviewSection targetType="holy-site" targetId={site.id} />
+
+        {/* Related Entities */}
+        <div className="mt-6">
+          <RelatedEntities entityType="HOLY_SITE" entityId={site.id} title="你可能还喜欢" />
+        </div>
 
         {/* CTA */}
         <div className="text-center mt-10">

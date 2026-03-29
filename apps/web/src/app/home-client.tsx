@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
+import HomepageRecommendations from "@/components/HomepageRecommendations";
 import type { Religion, HolySite, Temple, Patriarch, Route } from "@/lib/api";
 
 interface Props {
@@ -504,7 +505,10 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </section>
       )}
 
-      {/* ══════ Section 8.5: Cultural Traditions ══════ */}
+      {/* ══════ Section 8.5: Homepage Recommendations ══════ */}
+      <HomepageRecommendations />
+
+      {/* ══════ Section 9: Cultural Traditions ══════ */}
       {religions.length > 0 && (
         <section className="mt-14 md:mt-20 max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-6">

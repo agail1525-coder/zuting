@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
+import { recordView } from "@/lib/api";
 import type { Patriarch } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -27,6 +30,10 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
   const { t } = useTranslation();
   const gradient = RELIGION_GRADIENT[patriarch.religion?.slug || ""] || "from-gray-600 to-gray-700";
   const religionColor = patriarch.religion?.color ?? "#0066FF";
+
+  useEffect(() => {
+    recordView("PATRIARCH", patriarch.id);
+  }, [patriarch.id]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -151,8 +158,8 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
           </div>
         )}
 
-        {/* Reviews Section */}
-        <ReviewSection targetType="patriarch" targetId={patriarch.id} />
+        {/* Related Entities */}
+        <RelatedEntities entityType="PATRIARCH" entityId={patriarch.id} title="相关推荐" />
 
         {/* CTA */}
         <div className="text-center mt-10">

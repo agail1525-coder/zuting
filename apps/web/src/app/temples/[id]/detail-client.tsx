@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
+import { recordView } from "@/lib/api";
 import type { Temple } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
@@ -27,6 +30,10 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
   const { t } = useTranslation();
   const gradient = RELIGION_GRADIENT[temple.religion?.slug || ""] || "from-gray-700 to-gray-800";
   const religionColor = temple.religion?.color ?? "#0066FF";
+
+  useEffect(() => {
+    recordView("TEMPLE", temple.id);
+  }, [temple.id]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -178,6 +185,11 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
 
         {/* Reviews Section */}
         <ReviewSection targetType="temple" targetId={temple.id} />
+
+        {/* Related Entities */}
+        <div className="mt-6">
+          <RelatedEntities entityType="TEMPLE" entityId={temple.id} title="你可能还喜欢" />
+        </div>
 
         {/* CTA */}
         <div className="text-center mt-10">

@@ -938,6 +938,88 @@ export async function createReview(
   });
 }
 
+// Review Replies
+export async function replyToReview(reviewId: string, content: string): Promise<{ id: string; content: string }> {
+  return fetchAuthed<{ id: string; content: string }>(`/api/reviews/${reviewId}/replies`, {
+    method: "POST",
+    body: JSON.stringify({ content }),
+  });
+}
+
+// Review Votes
+export async function voteReview(reviewId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/reviews/${reviewId}/vote`, { method: "POST" });
+}
+
+export async function unvoteReview(reviewId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/reviews/${reviewId}/vote`, { method: "DELETE" });
+}
+
+export async function fetchReviewsWithSort(
+  targetType: string,
+  targetId: string,
+  page = 1,
+  limit = 5,
+  sort: "latest" | "helpful" = "latest"
+): Promise<ReviewListResponse> {
+  const params = new URLSearchParams({
+    targetType,
+    targetId,
+    page: String(page),
+    limit: String(limit),
+    sort,
+  });
+  return fetchJson<ReviewListResponse>(`/api/reviews?${params}`);
+}
+
+// --- Recommendations ---
+export interface RecommendationItem {
+  type: string;
+  id: string;
+  name: string;
+  nameEn: string | null;
+  imageUrl: string | null;
+  country?: string;
+  religionName: string;
+  religionColor: string | null;
+}
+
+export async function fetchRelatedItems(
+  entityType: string,
+  entityId: string,
+  limit = 6
+): Promise<{ items: RecommendationItem[] }> {
+  const params = new URLSearchParams({ entityType, entityId, limit: String(limit) });
+  return fetchJson<{ items: RecommendationItem[] }>(`/api/recommendations/related?${params}`);
+}
+
+export async function fetchHomepageRecommendations(limit = 12): Promise<{ items: RecommendationItem[] }> {
+  try {
+    return await fetchOptionalAuth<{ items: RecommendationItem[] }>(`/api/recommendations?limit=${limit}`);
+  } catch {
+    return fetchJson<{ items: RecommendationItem[] }>(`/api/recommendations/popular?limit=${limit}`);
+  }
+}
+
+export async function fetchPopularItems(religion?: string, limit = 10): Promise<{ items: RecommendationItem[] }> {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (religion) params.set("religion", religion);
+  return fetchJson<{ items: RecommendationItem[] }>(`/api/recommendations/popular?${params}`);
+}
+
+export async function recordView(entityType: string, entityId: string): Promise<void> {
+  try {
+    await fetchAuthed<void>("/api/recommendations/view-history", {
+      method: "POST",
+      body: JSON.stringify({ entityType, entityId }),
+    });
+  } catch { /* silent fail for non-authenticated users */ }
+}
+
+export async function fetchViewHistory(limit = 20): Promise<{ items: Array<{ entityType: string; entityId: string; viewedAt: string }> }> {
+  return fetchAuthed(`/api/recommendations/view-history?limit=${limit}`);
+}
+
 // --- Profile ---
 
 export interface UpdateProfileData {
