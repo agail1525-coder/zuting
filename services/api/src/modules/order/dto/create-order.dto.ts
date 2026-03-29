@@ -36,4 +36,20 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   currency?: string;
+
+  @ApiPropertyOptional({
+    description: 'Coupon code to apply. / 优惠券码',
+    example: 'PILGRIM2026',
+  })
+  @IsOptional()
+  @IsString()
+  couponCode?: string;
+
+  @ApiPropertyOptional({
+    description: 'Promotion ID to apply. / 促销活动ID',
+    example: 'clx3promo0001',
+  })
+  @IsOptional()
+  @IsString()
+  promotionId?: string;
 }

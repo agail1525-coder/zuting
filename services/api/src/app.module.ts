@@ -32,6 +32,7 @@ import { RecommendationModule } from './modules/recommendation/recommendation.mo
 import { GuideModule } from './modules/guide/guide.module';
 import { QuestionModule } from './modules/question/question.module';
 import { CommunityModule } from './modules/community/community.module';
+import { PromotionModule } from './modules/promotion/promotion.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -69,6 +70,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     GuideModule,
     QuestionModule,
     CommunityModule,
+    PromotionModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

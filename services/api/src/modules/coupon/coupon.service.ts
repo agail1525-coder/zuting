@@ -202,6 +202,83 @@ export class CouponService {
     return { items: filtered, total, page, pageSize: take };
   }
 
+  /** Public: list available coupons (active, not expired, has quota) */
+  async getAvailableCoupons(page = 1, limit = 20) {
+    const take = Math.min(limit, 50);
+    const now = new Date();
+    const where: Prisma.CouponWhereInput = {
+      isActive: true,
+      startAt: { lte: now },
+      endAt: { gte: now },
+    };
+    const [items, total] = await Promise.all([
+      this.prisma.coupon.findMany({
+        where,
+        orderBy: { endAt: 'asc' },
+        skip: (page - 1) * take,
+        take,
+      }),
+      this.prisma.coupon.count({ where }),
+    ]);
+    // Filter out fully used coupons (Prisma can't compare two columns directly)
+    const filtered = items.filter(
+      (c) => c.totalCount === 0 || c.usedCount < c.totalCount,
+    );
+    return { items: filtered, total, page, pageSize: take };
+  }
+
+  /** User claims a coupon */
+  async claim(couponId: string, userId: string) {
+    const coupon = await this.prisma.coupon.findUnique({ where: { id: couponId } });
+    if (!coupon) throw new NotFoundException('Coupon not found');
+    if (!coupon.isActive) throw new BadRequestException('Coupon is not active');
+
+    const now = new Date();
+    if (now < coupon.startAt || now > coupon.endAt) {
+      throw new BadRequestException('Coupon is not in valid period');
+    }
+    if (coupon.totalCount > 0 && coupon.usedCount >= coupon.totalCount) {
+      throw new BadRequestException('Coupon fully claimed');
+    }
+
+    // Check if already claimed
+    const existing = await this.prisma.userCoupon.findUnique({
+      where: { couponId_userId: { couponId, userId } },
+    });
+    if (existing) throw new ConflictException('Already claimed this coupon');
+
+    return this.prisma.userCoupon.create({
+      data: { couponId, userId },
+      include: { coupon: true },
+    });
+  }
+
+  /** Get user's claimed coupons with optional status filter */
+  async getMyClaimed(
+    userId: string,
+    status?: string,
+    page = 1,
+    limit = 20,
+  ) {
+    const take = Math.min(limit, 50);
+    const where: Prisma.UserCouponWhereInput = { userId };
+    if (status) {
+      where.status = status as Prisma.EnumUserCouponStatusFilter;
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.userCoupon.findMany({
+        where,
+        include: { coupon: true },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * take,
+        take,
+      }),
+      this.prisma.userCoupon.count({ where }),
+    ]);
+    return { items, total, page, pageSize: take };
+  }
+
   private calculateDiscount(
     coupon: { type: string; value: number; maxDiscount: number | null },
     orderAmount: number,

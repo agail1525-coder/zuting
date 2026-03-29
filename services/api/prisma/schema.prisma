@@ -293,6 +293,9 @@ model Order {
   paidAt        DateTime?
   cancelledAt   DateTime?
   refundedAt    DateTime?
+  discountAmount  Int?        // 优惠金额(分)
+  couponId        String?     // 使用的优惠券ID
+  promotionId     String?     // 使用的促销活动ID
 
   transactions PaymentTransaction[]
 
@@ -799,7 +802,28 @@ model Coupon {
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
 
-  usages CouponUsage[]
+  usages      CouponUsage[]
+  userCoupons UserCoupon[]
+}
+
+model UserCoupon {
+  id        String           @id @default(cuid())
+  couponId  String
+  coupon    Coupon           @relation(fields: [couponId], references: [id])
+  userId    String
+  status    UserCouponStatus @default(AVAILABLE)
+  orderId   String?          // 使用时关联的订单
+  usedAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@unique([couponId, userId])
+  @@index([userId, status])
+}
+
+enum UserCouponStatus {
+  AVAILABLE // 已领取未使用
+  USED      // 已使用
+  EXPIRED   // 已过期
 }
 
 model CouponUsage {
@@ -865,4 +889,51 @@ model CollectionItem {
   @@unique([collectionId, entityType, entityId])
   @@index([collectionId])
   @@index([entityType, entityId])
+}
+
+// ========== 促销引擎 ==========
+
+model Promotion {
+  id            String         @id @default(cuid())
+  name          String
+  description   String?        @db.Text
+  type          PromotionType
+  discountType  String         // FIXED / PERCENT
+  discountValue Int            // 固定金额(分) 或 百分比(1-100)
+  minAmount     Int?           // 最低消费(分)
+  maxDiscount   Int?           // 最大折扣(分)
+  startAt       DateTime
+  endAt         DateTime
+  entityType    String?        // TRIP / ROUTE / ALL
+  entityIds     String[]       // 适用的行程/路线ID列表, 空=全部
+  totalQuota    Int            @default(0) // 0=无限
+  usedQuota     Int            @default(0)
+  coverImage    String?
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  usages PromotionUsage[]
+
+  @@index([type, isActive])
+  @@index([startAt, endAt])
+}
+
+model PromotionUsage {
+  id          String    @id @default(cuid())
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  userId      String
+  orderId     String?
+  discount    Int       // 实际抵扣金额(分)
+  createdAt   DateTime  @default(now())
+
+  @@unique([promotionId, userId, orderId])
+  @@index([userId])
+}
+
+enum PromotionType {
+  TIME_LIMITED // 限时折扣
+  EARLY_BIRD   // 早鸟价
+  FLASH_SALE   // 闪购
 }
