@@ -2,16 +2,26 @@
 
 import StarRating from "@/components/StarRating";
 
+const SUB_SCORE_LABELS: Record<string, { label: string; color: string }> = {
+  spiritual: { label: "灵性氛围", color: "#8B5CF6" },
+  cultural: { label: "文化深度", color: "#F59E0B" },
+  accessibility: { label: "可达性", color: "#10B981" },
+  guideQuality: { label: "导览质量", color: "#3B82F6" },
+  authenticity: { label: "历史真实性", color: "#EF4444" },
+};
+
 interface RatingSummaryProps {
   averageRating: number;
   totalCount: number;
   distribution: Record<number, number>;
+  subScoreAverages?: Record<string, number>;
 }
 
 export default function RatingSummary({
   averageRating,
   totalCount,
   distribution,
+  subScoreAverages,
 }: RatingSummaryProps) {
   return (
     <div className="flex items-start gap-6 p-5 rounded-xl bg-gray-50 border border-gray-200">
@@ -46,6 +56,31 @@ export default function RatingSummary({
           );
         })}
       </div>
+
+      {/* Sub-score averages */}
+      {subScoreAverages && Object.keys(subScoreAverages).length > 0 && (
+        <div className="w-full pt-4 mt-4 border-t border-gray-200">
+          <p className="text-xs font-medium text-gray-500 mb-3">细分评分</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {Object.entries(subScoreAverages).map(([key, value]) => {
+              const meta = SUB_SCORE_LABELS[key] ?? { label: key, color: "#6B7280" };
+              const pct = (value / 5) * 100;
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500 w-[72px] text-right shrink-0">{meta.label}</span>
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, backgroundColor: meta.color }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-gray-600 w-8 shrink-0">{value.toFixed(1)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

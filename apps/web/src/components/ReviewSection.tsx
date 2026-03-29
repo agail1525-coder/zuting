@@ -16,11 +16,20 @@ import {
 
 // --- Review Card ---
 
+const SUB_SCORE_LABELS: Record<string, string> = {
+  spiritual: "灵性氛围",
+  cultural: "文化深度",
+  accessibility: "可达性",
+  guideQuality: "导览质量",
+  authenticity: "历史真实性",
+};
+
 function ReviewCard({ review }: { review: Review }) {
   const { t } = useTranslation();
   const [voted, setVoted] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
   const [voteLoading, setVoteLoading] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   const handleVote = async () => {
     if (voteLoading) return;
@@ -85,26 +94,48 @@ function ReviewCard({ review }: { review: Review }) {
         </button>
       </div>
 
-      {/* Stars */}
-      <StarRating value={review.rating} size="sm" readonly />
+      {/* Stars + sub-scores */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <StarRating value={review.rating} size="sm" readonly />
+        {review.subScores && Object.entries(review.subScores).map(([key, val]) => (
+          <span key={key} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-xs text-gray-500">
+            {SUB_SCORE_LABELS[key] ?? key} <span className="font-medium text-gray-700">{val}</span>
+          </span>
+        ))}
+      </div>
 
       {/* Content */}
       {review.content && (
         <p className="text-sm text-gray-600 leading-relaxed">{review.content}</p>
       )}
 
-      {/* Images placeholder */}
+      {/* Images with lightbox */}
       {review.images && review.images.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           {review.images.map((img, idx) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <button
               key={idx}
-              src={img}
-              alt={`评价图片 ${idx + 1}`}
-              className="w-20 h-20 rounded-lg object-cover border border-gray-200"
-            />
+              onClick={() => setLightboxImg(img)}
+              className="relative w-28 h-28 rounded-lg overflow-hidden border border-gray-200 hover:border-[#0066FF]/40 transition-colors"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img} alt={`评价图片 ${idx + 1}`} className="w-full h-full object-cover" />
+            </button>
           ))}
+        </div>
+      )}
+
+      {/* Image Lightbox */}
+      {lightboxImg && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          onClick={() => setLightboxImg(null)}
+        >
+          <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
+          <div className="relative max-w-4xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={lightboxImg} alt="Review photo" className="max-w-full max-h-[85vh] object-contain rounded-lg" />
+          </div>
         </div>
       )}
     </div>
@@ -281,6 +312,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
                   averageRating={stats.averageRating}
                   totalCount={stats.totalCount}
                   distribution={stats.distribution}
+                  subScoreAverages={stats.subScoreAverages}
                 />
               </div>
             )}

@@ -69,6 +69,17 @@ function RouteCard({ route }: { route: Route }) {
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          {/* Urgency / popularity badges */}
+          {route.bookCount > 50 && (
+            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-lg animate-pulse">
+              热门
+            </div>
+          )}
+          {route.bookCount > 10 && route.bookCount <= 50 && (
+            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500 text-white shadow">
+              本周{route.bookCount}人预订
+            </div>
+          )}
           <div className="absolute top-3 left-3 flex gap-2">
             <span className={`px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10 ${colors.bg} ${colors.text}`}>
               {categoryLabel}

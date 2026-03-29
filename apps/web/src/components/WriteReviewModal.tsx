@@ -20,15 +20,25 @@ export default function WriteReviewModal({
   onClose,
 }: WriteReviewModalProps) {
   const [rating, setRating] = useState(0);
+  const [subScores, setSubScores] = useState<Record<string, number>>({});
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toastVisible, setToastVisible] = useState(false);
 
+  const SUB_DIMENSIONS = [
+    { key: "spiritual", label: "灵性氛围" },
+    { key: "cultural", label: "文化深度" },
+    { key: "accessibility", label: "可达性" },
+    { key: "guideQuality", label: "导览质量" },
+    { key: "authenticity", label: "历史真实性" },
+  ];
+
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
       setRating(0);
+      setSubScores({});
       setContent("");
       setError(null);
     }
@@ -64,6 +74,7 @@ export default function WriteReviewModal({
         targetType: targetType as CreateReviewData["targetType"],
         targetId,
         rating,
+        subScores: Object.keys(subScores).length > 0 ? subScores : undefined,
         content: content.trim() || undefined,
       };
       await createReview(data);
@@ -121,6 +132,23 @@ export default function WriteReviewModal({
                   size="lg"
                   showLabel
                 />
+              </div>
+            </div>
+
+            {/* Sub-dimension scores */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">细分评分 <span className="text-gray-400 font-normal">（选填）</span></label>
+              <div className="grid grid-cols-1 gap-2">
+                {SUB_DIMENSIONS.map((dim) => (
+                  <div key={dim.key} className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-gray-50">
+                    <span className="text-xs text-gray-600 min-w-[72px]">{dim.label}</span>
+                    <StarRating
+                      value={subScores[dim.key] ?? 0}
+                      onChange={(v) => setSubScores((prev) => ({ ...prev, [dim.key]: v }))}
+                      size="sm"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 

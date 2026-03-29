@@ -10,6 +10,11 @@ import RelatedEntities from "@/components/RelatedEntities";
 import MediaTour from "@/components/MediaTour";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
+import PhotoMosaic from "@/components/PhotoMosaic";
+import SocialProof from "@/components/SocialProof";
+import UGCPhotoWall from "@/components/UGCPhotoWall";
+import QASection from "@/components/QASection";
+import WorldMapDynamic from "@/components/WorldMapDynamic";
 import { recordView } from "@/lib/api";
 import type { HolySite } from "@/lib/api";
 
@@ -32,6 +37,10 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
   const { t } = useTranslation();
   const gradient = RELIGION_GRADIENT[site.religion?.slug || ""] || "from-gray-700 to-gray-800";
   const religionColor = site.religion?.color ?? '#0066FF';
+  const galleryImages = [
+    ...(site.imageUrl ? [site.imageUrl] : []),
+    ...(site.galleryImages ?? []),
+  ];
 
   useEffect(() => {
     recordView("HOLY_SITE", site.id);
@@ -40,72 +49,92 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative">
-        <div className="h-[400px] md:h-[500px] relative overflow-hidden">
-          {site.imageUrl ? (
-            <>
-              <OptimizedImage src={site.imageUrl} alt={site.name} fill priority className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
-            </>
-          ) : (
-            <div className={`absolute inset-0 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-              <span className="text-[120px] opacity-20">{site.religion?.symbol || "🕌"}</span>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
-            </div>
-          )}
+      {galleryImages.length > 1 ? (
+        /* Airbnb-style Photo Mosaic Hero */
+        <div className="max-w-5xl mx-auto px-4 md:px-8 pt-20 md:pt-24">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
+            <Link href="/holy-sites" className="hover:text-gray-700 transition-colors">{t("nav.holySites") || "圣地"}</Link>
+            <span>/</span>
+            <span className="text-gray-600">{site.name}</span>
+          </div>
 
-          {/* Content overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-            <div className="max-w-5xl mx-auto">
-              {/* Breadcrumb */}
-              <div className="flex items-center gap-2 text-sm text-white/60 mb-4">
-                <Link href="/holy-sites" className="hover:text-white transition-colors">{t("nav.holySites") || "圣地"}</Link>
-                <span>/</span>
-                <span className="text-white/80">{site.name}</span>
-              </div>
-
-              {/* Religion badge */}
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
               {site.religion && (
                 <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm border border-white/10 mb-3"
-                  style={{ backgroundColor: `${religionColor}30`, color: religionColor }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border mb-3"
+                  style={{ backgroundColor: `${religionColor}10`, color: religionColor, borderColor: `${religionColor}30` }}
                 >
                   {site.religion.symbol} {site.religion.name}
                 </span>
               )}
-
-              <div className="flex items-start gap-3">
-                <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">
-                  {site.name}
-                </h1>
-                <div className="mt-1">
-                  <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
-                  <ShareButton
-                    title={site.name}
-                    description={site.description}
-                    url={`/holy-sites/${site.id}`}
-                    entityType="HOLY_SITE"
-                    entityId={site.id}
-                  />
-                </div>
+              <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">{site.name}</h1>
+              <p className="text-lg text-gray-500 mt-1">{site.nameEn}</p>
+              <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-gray-500">
+                <span>📍 {site.country}</span>
+                <span>🌐 {site.latitude.toFixed(2)}°N, {site.longitude.toFixed(2)}°E</span>
+                <span>🕐 UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}</span>
               </div>
-              <p className="text-xl text-white/70 mt-2">{site.nameEn}</p>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
+              <ShareButton title={site.name} description={site.description} url={`/holy-sites/${site.id}`} entityType="HOLY_SITE" entityId={site.id} />
+            </div>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-4 mt-4">
-                <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  📍 {site.country}
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  🌐 {site.latitude.toFixed(2)}°N, {site.longitude.toFixed(2)}°E
-                </span>
-                <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  🕐 UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}
-                </span>
+          <PhotoMosaic images={galleryImages} alt={site.name} />
+
+          <div className="mt-4">
+            <SocialProof entityType="HOLY_SITE" entityId={site.id} />
+          </div>
+        </div>
+      ) : (
+        /* Fallback: original single-image hero */
+        <div className="relative">
+          <div className="h-[400px] md:h-[500px] relative overflow-hidden">
+            {site.imageUrl ? (
+              <>
+                <OptimizedImage src={site.imageUrl} alt={site.name} fill priority className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+              </>
+            ) : (
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                <span className="text-[120px] opacity-20">{site.religion?.symbol || "🕌"}</span>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60" />
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+              <div className="max-w-5xl mx-auto">
+                <div className="flex items-center gap-2 text-sm text-white/60 mb-4">
+                  <Link href="/holy-sites" className="hover:text-white transition-colors">{t("nav.holySites") || "圣地"}</Link>
+                  <span>/</span>
+                  <span className="text-white/80">{site.name}</span>
+                </div>
+                {site.religion && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm border border-white/10 mb-3" style={{ backgroundColor: `${religionColor}30`, color: religionColor }}>
+                    {site.religion.symbol} {site.religion.name}
+                  </span>
+                )}
+                <div className="flex items-start gap-3">
+                  <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">{site.name}</h1>
+                  <div className="mt-1">
+                    <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
+                    <ShareButton title={site.name} description={site.description} url={`/holy-sites/${site.id}`} entityType="HOLY_SITE" entityId={site.id} />
+                  </div>
+                </div>
+                <p className="text-xl text-white/70 mt-2">{site.nameEn}</p>
+                <div className="flex flex-wrap items-center gap-4 mt-4">
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">📍 {site.country}</span>
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">🌐 {site.latitude.toFixed(2)}°N, {site.longitude.toFixed(2)}°E</span>
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white/80 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-full">🕐 UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 -mt-4 relative z-10 pb-24">
@@ -141,22 +170,24 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
         {/* Map Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
-          <div className="p-6">
+          <div className="p-6 pb-0">
             <h2 className="text-[#0066FF] font-serif font-bold text-lg mb-4">{t("detail.mapPlaceholder") || "地理位置"}</h2>
           </div>
-          <div className="h-64 bg-gray-50 border border-gray-200 flex items-center justify-center border-t border-gray-200">
-            <div className="text-center">
-              <span className="text-4xl block mb-3">🗺</span>
-              <p className="text-gray-600">
-                {site.latitude.toFixed(4)}°N, {site.longitude.toFixed(4)}°E
-              </p>
-              <Link
-                href={`/map?lat=${site.latitude}&lng=${site.longitude}`}
-                className="inline-block mt-3 text-sm text-[#0066FF] hover:text-[#3385FF] transition-colors"
-              >
-                在全球地图中查看 →
-              </Link>
-            </div>
+          <div className="h-72">
+            <WorldMapDynamic
+              holySites={[site]}
+              height="288px"
+              selectedSiteId={site.id}
+              interactive={false}
+            />
+          </div>
+          <div className="px-6 py-3 border-t border-gray-100 text-center">
+            <Link
+              href={`/map?lat=${site.latitude}&lng=${site.longitude}`}
+              className="text-sm text-[#0066FF] hover:text-[#3385FF] transition-colors"
+            >
+              在全球地图中查看 →
+            </Link>
           </div>
         </div>
 
@@ -180,8 +211,21 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
           </div>
         )}
 
+        {/* Social Proof (inline for single-image hero) */}
+        {galleryImages.length <= 1 && (
+          <div className="mb-6">
+            <SocialProof entityType="HOLY_SITE" entityId={site.id} />
+          </div>
+        )}
+
         {/* Media Tour */}
         <MediaTour entityType="HOLY_SITE" entityId={site.id} />
+
+        {/* UGC Photo Wall */}
+        <UGCPhotoWall targetType="holy-site" targetId={site.id} />
+
+        {/* Q&A Section */}
+        <QASection entityType="HOLY_SITE" entityId={site.id} />
 
         {/* Reviews Section */}
         <ReviewSection targetType="holy-site" targetId={site.id} />

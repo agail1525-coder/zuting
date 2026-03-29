@@ -503,6 +503,28 @@
   "review.totalReviews": "reviews",
   "review.anonymous": "Anonymous",
   "review.anonymousPilgrim": "Anonymous Pilgrim",
+  "review.subScores.spiritual": "Spiritual Atmosphere",
+  "review.subScores.cultural": "Cultural Depth",
+  "review.subScores.accessibility": "Accessibility",
+  "review.subScores.guideQuality": "Guide Quality",
+  "review.subScores.authenticity": "Historical Authenticity",
+  "review.subDimensions": "Sub-scores",
+
+  "socialProof.monthlyVisitors": "{count} pilgrims visited this month",
+  "socialProof.viewingNow": "{count} viewing now",
+  "socialProof.pilgrims": "pilgrims visited this month",
+  "socialProof.viewing": "viewing now",
+
+  "ugcPhotos.title": "Community Photos",
+  "ugcPhotos.viewAll": "View all community photos",
+
+  "qa.title": "Traveler Q&A",
+  "qa.askQuestion": "Ask a Question",
+  "qa.noQuestions": "No questions yet. Be the first to ask!",
+  "qa.answers": "answers",
+
+  "gallery.viewAll": "View all photos",
+  "gallery.photos": "photos",
 
   "profile.nicknamePlaceholder": "Enter nickname",
   "profile.pilgrim": "Pilgrim",

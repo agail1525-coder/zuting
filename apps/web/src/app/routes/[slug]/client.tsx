@@ -3,6 +3,8 @@
 import Link from "next/link";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
+import PhotoMosaic from "@/components/PhotoMosaic";
+import SocialProof from "@/components/SocialProof";
 import type { Route, ItineraryDay } from "@/lib/api";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -123,17 +125,16 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             <p className="text-gray-600 leading-relaxed whitespace-pre-line">{route.description}</p>
           </div>
 
-          {/* Image Gallery */}
+          {/* Social Proof */}
+          <div className="mt-6">
+            <SocialProof entityType="ROUTE" entityId={route.slug ?? route.id} variant="banner" />
+          </div>
+
+          {/* Image Gallery (Mosaic) */}
           {route.images && route.images.length > 0 && (
             <div className="mt-8">
               <h2 className="text-xl font-bold text-gray-900 mb-4">路线图集</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {route.images.map((img, i) => (
-                  <div key={i} className="relative h-48 rounded-xl overflow-hidden shadow-sm">
-                    <OptimizedImage src={img} alt={`${route.title} ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
-                  </div>
-                ))}
-              </div>
+              <PhotoMosaic images={route.images} alt={route.title} />
             </div>
           )}
 

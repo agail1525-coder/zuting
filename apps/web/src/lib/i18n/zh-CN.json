@@ -503,6 +503,28 @@
   "review.totalReviews": "条评价",
   "review.anonymous": "匿名",
   "review.anonymousPilgrim": "匿名朝圣者",
+  "review.subScores.spiritual": "灵性氛围",
+  "review.subScores.cultural": "文化深度",
+  "review.subScores.accessibility": "可达性",
+  "review.subScores.guideQuality": "导览质量",
+  "review.subScores.authenticity": "历史真实性",
+  "review.subDimensions": "细分评分",
+
+  "socialProof.monthlyVisitors": "{count} 位朝圣者本月到访",
+  "socialProof.viewingNow": "{count} 人正在浏览",
+  "socialProof.pilgrims": "位朝圣者本月到访",
+  "socialProof.viewing": "人正在浏览",
+
+  "ugcPhotos.title": "社区照片",
+  "ugcPhotos.viewAll": "查看全部社区照片",
+
+  "qa.title": "旅行者问答",
+  "qa.askQuestion": "提问",
+  "qa.noQuestions": "暂无问答，成为第一个提问的人",
+  "qa.answers": "个回答",
+
+  "gallery.viewAll": "查看全部照片",
+  "gallery.photos": "张照片",
 
   "profile.nicknamePlaceholder": "输入昵称",
   "profile.pilgrim": "朝圣者",

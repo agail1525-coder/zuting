@@ -41,6 +41,7 @@ export interface HolySite {
   utcOffset: number;
   description: string;
   imageUrl: string | null;
+  galleryImages?: string[];
   soundEffect: string | null;
   religionId: string;
   religion?: Religion;
@@ -882,6 +883,7 @@ export interface ReviewUser {
 export interface Review {
   id: string;
   rating: number;
+  subScores?: Record<string, number>;
   content: string;
   images: string[];
   createdAt: string;
@@ -899,12 +901,14 @@ export interface ReviewStats {
   averageRating: number;
   totalCount: number;
   distribution: Record<number, number>;
+  subScoreAverages?: Record<string, number>;
 }
 
 export interface CreateReviewData {
   targetType: "TRIP" | "GUIDE" | "SITE";
   targetId: string;
   rating: number;
+  subScores?: Record<string, number>;
   content?: string;
   images?: string[];
 }
