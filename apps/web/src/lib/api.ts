@@ -1321,6 +1321,247 @@ export async function checkSaved(entityType: CollectionEntityType, entityId: str
   );
 }
 
+// --- Guides (攻略) ---
+
+export interface GuideAuthor {
+  id: string;
+  nickname: string;
+  avatar: string | null;
+}
+
+export interface GuideItem {
+  id: string;
+  title: string;
+  coverImage: string | null;
+  content: string;
+  entityType: string | null;
+  entityId: string | null;
+  tags: string[];
+  status: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  publishedAt: string | null;
+  createdAt: string;
+  user: GuideAuthor;
+}
+
+export interface GuideListResponse {
+  items: GuideItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface GuideComment {
+  id: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface GuideCommentListResponse {
+  items: GuideComment[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+// --- Questions (问答) ---
+
+export interface QuestionItem {
+  id: string;
+  userId: string;
+  title: string;
+  content: string;
+  entityType: string | null;
+  entityId: string | null;
+  tags: string[];
+  status: string;
+  viewCount: number;
+  answerCount: number;
+  createdAt: string;
+}
+
+export interface QuestionListResponse {
+  items: QuestionItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface AnswerItem {
+  id: string;
+  userId: string;
+  content: string;
+  isAccepted: boolean;
+  voteCount: number;
+  createdAt: string;
+}
+
+export interface QuestionDetail extends QuestionItem {
+  answers: AnswerItem[];
+}
+
+// --- Community ---
+
+export interface LeaderboardEntry {
+  userId: string;
+  nickname: string;
+  avatar: string | null;
+  count: number;
+  rank: number;
+}
+
+export interface TrendingContent {
+  hotGuides: GuideItem[];
+  hotQuestions: QuestionItem[];
+}
+
+export interface PhotoItem {
+  id: string;
+  url: string;
+  userId: string;
+  userName: string;
+  userAvatar: string | null;
+  entityType: string | null;
+  entityId: string | null;
+  createdAt: string;
+}
+
+// --- UserProfile ---
+
+export interface UserProfile {
+  id: string;
+  userId: string;
+  displayName: string | null;
+  avatar: string | null;
+  bio: string | null;
+  location: string | null;
+  pilgrimLevel: number;
+  totalTrips: number;
+  totalSites: number;
+  guideCount: number;
+  reviewCount: number;
+  followerCount: number;
+  followingCount: number;
+}
+
+// --- Guides API ---
+export async function fetchGuides(params?: { tag?: string; sort?: string; page?: number; limit?: number }): Promise<GuideListResponse> {
+  const p = new URLSearchParams();
+  if (params?.tag) p.set("tag", params.tag);
+  if (params?.sort) p.set("sort", params.sort);
+  if (params?.page) p.set("page", String(params.page));
+  if (params?.limit) p.set("limit", String(params.limit));
+  return fetchJson<GuideListResponse>(`/api/guides?${p}`);
+}
+
+export async function fetchGuide(id: string): Promise<GuideItem> {
+  return fetchJson<GuideItem>(`/api/guides/${id}`);
+}
+
+export async function createGuide(data: { title: string; content: string; coverImage?: string; entityType?: string; entityId?: string; tags?: string[] }): Promise<GuideItem> {
+  return fetchAuthed<GuideItem>("/api/guides", { method: "POST", body: JSON.stringify(data) });
+}
+
+export async function updateGuide(id: string, data: Partial<{ title: string; content: string; coverImage: string; tags: string[] }>): Promise<GuideItem> {
+  return fetchAuthed<GuideItem>(`/api/guides/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+}
+
+export async function deleteGuide(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/guides/${id}`, { method: "DELETE" });
+}
+
+export async function publishGuide(id: string): Promise<GuideItem> {
+  return fetchAuthed<GuideItem>(`/api/guides/${id}/publish`, { method: "POST" });
+}
+
+export async function fetchGuideComments(guideId: string, page = 1): Promise<GuideCommentListResponse> {
+  return fetchJson<GuideCommentListResponse>(`/api/guides/${guideId}/comments?page=${page}`);
+}
+
+export async function addGuideComment(guideId: string, content: string): Promise<GuideComment> {
+  return fetchAuthed<GuideComment>(`/api/guides/${guideId}/comments`, { method: "POST", body: JSON.stringify({ content }) });
+}
+
+export async function likeGuide(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/guides/${id}/like`, { method: "POST" });
+}
+
+export async function unlikeGuide(id: string): Promise<void> {
+  await fetchAuthed<void>(`/api/guides/${id}/like`, { method: "DELETE" });
+}
+
+// --- Questions API ---
+export async function fetchQuestions(params?: { tag?: string; status?: string; sort?: string; page?: number }): Promise<QuestionListResponse> {
+  const p = new URLSearchParams();
+  if (params?.tag) p.set("tag", params.tag);
+  if (params?.status) p.set("status", params.status);
+  if (params?.sort) p.set("sort", params.sort);
+  if (params?.page) p.set("page", String(params.page));
+  return fetchJson<QuestionListResponse>(`/api/questions?${p}`);
+}
+
+export async function fetchQuestion(id: string): Promise<QuestionDetail> {
+  return fetchJson<QuestionDetail>(`/api/questions/${id}`);
+}
+
+export async function createQuestion(data: { title: string; content: string; tags?: string[] }): Promise<QuestionItem> {
+  return fetchAuthed<QuestionItem>("/api/questions", { method: "POST", body: JSON.stringify(data) });
+}
+
+export async function addAnswer(questionId: string, content: string): Promise<AnswerItem> {
+  return fetchAuthed<AnswerItem>(`/api/questions/${questionId}/answers`, { method: "POST", body: JSON.stringify({ content }) });
+}
+
+export async function acceptAnswer(questionId: string, answerId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/questions/${questionId}/answers/${answerId}/accept`, { method: "POST" });
+}
+
+export async function voteAnswer(questionId: string, answerId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/questions/${questionId}/answers/${answerId}/vote`, { method: "POST" });
+}
+
+// --- Community API ---
+export async function fetchLeaderboard(type: string, period: string): Promise<LeaderboardEntry[]> {
+  return fetchJson<LeaderboardEntry[]>(`/api/community/leaderboard?type=${type}&period=${period}`);
+}
+
+export async function fetchTrending(): Promise<TrendingContent> {
+  return fetchJson<TrendingContent>("/api/community/trending");
+}
+
+export async function fetchPhotoWall(params?: { entityType?: string; entityId?: string; page?: number; limit?: number }): Promise<{ items: PhotoItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (params?.entityType) p.set("entityType", params.entityType);
+  if (params?.entityId) p.set("entityId", params.entityId);
+  if (params?.page) p.set("page", String(params.page));
+  if (params?.limit) p.set("limit", String(params.limit));
+  return fetchJson<{ items: PhotoItem[]; total: number }>(`/api/community/photos?${p}`);
+}
+
+export async function fetchFeaturedPhotos(): Promise<{ items: PhotoItem[] }> {
+  return fetchJson<{ items: PhotoItem[] }>("/api/community/photos/featured");
+}
+
+// --- User Profile API ---
+export async function fetchMyProfile(): Promise<UserProfile> {
+  return fetchAuthed<UserProfile>("/api/users/me/profile");
+}
+
+export async function updateMyProfile(data: { displayName?: string; bio?: string; location?: string; avatar?: string }): Promise<UserProfile> {
+  return fetchAuthed<UserProfile>("/api/users/me/profile", { method: "PATCH", body: JSON.stringify(data) });
+}
+
+export async function fetchUserProfile(userId: string): Promise<UserProfile & { nickname: string }> {
+  return fetchJson<UserProfile & { nickname: string }>(`/api/users/${userId}/profile`);
+}
+
+export async function fetchUserGuides(userId: string, page = 1): Promise<GuideListResponse> {
+  return fetchJson<GuideListResponse>(`/api/users/${userId}/guides?page=${page}`);
+}
+
 export async function fetchSharedCollection(shareToken: string): Promise<Collection> {
   return fetchJson<Collection>(`/api/collections/shared/${shareToken}`);
 }
