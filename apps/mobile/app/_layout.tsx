@@ -129,6 +129,14 @@ function RootLayout() {
           name="merchants/[id]"
           options={{ title: '商家详情' }}
         />
+        <Stack.Screen
+          name="messages"
+          options={{ title: '消息' }}
+        />
+        <Stack.Screen
+          name="chat-room/[id]"
+          options={{ title: '聊天' }}
+        />
         </Stack>
       </I18nProvider>
     </AuthProvider>

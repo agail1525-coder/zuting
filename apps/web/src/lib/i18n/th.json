@@ -617,5 +617,14 @@
   "merchant.registerSuccess": "ส่งการลงทะเบียนแล้ว!",
   "merchant.registerSuccessHint": "ใบสมัครของคุณอยู่ระหว่างการตรวจสอบ เราจะติดต่อกลับเร็วๆ นี้",
   "merchant.submitBtn": "ส่งใบสมัคร",
-  "merchant.registerDisclaimer": "การส่งแสดงว่าคุณยอมรับข้อกำหนดและเงื่อนไขของเรา"
+  "merchant.registerDisclaimer": "การส่งแสดงว่าคุณยอมรับข้อกำหนดและเงื่อนไขของเรา",
+  "chat.messages": "ข้อความ",
+  "chat.noRooms": "ยังไม่มีข้อความ",
+  "chat.selectRoom": "เลือกการสนทนา",
+  "chat.sendPlaceholder": "พิมพ์ข้อความ...",
+  "chat.send": "ส่ง",
+  "chat.today": "วันนี้",
+  "chat.yesterday": "เมื่อวาน",
+  "chat.merchant": "สอบถามร้านค้า",
+  "chat.contactMerchant": "ติดต่อร้านค้า"
 }

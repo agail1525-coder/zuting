@@ -617,5 +617,14 @@
   "merchant.registerSuccess": "登録申請が送信されました！",
   "merchant.registerSuccessHint": "申請を審査中です。しばらくお待ちください。",
   "merchant.submitBtn": "申請を送信",
-  "merchant.registerDisclaimer": "送信することにより、利用規約に同意したものとみなされます。"
+  "merchant.registerDisclaimer": "送信することにより、利用規約に同意したものとみなされます。",
+  "chat.messages": "メッセージ",
+  "chat.noRooms": "メッセージはありません",
+  "chat.selectRoom": "会話を選択",
+  "chat.sendPlaceholder": "メッセージを入力...",
+  "chat.send": "送信",
+  "chat.today": "今日",
+  "chat.yesterday": "昨日",
+  "chat.merchant": "ショップへの問い合わせ",
+  "chat.contactMerchant": "ショップに連絡"
 }

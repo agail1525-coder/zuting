@@ -1942,3 +1942,57 @@ export async function fetchAnalyticsFunnel(): Promise<AnalyticsFunnel> {
 export async function fetchTopContent(): Promise<TopContentItem[]> {
   return fetchAuthed<TopContentItem[]>('/api/analytics/top-content');
 }
+
+// ======== Chat 实时消息 ========
+
+export interface ChatRoom {
+  id: string;
+  type: string;
+  name: string | null;
+  createdAt: string;
+  participants: ChatParticipant[];
+  lastMessage?: ChatMessage;
+  unreadCount?: number;
+}
+
+export interface ChatParticipant {
+  id: string;
+  roomId: string;
+  userId: string;
+  lastReadAt: string | null;
+  joinedAt: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  roomId: string;
+  senderId: string;
+  type: string;
+  content: string;
+  isDeleted: boolean;
+  createdAt: string;
+}
+
+export async function fetchChatRooms(): Promise<ChatRoom[]> {
+  return fetchAuthed<ChatRoom[]>('/api/chat/rooms');
+}
+
+export async function createChatRoom(data: { type: string; participantIds: string[]; name?: string }): Promise<ChatRoom> {
+  return fetchAuthed<ChatRoom>('/api/chat/rooms', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchChatMessages(roomId: string, page = 1): Promise<{ items: ChatMessage[]; total: number }> {
+  return fetchAuthed<{ items: ChatMessage[]; total: number }>(`/api/chat/rooms/${roomId}/messages?page=${page}`);
+}
+
+export async function sendChatMessage(roomId: string, content: string, type = 'TEXT'): Promise<ChatMessage> {
+  return fetchAuthed<ChatMessage>(`/api/chat/rooms/${roomId}/messages`, { method: 'POST', body: JSON.stringify({ content, type }) });
+}
+
+export async function markChatRead(roomId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/chat/rooms/${roomId}/read`, { method: 'POST' });
+}
+
+export async function deleteChatMessage(messageId: string): Promise<void> {
+  await fetchAuthed<void>(`/api/chat/messages/${messageId}`, { method: 'DELETE' });
+}

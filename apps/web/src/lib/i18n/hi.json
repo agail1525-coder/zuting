@@ -617,5 +617,14 @@
   "merchant.registerSuccess": "पंजीकरण सबमिट किया गया!",
   "merchant.registerSuccessHint": "आपका आवेदन समीक्षाधीन है। हम जल्द ही आपसे संपर्क करेंगे।",
   "merchant.submitBtn": "आवेदन सबमिट करें",
-  "merchant.registerDisclaimer": "सबमिट करके, आप हमारे नियमों और शर्तों से सहमत हैं।"
+  "merchant.registerDisclaimer": "सबमिट करके, आप हमारे नियमों और शर्तों से सहमत हैं।",
+  "chat.messages": "संदेश",
+  "chat.noRooms": "कोई संदेश नहीं",
+  "chat.selectRoom": "बातचीत चुनें",
+  "chat.sendPlaceholder": "संदेश लिखें...",
+  "chat.send": "भेजें",
+  "chat.today": "आज",
+  "chat.yesterday": "कल",
+  "chat.merchant": "दुकान पूछताछ",
+  "chat.contactMerchant": "दुकान से संपर्क"
 }

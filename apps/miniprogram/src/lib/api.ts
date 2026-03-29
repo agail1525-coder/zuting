@@ -1069,6 +1069,43 @@ export function fetchMerchantDetail(id: string) {
   return request<Merchant>(`/merchants/${id}`)
 }
 
+// ─── Chat / 实时消息 ─────────────────────────────────────────────────────────
+
+export interface ChatRoom {
+  id: string
+  type: string
+  name: string | null
+  createdAt: string
+  lastMessage?: { content: string; createdAt: string; senderId: string }
+  unreadCount?: number
+}
+
+export interface ChatMessageItem {
+  id: string
+  roomId: string
+  senderId: string
+  type: string
+  content: string
+  isDeleted: boolean
+  createdAt: string
+}
+
+export function fetchChatRooms() {
+  return request<ChatRoom[]>('/chat/rooms')
+}
+
+export function fetchChatMessages(roomId: string, page = 1) {
+  return request<{ items: ChatMessageItem[]; total: number }>(`/chat/rooms/${roomId}/messages`, { page: String(page) })
+}
+
+export function sendChatMessage(roomId: string, content: string) {
+  return postRequest<ChatMessageItem>(`/chat/rooms/${roomId}/messages`, { content, type: 'TEXT' })
+}
+
+export function markChatRead(roomId: string) {
+  return postRequest<void>(`/chat/rooms/${roomId}/read`, {})
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

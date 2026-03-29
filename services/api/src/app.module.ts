@@ -41,6 +41,7 @@ import { PriceModule } from './modules/price/price.module';
 import { ShareModule } from './modules/share/share.module';
 import { MerchantModule } from './modules/merchant/merchant.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -87,6 +88,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     ShareModule,
     MerchantModule,
     AnalyticsModule,
+    ChatModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

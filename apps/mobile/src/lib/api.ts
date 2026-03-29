@@ -1248,3 +1248,43 @@ export async function fetchMerchants(type?: string, page = 1): Promise<{ items: 
 export async function fetchMerchantDetail(id: string): Promise<Merchant> {
   return fetchJson(`/api/merchants/${id}`);
 }
+
+// ─── Chat / 实时消息 ─────────────────────────────────────────────────────────
+
+export interface ChatRoom {
+  id: string;
+  type: string;
+  name: string | null;
+  createdAt: string;
+  lastMessage?: { content: string; createdAt: string; senderId: string };
+  unreadCount?: number;
+}
+
+export interface ChatMessageItem {
+  id: string;
+  roomId: string;
+  senderId: string;
+  type: string;
+  content: string;
+  isDeleted: boolean;
+  createdAt: string;
+}
+
+export async function fetchChatRooms(): Promise<ChatRoom[]> {
+  return fetchAuthed('/api/chat/rooms', { method: 'GET' });
+}
+
+export async function fetchChatMessages(roomId: string, page = 1): Promise<{ items: ChatMessageItem[]; total: number }> {
+  return fetchAuthed(`/api/chat/rooms/${roomId}/messages?page=${page}`, { method: 'GET' });
+}
+
+export async function sendChatMessage(roomId: string, content: string): Promise<ChatMessageItem> {
+  return fetchAuthed(`/api/chat/rooms/${roomId}/messages`, {
+    method: 'POST',
+    body: JSON.stringify({ content, type: 'TEXT' }),
+  });
+}
+
+export async function markChatRead(roomId: string): Promise<void> {
+  await fetchAuthed(`/api/chat/rooms/${roomId}/read`, { method: 'POST' });
+}

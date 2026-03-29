@@ -71,6 +71,12 @@ export default function ProfileScreen() {
       <Animated.View entering={FadeInDown.duration(300).delay(200)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>我的朝圣</Text>
         <MenuItem
+          icon="chatbubbles"
+          label="消息"
+          subtitle="私信 · 商家咨询"
+          onPress={() => router.push('/messages' as never)}
+        />
+        <MenuItem
           icon="airplane"
           label="我的行程"
           subtitle={`${counts?.trips ?? 0} 个行程`}

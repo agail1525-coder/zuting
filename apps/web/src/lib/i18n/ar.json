@@ -617,5 +617,14 @@
   "merchant.registerSuccess": "تم تقديم التسجيل!",
   "merchant.registerSuccessHint": "طلبك قيد المراجعة. سنتواصل معك قريباً.",
   "merchant.submitBtn": "تقديم الطلب",
-  "merchant.registerDisclaimer": "بالتقديم، فإنك توافق على الشروط والأحكام الخاصة بنا."
+  "merchant.registerDisclaimer": "بالتقديم، فإنك توافق على الشروط والأحكام الخاصة بنا.",
+  "chat.messages": "الرسائل",
+  "chat.noRooms": "لا توجد رسائل",
+  "chat.selectRoom": "اختر محادثة",
+  "chat.sendPlaceholder": "اكتب رسالة...",
+  "chat.send": "إرسال",
+  "chat.today": "اليوم",
+  "chat.yesterday": "أمس",
+  "chat.merchant": "استفسار تجاري",
+  "chat.contactMerchant": "تواصل مع المتجر"
 }

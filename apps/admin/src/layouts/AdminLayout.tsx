@@ -26,6 +26,7 @@ import {
   TranslationOutlined,
   ShopOutlined,
   BarChartOutlined,
+  MessageOutlined,
 } from '@ant-design/icons';
 import { logout } from '../lib/auth';
 
@@ -56,6 +57,7 @@ const menuItems = [
   { key: '/users', icon: <TeamOutlined />, label: '用户管理' },
   { key: '/moderation', icon: <SafetyCertificateOutlined />, label: '内容审核' },
   { type: 'divider' as const },
+  { key: '/chat-monitor', icon: <MessageOutlined />, label: '聊天监控' },
   { key: '/ai-config', icon: <RobotOutlined />, label: 'AI助手配置' },
   { key: '/search-stats', icon: <SearchOutlined />, label: '搜索统计' },
   { key: '/i18n-share', icon: <TranslationOutlined />, label: '国际化&分享' },
@@ -84,6 +86,7 @@ const breadcrumbMap: Record<string, string> = {
   '/merchants': '商家管理',
   '/users': '用户管理',
   '/moderation': '内容审核',
+  '/chat-monitor': '聊天监控',
   '/ai-config': 'AI助手配置',
   '/search-stats': '搜索统计',
   '/i18n-share': '国际化&分享',

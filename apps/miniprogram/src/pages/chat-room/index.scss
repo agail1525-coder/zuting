@@ -1,0 +1,138 @@
+.chat-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #F5F5F5;
+
+  &__messages {
+    flex: 1;
+    padding: 16rpx 24rpx;
+  }
+
+  &__input-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 16rpx 24rpx;
+    background: #FFFFFF;
+    border-top: 1rpx solid #E5E7EB;
+    gap: 16rpx;
+    padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  }
+
+  &__input {
+    flex: 1;
+    background: #F5F5F5;
+    border-radius: 32rpx;
+    padding: 16rpx 24rpx;
+    font-size: 28rpx;
+    color: #1A1A1A;
+    border: 1rpx solid #E5E7EB;
+  }
+
+  &__send-btn {
+    background: #0066FF;
+    border-radius: 32rpx;
+    padding: 16rpx 32rpx;
+    flex-shrink: 0;
+
+    &--disabled {
+      background: #E5E7EB;
+    }
+  }
+
+  &__send-btn-text {
+    color: #FFFFFF;
+    font-size: 28rpx;
+    font-weight: 600;
+  }
+}
+
+.msg-row {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16rpx;
+  align-items: flex-end;
+
+  &--own {
+    justify-content: flex-end;
+  }
+
+  &--other {
+    justify-content: flex-start;
+  }
+}
+
+.msg-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+
+  &__text {
+    font-size: 24rpx;
+  }
+}
+
+.msg-bubble {
+  max-width: 70%;
+  padding: 16rpx 24rpx;
+  border-radius: 24rpx;
+
+  &--own {
+    background: #0066FF;
+    border-bottom-right-radius: 6rpx;
+  }
+
+  &--other {
+    background: #FFFFFF;
+    border: 1rpx solid #E5E7EB;
+    border-bottom-left-radius: 6rpx;
+  }
+
+  &__text {
+    font-size: 28rpx;
+    color: #1A1A1A;
+    line-height: 1.5;
+
+    &--own {
+      color: #FFFFFF;
+    }
+  }
+
+  &__deleted {
+    font-size: 24rpx;
+    color: #9CA3AF;
+    font-style: italic;
+  }
+
+  &__time {
+    display: block;
+    font-size: 20rpx;
+    color: #9CA3AF;
+    margin-top: 6rpx;
+
+    &--own {
+      color: rgba(255, 255, 255, 0.7);
+      text-align: right;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+
+  &__text {
+    font-size: 28rpx;
+    color: #9CA3AF;
+  }
+}

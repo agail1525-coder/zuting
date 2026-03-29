@@ -652,5 +652,14 @@
   "merchant.registerSuccess": "Registration Submitted!",
   "merchant.registerSuccessHint": "Your application is under review. We will get back to you soon.",
   "merchant.submitBtn": "Submit Application",
-  "merchant.registerDisclaimer": "By submitting, you agree to our terms and conditions."
+  "merchant.registerDisclaimer": "By submitting, you agree to our terms and conditions.",
+  "chat.messages": "Messages",
+  "chat.noRooms": "No messages yet",
+  "chat.selectRoom": "Select a conversation",
+  "chat.sendPlaceholder": "Type a message...",
+  "chat.send": "Send",
+  "chat.today": "Today",
+  "chat.yesterday": "Yesterday",
+  "chat.merchant": "Merchant Inquiry",
+  "chat.contactMerchant": "Contact Merchant"
 }

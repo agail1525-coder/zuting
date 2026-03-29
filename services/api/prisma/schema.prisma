@@ -1191,3 +1191,44 @@ enum MerchantStatus {
   REJECTED  // 已拒绝
   CLOSED    // 已关闭
 }
+
+// ========== 实时消息 ==========
+
+model ChatRoom {
+  id        String   @id @default(cuid())
+  type      String   // PRIVATE / MERCHANT_INQUIRY / GUIDE_CHAT
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+
+  @@index([type])
+}
+
+model ChatParticipant {
+  id         String    @id @default(cuid())
+  roomId     String
+  room       ChatRoom  @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId     String
+  lastReadAt DateTime?
+  joinedAt   DateTime  @default(now())
+
+  @@unique([roomId, userId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderId  String
+  type      String   @default("TEXT") // TEXT / IMAGE / SYSTEM
+  content   String   @db.Text
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
+  @@index([senderId])
+}

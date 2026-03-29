@@ -1,0 +1,124 @@
+.msg-page {
+  min-height: 100vh;
+  background: #F5F5F5;
+}
+
+.room-list {
+  padding: 16rpx 32rpx 32rpx;
+}
+
+.room-card {
+  display: flex;
+  flex-direction: row;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #E5E7EB;
+  margin-bottom: 12rpx;
+  gap: 16rpx;
+  align-items: center;
+
+  &__avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: rgba(0, 102, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__avatar-text {
+    font-size: 36rpx;
+  }
+
+  &__content {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8rpx;
+  }
+
+  &__name {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #1A1A1A;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    margin-right: 16rpx;
+  }
+
+  &__time {
+    font-size: 20rpx;
+    color: #9CA3AF;
+    flex-shrink: 0;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__preview {
+    font-size: 24rpx;
+    color: #6B7280;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    margin-right: 16rpx;
+  }
+
+  &__badge {
+    background: #0066FF;
+    border-radius: 20rpx;
+    min-width: 32rpx;
+    height: 32rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8rpx;
+    flex-shrink: 0;
+  }
+
+  &__badge-text {
+    font-size: 18rpx;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+
+  &__icon {
+    font-size: 64rpx;
+    margin-bottom: 16rpx;
+  }
+
+  &__text {
+    font-size: 28rpx;
+    color: #9CA3AF;
+  }
+
+  &__sub {
+    font-size: 24rpx;
+    color: #D1D5DB;
+    margin-top: 8rpx;
+  }
+}

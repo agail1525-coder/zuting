@@ -652,5 +652,14 @@
   "merchant.registerSuccess": "入驻申请已提交！",
   "merchant.registerSuccessHint": "我们正在审核您的申请，请耐心等待。",
   "merchant.submitBtn": "提交申请",
-  "merchant.registerDisclaimer": "提交即表示您同意我们的服务条款和条件。"
+  "merchant.registerDisclaimer": "提交即表示您同意我们的服务条款和条件。",
+  "chat.messages": "消息",
+  "chat.noRooms": "暂无消息",
+  "chat.selectRoom": "选择一个对话",
+  "chat.sendPlaceholder": "输入消息...",
+  "chat.send": "发送",
+  "chat.today": "今天",
+  "chat.yesterday": "昨天",
+  "chat.merchant": "商家咨询",
+  "chat.contactMerchant": "联系商家"
 }
