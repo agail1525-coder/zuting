@@ -45,7 +45,7 @@ export default function PatriarchDetailPage() {
       {/* Hero */}
       <View className='detail-hero'>
         {hasImage ? (
-          <Image className='detail-hero__image' src={patriarch.imageUrl} mode='aspectFill' />
+          <Image className='detail-hero__image' src={patriarch.imageUrl!} mode='aspectFill' />
         ) : (
           <View className='detail-hero__image detail-hero__image--gradient' />
         )}

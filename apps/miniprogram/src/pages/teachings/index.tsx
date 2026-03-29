@@ -72,10 +72,10 @@ export default function TeachingsPage() {
             <View key={teaching.id} className='teaching-card' onClick={() => Taro.navigateTo({ url: `/pages/teaching-detail/index?id=${teaching.id}` })}>
               <View className='teaching-card__content-wrap'>
                 <Text className='teaching-card__quote'>{'\u{201C}'}</Text>
-                <Text className='teaching-card__content'>{teaching.content}</Text>
+                <Text className='teaching-card__content'>{teaching.originalText}</Text>
               </View>
               <View className='teaching-card__footer'>
-                <Text className='teaching-card__source'>{teaching.source}</Text>
+                <Text className='teaching-card__source'>{teaching.sourceText}</Text>
                 {teaching.religion && (
                   <Text className='teaching-card__badge'>{teaching.religion.emoji} {teaching.religion.name}</Text>
                 )}

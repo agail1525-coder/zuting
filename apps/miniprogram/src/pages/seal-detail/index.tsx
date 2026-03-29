@@ -25,7 +25,7 @@ export default function SealDetailPage() {
   }))
 
   useShareTimeline(() => ({
-    title: seal ? `第${seal.number}印 ${seal.name} | ${seal.series}` : '修行印 — 全球祖庭之旅',
+    title: seal ? `第${seal.id}印 ${seal.name} | ${seal.series}` : '修行印 — 全球祖庭之旅',
     query: `id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
@@ -58,10 +58,10 @@ export default function SealDetailPage() {
       <View className='seal-hero' style={{ background: `linear-gradient(135deg, ${seriesColor}, #003D99)` }}>
         <View className='seal-hero__overlay'>
           <View className='seal-hero__number'>
-            <Text className='seal-hero__number-text'>{seal.number}</Text>
+            <Text className='seal-hero__number-text'>{seal.id}</Text>
           </View>
           <Text className='seal-hero__title'>{seal.name}</Text>
-          <Text className='seal-hero__subtitle'>{seal.nameEn}</Text>
+          <Text className='seal-hero__subtitle'>{seal.series}</Text>
           <View className='seal-hero__series'>
             <View className='seal-hero__series-dot' />
             <Text className='seal-hero__series-text'>{seal.series}</Text>

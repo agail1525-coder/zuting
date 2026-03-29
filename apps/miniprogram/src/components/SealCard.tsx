@@ -28,7 +28,7 @@ export default function SealCard({ seal }: Props) {
     <View className='seal-card' hoverClass='seal-card--hover' onClick={handleTap}>
       <View className='seal-card__number' style={{ borderColor: seriesColor }}>
         <Text className='seal-card__number-text' style={{ color: seriesColor }}>
-          {seal.number}
+          {seal.id}
         </Text>
       </View>
       <View className='seal-card__content'>

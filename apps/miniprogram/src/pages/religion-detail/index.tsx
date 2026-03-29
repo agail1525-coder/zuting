@@ -165,8 +165,8 @@ export default function ReligionDetailPage() {
           {teachings.map(t => (
             <View key={t.id} className='teaching-card'>
               <Text className='teaching-card__quote'>&ldquo;</Text>
-              <Text className='teaching-card__content'>{t.content}</Text>
-              <Text className='teaching-card__source'>-- {t.source}</Text>
+              <Text className='teaching-card__content'>{t.originalText}</Text>
+              <Text className='teaching-card__source'>-- {t.sourceText}</Text>
             </View>
           ))}
         </View>

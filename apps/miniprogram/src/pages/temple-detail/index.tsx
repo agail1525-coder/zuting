@@ -48,8 +48,8 @@ export default function TempleDetailPage() {
   const openLocation = () => {
     if (!temple) return
     Taro.openLocation({
-      latitude: temple.latitude,
-      longitude: temple.longitude,
+      latitude: temple.latitude ?? 0,
+      longitude: temple.longitude ?? 0,
       name: temple.name,
       address: `${temple.city}, ${temple.country}`
     })
@@ -66,7 +66,7 @@ export default function TempleDetailPage() {
       {/* Hero */}
       <View className='detail-hero'>
         {hasImage ? (
-          <Image className='detail-hero__image' src={temple.imageUrl} mode='aspectFill' />
+          <Image className='detail-hero__image' src={temple.imageUrl!} mode='aspectFill' />
         ) : (
           <View className='detail-hero__image detail-hero__image--gradient' />
         )}
