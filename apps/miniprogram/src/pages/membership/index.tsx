@@ -23,7 +23,7 @@ const LEVEL_COLORS: Record<string, string> = {
 
 const QUICK_ACTIONS = [
   { icon: '🎁', label: '积分商城', url: '/pages/points-mall/index', color: '#EF4444' },
-  { icon: '📢', label: '分销推广', url: '', color: '#F59E0B' },
+  { icon: '📢', label: '分销推广', url: '/pages/referral/index', color: '#F59E0B' },
   { icon: '📦', label: '我的套餐', url: '/pages/packages/index', color: '#0066FF' },
   { icon: '📅', label: '签到日历', url: '', color: '#10B981' },
 ]
@@ -85,13 +85,6 @@ export default function MembershipPage() {
   const handleQuickAction = (action: typeof QUICK_ACTIONS[0]) => {
     if (action.url) {
       Taro.navigateTo({ url: action.url })
-    } else if (action.label === '分销推广') {
-      Taro.showModal({
-        title: '我的邀请码',
-        content: `邀请码: ${inviteCode}\n\n分享给朋友，好友注册后双方各得积分奖励！`,
-        showCancel: false,
-        confirmText: '知道了',
-      })
     } else if (action.label === '签到日历') {
       Taro.showToast({ title: '签到日历即将上线', icon: 'none' })
     }

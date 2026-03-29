@@ -166,6 +166,78 @@ export class ReferralService {
    * Level-1 referrer gets 5%, level-2 gets 2%. Cap: 500 points per order.
    * Called internally by the payment/order module.
    */
+  // ─── Admin endpoints ───────────────────────────────────────────────────────
+
+  /** List all distributors (users who have invite codes) — admin only */
+  async getDistributors(page = 1, limit = 20) {
+    const take = Math.min(limit, 100);
+    const skip = (page - 1) * take;
+
+    const [items, total] = await Promise.all([
+      this.prisma.inviteCode.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      this.prisma.inviteCode.count(),
+    ]);
+
+    // Batch-fetch users for all invite codes
+    const userIds = items.map((i) => i.userId);
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, nickname: true, email: true },
+    });
+    const userMap = new Map(users.map((u) => [u.id, u]));
+
+    const enrichedItems = items.map((item) => {
+      const user = userMap.get(item.userId);
+      return {
+        id: item.id,
+        userId: item.userId,
+        inviteCode: item.code,
+        nickname: user?.nickname ?? '',
+        totalInvites: item.totalInvites,
+        totalEarnings: item.totalRewards,
+        createdAt: item.createdAt,
+        user: {
+          name: user?.nickname ?? '',
+          email: user?.email ?? '',
+        },
+      };
+    });
+
+    return { items: enrichedItems, total, page, pageSize: take };
+  }
+
+  /** Get team members for a given distributor — admin only */
+  async getDistributorTeam(userId: string) {
+    const referrals = await this.prisma.referral.findMany({
+      where: { inviterId: userId },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+
+    // Batch-fetch invitee user info
+    const inviteeIds = referrals.map((r) => r.inviteeId);
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: inviteeIds } },
+      select: { id: true, nickname: true },
+    });
+    const userMap = new Map(users.map((u) => [u.id, u]));
+
+    const items = referrals.map((r) => ({
+      id: r.id,
+      inviteeId: r.inviteeId,
+      nickname: userMap.get(r.inviteeId)?.nickname ?? '',
+      level: r.level,
+      joinedAt: r.createdAt,
+      createdAt: r.createdAt,
+    }));
+
+    return { items };
+  }
+
   async settleReward(orderId: string, buyerUserId: string, orderAmount: number) {
     // Find buyer's level-1 referral
     const level1Ref = await this.prisma.referral.findFirst({

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { ReferralService } from './referral.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { BindInviteDto } from './dto/bind-invite.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
@@ -49,5 +50,27 @@ export class ReferralController {
     @Body() dto: BindInviteDto,
   ) {
     return this.referralService.bindInviteCode(userId, dto.code);
+  }
+
+  // ─── Admin Endpoints ────────────────────────────────────────────────────────
+
+  @Get('admin/distributors')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '(Admin) 分销商列表 / List all distributors' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  getDistributors(@Query() pagination: PaginationQueryDto) {
+    return this.referralService.getDistributors(
+      pagination.page,
+      pagination.limit,
+    );
+  }
+
+  @Get('admin/distributors/:userId/team')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '(Admin) 分销商团队 / Get distributor team members' })
+  @ApiParam({ name: 'userId', description: 'Distributor user ID' })
+  getDistributorTeam(@Param('userId') userId: string) {
+    return this.referralService.getDistributorTeam(userId);
   }
 }

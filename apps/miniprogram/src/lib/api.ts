@@ -964,6 +964,51 @@ export function fetchMyInviteCode() {
   return request<{ inviteCode: string; inviteCount: number; rewardPoints: number }>('/membership/invite-code')
 }
 
+// ─── Referral / 分销推荐 ────────────────────────────────────────────────────
+
+export interface ReferralStats {
+  totalInvites: number
+  level1Count: number
+  level2Count: number
+  totalRewards: number
+  monthlyRewards: number
+}
+
+export interface TeamMember {
+  id: string
+  inviteeId: string
+  level: number
+  createdAt: string
+}
+
+export interface ReferralRewardItem {
+  id: string
+  orderId: string
+  amount: number
+  level: number
+  status: string
+  createdAt: string
+}
+
+export function fetchReferralStats() {
+  return request<ReferralStats>('/referral/stats')
+}
+
+export function fetchMyTeam() {
+  return request<{ level1: TeamMember[]; level2: TeamMember[] }>('/referral/my-team')
+}
+
+export function fetchMyRewards(page = 1, limit = 20) {
+  return request<{ items: ReferralRewardItem[]; total: number; page: number; pageSize: number }>('/referral/my-rewards', {
+    page: String(page),
+    limit: String(limit),
+  })
+}
+
+export function bindInviteCode(code: string) {
+  return postRequest<void>('/referral/bind', { code })
+}
+
 // ─── Price Tools ─────────────────────────────────────────────────────────────
 
 export interface PriceCalendarDay {

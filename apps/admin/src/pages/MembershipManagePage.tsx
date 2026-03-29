@@ -464,7 +464,7 @@ function DistributionTab() {
   const load = useCallback(async (p = 1) => {
     setLoading(true);
     try {
-      const res = await apiFetch(`/distributors?page=${p}&limit=20`);
+      const res = await apiFetch(`/referral/admin/distributors?page=${p}&limit=20`);
       setData(Array.isArray(res?.items) ? res.items : []);
       setTotal(res?.total ?? 0);
     } catch {
@@ -480,7 +480,7 @@ function DistributionTab() {
     setTeamTarget(r);
     setTeamLoading(true);
     try {
-      const res = await apiFetch(`/distributors/${r.id}/team`);
+      const res = await apiFetch(`/referral/admin/distributors/${r.userId}/team`);
       setTeamMembers(Array.isArray(res?.items) ? res.items : []);
     } catch {
       setTeamMembers([]);
