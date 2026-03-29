@@ -585,5 +585,30 @@
 
   "loading": "Loading...",
   "error": "Failed to load",
-  "notFound": "Not found"
+  "notFound": "Not found",
+
+  "nav.deals": "Deals",
+  "nav.coupons": "Coupons",
+
+  "coupon.center": "Coupon Center",
+  "coupon.available": "Available",
+  "coupon.mine": "My Coupons",
+  "coupon.used": "Used",
+  "coupon.claim": "Claim Now",
+  "coupon.claimed": "Claimed",
+  "coupon.full": "Sold Out",
+  "coupon.use": "Use Now",
+  "coupon.expiringSoon": "Expiring Soon",
+  "coupon.noAvailable": "No coupons available",
+  "coupon.noMine": "No active coupons",
+  "coupon.noUsed": "No used coupons",
+
+  "promotion.title": "Promotions",
+  "promotion.all": "All",
+  "promotion.flashSale": "Flash Sale",
+  "promotion.earlyBird": "Early Bird",
+  "promotion.discount": "Limited Discount",
+  "promotion.noPromotion": "No active promotions",
+  "promotion.quota": "Remaining",
+  "promotion.ends": "Ends in"
 }

@@ -585,5 +585,30 @@
 
   "loading": "加载中...",
   "error": "加载失败",
-  "notFound": "未找到"
+  "notFound": "未找到",
+
+  "nav.deals": "优惠",
+  "nav.coupons": "优惠券",
+
+  "coupon.center": "优惠券中心",
+  "coupon.available": "可领取",
+  "coupon.mine": "我的券",
+  "coupon.used": "已使用",
+  "coupon.claim": "立即领取",
+  "coupon.claimed": "已领取",
+  "coupon.full": "已抢完",
+  "coupon.use": "去使用",
+  "coupon.expiringSoon": "即将过期",
+  "coupon.noAvailable": "暂无可领取的优惠券",
+  "coupon.noMine": "暂无可用优惠券",
+  "coupon.noUsed": "暂无已使用的优惠券",
+
+  "promotion.title": "促销活动",
+  "promotion.all": "全部",
+  "promotion.flashSale": "闪购",
+  "promotion.earlyBird": "早鸟价",
+  "promotion.discount": "限时折扣",
+  "promotion.noPromotion": "暂无进行中的促销活动",
+  "promotion.quota": "剩余名额",
+  "promotion.ends": "距结束"
 }

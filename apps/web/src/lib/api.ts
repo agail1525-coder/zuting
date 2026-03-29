@@ -637,6 +637,8 @@ export interface CreateOrderData {
   totalAmount: number;
   paymentMethod?: string;
   currency?: string;
+  couponCode?: string;
+  promotionId?: string;
 }
 
 export async function createOrder(data: CreateOrderData): Promise<OrderDetail> {
@@ -1319,6 +1321,116 @@ export async function checkSaved(entityType: CollectionEntityType, entityId: str
   return fetchAuthed<{ saved: boolean; collections: Array<{ id: string; name: string }> }>(
     `/api/collections/check?${params}`
   );
+}
+
+// --- Coupons (full CRUD + claim) ---
+
+export interface CouponItem {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  value: number;
+  minAmount: number | null;
+  maxDiscount: number | null;
+  startAt: string;
+  endAt: string;
+  totalCount: number;
+  usedCount: number;
+  isActive: boolean;
+}
+
+export interface UserCouponItem {
+  id: string;
+  couponId: string;
+  userId: string;
+  status: string;
+  orderId: string | null;
+  usedAt: string | null;
+  createdAt: string;
+  coupon: CouponItem;
+}
+
+export async function fetchAvailableCoupons(page = 1): Promise<{ items: CouponItem[]; total: number }> {
+  return fetchJson(`/api/coupons/available?page=${page}`);
+}
+
+export async function claimCoupon(couponId: string): Promise<UserCouponItem> {
+  return fetchAuthed<UserCouponItem>(`/api/coupons/${couponId}/claim`, { method: "POST" });
+}
+
+export async function fetchMyCoupons(status?: string, page = 1): Promise<{ items: UserCouponItem[]; total: number }> {
+  const p = new URLSearchParams({ page: String(page) });
+  if (status) p.set("status", status);
+  return fetchAuthed(`/api/coupons/my/claimed?${p}`);
+}
+
+export async function applyCoupon(code: string, orderId: string): Promise<{ discount: number }> {
+  return fetchAuthed<{ discount: number }>("/api/coupons/apply", {
+    method: "POST",
+    body: JSON.stringify({ code, orderId }),
+  });
+}
+
+export async function payOrder(
+  orderId: string,
+  data: { paidAmount?: number; paymentMethod?: string; paymentId?: string }
+): Promise<OrderDetail> {
+  return fetchAuthed<OrderDetail>(`/api/orders/${orderId}/pay`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// --- Promotions ---
+
+export interface PromotionItem {
+  id: string;
+  name: string;
+  description: string | null;
+  type: string;
+  discountType: string;
+  discountValue: number;
+  minAmount: number | null;
+  maxDiscount: number | null;
+  startAt: string;
+  endAt: string;
+  entityType: string | null;
+  entityIds: string[];
+  totalQuota: number;
+  usedQuota: number;
+  coverImage: string | null;
+  isActive: boolean;
+}
+
+export async function fetchPromotions(type?: string, page = 1): Promise<{ items: PromotionItem[]; total: number }> {
+  const p = new URLSearchParams({ page: String(page) });
+  if (type) p.set("type", type);
+  return fetchJson(`/api/promotions?${p}`);
+}
+
+export async function fetchPromotion(id: string): Promise<PromotionItem> {
+  return fetchJson<PromotionItem>(`/api/promotions/${id}`);
+}
+
+export async function verifyPromotion(
+  promotionId: string,
+  orderAmount: number
+): Promise<{ valid: boolean; discount?: number; reason?: string }> {
+  return fetchAuthed<{ valid: boolean; discount?: number; reason?: string }>("/api/promotions/verify", {
+    method: "POST",
+    body: JSON.stringify({ promotionId, orderAmount }),
+  });
+}
+
+export async function applyPromotion(
+  promotionId: string,
+  orderId: string
+): Promise<{ discount: number }> {
+  return fetchAuthed<{ discount: number }>("/api/promotions/apply", {
+    method: "POST",
+    body: JSON.stringify({ promotionId, orderId }),
+  });
 }
 
 // --- Guides (攻略) ---
