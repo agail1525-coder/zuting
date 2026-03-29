@@ -526,6 +526,15 @@
   "gallery.viewAll": "查看全部照片",
   "gallery.photos": "张照片",
 
+  "encyclopedia.templesSubtitle": "探索全球宗教祖庭",
+  "encyclopedia.holySitesSubtitle": "探索全球宗教文化圣地",
+  "encyclopedia.patriarchsSubtitle": "探索各信仰先贤圣者",
+  "encyclopedia.teachingsSubtitle": "聆听千年智慧之声",
+  "encyclopedia.search": "搜索",
+  "encyclopedia.sort": "排序",
+  "encyclopedia.results": "条结果",
+  "encyclopedia.loadMore": "加载更多",
+
   "profile.nicknamePlaceholder": "输入昵称",
   "profile.pilgrim": "朝圣者",
   "profile.motto": "愿以朝圣之心，行和平之路",

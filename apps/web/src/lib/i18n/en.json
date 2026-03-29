@@ -526,6 +526,15 @@
   "gallery.viewAll": "View all photos",
   "gallery.photos": "photos",
 
+  "encyclopedia.templesSubtitle": "Explore Ancestral Temples Worldwide",
+  "encyclopedia.holySitesSubtitle": "Explore Sacred Sites Across Faiths",
+  "encyclopedia.patriarchsSubtitle": "Discover Spiritual Masters & Founders",
+  "encyclopedia.teachingsSubtitle": "Listen to Millennia of Wisdom",
+  "encyclopedia.search": "Search",
+  "encyclopedia.sort": "Sort",
+  "encyclopedia.results": "results",
+  "encyclopedia.loadMore": "Load More",
+
   "profile.nicknamePlaceholder": "Enter nickname",
   "profile.pilgrim": "Pilgrim",
   "profile.motto": "Walk the path of peace with a pilgrim's heart",

@@ -6,6 +6,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createGuide, publishGuide } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import MarkdownEditor from "@/components/MarkdownEditor";
+
+const GUIDE_CATEGORIES = [
+  { value: "", label: "选择分类..." },
+  { value: "pilgrimage-diary", label: "朝圣日记" },
+  { value: "travel-tips", label: "旅行贴士" },
+  { value: "cultural-insight", label: "文化洞察" },
+  { value: "route-review", label: "路线评测" },
+];
 
 export default function WriteGuidePage() {
   const { user, loading } = useAuth();
@@ -14,6 +23,7 @@ export default function WriteGuidePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState("");
+  const [category, setCategory] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -165,6 +175,20 @@ export default function WriteGuidePage() {
             )}
           </div>
 
+          {/* Category */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">分类</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] cursor-pointer"
+            >
+              {GUIDE_CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">标签（用逗号分隔）</label>
@@ -183,17 +207,15 @@ export default function WriteGuidePage() {
             )}
           </div>
 
-          {/* Content */}
+          {/* Content (Markdown Editor) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">内容 *</label>
-            <textarea
+            <label className="block text-sm font-medium text-gray-700 mb-2">内容 * <span className="text-gray-400 font-normal">（支持 Markdown）</span></label>
+            <MarkdownEditor
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="分享你的朝圣旅程，让更多人了解这片圣地...&#10;&#10;可以描述：&#10;- 旅途中的见闻&#10;- 当地的风俗文化&#10;- 实用的旅行建议&#10;- 内心的感悟与体验"
+              onChange={setContent}
+              placeholder="分享你的朝圣旅程，让更多人了解这片圣地..."
               rows={20}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] resize-none leading-relaxed"
             />
-            <div className="text-xs text-gray-400 mt-1 text-right">{content.length} 字</div>
           </div>
         </div>
 

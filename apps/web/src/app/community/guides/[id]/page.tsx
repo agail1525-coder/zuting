@@ -16,6 +16,7 @@ import {
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import ShareButton from "@/components/ShareButton";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -169,9 +170,9 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
               </div>
             )}
 
-            {/* Content */}
-            <div className="prose prose-gray max-w-none mb-8 whitespace-pre-wrap text-gray-700 leading-relaxed">
-              {guide.content}
+            {/* Content (Markdown) */}
+            <div className="mb-8">
+              <MarkdownRenderer content={guide.content} />
             </div>
 
             {/* Actions */}
