@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { api, Temple } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
+import ReviewSection from '../../src/components/ReviewSection';
+import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
 
 export default function TempleDetailScreen() {
@@ -23,6 +25,8 @@ export default function TempleDetailScreen() {
         const found = await api.getTempleById(id);
         setTemple(found);
         navigation.setOptions({ title: found.name });
+        // Record view silently for recommendation engine
+        api.recordView('TEMPLE', id);
       } catch (err) {
         console.error('Failed to fetch temple:', err);
         setError('加载祖庭详情失败');
@@ -86,6 +90,14 @@ export default function TempleDetailScreen() {
           <Text style={s.descText}>{temple.description}</Text>
         </View>
       </View>
+
+      {/* Reviews */}
+      <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+        <ReviewSection targetType="TEMPLE" targetId={id!} />
+      </View>
+
+      {/* Related Entities */}
+      <RelatedEntities entityType="TEMPLE" entityId={id!} title="你可能也喜欢" />
 
       {/* Bottom CTA */}
       <View style={s.ctaRow}>

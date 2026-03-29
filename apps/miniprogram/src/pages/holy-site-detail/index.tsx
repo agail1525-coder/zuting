@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
-import { HolySite, Route, fetchHolySiteById, fetchRoutesBySite } from '../../lib/api'
+import { HolySite, Route, fetchHolySiteById, fetchRoutesBySite, recordView } from '../../lib/api'
 import ReviewSection from '../../components/ReviewSection'
+import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
@@ -40,6 +41,7 @@ export default function HolySiteDetailPage() {
       ])
       setSite(data)
       setRoutes(relatedRoutes)
+      recordView('HOLY_SITE', id!)
     } catch (err) {
       console.error('Failed to load site:', err)
       setError('网络错误，请稍后重试')
@@ -191,6 +193,11 @@ export default function HolySiteDetailPage() {
       {/* Reviews */}
       <View className='section'>
         <ReviewSection targetType='SITE' targetId={id!} />
+      </View>
+
+      {/* Related Entities */}
+      <View className='section'>
+        <RelatedEntities entityType='HOLY_SITE' entityId={id!} title='附近圣地' />
       </View>
 
       {/* Map Action */}

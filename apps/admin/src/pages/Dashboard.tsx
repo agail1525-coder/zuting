@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List, Rate, Avatar } from 'antd';
 import {
   GlobalOutlined,
   EnvironmentOutlined,
@@ -9,12 +9,14 @@ import {
   BookOutlined,
   SearchOutlined,
   FireOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
-import { getDashboardStats } from '../lib/api';
+import { getDashboardStats, getReviews } from '../lib/api';
+import type { Review } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -50,6 +52,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
+  const [recentReviews, setRecentReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     getDashboardStats()
@@ -57,6 +60,9 @@ export default function Dashboard() {
       .catch((e: unknown) => setError(e instanceof Error ? e.message : '加载失败'))
       .finally(() => setLoading(false));
     fetchHotKeywords().then((kws) => setHotKeywords(kws.slice(0, 5)));
+    getReviews(1, 5)
+      .then((res) => setRecentReviews(res.data))
+      .catch(() => setRecentReviews([]));
   }, []);
 
   if (loading) {
@@ -309,6 +315,57 @@ export default function Dashboard() {
                         </List.Item>
                       );
                     }}
+                  />
+                )}
+              </Card>
+            </Col>
+            <Col span={24}>
+              <Card
+                title={
+                  <span>
+                    <StarOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                    最新评价
+                  </span>
+                }
+                extra={
+                  <a href="/reviews" style={{ color: '#D4A855', fontSize: 12 }}>
+                    查看全部
+                  </a>
+                }
+                styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+              >
+                {recentReviews.length === 0 ? (
+                  <span style={{ color: '#666', fontSize: 13 }}>暂无评价数据</span>
+                ) : (
+                  <List
+                    size="small"
+                    dataSource={recentReviews}
+                    renderItem={(review) => (
+                      <List.Item style={{ padding: '8px 0', borderBottom: '1px solid #1a1a1a' }}>
+                        <div style={{ width: '100%' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                            <Avatar
+                              size={24}
+                              src={review.user?.avatar}
+                              icon={<UserOutlined />}
+                              style={{ backgroundColor: '#D4A855', flexShrink: 0 }}
+                            />
+                            <span style={{ color: '#d4d4d4', fontSize: 13, fontWeight: 500 }}>
+                              {review.user?.nickname || '匿名用户'}
+                            </span>
+                            <Rate disabled defaultValue={review.rating} style={{ fontSize: 11 }} />
+                            <span style={{ color: '#555', fontSize: 11, marginLeft: 'auto' }}>
+                              {review.createdAt ? new Date(review.createdAt).toLocaleDateString('zh-CN') : ''}
+                            </span>
+                          </div>
+                          {review.content && (
+                            <div style={{ color: '#888', fontSize: 12, paddingLeft: 32, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {review.content}
+                            </div>
+                          )}
+                        </div>
+                      </List.Item>
+                    )}
                   />
                 )}
               </Card>

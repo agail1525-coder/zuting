@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { api, HolySite, Route } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import ReviewSection from '../../src/components/ReviewSection';
+import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
 
 export default function HolySiteDetailScreen() {
@@ -29,6 +30,8 @@ export default function HolySiteDetailScreen() {
         setSite(found);
         setRoutes(relatedRoutes);
         navigation.setOptions({ title: found.name });
+        // Record view silently for recommendation engine
+        api.recordView('HOLY_SITE', id);
       } catch (err) {
         console.error('Failed to fetch holy site:', err);
         setError('加载圣地详情失败');
@@ -165,6 +168,9 @@ export default function HolySiteDetailScreen() {
       <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
         <ReviewSection targetType="SITE" targetId={id!} />
       </View>
+
+      {/* Related Entities */}
+      <RelatedEntities entityType="HOLY_SITE" entityId={id!} title="你可能也喜欢" />
 
       {/* Bottom CTA */}
       <View style={s.ctaRow}>

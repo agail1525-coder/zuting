@@ -422,6 +422,38 @@ export const api = {
 
   markAllNotificationsRead: () =>
     requestMutate<void>('/notifications/read-all', 'POST', {}),
+
+  // Reviews — reply, vote
+  replyToReview: (reviewId: string, content: string) =>
+    requestMutate<ReviewReply>(`/reviews/${reviewId}/replies`, 'POST', { content }),
+
+  voteReview: (reviewId: string) =>
+    requestMutate<{ helpful: number }>(`/reviews/${reviewId}/vote`, 'POST', {}),
+
+  unvoteReview: (reviewId: string) =>
+    requestMutate<{ helpful: number }>(`/reviews/${reviewId}/vote`, 'DELETE', {}),
+
+  // Recommendations
+  fetchRelatedItems: (entityType: RecommendationEntityType, entityId: string, limit = 6) =>
+    request<RecommendationItem[]>('/recommendations/related', {
+      entityType,
+      entityId,
+      limit: String(limit),
+    }),
+
+  fetchPopularItems: (religion?: string, limit = 10) =>
+    request<RecommendationItem[]>('/recommendations/popular', {
+      ...(religion ? { religion } : {}),
+      limit: String(limit),
+    }),
+
+  recordView: async (entityType: RecommendationEntityType, entityId: string): Promise<void> => {
+    try {
+      await requestMutate<void>('/recommendations/view-history', 'POST', { entityType, entityId });
+    } catch {
+      // silent fail — non-critical analytics
+    }
+  },
 };
 
 export interface Journal {
@@ -584,4 +616,28 @@ export interface SearchResponse {
   limit: number;
   total: number;
   results: SearchResultItem[];
+}
+
+// --- Recommendations ---
+
+export type RecommendationEntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'ROUTE' | 'JOURNAL';
+
+export interface RecommendationItem {
+  type: RecommendationEntityType;
+  id: string;
+  name: string;
+  nameEn: string;
+  imageUrl: string | null;
+  country?: string;
+  religionName: string;
+  religionColor: string | null;
+}
+
+// --- Review extras ---
+
+export interface ReviewReply {
+  id: string;
+  content: string;
+  createdAt: string;
+  user: ReviewUser;
 }

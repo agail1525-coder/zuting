@@ -1,0 +1,92 @@
+.related-entities {
+  margin-top: 8rpx;
+
+  &__title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 20rpx;
+  }
+
+  &__scroll {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.related-card {
+  display: inline-flex;
+  flex-direction: column;
+  width: 200rpx;
+  margin-right: 16rpx;
+  cursor: pointer;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &__image-wrap {
+    position: relative;
+    width: 200rpx;
+    height: 160rpx;
+    border-radius: 12rpx;
+    overflow: hidden;
+    margin-bottom: 10rpx;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    border-radius: 12rpx;
+
+    &--placeholder {
+      background: linear-gradient(135deg, #E5E7EB, #D1D5DB);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__placeholder-icon {
+    font-size: 48rpx;
+  }
+
+  &__badge {
+    position: absolute;
+    bottom: 8rpx;
+    left: 8rpx;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 6rpx;
+    padding: 3rpx 10rpx;
+  }
+
+  &__badge-text {
+    font-size: 18rpx;
+    color: #FFFFFF;
+  }
+
+  &__name {
+    display: block;
+    font-size: 24rpx;
+    font-weight: 600;
+    color: #1A1A1A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200rpx;
+  }
+
+  &__sub {
+    display: block;
+    font-size: 20rpx;
+    color: #9CA3AF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200rpx;
+    margin-top: 4rpx;
+  }
+}

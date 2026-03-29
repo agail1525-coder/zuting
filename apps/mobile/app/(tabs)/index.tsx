@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { api, Religion, Route, HolySite, Temple, Patriarch } from '../../src/lib/api';
+import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
@@ -67,6 +67,7 @@ export default function HomeScreen() {
   const [holySites, setHolySites] = useState<HolySite[]>([]);
   const [temples, setTemples] = useState<Temple[]>([]);
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
+  const [popularItems, setPopularItems] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeSearchTab, setActiveSearchTab] = useState('sites');
@@ -74,18 +75,20 @@ export default function HomeScreen() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [routesData, religionsData, sitesData, templesData, patriarchsData] = await Promise.all([
+      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData] = await Promise.all([
         api.getFeaturedRoutes(6),
         api.getReligions(),
         api.getHolySites(),
         api.getTemples(),
         api.getPatriarchs(),
+        api.fetchPopularItems(undefined, 10).catch(() => [] as RecommendationItem[]),
       ]);
       setFeaturedRoutes(routesData);
       setReligions(religionsData);
       setHolySites(sitesData);
       setTemples(templesData);
       setPatriarchs(patriarchsData);
+      setPopularItems(popularData);
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -347,7 +350,35 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      {/* ── 9. Stats + CTA ── */}
+      {/* ── 9. For You — Popular Recommendations ── */}
+      {popularItems.length > 0 && (
+        <>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>为你推荐</Text>
+          </View>
+          <FlatList
+            data={popularItems}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.popularList}
+            keyExtractor={(item) => `${item.type}-${item.id}`}
+            renderItem={({ item }) => (
+              <PopularCard item={item} onPress={() => {
+                const route = item.type === 'HOLY_SITE'
+                  ? `/holy-sites/${item.id}`
+                  : item.type === 'TEMPLE'
+                  ? `/temples/${item.id}`
+                  : item.type === 'PATRIARCH'
+                  ? `/patriarchs/${item.id}`
+                  : `/routes/${item.id}`;
+                router.push(route as never);
+              }} />
+            )}
+          />
+        </>
+      )}
+
+      {/* ── 10. Stats + CTA ── */}
       <View style={styles.statsCard}>
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
@@ -427,6 +458,29 @@ function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
         <View style={styles.routeCardFooter}>
           <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>/人起</Text></Text>
         </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function PopularCard({ item, onPress }: { item: RecommendationItem; onPress: () => void }) {
+  return (
+    <Pressable style={styles.popularCard} onPress={onPress}>
+      {item.imageUrl ? (
+        <Image source={{ uri: item.imageUrl }} style={styles.popularCardImage} resizeMode="cover" />
+      ) : (
+        <View style={[styles.popularCardImage, { backgroundColor: '#EFF6FF', justifyContent: 'center', alignItems: 'center' }]}>
+          <Ionicons name="image" size={22} color="#CBD5E1" />
+        </View>
+      )}
+      <View style={styles.popularCardBody}>
+        <View style={[styles.popularBadge, { backgroundColor: item.religionColor ? `${item.religionColor}22` : '#EFF6FF' }]}>
+          <Text style={[styles.popularBadgeText, { color: item.religionColor ?? '#0066FF' }]} numberOfLines={1}>
+            {item.religionName}
+          </Text>
+        </View>
+        <Text style={styles.popularCardName} numberOfLines={2}>{item.name}</Text>
+        {item.country ? <Text style={styles.popularCardSub} numberOfLines={1}>{item.country}</Text> : null}
       </View>
     </Pressable>
   );
@@ -648,4 +702,18 @@ const styles = StyleSheet.create({
   // Footer
   footer: { alignItems: 'center', paddingVertical: 24 },
   footerText: { color: '#9CA3AF', fontSize: 13 },
+
+  // Popular Recommendations
+  popularList: { paddingHorizontal: spacing.md, gap: 10 },
+  popularCard: {
+    width: 150, backgroundColor: '#FFFFFF', borderRadius: 12, overflow: 'hidden',
+    borderWidth: 1, borderColor: '#E5E7EB',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  popularCardImage: { width: '100%', height: 100 },
+  popularCardBody: { padding: 8, gap: 4 },
+  popularBadge: { alignSelf: 'flex-start', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
+  popularBadgeText: { fontSize: 10, fontWeight: '600' },
+  popularCardName: { fontSize: 13, fontWeight: '600', color: '#1A1A1A', lineHeight: 18 },
+  popularCardSub: { fontSize: 11, color: '#9CA3AF' },
 });

@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { api, Patriarch } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
+import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
 
 export default function PatriarchDetailScreen() {
@@ -23,6 +24,8 @@ export default function PatriarchDetailScreen() {
         const found = await api.getPatriarchById(id);
         setPatriarch(found);
         navigation.setOptions({ title: found.name });
+        // Record view silently for recommendation engine
+        api.recordView('PATRIARCH', id);
       } catch (err) {
         console.error('Failed to fetch patriarch:', err);
         setError('加载祖师详情失败');
@@ -98,6 +101,9 @@ export default function PatriarchDetailScreen() {
           </View>
         </View>
       ) : null}
+
+      {/* Related Entities */}
+      <RelatedEntities entityType="PATRIARCH" entityId={id!} title="相关推荐" />
 
       {/* Bottom CTA */}
       <View style={s.ctaRow}>

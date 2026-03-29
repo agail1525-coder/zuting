@@ -493,6 +493,57 @@ export function createReview(data: CreateReviewData) {
   return postRequest<Review>('/reviews', data)
 }
 
+export interface ReviewReply {
+  id: string
+  content: string
+  createdAt: string
+  user: ReviewUser
+}
+
+export function replyToReview(reviewId: string, content: string) {
+  return postRequest<ReviewReply>(`/reviews/${reviewId}/replies`, { content })
+}
+
+export function voteReview(reviewId: string) {
+  return postRequest<{ voted: boolean }>(`/reviews/${reviewId}/vote`, {})
+}
+
+export function unvoteReview(reviewId: string) {
+  return deleteRequest<{ voted: boolean }>(`/reviews/${reviewId}/vote`)
+}
+
+// --- Recommendations ---
+
+export type EntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'ROUTE'
+
+export interface RecommendedItem {
+  id: string
+  entityType: EntityType
+  title: string
+  imageUrl: string | null
+  religion: string | null
+  subtitle: string | null
+}
+
+export function fetchRelatedItems(entityType: EntityType, entityId: string, limit = 6) {
+  return request<RecommendedItem[]>('/recommendations/related', {
+    entityType,
+    entityId,
+    limit: String(limit),
+  })
+}
+
+export function fetchPopularItems(religion?: string, limit = 8) {
+  return request<RecommendedItem[]>('/recommendations/popular', {
+    ...(religion ? { religion } : {}),
+    limit: String(limit),
+  })
+}
+
+export function recordView(entityType: EntityType, entityId: string): void {
+  postRequest<void>('/recommendations/view-history', { entityType, entityId }).catch(() => {})
+}
+
 // --- Orders ---
 
 export interface OrderDetail {

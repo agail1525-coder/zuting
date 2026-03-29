@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Rate, Select, Popconfirm, Button, Image, message, Space } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { Table, Card, Typography, Tag, Rate, Select, Popconfirm, Button, Image, message, Space, Tabs, Tooltip } from 'antd';
+import { DeleteOutlined, CheckOutlined, CloseOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getReviews, deleteReview } from '../lib/api';
 import type { Review } from '../types';
 import dayjs from 'dayjs';
 
 const { Title, Paragraph } = Typography;
+
+type ReviewStatus = 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'HIDDEN';
 
 const TARGET_TYPE_OPTIONS = [
   { value: '', label: '全部类型' },
@@ -21,6 +23,14 @@ const targetTypeLabels: Record<string, { text: string; color: string }> = {
   SITE: { text: '圣地', color: 'orange' },
 };
 
+const STATUS_CONFIG: Record<ReviewStatus, { label: string; color: string }> = {
+  ALL:      { label: '全部',   color: '' },
+  PENDING:  { label: '待审核', color: 'orange' },
+  APPROVED: { label: '已通过', color: 'green' },
+  REJECTED: { label: '已拒绝', color: 'red' },
+  HIDDEN:   { label: '已隐藏', color: 'default' },
+};
+
 export default function ReviewsPage() {
   const [data, setData] = useState<Review[]>([]);
   const [total, setTotal] = useState(0);
@@ -28,6 +38,9 @@ export default function ReviewsPage() {
   const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('');
+  const [activeTab, setActiveTab] = useState<ReviewStatus>('ALL');
+  // Local status management (no backend status field yet)
+  const [localStatus, setLocalStatus] = useState<Record<string, ReviewStatus>>({});
 
   const fetchReviews = (p = page, ps = pageSize) => {
     setLoading(true);
@@ -52,13 +65,62 @@ export default function ReviewsPage() {
     }
   };
 
+  const handleStatusChange = (id: string, status: ReviewStatus) => {
+    setLocalStatus((prev) => ({ ...prev, [id]: status }));
+    const labels: Record<ReviewStatus, string> = {
+      ALL: '', PENDING: '已标记待审核', APPROVED: '已通过审核', REJECTED: '已拒绝', HIDDEN: '已隐藏',
+    };
+    if (labels[status]) message.success(labels[status]);
+  };
+
+  const getEffectiveStatus = (id: string): ReviewStatus =>
+    localStatus[id] ?? 'PENDING';
+
+  const filteredData = data.filter((r) => {
+    if (activeTab === 'ALL') return true;
+    return getEffectiveStatus(r.id) === activeTab;
+  });
+
+  const tabItems = (Object.keys(STATUS_CONFIG) as ReviewStatus[]).map((key) => {
+    const count = key === 'ALL'
+      ? data.length
+      : data.filter((r) => getEffectiveStatus(r.id) === key).length;
+    return {
+      key,
+      label: `${STATUS_CONFIG[key].label}${count > 0 ? ` (${count})` : ''}`,
+    };
+  });
+
   const columns: ColumnsType<Review> = [
     {
-      title: '评价者',
-      dataIndex: ['user', 'nickname'],
-      key: 'user',
-      width: 120,
-      render: (_: unknown, r: Review) => r.user?.nickname || '匿名用户',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 90,
+      render: (id: string) => (
+        <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#888' }}>
+          {id.slice(-8)}
+        </span>
+      ),
+    },
+    {
+      title: '评分',
+      dataIndex: 'rating',
+      key: 'rating',
+      width: 150,
+      sorter: (a: Review, b: Review) => a.rating - b.rating,
+      render: (rating: number) => <Rate disabled defaultValue={rating} style={{ fontSize: 13 }} />,
+    },
+    {
+      title: '内容',
+      dataIndex: 'content',
+      key: 'content',
+      width: 240,
+      render: (text: string) => (
+        <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: '展开' }} style={{ marginBottom: 0, color: '#ccc', fontSize: 13 }}>
+          {text || '-'}
+        </Paragraph>
+      ),
     },
     {
       title: '目标类型',
@@ -74,43 +136,49 @@ export default function ReviewsPage() {
       title: '目标ID',
       dataIndex: 'targetId',
       key: 'targetId',
-      width: 160,
+      width: 130,
       ellipsis: true,
-      render: (id: string) => <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{id}</span>,
-    },
-    {
-      title: '评分',
-      dataIndex: 'rating',
-      key: 'rating',
-      width: 160,
-      sorter: (a: Review, b: Review) => a.rating - b.rating,
-      render: (rating: number) => <Rate disabled defaultValue={rating} style={{ fontSize: 14 }} />,
-    },
-    {
-      title: '内容',
-      dataIndex: 'content',
-      key: 'content',
-      width: 260,
-      render: (text: string) => (
-        <Paragraph ellipsis={{ rows: 2 }} style={{ marginBottom: 0, color: '#ccc' }}>
-          {text || '-'}
-        </Paragraph>
+      render: (id: string) => (
+        <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#888' }}>
+          {id.slice(-10)}
+        </span>
       ),
+    },
+    {
+      title: '用户',
+      dataIndex: ['user', 'nickname'],
+      key: 'user',
+      width: 110,
+      render: (_: unknown, r: Review) => r.user?.nickname || '匿名用户',
+    },
+    {
+      title: '状态',
+      key: 'status',
+      width: 100,
+      render: (_: unknown, record: Review) => {
+        const s = getEffectiveStatus(record.id);
+        const cfg = STATUS_CONFIG[s];
+        return cfg.color ? (
+          <Tag color={cfg.color}>{cfg.label}</Tag>
+        ) : (
+          <Tag>{cfg.label}</Tag>
+        );
+      },
     },
     {
       title: '图片',
       dataIndex: 'images',
       key: 'images',
-      width: 120,
+      width: 100,
       render: (images: string[]) => {
         if (!images || images.length === 0) return '-';
         return (
           <Image.PreviewGroup>
             <Space size={4}>
               {images.slice(0, 3).map((url, i) => (
-                <Image key={i} src={url} width={32} height={32} style={{ objectFit: 'cover', borderRadius: 4 }} />
+                <Image key={i} src={url} width={28} height={28} style={{ objectFit: 'cover', borderRadius: 3 }} />
               ))}
-              {images.length > 3 && <span style={{ color: '#999', fontSize: 12 }}>+{images.length - 3}</span>}
+              {images.length > 3 && <span style={{ color: '#999', fontSize: 11 }}>+{images.length - 3}</span>}
             </Space>
           </Image.PreviewGroup>
         );
@@ -120,25 +188,65 @@ export default function ReviewsPage() {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 120,
+      width: 110,
       sorter: (a: Review, b: Review) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      render: (v: string) => v ? dayjs(v).format('YYYY-MM-DD') : '-',
+      render: (v: string) => v ? dayjs(v).format('MM-DD HH:mm') : '-',
     },
     {
       title: '操作',
       key: 'action',
-      width: 80,
-      render: (_: unknown, record: Review) => (
-        <Popconfirm
-          title="确认删除此评价?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="删除"
-          cancelText="取消"
-          okButtonProps={{ danger: true }}
-        >
-          <Button type="text" danger icon={<DeleteOutlined />} size="small" />
-        </Popconfirm>
-      ),
+      width: 140,
+      render: (_: unknown, record: Review) => {
+        const s = getEffectiveStatus(record.id);
+        return (
+          <Space size={4}>
+            {s !== 'APPROVED' && (
+              <Tooltip title="通过">
+                <Button
+                  type="text"
+                  icon={<CheckOutlined />}
+                  size="small"
+                  style={{ color: '#52C41A' }}
+                  onClick={() => handleStatusChange(record.id, 'APPROVED')}
+                />
+              </Tooltip>
+            )}
+            {s !== 'REJECTED' && (
+              <Tooltip title="拒绝">
+                <Button
+                  type="text"
+                  icon={<CloseOutlined />}
+                  size="small"
+                  danger
+                  onClick={() => handleStatusChange(record.id, 'REJECTED')}
+                />
+              </Tooltip>
+            )}
+            {s !== 'HIDDEN' && (
+              <Tooltip title="隐藏">
+                <Button
+                  type="text"
+                  icon={<EyeInvisibleOutlined />}
+                  size="small"
+                  style={{ color: '#888' }}
+                  onClick={() => handleStatusChange(record.id, 'HIDDEN')}
+                />
+              </Tooltip>
+            )}
+            <Popconfirm
+              title="确认删除此评价?"
+              onConfirm={() => handleDelete(record.id)}
+              okText="删除"
+              cancelText="取消"
+              okButtonProps={{ danger: true }}
+            >
+              <Tooltip title="删除">
+                <Button type="text" danger icon={<DeleteOutlined />} size="small" />
+              </Tooltip>
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -146,7 +254,7 @@ export default function ReviewsPage() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={4} style={{ color: '#D4A855', marginBottom: 0 }}>
-          评价管理
+          评价管理 / Review Management
         </Title>
         <Select
           value={filterType}
@@ -156,24 +264,32 @@ export default function ReviewsPage() {
           placeholder="筛选类型"
         />
       </div>
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey="id"
-          loading={loading}
-          locale={{ emptyText: '暂无评价数据' }}
-          pagination={{
-            current: page,
-            pageSize,
-            total,
-            showSizeChanger: true,
-            showTotal: (t) => `共 ${t} 条`,
-            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
-          }}
-          size="middle"
-          scroll={{ x: 1100 }}
+      <Card bodyStyle={{ padding: '0 0 16px' }}>
+        <Tabs
+          activeKey={activeTab}
+          onChange={(k) => { setActiveTab(k as ReviewStatus); setPage(1); }}
+          items={tabItems}
+          style={{ paddingLeft: 16, paddingRight: 16 }}
         />
+        <div style={{ paddingLeft: 16, paddingRight: 16 }}>
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            rowKey="id"
+            loading={loading}
+            locale={{ emptyText: '暂无评价数据' }}
+            pagination={{
+              current: page,
+              pageSize,
+              total: activeTab === 'ALL' ? total : filteredData.length,
+              showSizeChanger: true,
+              showTotal: (t) => `共 ${t} 条`,
+              onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+            }}
+            size="middle"
+            scroll={{ x: 1200 }}
+          />
+        </div>
       </Card>
     </>
   );

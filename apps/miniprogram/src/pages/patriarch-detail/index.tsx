@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
-import { Patriarch, fetchPatriarchById } from '../../lib/api'
+import { Patriarch, fetchPatriarchById, recordView } from '../../lib/api'
+import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
@@ -22,6 +23,7 @@ export default function PatriarchDetailPage() {
       setError(null)
       const data = await fetchPatriarchById(id!)
       setPatriarch(data)
+      recordView('PATRIARCH', id!)
     } catch (err) {
       console.error('Failed to load patriarch:', err)
       setError('网络错误，请稍后重试')
@@ -93,6 +95,11 @@ export default function PatriarchDetailPage() {
           </View>
         </View>
       )}
+
+      {/* Related Entities */}
+      <View className='section'>
+        <RelatedEntities entityType='PATRIARCH' entityId={id!} title='相关祖师' />
+      </View>
 
       {/* CTA */}
       <View className='cta-row'>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
-import { Temple, fetchTempleById } from '../../lib/api'
+import { Temple, fetchTempleById, recordView } from '../../lib/api'
+import ReviewSection from '../../components/ReviewSection'
+import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
 import './index.scss'
 
@@ -34,6 +36,7 @@ export default function TempleDetailPage() {
       setError(null)
       const data = await fetchTempleById(id!)
       setTemple(data)
+      recordView('TEMPLE', id!)
     } catch (err) {
       console.error('Failed to load temple:', err)
       setError('网络错误，请稍后重试')
@@ -115,6 +118,16 @@ export default function TempleDetailPage() {
         <View className='card'>
           <Text className='card__text'>{temple.description}</Text>
         </View>
+      </View>
+
+      {/* Reviews */}
+      <View className='section'>
+        <ReviewSection targetType='SITE' targetId={id!} />
+      </View>
+
+      {/* Related Entities */}
+      <View className='section'>
+        <RelatedEntities entityType='TEMPLE' entityId={id!} title='相关祖庭' />
       </View>
 
       {/* Map Action */}

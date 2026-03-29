@@ -1,0 +1,40 @@
+.star-rating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4rpx;
+
+  &--small {
+    .star-rating__star {
+      font-size: 24rpx;
+    }
+  }
+
+  &--medium {
+    .star-rating__star {
+      font-size: 36rpx;
+    }
+  }
+
+  &--large {
+    .star-rating__star {
+      font-size: 52rpx;
+    }
+  }
+
+  &__star {
+    line-height: 1;
+
+    &--filled {
+      color: #D4A855;
+    }
+
+    &--empty {
+      color: #D1D5DB;
+    }
+
+    &--clickable {
+      cursor: pointer;
+    }
+  }
+}

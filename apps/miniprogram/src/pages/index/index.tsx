@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import {
-  Religion, Route, HolySite, Temple, Patriarch,
+  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem,
   fetchReligions, fetchFeaturedRoutes, fetchHolySites, fetchTemples, fetchPatriarchs,
+  fetchPopularItems,
 } from '../../lib/api'
 import './index.scss'
 
@@ -57,6 +58,7 @@ export default function IndexPage() {
   const [holySites, setHolySites] = useState<HolySite[]>([])
   const [temples, setTemples] = useState<Temple[]>([])
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([])
+  const [popularItems, setPopularItems] = useState<RecommendedItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSearchTab, setActiveSearchTab] = useState('sites')
   const [activeRecTab, setActiveRecTab] = useState('temples')
@@ -77,18 +79,20 @@ export default function IndexPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [religionList, routeList, siteList, templeList, patriarchList] = await Promise.all([
+      const [religionList, routeList, siteList, templeList, patriarchList, popularList] = await Promise.all([
         fetchReligions(),
         fetchFeaturedRoutes(6),
         fetchHolySites(),
         fetchTemples(),
         fetchPatriarchs(),
+        fetchPopularItems(undefined, 8).catch(() => [] as RecommendedItem[]),
       ])
       setReligions(religionList)
       setFeaturedRoutes(routeList)
       setHolySites(siteList)
       setTemples(templeList)
       setPatriarchs(patriarchList)
+      setPopularItems(popularList)
     } catch (err) {
       console.error('Failed to load data:', err)
       Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
@@ -367,7 +371,57 @@ export default function IndexPage() {
         ))}
       </View>
 
-      {/* ── 9. Stats + CTA ── */}
+      {/* ── 9. Popular Recommendations from API ── */}
+      {popularItems.length > 0 && (
+        <>
+          <View className='section-header'>
+            <Text className='section-title'>全平台热门</Text>
+            <Text
+              className='section-more'
+              onClick={() => Taro.navigateTo({ url: '/pages/holy-sites/index' })}
+            >
+              查看全部 &gt;
+            </Text>
+          </View>
+          <ScrollView className='popular-scroll' scrollX>
+            {popularItems.map(item => (
+              <View
+                key={item.id}
+                className='popular-card'
+                onClick={() => {
+                  const pageMap: Record<string, string> = {
+                    HOLY_SITE: '/pages/holy-site-detail/index',
+                    TEMPLE: '/pages/temple-detail/index',
+                    PATRIARCH: '/pages/patriarch-detail/index',
+                    ROUTE: '/pages/route-detail/index',
+                  }
+                  const page = pageMap[item.entityType]
+                  if (page) {
+                    const param = item.entityType === 'ROUTE' ? 'slug' : 'id'
+                    Taro.navigateTo({ url: `${page}?${param}=${item.id}` })
+                  }
+                }}
+              >
+                {item.imageUrl ? (
+                  <Image className='popular-card__image' src={item.imageUrl} mode='aspectFill' lazyLoad />
+                ) : (
+                  <View className='popular-card__image popular-card__image--placeholder'>
+                    <Text style={{ fontSize: '44rpx' }}>🏛</Text>
+                  </View>
+                )}
+                <View className='popular-card__overlay'>
+                  <Text className='popular-card__name'>{item.title}</Text>
+                  {item.religion && (
+                    <Text className='popular-card__religion'>{item.religion}</Text>
+                  )}
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </>
+      )}
+
+      {/* ── 10. Stats + CTA ── */}
       <View className='stats-card'>
         <View className='stats-card__grid'>
           <View className='stats-card__item'>
