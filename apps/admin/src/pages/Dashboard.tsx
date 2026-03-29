@@ -15,6 +15,7 @@ import {
   QuestionCircleOutlined,
   GiftOutlined,
   ShoppingCartOutlined,
+  CrownOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -58,6 +59,37 @@ async function fetchCommunityStats(): Promise<CommunityStats> {
     };
   } catch {
     return { guideTotal: 0, questionTotal: 0, guidesToday: 0, questionsToday: 0, topGuides: [] };
+  }
+}
+
+interface MembershipOverview {
+  totalMembers: number;
+  premiumMembers: number;
+  todayCheckins: number;
+  todayRedemptions: number;
+}
+
+async function fetchMembershipOverview(): Promise<MembershipOverview> {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const token = localStorage.getItem('token');
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    const [membersRes, checkinRes, redemptionRes] = await Promise.all([
+      fetch(`${base}/members?page=1&limit=1`, { headers }),
+      fetch(`${base}/members/checkins/today`, { headers }),
+      fetch(`${base}/points-products/redemptions/today`, { headers }),
+    ]);
+    const membersData = membersRes.ok ? await membersRes.json() : null;
+    const checkinData = checkinRes.ok ? await checkinRes.json() : null;
+    const redemptionData = redemptionRes.ok ? await redemptionRes.json() : null;
+    return {
+      totalMembers: membersData?.total ?? 0,
+      premiumMembers: membersData?.premiumCount ?? 0,
+      todayCheckins: checkinData?.count ?? 0,
+      todayRedemptions: redemptionData?.count ?? 0,
+    };
+  } catch {
+    return { totalMembers: 0, premiumMembers: 0, todayCheckins: 0, todayRedemptions: 0 };
   }
 }
 
@@ -127,6 +159,9 @@ export default function Dashboard() {
   const [promotionOverview, setPromotionOverview] = useState<PromotionOverview>({
     activePromotions: 0, totalCoupons: 0, todayOrders: 0,
   });
+  const [membershipOverview, setMembershipOverview] = useState<MembershipOverview>({
+    totalMembers: 0, premiumMembers: 0, todayCheckins: 0, todayRedemptions: 0,
+  });
 
   useEffect(() => {
     getDashboardStats()
@@ -139,6 +174,7 @@ export default function Dashboard() {
       .catch(() => setRecentReviews([]));
     fetchCommunityStats().then(setCommunityStats);
     fetchPromotionOverview().then(setPromotionOverview);
+    fetchMembershipOverview().then(setMembershipOverview);
   }, []);
 
   if (loading) {
@@ -453,6 +489,61 @@ export default function Dashboard() {
                   title={<span style={{ color: '#999' }}>今日订单数</span>}
                   value={promotionOverview.todayOrders}
                   prefix={<ShoppingCartOutlined />}
+                  valueStyle={{ color: '#1890FF', fontWeight: 700 }}
+                />
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 会员概览 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24}>
+          <Card
+            title={
+              <span>
+                <CrownOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                会员概览
+              </span>
+            }
+            extra={
+              <a href="/membership" style={{ color: '#D4A855', fontSize: 12 }}>
+                会员管理
+              </a>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={6}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>总会员数</span>}
+                  value={membershipOverview.totalMembers}
+                  prefix={<CrownOutlined />}
+                  valueStyle={{ color: '#D4A855', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>Lv3+ 高级会员</span>}
+                  value={membershipOverview.premiumMembers}
+                  prefix={<CrownOutlined />}
+                  valueStyle={{ color: '#B37FEB', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>今日签到数</span>}
+                  value={membershipOverview.todayCheckins}
+                  prefix={<UserOutlined />}
+                  valueStyle={{ color: '#52C41A', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>积分商城兑换数</span>}
+                  value={membershipOverview.todayRedemptions}
+                  prefix={<GiftOutlined />}
                   valueStyle={{ color: '#1890FF', fontWeight: 700 }}
                 />
               </Col>

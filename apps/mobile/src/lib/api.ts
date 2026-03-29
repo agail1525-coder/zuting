@@ -909,3 +909,207 @@ export async function fetchPromotions(type?: string): Promise<{ items: Promotion
   if (type) p.set('type', type);
   return fetchJson(`/api/promotions?${p}`);
 }
+
+// ─── Membership ──────────────────────────────────────────────────────────────
+
+export interface MembershipData {
+  id: string;
+  userId: string;
+  level: string;        // e.g. "BRONZE" | "SILVER" | "GOLD" | "PLATINUM"
+  levelName: string;
+  points: number;
+  totalPoints: number;
+  nextLevel: string | null;
+  nextLevelPoints: number | null;
+  expiredAt: string | null;
+  checkinStreak: number;
+  totalCheckins: number;
+}
+
+export interface PointsTransactionItem {
+  id: string;
+  type: string;
+  amount: number;
+  balance: number;
+  description: string;
+  createdAt: string;
+}
+
+export interface MemberLevel {
+  level: string;
+  name: string;
+  minPoints: number;
+  icon: string;
+  color: string;
+  perks: string[];
+}
+
+export async function fetchMyMembership(): Promise<MembershipData> {
+  return fetchAuthed('/api/membership/me', { method: 'GET' });
+}
+
+export async function fetchPointsHistory(page = 1): Promise<{ items: PointsTransactionItem[]; total: number }> {
+  return fetchAuthed(`/api/membership/points/history?page=${page}`, { method: 'GET' });
+}
+
+export async function checkin(): Promise<{ points: number; streak: number; message: string }> {
+  return fetchAuthed('/api/membership/checkin', { method: 'POST' });
+}
+
+export async function fetchCheckinCalendar(year: number, month: number): Promise<{ dates: string[] }> {
+  return fetchAuthed(`/api/membership/checkin/calendar?year=${year}&month=${month}`, { method: 'GET' });
+}
+
+export async function fetchLevels(): Promise<MemberLevel[]> {
+  return fetchJson('/api/membership/levels');
+}
+
+// ─── Referral / 分销 ──────────────────────────────────────────────────────────
+
+export interface InviteCodeData {
+  code: string;
+  link: string;
+  usedCount: number;
+}
+
+export interface ReferralStats {
+  totalInvited: number;
+  level1Count: number;
+  level2Count: number;
+  totalEarnings: number;
+  pendingEarnings: number;
+}
+
+export interface ReferralTeamMember {
+  id: string;
+  nickname: string;
+  avatar: string | null;
+  level: number;
+  joinedAt: string;
+  contribution: number;
+}
+
+export async function fetchMyInviteCode(): Promise<InviteCodeData> {
+  return fetchAuthed('/api/referral/my-code', { method: 'GET' });
+}
+
+export async function fetchReferralStats(): Promise<ReferralStats> {
+  return fetchAuthed('/api/referral/stats', { method: 'GET' });
+}
+
+export async function fetchMyTeam(page = 1): Promise<{ items: ReferralTeamMember[]; total: number }> {
+  return fetchAuthed(`/api/referral/team?page=${page}`, { method: 'GET' });
+}
+
+export async function bindInviteCode(code: string): Promise<{ success: boolean; message: string }> {
+  return fetchAuthed('/api/referral/bind', { method: 'POST', body: JSON.stringify({ code }) });
+}
+
+// ─── Points Mall / 积分商城 ────────────────────────────────────────────────────
+
+export interface PointsProductItem {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string | null;
+  pointsCost: number;
+  category: string;
+  stock: number;
+  isActive: boolean;
+  exchangeLimit: number | null;
+}
+
+export interface PointsExchangeItem {
+  id: string;
+  productId: string;
+  product: PointsProductItem;
+  pointsCost: number;
+  status: string;
+  createdAt: string;
+}
+
+export async function fetchPointsProducts(category?: string): Promise<{ items: PointsProductItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (category) p.set('category', category);
+  return fetchJson(`/api/points-mall/products?${p}`);
+}
+
+export async function exchangeProduct(productId: string): Promise<PointsExchangeItem> {
+  return fetchAuthed('/api/points-mall/exchange', { method: 'POST', body: JSON.stringify({ productId }) });
+}
+
+export async function fetchMyExchanges(page = 1): Promise<{ items: PointsExchangeItem[]; total: number }> {
+  return fetchAuthed(`/api/points-mall/my-exchanges?page=${page}`, { method: 'GET' });
+}
+
+// ─── Packages / 套餐 ──────────────────────────────────────────────────────────
+
+export interface PackageItem {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  coverImage: string | null;
+  type: string;
+  duration: number;
+  nights: number;
+  priceFrom: number;
+  originalPrice: number | null;
+  rating: number | null;
+  reviewCount: number;
+  bookCount: number;
+  highlights: string[];
+  includes: string[];
+  isActive: boolean;
+  religion?: { name: string; color: string | null };
+}
+
+export interface PackageDetail extends PackageItem {
+  description: string;
+  itinerary: Array<{ day: number; title: string; activities: string[]; meals: string[]; accommodation: string }>;
+  excluded: string[];
+  tips: string[];
+  sites: Array<{ id: string; name: string; day: number }>;
+}
+
+export interface PackageBookingItem {
+  id: string;
+  packageId: string;
+  package: { id: string; title: string; coverImage: string | null };
+  userId: string;
+  startDate: string;
+  persons: number;
+  totalAmount: number;
+  status: string;
+  contactName: string;
+  contactPhone: string;
+  note: string | null;
+  createdAt: string;
+}
+
+export async function fetchPackages(params?: { type?: string; page?: string; pageSize?: string }): Promise<{ items: PackageItem[]; total: number; page: number; pageSize: number }> {
+  const p = new URLSearchParams();
+  if (params?.type) p.set('type', params.type);
+  if (params?.page) p.set('page', params.page);
+  if (params?.pageSize) p.set('pageSize', params.pageSize);
+  return fetchJson(`/api/packages?${p}`);
+}
+
+export async function fetchPackage(id: string): Promise<PackageDetail> {
+  return fetchJson(`/api/packages/${id}`);
+}
+
+export async function bookPackage(data: {
+  packageId: string;
+  startDate: string;
+  persons: number;
+  contactName: string;
+  contactPhone: string;
+  note?: string;
+}): Promise<PackageBookingItem> {
+  return fetchAuthed('/api/packages/book', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchMyPackageBookings(page = 1): Promise<{ items: PackageBookingItem[]; total: number }> {
+  return fetchAuthed(`/api/packages/my-bookings?page=${page}`, { method: 'GET' });
+}

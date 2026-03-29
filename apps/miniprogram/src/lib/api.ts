@@ -878,6 +878,92 @@ export function payOrder(orderId: string, paymentMethod: string) {
   return postRequest<OrderDetail>(`/orders/${orderId}/pay`, { paymentMethod })
 }
 
+// --- Membership ---
+
+export interface MembershipData {
+  id: string
+  userId: string
+  level: string       // BRONZE | SILVER | GOLD | PLATINUM
+  points: number
+  checkinStreak: number
+  lastCheckinDate: string | null
+  pointsHistory: PointsHistoryItem[]
+  inviteCode: string
+}
+
+export interface PointsHistoryItem {
+  id: string
+  type: string
+  points: number
+  description: string
+  createdAt: string
+}
+
+export interface PointsProductItem {
+  id: string
+  name: string
+  description: string
+  imageUrl: string | null
+  pointsCost: number
+  stock: number
+  category: string
+}
+
+export interface PackageItem {
+  id: string
+  slug: string
+  title: string
+  subtitle: string | null
+  type: string          // CLASSIC | PREMIUM | LUXURY | CUSTOM
+  coverImage: string | null
+  priceFrom: number
+  duration: number
+  nights: number
+  groupSize: string | null
+  highlights: string[]
+  description: string
+  religion?: { id: string; name: string; emoji: string }
+  status: string
+  rating: number | null
+  reviewCount: number
+}
+
+export interface PackageDetail extends PackageItem {
+  itinerary: Array<{ day: number; title: string; activities: string[]; meals: string[]; accommodation: string }>
+  included: string[]
+  excluded: string[]
+  tips: string[]
+  sites: Array<{ id: string; site: { id: string; name: string; country: string } }>
+}
+
+export function fetchMyMembership() {
+  return request<MembershipData>('/membership/my')
+}
+
+export function checkin() {
+  return postRequest<{ points: number; streak: number; totalPoints: number }>('/membership/checkin', {})
+}
+
+export function fetchPointsProducts(category?: string) {
+  return request<PointsProductItem[]>('/membership/points-products', category ? { category } : undefined)
+}
+
+export function exchangeProduct(productId: string) {
+  return postRequest<{ success: boolean; remainingPoints: number }>('/membership/points-products/exchange', { productId })
+}
+
+export function fetchPackages(params?: { type?: string; page?: string; pageSize?: string }) {
+  return request<{ items: PackageItem[]; total: number }>('/packages', params as Record<string, string> | undefined)
+}
+
+export function fetchPackage(idOrSlug: string) {
+  return request<PackageDetail>(`/packages/${idOrSlug}`)
+}
+
+export function fetchMyInviteCode() {
+  return request<{ inviteCode: string; inviteCount: number; rewardPoints: number }>('/membership/invite-code')
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

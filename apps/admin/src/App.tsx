@@ -24,6 +24,7 @@ const AIConfigPage = lazy(() => import('./pages/AIConfigPage'));
 const SearchStatsPage = lazy(() => import('./pages/SearchStatsPage'));
 const CommunityManagePage = lazy(() => import('./pages/CommunityManagePage'));
 const PromotionManagePage = lazy(() => import('./pages/PromotionManagePage'));
+const MembershipManagePage = lazy(() => import('./pages/MembershipManagePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="search-stats" element={<SearchStatsPage />} />
           <Route path="community" element={<CommunityManagePage />} />
           <Route path="promotions" element={<PromotionManagePage />} />
+          <Route path="membership" element={<MembershipManagePage />} />
         </Route>
       </Routes>
     </Suspense>

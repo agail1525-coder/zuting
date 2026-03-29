@@ -119,6 +119,35 @@ export default function ProfileScreen() {
         />
       </Animated.View>
 
+      {/* Membership & Packages */}
+      <Animated.View entering={FadeInDown.duration(300).delay(250)} style={styles.menuSection}>
+        <Text style={styles.menuSectionTitle}>会员中心</Text>
+        <MenuItem
+          icon="diamond"
+          label="会员中心"
+          subtitle="等级 · 积分 · 签到"
+          onPress={() => router.push('/membership' as never)}
+        />
+        <MenuItem
+          icon="storefront"
+          label="积分商城"
+          subtitle="用积分兑换精美礼品"
+          onPress={() => router.push('/points-mall' as never)}
+        />
+        <MenuItem
+          icon="people"
+          label="分销中心"
+          subtitle="邀请好友 · 赚取积分"
+          onPress={() => router.push('/referral' as never)}
+        />
+        <MenuItem
+          icon="cube"
+          label="我的套餐"
+          subtitle="查看已预订套餐"
+          onPress={() => router.push('/packages' as never)}
+        />
+      </Animated.View>
+
       {/* About */}
       <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>

@@ -87,6 +87,26 @@ function RootLayout() {
           name="promotions"
           options={{ title: '促销活动' }}
         />
+        <Stack.Screen
+          name="membership"
+          options={{ title: '会员中心' }}
+        />
+        <Stack.Screen
+          name="referral"
+          options={{ title: '分销中心' }}
+        />
+        <Stack.Screen
+          name="points-mall"
+          options={{ title: '积分商城' }}
+        />
+        <Stack.Screen
+          name="packages"
+          options={{ title: '套餐列表' }}
+        />
+        <Stack.Screen
+          name="packages/[id]"
+          options={{ title: '套餐详情' }}
+        />
       </Stack>
     </AuthProvider>
   );

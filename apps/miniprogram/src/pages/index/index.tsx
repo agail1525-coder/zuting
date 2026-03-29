@@ -209,21 +209,21 @@ export default function IndexPage() {
         </View>
         <View
           className='quick-action-item'
-          onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}
+          onClick={() => Taro.navigateTo({ url: '/pages/membership/index' })}
         >
-          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
-            <Text className='quick-action-item__icon'>📋</Text>
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--purple'>
+            <Text className='quick-action-item__icon'>👑</Text>
           </View>
-          <Text className='quick-action-item__label'>我的行程</Text>
+          <Text className='quick-action-item__label'>会员中心</Text>
         </View>
         <View
           className='quick-action-item'
-          onClick={() => Taro.navigateTo({ url: '/pages/orders/index' })}
+          onClick={() => Taro.navigateTo({ url: '/pages/packages/index' })}
         >
-          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--green'>
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
             <Text className='quick-action-item__icon'>📦</Text>
           </View>
-          <Text className='quick-action-item__label'>我的订单</Text>
+          <Text className='quick-action-item__label'>套餐</Text>
         </View>
       </View>
 

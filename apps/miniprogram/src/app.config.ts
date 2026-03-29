@@ -33,7 +33,11 @@ export default defineAppConfig({
     'pages/guide-detail/index',
     'pages/question-detail/index',
     'pages/coupons/index',
-    'pages/promotions/index'
+    'pages/promotions/index',
+    'pages/membership/index',
+    'pages/points-mall/index',
+    'pages/packages/index',
+    'pages/package-detail/index'
   ],
   tabBar: {
     color: '#9CA3AF',
