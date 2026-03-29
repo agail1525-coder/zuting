@@ -16,12 +16,15 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { UserService } from './user.service';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -65,6 +68,29 @@ export class UserController {
   ) {
     this.logger.log(`Admin updating user ${id}: ${JSON.stringify(data)}`);
     return this.userService.adminUpdateUser(id, data);
+  }
+
+  @Get('me/profile')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Get my profile / 获取我的资料', description: 'Auto-creates UserProfile if not exists.' })
+  @ApiResponse({ status: 200, description: 'User profile returned' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  getMyProfile(@CurrentUser('id') userId: string) {
+    this.logger.log(`User ${userId} fetching own profile`);
+    return this.userService.getMyProfile(userId);
+  }
+
+  @Patch('me/profile')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: 'Update my profile / 更新我的资料' })
+  @ApiResponse({ status: 200, description: 'Profile updated' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  updateMyProfile(
+    @CurrentUser('id') userId: string,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    this.logger.log(`User ${userId} updating profile`);
+    return this.userService.updateMyProfile(userId, dto);
   }
 
   @Get('me/export')
@@ -155,5 +181,33 @@ export class UserController {
   async deleteMyAccount(@CurrentUser('id') userId: string): Promise<void> {
     this.logger.warn(`User ${userId} requested account deletion`);
     await this.userService.softDeleteAccount(userId);
+  }
+
+  @Get(':userId/profile')
+  @Public()
+  @ApiOperation({ summary: 'Get public user profile / 获取用户公开资料' })
+  @ApiParam({ name: 'userId', description: 'User ID / 用户ID' })
+  @ApiResponse({ status: 200, description: 'Public profile returned' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  getPublicProfile(@Param('userId') userId: string) {
+    return this.userService.getPublicProfile(userId);
+  }
+
+  @Get(':userId/guides')
+  @Public()
+  @ApiOperation({ summary: "Get user's published guides / 获取用户发布的攻略" })
+  @ApiParam({ name: 'userId', description: 'User ID / 用户ID' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page (max 50)' })
+  @ApiResponse({ status: 200, description: 'Paginated guide list' })
+  getUserGuides(
+    @Param('userId') userId: string,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.userService.getUserGuides(
+      userId,
+      pagination.page ?? 1,
+      pagination.limit ?? 20,
+    );
   }
 }

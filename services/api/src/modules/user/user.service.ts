@@ -4,6 +4,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 /** Shape of the full user data export */
 export interface UserDataExport {
@@ -349,6 +350,122 @@ export class UserService {
       posts,
       exportedAt: new Date().toISOString(),
     };
+  }
+
+  /**
+   * Get or auto-create UserProfile for authenticated user.
+   * Includes computed stats from the profile record.
+   */
+  async getMyProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, nickname: true, email: true, avatar: true, createdAt: true },
+    });
+    if (!user) throw new NotFoundException('User not found / 用户不存在');
+
+    let profile = await this.prisma.userProfile.findUnique({ where: { userId } });
+    if (!profile) {
+      profile = await this.prisma.userProfile.create({
+        data: { userId },
+      });
+    }
+
+    return { ...user, profile };
+  }
+
+  /**
+   * Update UserProfile fields for authenticated user.
+   */
+  async updateMyProfile(userId: string, dto: UpdateProfileDto) {
+    // Ensure profile exists
+    await this.getMyProfile(userId);
+
+    const profile = await this.prisma.userProfile.update({
+      where: { userId },
+      data: {
+        displayName: dto.displayName,
+        bio: dto.bio,
+        location: dto.location,
+        avatar: dto.avatar,
+      },
+    });
+
+    // Also update avatar on User record if provided
+    if (dto.avatar) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { avatar: dto.avatar },
+      });
+    }
+
+    return profile;
+  }
+
+  /**
+   * Get public profile for a user (no private data).
+   */
+  async getPublicProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        nickname: true,
+        avatar: true,
+        createdAt: true,
+        _count: { select: { trips: true, journals: true } },
+      },
+    });
+    if (!user) throw new NotFoundException('User not found / 用户不存在');
+
+    const profile = await this.prisma.userProfile.findUnique({
+      where: { userId },
+      select: {
+        displayName: true,
+        avatar: true,
+        bio: true,
+        location: true,
+        pilgrimLevel: true,
+        totalTrips: true,
+        totalSites: true,
+        guideCount: true,
+        reviewCount: true,
+        followerCount: true,
+        followingCount: true,
+      },
+    });
+
+    return { ...user, profile };
+  }
+
+  /**
+   * Get paginated published guides for a user.
+   */
+  async getUserGuides(userId: string, page: number, limit: number) {
+    const take = Math.min(limit, 50);
+    const skip = (page - 1) * take;
+
+    const [data, total] = await Promise.all([
+      this.prisma.guide.findMany({
+        where: { userId, status: 'PUBLISHED' },
+        select: {
+          id: true,
+          title: true,
+          coverImage: true,
+          viewCount: true,
+          likeCount: true,
+          commentCount: true,
+          publishedAt: true,
+          createdAt: true,
+          tags: true,
+        },
+        orderBy: { publishedAt: 'desc' },
+        skip,
+        take,
+      }),
+      this.prisma.guide.count({ where: { userId, status: 'PUBLISHED' } }),
+    ]);
+
+    return { data, total, page, limit: take };
   }
 
   /**

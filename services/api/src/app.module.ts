@@ -29,6 +29,9 @@ import { SearchModule } from './modules/search/search.module';
 import { UserModule } from './modules/user/user.module';
 import { CollectionModule } from './modules/collection/collection.module';
 import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { GuideModule } from './modules/guide/guide.module';
+import { QuestionModule } from './modules/question/question.module';
+import { CommunityModule } from './modules/community/community.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -63,6 +66,9 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     UserModule,
     CollectionModule,
     RecommendationModule,
+    GuideModule,
+    QuestionModule,
+    CommunityModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

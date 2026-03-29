@@ -46,6 +46,7 @@ model User {
   conversations   Conversation[]
   routeBookings   RouteBooking[]
   collections     Collection[]
+  guides          Guide[]
 }
 
 model Session {
@@ -626,6 +627,119 @@ enum BookingStatus {
   PAID
   CANCELLED
   COMPLETED
+}
+
+// ========== 攻略社区 ==========
+
+model Guide {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  title        String
+  coverImage   String?
+  content      String      @db.Text
+  entityType   String?     // HOLY_SITE / TEMPLE
+  entityId     String?
+  tags         String[]
+  status       GuideStatus @default(DRAFT)
+  viewCount    Int         @default(0)
+  likeCount    Int         @default(0)
+  commentCount Int         @default(0)
+  publishedAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  comments GuideComment[]
+  likes    GuideLike[]
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@index([entityType, entityId])
+}
+
+model GuideComment {
+  id        String   @id @default(cuid())
+  guideId   String
+  guide     Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  userId    String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([guideId])
+}
+
+model GuideLike {
+  id        String   @id @default(cuid())
+  guideId   String
+  guide     Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([guideId, userId])
+  @@index([guideId])
+}
+
+enum GuideStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+model Question {
+  id          String         @id @default(cuid())
+  userId      String
+  title       String
+  content     String         @db.Text
+  entityType  String?
+  entityId    String?
+  tags        String[]
+  status      QuestionStatus @default(OPEN)
+  viewCount   Int            @default(0)
+  answerCount Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  answers Answer[]
+
+  @@index([userId])
+  @@index([status, createdAt])
+}
+
+model Answer {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userId     String
+  content    String   @db.Text
+  isAccepted Boolean  @default(false)
+  voteCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([questionId])
+}
+
+enum QuestionStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+model UserProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  displayName    String?
+  avatar         String?
+  bio            String?  @db.Text
+  location       String?
+  pilgrimLevel   Int      @default(1)
+  totalTrips     Int      @default(0)
+  totalSites     Int      @default(0)
+  guideCount     Int      @default(0)
+  reviewCount    Int      @default(0)
+  followerCount  Int      @default(0)
+  followingCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 // ========== AI 配置 + 对话历史 ==========
