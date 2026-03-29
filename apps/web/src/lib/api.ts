@@ -1910,3 +1910,35 @@ export async function updateMyMerchant(data: Partial<{ name: string; description
 export async function fetchMerchantStats(): Promise<MerchantStats> {
   return fetchAuthed<MerchantStats>('/api/merchants/stats');
 }
+
+// ======== Analytics 数据分析 ========
+
+export interface AnalyticsOverview {
+  users: number; trips: number; orders: number; reviews: number;
+  guides: number; merchants: number; shares: number;
+}
+
+export interface AnalyticsTrend {
+  date: string; orders: number; trips: number; users: number;
+}
+
+export interface AnalyticsFunnel {
+  totalUsers: number; usersWithTrips: number; usersWithOrders: number; usersWithPaidOrders: number;
+}
+
+export interface TopContentItem {
+  entityType: string; entityId: string; count: number;
+}
+
+export async function fetchAnalyticsOverview(): Promise<AnalyticsOverview> {
+  return fetchAuthed<AnalyticsOverview>('/api/analytics/overview');
+}
+export async function fetchAnalyticsTrends(): Promise<AnalyticsTrend[]> {
+  return fetchAuthed<AnalyticsTrend[]>('/api/analytics/trends');
+}
+export async function fetchAnalyticsFunnel(): Promise<AnalyticsFunnel> {
+  return fetchAuthed<AnalyticsFunnel>('/api/analytics/funnel');
+}
+export async function fetchTopContent(): Promise<TopContentItem[]> {
+  return fetchAuthed<TopContentItem[]>('/api/analytics/top-content');
+}

@@ -28,6 +28,7 @@ const MembershipManagePage = lazy(() => import('./pages/MembershipManagePage'));
 const PriceManagePage = lazy(() => import('./pages/PriceManagePage'));
 const MerchantManagePage = lazy(() => import('./pages/MerchantManagePage'));
 const I18nShareManagePage = lazy(() => import('./pages/I18nShareManagePage'));
+const AnalyticsDashboardPage = lazy(() => import('./pages/AnalyticsDashboardPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="prices" element={<PriceManagePage />} />
           <Route path="merchants" element={<MerchantManagePage />} />
           <Route path="i18n-share" element={<I18nShareManagePage />} />
+          <Route path="analytics" element={<AnalyticsDashboardPage />} />
         </Route>
       </Routes>
     </Suspense>

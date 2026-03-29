@@ -1,73 +1,77 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/** Result of push token registration */
-interface PushTokenResult {
-  granted: boolean;
-  token: string | null;
-}
+const PUSH_TOKEN_KEY = '@zuting/push-token';
+
+// Configure notification handler — call once at app startup
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 /**
  * Request notification permissions and retrieve the Expo push token.
+ * Persists the token to AsyncStorage for later retrieval.
  * Returns the token string if granted, null otherwise.
  */
-export async function registerForPushNotifications(): Promise<PushTokenResult> {
-  if (Platform.OS === 'web') {
-    return { granted: false, token: null };
+export async function registerForPushNotifications(): Promise<string | null> {
+  try {
+    if (Platform.OS === 'web') {
+      return null;
+    }
+
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      return null;
+    }
+
+    // Android requires a notification channel
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'Joinus通知',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+      });
+    }
+
+    const projectId =
+      Constants.expoConfig?.extra?.eas?.projectId ??
+      Constants.easConfig?.projectId;
+
+    if (!projectId) {
+      console.warn(
+        '[notifications] No EAS projectId found. Push token unavailable.',
+      );
+      return null;
+    }
+
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+    const token = tokenData.data;
+
+    await AsyncStorage.setItem(PUSH_TOKEN_KEY, token);
+    return token;
+  } catch {
+    return null;
   }
-
-  const { status: existingStatus } =
-    await Notifications.getPermissionsAsync();
-
-  let finalStatus = existingStatus;
-
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== 'granted') {
-    return { granted: false, token: null };
-  }
-
-  // Android requires a notification channel
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#0066FF',
-    });
-  }
-
-  const projectId =
-    Constants.expoConfig?.extra?.eas?.projectId ??
-    Constants.easConfig?.projectId;
-
-  if (!projectId) {
-    console.warn(
-      '[notifications] No EAS projectId found. Push token unavailable.',
-    );
-    return { granted: true, token: null };
-  }
-
-  const pushToken = await Notifications.getExpoPushTokenAsync({ projectId });
-
-  return { granted: true, token: pushToken.data };
 }
 
 /**
- * Configure default notification behavior (foreground display).
- * Call this once at app startup.
+ * Retrieve the previously saved push token from AsyncStorage.
  */
-export function configureNotificationHandler(): void {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    }),
-  });
+export async function getSavedPushToken(): Promise<string | null> {
+  return AsyncStorage.getItem(PUSH_TOKEN_KEY);
 }
