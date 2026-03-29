@@ -22,6 +22,7 @@ const RoutesPage = lazy(() => import('./pages/RoutesPage'));
 const BookingsPage = lazy(() => import('./pages/BookingsPage'));
 const AIConfigPage = lazy(() => import('./pages/AIConfigPage'));
 const SearchStatsPage = lazy(() => import('./pages/SearchStatsPage'));
+const CommunityManagePage = lazy(() => import('./pages/CommunityManagePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="moderation" element={<ModerationPage />} />
           <Route path="ai-config" element={<AIConfigPage />} />
           <Route path="search-stats" element={<SearchStatsPage />} />
+          <Route path="community" element={<CommunityManagePage />} />
         </Route>
       </Routes>
     </Suspense>

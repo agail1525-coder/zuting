@@ -28,7 +28,10 @@ export default defineAppConfig({
     'pages/checkout/index',
     'pages/collections/index',
     'pages/collection-detail/index',
-    'pages/write-review/index'
+    'pages/write-review/index',
+    'pages/community/index',
+    'pages/guide-detail/index',
+    'pages/question-detail/index'
   ],
   tabBar: {
     color: '#9CA3AF',

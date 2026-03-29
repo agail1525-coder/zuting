@@ -99,6 +99,12 @@ export default function ProfileScreen() {
           subtitle="收藏的圣地、祖庭、祖师"
           onPress={() => router.push('/collections' as never)}
         />
+        <MenuItem
+          icon="newspaper"
+          label="攻略社区"
+          subtitle="游记 · 问答 · 排行"
+          onPress={() => router.push('/community' as never)}
+        />
       </Animated.View>
 
       {/* About */}

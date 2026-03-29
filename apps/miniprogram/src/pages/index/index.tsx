@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import {
-  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem,
+  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem, GuideItem,
   fetchReligions, fetchFeaturedRoutes, fetchHolySites, fetchTemples, fetchPatriarchs,
-  fetchPopularItems,
+  fetchPopularItems, fetchTrending,
 } from '../../lib/api'
 import './index.scss'
 
@@ -59,6 +59,7 @@ export default function IndexPage() {
   const [temples, setTemples] = useState<Temple[]>([])
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([])
   const [popularItems, setPopularItems] = useState<RecommendedItem[]>([])
+  const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSearchTab, setActiveSearchTab] = useState('sites')
   const [activeRecTab, setActiveRecTab] = useState('temples')
@@ -79,13 +80,14 @@ export default function IndexPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [religionList, routeList, siteList, templeList, patriarchList, popularList] = await Promise.all([
+      const [religionList, routeList, siteList, templeList, patriarchList, popularList, trendingData] = await Promise.all([
         fetchReligions(),
         fetchFeaturedRoutes(6),
         fetchHolySites(),
         fetchTemples(),
         fetchPatriarchs(),
         fetchPopularItems(undefined, 8).catch(() => [] as RecommendedItem[]),
+        fetchTrending().catch(() => ({ hotGuides: [] as GuideItem[], hotQuestions: [] })),
       ])
       setReligions(religionList)
       setFeaturedRoutes(routeList)
@@ -93,6 +95,7 @@ export default function IndexPage() {
       setTemples(templeList)
       setPatriarchs(patriarchList)
       setPopularItems(popularList)
+      setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : [])
     } catch (err) {
       console.error('Failed to load data:', err)
       Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
@@ -414,6 +417,77 @@ export default function IndexPage() {
                   {item.religion && (
                     <Text className='popular-card__religion'>{item.religion}</Text>
                   )}
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        </>
+      )}
+
+      {/* ── 9.5 Community Entry + Trending Guides ── */}
+      <View className='section-header'>
+        <Text className='section-title'>攻略社区</Text>
+        <Text
+          className='section-more'
+          onClick={() => Taro.navigateTo({ url: '/pages/community/index' })}
+        >
+          查看全部 &gt;
+        </Text>
+      </View>
+
+      {/* Community Entry Card */}
+      <View
+        className='community-entry'
+        onClick={() => Taro.navigateTo({ url: '/pages/community/index' })}
+      >
+        <View className='community-entry__item'>
+          <Text className='community-entry__icon'>📖</Text>
+          <Text className='community-entry__label'>游记</Text>
+        </View>
+        <View className='community-entry__divider' />
+        <View className='community-entry__item'>
+          <Text className='community-entry__icon'>❓</Text>
+          <Text className='community-entry__label'>问答</Text>
+        </View>
+        <View className='community-entry__divider' />
+        <View className='community-entry__item'>
+          <Text className='community-entry__icon'>🏆</Text>
+          <Text className='community-entry__label'>排行</Text>
+        </View>
+      </View>
+
+      {/* Trending Guides */}
+      {trendingGuides.length > 0 && (
+        <>
+          <View className='section-header'>
+            <Text className='section-title'>热门游记</Text>
+            <Text
+              className='section-more'
+              onClick={() => Taro.navigateTo({ url: '/pages/community/index' })}
+            >
+              更多 &gt;
+            </Text>
+          </View>
+          <ScrollView className='trending-scroll' scrollX>
+            {trendingGuides.map(guide => (
+              <View
+                key={guide.id}
+                className='trending-card'
+                onClick={() => Taro.navigateTo({ url: `/pages/guide-detail/index?id=${guide.id}` })}
+              >
+                {guide.coverImage ? (
+                  <Image className='trending-card__cover' src={guide.coverImage} mode='aspectFill' lazyLoad />
+                ) : (
+                  <View className='trending-card__cover trending-card__cover--placeholder'>
+                    <Text style={{ fontSize: '48rpx' }}>🏔</Text>
+                  </View>
+                )}
+                <View className='trending-card__body'>
+                  <Text className='trending-card__title'>{guide.title}</Text>
+                  <View className='trending-card__meta'>
+                    <Text className='trending-card__author'>{guide.user.nickname || '旅行者'}</Text>
+                    <Text className='trending-card__likes'>❤️ {guide.likeCount}</Text>
+                  </View>
                 </View>
               </View>
             ))}

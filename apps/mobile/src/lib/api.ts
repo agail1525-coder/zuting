@@ -641,3 +641,175 @@ export interface ReviewReply {
   createdAt: string;
   user: ReviewUser;
 }
+
+// --- Community types ---
+
+export interface GuideItem {
+  id: string;
+  title: string;
+  coverImage: string | null;
+  content: string;
+  tags: string[];
+  status: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  publishedAt: string | null;
+  createdAt: string;
+  user: { id: string; nickname: string; avatar: string | null };
+}
+
+export interface GuideCommentItem {
+  id: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface QuestionItem {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  status: string;
+  viewCount: number;
+  answerCount: number;
+  createdAt: string;
+}
+
+export interface AnswerItem {
+  id: string;
+  userId: string;
+  content: string;
+  isAccepted: boolean;
+  voteCount: number;
+  createdAt: string;
+}
+
+export interface QuestionDetail extends QuestionItem {
+  answers: AnswerItem[];
+}
+
+export interface LeaderboardEntry {
+  userId: string;
+  nickname: string;
+  avatar: string | null;
+  count: number;
+  rank: number;
+}
+
+export interface UserProfileData {
+  displayName: string | null;
+  avatar: string | null;
+  bio: string | null;
+  location: string | null;
+  pilgrimLevel: number;
+  totalTrips: number;
+  totalSites: number;
+  guideCount: number;
+  reviewCount: number;
+}
+
+// --- Community helpers ---
+
+async function fetchJson<T>(path: string): Promise<T> {
+  const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  return response.json();
+}
+
+async function fetchAuthed<T>(path: string, options: RequestInit): Promise<T> {
+  const token = await getAccessToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+  const url = path.startsWith('http') ? path : `${BASE_URL}${path}`;
+  const response = await fetch(url, { ...options, headers: { ...headers, ...(options.headers as Record<string, string> ?? {}) } });
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(errorBody || `API Error: ${response.status} ${response.statusText}`);
+  }
+  if (response.status === 204) return undefined as unknown as T;
+  return response.json();
+}
+
+// --- Guides ---
+export async function fetchGuides(params?: { tag?: string; sort?: string; page?: number }): Promise<{ items: GuideItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (params?.tag) p.set('tag', params.tag);
+  if (params?.sort) p.set('sort', params.sort);
+  if (params?.page) p.set('page', String(params.page));
+  return fetchJson(`/api/guides?${p}`);
+}
+
+export async function fetchGuide(id: string): Promise<GuideItem> {
+  return fetchJson(`/api/guides/${id}`);
+}
+
+export async function createGuide(data: { title: string; content: string; coverImage?: string; tags?: string[] }): Promise<GuideItem> {
+  return fetchAuthed('/api/guides', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function publishGuide(id: string): Promise<GuideItem> {
+  return fetchAuthed(`/api/guides/${id}/publish`, { method: 'POST' });
+}
+
+export async function likeGuide(id: string): Promise<void> {
+  await fetchAuthed(`/api/guides/${id}/like`, { method: 'POST' });
+}
+
+export async function unlikeGuide(id: string): Promise<void> {
+  await fetchAuthed(`/api/guides/${id}/like`, { method: 'DELETE' });
+}
+
+export async function fetchGuideComments(guideId: string, page = 1): Promise<{ items: GuideCommentItem[]; total: number }> {
+  return fetchJson(`/api/guides/${guideId}/comments?page=${page}`);
+}
+
+export async function addGuideComment(guideId: string, content: string): Promise<GuideCommentItem> {
+  return fetchAuthed(`/api/guides/${guideId}/comments`, { method: 'POST', body: JSON.stringify({ content }) });
+}
+
+// --- Questions ---
+export async function fetchQuestions(params?: { sort?: string; page?: number }): Promise<{ items: QuestionItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (params?.sort) p.set('sort', params.sort);
+  if (params?.page) p.set('page', String(params.page));
+  return fetchJson(`/api/questions?${p}`);
+}
+
+export async function fetchQuestion(id: string): Promise<QuestionDetail> {
+  return fetchJson(`/api/questions/${id}`);
+}
+
+export async function createQuestion(data: { title: string; content: string; tags?: string[] }): Promise<QuestionItem> {
+  return fetchAuthed('/api/questions', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function addAnswer(questionId: string, content: string): Promise<AnswerItem> {
+  return fetchAuthed(`/api/questions/${questionId}/answers`, { method: 'POST', body: JSON.stringify({ content }) });
+}
+
+export async function voteAnswer(questionId: string, answerId: string): Promise<void> {
+  await fetchAuthed(`/api/questions/${questionId}/answers/${answerId}/vote`, { method: 'POST' });
+}
+
+// --- Community ---
+export async function fetchLeaderboard(type: string, period: string): Promise<LeaderboardEntry[]> {
+  return fetchJson(`/api/community/leaderboard?type=${type}&period=${period}`);
+}
+
+export async function fetchTrending(): Promise<{ hotGuides: GuideItem[]; hotQuestions: QuestionItem[] }> {
+  return fetchJson('/api/community/trending');
+}
+
+// --- User Profile ---
+export async function fetchUserProfile(userId: string): Promise<UserProfileData> {
+  return fetchJson(`/api/users/${userId}/profile`);
+}
+
+export async function fetchMyProfile(): Promise<UserProfileData> {
+  return fetchAuthed('/api/users/me/profile', { method: 'GET' });
+}

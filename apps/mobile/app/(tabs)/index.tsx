@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem } from '../../src/lib/api';
+import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, GuideItem } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
@@ -68,6 +68,7 @@ export default function HomeScreen() {
   const [temples, setTemples] = useState<Temple[]>([]);
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
   const [popularItems, setPopularItems] = useState<RecommendationItem[]>([]);
+  const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeSearchTab, setActiveSearchTab] = useState('sites');
@@ -75,13 +76,14 @@ export default function HomeScreen() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData] = await Promise.all([
+      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData, trendingData] = await Promise.all([
         api.getFeaturedRoutes(6),
         api.getReligions(),
         api.getHolySites(),
         api.getTemples(),
         api.getPatriarchs(),
         api.fetchPopularItems(undefined, 10).catch(() => [] as RecommendationItem[]),
+        fetchTrending().catch(() => ({ hotGuides: [], hotQuestions: [] })),
       ]);
       setFeaturedRoutes(routesData);
       setReligions(religionsData);
@@ -89,6 +91,7 @@ export default function HomeScreen() {
       setTemples(templesData);
       setPatriarchs(patriarchsData);
       setPopularItems(popularData);
+      setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : []);
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -373,6 +376,48 @@ export default function HomeScreen() {
                   : `/routes/${item.id}`;
                 router.push(route as never);
               }} />
+            )}
+          />
+        </>
+      )}
+
+      {/* ── 10a. Hot Guides ── */}
+      {trendingGuides.length > 0 && (
+        <>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>热门游记</Text>
+            <Pressable onPress={() => router.push('/community' as never)}>
+              <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+            </Pressable>
+          </View>
+          <FlatList
+            data={trendingGuides}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.routeList}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <Pressable
+                style={styles.trendingGuideCard}
+                onPress={() => router.push(`/community/guide/${item.id}` as never)}
+              >
+                {item.coverImage ? (
+                  <Image source={{ uri: item.coverImage }} style={styles.trendingGuideCover} resizeMode="cover" />
+                ) : (
+                  <View style={[styles.trendingGuideCover, styles.trendingGuidePlaceholder]}>
+                    <Ionicons name="newspaper-outline" size={28} color="#CBD5E1" />
+                  </View>
+                )}
+                <View style={styles.trendingGuideOverlay}>
+                  <Text style={styles.trendingGuideTitle} numberOfLines={2}>{item.title}</Text>
+                  <View style={styles.trendingGuideMeta}>
+                    <Ionicons name="heart" size={11} color="rgba(255,255,255,0.85)" />
+                    <Text style={styles.trendingGuideMetaText}>{item.likeCount ?? 0}</Text>
+                    <Ionicons name="chatbubble" size={11} color="rgba(255,255,255,0.85)" />
+                    <Text style={styles.trendingGuideMetaText}>{item.commentCount ?? 0}</Text>
+                  </View>
+                </View>
+              </Pressable>
             )}
           />
         </>
@@ -716,4 +761,21 @@ const styles = StyleSheet.create({
   popularBadgeText: { fontSize: 10, fontWeight: '600' },
   popularCardName: { fontSize: 13, fontWeight: '600', color: '#1A1A1A', lineHeight: 18 },
   popularCardSub: { fontSize: 11, color: '#9CA3AF' },
+
+  // Trending Guides
+  trendingGuideCard: {
+    width: 220, borderRadius: 12, overflow: 'hidden', backgroundColor: '#1A1A1A',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3,
+  },
+  trendingGuideCover: { width: '100%', height: 140 },
+  trendingGuidePlaceholder: {
+    backgroundColor: '#F1F5F9', justifyContent: 'center', alignItems: 'center',
+  },
+  trendingGuideOverlay: {
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    padding: 10, backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  trendingGuideTitle: { fontSize: 13, fontWeight: '700', color: '#FFFFFF', lineHeight: 18, marginBottom: 4 },
+  trendingGuideMeta: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  trendingGuideMetaText: { fontSize: 11, color: 'rgba(255,255,255,0.85)', marginRight: 8 },
 });

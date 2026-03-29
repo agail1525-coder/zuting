@@ -697,6 +697,90 @@ export function removeFromCollection(collectionId: string, itemId: string) {
   return deleteRequest<void>(`/collections/${collectionId}/items/${itemId}`)
 }
 
+// --- Guides ---
+
+export interface GuideItem {
+  id: string
+  title: string
+  coverImage: string | null
+  content: string
+  tags: string[]
+  viewCount: number
+  likeCount: number
+  commentCount: number
+  publishedAt: string | null
+  user: { id: string; nickname: string; avatar: string | null }
+}
+
+export async function fetchGuides(params?: { sort?: string; page?: number }): Promise<{ items: GuideItem[]; total: number }> {
+  const p: Record<string, string> = {}
+  if (params?.sort) p['sort'] = params.sort
+  if (params?.page) p['page'] = String(params.page)
+  return request<{ items: GuideItem[]; total: number }>('/guides', p)
+}
+
+export async function fetchGuide(id: string): Promise<GuideItem> {
+  return request<GuideItem>(`/guides/${id}`)
+}
+
+export async function likeGuide(id: string): Promise<void> {
+  await postRequest<void>(`/guides/${id}/like`, {})
+}
+
+export async function unlikeGuide(id: string): Promise<void> {
+  await deleteRequest<void>(`/guides/${id}/like`)
+}
+
+// --- Questions ---
+
+export interface QuestionItem {
+  id: string
+  title: string
+  content: string
+  tags: string[]
+  status: string
+  viewCount: number
+  answerCount: number
+  createdAt: string
+}
+
+export interface AnswerItem {
+  id: string
+  content: string
+  isAccepted: boolean
+  voteCount: number
+  createdAt: string
+}
+
+export async function fetchQuestions(params?: { sort?: string; page?: number }): Promise<{ items: QuestionItem[]; total: number }> {
+  const p: Record<string, string> = {}
+  if (params?.sort) p['sort'] = params.sort
+  if (params?.page) p['page'] = String(params.page)
+  return request<{ items: QuestionItem[]; total: number }>('/questions', p)
+}
+
+export async function fetchQuestion(id: string): Promise<QuestionItem & { answers: AnswerItem[] }> {
+  return request<QuestionItem & { answers: AnswerItem[] }>(`/questions/${id}`)
+}
+
+// --- Community ---
+
+export interface LeaderboardEntry {
+  userId: string
+  nickname: string
+  avatar: string | null
+  count: number
+  rank: number
+}
+
+export async function fetchLeaderboard(type: string, period: string): Promise<LeaderboardEntry[]> {
+  return request<LeaderboardEntry[]>('/community/leaderboard', { type, period })
+}
+
+export async function fetchTrending(): Promise<{ hotGuides: GuideItem[]; hotQuestions: QuestionItem[] }> {
+  return request<{ hotGuides: GuideItem[]; hotQuestions: QuestionItem[] }>('/community/trending')
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List, Rate, Avatar } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List, Rate, Avatar, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import {
   GlobalOutlined,
   EnvironmentOutlined,
@@ -10,6 +11,8 @@ import {
   SearchOutlined,
   FireOutlined,
   StarOutlined,
+  ReadOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -21,6 +24,40 @@ import type { Review } from '../types';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 interface HotKeyword { keyword: string; count: number; }
+
+interface TopGuide { id: string; title: string; viewCount: number; likeCount: number; }
+
+interface CommunityStats {
+  guideTotal: number;
+  questionTotal: number;
+  guidesToday: number;
+  questionsToday: number;
+  topGuides: TopGuide[];
+}
+
+async function fetchCommunityStats(): Promise<CommunityStats> {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const token = localStorage.getItem('token');
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    const [guidesRes, questionsRes] = await Promise.all([
+      fetch(`${base}/guides?limit=5&sortBy=viewCount&order=desc`, { headers }),
+      fetch(`${base}/questions?limit=1`, { headers }),
+    ]);
+    const guidesData = guidesRes.ok ? await guidesRes.json() : null;
+    const questionsData = questionsRes.ok ? await questionsRes.json() : null;
+    const guideItems: TopGuide[] = Array.isArray(guidesData?.items) ? guidesData.items : [];
+    return {
+      guideTotal: guidesData?.total ?? 0,
+      questionTotal: questionsData?.total ?? 0,
+      guidesToday: 0,
+      questionsToday: 0,
+      topGuides: guideItems.slice(0, 5),
+    };
+  } catch {
+    return { guideTotal: 0, questionTotal: 0, guidesToday: 0, questionsToday: 0, topGuides: [] };
+  }
+}
 
 async function fetchHotKeywords(): Promise<HotKeyword[]> {
   try {
@@ -53,6 +90,9 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [hotKeywords, setHotKeywords] = useState<HotKeyword[]>([]);
   const [recentReviews, setRecentReviews] = useState<Review[]>([]);
+  const [communityStats, setCommunityStats] = useState<CommunityStats>({
+    guideTotal: 0, questionTotal: 0, guidesToday: 0, questionsToday: 0, topGuides: [],
+  });
 
   useEffect(() => {
     getDashboardStats()
@@ -63,6 +103,7 @@ export default function Dashboard() {
     getReviews(1, 5)
       .then((res) => setRecentReviews(res.data))
       .catch(() => setRecentReviews([]));
+    fetchCommunityStats().then(setCommunityStats);
   }, []);
 
   if (loading) {
@@ -220,6 +261,120 @@ export default function Dashboard() {
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Community Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        {/* 社区活跃度 */}
+        <Col xs={24} lg={10}>
+          <Card
+            title={
+              <span>
+                <ReadOutlined style={{ color: '#52C41A', marginRight: 8 }} />
+                社区活跃度
+              </span>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>游记总数</span>}
+                  value={communityStats.guideTotal}
+                  prefix={<ReadOutlined />}
+                  valueStyle={{ color: '#52C41A' }}
+                />
+              </Col>
+              <Col span={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>问答总数</span>}
+                  value={communityStats.questionTotal}
+                  prefix={<QuestionCircleOutlined />}
+                  valueStyle={{ color: '#1890FF' }}
+                />
+              </Col>
+              <Col span={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>今日新游记</span>}
+                  value={communityStats.guidesToday}
+                  valueStyle={{ color: '#D4A855' }}
+                />
+              </Col>
+              <Col span={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>今日新问答</span>}
+                  value={communityStats.questionsToday}
+                  valueStyle={{ color: '#E87040' }}
+                />
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+
+        {/* 热门游记 Top 5 */}
+        <Col xs={24} lg={14}>
+          <Card
+            title={
+              <span>
+                <FireOutlined style={{ color: '#FF4D4F', marginRight: 8 }} />
+                热门游记 Top 5
+              </span>
+            }
+            extra={
+              <a href="/community" style={{ color: '#D4A855', fontSize: 12 }}>
+                社区管理
+              </a>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            {communityStats.topGuides.length === 0 ? (
+              <span style={{ color: '#666', fontSize: 13 }}>暂无游记数据</span>
+            ) : (
+              <Table<TopGuide>
+                dataSource={communityStats.topGuides}
+                rowKey="id"
+                size="small"
+                pagination={false}
+                columns={[
+                  {
+                    title: '排名',
+                    key: 'rank',
+                    width: 50,
+                    render: (_: unknown, __: TopGuide, index: number) => (
+                      <Tag color={index === 0 ? 'gold' : index === 1 ? 'default' : index === 2 ? 'orange' : undefined}>
+                        {index + 1}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    title: '标题',
+                    dataIndex: 'title',
+                    key: 'title',
+                    ellipsis: true,
+                  },
+                  {
+                    title: '浏览数',
+                    dataIndex: 'viewCount',
+                    key: 'viewCount',
+                    width: 80,
+                    render: (v: number) => (
+                      <span style={{ color: '#D4A855', fontWeight: 600 }}>
+                        {(v ?? 0).toLocaleString()}
+                      </span>
+                    ),
+                  },
+                  {
+                    title: '点赞数',
+                    dataIndex: 'likeCount',
+                    key: 'likeCount',
+                    width: 80,
+                    render: (v: number) => (v ?? 0).toLocaleString(),
+                  },
+                ] as ColumnsType<TopGuide>}
+              />
+            )}
           </Card>
         </Col>
       </Row>

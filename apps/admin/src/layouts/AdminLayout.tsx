@@ -20,6 +20,7 @@ import {
   MenuUnfoldOutlined,
   LogoutOutlined,
   SearchOutlined,
+  ReadOutlined,
 } from '@ant-design/icons';
 import { logout } from '../lib/auth';
 
@@ -42,6 +43,7 @@ const menuItems = [
   { key: '/coupons', icon: <GiftOutlined />, label: '优惠券管理' },
   { key: '/journals', icon: <FileTextOutlined />, label: '朝圣日记' },
   { key: '/reviews', icon: <StarOutlined />, label: '评价管理' },
+  { key: '/community', icon: <ReadOutlined />, label: '社区管理' },
   { key: '/users', icon: <TeamOutlined />, label: '用户管理' },
   { key: '/moderation', icon: <SafetyCertificateOutlined />, label: '内容审核' },
   { type: 'divider' as const },
@@ -64,6 +66,7 @@ const breadcrumbMap: Record<string, string> = {
   '/coupons': '优惠券管理',
   '/journals': '朝圣日记',
   '/reviews': '评价管理',
+  '/community': '社区管理',
   '/users': '用户管理',
   '/moderation': '内容审核',
   '/ai-config': 'AI助手配置',
