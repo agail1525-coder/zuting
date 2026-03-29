@@ -23,7 +23,7 @@ const MENU_ITEMS = [
   { icon: '\u{1F5FA}', label: '圣地地图', desc: '全球圣地分布', action: 'map', url: '/pages/map/index' },
   { icon: '\u{1F30F}', label: '语言设置', desc: '简体中文', action: 'language' },
   { icon: '\u{1F514}', label: '通知设置', desc: '管理推送通知', action: 'notifications' },
-  { icon: '\u{2139}\u{FE0F}', label: '关于我们', desc: '了解祖庭之旅', action: 'about' },
+  { icon: '\u{2139}\u{FE0F}', label: '关于我们', desc: '了解祖庭之旅', action: 'about', url: '/pages/about/index' },
   { icon: '\u{1F4AC}', label: '意见反馈', desc: '帮助我们改进', action: 'feedback' },
   { icon: '\u{2B50}', label: '给我们评分', desc: '支持我们的工作', action: 'rate' },
 ]
@@ -131,14 +131,6 @@ export default function ProfilePage() {
       return
     }
     switch (item.action) {
-      case 'about':
-        Taro.showModal({
-          title: '关于祖庭之旅',
-          content: `全球祖庭旅行平台 v${APP_VERSION}\n\n帮助100万人走祖庭，建立全球宗教文化和平使者网络。\n\n十二大信仰 | 六十圣地 | 二十七祖庭 | 三十印`,
-          showCancel: false,
-          confirmText: '了解'
-        })
-        break
       case 'feedback':
         Taro.showModal({
           title: '意见反馈',

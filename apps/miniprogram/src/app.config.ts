@@ -48,9 +48,13 @@ export default defineAppConfig({
     'pages/guides/index',
     'pages/price-compare/index',
     'pages/price-trend/index',
+    'pages/price-alerts/index',
     'pages/leaderboard/index',
     'pages/photos/index',
-    'pages/referral/index'
+    'pages/referral/index',
+    'pages/about/index',
+    'pages/privacy/index',
+    'pages/terms/index'
   ],
   tabBar: {
     color: '#9CA3AF',

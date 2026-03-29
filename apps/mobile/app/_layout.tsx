@@ -137,6 +137,22 @@ function RootLayout() {
           name="chat-room/[id]"
           options={{ title: '聊天' }}
         />
+        <Stack.Screen
+          name="edit-profile"
+          options={{ title: '编辑资料' }}
+        />
+        <Stack.Screen
+          name="about"
+          options={{ title: '关于祖庭之旅' }}
+        />
+        <Stack.Screen
+          name="privacy"
+          options={{ title: '隐私政策' }}
+        />
+        <Stack.Screen
+          name="terms"
+          options={{ title: '用户协议' }}
+        />
         </Stack>
       </I18nProvider>
     </AuthProvider>

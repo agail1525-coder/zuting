@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  Alert,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -42,6 +40,13 @@ export default function ProfileScreen() {
             {user.phone && (
               <Text style={styles.userPhone}>{user.phone}</Text>
             )}
+            <Pressable
+              style={styles.editProfileButton}
+              onPress={() => router.push('/edit-profile' as never)}
+            >
+              <Ionicons name="create-outline" size={16} color={colors.gold} />
+              <Text style={styles.editProfileText}>编辑资料</Text>
+            </Pressable>
           </>
         ) : (
           <>
@@ -186,9 +191,9 @@ export default function ProfileScreen() {
       {/* About */}
       <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>
-        <MenuItem icon="information-circle" label="关于祖庭之旅" onPress={() => Alert.alert('关于', '全球祖庭旅行平台 v0.2.0\n帮助100万人走祖庭')} />
-        <MenuItem icon="document-text" label="用户协议" onPress={() => Linking.openURL('https://zuting.com/terms')} />
-        <MenuItem icon="shield-checkmark" label="隐私政策" onPress={() => Linking.openURL('https://zuting.com/privacy')} />
+        <MenuItem icon="information-circle" label="关于祖庭之旅" onPress={() => router.push('/about' as never)} />
+        <MenuItem icon="document-text" label="用户协议" onPress={() => router.push('/terms' as never)} />
+        <MenuItem icon="shield-checkmark" label="隐私政策" onPress={() => router.push('/privacy' as never)} />
       </Animated.View>
 
       {/* Logout */}
@@ -304,6 +309,22 @@ const styles = StyleSheet.create({
   userPhone: {
     color: colors.textSecondary,
     fontSize: fontSize.md,
+  },
+  editProfileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    gap: spacing.xs,
+  },
+  editProfileText: {
+    color: colors.gold,
+    fontSize: fontSize.sm,
+    fontWeight: '600',
   },
   loginPrompt: {
     color: colors.textSecondary,
