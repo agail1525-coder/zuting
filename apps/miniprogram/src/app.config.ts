@@ -43,7 +43,9 @@ export default defineAppConfig({
     'pages/merchants/index',
     'pages/merchant-detail/index',
     'pages/messages/index',
-    'pages/chat-room/index'
+    'pages/chat-room/index',
+    'pages/religions/index',
+    'pages/guides/index'
   ],
   tabBar: {
     color: '#9CA3AF',

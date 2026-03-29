@@ -1,6 +1,6 @@
 # 全球祖庭旅行平台 — Global Ancestral Temple Travel Platform
 
-> Monorepo | 路径: E:\ZUTING\ | Phase 1 + P0/P1升级完成 (2026-03-25)
+> Monorepo | 路径: E:\ZUTING\ | Phase A→E2 全交付 | 66页Web+52屏Mobile+44页小程序+28页Admin (2026-03-29)
 
 ## 愿景
 帮助100万人走祖庭，建立全球宗教文化和平使者网络。
@@ -95,45 +95,50 @@ JOINUS.COM = 全球祖庭文化旅行平台 NO.1
 ### SCP-06 全功能集合路线图
 ```
 [SCP-06] 全功能集合路线图 — JOINUS.COM必须具备:
-  Phase A (核心功能 — 当前):
+  Phase A (核心功能 — ✅ 完成):
     ✓ 目的地(圣地/祖庭)浏览与详情
-    ✓ 行程规划与状态管理
-    ✓ AI聊天助手(小鸿)
-    ✓ 朝圣日志
-    ✓ 管理后台CRUD
+    ✓ 行程规划与状态管理 (12状态机)
+    ✓ AI聊天助手(小鸿, Qwen3.5-35B)
+    ✓ 朝圣日志 (CRUD+公开/私密)
+    ✓ 管理后台CRUD (28页)
 
-  Phase B (体验升级 — 对标Booking+Airbnb+TripAdvisor):
-    □ 搜索系统 — 全站搜索+筛选+排序+地图搜索 (对标Booking/Kayak)
-    □ 评价系统 — UGC评价+评分+照片+回复 (对标TripAdvisor)
-    □ 收藏系统 — Wishlist+收藏夹+分享 (对标Airbnb)
-    □ 推荐系统 — 个性化推荐+相关推荐+猜你喜欢 (对标Booking/Trip.com)
-    □ 攻略社区 — 游记+攻略+问答+照片墙 (对标TripAdvisor)
+  Phase B (体验升级 — ✅ 完成):
+    ✓ 搜索系统 — 全站搜索+筛选+排序+热词+建议 (对标Booking/Kayak)
+    ✓ 评价系统 — UGC评价+评分+照片+回复+投票 (对标TripAdvisor)
+    ✓ 收藏系统 — Wishlist+收藏夹+分享+快捷收藏 (对标Airbnb)
+    ✓ 推荐系统 — 相关推荐+猜你喜欢+热门 (对标Booking/Trip.com)
+    ✓ 攻略社区 — 游记+攻略+问答+照片墙+排行榜 (对标TripAdvisor)
 
-  Phase C (商业闭环 — 对标Expedia+Agoda+Priceline):
-    □ 支付系统 — 在线支付+多币种+退款 (对标Booking/Agoda)
-    □ 促销系统 — 优惠券+限时折扣+早鸟价+闪购 (对标Priceline/Agoda)
-    □ 会员体系 — 等级+积分+专属权益 (对标AmEx Travel)
-    □ 套餐打包 — 行程+住宿+交通组合 (对标Expedia)
-    □ 价格工具 — 比价+价格日历+价格提醒 (对标Skyscanner/Kayak)
+  Phase C (商业闭环 — ✅ 完成):
+    ✓ 支付系统 — 在线支付+退款+订单管理 (对标Booking/Agoda)
+    ✓ 促销系统 — 优惠券+限时折扣+活动管理 (对标Priceline/Agoda)
+    ✓ 会员体系 — 等级+积分+签到+积分商城+专属权益 (对标AmEx Travel)
+    ✓ 套餐打包 — 路线套餐+预订管理 (对标Expedia)
+    ✓ 价格工具 — 比价+价格日历+价格提醒+趋势 (对标Skyscanner/Kayak)
 
-  Phase D (生态扩展 — 全球NO.1):
-    □ 多语言 — 中/英/日/韩/泰/印/阿 (对标Booking全球化)
-    □ 社交分享 — 朋友圈/Instagram/Facebook (对标Airbnb)
-    □ 商家入驻 — 祖庭/导游/住宿供应商管理平台
-    □ 数据分析 — 用户行为/转化漏斗/热力图
-    □ 移动优先 — PWA+离线+推送 (对标Agoda移动体验)
+  Phase D (生态扩展 — ✅ 完成):
+    ✓ 多语言 — 中/英/日/韩/泰/印/阿 7语言 (对标Booking全球化)
+    ✓ 社交分享 — ShareButton+分享API+分享追踪 (对标Airbnb)
+    ✓ 商家入驻 — 供应商注册/审核/管理平台 (对标Booking商家端)
+    ✓ 数据分析 — 运营面板+用户行为+转化漏斗 (对标Agoda分析)
+    ✓ 移动优先 — PWA+离线+推送通知 (对标Agoda移动体验)
+
+  Phase E (沉浸体验 — ✅ 进行中):
+    ✓ 实时消息 — WebSocket+私信+商家咨询 (Sprint E1)
+    ✓ 多媒体导览 — 视频+360全景+音频讲解 (Sprint E2)
+    □ 二级分销 — 邀请码+佣金+团队管理 (已有API,待强化)
 ```
 
 ---
 
 ## 技术栈
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7
-- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (21页面)
-- **Admin**: Vite + React 19 + Ant Design 5 + Recharts (11页面)
-- **Mobile**: React Native + Expo 52 + Expo Router (5 tabs + 详情页)
-- **小程序**: Taro 4.x + React (14页面)
-- **Shared**: @zuting/api-client, @zuting/shared-types, @zuting/config
+- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7 (40模块, 241路由, 63表)
+- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (66页面)
+- **Admin**: Vite + React 19 + Ant Design 5 + Recharts (28页面)
+- **Mobile**: React Native + Expo 52 + Expo Router (52屏, 5 tabs)
+- **小程序**: Taro 4.x + React (44页面)
+- **Shared**: @zuting/api-client, @zuting/shared-types, @zuting/config, @zuting/shared-utils, @zuting/translations
 - **Desktop**: Python 3 + tkinter (原有桌面助手，保留在 desktop/)
 
 ## 项目结构
@@ -141,36 +146,65 @@ JOINUS.COM = 全球祖庭文化旅行平台 NO.1
 E:\ZUTING\
 ├── apps/
 │   ├── web/                     # Next.js 15 官网 (@zuting/web)
-│   │   ├── src/app/             # 21个页面路由 (App Router)
-│   │   ├── src/components/      # WorldMap, MobileNav 等
-│   │   └── src/lib/             # API客户端 + i18n
+│   │   ├── src/app/             # 66个页面路由 (App Router)
+│   │   ├── src/components/      # 30+ 组件 (MediaTour, ReviewSection, SaveButton等)
+│   │   └── src/lib/             # API客户端 + i18n (7语言)
 │   ├── admin/                   # Vite管理后台 (@zuting/admin)
-│   │   └── src/pages/           # 11个页面 (Dashboard, CRUD tables)
+│   │   └── src/pages/           # 28个页面 (Dashboard, CRUD, 分析, 审核等)
 │   ├── mobile/                  # Expo React Native (@zuting/mobile)
 │   │   ├── app/(tabs)/          # 5个Tab (首页/圣地/AI聊天/修行/我的)
-│   │   └── app/                 # 详情页 (chat, trips, journals)
+│   │   └── app/                 # 47个详情/功能页
 │   └── miniprogram/             # Taro 微信小程序 (@zuting/miniprogram)
-│       └── src/pages/           # 14个页面
+│       └── src/pages/           # 44个页面
 ├── packages/
 │   ├── shared-types/            # 共享TypeScript类型
 │   ├── api-client/              # 类型安全API客户端
-│   └── config/                  # 业务配置 (religions, seals, trips, design)
+│   ├── config/                  # 业务配置 (religions, seals, trips, design)
+│   ├── shared-utils/            # 共享工具函数
+│   └── translations/            # i18n翻译文件
 ├── services/
 │   └── api/                     # NestJS 后端 (@zuting/api)
-│       ├── src/modules/         # 10个模块 (34个路由)
+│       ├── src/modules/         # 40个模块 (241个路由)
 │       │   ├── religion/        # 12大信仰
 │       │   ├── holy-site/       # 60圣地
-│       │   ├── temple/          # 27祖庭
-│       │   ├── patriarch/       # 28祖师
-│       │   ├── teaching/        # 39祖训
-│       │   ├── seal/            # 30印
-│       │   ├── xiaohong/        # 小鸿AI聊天 (SSE流式)
+│       │   ├── temple/          # 祖庭管理
+│       │   ├── patriarch/       # 祖师管理
+│       │   ├── teaching/        # 祖训管理
+│       │   ├── seal/            # 三十印
+│       │   ├── xiaohong/        # 小鸿AI聊天 (SSE流式, Qwen3.5-35B)
 │       │   ├── trip/            # 行程管理 (12状态机)
-│       │   ├── order/           # 订单管理
-│       │   └── journal/         # 朝圣日志
+│       │   ├── order/           # 订单+支付
+│       │   ├── journal/         # 朝圣日志
+│       │   ├── review/          # UGC评价+投票
+│       │   ├── collection/      # 收藏系统
+│       │   ├── search/          # 全站搜索
+│       │   ├── community/       # 攻略社区
+│       │   ├── guide/           # 游记攻略
+│       │   ├── question/        # 问答系统
+│       │   ├── coupon/          # 优惠券
+│       │   ├── promotion/       # 促销活动
+│       │   ├── membership/      # 会员体系+签到
+│       │   ├── referral/        # 分销推荐
+│       │   ├── points-mall/     # 积分商城
+│       │   ├── package/         # 套餐打包
+│       │   ├── price/           # 价格工具
+│       │   ├── route/           # 路线管理
+│       │   ├── booking/         # 路线预订
+│       │   ├── merchant/        # 商家入驻
+│       │   ├── media/           # 多媒体导览
+│       │   ├── chat/            # 实时消息
+│       │   ├── analytics/       # 数据分析
+│       │   ├── share/           # 社交分享
+│       │   ├── notification/    # 推送通知
+│       │   ├── recommendation/  # 推荐引擎
+│       │   ├── moderation/      # 内容审核
+│       │   └── auth,health,redis,upload,payment,user/
 │       ├── src/common/          # TripStateMachine
-│       ├── prisma/schema.prisma # 数据模型 (14个表)
-│       └── prisma/seed.ts       # 种子数据 (196条记录)
+│       ├── prisma/schema.prisma # 数据模型 (63个表)
+│       └── prisma/seed.ts       # 种子数据 (200+条记录)
+├── docs/
+│   ├── prd/                     # 60份PRD (M31+P29+F09)
+│   └── protocols/               # 开发协议规则库
 ├── desktop/                     # 原有Python桌面修行助手
 ├── docker/docker-compose.yml    # PostgreSQL:5435 + Redis:6380
 ├── turbo.json
@@ -194,25 +228,41 @@ pnpm --filter @zuting/mobile dev       # Expo开发服务器
 pnpm --filter @zuting/miniprogram dev  # Taro微信小程序
 ```
 
-## API端点 (10个模块, 34个路由)
-| 模块 | 端点 | 说明 |
-|------|------|------|
-| religions | GET /api/religions, GET /:slug | 12大信仰 |
-| holy-sites | GET /api/holy-sites, GET /:id | 60圣地 |
-| temples | GET /api/temples, GET /:id | 27祖庭 |
-| patriarchs | GET /api/patriarchs, GET /:id | 28祖师 |
-| teachings | GET /api/teachings, GET /:id | 39祖训 |
-| seals | GET /api/seals, GET /:id | 30印 |
-| xiaohong | POST /chat, GET /chat/stream, GET /suggestions | 小鸿AI聊天 (SSE) |
-| trips | POST, GET, GET /:id, PATCH /:id, POST /:id/transition, POST /:id/sites, DELETE /:id/sites/:siteId, GET /status-meta | 行程管理 (12状态机) |
-| orders | POST, GET, GET /:id, POST /:id/pay, POST /:id/cancel, POST /:id/refund | 订单管理 |
-| journals | POST, GET, GET /:id, PATCH /:id, DELETE /:id | 朝圣日志 |
+## API端点 (40个模块, 241个路由)
+| 类别 | 模块 | 路由数 | 说明 |
+|------|------|--------|------|
+| 内容 | religions, holy-sites, temples, patriarchs, teachings, seals | ~24 | 核心文化内容CRUD |
+| 行程 | trips, routes, bookings, packages | ~40 | 行程+路线+预订+套餐 |
+| 商业 | orders, payment, coupons, promotions, prices | ~35 | 订单+支付+促销+价格 |
+| 社区 | reviews, guides, questions, community | ~30 | 评价+攻略+问答+社区 |
+| 用户 | auth, users, membership, referral, points-mall, collections | ~40 | 认证+会员+分销+积分+收藏 |
+| 运营 | merchants, analytics, moderation, notifications, search | ~30 | 商家+分析+审核+通知+搜索 |
+| AI | xiaohong, recommendation, ai-config | ~15 | 小鸿聊天+推荐+配置 |
+| 媒体 | media, upload, share, chat | ~27 | 多媒体+上传+分享+消息 |
 
-## Web 页面 (21页)
-首页, 12信仰, 信仰详情, 圣地列表(地图/网格), 圣地详情, 祖庭, 祖庭详情, 祖师, 祖师详情, 祖训, 祖训详情, 三十印, 印详情, AI聊天, 地图, 行程列表, 行程详情, 日志, 个人中心, 404
+## Web 页面 (66页)
+核心内容(12): 首页, 信仰列表/详情, 圣地列表/详情, 祖庭列表/详情, 祖师列表/详情, 祖训列表/详情, 印列表/详情
+路线行程(8): 路线列表/详情, 行程列表/创建/详情, 套餐列表/详情, 结账
+社区(10): 社区首页, 攻略列表/编辑/详情, 问答广场/详情, 排行榜, 照片墙, 日志列表/创建/详情
+商业(11): 订单列表, 会员中心, 分销中心, 积分商城, 优惠券, 促销活动, 结账/支付结果
+价格(5): 价格中心, 日历, 比价, 趋势, 提醒
+用户(8): 登录/注册, 个人中心, 用户主页, 收藏列表/详情/分享, 消息, 通知
+商家(3): 商家列表/详情, 商家注册
+其他(9): AI聊天, 地图, 搜索, 关于/隐私/条款, 离线页, 实时消息
 
-## Admin 后台 (11页)
-Dashboard(图表), 宗教管理, 圣地管理, 祖庭管理, 祖师管理, 祖训管理, 印管理, 行程管理, 订单管理, 日志管理, AI配置
+## Admin 后台 (28页)
+内容管理(7): 信仰/圣地/祖庭/祖师/祖训/印/多媒体
+运营管理(8): 路线/预订/行程/订单/优惠券/促销/会员/价格
+社区管理(4): 评价/社区/内容审核/用户
+商家系统(1): 商家管理
+AI与分析(5): AI配置/聊天监控/搜索统计/数据分析/国际化分享
+其他(3): 仪表盘/登录
+
+## Mobile APP (52屏)
+5 Tabs + 47个功能页 (详情/社区/支付/会员/商家/价格/消息/通知等)
+
+## 微信小程序 (44页)
+核心浏览+社区+商业+消息全覆盖
 
 ## Trip 状态机 (12状态)
 DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PROGRESS → COMPLETED → REVIEWING
@@ -228,20 +278,38 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 | Admin | 3003 |
 | Expo | 8081 |
 
-## 数据内容 (196条记录)
+## 数据内容 (200+条种子记录)
 - **12大信仰**: 佛教/道教/基督教/伊斯兰教/印度教/犹太教/儒教/锡克教/神道教/藏传佛教/原住民灵性/巴哈伊教
-- **60圣地**: 每信仰5个，含GPS坐标、UTC偏移、描述
-- **27祖庭**: 各信仰重要祖庭
-- **28祖师**: 各信仰创始人/重要人物
-- **39祖训**: 原文+来源
+- **60圣地**: 每信仰5个，含GPS坐标、UTC偏移、描述、图片
+- **27祖庭**: 各信仰重要祖庭，含建立时间、坐标
+- **28祖师**: 各信仰创始人/重要人物，含传记
+- **39祖训**: 原文+来源+中文翻译
 - **30印**: 曹溪愿命三十印 (五系: 初印系→中印系→印果印→成道印→归源印)
+- **10路线**: 精品朝圣路线，含站点+价格+时长
+- **11 AI配置**: 小鸿AI参数+推荐问题
+- **6多媒体**: 视频/全景/音频示例内容
 
 ## 设计主题
 - 深色殿堂风: 背景 #0f172a → #020617, 金色点缀 #D4A855
 - 每个宗教有独特颜色和符号
 - 五系印各有系列色 (青/蓝/紫/红/金)
 - 地图: Leaflet + CartoDB暗色瓦片
-- 中英双语支持 (i18n)
+- 7语言i18n: 中/英/日/韩/泰/印地/阿拉伯 (含RTL)
+
+## Sprint 历史
+| Sprint | 内容 | 状态 |
+|--------|------|------|
+| Phase A | 核心内容+行程+AI聊天+日志+后台 | ✅ |
+| Phase B | 搜索+评价+收藏+推荐+攻略社区 | ✅ |
+| C1 | 结账+支付+订单管理 | ✅ |
+| C2 | 会员+分销+积分商城+套餐 | ✅ |
+| C3 | 价格工具(比价/日历/提醒/趋势) | ✅ |
+| D1 | 多语言+社交分享 (7语言i18n) | ✅ |
+| D2 | 商家入驻平台 | ✅ |
+| D3 | 数据分析+PWA离线推送 | ✅ |
+| E1 | 实时消息系统 (WebSocket+私信) | ✅ |
+| E2 | 多媒体导览 (视频+全景+音频) | ✅ |
+| F1 | 宪法升级+移动端对齐 | 🔄 进行中 |
 
 ## 注意事项
 - NestJS使用SWC编译 (nest-cli.json配置builder:swc)，因为tsx不支持emitDecoratorMetadata
