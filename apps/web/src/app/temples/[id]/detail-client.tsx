@@ -7,6 +7,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
+import MediaTour from "@/components/MediaTour";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
 import { recordView } from "@/lib/api";
@@ -190,6 +191,9 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
             </div>
           </div>
         )}
+
+        {/* Multimedia Tour */}
+        <MediaTour entityType="TEMPLE" entityId={temple.id} />
 
         {/* Reviews Section */}
         <ReviewSection targetType="temple" targetId={temple.id} />

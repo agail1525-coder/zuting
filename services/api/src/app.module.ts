@@ -42,6 +42,7 @@ import { ShareModule } from './modules/share/share.module';
 import { MerchantModule } from './modules/merchant/merchant.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { MediaModule } from './modules/media/media.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -89,6 +90,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     MerchantModule,
     AnalyticsModule,
     ChatModule,
+    MediaModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

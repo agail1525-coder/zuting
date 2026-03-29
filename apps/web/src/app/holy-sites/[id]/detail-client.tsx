@@ -7,6 +7,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
+import MediaTour from "@/components/MediaTour";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
 import { recordView } from "@/lib/api";
@@ -178,6 +179,9 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             </div>
           </div>
         )}
+
+        {/* Media Tour */}
+        <MediaTour entityType="HOLY_SITE" entityId={site.id} />
 
         {/* Reviews Section */}
         <ReviewSection targetType="holy-site" targetId={site.id} />

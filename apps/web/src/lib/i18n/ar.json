@@ -626,5 +626,13 @@
   "chat.today": "اليوم",
   "chat.yesterday": "أمس",
   "chat.merchant": "استفسار تجاري",
-  "chat.contactMerchant": "تواصل مع المتجر"
+  "chat.contactMerchant": "تواصل مع المتجر",
+
+  "media.tour": "جولة افتراضية",
+  "media.video": "فيديو",
+  "media.panorama": "عرض 360°",
+  "media.audio": "دليل صوتي",
+  "media.play": "تشغيل",
+  "media.pause": "إيقاف",
+  "media.noContent": "لا يوجد محتوى جولة"
 }

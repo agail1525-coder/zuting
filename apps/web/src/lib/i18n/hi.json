@@ -626,5 +626,13 @@
   "chat.today": "आज",
   "chat.yesterday": "कल",
   "chat.merchant": "दुकान पूछताछ",
-  "chat.contactMerchant": "दुकान से संपर्क"
+  "chat.contactMerchant": "दुकान से संपर्क",
+
+  "media.tour": "वर्चुअल टूर",
+  "media.video": "वीडियो",
+  "media.panorama": "360° दृश्य",
+  "media.audio": "ऑडियो गाइड",
+  "media.play": "चलाएं",
+  "media.pause": "रोकें",
+  "media.noContent": "कोई टूर सामग्री नहीं"
 }

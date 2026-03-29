@@ -626,5 +626,13 @@
   "chat.today": "วันนี้",
   "chat.yesterday": "เมื่อวาน",
   "chat.merchant": "สอบถามร้านค้า",
-  "chat.contactMerchant": "ติดต่อร้านค้า"
+  "chat.contactMerchant": "ติดต่อร้านค้า",
+
+  "media.tour": "ทัวร์เสมือนจริง",
+  "media.video": "วิดีโอ",
+  "media.panorama": "มุมมอง 360°",
+  "media.audio": "ไกด์เสียง",
+  "media.play": "เล่น",
+  "media.pause": "หยุดชั่วคราว",
+  "media.noContent": "ยังไม่มีเนื้อหาทัวร์"
 }

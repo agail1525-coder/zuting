@@ -661,5 +661,13 @@
   "chat.today": "Today",
   "chat.yesterday": "Yesterday",
   "chat.merchant": "Merchant Inquiry",
-  "chat.contactMerchant": "Contact Merchant"
+  "chat.contactMerchant": "Contact Merchant",
+
+  "media.tour": "Virtual Tour",
+  "media.video": "Video",
+  "media.panorama": "360° View",
+  "media.audio": "Audio Guide",
+  "media.play": "Play",
+  "media.pause": "Pause",
+  "media.noContent": "No tour content yet"
 }

@@ -1946,6 +1946,73 @@ async function main() {
   }
   console.log(`  ✓ ${aiConfigs.length} AI configs created`);
 
+  // ── Media Content (demo data) ──
+  console.log('Creating demo media content...');
+  await prisma.mediaContent.deleteMany();
+  // Fetch first holy site and first temple for demo association
+  const firstSite = await prisma.holySite.findFirst({ orderBy: { name: 'asc' } });
+  const secondSite = await prisma.holySite.findFirst({ orderBy: { name: 'asc' }, skip: 1 });
+  const firstTemple = await prisma.temple.findFirst({ orderBy: { name: 'asc' } });
+  const mediaItems: Array<{
+    entityType: string; entityId: string; mediaType: string;
+    title: string; description?: string; url: string;
+    thumbnailUrl?: string; duration?: number; sortOrder: number;
+  }> = [];
+  if (firstSite) {
+    mediaItems.push(
+      {
+        entityType: 'HOLY_SITE', entityId: firstSite.id, mediaType: 'VIDEO',
+        title: `${firstSite.name} 航拍导览`, description: `从空中俯瞰${firstSite.name}全貌`,
+        url: 'https://cdn.zuting.org/demo/holy-site-aerial.mp4',
+        thumbnailUrl: 'https://cdn.zuting.org/demo/holy-site-aerial-thumb.jpg',
+        duration: 180, sortOrder: 0,
+      },
+      {
+        entityType: 'HOLY_SITE', entityId: firstSite.id, mediaType: 'AUDIO',
+        title: `${firstSite.name} 历史讲解`, description: '专业导游语音讲解',
+        url: 'https://cdn.zuting.org/demo/holy-site-guide.mp3',
+        duration: 420, sortOrder: 0,
+      },
+      {
+        entityType: 'HOLY_SITE', entityId: firstSite.id, mediaType: 'PANORAMA',
+        title: `${firstSite.name} 大殿全景`, description: '360度沉浸式全景',
+        url: 'https://cdn.zuting.org/demo/holy-site-panorama.jpg',
+        thumbnailUrl: 'https://cdn.zuting.org/demo/holy-site-panorama-thumb.jpg',
+        sortOrder: 0,
+      },
+    );
+  }
+  if (secondSite) {
+    mediaItems.push({
+      entityType: 'HOLY_SITE', entityId: secondSite.id, mediaType: 'VIDEO',
+      title: `${secondSite.name} 文化纪录片`, description: '深入了解宗教文化背景',
+      url: 'https://cdn.zuting.org/demo/holy-site-documentary.mp4',
+      thumbnailUrl: 'https://cdn.zuting.org/demo/holy-site-doc-thumb.jpg',
+      duration: 600, sortOrder: 0,
+    });
+  }
+  if (firstTemple) {
+    mediaItems.push(
+      {
+        entityType: 'TEMPLE', entityId: firstTemple.id, mediaType: 'VIDEO',
+        title: `${firstTemple.name} 建筑巡礼`, description: `探索${firstTemple.name}的千年建筑`,
+        url: 'https://cdn.zuting.org/demo/temple-architecture.mp4',
+        thumbnailUrl: 'https://cdn.zuting.org/demo/temple-arch-thumb.jpg',
+        duration: 240, sortOrder: 0,
+      },
+      {
+        entityType: 'TEMPLE', entityId: firstTemple.id, mediaType: 'AUDIO',
+        title: `${firstTemple.name} 诵经录音`, description: '感受祖庭的清净氛围',
+        url: 'https://cdn.zuting.org/demo/temple-chanting.mp3',
+        duration: 300, sortOrder: 1,
+      },
+    );
+  }
+  for (const item of mediaItems) {
+    await prisma.mediaContent.create({ data: item });
+  }
+  console.log(`  ✓ ${mediaItems.length} media content items created`);
+
   console.log('\nSeed complete!');
   console.log(`  Religions: ${religions.length}`);
   console.log(`  Holy Sites: ${holySites.length}`);
@@ -1955,6 +2022,7 @@ async function main() {
   console.log(`  Seals: ${seals.length}`);
   console.log(`  Routes: ${routes.length}`);
   console.log(`  AI Configs: ${aiConfigs.length}`);
+  console.log(`  Media Content: ${mediaItems.length}`);
 }
 
 main()

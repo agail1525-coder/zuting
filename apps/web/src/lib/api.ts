@@ -1996,3 +1996,28 @@ export async function markChatRead(roomId: string): Promise<void> {
 export async function deleteChatMessage(messageId: string): Promise<void> {
   await fetchAuthed<void>(`/api/chat/messages/${messageId}`, { method: 'DELETE' });
 }
+
+// ======== Media 多媒体导览 ========
+
+export interface MediaContent {
+  id: string;
+  entityType: string;
+  entityId: string;
+  mediaType: string;
+  title: string;
+  description: string | null;
+  url: string;
+  thumbnailUrl: string | null;
+  duration: number | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export async function fetchMediaByEntity(entityType: string, entityId: string): Promise<MediaContent[]> {
+  const res = await fetchJson<{ data: MediaContent[] }>(`/api/media?entityType=${entityType}&entityId=${entityId}`);
+  return Array.isArray(res.data) ? res.data : [];
+}
+
+export async function fetchMediaDetail(id: string): Promise<MediaContent> {
+  return fetchJson<MediaContent>(`/api/media/${id}`);
+}

@@ -8,6 +8,7 @@ import { LoadingView } from '../../src/components/LoadingView';
 import ReviewSection from '../../src/components/ReviewSection';
 import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
+import MediaTour from '../../src/components/MediaTour';
 
 export default function HolySiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -163,6 +164,9 @@ export default function HolySiteDetailScreen() {
           ))}
         </View>
       )}
+
+      {/* Multimedia Tour */}
+      <MediaTour entityType="HOLY_SITE" entityId={id!} />
 
       {/* Reviews */}
       <View style={{ paddingHorizontal: 16, marginTop: 20 }}>

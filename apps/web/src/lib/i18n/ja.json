@@ -626,5 +626,13 @@
   "chat.today": "今日",
   "chat.yesterday": "昨日",
   "chat.merchant": "ショップへの問い合わせ",
-  "chat.contactMerchant": "ショップに連絡"
+  "chat.contactMerchant": "ショップに連絡",
+
+  "media.tour": "バーチャルツアー",
+  "media.video": "動画",
+  "media.panorama": "360°パノラマ",
+  "media.audio": "音声ガイド",
+  "media.play": "再生",
+  "media.pause": "一時停止",
+  "media.noContent": "ツアーコンテンツはありません"
 }

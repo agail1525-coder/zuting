@@ -1106,6 +1106,27 @@ export function markChatRead(roomId: string) {
   return postRequest<void>(`/chat/rooms/${roomId}/read`, {})
 }
 
+// ======== Media 多媒体导览 ========
+
+export interface MediaContent {
+  id: string
+  entityType: string
+  entityId: string
+  mediaType: string
+  title: string
+  description: string | null
+  url: string
+  thumbnailUrl: string | null
+  duration: number | null
+  sortOrder: number
+  isActive: boolean
+}
+
+export function fetchMediaByEntity(entityType: string, entityId: string) {
+  return request<{ data: MediaContent[] }>('/media', { entityType, entityId })
+    .then(res => Array.isArray(res.data) ? res.data.filter(m => m.isActive) : [])
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

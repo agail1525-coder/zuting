@@ -281,6 +281,22 @@ export interface AdminBooking {
   user?: { id: string; nickname: string };
 }
 
+export interface MediaContent {
+  id: string;
+  entityType: string;
+  entityId: string;
+  mediaType: string;
+  title: string;
+  description: string | null;
+  url: string;
+  thumbnailUrl: string | null;
+  duration: number | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Trip {
   id: string;
   title: string;

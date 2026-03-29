@@ -4,7 +4,7 @@ import type {
   Trip, Order, Journal, Review, Coupon, CreateCouponDto,
   Report, ReportStats, Upload, DeleteResponse, User,
   XiaohongChatResponse, NotificationSendResponse,
-  AdminRoute, AdminBooking,
+  AdminRoute, AdminBooking, MediaContent,
 } from '../types';
 
 // ---- DTO Interfaces (R-01: 严禁any) ----
@@ -340,6 +340,35 @@ export const getBookings = (page = 1, limit = 20, status?: string) => {
     `/bookings/admin?${params.toString()}`,
   );
 };
+
+// ---- Media ----
+export interface CreateMediaDto {
+  entityType: string;
+  entityId: string;
+  mediaType: string;
+  title: string;
+  url: string;
+  description?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  sortOrder?: number;
+}
+export const getMediaList = (entityType?: string, entityId?: string, mediaType?: string) => {
+  const params = new URLSearchParams();
+  if (entityType) params.set('entityType', entityType);
+  if (entityId) params.set('entityId', entityId);
+  if (mediaType) params.set('mediaType', mediaType);
+  params.set('limit', '100');
+  return fetchJson<{ data: MediaContent[]; total: number; page: number; limit: number }>(
+    `/media?${params.toString()}`,
+  );
+};
+export const createMedia = (data: CreateMediaDto) =>
+  fetchJson<MediaContent>('/media', { method: 'POST', body: JSON.stringify(data) });
+export const updateMedia = (id: string, data: Partial<CreateMediaDto>) =>
+  fetchJson<MediaContent>(`/media/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+export const deleteMedia = (id: string) =>
+  fetchJson<DeleteResponse>(`/media/${id}`, { method: 'DELETE' });
 
 // ---- Dashboard stats helper ----
 // [R-64] Explicit take limits to prevent OOM as data grows

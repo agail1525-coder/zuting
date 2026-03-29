@@ -1288,3 +1288,24 @@ export async function sendChatMessage(roomId: string, content: string): Promise<
 export async function markChatRead(roomId: string): Promise<void> {
   await fetchAuthed(`/api/chat/rooms/${roomId}/read`, { method: 'POST' });
 }
+
+// ======== Media 多媒体导览 ========
+
+export interface MediaContent {
+  id: string;
+  entityType: string;
+  entityId: string;
+  mediaType: string;
+  title: string;
+  description: string | null;
+  url: string;
+  thumbnailUrl: string | null;
+  duration: number | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export async function fetchMediaByEntity(entityType: string, entityId: string): Promise<MediaContent[]> {
+  const res = await request<{ data: MediaContent[] }>('/media', { entityType, entityId });
+  return Array.isArray(res.data) ? res.data.filter((m) => m.isActive) : [];
+}

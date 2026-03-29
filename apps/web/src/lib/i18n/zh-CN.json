@@ -661,5 +661,13 @@
   "chat.today": "今天",
   "chat.yesterday": "昨天",
   "chat.merchant": "商家咨询",
-  "chat.contactMerchant": "联系商家"
+  "chat.contactMerchant": "联系商家",
+
+  "media.tour": "多媒体导览",
+  "media.video": "视频",
+  "media.panorama": "全景",
+  "media.audio": "音频讲解",
+  "media.play": "播放",
+  "media.pause": "暂停",
+  "media.noContent": "暂无导览内容"
 }

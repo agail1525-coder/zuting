@@ -626,5 +626,13 @@
   "chat.today": "오늘",
   "chat.yesterday": "어제",
   "chat.merchant": "상점 문의",
-  "chat.contactMerchant": "상점 연락"
+  "chat.contactMerchant": "상점 연락",
+
+  "media.tour": "가상 투어",
+  "media.video": "동영상",
+  "media.panorama": "360° 뷰",
+  "media.audio": "오디오 가이드",
+  "media.play": "재생",
+  "media.pause": "일시정지",
+  "media.noContent": "투어 콘텐츠가 없습니다"
 }

@@ -1232,3 +1232,24 @@ model ChatMessage {
   @@index([roomId, createdAt])
   @@index([senderId])
 }
+
+// ========== 多媒体导览 ==========
+
+model MediaContent {
+  id           String   @id @default(cuid())
+  entityType   String   // HOLY_SITE / TEMPLE
+  entityId     String
+  mediaType    String   // VIDEO / PANORAMA / AUDIO
+  title        String
+  description  String?  @db.Text
+  url          String   // 媒体文件URL
+  thumbnailUrl String?  // 缩略图
+  duration     Int?     // 时长(秒)
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([entityType, entityId, isActive])
+  @@index([mediaType])
+}

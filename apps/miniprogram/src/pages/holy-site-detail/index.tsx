@@ -5,6 +5,7 @@ import { HolySite, Route, fetchHolySiteById, fetchRoutesBySite, recordView } fro
 import ReviewSection from '../../components/ReviewSection'
 import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
+import MediaTour from '../../components/MediaTour'
 import './index.scss'
 
 export default function HolySiteDetailPage() {
@@ -189,6 +190,9 @@ export default function HolySiteDetailPage() {
           ))}
         </View>
       )}
+
+      {/* Multimedia Tour */}
+      <MediaTour entityType='HOLY_SITE' entityId={id!} />
 
       {/* Reviews */}
       <View className='section'>
