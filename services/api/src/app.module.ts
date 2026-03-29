@@ -33,6 +33,10 @@ import { GuideModule } from './modules/guide/guide.module';
 import { QuestionModule } from './modules/question/question.module';
 import { CommunityModule } from './modules/community/community.module';
 import { PromotionModule } from './modules/promotion/promotion.module';
+import { MembershipModule } from './modules/membership/membership.module';
+import { ReferralModule } from './modules/referral/referral.module';
+import { PointsMallModule } from './modules/points-mall/points-mall.module';
+import { PackageModule } from './modules/package/package.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -71,6 +75,10 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     QuestionModule,
     CommunityModule,
     PromotionModule,
+    MembershipModule,
+    ReferralModule,
+    PointsMallModule,
+    PackageModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

@@ -937,3 +937,154 @@ enum PromotionType {
   EARLY_BIRD   // 早鸟价
   FLASH_SALE   // 闪购
 }
+
+// ========== 会员体系 ==========
+
+model Membership {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  level           Int      @default(1) // 1-5
+  levelName       String   @default("朝圣新手")
+  totalPoints     Int      @default(0)
+  availablePoints Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  points PointsTransaction[]
+
+  @@index([level])
+}
+
+model PointsTransaction {
+  id           String     @id @default(cuid())
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+  type         String     // EARN / SPEND
+  amount       Int        // positive for earn, positive for spend
+  source       String     // ORDER / GUIDE / REVIEW / CHECKIN / INVITE / REFERRAL_REWARD / REDEEM
+  sourceId     String?
+  description  String
+  createdAt    DateTime   @default(now())
+
+  @@index([membershipId])
+  @@index([source])
+}
+
+// ========== 二级分销 ==========
+
+model InviteCode {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  code         String   @unique // 6位字母数字
+  totalInvites Int      @default(0)
+  totalRewards Int      @default(0) // 累计返佣积分
+  createdAt    DateTime @default(now())
+}
+
+model Referral {
+  id        String   @id @default(cuid())
+  inviterId String
+  inviteeId String   @unique
+  level     Int      // 1=一级 2=二级
+  createdAt DateTime @default(now())
+
+  rewards ReferralReward[]
+
+  @@index([inviterId])
+}
+
+model ReferralReward {
+  id         String   @id @default(cuid())
+  referralId String
+  referral   Referral @relation(fields: [referralId], references: [id])
+  orderId    String
+  inviterId  String
+  amount     Int      // 返佣积分数
+  level      Int      // 1或2
+  status     String   @default("PENDING") // PENDING / SETTLED / CANCELLED
+  settledAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([inviterId])
+  @@index([orderId])
+}
+
+// ========== 积分商城 ==========
+
+model PointsProduct {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?  @db.Text
+  coverImage    String?
+  category      String   // COUPON / DISCOUNT / EXPERIENCE / PERK / BADGE
+  pointsCost    Int
+  originalPrice Int?     // 原价(分)
+  stock         Int      @default(0) // 0=无限
+  soldCount     Int      @default(0)
+  metadata      Json?    // couponId/discountPercent/badgeImage等
+  isActive      Boolean  @default(true)
+  startAt       DateTime?
+  endAt         DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  exchanges PointsExchange[]
+
+  @@index([category, isActive])
+}
+
+model PointsExchange {
+  id          String        @id @default(cuid())
+  userId      String
+  productId   String
+  product     PointsProduct @relation(fields: [productId], references: [id])
+  pointsSpent Int
+  status      String        @default("PENDING") // PENDING / FULFILLED / CANCELLED
+  metadata    Json?         // 兑换结果详情
+  createdAt   DateTime      @default(now())
+
+  @@index([userId])
+  @@index([productId])
+}
+
+// ========== 套餐打包 ==========
+
+model TravelPackage {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?  @db.Text
+  coverImage   String?
+  packageType  String   // CLASSIC / DEEP / VIP / FREE / GROUP
+  basePrice    Int      // 基础价(分)
+  memberPrice  Int?     // 会员价(分)
+  includes     Json     // {accommodation, transport, guide, meals}
+  duration     Int      // 天数
+  maxPersons   Int      @default(20)
+  entityType   String?  // HOLY_SITE / TEMPLE
+  entityIds    String[]
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings PackageBooking[]
+
+  @@index([packageType, isActive])
+}
+
+model PackageBooking {
+  id           String        @id @default(cuid())
+  packageId    String
+  package      TravelPackage @relation(fields: [packageId], references: [id])
+  userId       String
+  orderId      String?
+  persons      Int
+  totalPrice   Int           // 实付(分)
+  status       String        @default("PENDING") // PENDING / CONFIRMED / CANCELLED
+  startDate    DateTime
+  contactName  String?
+  contactPhone String?
+  createdAt    DateTime      @default(now())
+
+  @@index([userId])
+  @@index([packageId])
+}
