@@ -535,6 +535,18 @@
   "encyclopedia.results": "条结果",
   "encyclopedia.loadMore": "加载更多",
 
+  "rankings.title": "排行榜",
+  "rankings.subtitle": "最受朝圣者推荐的圣地与路线",
+  "rankings.bestSites": "最佳圣地",
+  "rankings.bestRoutes": "最佳路线",
+
+  "priceForecast.title": "价格趋势",
+  "priceForecast.goodDeal": "适合现在预订",
+  "priceForecast.waitMaybe": "价格可能下降",
+  "priceForecast.confidence": "置信度",
+  "priceForecast.lowest": "历史最低",
+  "priceForecast.average": "平均",
+
   "profile.nicknamePlaceholder": "输入昵称",
   "profile.pilgrim": "朝圣者",
   "profile.motto": "愿以朝圣之心，行和平之路",

@@ -535,6 +535,18 @@
   "encyclopedia.results": "results",
   "encyclopedia.loadMore": "Load More",
 
+  "rankings.title": "Rankings",
+  "rankings.subtitle": "Top recommended holy sites and routes",
+  "rankings.bestSites": "Best Holy Sites",
+  "rankings.bestRoutes": "Best Routes",
+
+  "priceForecast.title": "Price Trend",
+  "priceForecast.goodDeal": "Good time to book",
+  "priceForecast.waitMaybe": "Price may drop",
+  "priceForecast.confidence": "confidence",
+  "priceForecast.lowest": "Lowest",
+  "priceForecast.average": "Average",
+
   "profile.nicknamePlaceholder": "Enter nickname",
   "profile.pilgrim": "Pilgrim",
   "profile.motto": "Walk the path of peace with a pilgrim's heart",

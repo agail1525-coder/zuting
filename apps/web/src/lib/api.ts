@@ -1236,7 +1236,7 @@ export async function fetchRoutesBySite(siteId: string): Promise<Route[]> {
 
 // --- Collections (authenticated) ---
 
-export type CollectionEntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'TRIP';
+export type CollectionEntityType = 'HOLY_SITE' | 'TEMPLE' | 'PATRIARCH' | 'TRIP' | 'ROUTE';
 
 export interface CollectionItem {
   id: string;

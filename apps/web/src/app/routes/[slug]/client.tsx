@@ -5,6 +5,8 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import PhotoMosaic from "@/components/PhotoMosaic";
 import SocialProof from "@/components/SocialProof";
+import PriceForecast from "@/components/PriceForecast";
+import SaveButton from "@/components/SaveButton";
 import type { Route, ItineraryDay } from "@/lib/api";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -97,13 +99,18 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   >
                     AI规划师咨询
                   </Link>
-                  <button className="w-full py-3 rounded-xl border border-gray-200 hover:bg-[#0066FF]/5 text-gray-700 font-medium transition-colors">
-                    收藏路线
-                  </button>
+                  <div className="flex items-center justify-center gap-2">
+                    <SaveButton entityType="ROUTE" entityId={route.slug ?? route.id} size="md" />
+                    <span className="text-sm text-gray-500">收藏路线</span>
+                  </div>
                 </div>
                 <p className="text-xs text-gray-400 text-center mt-3">
                   已有 {route.bookCount} 人预订
                 </p>
+              </div>
+              {/* Price Forecast */}
+              <div className="hidden md:block md:min-w-[280px]">
+                <PriceForecast routeId={route.slug ?? route.id} currentPrice={route.priceFrom / 100} />
               </div>
             </div>
           </div>

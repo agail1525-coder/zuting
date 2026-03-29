@@ -136,22 +136,19 @@ export default function RoutesClient({ initialData, error }: Props) {
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("");
   const [sort, setSort] = useState("createdAt");
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const PAGE_SIZE = 12;
 
-  const handleFilter = async (newCategory?: string, newDifficulty?: string, newSort?: string) => {
-    const cat = newCategory ?? category;
-    const diff = newDifficulty ?? difficulty;
-    const s = newSort ?? sort;
-    setCategory(cat);
-    setDifficulty(diff);
-    setSort(s);
+  const loadRoutes = async (cat: string, diff: string, s: string, p: number) => {
     setLoading(true);
     try {
       const data = await fetchRoutes({
         category: cat || undefined,
         difficulty: diff || undefined,
         sort: s,
-        pageSize: 20,
+        page: p,
+        pageSize: PAGE_SIZE,
       });
       setRoutes(data.items);
       setTotal(data.total);
@@ -160,6 +157,23 @@ export default function RoutesClient({ initialData, error }: Props) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFilter = async (newCategory?: string, newDifficulty?: string, newSort?: string) => {
+    const cat = newCategory ?? category;
+    const diff = newDifficulty ?? difficulty;
+    const s = newSort ?? sort;
+    setCategory(cat);
+    setDifficulty(diff);
+    setSort(s);
+    setPage(1);
+    loadRoutes(cat, diff, s, 1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    loadRoutes(category, difficulty, sort, newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -243,9 +257,46 @@ export default function RoutesClient({ initialData, error }: Props) {
             </div>
           )}
 
+          {/* Pagination */}
+          {!loading && total > PAGE_SIZE && (
+            <div className="flex items-center justify-center gap-2 mt-10">
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                上一页
+              </button>
+              {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === Math.ceil(total / PAGE_SIZE) || Math.abs(p - page) <= 1)
+                .map((p, idx, arr) => (
+                  <span key={p}>
+                    {idx > 0 && arr[idx - 1] !== p - 1 && <span className="text-gray-300 mx-1">...</span>}
+                    <button
+                      onClick={() => handlePageChange(p)}
+                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
+                        p === page
+                          ? "bg-[#0066FF] text-white shadow-sm"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  </span>
+                ))
+              }
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= Math.ceil(total / PAGE_SIZE)}
+                className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                下一页
+              </button>
+            </div>
+          )}
           {!loading && total > 0 && (
-            <p className="text-center text-sm text-gray-400 mt-8">
-              共 {total} 条路线
+            <p className="text-center text-sm text-gray-400 mt-4">
+              第 {page} 页 · 共 {total} 条路线
             </p>
           )}
         </div>

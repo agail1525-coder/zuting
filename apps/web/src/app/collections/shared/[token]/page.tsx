@@ -14,6 +14,7 @@ const ENTITY_TYPE_LABELS: Record<CollectionEntityType, string> = {
   TEMPLE: "祖庭",
   PATRIARCH: "祖师",
   TRIP: "行程",
+  ROUTE: "路线",
 };
 
 const ENTITY_TYPE_COLORS: Record<CollectionEntityType, string> = {
@@ -21,6 +22,7 @@ const ENTITY_TYPE_COLORS: Record<CollectionEntityType, string> = {
   TEMPLE: "bg-blue-100 text-blue-700",
   PATRIARCH: "bg-purple-100 text-purple-700",
   TRIP: "bg-green-100 text-green-700",
+  ROUTE: "bg-cyan-100 text-cyan-700",
 };
 
 const ENTITY_TYPE_LINKS: Record<CollectionEntityType, string> = {
@@ -28,6 +30,7 @@ const ENTITY_TYPE_LINKS: Record<CollectionEntityType, string> = {
   TEMPLE: "/temples",
   PATRIARCH: "/patriarchs",
   TRIP: "/trips",
+  ROUTE: "/routes",
 };
 
 function SharedItemCard({ item }: { item: CollectionItem }) {
