@@ -613,5 +613,17 @@
   "promotion.discount": "限时折扣",
   "promotion.noPromotion": "暂无进行中的促销活动",
   "promotion.quota": "剩余名额",
-  "promotion.ends": "距结束"
+  "promotion.ends": "距结束",
+
+  "share.button": "分享",
+  "share.title": "分享到",
+  "share.wechat": "微信",
+  "share.weibo": "微博",
+  "share.facebook": "Facebook",
+  "share.twitter": "X/推特",
+  "share.whatsapp": "WhatsApp",
+  "share.copy": "复制链接",
+  "share.copied": "已复制！",
+  "share.wechatQR": "扫描二维码分享到微信",
+  "share.scanQR": "二维码"
 }

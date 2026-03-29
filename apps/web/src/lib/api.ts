@@ -1813,3 +1813,32 @@ export async function fetchMyPriceAlerts(): Promise<{ items: PriceAlertItem[] }>
 export async function deletePriceAlert(id: string): Promise<void> {
   await fetchAuthed<void>(`/api/price-alerts/${id}`, { method: "DELETE" });
 }
+
+// ======== Share 社交分享 ========
+
+export interface ShareStats {
+  total: number;
+  byPlatform: { platform: string; _count: number }[];
+  byEntityType: { entityType: string; _count: number }[];
+}
+
+export interface PopularShare {
+  entityType: string;
+  entityId: string;
+  _count: { id: number };
+}
+
+export async function recordShare(data: { platform: string; entityType: string; entityId: string }): Promise<void> {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  await fetch(`${API_BASE}/api/shares`, { method: "POST", headers, body: JSON.stringify(data) });
+}
+
+export async function fetchShareStats(): Promise<ShareStats> {
+  return fetchAuthed<ShareStats>("/api/shares/stats");
+}
+
+export async function fetchPopularShares(): Promise<PopularShare[]> {
+  return fetchJson<PopularShare[]>("/api/shares/popular");
+}

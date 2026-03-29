@@ -8,6 +8,7 @@ import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
+import ShareButton from "@/components/ShareButton";
 import { recordView } from "@/lib/api";
 import type { Temple } from "@/lib/api";
 
@@ -76,8 +77,15 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                 <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">
                   {temple.name}
                 </h1>
-                <div className="mt-1">
+                <div className="mt-1 flex items-center gap-2">
                   <SaveButton entityType="TEMPLE" entityId={temple.id} size="md" />
+                  <ShareButton
+                    title={temple.name}
+                    description={temple.description}
+                    url={`/temples/${temple.id}`}
+                    entityType="TEMPLE"
+                    entityId={temple.id}
+                  />
                 </div>
               </div>
               {temple.nameEn && (

@@ -613,5 +613,17 @@
   "promotion.discount": "Limited Discount",
   "promotion.noPromotion": "No active promotions",
   "promotion.quota": "Remaining",
-  "promotion.ends": "Ends in"
+  "promotion.ends": "Ends in",
+
+  "share.button": "Share",
+  "share.title": "Share to",
+  "share.wechat": "WeChat",
+  "share.weibo": "Weibo",
+  "share.facebook": "Facebook",
+  "share.twitter": "X/Twitter",
+  "share.whatsapp": "WhatsApp",
+  "share.copy": "Copy Link",
+  "share.copied": "Copied!",
+  "share.wechatQR": "Scan QR code to share on WeChat",
+  "share.scanQR": "QR Code"
 }

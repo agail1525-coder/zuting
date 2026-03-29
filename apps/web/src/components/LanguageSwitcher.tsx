@@ -35,13 +35,13 @@ export default function LanguageSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="px-3 py-1.5 text-xs font-medium rounded-full border border-gold/30 text-gold hover:bg-gold/10 transition-colors"
+        className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-300 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 hover:bg-blue-50 transition-colors"
       >
         {current.label}
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-32 rounded-lg border border-gold/20 bg-slate-900/95 backdrop-blur-sm shadow-lg z-50 overflow-hidden max-h-72 overflow-y-auto">
+        <div className="absolute right-0 mt-2 w-36 rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden max-h-72 overflow-y-auto">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
@@ -49,10 +49,10 @@ export default function LanguageSwitcher() {
                 setLocale(lang.code);
                 setOpen(false);
               }}
-              className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
+              className={`block w-full text-left px-4 py-2.5 text-sm transition-colors ${
                 locale === lang.code
-                  ? "text-gold bg-gold/10"
-                  : "text-gray-300 hover:text-gold hover:bg-gold/5"
+                  ? "text-[#0066FF] font-medium bg-blue-50"
+                  : "text-gray-700 hover:text-[#0066FF] hover:bg-gray-50"
               }`}
             >
               {lang.label}

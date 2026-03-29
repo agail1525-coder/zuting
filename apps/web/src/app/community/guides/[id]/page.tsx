@@ -15,6 +15,7 @@ import {
   type GuideComment,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import ShareButton from "@/components/ShareButton";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -185,12 +186,13 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
               >
                 {liked ? "❤️" : "🤍"} 点赞 ({likeCount})
               </button>
-              <button
-                onClick={() => navigator.share?.({ title: guide.title, url: window.location.href }).catch(() => {})}
-                className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              >
-                🔗 分享
-              </button>
+              <ShareButton
+                title={guide.title}
+                description={guide.content?.slice(0, 100)}
+                url={`/community/guides/${guide.id || id}`}
+                entityType="GUIDE"
+                entityId={guide.id || id}
+              />
             </div>
 
             {/* Comments */}

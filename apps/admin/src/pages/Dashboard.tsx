@@ -17,6 +17,8 @@ import {
   ShoppingCartOutlined,
   CrownOutlined,
   DollarOutlined,
+  TranslationOutlined,
+  ShareAltOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -614,6 +616,45 @@ export default function Dashboard() {
                   value={priceOverview.activeAlerts}
                   prefix={<DollarOutlined />}
                   valueStyle={{ color: '#E87040', fontWeight: 700 }}
+                />
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 国际化 & 分享概览 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24}>
+          <Card
+            title={
+              <span>
+                <TranslationOutlined style={{ color: '#1890FF', marginRight: 8 }} />
+                国际化 & 分享
+              </span>
+            }
+            extra={
+              <a href="/i18n-share" style={{ color: '#D4A855', fontSize: 12 }}>
+                详情管理
+              </a>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>多语言支持</span>}
+                  value="7种语言"
+                  prefix={<TranslationOutlined />}
+                  valueStyle={{ color: '#1890FF', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>社交分享</span>}
+                  value="已启用"
+                  prefix={<ShareAltOutlined />}
+                  valueStyle={{ color: '#52C41A', fontWeight: 700 }}
                 />
               </Col>
             </Row>

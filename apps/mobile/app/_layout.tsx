@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../src/lib/auth-context';
+import { I18nProvider } from '../src/lib/i18n';
 import { initSentry, wrap } from '../src/lib/sentry';
 
 // Initialize Sentry before rendering
@@ -10,22 +11,23 @@ initSentry();
 function RootLayout() {
   return (
     <AuthProvider>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-          headerTintColor: '#0066FF',
-          headerTitleStyle: {
-            fontWeight: '600',
-          },
-          contentStyle: {
-            backgroundColor: '#FFFFFF',
-          },
-          animation: 'slide_from_right',
-        }}
-      >
+      <I18nProvider>
+        <StatusBar style="dark" />
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#FFFFFF',
+            },
+            headerTintColor: '#0066FF',
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
+            contentStyle: {
+              backgroundColor: '#FFFFFF',
+            },
+            animation: 'slide_from_right',
+          }}
+        >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="login"
@@ -119,7 +121,8 @@ function RootLayout() {
           name="price-alerts"
           options={{ title: '价格提醒' }}
         />
-      </Stack>
+        </Stack>
+      </I18nProvider>
     </AuthProvider>
   );
 }

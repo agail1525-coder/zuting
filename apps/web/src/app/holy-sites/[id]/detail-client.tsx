@@ -8,6 +8,7 @@ import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
+import ShareButton from "@/components/ShareButton";
 import { recordView } from "@/lib/api";
 import type { HolySite } from "@/lib/api";
 
@@ -78,6 +79,13 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                 </h1>
                 <div className="mt-1">
                   <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
+                  <ShareButton
+                    title={site.name}
+                    description={site.description}
+                    url={`/holy-sites/${site.id}`}
+                    entityType="HOLY_SITE"
+                    entityId={site.id}
+                  />
                 </div>
               </div>
               <p className="text-xl text-white/70 mt-2">{site.nameEn}</p>

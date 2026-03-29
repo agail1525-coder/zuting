@@ -7,6 +7,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import ShareButton from "@/components/ShareButton";
 import { fetchPackage, bookPackage, type PackageItem } from "@/lib/api";
 
 function formatPrice(cents: number) {
@@ -128,7 +129,16 @@ export default function PackageDetailPage() {
 
           {/* Title & Pricing */}
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h1>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-bold text-gray-900">{pkg.name}</h1>
+              <ShareButton
+                title={pkg.name}
+                description={pkg.description ?? undefined}
+                url={`/packages/${pkg.id || id}`}
+                entityType="PACKAGE"
+                entityId={pkg.id || id}
+              />
+            </div>
             <div className="flex items-center gap-4">
               <div>
                 <p className="text-2xl font-bold text-gray-900">{formatPrice(pkg.basePrice)}<span className="text-sm text-gray-500 font-normal">/人起</span></p>

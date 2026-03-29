@@ -1120,3 +1120,18 @@ model PackageBooking {
   @@index([userId])
   @@index([packageId])
 }
+
+// ========== 社交分享 ==========
+
+model Share {
+  id         String   @id @default(cuid())
+  userId     String?
+  platform   String   // WECHAT / WEIBO / FACEBOOK / TWITTER / WHATSAPP / COPY / NATIVE
+  entityType String   // HOLY_SITE / TEMPLE / TRIP / GUIDE / QUESTION / PROMOTION / PACKAGE
+  entityId   String
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([platform])
+}
