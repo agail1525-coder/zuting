@@ -1135,3 +1135,59 @@ model Share {
   @@index([entityType, entityId])
   @@index([platform])
 }
+
+// ========== 商家入驻 ==========
+
+model Merchant {
+  id            String         @id @default(cuid())
+  userId        String         @unique
+  type          String         // TEMPLE / GUIDE / ACCOMMODATION / TRANSPORT
+  name          String
+  description   String?        @db.Text
+  logo          String?
+  license       String?        // 营业执照/资质证书URL
+  status        MerchantStatus @default(PENDING)
+  contactPhone  String?
+  contactEmail  String?
+  address       String?
+  province      String?
+  city          String?
+  rating        Float          @default(0)
+  totalOrders   Int            @default(0)
+  totalRevenue  Int            @default(0) // cents
+  rejectedReason String?
+  approvedAt    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  services MerchantService[]
+
+  @@index([type, status])
+  @@index([status])
+}
+
+model MerchantService {
+  id          String   @id @default(cuid())
+  merchantId  String
+  merchant    Merchant @relation(fields: [merchantId], references: [id])
+  name        String
+  description String?  @db.Text
+  coverImage  String?
+  price       Int      // cents
+  duration    Int?     // minutes
+  maxPersons  Int?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([merchantId, isActive])
+}
+
+enum MerchantStatus {
+  PENDING   // 待审核
+  APPROVED  // 审核通过
+  ACTIVE    // 正常运营
+  SUSPENDED // 已暂停
+  REJECTED  // 已拒绝
+  CLOSED    // 已关闭
+}

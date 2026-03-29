@@ -1046,6 +1046,29 @@ export function fetchPriceCompare(routeIds: string[]) {
   return request<PriceCompareItem[]>('/prices/compare', { ids: routeIds.join(',') })
 }
 
+// --- Merchant ---
+
+export interface Merchant {
+  id: string
+  type: string
+  name: string
+  description: string | null
+  logo: string | null
+  rating: number
+  totalOrders: number
+  address: string | null
+  services?: { id: string; name: string; price: number }[]
+}
+
+export function fetchMerchants(type?: string, page = 1) {
+  const qs = type ? `?type=${type}&page=${page}` : `?page=${page}`
+  return request<{ items: Merchant[]; total: number }>(`/merchants${qs}`)
+}
+
+export function fetchMerchantDetail(id: string) {
+  return request<Merchant>(`/merchants/${id}`)
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

@@ -1842,3 +1842,71 @@ export async function fetchShareStats(): Promise<ShareStats> {
 export async function fetchPopularShares(): Promise<PopularShare[]> {
   return fetchJson<PopularShare[]>("/api/shares/popular");
 }
+
+// ======== Merchant 商家入驻 ========
+
+export interface Merchant {
+  id: string;
+  userId: string;
+  type: string;
+  name: string;
+  description: string | null;
+  logo: string | null;
+  license: string | null;
+  status: string;
+  contactPhone: string | null;
+  contactEmail: string | null;
+  address: string | null;
+  province: string | null;
+  city: string | null;
+  rating: number;
+  totalOrders: number;
+  createdAt: string;
+  services?: MerchantServiceItem[];
+}
+
+export interface MerchantServiceItem {
+  id: string;
+  merchantId: string;
+  name: string;
+  description: string | null;
+  coverImage: string | null;
+  price: number;
+  duration: number | null;
+  maxPersons: number | null;
+  isActive: boolean;
+}
+
+export interface MerchantStats {
+  total: number;
+  byStatus: Record<string, number>;
+  byType: Record<string, number>;
+}
+
+export async function fetchMerchants(params?: { type?: string; page?: number; pageSize?: number }): Promise<{ items: Merchant[]; total: number }> {
+  const qs = new URLSearchParams();
+  if (params?.type) qs.set('type', params.type);
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.pageSize) qs.set('pageSize', String(params.pageSize));
+  return fetchJson<{ items: Merchant[]; total: number }>(`/api/merchants?${qs}`);
+}
+
+export async function fetchMerchantDetail(id: string): Promise<Merchant> {
+  return fetchJson<Merchant>(`/api/merchants/${id}`);
+}
+
+export async function registerMerchant(data: { type: string; name: string; description?: string; contactPhone?: string; contactEmail?: string; address?: string }): Promise<Merchant> {
+  return fetchAuthed<Merchant>('/api/merchants/register', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchMyMerchant(): Promise<Merchant> {
+  return fetchAuthed<Merchant>('/api/merchants/my');
+}
+
+export async function updateMyMerchant(data: Partial<{ name: string; description: string; contactPhone: string; contactEmail: string; address: string; logo: string }>): Promise<Merchant> {
+  return fetchAuthed<Merchant>('/api/merchants/my', { method: 'PATCH', body: JSON.stringify(data) });
+}
+
+export async function fetchMerchantStats(): Promise<MerchantStats> {
+  return fetchAuthed<MerchantStats>('/api/merchants/stats');
+}

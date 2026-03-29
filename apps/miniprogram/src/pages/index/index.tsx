@@ -234,6 +234,15 @@ export default function IndexPage() {
           </View>
           <Text className='quick-action-item__label'>价格工具</Text>
         </View>
+        <View
+          className='quick-action-item'
+          onClick={() => Taro.navigateTo({ url: '/pages/merchants/index' })}
+        >
+          <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
+            <Text className='quick-action-item__icon'>🏪</Text>
+          </View>
+          <Text className='quick-action-item__label'>合作商家</Text>
+        </View>
       </View>
 
       {/* ── 2.8 限时优惠 Section ── */}

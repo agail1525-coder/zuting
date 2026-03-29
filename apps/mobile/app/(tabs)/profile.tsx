@@ -146,6 +146,12 @@ export default function ProfileScreen() {
           subtitle="查看已预订套餐"
           onPress={() => router.push('/packages' as never)}
         />
+        <MenuItem
+          icon="storefront"
+          label="合作商家"
+          subtitle="寺庙 · 导游 · 住宿 · 交通"
+          onPress={() => router.push('/merchants' as never)}
+        />
       </Animated.View>
 
       {/* Price Tools */}

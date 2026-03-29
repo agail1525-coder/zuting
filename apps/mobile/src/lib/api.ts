@@ -1213,3 +1213,38 @@ export async function createPriceAlert(data: CreatePriceAlertData): Promise<Pric
 export async function deletePriceAlert(id: string): Promise<void> {
   await fetchAuthed(`/api/prices/alerts/${id}`, { method: 'DELETE' });
 }
+
+// ─── Merchant / 商家 ─────────────────────────────────────────────────────────
+
+export interface Merchant {
+  id: string;
+  userId: string;
+  type: string;
+  name: string;
+  description: string | null;
+  logo: string | null;
+  status: string;
+  contactPhone: string | null;
+  contactEmail: string | null;
+  address: string | null;
+  rating: number;
+  totalOrders: number;
+  createdAt: string;
+  services?: MerchantServiceItem[];
+}
+
+export interface MerchantServiceItem {
+  id: string;
+  name: string;
+  price: number;
+  duration: number | null;
+}
+
+export async function fetchMerchants(type?: string, page = 1): Promise<{ items: Merchant[]; total: number }> {
+  const qs = type ? `?type=${type}&page=${page}` : `?page=${page}`;
+  return fetchJson(`/api/merchants${qs}`);
+}
+
+export async function fetchMerchantDetail(id: string): Promise<Merchant> {
+  return fetchJson(`/api/merchants/${id}`);
+}

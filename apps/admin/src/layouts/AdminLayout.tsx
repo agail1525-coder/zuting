@@ -24,6 +24,7 @@ import {
   CrownOutlined,
   DollarOutlined,
   TranslationOutlined,
+  ShopOutlined,
 } from '@ant-design/icons';
 import { logout } from '../lib/auth';
 
@@ -50,6 +51,7 @@ const menuItems = [
   { key: '/promotions', icon: <GiftOutlined />, label: '促销管理' },
   { key: '/membership', icon: <CrownOutlined />, label: '会员管理' },
   { key: '/prices', icon: <DollarOutlined />, label: '价格管理' },
+  { key: '/merchants', icon: <ShopOutlined />, label: '商家管理' },
   { key: '/users', icon: <TeamOutlined />, label: '用户管理' },
   { key: '/moderation', icon: <SafetyCertificateOutlined />, label: '内容审核' },
   { type: 'divider' as const },
@@ -77,6 +79,7 @@ const breadcrumbMap: Record<string, string> = {
   '/promotions': '促销管理',
   '/membership': '会员管理',
   '/prices': '价格管理',
+  '/merchants': '商家管理',
   '/users': '用户管理',
   '/moderation': '内容审核',
   '/ai-config': 'AI助手配置',

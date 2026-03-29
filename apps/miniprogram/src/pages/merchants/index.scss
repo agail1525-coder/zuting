@@ -1,0 +1,169 @@
+.merchants-page {
+  min-height: 100vh;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Type filter tabs */
+.type-tabs {
+  display: flex;
+  white-space: nowrap;
+  background: #FFFFFF;
+  padding: 20rpx 32rpx;
+  border-bottom: 1rpx solid #E5E7EB;
+
+  &__item {
+    display: inline-block;
+    padding: 12rpx 28rpx;
+    margin-right: 16rpx;
+    border-radius: 999rpx;
+    background: #F3F4F6;
+    border: 2rpx solid #E5E7EB;
+  }
+
+  &__item--active {
+    background: #0066FF;
+    border-color: #0066FF;
+  }
+
+  &__text {
+    font-size: 28rpx;
+    color: #6B7280;
+  }
+
+  &__text--active {
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+}
+
+/* Merchant list */
+.merchant-list {
+  flex: 1;
+  padding: 24rpx 32rpx 0;
+  height: calc(100vh - 120rpx);
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120rpx 0;
+  }
+
+  &__empty-icon {
+    font-size: 80rpx;
+    margin-bottom: 16rpx;
+  }
+
+  &__empty-text {
+    font-size: 28rpx;
+    color: #9CA3AF;
+  }
+}
+
+/* Merchant card */
+.merchant-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+  &--hover {
+    opacity: 0.85;
+  }
+
+  &__icon {
+    width: 88rpx;
+    height: 88rpx;
+    border-radius: 12rpx;
+    background: rgba(0, 102, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    flex-shrink: 0;
+  }
+
+  &__icon-emoji {
+    font-size: 44rpx;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 8rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12rpx;
+    margin-bottom: 8rpx;
+  }
+
+  &__type-badge {
+    background: rgba(0, 102, 255, 0.1);
+    padding: 4rpx 16rpx;
+    border-radius: 8rpx;
+  }
+
+  &__type-text {
+    font-size: 22rpx;
+    color: #0066FF;
+    font-weight: 600;
+  }
+
+  &__rating {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4rpx;
+  }
+
+  &__rating-star {
+    font-size: 24rpx;
+    color: #F59E0B;
+  }
+
+  &__rating-text {
+    font-size: 24rpx;
+    color: #6B7280;
+    font-weight: 600;
+  }
+
+  &__orders {
+    font-size: 22rpx;
+    color: #9CA3AF;
+  }
+
+  &__address {
+    font-size: 24rpx;
+    color: #9CA3AF;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    font-size: 36rpx;
+    color: #9CA3AF;
+    margin-left: 12rpx;
+    flex-shrink: 0;
+  }
+}

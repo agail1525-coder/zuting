@@ -121,6 +121,14 @@ function RootLayout() {
           name="price-alerts"
           options={{ title: '价格提醒' }}
         />
+        <Stack.Screen
+          name="merchants"
+          options={{ title: '合作商家' }}
+        />
+        <Stack.Screen
+          name="merchants/[id]"
+          options={{ title: '商家详情' }}
+        />
         </Stack>
       </I18nProvider>
     </AuthProvider>

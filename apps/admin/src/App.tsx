@@ -26,6 +26,7 @@ const CommunityManagePage = lazy(() => import('./pages/CommunityManagePage'));
 const PromotionManagePage = lazy(() => import('./pages/PromotionManagePage'));
 const MembershipManagePage = lazy(() => import('./pages/MembershipManagePage'));
 const PriceManagePage = lazy(() => import('./pages/PriceManagePage'));
+const MerchantManagePage = lazy(() => import('./pages/MerchantManagePage'));
 const I18nShareManagePage = lazy(() => import('./pages/I18nShareManagePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="promotions" element={<PromotionManagePage />} />
           <Route path="membership" element={<MembershipManagePage />} />
           <Route path="prices" element={<PriceManagePage />} />
+          <Route path="merchants" element={<MerchantManagePage />} />
           <Route path="i18n-share" element={<I18nShareManagePage />} />
         </Route>
       </Routes>

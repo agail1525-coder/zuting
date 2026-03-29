@@ -39,7 +39,9 @@ export default defineAppConfig({
     'pages/packages/index',
     'pages/package-detail/index',
     'pages/prices/index',
-    'pages/price-calendar/index'
+    'pages/price-calendar/index',
+    'pages/merchants/index',
+    'pages/merchant-detail/index'
   ],
   tabBar: {
     color: '#9CA3AF',
