@@ -964,6 +964,88 @@ export function fetchMyInviteCode() {
   return request<{ inviteCode: string; inviteCount: number; rewardPoints: number }>('/membership/invite-code')
 }
 
+// ─── Price Tools ─────────────────────────────────────────────────────────────
+
+export interface PriceCalendarDay {
+  date: string          // YYYY-MM-DD
+  price: number | null  // null = not available
+  level: 'low' | 'medium' | 'high' | 'unavailable'
+  available: boolean
+}
+
+export interface PriceCalendarResponse {
+  routeId: string
+  year: number
+  month: number
+  days: PriceCalendarDay[]
+  minPrice: number
+  maxPrice: number
+}
+
+export interface PriceAlertItem {
+  id: string
+  routeId: string
+  routeTitle: string
+  targetPrice: number
+  currentPrice: number | null
+  triggered: boolean
+  createdAt: string
+}
+
+export interface PriceAlertInput {
+  routeId: string
+  targetPrice: number
+}
+
+export interface PriceCompareItem {
+  routeId: string
+  routeTitle: string
+  coverImage: string | null
+  duration: number
+  nights: number
+  priceFrom: number
+  priceHistory: { date: string; price: number }[]
+  lowestPrice: number
+  highestPrice: number
+  avgPrice: number
+}
+
+export interface PriceHistoryResponse {
+  routeId: string
+  history: { date: string; price: number }[]
+  lowestPrice: number
+  highestPrice: number
+  trend: 'rising' | 'falling' | 'stable'
+}
+
+export function fetchPriceCalendar(routeId: string, year: number, month: number) {
+  return request<PriceCalendarResponse>('/prices/calendar', {
+    routeId,
+    year: String(year),
+    month: String(month),
+  })
+}
+
+export function fetchPriceHistory(routeId: string, days = 30) {
+  return request<PriceHistoryResponse>(`/prices/history/${routeId}`, { days: String(days) })
+}
+
+export function fetchPriceAlerts() {
+  return request<PriceAlertItem[]>('/prices/alerts')
+}
+
+export function createPriceAlert(input: PriceAlertInput) {
+  return postRequest<PriceAlertItem>('/prices/alerts', input)
+}
+
+export function deletePriceAlert(alertId: string) {
+  return deleteRequest<void>(`/prices/alerts/${alertId}`)
+}
+
+export function fetchPriceCompare(routeIds: string[]) {
+  return request<PriceCompareItem[]>('/prices/compare', { ids: routeIds.join(',') })
+}
+
 async function deleteRequest<T>(path: string): Promise<T> {
   const url = `${BASE_URL}${path}`
   const token = getAccessToken()

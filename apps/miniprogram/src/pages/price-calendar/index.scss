@@ -1,0 +1,386 @@
+.price-calendar-page {
+  min-height: 100vh;
+  background: #F5F5F5;
+}
+
+/* ── Cal Header ── */
+.cal-header {
+  background: #FFFFFF;
+  padding: 28rpx 32rpx 20rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+
+  &__title {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 800;
+    color: #1A1A1A;
+    margin-bottom: 8rpx;
+  }
+
+  &__range {
+    display: flex;
+    align-items: center;
+  }
+
+  &__range-low {
+    font-size: 24rpx;
+    font-weight: 700;
+    color: #10B981;
+  }
+
+  &__range-sep {
+    font-size: 24rpx;
+    color: #D1D5DB;
+  }
+
+  &__range-high {
+    font-size: 24rpx;
+    font-weight: 700;
+    color: #EF4444;
+  }
+}
+
+/* ── Month Picker ── */
+.month-picker {
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 40rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+
+  &__btn {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    background: #F3F4F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &-text {
+      font-size: 32rpx;
+      color: #374151;
+      font-weight: 700;
+    }
+  }
+
+  &__label {
+    font-size: 34rpx;
+    font-weight: 800;
+    color: #1A1A1A;
+  }
+}
+
+/* ── Legend ── */
+.legend {
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+  }
+
+  &__dot {
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+
+    &--unavail {
+      background: #9CA3AF;
+    }
+  }
+
+  &__text {
+    font-size: 22rpx;
+    font-weight: 600;
+
+    &--unavail {
+      color: #9CA3AF;
+    }
+  }
+}
+
+/* ── Weekday Header ── */
+.cal-week-header {
+  background: #FFFFFF;
+  display: flex;
+  padding: 12rpx 16rpx 8rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+
+  &__cell {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__text {
+    font-size: 24rpx;
+    color: #6B7280;
+    font-weight: 600;
+
+    &--weekend {
+      color: #EF4444;
+    }
+  }
+}
+
+/* ── Calendar Grid ── */
+.cal-grid {
+  background: #FFFFFF;
+  padding: 12rpx 16rpx 24rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cal-cell {
+  width: calc(100% / 7);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  border: 1rpx solid transparent;
+  box-sizing: border-box;
+  padding: 4rpx;
+  margin: 3rpx 0;
+  position: relative;
+
+  &--empty {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  &--unavailable {
+    opacity: 0.5;
+  }
+
+  &--selected {
+    border-radius: 16rpx;
+    transform: scale(1.05);
+  }
+
+  &--today {
+    box-shadow: 0 0 0 3rpx #0066FF;
+  }
+
+  &__day {
+    font-size: 26rpx;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4rpx;
+  }
+
+  &__price {
+    font-size: 18rpx;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  &__unavail {
+    font-size: 22rpx;
+    color: #D1D5DB;
+  }
+
+  &__dot {
+    position: absolute;
+    top: 6rpx;
+    right: 6rpx;
+    width: 10rpx;
+    height: 10rpx;
+    border-radius: 50%;
+
+    &--low {
+      background: #10B981;
+    }
+
+    &--high {
+      background: #EF4444;
+    }
+  }
+}
+
+/* ── Loading ── */
+.cal-loading {
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+
+  &__text {
+    font-size: 28rpx;
+    color: #9CA3AF;
+  }
+}
+
+/* ── Selected Detail ── */
+.selected-detail {
+  margin: 20rpx 32rpx 0;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.07);
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16rpx;
+  }
+
+  &__date {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  &__level {
+    font-size: 24rpx;
+    font-weight: 700;
+    padding: 6rpx 18rpx;
+    border-radius: 999rpx;
+    background: #F3F4F6;
+  }
+
+  &__price-row {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    margin-bottom: 24rpx;
+  }
+
+  &__price-label {
+    font-size: 26rpx;
+    color: #6B7280;
+  }
+
+  &__price-value {
+    font-size: 40rpx;
+    font-weight: 800;
+    color: #1A1A1A;
+  }
+
+  &__book-btn {
+    background: #0066FF;
+    border-radius: 999rpx;
+    padding: 20rpx 0;
+    text-align: center;
+  }
+
+  &__book-text {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+}
+
+/* ── Price Alert Setup ── */
+.alert-setup {
+  margin: 24rpx 32rpx 0;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+
+  &__title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 800;
+    color: #1A1A1A;
+    margin-bottom: 8rpx;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 24rpx;
+    color: #6B7280;
+    margin-bottom: 24rpx;
+  }
+
+  &__row {
+    display: flex;
+    gap: 16rpx;
+    align-items: center;
+  }
+
+  &__input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #F9FAFB;
+    border-radius: 16rpx;
+    border: 1rpx solid #E5E7EB;
+    padding: 0 20rpx;
+    height: 80rpx;
+  }
+
+  &__currency {
+    font-size: 30rpx;
+    color: #6B7280;
+    margin-right: 8rpx;
+  }
+
+  &__input {
+    flex: 1;
+    font-size: 28rpx;
+    color: #1A1A1A;
+    background: transparent;
+    border: none;
+    outline: none;
+    height: 100%;
+  }
+
+  &__btn {
+    background: #F59E0B;
+    border-radius: 999rpx;
+    padding: 0 32rpx;
+    height: 80rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &--loading {
+      opacity: 0.7;
+    }
+
+    &-text {
+      font-size: 26rpx;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+  }
+}
+
+/* ── Quick Tips ── */
+.cal-tips {
+  margin: 24rpx 32rpx 0;
+  background: #F0FDF4;
+  border-radius: 20rpx;
+  padding: 28rpx 32rpx;
+  border: 1rpx solid #D1FAE5;
+
+  &__title {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 800;
+    color: #10B981;
+    margin-bottom: 16rpx;
+  }
+
+  &__item {
+    display: block;
+    font-size: 24rpx;
+    color: #374151;
+    line-height: 1.8;
+  }
+}

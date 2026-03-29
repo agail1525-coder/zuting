@@ -1113,3 +1113,103 @@ export async function bookPackage(data: {
 export async function fetchMyPackageBookings(page = 1): Promise<{ items: PackageBookingItem[]; total: number }> {
   return fetchAuthed(`/api/packages/my-bookings?page=${page}`, { method: 'GET' });
 }
+
+// ─── Price Tools / 价格工具 ────────────────────────────────────────────────────
+
+export interface PriceCalendarDay {
+  date: string;         // ISO date string YYYY-MM-DD
+  price: number;
+  level: 'cheap' | 'normal' | 'expensive';
+  available: boolean;
+}
+
+export interface PriceCalendarResponse {
+  routeId: string;
+  year: number;
+  month: number;
+  days: PriceCalendarDay[];
+  currency: string;
+}
+
+export interface PriceCompareItem {
+  routeId: string;
+  title: string;
+  coverImage: string | null;
+  basePrice: number;
+  currentPrice: number;
+  discount: number | null;
+  rating: number | null;
+  duration: number;
+  priceLevel: 'cheap' | 'normal' | 'expensive';
+  currency: string;
+}
+
+export interface PriceTrendPoint {
+  date: string;
+  price: number;
+}
+
+export interface PriceTrendResponse {
+  routeId: string;
+  title: string;
+  trend: PriceTrendPoint[];
+  minPrice: number;
+  maxPrice: number;
+  avgPrice: number;
+  recommendation: string;
+}
+
+export interface PriceAlert {
+  id: string;
+  userId: string;
+  routeId: string;
+  routeTitle: string;
+  targetPrice: number;
+  currentPrice: number;
+  currency: string;
+  isTriggered: boolean;
+  triggeredAt: string | null;
+  createdAt: string;
+}
+
+export interface CreatePriceAlertData {
+  routeId: string;
+  targetPrice: number;
+}
+
+// --- Price Calendar ---
+export async function fetchPriceCalendar(
+  routeId: string,
+  year: number,
+  month: number,
+): Promise<PriceCalendarResponse> {
+  return fetchJson(`/api/prices/calendar?routeId=${routeId}&year=${year}&month=${month}`);
+}
+
+// --- Price Compare ---
+export async function fetchPriceCompare(routeIds: string[]): Promise<PriceCompareItem[]> {
+  const ids = routeIds.join(',');
+  return fetchJson(`/api/prices/compare?ids=${ids}`);
+}
+
+export async function fetchCheapestRoutes(limit = 10): Promise<PriceCompareItem[]> {
+  return fetchJson(`/api/prices/cheapest?limit=${limit}`);
+}
+
+// --- Price Trend ---
+export async function fetchPriceTrend(routeId: string, days = 30): Promise<PriceTrendResponse> {
+  return fetchJson(`/api/prices/trend?routeId=${routeId}&days=${days}`);
+}
+
+// --- Price Alerts ---
+export async function fetchPriceAlerts(): Promise<PriceAlert[]> {
+  return fetchAuthed('/api/prices/alerts', { method: 'GET' });
+}
+
+export async function createPriceAlert(data: CreatePriceAlertData): Promise<PriceAlert> {
+  return fetchAuthed('/api/prices/alerts', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function deletePriceAlert(id: string): Promise<void> {
+  await fetchAuthed(`/api/prices/alerts/${id}`, { method: 'DELETE' });
+}

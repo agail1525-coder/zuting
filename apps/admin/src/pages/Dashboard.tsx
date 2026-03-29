@@ -16,6 +16,7 @@ import {
   GiftOutlined,
   ShoppingCartOutlined,
   CrownOutlined,
+  DollarOutlined,
 } from '@ant-design/icons';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -122,6 +123,31 @@ async function fetchPromotionOverview(): Promise<PromotionOverview> {
   }
 }
 
+interface PriceOverview {
+  totalSnapshots: number;
+  activeAlerts: number;
+}
+
+async function fetchPriceOverview(): Promise<PriceOverview> {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const token = localStorage.getItem('token');
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    const [snapshotsRes, alertsRes] = await Promise.all([
+      fetch(`${base}/price-snapshots?page=1&limit=1`, { headers }),
+      fetch(`${base}/price-alerts?page=1&limit=1&status=ACTIVE`, { headers }),
+    ]);
+    const snapshotsData = snapshotsRes.ok ? await snapshotsRes.json() : null;
+    const alertsData = alertsRes.ok ? await alertsRes.json() : null;
+    return {
+      totalSnapshots: snapshotsData?.total ?? 0,
+      activeAlerts: alertsData?.total ?? 0,
+    };
+  } catch {
+    return { totalSnapshots: 0, activeAlerts: 0 };
+  }
+}
+
 async function fetchHotKeywords(): Promise<HotKeyword[]> {
   try {
     const res = await fetch(`${API_BASE}/search/hot`);
@@ -162,6 +188,9 @@ export default function Dashboard() {
   const [membershipOverview, setMembershipOverview] = useState<MembershipOverview>({
     totalMembers: 0, premiumMembers: 0, todayCheckins: 0, todayRedemptions: 0,
   });
+  const [priceOverview, setPriceOverview] = useState<PriceOverview>({
+    totalSnapshots: 0, activeAlerts: 0,
+  });
 
   useEffect(() => {
     getDashboardStats()
@@ -175,6 +204,7 @@ export default function Dashboard() {
     fetchCommunityStats().then(setCommunityStats);
     fetchPromotionOverview().then(setPromotionOverview);
     fetchMembershipOverview().then(setMembershipOverview);
+    fetchPriceOverview().then(setPriceOverview);
   }, []);
 
   if (loading) {
@@ -545,6 +575,45 @@ export default function Dashboard() {
                   value={membershipOverview.todayRedemptions}
                   prefix={<GiftOutlined />}
                   valueStyle={{ color: '#1890FF', fontWeight: 700 }}
+                />
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 价格概览 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24}>
+          <Card
+            title={
+              <span>
+                <DollarOutlined style={{ color: '#52C41A', marginRight: 8 }} />
+                价格概览
+              </span>
+            }
+            extra={
+              <a href="/prices" style={{ color: '#D4A855', fontSize: 12 }}>
+                价格管理
+              </a>
+            }
+            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>总快照数</span>}
+                  value={priceOverview.totalSnapshots}
+                  prefix={<DollarOutlined />}
+                  valueStyle={{ color: '#52C41A', fontWeight: 700 }}
+                />
+              </Col>
+              <Col xs={24} sm={12}>
+                <Statistic
+                  title={<span style={{ color: '#999' }}>活跃提醒数</span>}
+                  value={priceOverview.activeAlerts}
+                  prefix={<DollarOutlined />}
+                  valueStyle={{ color: '#E87040', fontWeight: 700 }}
                 />
               </Col>
             </Row>

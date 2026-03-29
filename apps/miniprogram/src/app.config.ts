@@ -37,7 +37,9 @@ export default defineAppConfig({
     'pages/membership/index',
     'pages/points-mall/index',
     'pages/packages/index',
-    'pages/package-detail/index'
+    'pages/package-detail/index',
+    'pages/prices/index',
+    'pages/price-calendar/index'
   ],
   tabBar: {
     color: '#9CA3AF',

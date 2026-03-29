@@ -107,6 +107,18 @@ function RootLayout() {
           name="packages/[id]"
           options={{ title: '套餐详情' }}
         />
+        <Stack.Screen
+          name="prices"
+          options={{ title: '价格工具' }}
+        />
+        <Stack.Screen
+          name="price-calendar"
+          options={{ title: '价格日历' }}
+        />
+        <Stack.Screen
+          name="price-alerts"
+          options={{ title: '价格提醒' }}
+        />
       </Stack>
     </AuthProvider>
   );

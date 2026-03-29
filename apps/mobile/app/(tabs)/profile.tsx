@@ -148,6 +148,29 @@ export default function ProfileScreen() {
         />
       </Animated.View>
 
+      {/* Price Tools */}
+      <Animated.View entering={FadeInDown.duration(300).delay(275)} style={styles.menuSection}>
+        <Text style={styles.menuSectionTitle}>价格工具</Text>
+        <MenuItem
+          icon="calculator"
+          label="价格工具"
+          subtitle="日历·比价·趋势·提醒"
+          onPress={() => router.push('/prices' as never)}
+        />
+        <MenuItem
+          icon="calendar"
+          label="价格日历"
+          subtitle="全月价格一览，选最低价出行"
+          onPress={() => router.push('/price-calendar' as never)}
+        />
+        <MenuItem
+          icon="notifications"
+          label="价格提醒"
+          subtitle="设置目标价，降价即时通知"
+          onPress={() => router.push('/price-alerts' as never)}
+        />
+      </Animated.View>
+
       {/* About */}
       <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>
