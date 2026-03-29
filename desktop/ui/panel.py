@@ -258,10 +258,33 @@ def _build_chat(parent):
                                state="disabled")
     chat_box.pack(padx=10, pady=5, fill="both", expand=True)
 
-    # 添加欢迎消息
+    # 添加欢迎消息 + 自动检测 AI 连接状态
     chat_box.configure(state="normal")
     chat_box.insert("end", "小鸿: 愿力不退，精进不止。有什么修行上的疑惑？\n\n")
     chat_box.configure(state="disabled")
+
+    # 状态标签
+    ai_status = ctk.CTkLabel(parent, text="AI: 检测中...",
+                             font=ctk.CTkFont(size=10), text_color="#888")
+    ai_status.pack(anchor="e", padx=15)
+
+    def _check_ai():
+        try:
+            import api_client
+            if api_client.check_api():
+                st.api_online = True
+                if st.root:
+                    st.root.after(0, lambda: ai_status.configure(
+                        text="AI: ● Qwen 已连接", text_color="#43e97b"))
+            else:
+                if st.root:
+                    st.root.after(0, lambda: ai_status.configure(
+                        text="AI: ○ 离线模式 (本地规则引擎)", text_color="#ffa500"))
+        except Exception:
+            if st.root:
+                st.root.after(0, lambda: ai_status.configure(
+                    text="AI: ○ 离线模式", text_color="#ffa500"))
+    threading.Thread(target=_check_ai, daemon=True).start()
 
     # 输入区
     input_frame = ctk.CTkFrame(parent, fg_color="transparent")
@@ -422,10 +445,66 @@ def _build_settings(parent):
     def on_api_change(*args):
         config.set_val("api_url", api_var.get())
 
-    api_entry = ctk.CTkEntry(scroll, textvariable=api_var, width=400,
+    api_row = ctk.CTkFrame(scroll, fg_color="transparent")
+    api_row.pack(fill="x", padx=10, pady=(0, 5))
+
+    api_entry = ctk.CTkEntry(api_row, textvariable=api_var, width=340,
                              font=ctk.CTkFont(size=11))
-    api_entry.pack(anchor="w", padx=10, pady=(0, 10))
+    api_entry.pack(side="left")
     api_var.trace_add("write", on_api_change)
+
+    # 连通测试按钮
+    test_result = ctk.StringVar(value="")
+    test_label = ctk.CTkLabel(scroll, textvariable=test_result,
+                              font=ctk.CTkFont(size=11), text_color="#888")
+    test_label.pack(anchor="w", padx=10, pady=(0, 5))
+
+    def test_connection():
+        test_result.set("测试中...")
+        test_label.configure(text_color="#ffa500")
+
+        def _test():
+            import api_client
+            results = []
+
+            # 1. 测试基础 API
+            api_ok = api_client.check_api()
+            st.api_online = api_ok
+            results.append(f"API: {'● 已连接' if api_ok else '✗ 未连接'}")
+
+            # 2. 测试小鸿 AI
+            if api_ok:
+                try:
+                    import httpx
+                    url = config.get("api_url") + "/xiaohong/chat/stream"
+                    ai_ok = False
+                    with httpx.stream("GET", url, params={"message": "你好"},
+                                      timeout=15.0) as resp:
+                        for line in resp.iter_lines():
+                            if line.strip().startswith("data: "):
+                                ai_ok = True
+                                break
+                    results.append(f"AI小鸿: {'● 已连接' if ai_ok else '✗ 无响应'}")
+                except Exception as e:
+                    results.append(f"AI小鸿: ✗ {str(e)[:30]}")
+            else:
+                results.append("AI小鸿: ✗ (API未连接)")
+
+            summary = "  |  ".join(results)
+            color = "#43e97b" if api_ok else "#ff6b6b"
+
+            if st.root:
+                st.root.after(0, lambda: (
+                    test_result.set(summary),
+                    test_label.configure(text_color=color),
+                ))
+
+        threading.Thread(target=_test, daemon=True).start()
+
+    ctk.CTkButton(api_row, text="测试连通", width=100,
+                  fg_color="#667eea", text_color="white",
+                  hover_color="#5568d0",
+                  command=test_connection).pack(side="left", padx=(10, 0))
 
 
 # ═══════════════════════════════════════════════════════
