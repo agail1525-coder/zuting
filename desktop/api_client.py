@@ -115,28 +115,42 @@ def get_media(entity_type, entity_id, media_type=None):
 
 
 def stream_xiaohong_chat(message, on_token=None, on_done=None):
-    """SSE 流式聊天 — 在后台线程运行"""
+    """SSE 流式聊天 — 在后台线程运行
+    NestJS @Sse 输出格式: data: {"content":"token","done":false}\n\n
+    """
     def _stream():
         try:
             import httpx
             url = config.get("api_url") + "/xiaohong/chat/stream"
-            with httpx.stream("GET", url, params={"message": message}, timeout=60.0) as resp:
-                buffer = ""
+            buffer = ""
+            with httpx.stream("GET", url, params={"message": message}, timeout=180.0,
+                              headers={"Accept": "text/event-stream"}) as resp:
                 for line in resp.iter_lines():
+                    line = line.strip()
+                    if not line:
+                        continue
+                    # NestJS SSE: "data: {...}" 格式
                     if line.startswith("data: "):
-                        chunk = line[6:]
-                        if chunk == "[DONE]":
+                        payload = line[6:]
+                        if payload == "[DONE]":
                             break
                         try:
-                            data = json.loads(chunk)
-                            token = data.get("content", data.get("text", chunk))
-                            buffer += token
-                            if on_token:
-                                on_token(token)
+                            data = json.loads(payload)
+                            # NestJS @Sse wraps in {data: {content, done, intent}}
+                            inner = data if "content" in data else data.get("data", data)
+                            token = inner.get("content", "")
+                            done = inner.get("done", False)
+                            if token:
+                                buffer += token
+                                if on_token:
+                                    on_token(token)
+                            if done:
+                                break
                         except json.JSONDecodeError:
-                            buffer += chunk
+                            # 纯文本 token
+                            buffer += payload
                             if on_token:
-                                on_token(chunk)
+                                on_token(payload)
             if on_done:
                 on_done(buffer)
         except Exception as e:

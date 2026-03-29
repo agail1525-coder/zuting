@@ -305,7 +305,7 @@ def _build_chat(parent):
         # 离线回退: 使用本地小鸿
         from xiaohong_agent import get_greeting, get_cross_insight, get_zuting_vision
         seal = get_current_seal()
-        reply = get_greeting() + "\n" + get_cross_insight(seal["series"])
+        reply = "[离线模式] " + get_greeting() + "\n" + get_cross_insight(seal["series"])
         chat_box.configure(state="normal")
         chat_box.insert("end", f"{reply}\n\n")
         chat_box.see("end")
@@ -330,7 +330,13 @@ def _append_token(chat_box, token):
 def _finish_reply(chat_box, full_text):
     chat_box.configure(state="normal")
     if full_text is None:
-        chat_box.insert("end", "(连接失败，请检查 API)")
+        chat_box.insert("end", "(AI 连接失败，已回退离线模式)\n")
+        # 离线回退
+        from xiaohong_agent import get_greeting, get_cross_insight
+        from core.state import get_current_seal
+        seal = get_current_seal()
+        fallback = get_greeting() + "\n" + get_cross_insight(seal["series"])
+        chat_box.insert("end", f"小鸿: [离线] {fallback}")
     chat_box.insert("end", "\n\n")
     chat_box.see("end")
     chat_box.configure(state="disabled")
