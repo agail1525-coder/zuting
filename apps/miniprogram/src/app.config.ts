@@ -45,7 +45,11 @@ export default defineAppConfig({
     'pages/messages/index',
     'pages/chat-room/index',
     'pages/religions/index',
-    'pages/guides/index'
+    'pages/guides/index',
+    'pages/price-compare/index',
+    'pages/price-trend/index',
+    'pages/leaderboard/index',
+    'pages/photos/index'
   ],
   tabBar: {
     color: '#9CA3AF',

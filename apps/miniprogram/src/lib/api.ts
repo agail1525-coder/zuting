@@ -1046,6 +1046,49 @@ export function fetchPriceCompare(routeIds: string[]) {
   return request<PriceCompareItem[]>('/prices/compare', { ids: routeIds.join(',') })
 }
 
+export function fetchCheapestRoutes(limit = 10) {
+  return request<PriceCompareItem[]>('/prices/cheapest', { limit: String(limit) })
+}
+
+export interface PriceTrendPoint {
+  date: string
+  price: number
+}
+
+export interface PriceTrendResponse {
+  routeId: string
+  title: string
+  trend: PriceTrendPoint[]
+  minPrice: number
+  maxPrice: number
+  avgPrice: number
+  recommendation: string
+}
+
+export function fetchPriceTrend(routeId: string, days = 30) {
+  return request<PriceTrendResponse>('/prices/trend', { routeId, days: String(days) })
+}
+
+// --- Photo Wall ---
+
+export interface PhotoItem {
+  id: string
+  url: string
+  userId: string
+  userName: string
+  userAvatar: string | null
+  entityType: string
+  entityId: string
+  createdAt: string
+}
+
+export function fetchPhotoWall(params?: { page?: number; limit?: number }) {
+  const p: Record<string, string> = {}
+  if (params?.page) p['page'] = String(params.page)
+  if (params?.limit) p['limit'] = String(params.limit)
+  return request<{ items: PhotoItem[]; total: number }>('/community/photos', p)
+}
+
 // --- Merchant ---
 
 export interface Merchant {

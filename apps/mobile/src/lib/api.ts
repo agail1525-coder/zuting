@@ -805,6 +805,25 @@ export async function fetchTrending(): Promise<{ hotGuides: GuideItem[]; hotQues
   return fetchJson('/api/community/trending');
 }
 
+// --- Photo Wall ---
+export interface PhotoItem {
+  id: string;
+  url: string;
+  userId: string;
+  userName: string;
+  userAvatar: string | null;
+  entityType: string;
+  entityId: string;
+  createdAt: string;
+}
+
+export async function fetchPhotoWall(params?: { page?: number; limit?: number }): Promise<{ items: PhotoItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (params?.page) p.set('page', String(params.page));
+  if (params?.limit) p.set('limit', String(params.limit));
+  return fetchJson(`/api/community/photos?${p}`);
+}
+
 // --- User Profile ---
 export async function fetchUserProfile(userId: string): Promise<UserProfileData> {
   return fetchJson(`/api/users/${userId}/profile`);

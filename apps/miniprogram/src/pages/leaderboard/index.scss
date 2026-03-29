@@ -1,0 +1,152 @@
+.leaderboard {
+  min-height: 100vh;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+
+  &__tabs {
+    display: flex;
+    padding: 24rpx 32rpx;
+    gap: 16rpx;
+  }
+
+  &__tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16rpx;
+    border-radius: 16rpx;
+    background: #FFFFFF;
+    border: 1rpx solid #E5E7EB;
+
+    &--active {
+      background: rgba(212, 168, 85, 0.1);
+      border-color: #D4A855;
+    }
+  }
+
+  &__tab-icon {
+    font-size: 36rpx;
+    margin-bottom: 4rpx;
+  }
+
+  &__tab-label {
+    font-size: 22rpx;
+    color: #9CA3AF;
+
+    .leaderboard__tab--active & {
+      color: #D4A855;
+      font-weight: 700;
+    }
+  }
+
+  &__periods {
+    display: flex;
+    padding: 0 32rpx 16rpx;
+    gap: 12rpx;
+  }
+
+  &__period {
+    padding: 8rpx 24rpx;
+    border-radius: 32rpx;
+    background: #FFFFFF;
+    border: 1rpx solid #E5E7EB;
+    font-size: 24rpx;
+    color: #6B7280;
+
+    &--active {
+      background: #D4A855;
+      border-color: #D4A855;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+  }
+
+  &__list {
+    flex: 1;
+    padding: 0 32rpx;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    border-radius: 16rpx;
+    border: 1rpx solid #E5E7EB;
+    padding: 20rpx 24rpx;
+    margin-bottom: 12rpx;
+  }
+
+  &__rank-col {
+    width: 56rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__medal {
+    width: 44rpx;
+    height: 44rpx;
+    border-radius: 22rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__medal-text {
+    color: #FFFFFF;
+    font-size: 24rpx;
+    font-weight: 800;
+  }
+
+  &__rank-num {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #9CA3AF;
+  }
+
+  &__avatar {
+    width: 60rpx;
+    height: 60rpx;
+    border-radius: 30rpx;
+    background: rgba(212, 168, 85, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 16rpx;
+  }
+
+  &__avatar-initial {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #D4A855;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__nickname {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  &__count-col {
+    text-align: right;
+  }
+
+  &__count-value {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 800;
+    color: #D4A855;
+  }
+
+  &__count-unit {
+    display: block;
+    font-size: 20rpx;
+    color: #9CA3AF;
+  }
+}
