@@ -1372,6 +1372,105 @@ export async function applyCoupon(code: string, orderId: string): Promise<{ disc
   });
 }
 
+// --- Membership ---
+export interface MembershipData {
+  id: string; userId: string; level: number; levelName: string; totalPoints: number; availablePoints: number;
+}
+export interface PointsTransactionItem {
+  id: string; type: string; amount: number; source: string; description: string; createdAt: string;
+}
+export interface LevelInfo {
+  level: number; name: string; minPoints: number; perks: string[];
+}
+
+export async function fetchMyMembership(): Promise<MembershipData> {
+  return fetchAuthed("/api/membership/me");
+}
+export async function fetchPointsHistory(page = 1): Promise<{ items: PointsTransactionItem[]; total: number }> {
+  return fetchAuthed(`/api/membership/points?page=${page}`);
+}
+export async function checkin(): Promise<{ points: number; streak: number; bonus: number }> {
+  return fetchAuthed("/api/membership/checkin", { method: "POST" });
+}
+export async function fetchCheckinCalendar(year: number, month: number): Promise<{ dates: string[] }> {
+  return fetchAuthed(`/api/membership/checkin-calendar?year=${year}&month=${month}`);
+}
+export async function fetchLevels(): Promise<LevelInfo[]> {
+  return fetchJson("/api/membership/levels");
+}
+
+// --- Referral ---
+export interface InviteCodeData { code: string; totalInvites: number; totalRewards: number }
+export interface ReferralStats { totalInvites: number; level1Count: number; level2Count: number; totalRewards: number; monthlyRewards: number }
+export interface TeamMember { id: string; inviteeId: string; level: number; createdAt: string }
+export interface ReferralRewardItem { id: string; orderId: string; amount: number; level: number; status: string; createdAt: string }
+
+export async function fetchMyInviteCode(): Promise<InviteCodeData> {
+  return fetchAuthed("/api/referral/my-code");
+}
+export async function fetchMyTeam(): Promise<{ level1: TeamMember[]; level2: TeamMember[] }> {
+  return fetchAuthed("/api/referral/my-team");
+}
+export async function fetchMyRewards(page = 1): Promise<{ items: ReferralRewardItem[]; total: number }> {
+  return fetchAuthed(`/api/referral/my-rewards?page=${page}`);
+}
+export async function fetchReferralStats(): Promise<ReferralStats> {
+  return fetchAuthed("/api/referral/stats");
+}
+export async function bindInviteCode(code: string): Promise<void> {
+  await fetchAuthed("/api/referral/bind", { method: "POST", body: JSON.stringify({ code }) });
+}
+
+// --- Points Mall ---
+export interface PointsProductItem {
+  id: string; name: string; description: string | null; coverImage: string | null; category: string;
+  pointsCost: number; originalPrice: number | null; stock: number; soldCount: number; isActive: boolean;
+}
+export interface PointsExchangeItem {
+  id: string; productId: string; pointsSpent: number; status: string; createdAt: string; product: PointsProductItem;
+}
+
+export async function fetchPointsProducts(category?: string, page = 1): Promise<{ items: PointsProductItem[]; total: number }> {
+  const p = new URLSearchParams({ page: String(page) });
+  if (category) p.set("category", category);
+  return fetchJson(`/api/points-mall/products?${p}`);
+}
+export async function fetchPointsProduct(id: string): Promise<PointsProductItem> {
+  return fetchJson(`/api/points-mall/products/${id}`);
+}
+export async function exchangeProduct(productId: string): Promise<PointsExchangeItem> {
+  return fetchAuthed("/api/points-mall/exchange", { method: "POST", body: JSON.stringify({ productId }) });
+}
+export async function fetchMyExchanges(page = 1): Promise<{ items: PointsExchangeItem[]; total: number }> {
+  return fetchAuthed(`/api/points-mall/my-exchanges?page=${page}`);
+}
+
+// --- Packages ---
+export interface PackageItem {
+  id: string; name: string; description: string | null; coverImage: string | null; packageType: string;
+  basePrice: number; memberPrice: number | null; includes: Record<string, boolean>; duration: number;
+  maxPersons: number; isActive: boolean;
+}
+export interface PackageBookingItem {
+  id: string; packageId: string; persons: number; totalPrice: number; status: string; startDate: string; createdAt: string; package: PackageItem;
+}
+
+export async function fetchPackages(params?: { type?: string; page?: number }): Promise<{ items: PackageItem[]; total: number }> {
+  const p = new URLSearchParams();
+  if (params?.type) p.set("type", params.type);
+  if (params?.page) p.set("page", String(params.page));
+  return fetchJson(`/api/packages?${p}`);
+}
+export async function fetchPackage(id: string): Promise<PackageItem> {
+  return fetchJson(`/api/packages/${id}`);
+}
+export async function bookPackage(packageId: string, data: { persons: number; startDate: string; contactName?: string; contactPhone?: string }): Promise<PackageBookingItem> {
+  return fetchAuthed(`/api/packages/${packageId}/book`, { method: "POST", body: JSON.stringify(data) });
+}
+export async function fetchMyPackageBookings(page = 1): Promise<{ items: PackageBookingItem[]; total: number }> {
+  return fetchAuthed(`/api/packages/my-bookings?page=${page}`);
+}
+
 export async function payOrder(
   orderId: string,
   data: { paidAmount?: number; paymentMethod?: string; paymentId?: string }
