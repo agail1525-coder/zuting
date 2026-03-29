@@ -7,6 +7,8 @@ import {
   Param,
   Query,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,6 +24,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { CreateReplyDto } from './dto/create-reply.dto';
 
 @ApiTags('reviews')
 @Controller('reviews')
@@ -108,6 +111,60 @@ export class ReviewController {
     @Param('targetId') targetId: string,
   ) {
     return this.reviewService.getStats(targetType, targetId);
+  }
+
+  @Post(':id/replies')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Reply to a review',
+    description: '回复一条评价。支持官方/普通回复。\n\nReply to a review (official or regular).',
+  })
+  @ApiParam({ name: 'id', description: 'Review ID (评价ID)' })
+  @ApiResponse({ status: 201, description: 'Reply created / 回复已创建' })
+  @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
+  @ApiResponse({ status: 404, description: 'Review not found / 评价不存在' })
+  addReply(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @Body() dto: CreateReplyDto,
+  ) {
+    return this.reviewService.addReply(id, userId, dto);
+  }
+
+  @Post(':id/vote')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Vote review as helpful',
+    description: '标记评价为"有帮助"。每个用户只能投票一次。\n\nMark a review as helpful. Each user can vote once.',
+  })
+  @ApiParam({ name: 'id', description: 'Review ID (评价ID)' })
+  @ApiResponse({ status: 200, description: 'Vote recorded / 投票成功' })
+  @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
+  @ApiResponse({ status: 404, description: 'Review not found / 评价不存在' })
+  @ApiResponse({ status: 409, description: 'Already voted / 已投票' })
+  addVote(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.reviewService.addVote(id, userId);
+  }
+
+  @Delete(':id/vote')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Remove helpful vote',
+    description: '取消对评价的"有帮助"投票。\n\nRemove your helpful vote from a review.',
+  })
+  @ApiParam({ name: 'id', description: 'Review ID (评价ID)' })
+  @ApiResponse({ status: 200, description: 'Vote removed / 投票已取消' })
+  @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
+  @ApiResponse({ status: 404, description: 'Vote not found / 投票不存在' })
+  removeVote(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.reviewService.removeVote(id, userId);
   }
 
   @Patch(':id')

@@ -36,9 +36,11 @@ model User {
   journals      JournalEntry[]
   sessions      Session[]
   guideProfile  GuideProfile?
-  reviews       Review[]
-  notifications Notification[]
-  uploads       Upload[]
+  reviews         Review[]
+  reviewReplies   ReviewReply[]
+  reviewVotes     ReviewVote[]
+  notifications   Notification[]
+  uploads         Upload[]
   reportsMade     ContentReport[] @relation("ReportsMade")
   reportsReviewed ContentReport[] @relation("ReportsReviewed")
   conversations   Conversation[]
@@ -399,19 +401,66 @@ model GuideProfile {
 // ========== P1: 评价 ==========
 
 model Review {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  targetType String   // TRIP / GUIDE / SITE
-  targetId   String
-  rating     Int      // 1-5
-  content    String?  @db.Text
-  images     String[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  targetType   String   // TRIP / GUIDE / SITE
+  targetId     String
+  rating       Int      // 1-5
+  content      String?  @db.Text
+  images       String[]
+  helpfulCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  replies      ReviewReply[]
+  votes        ReviewVote[]
 
   @@unique([userId, targetType, targetId])
   @@index([targetType, targetId])
+}
+
+// ========== 评价回复 ==========
+
+model ReviewReply {
+  id         String   @id @default(cuid())
+  reviewId   String
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  isOfficial Boolean  @default(false)
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([reviewId])
+}
+
+// ========== 评价投票 ==========
+
+model ReviewVote {
+  id        String   @id @default(cuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
+  @@index([reviewId])
+}
+
+// ========== 浏览历史 ==========
+
+model UserViewHistory {
+  id         String   @id @default(cuid())
+  userId     String?
+  sessionId  String?
+  entityType String
+  entityId   String
+  viewedAt   DateTime @default(now())
+
+  @@index([userId, viewedAt])
+  @@index([entityType, entityId])
 }
 
 // ========== P2: 通知 ==========

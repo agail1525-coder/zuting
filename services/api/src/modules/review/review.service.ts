@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { CreateReplyDto } from './dto/create-reply.dto';
 
 @Injectable()
 export class ReviewService {
@@ -73,6 +74,11 @@ export class ReviewService {
         where,
         include: {
           user: { select: { id: true, nickname: true, avatar: true } },
+          replies: {
+            include: { user: { select: { id: true, nickname: true, avatar: true } } },
+            orderBy: { createdAt: 'asc' },
+          },
+          _count: { select: { votes: true } },
         },
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * take,
@@ -160,5 +166,62 @@ export class ReviewService {
     }
 
     return this.prisma.review.delete({ where: { id } });
+  }
+
+  /** Add a reply to a review */
+  async addReply(reviewId: string, userId: string, dto: CreateReplyDto) {
+    const review = await this.prisma.review.findUnique({ where: { id: reviewId } });
+    if (!review) throw new NotFoundException(`Review ${reviewId} not found`);
+
+    return this.prisma.reviewReply.create({
+      data: {
+        reviewId,
+        userId,
+        content: dto.content,
+        isOfficial: dto.isOfficial ?? false,
+      },
+      include: {
+        user: { select: { id: true, nickname: true, avatar: true } },
+      },
+    });
+  }
+
+  /** Vote a review as "helpful" */
+  async addVote(reviewId: string, userId: string) {
+    const review = await this.prisma.review.findUnique({ where: { id: reviewId } });
+    if (!review) throw new NotFoundException(`Review ${reviewId} not found`);
+
+    const existing = await this.prisma.reviewVote.findUnique({
+      where: { reviewId_userId: { reviewId, userId } },
+    });
+    if (existing) throw new ConflictException('You have already voted for this review');
+
+    await this.prisma.$transaction([
+      this.prisma.reviewVote.create({ data: { reviewId, userId } }),
+      this.prisma.review.update({
+        where: { id: reviewId },
+        data: { helpfulCount: { increment: 1 } },
+      }),
+    ]);
+
+    return { message: 'Vote recorded' };
+  }
+
+  /** Remove vote from a review */
+  async removeVote(reviewId: string, userId: string) {
+    const vote = await this.prisma.reviewVote.findUnique({
+      where: { reviewId_userId: { reviewId, userId } },
+    });
+    if (!vote) throw new NotFoundException('Vote not found');
+
+    await this.prisma.$transaction([
+      this.prisma.reviewVote.delete({ where: { reviewId_userId: { reviewId, userId } } }),
+      this.prisma.review.update({
+        where: { id: reviewId },
+        data: { helpfulCount: { decrement: 1 } },
+      }),
+    ]);
+
+    return { message: 'Vote removed' };
   }
 }
