@@ -17,24 +17,26 @@ export default function RankingsClient() {
   const [sites, setSites] = useState<HolySite[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     if (tab === "sites") {
       fetchHolySites()
         .then((data) => {
           const sorted = [...data].sort((a, b) => (b.name > a.name ? -1 : 1));
           setSites(sorted.slice(0, 20));
         })
-        .catch(() => {})
+        .catch(() => setError(t("rankings.loadError") || "加载失败，请刷新重试"))
         .finally(() => setLoading(false));
     } else {
       fetchRoutes({ sort: "rating", pageSize: 20 })
         .then((data) => setRoutes(data.items))
-        .catch(() => {})
+        .catch(() => setError(t("rankings.loadError") || "加载失败，请刷新重试"))
         .finally(() => setLoading(false));
     }
-  }, [tab]);
+  }, [tab, t]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,6 +77,21 @@ export default function RankingsClient() {
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
               ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500">{error}</p>
+              <button
+                onClick={() => { setLoading(true); setError(null); }}
+                className="mt-4 px-4 py-2 bg-[#0066FF] text-white rounded-lg text-sm hover:bg-[#0052CC]"
+              >
+                {t("rankings.retry") || "重试"}
+              </button>
+            </div>
+          ) : (tab === "sites" && sites.length === 0) || (tab === "routes" && routes.length === 0) ? (
+            <div className="text-center py-16">
+              <p className="text-4xl mb-3">🏛️</p>
+              <p className="text-gray-500">{t("rankings.empty") || "暂无排行数据"}</p>
             </div>
           ) : tab === "sites" ? (
             <div className="space-y-3">

@@ -59,7 +59,7 @@ export default function ChatPage() {
           setSuggestions(data.suggestions);
         }
       })
-      .catch(() => {});
+      .catch((err) => { console.error('Load suggestions failed:', err) });
   }, []);
 
   const handleSend = useCallback(
