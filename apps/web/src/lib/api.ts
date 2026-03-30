@@ -2,6 +2,13 @@ export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ||
   (typeof window === "undefined" ? "http://localhost:3002" : "");
 
+interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 async function fetchJson<T>(url: string): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
@@ -105,13 +112,14 @@ export interface Seal {
 // --- Religions ---
 
 export async function fetchReligions(): Promise<Religion[]> {
-  return fetchJson<Religion[]>("/api/religions");
+  const res = await fetchJson<PaginatedResponse<Religion>>("/api/religions?limit=100");
+  return res.items;
 }
 
 export async function fetchReligion(slug: string): Promise<Religion> {
-  const list = await fetchJson<Religion[]>(`/api/religions?slug=${slug}`);
-  if (list.length === 0) throw new Error(`Religion not found: ${slug}`);
-  return list[0];
+  const res = await fetchJson<PaginatedResponse<Religion>>(`/api/religions?slug=${slug}&limit=100`);
+  if (res.items.length === 0) throw new Error(`Religion not found: ${slug}`);
+  return res.items[0];
 }
 
 // --- Holy Sites ---
@@ -119,8 +127,10 @@ export async function fetchReligion(slug: string): Promise<Religion> {
 export async function fetchHolySites(
   religionId?: string
 ): Promise<HolySite[]> {
-  const params = religionId ? `?religionId=${religionId}` : "";
-  return fetchJson<HolySite[]>(`/api/holy-sites${params}`);
+  const params = new URLSearchParams({ limit: "100" });
+  if (religionId) params.set("religionId", religionId);
+  const res = await fetchJson<PaginatedResponse<HolySite>>(`/api/holy-sites?${params}`);
+  return res.items;
 }
 
 export async function fetchHolySite(id: string): Promise<HolySite> {
@@ -130,8 +140,10 @@ export async function fetchHolySite(id: string): Promise<HolySite> {
 // --- Temples ---
 
 export async function fetchTemples(religionId?: string): Promise<Temple[]> {
-  const params = religionId ? `?religionId=${religionId}` : "";
-  return fetchJson<Temple[]>(`/api/temples${params}`);
+  const params = new URLSearchParams({ limit: "100" });
+  if (religionId) params.set("religionId", religionId);
+  const res = await fetchJson<PaginatedResponse<Temple>>(`/api/temples?${params}`);
+  return res.items;
 }
 
 export async function fetchTemple(id: string): Promise<Temple> {
@@ -143,8 +155,10 @@ export async function fetchTemple(id: string): Promise<Temple> {
 export async function fetchPatriarchs(
   religionId?: string
 ): Promise<Patriarch[]> {
-  const params = religionId ? `?religionId=${religionId}` : "";
-  return fetchJson<Patriarch[]>(`/api/patriarchs${params}`);
+  const params = new URLSearchParams({ limit: "100" });
+  if (religionId) params.set("religionId", religionId);
+  const res = await fetchJson<PaginatedResponse<Patriarch>>(`/api/patriarchs?${params}`);
+  return res.items;
 }
 
 export async function fetchPatriarch(id: string): Promise<Patriarch> {
@@ -156,8 +170,10 @@ export async function fetchPatriarch(id: string): Promise<Patriarch> {
 export async function fetchTeachings(
   religionId?: string
 ): Promise<Teaching[]> {
-  const params = religionId ? `?religionId=${religionId}` : "";
-  return fetchJson<Teaching[]>(`/api/teachings${params}`);
+  const params = new URLSearchParams({ limit: "100" });
+  if (religionId) params.set("religionId", religionId);
+  const res = await fetchJson<PaginatedResponse<Teaching>>(`/api/teachings?${params}`);
+  return res.items;
 }
 
 export async function fetchTeaching(id: string): Promise<Teaching> {
@@ -259,8 +275,10 @@ export async function fetchMapSearch(bounds: {
 // --- Seals ---
 
 export async function fetchSeals(series?: string): Promise<Seal[]> {
-  const params = series ? `?series=${series}` : "";
-  return fetchJson<Seal[]>(`/api/seals${params}`);
+  const params = new URLSearchParams({ limit: "100" });
+  if (series) params.set("series", series);
+  const res = await fetchJson<PaginatedResponse<Seal>>(`/api/seals?${params}`);
+  return res.items;
 }
 
 export async function fetchSeal(id: number): Promise<Seal> {

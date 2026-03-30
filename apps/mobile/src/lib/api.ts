@@ -231,6 +231,13 @@ export interface Trip {
   _count: { orders: number; journals: number };
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface PaginatedTrips {
   data: Trip[];
   total: number;
@@ -239,35 +246,47 @@ export interface PaginatedTrips {
 }
 
 export const api = {
-  getReligions: (slug?: string) =>
-    request<Religion[]>('/religions', slug ? { slug } : undefined),
+  getReligions: async (slug?: string): Promise<Religion[]> => {
+    const res = await request<PaginatedResponse<Religion>>('/religions', { ...(slug ? { slug } : {}), limit: '100' });
+    return res.items;
+  },
 
-  getHolySites: (religionId?: string) =>
-    request<HolySite[]>('/holy-sites', religionId ? { religionId } : undefined),
+  getHolySites: async (religionId?: string): Promise<HolySite[]> => {
+    const res = await request<PaginatedResponse<HolySite>>('/holy-sites', { ...(religionId ? { religionId } : {}), limit: '100' });
+    return res.items;
+  },
 
   getHolySiteById: (id: string) =>
     request<HolySite>(`/holy-sites/${id}`),
 
-  getTemples: (religionId?: string) =>
-    request<Temple[]>('/temples', religionId ? { religionId } : undefined),
+  getTemples: async (religionId?: string): Promise<Temple[]> => {
+    const res = await request<PaginatedResponse<Temple>>('/temples', { ...(religionId ? { religionId } : {}), limit: '100' });
+    return res.items;
+  },
 
   getTempleById: (id: string) =>
     request<Temple>(`/temples/${id}`),
 
-  getPatriarchs: (religionId?: string) =>
-    request<Patriarch[]>('/patriarchs', religionId ? { religionId } : undefined),
+  getPatriarchs: async (religionId?: string): Promise<Patriarch[]> => {
+    const res = await request<PaginatedResponse<Patriarch>>('/patriarchs', { ...(religionId ? { religionId } : {}), limit: '100' });
+    return res.items;
+  },
 
   getPatriarchById: (id: string) =>
     request<Patriarch>(`/patriarchs/${id}`),
 
-  getTeachings: (religionId?: string) =>
-    request<Teaching[]>('/teachings', religionId ? { religionId } : undefined),
+  getTeachings: async (religionId?: string): Promise<Teaching[]> => {
+    const res = await request<PaginatedResponse<Teaching>>('/teachings', { ...(religionId ? { religionId } : {}), limit: '100' });
+    return res.items;
+  },
 
   getTeachingById: (id: string) =>
     request<Teaching>(`/teachings/${id}`),
 
-  getSeals: (series?: string) =>
-    request<Seal[]>('/seals', series ? { series } : undefined),
+  getSeals: async (series?: string): Promise<Seal[]> => {
+    const res = await request<PaginatedResponse<Seal>>('/seals', { ...(series ? { series } : {}), limit: '100' });
+    return res.items;
+  },
 
   getSealById: (id: string) =>
     request<Seal>(`/seals/${id}`),

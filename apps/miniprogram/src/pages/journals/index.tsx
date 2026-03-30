@@ -46,7 +46,7 @@ export default function JournalsPage() {
     }
     fetchJournals(params)
       .then(res => {
-        setJournals(res.data)
+        setJournals(res.items)
         setLoading(false)
       })
       .catch(err => {

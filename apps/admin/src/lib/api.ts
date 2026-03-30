@@ -7,6 +7,14 @@ import type {
   AdminRoute, AdminBooking, MediaContent,
 } from '../types';
 
+// ---- Paginated response type ----
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 // ---- DTO Interfaces (R-01: 严禁any) ----
 
 export interface CreateReligionDto {
@@ -105,8 +113,10 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 // ---- Religions ----
-export const getReligions = (slug?: string) =>
-  fetchJson<Religion[]>(slug ? `/religions?slug=${slug}` : '/religions');
+export const getReligions = async (slug?: string): Promise<Religion[]> => {
+  const res = await fetchJson<PaginatedResponse<Religion>>(slug ? `/religions?slug=${slug}&limit=100` : '/religions?limit=100');
+  return res.items;
+};
 export const createReligion = (data: CreateReligionDto) =>
   fetchJson<CreateReligionDto & { id: string }>('/religions', { method: 'POST', body: JSON.stringify(data) });
 export const updateReligion = (id: string, data: Partial<CreateReligionDto>) =>
@@ -115,8 +125,12 @@ export const deleteReligion = (id: string) =>
   fetchJson<DeleteResponse>(`/religions/${id}`, { method: 'DELETE' });
 
 // ---- Holy Sites ----
-export const getHolySites = (religionId?: string) =>
-  fetchJson<HolySite[]>(religionId ? `/holy-sites?religionId=${religionId}` : '/holy-sites');
+export const getHolySites = async (religionId?: string): Promise<HolySite[]> => {
+  const params = new URLSearchParams({ limit: '100' });
+  if (religionId) params.set('religionId', religionId);
+  const res = await fetchJson<PaginatedResponse<HolySite>>(`/holy-sites?${params}`);
+  return res.items;
+};
 export const createHolySite = (data: CreateHolySiteDto) =>
   fetchJson<CreateHolySiteDto & { id: string }>('/holy-sites', { method: 'POST', body: JSON.stringify(data) });
 export const updateHolySite = (id: string, data: Partial<CreateHolySiteDto>) =>
@@ -125,8 +139,12 @@ export const deleteHolySite = (id: string) =>
   fetchJson<DeleteResponse>(`/holy-sites/${id}`, { method: 'DELETE' });
 
 // ---- Temples ----
-export const getTemples = (religionId?: string) =>
-  fetchJson<Temple[]>(religionId ? `/temples?religionId=${religionId}` : '/temples');
+export const getTemples = async (religionId?: string): Promise<Temple[]> => {
+  const params = new URLSearchParams({ limit: '100' });
+  if (religionId) params.set('religionId', religionId);
+  const res = await fetchJson<PaginatedResponse<Temple>>(`/temples?${params}`);
+  return res.items;
+};
 export const createTemple = (data: CreateTempleDto) =>
   fetchJson<CreateTempleDto & { id: string }>('/temples', { method: 'POST', body: JSON.stringify(data) });
 export const updateTemple = (id: string, data: Partial<CreateTempleDto>) =>
@@ -135,8 +153,12 @@ export const deleteTemple = (id: string) =>
   fetchJson<DeleteResponse>(`/temples/${id}`, { method: 'DELETE' });
 
 // ---- Patriarchs ----
-export const getPatriarchs = (religionId?: string) =>
-  fetchJson<Patriarch[]>(religionId ? `/patriarchs?religionId=${religionId}` : '/patriarchs');
+export const getPatriarchs = async (religionId?: string): Promise<Patriarch[]> => {
+  const params = new URLSearchParams({ limit: '100' });
+  if (religionId) params.set('religionId', religionId);
+  const res = await fetchJson<PaginatedResponse<Patriarch>>(`/patriarchs?${params}`);
+  return res.items;
+};
 export const createPatriarch = (data: CreatePatriarchDto) =>
   fetchJson<CreatePatriarchDto & { id: string }>('/patriarchs', { method: 'POST', body: JSON.stringify(data) });
 export const updatePatriarch = (id: string, data: Partial<CreatePatriarchDto>) =>
@@ -145,8 +167,12 @@ export const deletePatriarch = (id: string) =>
   fetchJson<DeleteResponse>(`/patriarchs/${id}`, { method: 'DELETE' });
 
 // ---- Teachings ----
-export const getTeachings = (religionId?: string) =>
-  fetchJson<Teaching[]>(religionId ? `/teachings?religionId=${religionId}` : '/teachings');
+export const getTeachings = async (religionId?: string): Promise<Teaching[]> => {
+  const params = new URLSearchParams({ limit: '100' });
+  if (religionId) params.set('religionId', religionId);
+  const res = await fetchJson<PaginatedResponse<Teaching>>(`/teachings?${params}`);
+  return res.items;
+};
 export const createTeaching = (data: CreateTeachingDto) =>
   fetchJson<CreateTeachingDto & { id: string }>('/teachings', { method: 'POST', body: JSON.stringify(data) });
 export const updateTeaching = (id: string, data: Partial<CreateTeachingDto>) =>
@@ -155,8 +181,12 @@ export const deleteTeaching = (id: string) =>
   fetchJson<DeleteResponse>(`/teachings/${id}`, { method: 'DELETE' });
 
 // ---- Seals ----
-export const getSeals = (series?: string) =>
-  fetchJson<Seal[]>(series ? `/seals?series=${series}` : '/seals');
+export const getSeals = async (series?: string): Promise<Seal[]> => {
+  const params = new URLSearchParams({ limit: '100' });
+  if (series) params.set('series', series);
+  const res = await fetchJson<PaginatedResponse<Seal>>(`/seals?${params}`);
+  return res.items;
+};
 export const createSeal = (data: CreateSealDto) =>
   fetchJson<Seal>('/seals', { method: 'POST', body: JSON.stringify(data) });
 export const updateSeal = (id: number, data: Partial<CreateSealDto>) =>
@@ -375,12 +405,12 @@ export const deleteMedia = (id: string) =>
 export async function getDashboardStats() {
   const [religions, holySites, temples, patriarchs, teachings, seals] =
     await Promise.all([
-      fetchJson<Religion[]>('/religions?take=100').catch(() => [] as Religion[]),
-      fetchJson<HolySite[]>('/holy-sites?take=100').catch(() => [] as HolySite[]),
-      fetchJson<Temple[]>('/temples?take=100').catch(() => [] as Temple[]),
-      fetchJson<Patriarch[]>('/patriarchs?take=100').catch(() => [] as Patriarch[]),
-      fetchJson<Teaching[]>('/teachings?take=100').catch(() => [] as Teaching[]),
-      fetchJson<Seal[]>('/seals?take=100').catch(() => [] as Seal[]),
+      fetchJson<PaginatedResponse<Religion>>('/religions?limit=100').then(r => r.items).catch(() => [] as Religion[]),
+      fetchJson<PaginatedResponse<HolySite>>('/holy-sites?limit=100').then(r => r.items).catch(() => [] as HolySite[]),
+      fetchJson<PaginatedResponse<Temple>>('/temples?limit=100').then(r => r.items).catch(() => [] as Temple[]),
+      fetchJson<PaginatedResponse<Patriarch>>('/patriarchs?limit=100').then(r => r.items).catch(() => [] as Patriarch[]),
+      fetchJson<PaginatedResponse<Teaching>>('/teachings?limit=100').then(r => r.items).catch(() => [] as Teaching[]),
+      fetchJson<PaginatedResponse<Seal>>('/seals?limit=100').then(r => r.items).catch(() => [] as Seal[]),
     ]);
   return { religions, holySites, temples, patriarchs, teachings, seals };
 }

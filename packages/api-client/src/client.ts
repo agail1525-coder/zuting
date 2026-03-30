@@ -7,6 +7,14 @@ import type {
   Seal,
 } from './types';
 
+/** Paginated list response from the API. */
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 /** Error thrown when an API request fails. */
 export class ApiError extends Error {
   constructor(
@@ -88,16 +96,17 @@ export class ZutingApiClient {
 
   /** Fetch all religions (12 items). */
   async getReligions(): Promise<Religion[]> {
-    return this.fetch<Religion[]>('/religions');
+    const res = await this.fetch<PaginatedResponse<Religion>>('/religions', { limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single religion by its slug (e.g. "buddhism"). */
   async getReligion(slug: string): Promise<Religion> {
-    const results = await this.fetch<Religion[]>('/religions', { slug });
-    if (results.length === 0) {
+    const res = await this.fetch<PaginatedResponse<Religion>>('/religions', { slug, limit: '100' });
+    if (res.items.length === 0) {
       throw new ApiError(404, 'Not Found', { message: `Religion with slug "${slug}" not found` });
     }
-    return results[0];
+    return res.items[0];
   }
 
   // ---------------------------------------------------------------------------
@@ -106,7 +115,8 @@ export class ZutingApiClient {
 
   /** Fetch holy sites, optionally filtered by religionId. */
   async getHolySites(religionId?: string): Promise<HolySite[]> {
-    return this.fetch<HolySite[]>('/holy-sites', { religionId });
+    const res = await this.fetch<PaginatedResponse<HolySite>>('/holy-sites', { religionId, limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single holy site by id. */
@@ -120,7 +130,8 @@ export class ZutingApiClient {
 
   /** Fetch temples, optionally filtered by religionId. */
   async getTemples(religionId?: string): Promise<Temple[]> {
-    return this.fetch<Temple[]>('/temples', { religionId });
+    const res = await this.fetch<PaginatedResponse<Temple>>('/temples', { religionId, limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single temple by id. */
@@ -134,7 +145,8 @@ export class ZutingApiClient {
 
   /** Fetch patriarchs, optionally filtered by religionId. */
   async getPatriarchs(religionId?: string): Promise<Patriarch[]> {
-    return this.fetch<Patriarch[]>('/patriarchs', { religionId });
+    const res = await this.fetch<PaginatedResponse<Patriarch>>('/patriarchs', { religionId, limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single patriarch by id. */
@@ -148,7 +160,8 @@ export class ZutingApiClient {
 
   /** Fetch teachings, optionally filtered by religionId. */
   async getTeachings(religionId?: string): Promise<Teaching[]> {
-    return this.fetch<Teaching[]>('/teachings', { religionId });
+    const res = await this.fetch<PaginatedResponse<Teaching>>('/teachings', { religionId, limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single teaching by id. */
@@ -162,7 +175,8 @@ export class ZutingApiClient {
 
   /** Fetch seals, optionally filtered by series name. */
   async getSeals(series?: string): Promise<Seal[]> {
-    return this.fetch<Seal[]>('/seals', { series });
+    const res = await this.fetch<PaginatedResponse<Seal>>('/seals', { series, limit: '100' });
+    return res.items;
   }
 
   /** Fetch a single seal by its numeric id. */

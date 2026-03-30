@@ -63,7 +63,7 @@ export default function TripsPage() {
     const statusParam = activeStatus === '全部' ? undefined : activeStatus
     fetchTrips(statusParam)
       .then(res => {
-        setTrips(res.data)
+        setTrips(res.items)
         setLoading(false)
       })
       .catch(err => {

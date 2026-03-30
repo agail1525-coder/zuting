@@ -124,13 +124,16 @@ async function request<T>(path: string, params?: Record<string, string>): Promis
   }
 }
 
+
 // Religion endpoints
-export function fetchReligions() {
-  return request<Religion[]>('/religions')
+export async function fetchReligions(): Promise<Religion[]> {
+  const res = await request<PaginatedResponse<Religion>>('/religions', { limit: '100' })
+  return res.items
 }
 
-export function fetchReligionBySlug(slug: string) {
-  return request<Religion[]>('/religions', { slug }).then(list => list[0])
+export async function fetchReligionBySlug(slug: string): Promise<Religion> {
+  const res = await request<PaginatedResponse<Religion>>('/religions', { slug, limit: '100' })
+  return res.items[0]
 }
 
 export function fetchReligionById(id: string) {
@@ -138,8 +141,9 @@ export function fetchReligionById(id: string) {
 }
 
 // Holy site endpoints
-export function fetchHolySites(religionId?: string) {
-  return request<HolySite[]>('/holy-sites', religionId ? { religionId } : undefined)
+export async function fetchHolySites(religionId?: string): Promise<HolySite[]> {
+  const res = await request<PaginatedResponse<HolySite>>('/holy-sites', { ...(religionId ? { religionId } : {}), limit: '100' })
+  return res.items
 }
 
 export function fetchHolySiteById(id: string) {
@@ -147,8 +151,9 @@ export function fetchHolySiteById(id: string) {
 }
 
 // Temple endpoints
-export function fetchTemples(religionId?: string) {
-  return request<Temple[]>('/temples', religionId ? { religionId } : undefined)
+export async function fetchTemples(religionId?: string): Promise<Temple[]> {
+  const res = await request<PaginatedResponse<Temple>>('/temples', { ...(religionId ? { religionId } : {}), limit: '100' })
+  return res.items
 }
 
 export function fetchTempleById(id: string) {
@@ -156,8 +161,9 @@ export function fetchTempleById(id: string) {
 }
 
 // Patriarch endpoints
-export function fetchPatriarchs(religionId?: string) {
-  return request<Patriarch[]>('/patriarchs', religionId ? { religionId } : undefined)
+export async function fetchPatriarchs(religionId?: string): Promise<Patriarch[]> {
+  const res = await request<PaginatedResponse<Patriarch>>('/patriarchs', { ...(religionId ? { religionId } : {}), limit: '100' })
+  return res.items
 }
 
 export function fetchPatriarchById(id: string) {
@@ -165,8 +171,9 @@ export function fetchPatriarchById(id: string) {
 }
 
 // Teaching endpoints
-export function fetchTeachings(religionId?: string) {
-  return request<Teaching[]>('/teachings', religionId ? { religionId } : undefined)
+export async function fetchTeachings(religionId?: string): Promise<Teaching[]> {
+  const res = await request<PaginatedResponse<Teaching>>('/teachings', { ...(religionId ? { religionId } : {}), limit: '100' })
+  return res.items
 }
 
 export function fetchTeachingById(id: string) {
@@ -174,8 +181,9 @@ export function fetchTeachingById(id: string) {
 }
 
 // Seal endpoints
-export function fetchSeals(series?: string) {
-  return request<Seal[]>('/seals', series ? { series } : undefined)
+export async function fetchSeals(series?: string): Promise<Seal[]> {
+  const res = await request<PaginatedResponse<Seal>>('/seals', { ...(series ? { series } : {}), limit: '100' })
+  return res.items
 }
 
 export function fetchSealById(id: string) {
@@ -253,7 +261,7 @@ export function fetchRoutesBySite(siteId: string) {
 
 // Paginated response wrapper
 export interface PaginatedResponse<T> {
-  data: T[]
+  items: T[]
   total: number
   page: number
   limit: number
