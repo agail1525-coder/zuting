@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -101,10 +101,20 @@ const PILGRIM_STORIES = [
 
 const REC_TABS = ["祖庭", "祖师", "圣地"] as const;
 
+/* Deterministic pseudo-random from string hash */
+function hashCode(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
 /* ─── Sub Components ─── */
 
-function RouteCard({ route }: { route: Route }) {
+function RouteCard({ route, showScarcity }: { route: Route; showScarcity?: boolean }) {
   const price = (route.priceFrom / 100).toLocaleString();
+  const h = hashCode(route.id);
+  const spotsLeft = (h % 5) + 2; // 2-6
+  const bookingsToday = (h % 12) + 3; // 3-14
   return (
     <Link href={`/routes/${route.slug}`} className="group">
       <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
@@ -123,6 +133,17 @@ function RouteCard({ route }: { route: Route }) {
               {CATEGORY_LABELS[route.category] ?? route.category} · {route.duration}天{route.nights}晚
             </span>
           </div>
+          {/* Scarcity signal (Booking.com style) */}
+          {showScarcity && spotsLeft <= 4 && (
+            <div className="absolute bottom-3 left-3 right-3 flex items-center gap-1.5">
+              <span className="px-2 py-1 rounded-md bg-red-600 text-white text-[10px] font-bold animate-pulse">
+                仅剩{spotsLeft}个名额
+              </span>
+              <span className="px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-[10px]">
+                今日{bookingsToday}人预订
+              </span>
+            </div>
+          )}
         </div>
         <div className="p-4">
           <h3 className="font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors line-clamp-1">{route.title}</h3>
@@ -136,6 +157,144 @@ function RouteCard({ route }: { route: Route }) {
         </div>
       </div>
     </Link>
+  );
+}
+
+/* Flash Deal countdown timer (Priceline/Agoda style) */
+function FlashDealBanner({ routes }: { routes: Route[] }) {
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  const dealRoutes = useMemo(() => routes.slice(0, 3), [routes]);
+
+  useEffect(() => {
+    function calcRemaining() {
+      const now = new Date();
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+      const diff = endOfDay.getTime() - now.getTime();
+      return {
+        h: Math.floor(diff / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      };
+    }
+    setTimeLeft(calcRemaining());
+    const timer = setInterval(() => setTimeLeft(calcRemaining()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  if (dealRoutes.length === 0) return null;
+
+  return (
+    <section className="mt-10 max-w-6xl mx-auto px-4">
+      <div className="bg-gradient-to-r from-red-600 to-orange-500 rounded-2xl p-6 text-white overflow-hidden relative">
+        {/* Background decoration */}
+        <div className="absolute -right-8 -top-8 w-40 h-40 bg-white/5 rounded-full" />
+        <div className="absolute -right-4 -bottom-12 w-32 h-32 bg-white/5 rounded-full" />
+
+        <div className="relative">
+          {/* Header with countdown */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">⚡</span>
+              <div>
+                <h2 className="text-xl font-bold">限时闪购</h2>
+                <p className="text-white/80 text-sm">精选路线限时特惠，先到先得</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-white/80">剩余时间</span>
+              <div className="flex gap-1">
+                {[
+                  { v: timeLeft.h, l: "时" },
+                  { v: timeLeft.m, l: "分" },
+                  { v: timeLeft.s, l: "秒" },
+                ].map((unit) => (
+                  <span key={unit.l} className="bg-black/30 backdrop-blur-sm px-2 py-1 rounded-md text-sm font-mono font-bold min-w-[36px] text-center">
+                    {String(unit.v).padStart(2, "0")}{unit.l}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Deal cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {dealRoutes.map((route) => {
+              const price = Math.round(route.priceFrom / 100);
+              const discountPrice = Math.round(price * 0.8);
+              const h = hashCode(route.id);
+              const bookers = (h % 20) + 10;
+              return (
+                <Link key={route.id} href={`/routes/${route.slug}`} className="group">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 hover:bg-white/20 transition-all">
+                    <div className="flex items-start gap-3">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white/10">
+                        {route.coverImage ? (
+                          <OptimizedImage src={route.coverImage} alt={route.title} width={64} height={64} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-2xl opacity-50">☸</div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-sm line-clamp-1 group-hover:text-yellow-200 transition-colors">{route.title}</h3>
+                        <p className="text-white/60 text-xs mt-0.5">{route.duration}天{route.nights}晚</p>
+                        <div className="flex items-baseline gap-2 mt-1">
+                          <span className="font-bold text-yellow-300">¥{discountPrice.toLocaleString()}</span>
+                          <span className="text-white/50 text-xs line-through">¥{price.toLocaleString()}</span>
+                          <span className="bg-yellow-400 text-black text-[10px] font-bold px-1.5 py-0.5 rounded">-20%</span>
+                        </div>
+                        <p className="text-white/50 text-[10px] mt-1">{bookers}人正在查看</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 text-center">
+            <Link href="/promotions" className="inline-flex items-center gap-1.5 px-5 py-2 bg-white text-red-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition-colors">
+              查看全部特惠 →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Live activity ticker (Booking.com "X people booked today" style) */
+function LiveActivityTicker() {
+  const ACTIVITIES = [
+    { text: "来自北京的旅行者刚刚预订了「六祖慧能路线」", time: "2分钟前", icon: "🎉" },
+    { text: "慧行者 发布了新攻略「禅宗三日行完全指南」", time: "5分钟前", icon: "📝" },
+    { text: "来自上海的旅行者收藏了南华寺", time: "8分钟前", icon: "❤️" },
+    { text: "Peter W. 给耶路撒冷朝圣路线打了5星好评", time: "12分钟前", icon: "⭐" },
+    { text: "来自广州的3人团刚刚预订了「丝绸之路深度行」", time: "15分钟前", icon: "🎉" },
+    { text: "道心 完成了武当山朝圣日志打卡", time: "18分钟前", icon: "📖" },
+  ];
+
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % ACTIVITIES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const item = ACTIVITIES[activeIdx];
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 mt-6">
+      <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 flex items-center gap-3 overflow-hidden">
+        <span className="text-lg shrink-0">{item.icon}</span>
+        <p className="text-sm text-gray-700 flex-1 truncate">
+          {item.text}
+        </p>
+        <span className="text-xs text-gray-400 shrink-0">{item.time}</span>
+      </div>
+    </div>
   );
 }
 
@@ -356,6 +515,12 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </div>
       </section>
 
+      {/* ══════ Section 3.6: Flash Deals (对标Priceline/Agoda闪购) ══════ */}
+      <FlashDealBanner routes={featuredRoutes} />
+
+      {/* ══════ Section 3.7: Live Activity Ticker (对标Booking.com) ══════ */}
+      <LiveActivityTicker />
+
       {/* ══════ Section 4: Pilgrim Stories UGC (对标美妙旅程) ══════ */}
       <section className="mt-14 md:mt-20 max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
@@ -432,7 +597,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {featuredRoutes.slice(0, 8).map((route) => (
-                <RouteCard key={route.id} route={route} />
+                <RouteCard key={route.id} route={route} showScarcity />
               ))}
             </div>
           </div>
@@ -667,7 +832,47 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </section>
       )}
 
-      {/* ══════ Section 9: Stats + CTA ══════ */}
+      {/* ══════ Section 9.5: Newsletter + App Download (对标Trip.com/Agoda) ══════ */}
+      <section className="mt-14 md:mt-20 max-w-6xl mx-auto px-4">
+        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 md:p-10 relative overflow-hidden">
+          <div className="absolute -right-16 -top-16 w-64 h-64 bg-[#0066FF]/10 rounded-full blur-3xl" />
+          <div className="absolute -left-8 -bottom-8 w-48 h-48 bg-[#D4A855]/10 rounded-full blur-2xl" />
+          <div className="relative flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-2xl font-bold text-white">获取专属优惠与朝圣资讯</h2>
+              <p className="text-gray-400 mt-2">订阅我们的旅行通讯，第一时间获取限时折扣、新路线上线和文化深度解读。</p>
+              <div className="flex gap-3 mt-5 max-w-md mx-auto md:mx-0">
+                <input
+                  type="email"
+                  placeholder="输入您的邮箱地址"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/50"
+                />
+                <button className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm shrink-0">
+                  订阅
+                </button>
+              </div>
+              <p className="text-gray-500 text-xs mt-3">🔒 我们尊重您的隐私，随时可取消订阅</p>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <div className="grid grid-cols-2 gap-3 text-center">
+                {[
+                  { n: "50,000+", l: "活跃旅行者" },
+                  { n: "¥500", l: "平均节省" },
+                  { n: "98%", l: "好评率" },
+                  { n: "7×24", l: "客服在线" },
+                ].map((s) => (
+                  <div key={s.l} className="bg-white/5 rounded-xl p-3 min-w-[100px]">
+                    <p className="text-[#0066FF] font-bold text-lg">{s.n}</p>
+                    <p className="text-gray-400 text-xs mt-0.5">{s.l}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Section 10: Stats + CTA ══════ */}
       <section className="mt-14 md:mt-20 bg-gray-50 py-12">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
