@@ -1,15 +1,19 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
+import QASection from "@/components/QASection";
 import RelatedEntities from "@/components/RelatedEntities";
 import SaveButton from "@/components/SaveButton";
-import { recordView } from "@/lib/api";
-import type { Patriarch } from "@/lib/api";
+import ShareButton from "@/components/ShareButton";
+import SocialProof from "@/components/SocialProof";
+import MediaTour from "@/components/MediaTour";
+import { recordView, fetchTeachings } from "@/lib/api";
+import type { Patriarch, Teaching } from "@/lib/api";
 
 const RELIGION_GRADIENT: Record<string, string> = {
   buddhism: "from-amber-800/30 to-amber-950/50",
@@ -26,6 +30,41 @@ const RELIGION_GRADIENT: Record<string, string> = {
   bahai: "from-cyan-800/30 to-cyan-950/50",
 };
 
+function RelatedTeachings({ religionId }: { religionId: string }) {
+  const [teachings, setTeachings] = useState<Teaching[]>([]);
+
+  useEffect(() => {
+    fetchTeachings(religionId)
+      .then((items) => setTeachings(items.slice(0, 3)))
+      .catch(() => {});
+  }, [religionId]);
+
+  if (teachings.length === 0) return null;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+      <h2 className="text-lg font-bold text-gray-900 mb-4">相关祖训</h2>
+      <div className="space-y-3">
+        {teachings.map((t) => (
+          <Link
+            key={t.id}
+            href={`/teachings/${t.id}`}
+            className="block p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 hover:border-[#0066FF]/30"
+          >
+            <p className="font-medium text-gray-900 text-sm">{t.name}</p>
+            <p className="text-sm text-gray-600 mt-1 line-clamp-2 font-serif italic">
+              {t.originalText}
+            </p>
+            {t.sourceText && (
+              <p className="text-xs text-gray-400 mt-1">— {t.sourceText}</p>
+            )}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function PatriarchDetailClient({ patriarch }: { patriarch: Patriarch }) {
   const { t } = useTranslation();
   const gradient = RELIGION_GRADIENT[patriarch.religion?.slug || ""] || "from-gray-600 to-gray-700";
@@ -37,7 +76,7 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
+      {/* ========== Hero Section ========== */}
       <div className="relative">
         <div className="h-[350px] md:h-[450px] relative overflow-hidden">
           {patriarch.imageUrl ? (
@@ -57,7 +96,9 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
             <div className="max-w-5xl mx-auto">
               {/* Breadcrumb */}
               <div className="flex items-center gap-2 text-sm text-white/60 mb-4">
-                <Link href="/patriarchs" className="hover:text-white transition-colors">{t("nav.patriarchs") || "祖师"}</Link>
+                <Link href="/patriarchs" className="hover:text-white transition-colors">
+                  {t("nav.patriarchs") || "祖师"}
+                </Link>
                 <span>/</span>
                 <span className="text-white/80">{patriarch.name}</span>
               </div>
@@ -76,8 +117,17 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
                 <h1 className="text-3xl md:text-5xl font-serif font-bold text-white drop-shadow-lg flex-1">
                   {patriarch.name}
                 </h1>
-                <div className="mt-1">
+                <div className="flex items-center gap-2 mt-1">
                   <SaveButton entityType="PATRIARCH" entityId={patriarch.id} size="md" />
+                  <ShareButton
+                    title={patriarch.name}
+                    description={patriarch.biography.slice(0, 100)}
+                    url={typeof window !== "undefined" ? window.location.href : ""}
+                    image={patriarch.imageUrl ?? undefined}
+                    entityType="PATRIARCH"
+                    entityId={patriarch.id}
+                    className="text-sm"
+                  />
                 </div>
               </div>
               {patriarch.nameEn && (
@@ -103,44 +153,79 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 -mt-4 relative z-10 pb-24">
-        {/* Biography Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
-          <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">{t("detail.biography") || "生平事迹"}</h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">{patriarch.biography}</p>
+        {/* ========== Social Proof ========== */}
+        <div className="mb-6">
+          <SocialProof entityType="PATRIARCH" entityId={patriarch.id} variant="banner" />
         </div>
 
-        {/* Core Teaching Card */}
+        {/* ========== Biography Card ========== */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
-          <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">{t("detail.coreTeaching") || "核心教义"}</h2>
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-serif italic">{patriarch.coreTeaching}</p>
+          <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">
+            {t("detail.biography") || "生平事迹"}
+          </h2>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line text-lg">
+            {patriarch.biography}
+          </p>
         </div>
 
-        {/* Quick Info Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        {/* ========== Core Teaching Card ========== */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
+          <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">
+            {t("detail.coreTeaching") || "核心教义"}
+          </h2>
+          <blockquote className="text-gray-700 leading-relaxed whitespace-pre-line text-lg font-serif italic border-l-3 border-[#0066FF]/30 pl-6">
+            {patriarch.coreTeaching}
+          </blockquote>
+        </div>
+
+        {/* ========== Quick Info Grid ========== */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {patriarch.title && (
             <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-4 text-center">
               <span className="text-2xl mb-2 block">🏆</span>
-              <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("detail.title") || "称号"}</p>
-              <p className="text-gray-900 font-medium">{patriarch.title}</p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                {t("detail.title") || "称号"}
+              </p>
+              <p className="text-gray-900 font-medium text-sm">{patriarch.title}</p>
             </div>
           )}
           {patriarch.dates && (
             <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-4 text-center">
               <span className="text-2xl mb-2 block">📅</span>
-              <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("detail.dates") || "年代"}</p>
-              <p className="text-gray-900 font-medium">{patriarch.dates}</p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+                {t("detail.dates") || "年代"}
+              </p>
+              <p className="text-gray-900 font-medium text-sm">{patriarch.dates}</p>
             </div>
           )}
           <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-4 text-center">
             <span className="text-2xl mb-2 block">{patriarch.religion?.symbol || "🕉"}</span>
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("detail.religion") || "信仰"}</p>
-            <p className="text-gray-900 font-medium">{patriarch.religion?.name || "-"}</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
+              {t("detail.religion") || "信仰"}
+            </p>
+            <p className="text-gray-900 font-medium text-sm">{patriarch.religion?.name || "-"}</p>
+          </div>
+          <div className="bg-white shadow-sm border border-gray-100 rounded-xl p-4 text-center">
+            <span className="text-2xl mb-2 block">📖</span>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">传承</p>
+            <p className="text-gray-900 font-medium text-sm">开宗立派</p>
           </div>
         </div>
 
-        {/* Religion Context Card */}
+        {/* ========== Multimedia Tour ========== */}
+        <div className="mb-6">
+          <MediaTour entityType="PATRIARCH" entityId={patriarch.id} />
+        </div>
+
+        {/* ========== Related Teachings ========== */}
+        {patriarch.religionId && <RelatedTeachings religionId={patriarch.religionId} />}
+
+        {/* ========== Religion Context Card ========== */}
         {patriarch.religion && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6" style={{ borderColor: `${religionColor}20` }}>
+          <div
+            className="bg-white rounded-2xl shadow-sm border p-6 mb-6"
+            style={{ borderColor: `${religionColor}20` }}
+          >
             <div className="flex items-center gap-4">
               <span className="text-4xl">{patriarch.religion.symbol}</span>
               <div className="flex-1">
@@ -158,10 +243,41 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
           </div>
         )}
 
-        {/* Related Entities */}
-        <RelatedEntities entityType="PATRIARCH" entityId={patriarch.id} title="相关推荐" />
+        {/* ========== Reviews ========== */}
+        <div className="mt-6">
+          <ReviewSection targetType="PATRIARCH" targetId={patriarch.id} />
+        </div>
 
-        {/* CTA */}
+        {/* ========== Q&A ========== */}
+        <div className="mt-8">
+          <QASection entityType="PATRIARCH" entityId={patriarch.id} />
+        </div>
+
+        {/* ========== Related Entities ========== */}
+        <div className="mt-8">
+          <RelatedEntities entityType="PATRIARCH" entityId={patriarch.id} title="相关推荐" />
+        </div>
+
+        {/* ========== Pilgrim Journal CTA ========== */}
+        <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">📖</span>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">朝圣日志</h2>
+                <p className="text-sm text-gray-500">记录您对{patriarch.name}的参访感悟</p>
+              </div>
+            </div>
+            <Link
+              href="/journals"
+              className="px-4 py-2 rounded-xl bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
+            >
+              写日记
+            </Link>
+          </div>
+        </div>
+
+        {/* ========== Bottom CTA ========== */}
         <div className="text-center mt-10">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
