@@ -50,7 +50,7 @@ export function isRTL(locale: Locale): boolean {
 interface I18nContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, vars?: Record<string, string | number>) => string;
 }
 
 const I18nContext = createContext<I18nContextType>({
@@ -82,8 +82,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: string) => {
-      return translations[locale]?.[key] || translations[DEFAULT_LOCALE]?.[key] || key;
+    (key: string, vars?: Record<string, string | number>) => {
+      let text = translations[locale]?.[key] || translations[DEFAULT_LOCALE]?.[key] || key;
+      if (vars) {
+        Object.entries(vars).forEach(([k, v]) => {
+          text = text.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+        });
+      }
+      return text;
     },
     [locale]
   );

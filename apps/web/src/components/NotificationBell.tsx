@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchUnreadCount,
   fetchNotifications,
@@ -11,15 +12,15 @@ import {
   type Notification,
 } from "@/lib/api";
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, t: (key: string, vars?: Record<string, string | number>) => string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "刚刚";
-  if (minutes < 60) return `${minutes}分钟前`;
+  if (minutes < 1) return t("time.justNow");
+  if (minutes < 60) return `${minutes}${t("time.minutesAgo")}`;
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}小时前`;
+  if (hours < 24) return `${hours}${t("time.hoursAgo")}`;
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}天前`;
+  if (days < 30) return `${days}${t("time.daysAgo")}`;
   return new Date(dateStr).toLocaleDateString();
 }
 
@@ -42,6 +43,7 @@ function typeIcon(type: string): string {
 
 export default function NotificationBell() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -90,7 +92,7 @@ export default function NotificationBell() {
       const res = await fetchNotifications(1, 10);
       setNotifications(res.data);
     } catch {
-      setError("加载通知失败");
+      setError(t("notification.loadError"));
     } finally {
       setLoading(false);
     }
@@ -104,7 +106,7 @@ export default function NotificationBell() {
       );
       setUnreadCount((c) => Math.max(0, c - 1));
     } catch {
-      setError("标记已读失败");
+      setError(t("notification.markReadError"));
     }
   };
 
@@ -114,7 +116,7 @@ export default function NotificationBell() {
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch {
-      setError("全部标记已读失败");
+      setError(t("notification.markAllReadError"));
     }
   };
 
@@ -125,7 +127,7 @@ export default function NotificationBell() {
       <button
         onClick={handleOpen}
         className="relative p-2 text-gray-600 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-[#0066FF]/5"
-        aria-label={`通知${unreadCount > 0 ? ` (${unreadCount}条未读)` : ""}`}
+        aria-label={`${t("notification.title")}${unreadCount > 0 ? ` (${unreadCount}${t("notification.unreadCount")})` : ""}`}
       >
         <svg
           className="w-5 h-5"
@@ -150,13 +152,13 @@ export default function NotificationBell() {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-900">通知</h3>
+            <h3 className="text-sm font-semibold text-gray-900">{t("notification.title")}</h3>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
                 className="text-xs text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
               >
-                全部标为已读
+                {t("notification.markAllRead")}
               </button>
             )}
           </div>
@@ -173,7 +175,7 @@ export default function NotificationBell() {
               </div>
             ) : !error && notifications.length === 0 ? (
               <div className="py-8 text-center text-gray-500 text-sm">
-                暂无通知
+                {t("notification.empty")}
               </div>
             ) : (
               notifications.map((n) => (
@@ -209,7 +211,7 @@ export default function NotificationBell() {
                         {n.content}
                       </p>
                       <p className="text-[10px] text-gray-400 mt-1">
-                        {timeAgo(n.createdAt)}
+                        {timeAgo(n.createdAt, t)}
                       </p>
                     </div>
                   </div>
@@ -224,7 +226,7 @@ export default function NotificationBell() {
               className="text-xs text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
               onClick={() => setOpen(false)}
             >
-              查看全部通知
+              {t("notification.viewAll")}
             </Link>
           </div>
         </div>

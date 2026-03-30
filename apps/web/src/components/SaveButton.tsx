@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   quickSave,
   checkSaved,
@@ -29,6 +30,7 @@ export default function SaveButton({
   className = "",
 }: SaveButtonProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [saved, setSaved] = useState(false);
   const [savedItemId, setSavedItemId] = useState<string | null>(null);
   const [savedCollectionId, setSavedCollectionId] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function SaveButton({
 
   const handleClick = async () => {
     if (!user) {
-      showToast("请先登录");
+      showToast(t("save.loginRequired"));
       return;
     }
     if (loading) return;
@@ -81,7 +83,7 @@ export default function SaveButton({
         if (check.collections.length > 0) {
           setSavedCollectionId(check.collections[0].id);
         }
-        showToast("已收藏");
+        showToast(t("save.saved"));
       } else {
         // Remove from collection
         if (savedCollectionId && savedItemId) {
@@ -95,10 +97,10 @@ export default function SaveButton({
         }
         setSaved(false);
         setSavedItemId(null);
-        showToast("已取消收藏");
+        showToast(t("save.unsaved"));
       }
     } catch {
-      showToast("操作失败，请重试");
+      showToast(t("save.error"));
     } finally {
       setLoading(false);
     }
@@ -111,7 +113,7 @@ export default function SaveButton({
       <button
         onClick={handleClick}
         disabled={loading}
-        aria-label={saved ? "取消收藏" : "收藏"}
+        aria-label={saved ? t("save.unsaved") : t("save.saved")}
         className={`
           inline-flex items-center justify-center rounded-full
           bg-white/90 backdrop-blur-sm border border-gray-200

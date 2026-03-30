@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchMyMembership,
   fetchPointsHistory,
@@ -61,7 +62,7 @@ function ProgressBar({ current, next }: { current: number; next: number }) {
   );
 }
 
-function CheckinCalendar({ year, month, checkedDates }: { year: number; month: number; checkedDates: Set<string> }) {
+function CheckinCalendar({ year, month, checkedDates, t }: { year: number; month: number; checkedDates: Set<string>; t: (key: string) => string }) {
   const firstDay = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
   const today = new Date();
@@ -74,7 +75,7 @@ function CheckinCalendar({ year, month, checkedDates }: { year: number; month: n
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {["日", "一", "二", "三", "四", "五", "六"].map((d) => (
+        {[t("membership.weekSun"), t("membership.weekMon"), t("membership.weekTue"), t("membership.weekWed"), t("membership.weekThu"), t("membership.weekFri"), t("membership.weekSat")].map((d) => (
           <div key={d} className="text-center text-xs text-gray-400 font-medium py-1">
             {d}
           </div>
@@ -107,6 +108,7 @@ function CheckinCalendar({ year, month, checkedDates }: { year: number; month: n
 }
 
 export default function MembershipPage() {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -142,7 +144,7 @@ export default function MembershipPage() {
       setPointsHistory(Array.isArray(hist.items) ? hist.items : []);
       setCalendarDates(new Set(cal.dates ?? []));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "加载失败");
+      setError(e instanceof Error ? e.message : t("membership.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -157,10 +159,10 @@ export default function MembershipPage() {
     setCheckinMsg("");
     try {
       const res = await checkin();
-      setCheckinMsg(`签到成功！+${res.points}积分${res.bonus > 0 ? `（连续${res.streak}天，额外+${res.bonus}）` : ""}`);
+      setCheckinMsg(t("membership.checkinSuccess", { points: res.points }) + (res.bonus > 0 ? t("membership.checkinBonus", { streak: res.streak, bonus: res.bonus }) : ""));
       await loadData();
     } catch (e) {
-      setCheckinMsg(e instanceof Error ? e.message : "签到失败");
+      setCheckinMsg(e instanceof Error ? e.message : t("membership.checkinFailed"));
     } finally {
       setCheckingIn(false);
     }
@@ -183,7 +185,7 @@ export default function MembershipPage() {
       <div className="bg-gradient-to-br from-[#0066FF] to-[#0052CC] rounded-2xl p-6 text-white">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="text-blue-100 text-sm mb-2">我的会员等级</p>
+            <p className="text-blue-100 text-sm mb-2">{t("membership.myLevel")}</p>
             {membership ? (
               <LevelBadge level={membership.level} name={membership.levelName} />
             ) : (
@@ -191,7 +193,7 @@ export default function MembershipPage() {
             )}
           </div>
           <div className="text-right">
-            <p className="text-blue-100 text-sm">可用积分</p>
+            <p className="text-blue-100 text-sm">{t("membership.availablePoints")}</p>
             <p className="text-3xl font-bold text-[#D4A855]">
               {membership?.availablePoints?.toLocaleString() ?? "-"}
             </p>
@@ -201,12 +203,12 @@ export default function MembershipPage() {
         {membership && nextLevel && (
           <div className="mt-4">
             <div className="flex justify-between text-xs text-blue-100 mb-1.5">
-              <span>已有 {membership.totalPoints.toLocaleString()} 积分</span>
-              <span>升级需 {nextLevel.minPoints.toLocaleString()} 积分</span>
+              <span>{t("membership.hasPoints", { n: membership.totalPoints.toLocaleString() })}</span>
+              <span>{t("membership.upgradeNeed", { n: nextLevel.minPoints.toLocaleString() })}</span>
             </div>
             <ProgressBar current={membership.totalPoints} next={nextLevel.minPoints} />
             <p className="text-xs text-blue-200 mt-1.5">
-              距 {nextLevel.name} 还差 {Math.max(0, nextLevel.minPoints - membership.totalPoints).toLocaleString()} 积分
+              {t("membership.pointsToNext", { level: nextLevel.name, n: Math.max(0, nextLevel.minPoints - membership.totalPoints).toLocaleString() })}
             </p>
           </div>
         )}
@@ -218,7 +220,7 @@ export default function MembershipPage() {
             disabled={checkingIn}
             className="px-5 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold transition-colors disabled:opacity-60 text-sm border border-white/30"
           >
-            {checkingIn ? "签到中..." : "每日签到"}
+            {checkingIn ? t("membership.checkingIn") : t("membership.dailyCheckin")}
           </button>
           {checkinMsg && (
             <span className="text-xs text-blue-100 flex-1">{checkinMsg}</span>
@@ -233,9 +235,9 @@ export default function MembershipPage() {
       {/* Quick Actions */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "积分商城", href: "/points-mall", icon: "🛍️" },
-          { label: "分销中心", href: "/membership/referral", icon: "👥" },
-          { label: "邀请好友", href: "/membership/referral", icon: "🎁" },
+          { label: t("membership.pointsMall"), href: "/points-mall", icon: "🛍️" },
+          { label: t("membership.referralCenter"), href: "/membership/referral", icon: "👥" },
+          { label: t("membership.inviteFriends"), href: "/membership/referral", icon: "🎁" },
         ].map((a) => (
           <Link
             key={a.label}
@@ -251,22 +253,22 @@ export default function MembershipPage() {
       {/* Checkin Calendar */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3">
-          {year}年{month}月签到记录
+          {t("membership.checkinRecord", { year, month })}
         </h2>
-        <CheckinCalendar year={year} month={month} checkedDates={calendarDates} />
+        <CheckinCalendar year={year} month={month} checkedDates={calendarDates} t={t} />
       </div>
 
       {/* Level Comparison */}
       {levels.length > 0 && (
         <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-3">等级权益</h2>
+          <h2 className="text-base font-semibold text-gray-900 mb-3">{t("membership.levelPerks")}</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="text-left px-4 py-3 font-semibold text-gray-700">等级</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-700">所需积分</th>
-                  <th className="text-left px-4 py-3 font-semibold text-gray-700">专属权益</th>
+                  <th className="text-left px-4 py-3 font-semibold text-gray-700">{t("membership.levelCol")}</th>
+                  <th className="text-left px-4 py-3 font-semibold text-gray-700">{t("membership.requiredPoints")}</th>
+                  <th className="text-left px-4 py-3 font-semibold text-gray-700">{t("membership.exclusivePerks")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -280,7 +282,7 @@ export default function MembershipPage() {
                       <td className="px-4 py-3">
                         <LevelBadge level={lv.level} name={lv.name} />
                         {isMe && (
-                          <span className="ml-2 text-xs text-[#0066FF] font-medium">当前</span>
+                          <span className="ml-2 text-xs text-[#0066FF] font-medium">{t("membership.current")}</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-gray-600">{lv.minPoints.toLocaleString()}</td>
@@ -305,12 +307,12 @@ export default function MembershipPage() {
       {/* Points History */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-900">积分记录</h2>
-          <span className="text-xs text-gray-400">最近50条</span>
+          <h2 className="text-base font-semibold text-gray-900">{t("membership.pointsHistory")}</h2>
+          <span className="text-xs text-gray-400">{t("membership.recent50")}</span>
         </div>
         {pointsHistory.length === 0 ? (
           <div className="py-10 text-center text-gray-400 text-sm bg-white rounded-xl border border-gray-200">
-            暂无积分记录
+            {t("membership.noPointsHistory")}
           </div>
         ) : (
           <div className="space-y-2">

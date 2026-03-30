@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchNotifications,
   markNotificationAsRead,
@@ -13,15 +14,15 @@ import {
 
 export const dynamic = "force-dynamic";
 
-function timeAgo(dateStr: string): string {
+function timeAgo(dateStr: string, t: (key: string, vars?: Record<string, string | number>) => string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "刚刚";
-  if (minutes < 60) return `${minutes}分钟前`;
+  if (minutes < 1) return t("notifications.time.justNow");
+  if (minutes < 60) return t("notifications.time.minutesAgo", { n: minutes });
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}小时前`;
+  if (hours < 24) return t("notifications.time.hoursAgo", { n: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}天前`;
+  if (days < 30) return t("notifications.time.daysAgo", { n: days });
   return new Date(dateStr).toLocaleDateString();
 }
 
@@ -42,24 +43,19 @@ function typeIcon(type: string): string {
   }
 }
 
-function typeLabel(type: string): string {
-  switch (type) {
-    case "TRIP_STATUS":
-      return "行程";
-    case "PAYMENT":
-      return "支付";
-    case "REFUND":
-      return "退款";
-    case "REVIEW":
-      return "评价";
-    case "SYSTEM":
-      return "系统";
-    default:
-      return "通知";
-  }
+function typeLabel(type: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    TRIP_STATUS: "notifications.type.trip",
+    PAYMENT: "notifications.type.payment",
+    REFUND: "notifications.type.refund",
+    REVIEW: "notifications.type.review",
+    SYSTEM: "notifications.type.system",
+  };
+  return t(map[type] ?? "notifications.type.default");
 }
 
 export default function NotificationsPage() {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [total, setTotal] = useState(0);
@@ -83,7 +79,7 @@ export default function NotificationsPage() {
       setNotifications(res.data);
       setTotal(res.total);
     } catch {
-      setError("加载通知失败，请稍后重试");
+      setError(t("notifications.error.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -100,7 +96,7 @@ export default function NotificationsPage() {
         prev.map((n) => (n.id === id ? { ...n, read: true } : n))
       );
     } catch {
-      showToast("标记已读失败，请重试");
+      showToast(t("notifications.error.markReadFailed"));
     }
   };
 
@@ -109,7 +105,7 @@ export default function NotificationsPage() {
       await markAllNotificationsAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     } catch {
-      showToast("全部标记已读失败，请重试");
+      showToast(t("notifications.error.markAllReadFailed"));
     }
   };
 
@@ -119,7 +115,7 @@ export default function NotificationsPage() {
       setNotifications((prev) => prev.filter((n) => n.id !== id));
       setTotal((t) => t - 1);
     } catch {
-      showToast("删除通知失败，请重试");
+      showToast(t("notifications.error.deleteFailed"));
     }
   };
 
@@ -137,12 +133,12 @@ export default function NotificationsPage() {
   if (!user) {
     return (
       <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-600">请先登录查看通知</p>
+        <p className="text-gray-600">{t("notifications.loginRequired")}</p>
         <Link
           href="/login"
           className="px-6 py-2 bg-[#0066FF]/10 text-[#0066FF] rounded-lg hover:bg-[#0066FF]/20 transition-colors"
         >
-          去登录
+          {t("notifications.goLogin")}
         </Link>
       </div>
     );
@@ -152,7 +148,7 @@ export default function NotificationsPage() {
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
-          通知中心
+          {t("notifications.title")}
         </h1>
         <div className="flex items-center gap-3">
           {unreadCount > 0 && (
@@ -160,7 +156,7 @@ export default function NotificationsPage() {
               onClick={handleMarkAllRead}
               className="text-sm text-[#0066FF] hover:text-[#0066FF]/80 transition-colors"
             >
-              全部已读
+              {t("notifications.markAllRead")}
             </button>
           )}
         </div>
@@ -178,7 +174,7 @@ export default function NotificationsPage() {
               : "text-gray-500 hover:text-[#0066FF] hover:bg-[#0066FF]/5"
           }`}
         >
-          全部
+          {t("notifications.filterAll")}
         </button>
         <button
           onClick={() => {
@@ -191,7 +187,7 @@ export default function NotificationsPage() {
               : "text-gray-500 hover:text-[#0066FF] hover:bg-[#0066FF]/5"
           }`}
         >
-          未读
+          {t("notifications.filterUnread")}
         </button>
       </div>
 
@@ -213,14 +209,14 @@ export default function NotificationsPage() {
             onClick={() => { setError(null); loadNotifications(); }}
             className="px-4 py-2 bg-[#0066FF]/10 text-[#0066FF] rounded-lg hover:bg-[#0066FF]/20 transition-colors"
           >
-            重试
+            {t("notifications.retry")}
           </button>
         </div>
       ) : notifications.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-4xl block mb-4">🔔</span>
           <p className="text-gray-500">
-            {filter === "unread" ? "没有未读通知" : "暂无通知"}
+            {filter === "unread" ? t("notifications.emptyUnread") : t("notifications.empty")}
           </p>
         </div>
       ) : (
@@ -243,7 +239,7 @@ export default function NotificationsPage() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#0066FF]/10 text-[#0066FF]/70">
-                          {typeLabel(n.type)}
+                          {typeLabel(n.type, t)}
                         </span>
                         {!n.read && (
                           <span className="w-2 h-2 rounded-full bg-[#0066FF]" />
@@ -262,7 +258,7 @@ export default function NotificationsPage() {
                         {n.content}
                       </p>
                       <p className="text-xs text-gray-400 mt-2">
-                        {timeAgo(n.createdAt)}
+                        {timeAgo(n.createdAt, t)}
                       </p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
@@ -270,7 +266,7 @@ export default function NotificationsPage() {
                         <button
                           onClick={() => handleMarkRead(n.id)}
                           className="p-1.5 text-gray-500 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-[#0066FF]/10"
-                          title="标为已读"
+                          title={t("notifications.markRead")}
                         >
                           <svg
                             className="w-4 h-4"
@@ -290,7 +286,7 @@ export default function NotificationsPage() {
                       <button
                         onClick={() => handleDelete(n.id)}
                         className="p-1.5 text-gray-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10"
-                        title="删除"
+                        title={t("notifications.delete")}
                       >
                         <svg
                           className="w-4 h-4"
@@ -314,7 +310,7 @@ export default function NotificationsPage() {
                 <Link
                   href={n.link}
                   className="absolute inset-0 rounded-xl"
-                  aria-label={`查看: ${n.title}`}
+                  aria-label={`${t("notifications.view")}: ${n.title}`}
                   onClick={(e) => {
                     if (
                       (e.target as HTMLElement).closest("button")
@@ -337,7 +333,7 @@ export default function NotificationsPage() {
             disabled={page === 1}
             className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            上一页
+            {t("notifications.prevPage")}
           </button>
           <span className="text-sm text-gray-500">
             {page} / {totalPages}
@@ -347,7 +343,7 @@ export default function NotificationsPage() {
             disabled={page === totalPages}
             className="px-3 py-1.5 text-sm rounded-lg border border-gray-200 text-gray-600 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            下一页
+            {t("notifications.nextPage")}
           </button>
         </div>
       )}
