@@ -42,9 +42,9 @@ export default function CheckoutPage() {
   const { t } = useTranslation();
 
   const PAYMENT_METHODS: { key: PaymentGateway; label: string; icon: string }[] = [
-    { key: "wechat", label: t("payment.wechat") || "微信支付", icon: "💚" },
-    { key: "alipay", label: t("payment.alipay") || "支付宝", icon: "🔵" },
-    { key: "stripe", label: t("payment.stripe") || "Stripe 国际卡", icon: "💳" },
+    { key: "wechat", label: t("payment.wechat"), icon: "💚" },
+    { key: "alipay", label: t("payment.alipay"), icon: "🔵" },
+    { key: "stripe", label: t("payment.stripe"), icon: "💳" },
   ];
 
   const [trip, setTrip] = useState<TripDetail | null>(null);
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
         setTrip(tripData);
         setPromotions(promoData.items ?? []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : t("common.error") || "加载失败");
+        setError(err instanceof Error ? err.message : t("common.error"));
       } finally {
         setLoading(false);
       }
@@ -113,10 +113,10 @@ export default function CheckoutPage() {
         setCouponDiscount((result.discount ?? 0) * 100);
         setCouponValid(true);
       } else {
-        setCouponError(result.reason ?? (t("checkout.couponInvalid") || "优惠券无效"));
+        setCouponError(result.reason ?? t("checkout.couponInvalid"));
       }
     } catch (err) {
-      setCouponError(err instanceof Error ? err.message : t("common.error") || "验证失败");
+      setCouponError(err instanceof Error ? err.message : t("checkout.verifyError"));
     } finally {
       setCouponVerifying(false);
     }
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
       await createPayment(order.id, gateway);
       router.push(`/checkout/result?orderId=${order.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("common.error") || "提交失败");
+      setError(err instanceof Error ? err.message : t("checkout.submitError"));
     } finally {
       setSubmitting(false);
     }
@@ -176,7 +176,7 @@ export default function CheckoutPage() {
       <div className="min-h-[80vh] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">{t("common.loading") || "加载中..."}</p>
+          <p className="text-gray-500 text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -188,9 +188,9 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">😔</div>
-        <h1 className="text-xl font-bold text-gray-700 mb-4">缺少行程信息</h1>
+        <h1 className="text-xl font-bold text-gray-700 mb-4">{t("checkout.missingTrip")}</h1>
         <Link href="/trips" className="text-[#0066FF] hover:underline">
-          返回行程列表
+          {t("checkout.backToTrips")}
         </Link>
       </div>
     );
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
         <div className="text-5xl mb-4">😔</div>
         <h1 className="text-xl font-bold text-gray-700 mb-4">{error}</h1>
         <Link href={`/trips/${tripId}`} className="text-[#0066FF] hover:underline">
-          {t("checkout.backToTrip") || "返回行程"}
+          {t("checkout.backToTrip")}
         </Link>
       </div>
     );
@@ -226,22 +226,22 @@ export default function CheckoutPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          {t("checkout.backToTrip") || "返回行程"}
+          {t("checkout.backToTrip")}
         </Link>
         {countdown > 0 ? (
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            结账剩余时间 <Countdown seconds={countdown} />
+            {t("checkout.checkoutTimeout")} <Countdown seconds={countdown} />
           </div>
         ) : (
-          <span className="text-sm text-red-500">结账会话已超时，请重新发起</span>
+          <span className="text-sm text-red-500">{t("checkout.sessionExpired")}</span>
         )}
       </div>
 
       <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-        {t("checkout.title") || "确认支付"}
+        {t("checkout.title")}
       </h1>
 
       {error && (
@@ -255,27 +255,27 @@ export default function CheckoutPage() {
         <div className="lg:col-span-3 space-y-5">
           {/* Trip Summary */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-4">行程摘要</h2>
+            <h2 className="text-base font-semibold text-gray-900 mb-4">{t("checkout.tripSummaryTitle")}</h2>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">{t("checkout.tripName") || "行程名称"}</span>
+                <span className="text-gray-500">{t("checkout.tripName")}</span>
                 <span className="text-gray-900 font-medium">{trip.title}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">{t("checkout.travelDate") || "出行日期"}</span>
+                <span className="text-gray-500">{t("checkout.travelDate")}</span>
                 <span className="text-gray-700">
-                  {trip.startDate ?? "待定"} ~ {trip.endDate ?? "待定"}
+                  {trip.startDate ?? t("checkout.pending")} ~ {trip.endDate ?? t("checkout.pending")}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">{t("checkout.travelers") || "出行人数"}</span>
-                <span className="text-gray-700">{trip.persons ?? 1} 人</span>
+                <span className="text-gray-500">{t("checkout.travelers")}</span>
+                <span className="text-gray-700">{trip.persons ?? 1} {t("checkout.persons")}</span>
               </div>
             </div>
             {trip.sites && trip.sites.length > 0 && (
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-xs text-gray-400 mb-2">
-                  {t("checkout.holySites") || "朝圣圣地"} ({trip.sites.length} 处)
+                  {t("checkout.holySites")} ({trip.sites.length} {t("checkout.sites")})
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {trip.sites.map((ts) => (
@@ -283,7 +283,7 @@ export default function CheckoutPage() {
                       key={ts.id}
                       className="px-2.5 py-1 rounded-full bg-blue-50 text-xs text-blue-700 border border-blue-100"
                     >
-                      {ts.site?.name ?? `圣地 ${ts.order}`}
+                      {ts.site?.name ?? `#${ts.order}`}
                     </span>
                   ))}
                 </div>
@@ -294,28 +294,28 @@ export default function CheckoutPage() {
           {/* Price Breakdown */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-4">
-              {t("checkout.priceBreakdown") || "价格明细"}
+              {t("checkout.priceBreakdown")}
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">原价</span>
+                <span className="text-gray-500">{t("checkout.originalPrice")}</span>
                 <span className="text-gray-700">¥{rawTotal.toFixed(2)}</span>
               </div>
               {couponDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">优惠券折扣</span>
+                  <span className="text-gray-500">{t("checkout.couponDiscountLabel")}</span>
                   <span className="text-green-600">-¥{(couponDiscount / 100).toFixed(2)}</span>
                 </div>
               )}
               {promotionDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">促销优惠</span>
+                  <span className="text-gray-500">{t("checkout.promotionDiscount")}</span>
                   <span className="text-green-600">-¥{(promotionDiscount / 100).toFixed(2)}</span>
                 </div>
               )}
               <div className="pt-3 border-t border-gray-100 flex justify-between">
                 <span className="font-semibold text-gray-900">
-                  {t("checkout.totalDue") || "应付总价"}
+                  {t("checkout.totalDue")}
                 </span>
                 <div className="text-right">
                   {discountCents > 0 && (
@@ -337,7 +337,7 @@ export default function CheckoutPage() {
           {/* Coupon Selector */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-4">
-              {t("checkout.couponCode") || "优惠券"}
+              {t("checkout.couponCode")}
             </h2>
             <div className="flex gap-2">
               <input
@@ -349,7 +349,7 @@ export default function CheckoutPage() {
                   setCouponValid(false);
                   setCouponDiscount(0);
                 }}
-                placeholder={t("checkout.couponPlaceholder") || "输入优惠券码"}
+                placeholder={t("checkout.couponPlaceholder")}
                 className="flex-1 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] transition-colors"
               />
               <button
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
                 disabled={couponVerifying || !couponCode.trim()}
                 className="px-4 py-2.5 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] text-sm font-semibold hover:bg-[#0066FF]/20 transition-colors disabled:opacity-40"
               >
-                {couponVerifying ? "验证中..." : t("checkout.verify") || "验证"}
+                {couponVerifying ? t("checkout.verifying") : t("checkout.verify")}
               </button>
             </div>
             {couponError && (
@@ -368,12 +368,12 @@ export default function CheckoutPage() {
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-                优惠券有效，节省 ¥{(couponDiscount / 100).toFixed(2)}
+                {t("checkout.couponValidMsg", { amount: (couponDiscount / 100).toFixed(2) })}
               </p>
             )}
             <div className="mt-3">
               <Link href="/coupons" className="text-xs text-[#0066FF] hover:underline">
-                查看我的优惠券
+                {t("checkout.viewMyCoupons")}
               </Link>
             </div>
           </div>
@@ -381,7 +381,7 @@ export default function CheckoutPage() {
           {/* Available Promotions */}
           {promotions.length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-base font-semibold text-gray-900 mb-4">可用促销活动</h2>
+              <h2 className="text-base font-semibold text-gray-900 mb-4">{t("checkout.availablePromotions")}</h2>
               <div className="space-y-3">
                 {promotions.slice(0, 3).map((promo) => (
                   <label
@@ -405,15 +405,15 @@ export default function CheckoutPage() {
                       )}
                       <p className="text-xs text-orange-500 mt-0.5">
                         {promo.discountType === "PERCENT"
-                          ? `${promo.discountValue}% 折扣`
-                          : `减 ¥${(promo.discountValue / 100).toFixed(0)}`}
+                          ? t("checkout.percentDiscount", { value: promo.discountValue })
+                          : t("checkout.fixedDiscount", { value: (promo.discountValue / 100).toFixed(0) })}
                       </p>
                     </div>
                   </label>
                 ))}
               </div>
               <Link href="/promotions" className="text-xs text-[#0066FF] hover:underline mt-3 block">
-                查看全部促销
+                {t("checkout.viewAllPromotions")}
               </Link>
             </div>
           )}
@@ -421,7 +421,7 @@ export default function CheckoutPage() {
           {/* Payment Method */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <h2 className="text-base font-semibold text-gray-900 mb-4">
-              {t("checkout.paymentMethod") || "支付方式"}
+              {t("checkout.paymentMethod")}
             </h2>
             <div className="space-y-2">
               {PAYMENT_METHODS.map((method) => (
@@ -472,15 +472,15 @@ export default function CheckoutPage() {
             {submitting ? (
               <span className="inline-flex items-center gap-2 justify-center">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                {t("checkout.processing") || "处理中..."}
+                {t("checkout.processing")}
               </span>
             ) : (
-              `${t("checkout.confirmPay") || "确认支付"} ¥${(finalCents / 100).toFixed(2)}`
+              `${t("checkout.confirmPay")} ¥${(finalCents / 100).toFixed(2)}`
             )}
           </button>
 
           <p className="text-center text-gray-400 text-xs">
-            {t("checkout.agreementText") || "点击支付即表示您同意我们的服务条款和隐私政策"}
+            {t("checkout.agreementText")}
           </p>
         </div>
       </div>

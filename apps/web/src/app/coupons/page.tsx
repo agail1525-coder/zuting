@@ -37,6 +37,7 @@ interface AvailableCouponCardProps {
 }
 
 function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCouponCardProps) {
+  const { t } = useTranslation();
   const isFixed = coupon.type === "FIXED" || coupon.type === "fixed";
   const accentColor = isFixed ? "#EF4444" : "#3B82F6";
   const bgLight = isFixed ? "bg-red-50" : "bg-blue-50";
@@ -68,14 +69,14 @@ function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCo
                   <span className={`text-2xl font-bold ${textAccent}`}>
                     {(coupon.value / 100).toFixed(0)}
                   </span>
-                  <span className={`text-xs ${textAccent}`}>减</span>
+                  <span className={`text-xs ${textAccent}`}>{t("coupons.fixedUnit")}</span>
                 </>
               ) : (
                 <>
                   <span className={`text-2xl font-bold ${textAccent}`}>
                     {coupon.value}
                   </span>
-                  <span className={`text-xs ${textAccent}`}>折</span>
+                  <span className={`text-xs ${textAccent}`}>{t("coupons.percentUnit")}</span>
                 </>
               )}
             </div>
@@ -84,16 +85,16 @@ function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCo
             {/* Condition */}
             {coupon.minAmount != null && (
               <p className="text-xs text-gray-500">
-                满 ¥{(coupon.minAmount / 100).toFixed(0)} 可用
+                {t("coupons.minSpend", { min: (coupon.minAmount / 100).toFixed(0) })}
               </p>
             )}
             {/* Expiry */}
             <p className={`text-xs mt-1 ${expiring ? "text-orange-500 font-medium" : "text-gray-400"}`}>
-              {expiring ? "即将过期 · " : ""}有效至 {formatDate(coupon.endAt)}
+              {expiring ? t("coupons.expiringSoon") : ""}{t("coupons.validUntil", { date: formatDate(coupon.endAt) })}
             </p>
             {/* Quota */}
             <p className="text-xs text-gray-400 mt-0.5">
-              已领 {coupon.usedCount}/{coupon.totalCount}
+              {t("coupons.quotaClaimed", { used: coupon.usedCount, total: coupon.totalCount })}
             </p>
           </div>
           {/* Claim button */}
@@ -111,7 +112,7 @@ function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCo
               backgroundColor: claimed || isFull ? undefined : accentColor,
             }}
           >
-            {claimed ? "已领取" : isFull ? "已抢完" : claiming ? "领取中..." : "立即领取"}
+            {claimed ? t("coupons.claimed") : isFull ? t("coupons.soldOut") : claiming ? t("coupons.claiming") : t("coupons.claimNow")}
           </button>
         </div>
       </div>
@@ -125,6 +126,7 @@ interface MyCouponCardProps {
 }
 
 function MyCouponCard({ userCoupon, used }: MyCouponCardProps) {
+  const { t } = useTranslation();
   const { coupon } = userCoupon;
   const isFixed = coupon.type === "FIXED" || coupon.type === "fixed";
   const accentColor = used ? "#9CA3AF" : isFixed ? "#EF4444" : "#3B82F6";
@@ -151,34 +153,34 @@ function MyCouponCard({ userCoupon, used }: MyCouponCardProps) {
                   <span className={`text-2xl font-bold ${textAccent}`}>
                     {(coupon.value / 100).toFixed(0)}
                   </span>
-                  <span className={`text-xs ${textAccent}`}>减</span>
+                  <span className={`text-xs ${textAccent}`}>{t("coupons.fixedUnit")}</span>
                 </>
               ) : (
                 <>
                   <span className={`text-2xl font-bold ${textAccent}`}>{coupon.value}</span>
-                  <span className={`text-xs ${textAccent}`}>折</span>
+                  <span className={`text-xs ${textAccent}`}>{t("coupons.percentUnit")}</span>
                 </>
               )}
             </div>
             <p className="text-sm font-semibold text-gray-900 mb-1 truncate">{coupon.name}</p>
             {coupon.minAmount != null && (
               <p className="text-xs text-gray-500">
-                满 ¥{(coupon.minAmount / 100).toFixed(0)} 可用
+                {t("coupons.minSpend", { min: (coupon.minAmount / 100).toFixed(0) })}
               </p>
             )}
             <p className="text-xs text-gray-400 mt-1">
-              有效至 {formatDate(coupon.endAt)}
+              {t("coupons.validUntil", { date: formatDate(coupon.endAt) })}
             </p>
             {used && userCoupon.usedAt && (
               <p className="text-xs text-gray-400 mt-0.5">
-                使用于 {formatDate(userCoupon.usedAt)}
+                {t("coupons.usedAt", { date: formatDate(userCoupon.usedAt) })}
               </p>
             )}
           </div>
           {/* Status / Use button */}
           {used ? (
             <span className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-200 text-gray-500">
-              已使用
+              {t("coupons.statusUsed")}
             </span>
           ) : (
             <a
@@ -186,7 +188,7 @@ function MyCouponCard({ userCoupon, used }: MyCouponCardProps) {
               className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors hover:opacity-90"
               style={{ backgroundColor: accentColor }}
             >
-              去使用
+              {t("coupons.goUse")}
             </a>
           )}
         </div>
@@ -220,11 +222,11 @@ export default function CouponsPage() {
       const data = await fetchAvailableCoupons(1);
       setAvailableCoupons(Array.isArray(data.items) ? data.items : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载失败");
+      setError(err instanceof Error ? err.message : t("coupons.loadError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const loadMyCoupons = useCallback(async () => {
     setLoading(true);
@@ -237,7 +239,7 @@ export default function CouponsPage() {
       setMyCoupons(Array.isArray(available.items) ? available.items : []);
       setUsedCoupons(Array.isArray(used.items) ? used.items : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载失败");
+      setError(err instanceof Error ? err.message : t("coupons.loadError"));
     } finally {
       setLoading(false);
     }
@@ -263,7 +265,7 @@ export default function CouponsPage() {
           .then((d) => setMyCoupons(Array.isArray(d.items) ? d.items : []))
           .catch((err) => { console.error('Refresh my coupons failed:', err); });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "领取失败");
+        setError(err instanceof Error ? err.message : t("coupons.claimError"));
       } finally {
         setClaimingIds((prev) => {
           const next = new Set(prev);
@@ -276,9 +278,9 @@ export default function CouponsPage() {
   );
 
   const tabs: { key: TabKey; label: string; count?: number }[] = [
-    { key: "available", label: "可领取" },
-    { key: "mine", label: "我的券", count: myCoupons.length || undefined },
-    { key: "used", label: "已使用", count: usedCoupons.length || undefined },
+    { key: "available", label: t("coupons.tabAvailable") },
+    { key: "mine", label: t("coupons.tabMine"), count: myCoupons.length || undefined },
+    { key: "used", label: t("coupons.tabUsed"), count: usedCoupons.length || undefined },
   ];
 
   const currentList =
@@ -293,9 +295,9 @@ export default function CouponsPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          {t("nav.coupons") || "优惠券中心"}
+          {t("nav.coupons")}
         </h1>
-        <p className="text-gray-500 text-sm">领取并使用专属优惠，节省更多</p>
+        <p className="text-gray-500 text-sm">{t("coupons.subtitle")}</p>
       </div>
 
       {/* Tabs */}
@@ -331,17 +333,17 @@ export default function CouponsPage() {
       {loading ? (
         <div className="py-20 text-center">
           <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">加载中...</p>
+          <p className="text-gray-400 text-sm">{t("common.loading")}</p>
         </div>
       ) : currentList.length === 0 ? (
         <div className="py-20 text-center">
           <div className="text-5xl mb-4">🎫</div>
           <p className="text-gray-500 text-sm">
             {activeTab === "available"
-              ? "暂无可领取的优惠券"
+              ? t("coupons.emptyAvailable")
               : activeTab === "mine"
-              ? "暂无可用优惠券"
-              : "暂无已使用的优惠券"}
+              ? t("coupons.emptyMine")
+              : t("coupons.emptyUsed")}
           </p>
         </div>
       ) : (

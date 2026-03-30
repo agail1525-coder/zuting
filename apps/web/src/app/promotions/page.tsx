@@ -36,16 +36,18 @@ function useCountdown(endAt: string) {
 
 function CountdownBadge({ endAt }: { endAt: string }) {
   const { d, h, m, s, expired } = useCountdown(endAt);
-  if (expired) return <span className="text-xs text-gray-400 font-mono">已结束</span>;
+  const { t } = useTranslation();
+  if (expired) return <span className="text-xs text-gray-400 font-mono">{t("promotions.ended")}</span>;
   return (
     <span className="text-xs font-mono text-red-500 font-semibold bg-red-50 px-2 py-0.5 rounded-md">
-      {d > 0 ? `${d}天 ` : ""}
+      {d > 0 ? `${d}d ` : ""}
       {String(h).padStart(2, "0")}:{String(m).padStart(2, "0")}:{String(s).padStart(2, "0")}
     </span>
   );
 }
 
 function QuotaBar({ used, total }: { used: number; total: number }) {
+  const { t } = useTranslation();
   const pct = total > 0 ? Math.min(100, (used / total) * 100) : 0;
   const color = pct >= 80 ? "bg-red-500" : pct >= 50 ? "bg-orange-400" : "bg-[#0066FF]";
   return (
@@ -54,7 +56,7 @@ function QuotaBar({ used, total }: { used: number; total: number }) {
         <div className={`h-full rounded-full transition-all ${color}`} style={{ width: `${pct}%` }} />
       </div>
       <p className="text-xs text-gray-400 mt-1">
-        已抢 {used}/{total} · 剩余 {Math.max(0, total - used)}
+        {t("promotions.grabbed", { used: String(used), total: String(total), remaining: String(Math.max(0, total - used)) })}
       </p>
     </div>
   );
@@ -65,6 +67,7 @@ interface PromoCardProps {
 }
 
 function FlashSaleCard({ promo }: PromoCardProps) {
+  const { t } = useTranslation();
   const { expired } = useCountdown(promo.endAt);
   return (
     <div
@@ -86,7 +89,7 @@ function FlashSaleCard({ promo }: PromoCardProps) {
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-semibold text-gray-900 text-sm leading-tight">{promo.name}</h3>
           <span className="shrink-0 text-xs font-bold bg-red-500 text-white px-2 py-0.5 rounded-full">
-            闪购
+            {t("promotions.flashSaleTag")}
           </span>
         </div>
         {promo.description && (
@@ -96,16 +99,16 @@ function FlashSaleCard({ promo }: PromoCardProps) {
         <div className="flex items-center gap-2 mb-3">
           <span className="text-lg font-bold text-red-500">
             {promo.discountType === "PERCENT"
-              ? `${promo.discountValue}折`
-              : `减¥${(promo.discountValue / 100).toFixed(0)}`}
+              ? t("promotions.percentOff", { value: promo.discountValue })
+              : t("promotions.amountOff", { value: (promo.discountValue / 100).toFixed(0) })}
           </span>
           {promo.minAmount != null && (
-            <span className="text-xs text-gray-400">满¥{(promo.minAmount / 100).toFixed(0)}可用</span>
+            <span className="text-xs text-gray-400">{t("promotions.minSpend", { min: (promo.minAmount / 100).toFixed(0) })}</span>
           )}
         </div>
         {/* Countdown */}
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs text-gray-500">距结束</span>
+          <span className="text-xs text-gray-500">{t("promotions.endsIn")}</span>
           <CountdownBadge endAt={promo.endAt} />
         </div>
         {/* Quota bar */}
@@ -118,6 +121,7 @@ function FlashSaleCard({ promo }: PromoCardProps) {
 }
 
 function DiscountCard({ promo }: PromoCardProps) {
+  const { t } = useTranslation();
   const endDate = formatDate(promo.endAt);
   const nowMs = Date.now();
   const endMs = new Date(promo.endAt).getTime();
@@ -139,7 +143,7 @@ function DiscountCard({ promo }: PromoCardProps) {
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-semibold text-gray-900 text-sm leading-tight">{promo.name}</h3>
           <span className="shrink-0 text-xs font-bold bg-[#0066FF] text-white px-2 py-0.5 rounded-full">
-            限时
+            {t("promotions.limitedTimeTag")}
           </span>
         </div>
         {promo.description && (
@@ -148,19 +152,19 @@ function DiscountCard({ promo }: PromoCardProps) {
         <div className="flex items-center gap-2 mb-2">
           <span className="text-lg font-bold text-[#0066FF]">
             {promo.discountType === "PERCENT"
-              ? `${promo.discountValue}折`
-              : `减¥${(promo.discountValue / 100).toFixed(0)}`}
+              ? t("promotions.percentOff", { value: promo.discountValue })
+              : t("promotions.amountOff", { value: (promo.discountValue / 100).toFixed(0) })}
           </span>
           {promo.minAmount != null && (
             <span className="text-xs text-gray-400 line-through">
-              原价
+              {t("promotions.originalPrice")}
             </span>
           )}
         </div>
         <div className="flex items-center justify-between text-xs text-gray-400">
-          <span>截止 {endDate}</span>
+          <span>{t("promotions.deadline", { date: endDate })}</span>
           {remainDays <= 3 && remainDays > 0 && (
-            <span className="text-orange-500 font-medium">仅剩 {remainDays} 天</span>
+            <span className="text-orange-500 font-medium">{t("promotions.daysLeft", { days: remainDays })}</span>
           )}
         </div>
       </div>
@@ -169,6 +173,7 @@ function DiscountCard({ promo }: PromoCardProps) {
 }
 
 function EarlyBirdCard({ promo }: PromoCardProps) {
+  const { t } = useTranslation();
   const saving = promo.discountType === "FIXED"
     ? `¥${(promo.discountValue / 100).toFixed(0)}`
     : `${promo.discountValue}%`;
@@ -189,7 +194,7 @@ function EarlyBirdCard({ promo }: PromoCardProps) {
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="font-semibold text-gray-900 text-sm leading-tight">{promo.name}</h3>
           <span className="shrink-0 text-xs font-bold bg-green-500 text-white px-2 py-0.5 rounded-full">
-            早鸟
+            {t("promotions.earlyBirdTag")}
           </span>
         </div>
         {promo.description && (
@@ -200,11 +205,11 @@ function EarlyBirdCard({ promo }: PromoCardProps) {
             <path fillRule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17A3 3 0 015 5zm8.5 1H10V5.5a1 1 0 011-1h1a1 1 0 011 1V6z" clipRule="evenodd" />
           </svg>
           <span className="text-xs font-semibold text-green-700">
-            提前预订节省 {saving}
+            {t("promotions.bookEarlySave", { saving })}
           </span>
         </div>
         <div className="text-xs text-gray-400">
-          活动截止 {formatDate(promo.endAt)}
+          {t("promotions.eventDeadline", { date: formatDate(promo.endAt) })}
         </div>
         {promo.totalQuota > 0 && (
           <div className="mt-2">
@@ -231,10 +236,10 @@ export default function PromotionsPage() {
   const [error, setError] = useState("");
 
   const tabs: { key: TabKey; label: string; icon: string }[] = [
-    { key: "all", label: "全部", icon: "🎯" },
-    { key: "FLASH_SALE", label: "闪购", icon: "⚡" },
-    { key: "EARLY_BIRD", label: "早鸟价", icon: "🌅" },
-    { key: "DISCOUNT", label: "限时折扣", icon: "🏷️" },
+    { key: "all", label: t("promotions.tabAll"), icon: "🎯" },
+    { key: "FLASH_SALE", label: t("promotions.tabFlashSale"), icon: "⚡" },
+    { key: "EARLY_BIRD", label: t("promotions.tabEarlyBird"), icon: "🌅" },
+    { key: "DISCOUNT", label: t("promotions.tabDiscount"), icon: "🏷️" },
   ];
 
   const load = useCallback(async (type: TabKey) => {
@@ -244,11 +249,11 @@ export default function PromotionsPage() {
       const data = await fetchPromotions(type === "all" ? undefined : type, 1);
       setPromotions(Array.isArray(data.items) ? data.items : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "加载失败");
+      setError(err instanceof Error ? err.message : t("promotions.loadError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     load(activeTab);
@@ -259,9 +264,9 @@ export default function PromotionsPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          {t("nav.deals") || "促销活动"}
+          {t("nav.deals")}
         </h1>
-        <p className="text-gray-500 text-sm">限时优惠、早鸟特价、闪购活动，一站掌握</p>
+        <p className="text-gray-500 text-sm">{t("promotions.subtitle")}</p>
       </div>
 
       {/* Tabs */}
@@ -293,14 +298,14 @@ export default function PromotionsPage() {
       {loading ? (
         <div className="py-20 text-center">
           <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">加载中...</p>
+          <p className="text-gray-400 text-sm">{t("promotions.loading")}</p>
         </div>
       ) : promotions.length === 0 ? (
         <div className="py-20 text-center">
           <div className="text-5xl mb-4">🎉</div>
-          <p className="text-gray-500 text-sm">暂无进行中的促销活动，请稍后再来</p>
+          <p className="text-gray-500 text-sm">{t("promotions.empty")}</p>
           <Link href="/holy-sites" className="mt-4 inline-block text-[#0066FF] text-sm hover:underline">
-            浏览全部圣地
+            {t("promotions.browseAll")}
           </Link>
         </div>
       ) : (
