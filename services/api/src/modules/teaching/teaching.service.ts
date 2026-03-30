@@ -7,13 +7,19 @@ import { UpdateTeachingDto } from './dto/update-teaching.dto';
 export class TeachingService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(religionId?: string) {
-    return this.prisma.teaching.findMany({
-      take: 100,
-      where: religionId ? { religionId } : undefined,
-      include: { religion: { select: { name: true, nameEn: true, slug: true, color: true } } },
-      orderBy: { name: 'asc' },
-    });
+  async findAll(religionId?: string, page = 1, limit = 20) {
+    const where = religionId ? { religionId } : undefined;
+    const [items, total] = await Promise.all([
+      this.prisma.teaching.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { religion: { select: { name: true, nameEn: true, slug: true, color: true } } },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.teaching.count({ where }),
+    ]);
+    return { items, total, page, limit };
   }
 
   findById(id: string) {

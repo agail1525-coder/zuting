@@ -8,12 +8,18 @@ import { UpdateSealDto } from './dto/update-seal.dto';
 export class SealService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(series?: SealSeries) {
-    return this.prisma.seal.findMany({
-      where: series ? { series } : undefined,
-      orderBy: { id: 'asc' },
-      take: 100,
-    });
+  async findAll(series?: SealSeries, page = 1, limit = 20) {
+    const where = series ? { series } : undefined;
+    const [items, total] = await Promise.all([
+      this.prisma.seal.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { id: 'asc' },
+      }),
+      this.prisma.seal.count({ where }),
+    ]);
+    return { items, total, page, limit };
   }
 
   findById(id: number) {

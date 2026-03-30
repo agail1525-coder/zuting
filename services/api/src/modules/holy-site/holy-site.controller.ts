@@ -13,6 +13,7 @@ import { CreateHolySiteDto } from './dto/create-holy-site.dto';
 import { UpdateHolySiteDto } from './dto/update-holy-site.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('holy-sites')
 @Controller('holy-sites')
@@ -55,8 +56,11 @@ export class HolySiteController {
       },
     },
   })
-  findAll(@Query('religionId') religionId?: string) {
-    return this.holySiteService.findAll(religionId);
+  findAll(
+    @Query() pagination: PaginationQueryDto,
+    @Query('religionId') religionId?: string,
+  ) {
+    return this.holySiteService.findAll(religionId, pagination.page, pagination.limit);
   }
 
   @Get(':id')

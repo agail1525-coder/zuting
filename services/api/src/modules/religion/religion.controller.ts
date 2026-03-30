@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, NotFoundException } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -12,6 +12,7 @@ import { CreateReligionDto } from './dto/create-religion.dto';
 import { UpdateReligionDto } from './dto/update-religion.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('religions')
 @Controller('religions')
@@ -45,8 +46,8 @@ export class ReligionController {
       },
     },
   })
-  findAll() {
-    return this.religionService.findAll();
+  findAll(@Query() pagination: PaginationQueryDto) {
+    return this.religionService.findAll(pagination.page, pagination.limit);
   }
 
   @Get(':slug')

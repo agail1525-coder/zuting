@@ -7,13 +7,19 @@ import { UpdateTempleDto } from './dto/update-temple.dto';
 export class TempleService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(religionId?: string) {
-    return this.prisma.temple.findMany({
-      take: 100,
-      where: religionId ? { religionId } : undefined,
-      include: { religion: { select: { name: true, nameEn: true, slug: true, color: true } } },
-      orderBy: { name: 'asc' },
-    });
+  async findAll(religionId?: string, page = 1, limit = 20) {
+    const where = religionId ? { religionId } : undefined;
+    const [items, total] = await Promise.all([
+      this.prisma.temple.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { religion: { select: { name: true, nameEn: true, slug: true, color: true } } },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.temple.count({ where }),
+    ]);
+    return { items, total, page, limit };
   }
 
   findById(id: string) {

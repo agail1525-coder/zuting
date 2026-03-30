@@ -5,6 +5,7 @@ import { CreatePatriarchDto } from './dto/create-patriarch.dto';
 import { UpdatePatriarchDto } from './dto/update-patriarch.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('patriarchs')
 @Controller('patriarchs')
@@ -15,8 +16,11 @@ export class PatriarchController {
   @Public()
   @ApiOperation({ summary: '获取所有祖师 / Get all patriarchs' })
   @ApiQuery({ name: 'religionId', required: false })
-  findAll(@Query('religionId') religionId?: string) {
-    return this.patriarchService.findAll(religionId);
+  findAll(
+    @Query() pagination: PaginationQueryDto,
+    @Query('religionId') religionId?: string,
+  ) {
+    return this.patriarchService.findAll(religionId, pagination.page, pagination.limit);
   }
 
   @Get(':id')

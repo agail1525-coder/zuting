@@ -7,11 +7,16 @@ import { UpdateReligionDto } from './dto/update-religion.dto';
 export class ReligionService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return this.prisma.religion.findMany({
-      take: 100,
-      orderBy: { name: 'asc' },
-    });
+  async findAll(page = 1, limit = 20) {
+    const [items, total] = await Promise.all([
+      this.prisma.religion.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.religion.count(),
+    ]);
+    return { items, total, page, limit };
   }
 
   findBySlug(slug: string) {
