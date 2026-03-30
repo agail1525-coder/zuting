@@ -28,12 +28,12 @@ export default function RankingsClient() {
           const sorted = [...data].sort((a, b) => (b.name > a.name ? -1 : 1));
           setSites(sorted.slice(0, 20));
         })
-        .catch(() => setError(t("rankings.loadError") || "加载失败，请刷新重试"))
+        .catch(() => setError(t("rankings.loadError")))
         .finally(() => setLoading(false));
     } else {
       fetchRoutes({ sort: "rating", pageSize: 20 })
         .then((data) => setRoutes(data.items))
-        .catch(() => setError(t("rankings.loadError") || "加载失败，请刷新重试"))
+        .catch(() => setError(t("rankings.loadError")))
         .finally(() => setLoading(false));
     }
   }, [tab, t]);
@@ -44,10 +44,10 @@ export default function RankingsClient() {
         {/* Hero */}
         <div className="bg-gradient-to-b from-amber-50 to-gray-50 py-12 px-4 text-center">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">
-            {t("rankings.title") || "排行榜"}
+            {t("rankings.title")}
           </h1>
           <p className="text-gray-500 mt-2">
-            {t("rankings.subtitle") || "最受朝圣者推荐的圣地与路线"}
+            {t("rankings.subtitle")}
           </p>
         </div>
 
@@ -55,8 +55,8 @@ export default function RankingsClient() {
           {/* Tab Switcher */}
           <div className="flex items-center gap-2 mb-6 bg-white rounded-xl p-1 border border-gray-200 w-fit mx-auto">
             {([
-              { key: "sites" as RankType, label: t("rankings.bestSites") || "最佳圣地" },
-              { key: "routes" as RankType, label: t("rankings.bestRoutes") || "最佳路线" },
+              { key: "sites" as RankType, label: t("rankings.bestSites") },
+              { key: "routes" as RankType, label: t("rankings.bestRoutes") },
             ]).map(({ key, label }) => (
               <button
                 key={key}
@@ -85,13 +85,13 @@ export default function RankingsClient() {
                 onClick={() => { setLoading(true); setError(null); }}
                 className="mt-4 px-4 py-2 bg-[#0066FF] text-white rounded-lg text-sm hover:bg-[#0052CC]"
               >
-                {t("rankings.retry") || "重试"}
+                {t("rankings.retry")}
               </button>
             </div>
           ) : (tab === "sites" && sites.length === 0) || (tab === "routes" && routes.length === 0) ? (
             <div className="text-center py-16">
               <p className="text-4xl mb-3">🏛️</p>
-              <p className="text-gray-500">{t("rankings.empty") || "暂无排行数据"}</p>
+              <p className="text-gray-500">{t("rankings.empty")}</p>
             </div>
           ) : tab === "sites" ? (
             <div className="space-y-3">
@@ -154,7 +154,7 @@ export default function RankingsClient() {
                       {route.title}
                     </p>
                     <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-500">
-                      <span>{route.duration}天{route.nights}晚</span>
+                      <span>{route.duration}{t("rankings.days")}{route.nights}{t("rankings.nights")}</span>
                       {route.rating && (
                         <span className="text-amber-500">★ {route.rating.toFixed(1)}</span>
                       )}

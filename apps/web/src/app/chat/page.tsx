@@ -219,10 +219,10 @@ export default function ChatPage() {
               {/* Feature pills */}
               <div className="flex flex-wrap justify-center gap-2 mt-5">
                 {[
-                  { icon: "🌍", label: "12大信仰" },
-                  { icon: "📍", label: "60处圣地" },
-                  { icon: "🏛️", label: "27座祖庭" },
-                  { icon: "✈️", label: "路线规划" },
+                  { icon: "🌍", label: t("chat.feature.faiths") },
+                  { icon: "📍", label: t("chat.feature.sites") },
+                  { icon: "🏛️", label: t("chat.feature.temples") },
+                  { icon: "✈️", label: t("chat.feature.routes") },
                 ].map((f) => (
                   <span
                     key={f.label}

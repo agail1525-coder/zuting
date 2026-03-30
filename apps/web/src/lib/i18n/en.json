@@ -539,6 +539,16 @@
   "rankings.subtitle": "Top recommended holy sites and routes",
   "rankings.bestSites": "Best Holy Sites",
   "rankings.bestRoutes": "Best Routes",
+  "rankings.loadError": "Failed to load, please refresh",
+  "rankings.retry": "Retry",
+  "rankings.empty": "No ranking data yet",
+  "rankings.days": "days",
+  "rankings.nights": "nights",
+
+  "chat.feature.faiths": "12 Traditions",
+  "chat.feature.sites": "60+ Holy Sites",
+  "chat.feature.temples": "27 Ancestral Temples",
+  "chat.feature.routes": "Route Planning",
 
   "priceForecast.title": "Price Trend",
   "priceForecast.goodDeal": "Good time to book",

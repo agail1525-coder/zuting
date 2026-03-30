@@ -929,5 +929,15 @@
   "prices.calendar.months.sep": "Sep",
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
-  "prices.calendar.months.dec": "Dec"
+  "prices.calendar.months.dec": "Dec",
+
+  "rankings.loadError": "로딩 실패, 새로고침하세요",
+  "rankings.retry": "재시도",
+  "rankings.empty": "순위 데이터 없음",
+  "rankings.days": "일",
+  "rankings.nights": "박",
+  "chat.feature.faiths": "12대 전통",
+  "chat.feature.sites": "60+ 성지",
+  "chat.feature.temples": "27 조정",
+  "chat.feature.routes": "경로 계획"
 }

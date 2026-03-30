@@ -929,5 +929,15 @@
   "prices.calendar.months.sep": "Sep",
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
-  "prices.calendar.months.dec": "Dec"
+  "prices.calendar.months.dec": "Dec",
+
+  "rankings.loadError": "Failed to load, please refresh",
+  "rankings.retry": "Retry",
+  "rankings.empty": "No ranking data yet",
+  "rankings.days": "days",
+  "rankings.nights": "nights",
+  "chat.feature.faiths": "12 Traditions",
+  "chat.feature.sites": "60+ Holy Sites",
+  "chat.feature.temples": "27 Ancestral Temples",
+  "chat.feature.routes": "Route Planning"
 }

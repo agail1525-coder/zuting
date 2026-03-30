@@ -539,6 +539,16 @@
   "rankings.subtitle": "最受朝圣者推荐的圣地与路线",
   "rankings.bestSites": "最佳圣地",
   "rankings.bestRoutes": "最佳路线",
+  "rankings.loadError": "加载失败，请刷新重试",
+  "rankings.retry": "重试",
+  "rankings.empty": "暂无排行数据",
+  "rankings.days": "天",
+  "rankings.nights": "晚",
+
+  "chat.feature.faiths": "12大信仰",
+  "chat.feature.sites": "60处圣地",
+  "chat.feature.temples": "27座祖庭",
+  "chat.feature.routes": "路线规划",
 
   "priceForecast.title": "价格趋势",
   "priceForecast.goodDeal": "适合现在预订",

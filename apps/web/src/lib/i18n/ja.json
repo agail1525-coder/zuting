@@ -929,5 +929,15 @@
   "prices.calendar.months.sep": "Sep",
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
-  "prices.calendar.months.dec": "Dec"
+  "prices.calendar.months.dec": "Dec",
+
+  "rankings.loadError": "読み込みに失敗しました",
+  "rankings.retry": "再試行",
+  "rankings.empty": "ランキングデータなし",
+  "rankings.days": "日",
+  "rankings.nights": "泊",
+  "chat.feature.faiths": "12の伝統",
+  "chat.feature.sites": "60+聖地",
+  "chat.feature.temples": "27祖庭",
+  "chat.feature.routes": "ルート計画"
 }
