@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { fetchTrip, type TripDetail, type TripStatus } from "@/lib/api";
 import ReviewSection from "@/components/ReviewSection";
+import MobileNav from "@/components/MobileNav";
 
 const STATUS_ICONS: Record<string, string> = {
   DRAFT: "📝",
@@ -117,7 +118,8 @@ export default function TripDetailPage() {
   const tbd = t("tripDetail.dateTbd");
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Back */}
       <Link
         href="/trips"
@@ -307,6 +309,34 @@ export default function TripDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Action CTAs based on status */}
+      <div className="mt-6 flex flex-wrap gap-3">
+        {trip.status === "CONFIRMED" && (
+          <Link
+            href={`/trips/${id}/checkout`}
+            className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 text-sm"
+          >
+            立即支付 →
+          </Link>
+        )}
+        {trip.status === "COMPLETED" && (
+          <Link
+            href="/journals/create"
+            className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 text-sm"
+          >
+            写朝圣日志 →
+          </Link>
+        )}
+        <Link
+          href="/chat"
+          className="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm"
+        >
+          ✨ 咨询小鸿
+        </Link>
+      </div>
+      </div>
+      <MobileNav />
     </div>
   );
 }
