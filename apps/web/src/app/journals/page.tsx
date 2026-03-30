@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { fetchJournals, type JournalItem } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const MOOD_EMOJI: Record<string, { emoji: string; key: string }> = {
   "觉悟": { emoji: "🪷", key: "journal.mood.awakening" },
@@ -142,9 +143,11 @@ export default function JournalsPage() {
                   {/* Image or Emoji Placeholder */}
                   <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#0066FF]/10 to-gray-50 border border-gray-200 flex items-center justify-center text-2xl shrink-0 overflow-hidden">
                     {journal.images && journal.images.length > 0 ? (
-                      <img
+                      <OptimizedImage
                         src={journal.images[0]}
                         alt={journal.title}
+                        width={200}
+                        height={200}
                         className="w-full h-full object-cover"
                       />
                     ) : (

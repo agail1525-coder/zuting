@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { fetchMerchants, type Merchant } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const MERCHANT_TYPES = [
   { key: "", labelKey: "common.all" },
@@ -58,9 +59,11 @@ function MerchantCard({ merchant, t }: { merchant: Merchant; t: (k: string) => s
     >
       <div className="aspect-[3/2] bg-gray-100 overflow-hidden relative">
         {merchant.logo ? (
-          <img
+          <OptimizedImage
             src={merchant.logo}
             alt={merchant.name}
+            width={64}
+            height={64}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (

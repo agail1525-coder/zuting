@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { fetchMediaByEntity } from "@/lib/api";
 import type { MediaContent } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface MediaTourProps {
   entityType: string;
@@ -113,6 +114,7 @@ function PanoramaModal({
           onMouseLeave={onMouseUp}
         >
           {/* Wide panoramic image — user drags to explore */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={media.url}
             alt={media.title}
@@ -295,9 +297,11 @@ export default function MediaTour({ entityType, entityId }: MediaTourProps) {
               className="group relative rounded-xl overflow-hidden bg-gray-100 aspect-video text-left"
             >
               {item.thumbnailUrl ? (
-                <img
+                <OptimizedImage
                   src={item.thumbnailUrl}
                   alt={item.title}
+                  width={120}
+                  height={80}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
@@ -345,9 +349,11 @@ export default function MediaTour({ entityType, entityId }: MediaTourProps) {
               className="group relative rounded-xl overflow-hidden bg-gray-100 aspect-[2/1] text-left"
             >
               {item.thumbnailUrl ? (
-                <img
+                <OptimizedImage
                   src={item.thumbnailUrl}
                   alt={item.title}
+                  width={120}
+                  height={80}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (

@@ -8,6 +8,7 @@ import { createGuide, publishGuide } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import MarkdownEditor from "@/components/MarkdownEditor";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function WriteGuidePage() {
   const { user, loading } = useAuth();
@@ -167,6 +168,7 @@ export default function WriteGuidePage() {
             />
             {coverImage && (
               <div className="mt-3 aspect-video rounded-xl overflow-hidden border border-gray-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={coverImage}
                   alt={t("community.guide.coverPreview")}

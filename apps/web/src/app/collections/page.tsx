@@ -11,6 +11,7 @@ import {
   deleteCollection,
   type Collection,
 } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const GRADIENT_PLACEHOLDERS = [
   "from-blue-500 to-indigo-600",
@@ -61,9 +62,11 @@ function CollectionCard({
         {/* Cover */}
         <div className="relative h-36 overflow-hidden">
           {collection.coverImage ? (
-            <img
+            <OptimizedImage
               src={collection.coverImage}
               alt={collection.name}
+              width={400}
+              height={300}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (

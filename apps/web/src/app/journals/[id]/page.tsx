@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { fetchJournal, updateJournal, deleteJournal, type JournalDetail, type UpdateJournalData } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export const dynamic = "force-dynamic";
 
@@ -301,9 +302,11 @@ export default function JournalDetailPage() {
                     key={i}
                     className="rounded-xl overflow-hidden border border-gray-200"
                   >
-                    <img
+                    <OptimizedImage
                       src={img}
                       alt={`${journal.title} - ${i + 1}`}
+                      width={800}
+                      height={600}
                       className="w-full h-48 object-cover"
                     />
                   </div>
