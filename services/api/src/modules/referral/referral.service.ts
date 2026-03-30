@@ -187,6 +187,7 @@ export class ReferralService {
     const users = await this.prisma.user.findMany({
       where: { id: { in: userIds } },
       select: { id: true, nickname: true, email: true },
+      take: 100,
     });
     const userMap = new Map(users.map((u) => [u.id, u]));
 
@@ -223,6 +224,7 @@ export class ReferralService {
     const users = await this.prisma.user.findMany({
       where: { id: { in: inviteeIds } },
       select: { id: true, nickname: true },
+      take: 100,
     });
     const userMap = new Map(users.map((u) => [u.id, u]));
 
