@@ -2,11 +2,12 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 import {
   fetchMyMembership,
   fetchPointsHistory,
@@ -180,7 +181,7 @@ export default function MembershipPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 py-8 pb-24 space-y-6">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0066FF] to-[#0052CC] rounded-2xl p-6 text-white">
         <div className="flex items-start justify-between mb-4">
@@ -250,6 +251,83 @@ export default function MembershipPage() {
         ))}
       </div>
 
+      {/* ══════ Missions Board (对标Booking Genius/Agoda任务系统) ══════ */}
+      <div>
+        <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <span>🎯</span> {t("membership.missions") || "每日任务"}
+        </h2>
+        <div className="space-y-2">
+          {[
+            { icon: "✅", label: "每日签到", points: 10, done: calendarDates.has(`${year}-${String(month).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`) },
+            { icon: "📝", label: "写一篇朝圣日志", points: 50, done: false, href: "/journals/create" },
+            { icon: "⭐", label: "为路线写一条评价", points: 30, done: false, href: "/routes" },
+            { icon: "👥", label: "邀请一位好友注册", points: 100, done: false, href: "/membership/referral" },
+            { icon: "🛒", label: "预订一条路线", points: 200, done: false, href: "/routes" },
+          ].map((mission) => (
+            <div
+              key={mission.label}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
+                mission.done
+                  ? "bg-green-50 border-green-200"
+                  : "bg-white border-gray-200 hover:border-[#0066FF]/30 hover:shadow-sm"
+              }`}
+            >
+              <span className="text-lg">{mission.icon}</span>
+              <div className="flex-1">
+                <p className={`text-sm font-medium ${mission.done ? "text-green-600 line-through" : "text-gray-800"}`}>
+                  {mission.label}
+                </p>
+              </div>
+              <span className={`text-sm font-bold ${mission.done ? "text-green-500" : "text-[#D4A855]"}`}>
+                {mission.done ? "✓" : `+${mission.points}`}
+              </span>
+              {!mission.done && mission.href && (
+                <Link href={mission.href} className="text-xs text-[#0066FF] hover:underline shrink-0">
+                  去完成 →
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════ Streak Counter (对标Duolingo连续签到) ══════ */}
+      {membership && (
+        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-5 border border-amber-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🔥</span>
+              <div>
+                <p className="font-bold text-gray-900">{t("membership.streakTitle") || "连续签到"}</p>
+                <p className="text-sm text-gray-500">{t("membership.streakDesc") || "保持连续签到获取额外奖励"}</p>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-[#D4A855]">{calendarDates.size}</p>
+              <p className="text-xs text-gray-400">{t("membership.daysThisMonth") || "本月签到天数"}</p>
+            </div>
+          </div>
+          {/* Streak milestones */}
+          <div className="flex items-center gap-2 mt-4">
+            {[7, 14, 21, 30].map((milestone) => {
+              const reached = calendarDates.size >= milestone;
+              return (
+                <div
+                  key={milestone}
+                  className={`flex-1 text-center py-2 rounded-lg text-xs font-medium transition-all ${
+                    reached
+                      ? "bg-[#D4A855] text-white"
+                      : "bg-white border border-gray-200 text-gray-400"
+                  }`}
+                >
+                  {milestone}天{reached ? " ✓" : ""}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Checkin Calendar */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3">
@@ -304,6 +382,31 @@ export default function MembershipPage() {
         </div>
       )}
 
+      {/* ══════ Member Exclusive Deals (对标Booking Genius优惠) ══════ */}
+      <div>
+        <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <span>💎</span> {t("membership.exclusiveDeals") || "会员专属"}
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: "🎫", title: "会员专属优惠券", desc: "每月赠送3张折扣券", href: "/coupons", color: "from-blue-500/10 to-blue-600/10" },
+            { icon: "💰", title: "路线9折优惠", desc: "部分精选路线享专属折扣", href: "/routes", color: "from-amber-500/10 to-yellow-500/10" },
+            { icon: "⚡", title: "优先预订", desc: "新路线上线优先预订权", href: "/routes", color: "from-purple-500/10 to-violet-500/10" },
+            { icon: "🎁", title: "积分翻倍", desc: "消费积分翻倍累积", href: "/points-mall", color: "from-green-500/10 to-emerald-500/10" },
+          ].map((deal) => (
+            <Link
+              key={deal.title}
+              href={deal.href}
+              className={`bg-gradient-to-br ${deal.color} rounded-xl p-4 border border-gray-100 hover:shadow-md transition-all group`}
+            >
+              <span className="text-2xl block mb-2">{deal.icon}</span>
+              <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors">{deal.title}</h3>
+              <p className="text-xs text-gray-500 mt-1">{deal.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Points History */}
       <div>
         <div className="flex items-center justify-between mb-3">
@@ -338,6 +441,27 @@ export default function MembershipPage() {
           </div>
         )}
       </div>
+
+      {/* ══════ Upgrade Path CTA ══════ */}
+      {membership && nextLevel && (
+        <div className="bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-xl p-5 border border-[#0066FF]/10 text-center">
+          <p className="text-lg font-bold text-gray-900">
+            距离升级到 <span style={{ color: LEVEL_COLORS[nextLevel.level] }}>{nextLevel.name}</span> 还需
+          </p>
+          <p className="text-3xl font-bold text-[#0066FF] mt-1">
+            {Math.max(0, nextLevel.minPoints - membership.totalPoints).toLocaleString()} 积分
+          </p>
+          <p className="text-sm text-gray-400 mt-2">完成每日任务、写评价、邀请好友加速升级</p>
+          <Link
+            href="/routes"
+            className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm shadow-lg shadow-blue-500/20"
+          >
+            浏览路线赚积分 →
+          </Link>
+        </div>
+      )}
+
+      <MobileNav />
     </div>
   );
 }

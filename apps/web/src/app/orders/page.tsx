@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 import {
   fetchOrders,
   fetchOrder,
@@ -421,6 +422,16 @@ function InfoRow({
   );
 }
 
+const STATUS_TABS = [
+  { value: "", label: "全部", icon: "📋" },
+  { value: "PENDING", label: "待支付", icon: "⏳" },
+  { value: "PAID", label: "已支付", icon: "✅" },
+  { value: "COMPLETED", label: "已完成", icon: "🎉" },
+  { value: "CANCELLED", label: "已取消", icon: "❌" },
+  { value: "REFUNDING", label: "退款中", icon: "🔄" },
+  { value: "REFUNDED", label: "已退款", icon: "💰" },
+];
+
 // --- Main Page ---
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
@@ -432,12 +443,42 @@ export default function OrdersPage() {
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
   const [drawerLoading, setDrawerLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/login");
     }
   }, [authLoading, user, router]);
+
+  // Filtered orders
+  const filteredOrders = useMemo(() => {
+    let result = orders;
+    if (statusFilter) {
+      result = result.filter((o) => (o.status?.toUpperCase() || "") === statusFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (o) =>
+          o.orderNo.toLowerCase().includes(q) ||
+          (o.trip?.title ?? "").toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [orders, statusFilter, searchQuery]);
+
+  // Order stats
+  const orderStats = useMemo(() => {
+    const total = orders.reduce((s, o) => s + (o.totalAmount ?? 0), 0);
+    const statusCounts: Record<string, number> = {};
+    orders.forEach((o) => {
+      const key = o.status?.toUpperCase() || "PENDING";
+      statusCounts[key] = (statusCounts[key] || 0) + 1;
+    });
+    return { totalSpent: total, statusCounts, count: orders.length };
+  }, [orders]);
 
   const loadOrders = useCallback(async () => {
     try {
@@ -488,102 +529,206 @@ export default function OrdersPage() {
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Page Header */}
-      <div className="text-center mb-8">
-        <div className="text-4xl mb-3">📋</div>
-        <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
-          {t("orders.pageTitle")}
-        </h1>
-        <p className="text-gray-500 text-sm mt-2">{t("orders.pageSubtitle")}</p>
-      </div>
-
-      {/* Error */}
-      {error && (
-        <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
-          {error}
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="text-center mb-6">
+          <div className="text-4xl mb-3">📋</div>
+          <h1 className="text-2xl font-serif font-bold text-[#0066FF]">
+            {t("orders.pageTitle")}
+          </h1>
+          <p className="text-gray-500 text-sm mt-2">{t("orders.pageSubtitle")}</p>
         </div>
-      )}
 
-      {/* Empty State */}
-      {!error && orders.length === 0 && (
-        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
-          <div className="text-5xl mb-4">🏛</div>
-          <h2 className="text-xl font-serif text-gray-700 mb-3">{t("orders.empty")}</h2>
-          <p className="text-gray-500 text-sm mb-6">
-            {t("orders.emptyHint")}
-          </p>
-          <Link
-            href="/trips"
-            className="inline-block px-6 py-3 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] font-semibold hover:bg-[#0066FF]/20 transition-colors"
-          >
-            {t("orders.browseTrips")}
-          </Link>
-        </div>
-      )}
+        {/* ══════ Order Stats Summary (对标Trip.com订单中心) ══════ */}
+        {orders.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
+              <p className="text-2xl font-bold text-[#0066FF]">{orderStats.count}</p>
+              <p className="text-xs text-gray-400 mt-1">总订单</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
+              <p className="text-2xl font-bold text-[#0066FF]">{formatAmount(orderStats.totalSpent)}</p>
+              <p className="text-xs text-gray-400 mt-1">总消费</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
+              <p className="text-2xl font-bold text-green-500">{orderStats.statusCounts["COMPLETED"] || 0}</p>
+              <p className="text-xs text-gray-400 mt-1">已完成</p>
+            </div>
+          </div>
+        )}
 
-      {/* Drawer loading overlay */}
-      {drawerLoading && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
-        </div>
-      )}
-
-      {/* Orders List */}
-      {orders.length > 0 && (
-        <div className="space-y-4">
-          {orders.map((order) => {
-            const sc = getStatusStyle(order.status);
-            const orderStatusLabel = t(`order.status.${order.status?.toUpperCase() || "PENDING"}`);
+        {/* ══════ Status Tabs (对标Booking/Ctrip核心模式) ══════ */}
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+          {STATUS_TABS.map((tab) => {
+            const count = tab.value ? (orderStats.statusCounts[tab.value] || 0) : orders.length;
             return (
-              <div
-                key={order.id}
-                className="rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-colors"
+              <button
+                key={tab.value}
+                onClick={() => setStatusFilter(tab.value)}
+                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+                  statusFilter === tab.value
+                    ? "bg-[#0066FF] text-white shadow-md"
+                    : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                }`}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-gray-900 truncate">
-                      {order.trip?.title || `${t("orders.orderPrefix")} ${order.orderNo}`}
-                    </h3>
-                    <p className="text-xs text-gray-400 font-mono mt-1">
-                      {order.orderNo}
-                    </p>
-                  </div>
-                  <span
-                    className={`shrink-0 ml-3 px-3 py-1 rounded-full text-xs font-medium border ${sc.color} ${sc.bg} ${sc.border}`}
-                  >
-                    {orderStatusLabel}
+                <span>{tab.icon}</span> {tab.label}
+                {count > 0 && (
+                  <span className={`text-xs ${statusFilter === tab.value ? "text-white/70" : "text-gray-400"}`}>
+                    ({count})
                   </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-[#0066FF]">
-                    {formatAmount(order.totalAmount)}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">
-                      {formatDate(order.createdAt)}
-                    </span>
-                    <button
-                      onClick={() => openDetail(order.id)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF] hover:bg-[#0066FF]/20 transition-colors"
-                    >
-                      {t("orders.viewDetail")}
-                    </button>
-                  </div>
-                </div>
-              </div>
+                )}
+              </button>
             );
           })}
         </div>
-      )}
 
-      {/* Detail Drawer */}
-      <OrderDrawer
-        order={selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        onAction={handleDrawerAction}
-      />
+        {/* ══════ Search Bar ══════ */}
+        <div className="mb-6">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索订单号或行程名称..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+            />
+          </div>
+          {(statusFilter || searchQuery) && (
+            <div className="mt-2 flex items-center gap-2 text-sm">
+              <span className="text-gray-400">找到 {filteredOrders.length} 个订单</span>
+              <button
+                onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
+                className="text-[#0066FF] hover:underline text-xs"
+              >
+                清除筛选
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!error && orders.length === 0 && (
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
+            <div className="text-5xl mb-4">🏛</div>
+            <h2 className="text-xl font-serif text-gray-700 mb-3">{t("orders.empty")}</h2>
+            <p className="text-gray-500 text-sm mb-6">
+              {t("orders.emptyHint")}
+            </p>
+            <Link
+              href="/trips"
+              className="inline-block px-6 py-3 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] font-semibold hover:bg-[#0066FF]/20 transition-colors"
+            >
+              {t("orders.browseTrips")}
+            </Link>
+          </div>
+        )}
+
+        {/* Filtered empty */}
+        {!error && orders.length > 0 && filteredOrders.length === 0 && (
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
+            <div className="text-4xl mb-3">🔍</div>
+            <p className="text-gray-500">没有找到符合条件的订单</p>
+            <button
+              onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
+              className="mt-3 text-sm text-[#0066FF] hover:underline"
+            >
+              清除筛选条件
+            </button>
+          </div>
+        )}
+
+        {/* Drawer loading overlay */}
+        {drawerLoading && (
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* Orders List */}
+        {filteredOrders.length > 0 && (
+          <div className="space-y-4">
+            {filteredOrders.map((order) => {
+              const sc = getStatusStyle(order.status);
+              const orderStatusLabel = t(`order.status.${order.status?.toUpperCase() || "PENDING"}`);
+              // Trip countdown for upcoming paid orders
+              const isPaid = order.status?.toUpperCase() === "PAID";
+              return (
+                <div
+                  key={order.id}
+                  className="rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-colors"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-gray-900 truncate">
+                        {order.trip?.title || `${t("orders.orderPrefix")} ${order.orderNo}`}
+                      </h3>
+                      <p className="text-xs text-gray-400 font-mono mt-1">
+                        {order.orderNo}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 ml-3 px-3 py-1 rounded-full text-xs font-medium border ${sc.color} ${sc.bg} ${sc.border}`}
+                    >
+                      {orderStatusLabel}
+                    </span>
+                  </div>
+
+                  {/* Upcoming trip nudge */}
+                  {isPaid && (
+                    <div className="mb-3 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100 text-xs text-blue-600 flex items-center gap-1.5">
+                      <span>✈️</span> 您的行程已确认，祝旅途愉快！
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-[#0066FF]">
+                      {formatAmount(order.totalAmount)}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">
+                        {formatDate(order.createdAt)}
+                      </span>
+                      {order.status?.toUpperCase() === "COMPLETED" && (
+                        <Link
+                          href={`/routes`}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors"
+                        >
+                          再次预订
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => openDetail(order.id)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#0066FF]/10 border border-[#0066FF]/20 text-[#0066FF] hover:bg-[#0066FF]/20 transition-colors"
+                      >
+                        {t("orders.viewDetail")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Detail Drawer */}
+        <OrderDrawer
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onAction={handleDrawerAction}
+        />
+      </div>
+      <MobileNav />
     </div>
   );
 }
