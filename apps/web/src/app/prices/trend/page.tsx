@@ -2,14 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchPriceTrend, type PriceTrendPoint } from "@/lib/api";
+import { fetchPriceTrend, fetchRoutes, type PriceTrendPoint, type Route } from "@/lib/api";
 
-const ENTITY_OPTIONS = [
-  { type: "package", id: "pkg-001", label: "峨眉山朝圣7日游" },
-  { type: "package", id: "pkg-002", label: "麦加朝觐精华团" },
-  { type: "package", id: "pkg-003", label: "耶路撒冷圣地探访" },
-  { type: "package", id: "pkg-004", label: "恒河瓦拉纳西净心之旅" },
-];
+interface EntityOption { type: string; id: string; label: string }
 
 const PERIODS = [
   { label: "7天", days: 7 },
@@ -19,13 +14,6 @@ const PERIODS = [
 
 function formatPrice(cents: number): string {
   return `¥${(cents / 100).toFixed(0)}`;
-}
-
-function generateMockTrend(days: number, base: number): PriceTrendPoint[] {
-  return Array.from({ length: days }, (_, i) => ({
-    date: new Date(Date.now() - (days - 1 - i) * 86400000).toISOString().slice(0, 10),
-    price: base + Math.floor(Math.sin(i / 4) * 8000 + Math.random() * 6000 - 3000),
-  }));
 }
 
 // Pure SVG line chart
@@ -152,23 +140,48 @@ function TrendChart({
 }
 
 export default function PriceTrendPage() {
-  const [selectedEntity, setSelectedEntity] = useState(ENTITY_OPTIONS[0]);
+  const [entityOptions, setEntityOptions] = useState<EntityOption[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null);
   const [period, setPeriod] = useState(PERIODS[1]);
   const [trendData, setTrendData] = useState<PriceTrendPoint[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingRoutes, setLoadingRoutes] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Load routes as entity options
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetchRoutes({ pageSize: 50 });
+        const opts: EntityOption[] = (res.items || []).map((r: Route) => ({
+          type: "route",
+          id: r.id,
+          label: r.title,
+        }));
+        if (opts.length > 0) {
+          setEntityOptions(opts);
+          setSelectedEntity(opts[0]);
+        } else {
+          setError("暂无可用路线");
+        }
+      } catch {
+        setError("无法加载路线列表");
+      } finally {
+        setLoadingRoutes(false);
+      }
+    })();
+  }, []);
+
   const loadTrend = useCallback(async () => {
+    if (!selectedEntity) return;
     setLoading(true);
     setError(null);
     try {
       const data = await fetchPriceTrend(selectedEntity.type, selectedEntity.id, period.days);
       setTrendData(data);
     } catch {
-      // Fallback mock
-      const base = 89800 + Math.floor(Math.random() * 30000);
-      setTrendData(generateMockTrend(period.days, base));
-      setError("使用演示数据 (API 尚未就绪)");
+      setTrendData([]);
+      setError("暂无价格趋势数据");
     } finally {
       setLoading(false);
     }
@@ -199,19 +212,23 @@ export default function PriceTrendPage() {
         {/* Controls */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="block text-xs text-gray-500 mb-1.5 font-medium">套餐</label>
+            <label className="block text-xs text-gray-500 mb-1.5 font-medium">路线</label>
+            {loadingRoutes ? (
+              <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">加载路线中...</div>
+            ) : (
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
-              value={selectedEntity.id}
+              value={selectedEntity?.id ?? ""}
               onChange={(e) => {
-                const opt = ENTITY_OPTIONS.find(o => o.id === e.target.value);
+                const opt = entityOptions.find(o => o.id === e.target.value);
                 if (opt) setSelectedEntity(opt);
               }}
             >
-              {ENTITY_OPTIONS.map(opt => (
+              {entityOptions.map(opt => (
                 <option key={opt.id} value={opt.id}>{opt.label}</option>
               ))}
             </select>
+            )}
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1.5 font-medium">时间范围</label>

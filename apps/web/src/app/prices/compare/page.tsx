@@ -2,16 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchPriceCompare, type PriceCompareItem } from "@/lib/api";
+import { fetchPriceCompare, fetchRoutes, type PriceCompareItem } from "@/lib/api";
 
-const ALL_PACKAGES = [
-  { type: "package", id: "pkg-001", label: "峨眉山朝圣7日游" },
-  { type: "package", id: "pkg-002", label: "麦加朝觐精华团" },
-  { type: "package", id: "pkg-003", label: "耶路撒冷圣地探访" },
-  { type: "package", id: "pkg-004", label: "恒河瓦拉纳西净心之旅" },
-  { type: "package", id: "pkg-005", label: "京都寺庙禅修5日" },
-  { type: "package", id: "pkg-006", label: "梵蒂冈朝圣之旅" },
-];
+interface RouteOption {
+  type: string;
+  id: string;
+  label: string;
+}
 
 function formatPrice(cents: number): string {
   return `¥${(cents / 100).toFixed(0)}`;
@@ -78,30 +75,64 @@ const COMPARE_ROWS = [
 ];
 
 export default function PriceComparePage() {
-  const [selected, setSelected] = useState<string[]>(["pkg-001", "pkg-002"]);
+  const [routeOptions, setRouteOptions] = useState<RouteOption[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
   const [items, setItems] = useState<PriceCompareItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [routesLoading, setRoutesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [usingMock, setUsingMock] = useState(false);
+
+  // Load available routes on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function loadRoutes() {
+      setRoutesLoading(true);
+      try {
+        const res = await fetchRoutes({ pageSize: 20 });
+        if (cancelled) return;
+        const options: RouteOption[] = (res.items ?? []).map(r => ({
+          type: "route",
+          id: r.id,
+          label: r.title,
+        }));
+        setRouteOptions(options);
+        // Auto-select first 2 routes
+        if (options.length >= 2) {
+          setSelected([options[0].id, options[1].id]);
+        }
+      } catch {
+        // If routes API fails, leave empty — user sees message
+        if (!cancelled) setRouteOptions([]);
+      } finally {
+        if (!cancelled) setRoutesLoading(false);
+      }
+    }
+    loadRoutes();
+    return () => { cancelled = true; };
+  }, []);
 
   const loadCompare = useCallback(async () => {
     if (selected.length < 2) return;
     setLoading(true);
     setError(null);
+    setUsingMock(false);
     try {
-      const data = await fetchPriceCompare("package", selected);
+      const data = await fetchPriceCompare("route", selected);
       setItems(data);
     } catch {
-      // Fallback mock
+      // Fallback mock — keep UI functional but warn user
       const mocks = selected.map(id => {
-        const pkg = ALL_PACKAGES.find(p => p.id === id)!;
-        return generateMockItem(id, pkg?.label ?? id);
+        const opt = routeOptions.find(p => p.id === id);
+        return generateMockItem(id, opt?.label ?? id);
       });
       setItems(mocks);
-      setError("使用演示数据 (API 尚未就绪)");
+      setUsingMock(true);
+      setError("⚠ API 连接失败，当前显示为模拟演示数据，不代表真实价格");
     } finally {
       setLoading(false);
     }
-  }, [selected]);
+  }, [selected, routeOptions]);
 
   useEffect(() => { loadCompare(); }, [loadCompare]);
 
@@ -133,30 +164,42 @@ export default function PriceComparePage() {
 
         <h1 className="text-2xl font-bold text-gray-900 mb-6">比价面板</h1>
 
-        {/* Package selector */}
+        {/* Route selector */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6 shadow-sm">
-          <div className="text-sm font-medium text-gray-700 mb-3">选择套餐（最多4个）</div>
-          <div className="flex flex-wrap gap-2">
-            {ALL_PACKAGES.map(pkg => (
-              <button
-                key={pkg.id}
-                onClick={() => togglePackage(pkg.id)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-all ${
-                  selected.includes(pkg.id)
-                    ? "bg-[#0066FF] text-white border-[#0066FF]"
-                    : "bg-white text-gray-600 border-gray-300 hover:border-[#0066FF] hover:text-[#0066FF]"
-                }`}
-              >
-                {pkg.label}
-              </button>
-            ))}
-          </div>
-          {selected.length < 2 && (
-            <p className="text-xs text-orange-500 mt-2">请至少选择 2 个套餐进行比较</p>
+          <div className="text-sm font-medium text-gray-700 mb-3">选择路线（最多4条）</div>
+          {routesLoading ? (
+            <div className="text-sm text-gray-400 py-2">加载路线列表...</div>
+          ) : routeOptions.length === 0 ? (
+            <div className="text-sm text-gray-400 py-2">暂无可用路线数据</div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {routeOptions.map(pkg => (
+                <button
+                  key={pkg.id}
+                  onClick={() => togglePackage(pkg.id)}
+                  className={`px-3 py-1.5 rounded-full text-sm border transition-all ${
+                    selected.includes(pkg.id)
+                      ? "bg-[#0066FF] text-white border-[#0066FF]"
+                      : "bg-white text-gray-600 border-gray-300 hover:border-[#0066FF] hover:text-[#0066FF]"
+                  }`}
+                >
+                  {pkg.label}
+                </button>
+              ))}
+            </div>
+          )}
+          {selected.length < 2 && !routesLoading && routeOptions.length > 0 && (
+            <p className="text-xs text-orange-500 mt-2">请至少选择 2 条路线进行比较</p>
           )}
         </div>
 
-        {error && (
+        {usingMock && error && (
+          <div className="text-sm text-orange-700 bg-orange-50 rounded-lg px-4 py-3 mb-4 border border-orange-300 flex items-start gap-2">
+            <span className="shrink-0 mt-0.5">&#9888;</span>
+            <span>{error}</span>
+          </div>
+        )}
+        {!usingMock && error && (
           <div className="text-xs text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2 mb-4 border border-yellow-200">
             {error}
           </div>

@@ -2,14 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchMyPriceAlerts, createPriceAlert, deletePriceAlert, type PriceAlertItem } from "@/lib/api";
+import { fetchMyPriceAlerts, createPriceAlert, deletePriceAlert, fetchRoutes, type PriceAlertItem, type Route } from "@/lib/api";
 
-const ENTITY_OPTIONS = [
-  { type: "package", id: "pkg-001", name: "峨眉山朝圣7日游", currentPrice: 89800 },
-  { type: "package", id: "pkg-002", name: "麦加朝觐精华团", currentPrice: 128000 },
-  { type: "package", id: "pkg-003", name: "耶路撒冷圣地探访", currentPrice: 105000 },
-  { type: "package", id: "pkg-004", name: "恒河瓦拉纳西净心之旅", currentPrice: 79800 },
-];
+interface EntityOption { type: string; id: string; name: string; currentPrice: number }
 
 function formatPrice(cents: number): string {
   return `¥${(cents / 100).toFixed(0)}`;
@@ -19,41 +14,52 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
 }
 
-// Mock alerts for demo when not logged in
-const MOCK_ALERTS: PriceAlertItem[] = [
-  {
-    id: "alert-1", entityType: "package", entityId: "pkg-001", entityName: "峨眉山朝圣7日游",
-    targetPrice: 79800, currentPrice: 89800, isTriggered: false, isActive: true,
-    createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-  },
-  {
-    id: "alert-2", entityType: "package", entityId: "pkg-004", entityName: "恒河瓦拉纳西净心之旅",
-    targetPrice: 75000, currentPrice: 74900, isTriggered: true, isActive: true,
-    createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-  },
-];
-
 export default function PriceAlertsPage() {
   const [alerts, setAlerts] = useState<PriceAlertItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [usingMock, setUsingMock] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Entity options from real routes
+  const [entityOptions, setEntityOptions] = useState<EntityOption[]>([]);
+  const [loadingRoutes, setLoadingRoutes] = useState(true);
 
   // Form state
   const [showForm, setShowForm] = useState(false);
-  const [formEntity, setFormEntity] = useState(ENTITY_OPTIONS[0]);
+  const [formEntity, setFormEntity] = useState<EntityOption | null>(null);
   const [targetPriceStr, setTargetPriceStr] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
+  // Load routes as entity options
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetchRoutes({ pageSize: 50 });
+        const opts: EntityOption[] = (res.items || []).map((r: Route) => ({
+          type: "route",
+          id: r.id,
+          name: r.title,
+          currentPrice: r.priceFrom,
+        }));
+        setEntityOptions(opts);
+        if (opts.length > 0) setFormEntity(opts[0]);
+      } catch {
+        // Routes unavailable — form will be disabled
+      } finally {
+        setLoadingRoutes(false);
+      }
+    })();
+  }, []);
+
   const loadAlerts = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetchMyPriceAlerts();
-      setAlerts(res.items);
-      setUsingMock(false);
+      setAlerts(res.items || []);
     } catch {
-      setAlerts(MOCK_ALERTS);
-      setUsingMock(true);
+      setAlerts([]);
+      setError("请登录后查看您的价格提醒");
     } finally {
       setLoading(false);
     }
@@ -62,6 +68,7 @@ export default function PriceAlertsPage() {
   useEffect(() => { loadAlerts(); }, [loadAlerts]);
 
   async function handleCreate() {
+    if (!formEntity) return;
     const targetCents = Math.round(parseFloat(targetPriceStr) * 100);
     if (isNaN(targetCents) || targetCents <= 0) {
       setFormError("请输入有效的目标价格");
@@ -81,21 +88,7 @@ export default function PriceAlertsPage() {
       setShowForm(false);
       setTargetPriceStr("");
     } catch {
-      // Add mock alert
-      const mock: PriceAlertItem = {
-        id: `mock-${Date.now()}`,
-        entityType: formEntity.type,
-        entityId: formEntity.id,
-        entityName: formEntity.name,
-        targetPrice: targetCents,
-        currentPrice: formEntity.currentPrice,
-        isTriggered: targetCents >= formEntity.currentPrice,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-      };
-      setAlerts(prev => [mock, ...prev]);
-      setShowForm(false);
-      setTargetPriceStr("");
+      setFormError("创建失败，请登录后重试");
     } finally {
       setSubmitting(false);
     }
@@ -136,9 +129,9 @@ export default function PriceAlertsPage() {
           </button>
         </div>
 
-        {usingMock && (
+        {error && (
           <div className="text-xs text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2 mb-4 border border-yellow-200">
-            演示模式 — 登录后可管理真实提醒
+            {error}
           </div>
         )}
 
@@ -148,28 +141,36 @@ export default function PriceAlertsPage() {
             <h2 className="font-semibold text-gray-800 mb-4">新建价格提醒</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-600 mb-1.5">选择套餐</label>
+                <label className="block text-sm text-gray-600 mb-1.5">选择路线</label>
+                {loadingRoutes ? (
+                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">加载路线中...</div>
+                ) : entityOptions.length === 0 ? (
+                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">暂无可用路线</div>
+                ) : (
                 <select
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
-                  value={formEntity.id}
+                  value={formEntity?.id ?? ""}
                   onChange={(e) => {
-                    const opt = ENTITY_OPTIONS.find(o => o.id === e.target.value);
+                    const opt = entityOptions.find(o => o.id === e.target.value);
                     if (opt) setFormEntity(opt);
                   }}
                 >
-                  {ENTITY_OPTIONS.map(opt => (
+                  {entityOptions.map(opt => (
                     <option key={opt.id} value={opt.id}>
                       {opt.name} (当前: {formatPrice(opt.currentPrice)})
                     </option>
                   ))}
                 </select>
+                )}
               </div>
               <div>
                 <label className="block text-sm text-gray-600 mb-1.5">
                   目标价格 (元)
+                  {formEntity && (
                   <span className="text-gray-400 ml-2 text-xs">
                     当前价: {formatPrice(formEntity.currentPrice)}
                   </span>
+                  )}
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">¥</span>
@@ -177,7 +178,7 @@ export default function PriceAlertsPage() {
                     type="number"
                     value={targetPriceStr}
                     onChange={(e) => setTargetPriceStr(e.target.value)}
-                    placeholder={String(Math.floor(formEntity.currentPrice / 100 * 0.9))}
+                    placeholder={formEntity ? String(Math.floor(formEntity.currentPrice / 100 * 0.9)) : ""}
                     className="w-full border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
                     min="1"
                   />

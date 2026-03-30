@@ -2,14 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { fetchPriceCalendar, type PriceCalendarItem } from "@/lib/api";
+import { fetchPriceCalendar, fetchRoutes, type PriceCalendarItem } from "@/lib/api";
 
-const ENTITY_OPTIONS = [
-  { type: "package", id: "pkg-001", label: "峨眉山朝圣7日游" },
-  { type: "package", id: "pkg-002", label: "麦加朝觐精华团" },
-  { type: "package", id: "pkg-003", label: "耶路撒冷圣地探访" },
-  { type: "package", id: "pkg-004", label: "恒河瓦拉纳西净心之旅" },
-];
+interface EntityOption {
+  type: string;
+  id: string;
+  label: string;
+}
 
 function formatPrice(cents: number): string {
   return `¥${(cents / 100).toFixed(0)}`;
@@ -40,15 +39,54 @@ export default function PriceCalendarPage() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [selectedEntity, setSelectedEntity] = useState(ENTITY_OPTIONS[0]);
+  const [entityOptions, setEntityOptions] = useState<EntityOption[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null);
   const [calendarData, setCalendarData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
+  const [loadingRoutes, setLoadingRoutes] = useState(true);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
+
+  // Load real routes from API on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function loadRoutes() {
+      setLoadingRoutes(true);
+      try {
+        const data = await fetchRoutes({ pageSize: 50 });
+        if (cancelled) return;
+        const options: EntityOption[] = (data.items ?? []).map((r) => ({
+          type: "route",
+          id: r.id,
+          label: r.title,
+        }));
+        if (options.length > 0) {
+          setEntityOptions(options);
+          setSelectedEntity(options[0]);
+        } else {
+          setEntityOptions([]);
+          setSelectedEntity(null);
+          setError("暂无可用路线");
+        }
+      } catch {
+        if (cancelled) return;
+        setEntityOptions([]);
+        setSelectedEntity(null);
+        setError("无法加载路线列表");
+      } finally {
+        if (!cancelled) setLoadingRoutes(false);
+      }
+    }
+    loadRoutes();
+    return () => { cancelled = true; };
+  }, []);
 
   const loadCalendar = useCallback(async () => {
+    if (!selectedEntity) return;
     setLoading(true);
     setError(null);
+    setIsDemo(false);
     const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
     const lastDay = getDaysInMonth(year, month);
     const endDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
@@ -63,7 +101,7 @@ export default function PriceCalendarPage() {
       items.forEach((item) => { map[item.date] = item.price; });
       setCalendarData(map);
     } catch {
-      // Fallback: generate mock data so UI is always useful
+      // Fallback: generate demo data so UI is not blank
       const mock: Record<string, number> = {};
       const base = 89800;
       for (let d = 1; d <= lastDay; d++) {
@@ -71,7 +109,8 @@ export default function PriceCalendarPage() {
         mock[dateStr] = base + Math.floor(Math.random() * 40000) - 10000;
       }
       setCalendarData(mock);
-      setError("使用演示数据 (API 尚未就绪)");
+      setIsDemo(true);
+      setError("⚠ 演示数据 — 价格日历API暂不可用，以下为模拟价格");
     } finally {
       setLoading(false);
     }
@@ -117,19 +156,28 @@ export default function PriceCalendarPage() {
 
         {/* Entity selector */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm">
-          <label className="block text-sm text-gray-600 mb-2 font-medium">选择套餐</label>
-          <select
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
-            value={selectedEntity.id}
-            onChange={(e) => {
-              const opt = ENTITY_OPTIONS.find(o => o.id === e.target.value);
-              if (opt) setSelectedEntity(opt);
-            }}
-          >
-            {ENTITY_OPTIONS.map(opt => (
-              <option key={opt.id} value={opt.id}>{opt.label}</option>
-            ))}
-          </select>
+          <label className="block text-sm text-gray-600 mb-2 font-medium">选择路线</label>
+          {loadingRoutes ? (
+            <div className="text-sm text-gray-400 py-2">加载路线列表...</div>
+          ) : entityOptions.length === 0 ? (
+            <div className="text-sm text-gray-400 py-2">暂无可用路线</div>
+          ) : (
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
+              value={selectedEntity?.id ?? ""}
+              onChange={(e) => {
+                const opt = entityOptions.find(o => o.id === e.target.value);
+                if (opt) setSelectedEntity(opt);
+              }}
+            >
+              {entityOptions.map(opt => (
+                <option key={opt.id} value={opt.id}>{opt.label}</option>
+              ))}
+            </select>
+          )}
+          {isDemo && (
+            <div className="mt-2 text-xs text-amber-600">当前显示为演示数据，实际价格以API为准</div>
+          )}
         </div>
 
         {/* Calendar card */}

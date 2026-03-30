@@ -10,9 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
-import { fetchPriceCalendar, PriceCalendarDay } from '../src/lib/api';
-
-const DEMO_ROUTE_ID = 'route-demo-1';
+import { fetchPriceCalendar, PriceCalendarDay, api, Route } from '../src/lib/api';
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
 
 const PRICE_CONFIG = {
@@ -67,15 +65,36 @@ export default function PriceCalendarScreen() {
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [selectedDay, setSelectedDay] = useState<PriceCalendarDay | null>(null);
-  const [days, setDays] = useState<PriceCalendarDay[]>(() => buildMockCalendar(now.getFullYear(), now.getMonth() + 1));
-  const [loading, setLoading] = useState(false);
+  const [days, setDays] = useState<PriceCalendarDay[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [routeId, setRouteId] = useState<string | null>(null);
+  const [routeTitle, setRouteTitle] = useState<string>('');
 
+  // Load the first available route on mount
   useEffect(() => {
+    api.getFeaturedRoutes(1)
+      .then((routes: Route[]) => {
+        if (routes.length > 0) {
+          setRouteId(routes[0].id);
+          setRouteTitle(routes[0].title);
+        }
+      })
+      .catch(() => {
+        // No routes available — calendar will show empty
+      });
+  }, []);
+
+  // Fetch price calendar when routeId or month changes
+  useEffect(() => {
+    if (!routeId) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     setError(false);
-    fetchPriceCalendar(DEMO_ROUTE_ID, year, month)
+    fetchPriceCalendar(routeId, year, month)
       .then(res => {
         if (!cancelled) setDays(res.days);
       })
@@ -89,7 +108,7 @@ export default function PriceCalendarScreen() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [year, month]);
+  }, [routeId, year, month]);
 
   const cells = useMemo(() => buildCalendarGrid(year, month, days), [year, month, days]);
 
@@ -112,6 +131,11 @@ export default function PriceCalendarScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Route Title */}
+      {routeTitle ? (
+        <Text style={styles.routeTitle} numberOfLines={1}>{routeTitle}</Text>
+      ) : null}
+
       {/* Month Navigator */}
       <View style={styles.nav}>
         <Pressable onPress={prevMonth} style={styles.navBtn} hitSlop={12}>
@@ -231,6 +255,14 @@ export default function PriceCalendarScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: spacing.xxl },
+  routeTitle: {
+    fontSize: fontSize.md,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    textAlign: 'center',
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+  },
   nav: {
     flexDirection: 'row',
     alignItems: 'center',

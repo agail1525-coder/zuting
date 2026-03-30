@@ -14,43 +14,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
-import { fetchPriceAlerts, createPriceAlert, deletePriceAlert, PriceAlert } from '../src/lib/api';
+import { fetchPriceAlerts, createPriceAlert, deletePriceAlert, PriceAlert, api, Route } from '../src/lib/api';
 
-// Mock data for demo when API is unavailable
-const MOCK_ALERTS: PriceAlert[] = [
-  {
-    id: 'alert-1',
-    userId: 'demo',
-    routeId: 'route-1',
-    routeTitle: '佛教圣地朝圣之旅·尼泊尔+印度',
-    targetPrice: 4500,
-    currentPrice: 5280,
-    currency: 'CNY',
-    isTriggered: false,
-    triggeredAt: null,
-    createdAt: '2026-03-01T10:00:00Z',
-  },
-  {
-    id: 'alert-2',
-    userId: 'demo',
-    routeId: 'route-2',
-    routeTitle: '伊斯兰朝觐精华行·麦加+麦地那',
-    targetPrice: 8000,
-    currentPrice: 7880,
-    currency: 'CNY',
-    isTriggered: true,
-    triggeredAt: '2026-03-25T08:30:00Z',
-    createdAt: '2026-02-15T09:00:00Z',
-  },
-];
-
-// Suggested popular routes for the create form
-const POPULAR_ROUTES = [
-  { id: 'route-1', title: '佛教圣地朝圣之旅·尼泊尔+印度', price: 5280 },
-  { id: 'route-2', title: '伊斯兰朝觐精华行·麦加+麦地那', price: 7880 },
-  { id: 'route-3', title: '基督教圣地精华·耶路撒冷朝圣', price: 6680 },
-  { id: 'route-4', title: '道教名山七日·武当+峨眉+青城', price: 3280 },
-];
+interface PopularRoute {
+  id: string;
+  title: string;
+  price: number;
+}
 
 interface AlertCardProps {
   alert: PriceAlert;
@@ -118,18 +88,34 @@ function AlertCard({ alert, onDelete }: AlertCardProps) {
 }
 
 export default function PriceAlertsScreen() {
-  const [alerts, setAlerts] = useState<PriceAlert[]>(MOCK_ALERTS);
-  const [loading, setLoading] = useState(false);
+  const [alerts, setAlerts] = useState<PriceAlert[]>([]);
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [selectedRouteId, setSelectedRouteId] = useState(POPULAR_ROUTES[0].id);
+  const [popularRoutes, setPopularRoutes] = useState<PopularRoute[]>([]);
+  const [selectedRouteId, setSelectedRouteId] = useState('');
   const [targetPrice, setTargetPrice] = useState('');
+
+  // Load popular routes for the create form
+  useEffect(() => {
+    api.getFeaturedRoutes(4)
+      .then((routes: Route[]) => {
+        const mapped = routes.map(r => ({ id: r.id, title: r.title, price: r.priceFrom }));
+        setPopularRoutes(mapped);
+        if (mapped.length > 0 && !selectedRouteId) {
+          setSelectedRouteId(mapped[0].id);
+        }
+      })
+      .catch(() => {
+        // No routes available — form will show empty
+      });
+  }, []);
 
   const loadAlerts = useCallback(() => {
     setLoading(true);
     fetchPriceAlerts()
       .then(data => setAlerts(data))
-      .catch(() => setAlerts(MOCK_ALERTS))
+      .catch(() => setAlerts([]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -138,6 +124,10 @@ export default function PriceAlertsScreen() {
   }, [loadAlerts]);
 
   function handleCreate() {
+    if (!selectedRouteId) {
+      Alert.alert('请选择一条路线');
+      return;
+    }
     const price = parseFloat(targetPrice);
     if (!targetPrice || isNaN(price) || price <= 0) {
       Alert.alert('请输入有效的目标价格');
@@ -197,7 +187,7 @@ export default function PriceAlertsScreen() {
 
             <Text style={styles.formLabel}>选择路线</Text>
             <View style={styles.routeList}>
-              {POPULAR_ROUTES.map(r => (
+              {popularRoutes.map(r => (
                 <Pressable
                   key={r.id}
                   style={[styles.routeItem, selectedRouteId === r.id && styles.routeItemSelected]}
