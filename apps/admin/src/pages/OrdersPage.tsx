@@ -83,7 +83,7 @@ export default function OrdersPage() {
       const full = await getOrder(record.id);
       setDetail(full);
     } catch {
-      // keep partial data
+      message.warning('订单详情加载不完整');
     } finally {
       setDetailLoading(false);
     }

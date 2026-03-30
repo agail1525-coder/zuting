@@ -78,7 +78,7 @@ export default function AIConfigPage() {
       const data = await getXiaohongSuggestions();
       setSuggestions(data);
     } catch {
-      // ignore
+      message.warning('推荐问题加载失败');
     } finally {
       setSuggestionsLoading(false);
     }
