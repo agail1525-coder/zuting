@@ -12,8 +12,9 @@ import ShareButton from "@/components/ShareButton";
 import RouteMap from "@/components/RouteMap";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
-import type { Route, ItineraryDay } from "@/lib/api";
-import { fetchRoutes } from "@/lib/api";
+import MediaTour from "@/components/MediaTour";
+import type { Route, ItineraryDay, Patriarch, Teaching } from "@/lib/api";
+import { fetchRoutes, fetchPatriarchs, fetchTeachings } from "@/lib/api";
 
 /* ─── static maps ─── */
 
@@ -104,6 +105,127 @@ function FAQAccordion() {
         ))}
       </div>
     </div>
+  );
+}
+
+/* ─── RelatedCulture sub-component ─── */
+
+function RelatedCulture({ religionId }: { religionId: string | null }) {
+  const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
+  const [teachings, setTeachings] = useState<Teaching[]>([]);
+
+  useEffect(() => {
+    if (!religionId) return;
+    fetchPatriarchs(religionId)
+      .then((items) => setPatriarchs(items.slice(0, 3)))
+      .catch(() => {});
+    fetchTeachings(religionId)
+      .then((items) => setTeachings(items.slice(0, 3)))
+      .catch(() => {});
+  }, [religionId]);
+
+  if (!religionId || (patriarchs.length === 0 && teachings.length === 0)) return null;
+
+  return (
+    <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+      <h2 className="text-xl font-bold text-gray-900 mb-5">相关文化</h2>
+      <div className="grid md:grid-cols-2 gap-6">
+        {patriarchs.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 mb-3">相关祖师</h3>
+            <div className="space-y-3">
+              {patriarchs.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/patriarchs/${p.id}`}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 text-lg border border-amber-200">
+                    🧘
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{p.name}</p>
+                    <p className="text-xs text-gray-500">{p.nameEn}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+        {teachings.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 mb-3">相关祖训</h3>
+            <div className="space-y-3">
+              {teachings.map((t) => (
+                <Link
+                  key={t.id}
+                  href={`/teachings/${t.id}`}
+                  className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
+                >
+                  <p className="text-sm text-gray-800 font-medium line-clamp-2">{t.originalText}</p>
+                  {t.sourceText && (
+                    <p className="text-xs text-gray-400 mt-1">— {t.sourceText}</p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── XiaohongFloat sub-component ─── */
+
+function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {/* Floating button */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-xl shadow-blue-500/30 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
+        title="问问小鸿"
+      >
+        🤖
+      </button>
+
+      {/* Quick panel */}
+      {open && (
+        <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+          <div className="bg-[#0066FF] text-white px-4 py-3 flex items-center justify-between">
+            <span className="font-semibold text-sm">小鸿AI · 路线顾问</span>
+            <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">✕</button>
+          </div>
+          <div className="p-4 space-y-2">
+            <p className="text-sm text-gray-600">关于「{routeTitle}」，你想了解什么？</p>
+            <div className="space-y-1.5">
+              {[
+                "这条路线适合老人吗？",
+                "有什么必带物品？",
+                "住宿条件怎么样？",
+                "能否定制延长行程？",
+              ].map((q) => (
+                <Link
+                  key={q}
+                  href={`/chat?q=${encodeURIComponent(`关于路线"${routeTitle}"：${q}`)}`}
+                  className="block px-3 py-2 text-sm text-[#0066FF] bg-[#0066FF]/5 rounded-lg hover:bg-[#0066FF]/10 transition-colors border border-[#0066FF]/10"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+            <Link
+              href={`/chat?q=${encodeURIComponent(`我想了解路线"${routeTitle}"的详细信息`)}`}
+              className="block text-center text-sm text-[#0066FF] font-medium mt-2 hover:underline"
+            >
+              打开完整聊天 →
+            </Link>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -449,6 +571,11 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             </div>
           )}
 
+          {/* ========== Multimedia Tour ========== */}
+          <div className="mt-8">
+            <MediaTour entityType="ROUTE" entityId={route.id} />
+          </div>
+
           {/* ========== Itinerary ========== */}
           <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-6">逐日行程</h2>
@@ -567,6 +694,28 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             </div>
           )}
 
+          {/* ========== Related Culture (Patriarchs & Teachings) ========== */}
+          <RelatedCulture religionId={route.religionId} />
+
+          {/* ========== Pilgrim Journals ========== */}
+          <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">📖</span>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">朝圣者日志</h2>
+                  <p className="text-sm text-gray-500">查看走过此路线的朝圣者们的记录与感悟</p>
+                </div>
+              </div>
+              <Link
+                href="/journals"
+                className="px-4 py-2 rounded-xl bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
+              >
+                查看日志
+              </Link>
+            </div>
+          </div>
+
           {/* ========== Reviews (UGC) ========== */}
           <div className="mt-10">
             <ReviewSection targetType="ROUTE" targetId={route.id} />
@@ -600,6 +749,8 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
         </div>
       </main>
+      {/* Xiaohong AI Floating Widget */}
+      <XiaohongFloat routeTitle={route.title} />
       <MobileNav />
     </div>
   );
