@@ -541,7 +541,7 @@ export function fetchPopularItems(religion?: string, limit = 8) {
 }
 
 export function recordView(entityType: EntityType, entityId: string): void {
-  postRequest<void>('/recommendations/view-history', { entityType, entityId }).catch(() => {})
+  postRequest<void>('/recommendations/view-history', { entityType, entityId }).catch((err) => { console.error('Record view failed:', err) })
 }
 
 // --- Orders ---

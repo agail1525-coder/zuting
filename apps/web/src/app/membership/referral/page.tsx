@@ -86,7 +86,7 @@ export default function ReferralPage() {
     if (!inviteCode?.code) return;
     const text = `我正在使用JOINUS探索世界祖庭圣地，邀请你加入！邀请码：${inviteCode.code}`;
     if (navigator.share) {
-      navigator.share({ title: "加入JOINUS", text }).catch(() => {});
+      navigator.share({ title: "加入JOINUS", text }).catch((err) => { console.error('Share failed:', err); });
     } else {
       navigator.clipboard.writeText(text).then(() => {
         setCopied(true);

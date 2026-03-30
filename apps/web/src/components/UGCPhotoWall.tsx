@@ -33,7 +33,7 @@ export default function UGCPhotoWall({ targetType, targetId, maxPhotos = 12 }: U
         }
         setPhotos(collected);
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Load UGC photos failed:', err); })
       .finally(() => setLoading(false));
   }, [targetType, targetId, maxPhotos]);
 

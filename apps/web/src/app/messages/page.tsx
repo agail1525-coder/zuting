@@ -175,7 +175,7 @@ export default function MessagesPage() {
   useEffect(() => {
     if (activeRoomId) {
       loadMessages(activeRoomId);
-      markChatRead(activeRoomId).catch(() => {});
+      markChatRead(activeRoomId).catch((err) => { console.error('Mark chat read failed:', err); });
     } else {
       setMessages([]);
     }

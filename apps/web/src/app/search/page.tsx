@@ -125,7 +125,7 @@ export default function SearchPage() {
   useEffect(() => {
     fetchReligions()
       .then(setReligions)
-      .catch(() => {});
+      .catch((err) => { console.error('Fetch religions failed:', err); });
   }, []);
 
   // Load hot keywords on mount

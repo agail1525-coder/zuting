@@ -83,7 +83,7 @@ export default function CollectionDetailPage() {
         .catch(() => {
           Taro.showToast({ title: '移除失败', icon: 'none' })
         })
-    }).catch(() => {})
+    }).catch((err) => { console.error('Remove item confirmation failed:', err) })
   }, [collection])
 
   const handleShare = useCallback(() => {

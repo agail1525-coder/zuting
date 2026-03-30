@@ -274,7 +274,7 @@ export default function CollectionsPage() {
     if (!user) return;
     fetchCollections()
       .then(setCollections)
-      .catch(() => {/* ignore */})
+      .catch((err) => { console.error('Fetch collections failed:', err); })
       .finally(() => setLoading(false));
   }, [user]);
 

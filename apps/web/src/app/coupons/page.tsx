@@ -261,7 +261,7 @@ export default function CouponsPage() {
         // Refresh my coupons in background
         fetchMyCoupons("AVAILABLE", 1)
           .then((d) => setMyCoupons(Array.isArray(d.items) ? d.items : []))
-          .catch(() => {});
+          .catch((err) => { console.error('Refresh my coupons failed:', err); });
       } catch (err) {
         setError(err instanceof Error ? err.message : "领取失败");
       } finally {

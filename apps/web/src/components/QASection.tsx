@@ -30,7 +30,7 @@ export default function QASection({ entityType, entityId }: QASectionProps) {
       .then((res) => {
         setQuestions(Array.isArray(res.items) ? res.items : []);
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Load Q&A failed:', err); })
       .finally(() => setLoading(false));
   }, [entityType, entityId]);
 

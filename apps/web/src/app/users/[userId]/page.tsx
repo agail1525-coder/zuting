@@ -77,7 +77,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
         setGuides(res.items ?? []);
         setGuidesTotal(res.total ?? 0);
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Fetch user guides failed:', err); })
       .finally(() => setGuidesLoading(false));
   }, [userId, guidePage]);
 

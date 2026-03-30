@@ -281,7 +281,7 @@ export default function CollectionDetailPage({
         setCollection(c);
         setItems(c.items);
       })
-      .catch(() => {/* ignore */})
+      .catch((err) => { console.error('Fetch collection detail failed:', err); })
       .finally(() => setLoading(false));
   }, [user, id]);
 

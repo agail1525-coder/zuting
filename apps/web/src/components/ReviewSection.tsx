@@ -171,7 +171,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
     if (!targetId) return;
     fetchReviewStats(targetType, targetId)
       .then(setStats)
-      .catch(() => {});
+      .catch((err) => { console.error('Load review stats failed:', err); });
   }, [targetType, targetId]);
 
   const loadReviews = useCallback(

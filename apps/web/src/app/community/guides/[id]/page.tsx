@@ -59,7 +59,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
         if (g.tags?.length) {
           fetchGuides({ tag: g.tags[0], limit: 4 })
             .then((r) => setRelated((r.items ?? []).filter((x) => x.id !== id)))
-            .catch(() => {});
+            .catch((err) => { console.error('Fetch related guides failed:', err); });
         }
       })
       .catch(() => setError(t("community.loadError")))

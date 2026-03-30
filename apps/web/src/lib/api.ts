@@ -1124,7 +1124,7 @@ export async function logoutUser(token: string): Promise<void> {
   await fetchAuthEndpoint<void>("/api/auth/logout", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => {});
+  }).catch((err) => { console.error('Logout request failed:', err); });
 }
 
 // --- OAuth Providers ---

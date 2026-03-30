@@ -53,7 +53,7 @@ export default function SaveButton({
           setSavedCollectionId(res.collections[0].id);
         }
       })
-      .catch(() => {/* ignore */});
+      .catch((err) => { console.error('Check saved status failed:', err); });
     return () => { cancelled = true; };
   }, [user, entityType, entityId]);
 
