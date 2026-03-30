@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n";
+import OptimizedImage from "@/components/OptimizedImage";
 import StarRating from "@/components/StarRating";
 import RatingSummary from "@/components/RatingSummary";
 import WriteReviewModal from "@/components/WriteReviewModal";
@@ -57,10 +58,11 @@ function ReviewCard({ review }: { review: Review }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {review.user.avatar ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <OptimizedImage
               src={review.user.avatar}
               alt={review.user.nickname ?? "用户"}
+              width={36}
+              height={36}
               className="w-9 h-9 rounded-full object-cover border border-gray-200"
             />
           ) : (
@@ -118,8 +120,7 @@ function ReviewCard({ review }: { review: Review }) {
               onClick={() => setLightboxImg(img)}
               className="relative w-28 h-28 rounded-lg overflow-hidden border border-gray-200 hover:border-[#0066FF]/40 transition-colors"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img} alt={`评价图片 ${idx + 1}`} className="w-full h-full object-cover" />
+              <OptimizedImage src={img} alt={`评价图片 ${idx + 1}`} width={112} height={112} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
@@ -133,8 +134,7 @@ function ReviewCard({ review }: { review: Review }) {
         >
           <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
           <div className="relative max-w-4xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={lightboxImg} alt="Review photo" className="max-w-full max-h-[85vh] object-contain rounded-lg" />
+            <OptimizedImage src={lightboxImg} alt="Review photo" width={800} height={600} className="max-w-full max-h-[85vh] object-contain rounded-lg" />
           </div>
         </div>
       )}

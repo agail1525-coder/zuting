@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import OptimizedImage from "@/components/OptimizedImage";
 import StarRating from "@/components/StarRating";
 import { createReview, type CreateReviewData } from "@/lib/api";
 import { getAccessToken } from "@/lib/auth";
@@ -201,7 +202,7 @@ export default function WriteReviewModal({
               <div className="flex gap-3 flex-wrap">
                 {images.map((url, i) => (
                   <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
+                    <OptimizedImage src={url} alt="" width={80} height={80} className="w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => setImages(prev => prev.filter((_, idx) => idx !== i))}
