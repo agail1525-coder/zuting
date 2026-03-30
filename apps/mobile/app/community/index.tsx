@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { fetchGuides, fetchQuestions, GuideItem, QuestionItem } from '../../src/lib/api';
+import { fetchGuides, fetchQuestions, fetchLeaderboard, GuideItem, QuestionItem, LeaderboardEntry } from '../../src/lib/api';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
 type TabKey = 'guides' | 'questions' | 'leaderboard';
@@ -25,13 +25,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'leaderboard', label: '排行' },
 ];
 
-const LEADERBOARD_MOCK = [
-  { rank: 1, nickname: '慧明法师', count: 28, badge: '🏆' },
-  { rank: 2, nickname: 'David Chen', count: 21, badge: '🥈' },
-  { rank: 3, nickname: '清风道长', count: 17, badge: '🥉' },
-  { rank: 4, nickname: 'Ananda.B', count: 14, badge: '' },
-  { rank: 5, nickname: '宁静致远', count: 11, badge: '' },
-];
+const RANK_BADGES: Record<number, string> = { 1: '\uD83C\uDFC6', 2: '\uD83E\uDD48', 3: '\uD83E\uDD49' };
 
 export default function CommunityScreen() {
   const router = useRouter();
@@ -40,8 +34,10 @@ export default function CommunityScreen() {
   const [questionSort, setQuestionSort] = useState<QuestionSort>('latest');
   const [guides, setGuides] = useState<GuideItem[]>([]);
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [guideLoading, setGuideLoading] = useState(false);
   const [questionLoading, setQuestionLoading] = useState(false);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false);
 
   const loadGuides = useCallback(async () => {
     setGuideLoading(true);
@@ -67,6 +63,18 @@ export default function CommunityScreen() {
     }
   }, [questionSort]);
 
+  const loadLeaderboard = useCallback(async () => {
+    setLeaderboardLoading(true);
+    try {
+      const res = await fetchLeaderboard('guides', 'month');
+      setLeaderboard(Array.isArray(res) ? res : []);
+    } catch {
+      setLeaderboard([]);
+    } finally {
+      setLeaderboardLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (activeTab === 'guides') loadGuides();
   }, [activeTab, loadGuides]);
@@ -74,6 +82,10 @@ export default function CommunityScreen() {
   useEffect(() => {
     if (activeTab === 'questions') loadQuestions();
   }, [activeTab, loadQuestions]);
+
+  useEffect(() => {
+    if (activeTab === 'leaderboard') loadLeaderboard();
+  }, [activeTab, loadLeaderboard]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +132,7 @@ export default function CommunityScreen() {
           onPress={(id) => router.push(`/community/question/${id}` as never)}
         />
       )}
-      {activeTab === 'leaderboard' && <LeaderboardTab />}
+      {activeTab === 'leaderboard' && <LeaderboardTab entries={leaderboard} loading={leaderboardLoading} />}
     </SafeAreaView>
   );
 }
@@ -274,28 +286,35 @@ function QuestionsTab({
 }
 
 /* ── Leaderboard Tab ── */
-function LeaderboardTab() {
+function LeaderboardTab({ entries, loading }: { entries: LeaderboardEntry[]; loading: boolean }) {
+  if (loading) {
+    return <ActivityIndicator style={{ marginTop: 40 }} size="large" color={colors.gold} />;
+  }
   return (
     <ScrollView contentContainerStyle={styles.listContent}>
       <View style={styles.leaderboardHeader}>
         <Text style={styles.leaderboardTitle}>本月游记排行</Text>
         <Text style={styles.leaderboardSubtitle}>发布游记最多的朝圣者</Text>
       </View>
-      {LEADERBOARD_MOCK.map(entry => (
-        <View key={entry.rank} style={styles.leaderEntry}>
-          <Text style={styles.leaderRank}>
-            {entry.badge ? entry.badge : `#${entry.rank}`}
-          </Text>
-          <View style={styles.leaderAvatar}>
-            <Text style={styles.leaderAvatarText}>{entry.nickname[0]}</Text>
+      {entries.length === 0 ? (
+        <EmptyState icon="trophy-outline" text="暂无排行数据" />
+      ) : (
+        entries.map(entry => (
+          <View key={entry.rank} style={styles.leaderEntry}>
+            <Text style={styles.leaderRank}>
+              {RANK_BADGES[entry.rank] ?? `#${entry.rank}`}
+            </Text>
+            <View style={styles.leaderAvatar}>
+              <Text style={styles.leaderAvatarText}>{(entry.nickname ?? '?')[0]}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.leaderNickname}>{entry.nickname}</Text>
+              <Text style={styles.leaderCount}>{entry.count} 篇游记</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.leaderNickname}>{entry.nickname}</Text>
-            <Text style={styles.leaderCount}>{entry.count} 篇游记</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={16} color={colors.textMuted} />
-        </View>
-      ))}
+        ))
+      )}
     </ScrollView>
   );
 }

@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, GuideItem } from '../../src/lib/api';
+import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, fetchGuides, GuideItem } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
@@ -58,15 +58,6 @@ const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; la
   { key: 'leaderboard', icon: 'trophy', label: '排行榜', route: '/community/leaderboard' },
 ];
 
-// TODO: Replace with real API data when fetchPopularGuides is available
-const MOCK_GUIDES = [
-  { id: 'g1', title: '禅宗祖庭巡礼攻略', author: '慧明', views: 3280, coverImage: '' },
-  { id: 'g2', title: '耶路撒冷朝圣必读', author: 'David', views: 2150, coverImage: '' },
-  { id: 'g3', title: '武当山问道全攻略', author: '清风', views: 1890, coverImage: '' },
-  { id: 'g4', title: '菩提伽耶深度游记', author: 'Ananda', views: 1560, coverImage: '' },
-  { id: 'g5', title: '丝绸之路文化之旅', author: '行者', views: 1340, coverImage: '' },
-  { id: 'g6', title: '南华寺禅修体验分享', author: '净心', views: 1120, coverImage: '' },
-];
 
 const REC_TABS = [
   { key: 'temples', label: '祖庭' },
@@ -85,6 +76,7 @@ export default function HomeScreen() {
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
   const [popularItems, setPopularItems] = useState<RecommendationItem[]>([]);
   const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([]);
+  const [popularGuides, setPopularGuides] = useState<GuideItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeSearchTab, setActiveSearchTab] = useState('sites');
@@ -92,7 +84,7 @@ export default function HomeScreen() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData, trendingData] = await Promise.all([
+      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData, trendingData, guidesData] = await Promise.all([
         api.getFeaturedRoutes(6),
         api.getReligions(),
         api.getHolySites(),
@@ -100,6 +92,7 @@ export default function HomeScreen() {
         api.getPatriarchs(),
         api.fetchPopularItems(undefined, 10).catch(() => [] as RecommendationItem[]),
         fetchTrending().catch(() => ({ hotGuides: [], hotQuestions: [] })),
+        fetchGuides({ sort: 'hot' }).catch(() => ({ items: [], total: 0 })),
       ]);
       setFeaturedRoutes(routesData);
       setReligions(religionsData);
@@ -108,6 +101,7 @@ export default function HomeScreen() {
       setPatriarchs(patriarchsData);
       setPopularItems(popularData);
       setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : []);
+      setPopularGuides(Array.isArray(guidesData?.items) ? guidesData.items.slice(0, 6) : []);
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -315,15 +309,16 @@ export default function HomeScreen() {
         </Pressable>
       </View>
       <FlatList
-        data={MOCK_GUIDES}
+        data={popularGuides}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.guideList}
         keyExtractor={item => item.id}
+        ListEmptyComponent={<Text style={{ color: '#9CA3AF', padding: spacing.md }}>暂无攻略</Text>}
         renderItem={({ item }) => (
           <Pressable
             style={styles.guideCard}
-            onPress={() => router.push('/community' as never)}
+            onPress={() => router.push(`/community/guide/${item.id}` as never)}
           >
             <View style={styles.guideCardCover}>
               {item.coverImage ? (
@@ -337,10 +332,10 @@ export default function HomeScreen() {
             <View style={styles.guideCardBody}>
               <Text style={styles.guideCardTitle} numberOfLines={2}>{item.title}</Text>
               <View style={styles.guideCardMeta}>
-                <Text style={styles.guideCardAuthor}>{item.author}</Text>
+                <Text style={styles.guideCardAuthor}>{item.user?.nickname ?? '匿名'}</Text>
                 <View style={styles.guideCardViews}>
                   <Ionicons name="eye-outline" size={11} color="#9CA3AF" />
-                  <Text style={styles.guideCardViewsText}>{item.views}</Text>
+                  <Text style={styles.guideCardViewsText}>{item.viewCount ?? 0}</Text>
                 </View>
               </View>
             </View>
