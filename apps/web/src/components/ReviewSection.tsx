@@ -132,7 +132,7 @@ function ReviewCard({ review }: { review: Review }) {
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
           onClick={() => setLightboxImg(null)}
         >
-          <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
+          <button aria-label="关闭图片" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
           <div className="relative max-w-4xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
             <OptimizedImage src={lightboxImg} alt="Review photo" width={800} height={600} className="max-w-full max-h-[85vh] object-contain rounded-lg" />
           </div>
