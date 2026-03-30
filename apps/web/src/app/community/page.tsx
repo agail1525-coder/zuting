@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchGuides,
   fetchTrending,
@@ -18,6 +19,7 @@ import {
 type Tab = "guides" | "questions" | "photos" | "leaderboard";
 
 function GuideCard({ guide }: { guide: GuideItem }) {
+  const { t } = useTranslation();
   return (
     <Link href={`/community/guides/${guide.id}`} className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
       <div className="aspect-video bg-gray-100 overflow-hidden">
@@ -45,7 +47,7 @@ function GuideCard({ guide }: { guide: GuideItem }) {
             <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600">
               {guide.user?.nickname?.charAt(0) || "?"}
             </div>
-            <span className="text-gray-500 text-xs">{guide.user?.nickname || "匿名"}</span>
+            <span className="text-gray-500 text-xs">{guide.user?.nickname || t("community.anonymous")}</span>
           </div>
           <div className="flex items-center gap-3 text-gray-400 text-xs">
             <span>❤️ {guide.likeCount}</span>
@@ -59,6 +61,7 @@ function GuideCard({ guide }: { guide: GuideItem }) {
 }
 
 function QuestionCard({ q }: { q: QuestionItem }) {
+  const { t } = useTranslation();
   return (
     <Link href={`/community/questions/${q.id}`} className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4">
       <div className="flex gap-3">
@@ -73,7 +76,7 @@ function QuestionCard({ q }: { q: QuestionItem }) {
         </div>
         <div className="shrink-0 text-right">
           <div className="text-lg font-bold text-[#0066FF]">{q.answerCount}</div>
-          <div className="text-xs text-gray-400">回答</div>
+          <div className="text-xs text-gray-400">{t("community.answers")}</div>
         </div>
       </div>
     </Link>
@@ -136,6 +139,7 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
 }
 
 export default function CommunityPage() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("guides");
   const [guides, setGuides] = useState<GuideItem[]>([]);
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
@@ -164,7 +168,7 @@ export default function CommunityPage() {
           setLeaderboard(Array.isArray(res) ? res : []);
         }
       } catch {
-        setError("加载失败，请稍后再试");
+        setError(t("community.loadError"));
       } finally {
         setLoading(false);
       }
@@ -173,10 +177,10 @@ export default function CommunityPage() {
   }, [tab]);
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: "guides", label: "推荐游记" },
-    { id: "questions", label: "热门问答" },
-    { id: "photos", label: "照片墙" },
-    { id: "leaderboard", label: "排行榜" },
+    { id: "guides", label: t("community.tabGuides") },
+    { id: "questions", label: t("community.tabQuestions") },
+    { id: "photos", label: t("community.tabPhotos") },
+    { id: "leaderboard", label: t("community.tabLeaderboard") },
   ];
 
   return (
@@ -184,14 +188,14 @@ export default function CommunityPage() {
       {/* Hero */}
       <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold mb-2">朝圣者社区</h1>
-          <p className="text-blue-100 mb-6">分享旅行故事，探索宗教文化，结识同路人</p>
+          <h1 className="text-3xl font-bold mb-2">{t("community.title")}</h1>
+          <p className="text-blue-100 mb-6">{t("community.subtitle")}</p>
           <div className="flex gap-3 flex-wrap">
             <Link href="/community/guides/write" className="px-5 py-2 bg-white text-[#0066FF] rounded-full text-sm font-semibold hover:bg-blue-50 transition-colors">
-              ✍️ 写游记
+              ✍️ {t("community.writeGuide")}
             </Link>
             <Link href="/community/questions" className="px-5 py-2 bg-white/20 text-white rounded-full text-sm font-semibold hover:bg-white/30 transition-colors border border-white/30">
-              ❓ 提问题
+              ❓ {t("community.askQuestion")}
             </Link>
           </div>
         </div>
@@ -200,24 +204,24 @@ export default function CommunityPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
         <div className="flex gap-1 bg-white rounded-xl shadow-sm p-1 mb-8 overflow-x-auto">
-          {tabs.map((t) => (
+          {tabs.map((item) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={item.id}
+              onClick={() => setTab(item.id)}
               className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                tab === t.id
+                tab === item.id
                   ? "bg-[#0066FF] text-white shadow-sm"
                   : "text-gray-600 hover:text-[#0066FF] hover:bg-gray-50"
               }`}
             >
-              {t.label}
+              {item.label}
             </button>
           ))}
         </div>
 
         {/* Content */}
         {loading ? (
-          <div className="text-center py-20 text-gray-400">加载中...</div>
+          <div className="text-center py-20 text-gray-400">{t("community.loading")}</div>
         ) : error ? (
           <div className="text-center py-20 text-red-400">{error}</div>
         ) : (
@@ -225,7 +229,7 @@ export default function CommunityPage() {
             {tab === "guides" && (
               <>
                 {guides.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">暂无游记，快来写第一篇吧！</div>
+                  <div className="text-center py-20 text-gray-400">{t("community.emptyGuides")}</div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {guides.map((g) => <GuideCard key={g.id} guide={g} />)}
@@ -233,7 +237,7 @@ export default function CommunityPage() {
                 )}
                 <div className="mt-8 text-center">
                   <Link href="/community/guides" className="text-[#0066FF] text-sm font-medium hover:underline">
-                    查看全部游记 →
+                    {t("community.viewAllGuides")}
                   </Link>
                 </div>
               </>
@@ -242,7 +246,7 @@ export default function CommunityPage() {
             {tab === "questions" && (
               <>
                 {questions.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">暂无问题，来提第一个问题吧！</div>
+                  <div className="text-center py-20 text-gray-400">{t("community.emptyQuestions")}</div>
                 ) : (
                   <div className="max-w-3xl mx-auto space-y-3">
                     {questions.map((q) => <QuestionCard key={q.id} q={q} />)}
@@ -250,7 +254,7 @@ export default function CommunityPage() {
                 )}
                 <div className="mt-8 text-center">
                   <Link href="/community/questions" className="text-[#0066FF] text-sm font-medium hover:underline">
-                    查看全部问答 →
+                    {t("community.viewAllQuestions")}
                   </Link>
                 </div>
               </>
@@ -259,13 +263,13 @@ export default function CommunityPage() {
             {tab === "photos" && (
               <>
                 {photos.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">暂无照片</div>
+                  <div className="text-center py-20 text-gray-400">{t("community.emptyPhotos")}</div>
                 ) : (
                   <PhotoGrid photos={photos} />
                 )}
                 <div className="mt-8 text-center">
                   <Link href="/community/photos" className="text-[#0066FF] text-sm font-medium hover:underline">
-                    查看更多照片 →
+                    {t("community.viewMorePhotos")}
                   </Link>
                 </div>
               </>
@@ -274,7 +278,7 @@ export default function CommunityPage() {
             {tab === "leaderboard" && (
               <>
                 {leaderboard.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">暂无排行数据</div>
+                  <div className="text-center py-20 text-gray-400">{t("community.emptyLeaderboard")}</div>
                 ) : (
                   <div className="max-w-2xl mx-auto">
                     <LeaderboardList entries={leaderboard} />
@@ -282,7 +286,7 @@ export default function CommunityPage() {
                 )}
                 <div className="mt-8 text-center">
                   <Link href="/community/leaderboard" className="text-[#0066FF] text-sm font-medium hover:underline">
-                    查看完整排行榜 →
+                    {t("community.viewFullLeaderboard")}
                   </Link>
                 </div>
               </>

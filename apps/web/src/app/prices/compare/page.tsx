@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchPriceCompare, fetchRoutes, type PriceCompareItem } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
 interface RouteOption {
   type: string;
@@ -65,16 +66,17 @@ function generateMockItem(id: string, label: string): PriceCompareItem {
   };
 }
 
-const COMPARE_ROWS = [
-  { key: "currentPrice" as const, label: "当前价格", format: (v: number) => formatPrice(v), highlight: true },
-  { key: "memberPrice" as const, label: "会员价", format: (v: number | null) => v ? formatPrice(v) : "--", highlight: false },
-  { key: "minPrice" as const, label: "30天最低", format: (v: number) => formatPrice(v), highlight: true },
-  { key: "maxPrice" as const, label: "30天最高", format: (v: number) => formatPrice(v), highlight: false },
-  { key: "avgPrice" as const, label: "30天均价", format: (v: number) => formatPrice(v), highlight: false },
-  { key: "duration" as const, label: "行程天数", format: (v: number) => `${v} 天`, highlight: false },
-];
-
 export default function PriceComparePage() {
+  const { t } = useTranslation();
+
+  const COMPARE_ROWS = [
+    { key: "currentPrice" as const, label: t("prices.compare.currentPrice"), format: (v: number) => formatPrice(v), highlight: true },
+    { key: "memberPrice" as const, label: t("prices.compare.memberPrice"), format: (v: number | null) => v ? formatPrice(v) : "--", highlight: false },
+    { key: "minPrice" as const, label: t("prices.compare.min30"), format: (v: number) => formatPrice(v), highlight: true },
+    { key: "maxPrice" as const, label: t("prices.compare.max30"), format: (v: number) => formatPrice(v), highlight: false },
+    { key: "avgPrice" as const, label: t("prices.compare.avg30"), format: (v: number) => formatPrice(v), highlight: false },
+    { key: "duration" as const, label: t("prices.compare.duration"), format: (v: number) => t("prices.compare.durationDays").replace("{days}", String(v)), highlight: false },
+  ];
   const [routeOptions, setRouteOptions] = useState<RouteOption[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [items, setItems] = useState<PriceCompareItem[]>([]);
@@ -128,7 +130,7 @@ export default function PriceComparePage() {
       });
       setItems(mocks);
       setUsingMock(true);
-      setError("⚠ API 连接失败，当前显示为模拟演示数据，不代表真实价格");
+      setError("⚠ " + t("prices.compare.apiError"));
     } finally {
       setLoading(false);
     }
@@ -159,18 +161,18 @@ export default function PriceComparePage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          返回价格工具
+          {t("prices.backToPrices")}
         </Link>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">比价面板</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("prices.compare.title")}</h1>
 
         {/* Route selector */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6 shadow-sm">
-          <div className="text-sm font-medium text-gray-700 mb-3">选择路线（最多4条）</div>
+          <div className="text-sm font-medium text-gray-700 mb-3">{t("prices.compare.selectRoutes")}</div>
           {routesLoading ? (
-            <div className="text-sm text-gray-400 py-2">加载路线列表...</div>
+            <div className="text-sm text-gray-400 py-2">{t("prices.compare.loadingRoutes")}</div>
           ) : routeOptions.length === 0 ? (
-            <div className="text-sm text-gray-400 py-2">暂无可用路线数据</div>
+            <div className="text-sm text-gray-400 py-2">{t("prices.compare.noRoutes")}</div>
           ) : (
             <div className="flex flex-wrap gap-2">
               {routeOptions.map(pkg => (
@@ -189,7 +191,7 @@ export default function PriceComparePage() {
             </div>
           )}
           {selected.length < 2 && !routesLoading && routeOptions.length > 0 && (
-            <p className="text-xs text-orange-500 mt-2">请至少选择 2 条路线进行比较</p>
+            <p className="text-xs text-orange-500 mt-2">{t("prices.compare.minTwo")}</p>
           )}
         </div>
 
@@ -207,13 +209,13 @@ export default function PriceComparePage() {
 
         {/* Comparison Table */}
         {loading ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">加载中...</div>
+          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">{t("prices.compare.loading")}</div>
         ) : items.length >= 2 ? (
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="text-left px-5 py-4 text-gray-500 font-medium w-32">对比项</th>
+                  <th className="text-left px-5 py-4 text-gray-500 font-medium w-32">{t("prices.compare.compareItem")}</th>
                   {items.map(item => (
                     <th key={item.entityId} className="px-4 py-4 text-center font-semibold text-gray-800 min-w-[130px]">
                       {item.name}
@@ -240,7 +242,7 @@ export default function PriceComparePage() {
                           >
                             {row.format(rawVal as never)}
                             {isCheapest && (
-                              <span className="ml-1.5 text-[10px] bg-green-100 text-green-600 px-1 py-0.5 rounded-full">最优</span>
+                              <span className="ml-1.5 text-[10px] bg-green-100 text-green-600 px-1 py-0.5 rounded-full">{t("prices.compare.best")}</span>
                             )}
                           </td>
                         );
@@ -250,7 +252,7 @@ export default function PriceComparePage() {
                 })}
                 {/* Trend row */}
                 <tr className="bg-gray-50/50 border-t border-gray-100">
-                  <td className="px-5 py-3.5 text-gray-500 font-medium">价格走势</td>
+                  <td className="px-5 py-3.5 text-gray-500 font-medium">{t("prices.compare.trend")}</td>
                   {items.map(item => (
                     <td key={item.entityId} className="px-4 py-3.5 flex justify-center">
                       <Sparkline data={item.trend} />
@@ -259,14 +261,14 @@ export default function PriceComparePage() {
                 </tr>
                 {/* Action row */}
                 <tr className="border-t border-gray-100">
-                  <td className="px-5 py-4 text-gray-500 font-medium">操作</td>
+                  <td className="px-5 py-4 text-gray-500 font-medium">{t("prices.compare.action")}</td>
                   {items.map(item => (
                     <td key={item.entityId} className="px-4 py-4 text-center">
                       <Link
                         href={`/prices/alerts`}
                         className="inline-block text-xs bg-[#0066FF] text-white px-3 py-1.5 rounded-full hover:bg-[#0052CC] transition-colors"
                       >
-                        设提醒
+                        {t("prices.compare.setAlert")}
                       </Link>
                     </td>
                   ))}
@@ -277,7 +279,7 @@ export default function PriceComparePage() {
         ) : null}
 
         <p className="mt-4 text-xs text-gray-400">
-          * 价格为参考价，以实际支付页面为准。会员价需登录后查看。
+          {t("prices.compare.disclaimer")}
         </p>
       </div>
     </main>

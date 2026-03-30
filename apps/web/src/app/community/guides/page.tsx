@@ -4,17 +4,24 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 import { fetchGuides, type GuideItem } from "@/lib/api";
 
-const SORT_OPTIONS = [
-  { key: "latest", label: "最新" },
-  { key: "hot", label: "最热" },
-  { key: "likes", label: "最多点赞" },
-];
-
-const POPULAR_TAGS = ["朝圣", "佛教", "道教", "伊斯兰教", "基督教", "印度教", "神社", "旅行攻略", "美食", "住宿"];
+const POPULAR_TAGS = [
+  { value: "朝圣", key: "tagPilgrimage" },
+  { value: "佛教", key: "tagBuddhism" },
+  { value: "道教", key: "tagTaoism" },
+  { value: "伊斯兰教", key: "tagIslam" },
+  { value: "基督教", key: "tagChristianity" },
+  { value: "印度教", key: "tagHinduism" },
+  { value: "神社", key: "tagShrine" },
+  { value: "旅行攻略", key: "tagTravelTips" },
+  { value: "美食", key: "tagFood" },
+  { value: "住宿", key: "tagAccommodation" },
+] as const;
 
 function GuideCard({ guide }: { guide: GuideItem }) {
+  const { t } = useTranslation();
   return (
     <Link
       href={`/community/guides/${guide.id}`}
@@ -48,7 +55,7 @@ function GuideCard({ guide }: { guide: GuideItem }) {
             <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600">
               {guide.user?.nickname?.charAt(0) || "?"}
             </div>
-            <span className="text-gray-500 text-xs">{guide.user?.nickname || "匿名"}</span>
+            <span className="text-gray-500 text-xs">{guide.user?.nickname || t("community.anonymous")}</span>
           </div>
           <div className="flex items-center gap-3 text-gray-400 text-xs">
             <span>❤️ {guide.likeCount}</span>
@@ -62,6 +69,7 @@ function GuideCard({ guide }: { guide: GuideItem }) {
 }
 
 export default function GuidesPage() {
+  const { t } = useTranslation();
   const [sort, setSort] = useState("latest");
   const [tag, setTag] = useState("");
   const [page, setPage] = useState(1);
@@ -72,6 +80,12 @@ export default function GuidesPage() {
 
   const PAGE_SIZE = 12;
 
+  const SORT_OPTIONS = [
+    { key: "latest", label: t("community.guides.sortLatest") },
+    { key: "hot", label: t("community.guides.sortHot") },
+    { key: "likes", label: t("community.guides.sortLikes") },
+  ];
+
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -80,7 +94,7 @@ export default function GuidesPage() {
         setGuides(res.items ?? []);
         setTotal(res.total ?? 0);
       })
-      .catch(() => setError("加载失败，请稍后再试"))
+      .catch(() => setError(t("community.loadError")))
       .finally(() => setLoading(false));
   }, [sort, tag, page]);
 
@@ -92,14 +106,14 @@ export default function GuidesPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">旅行游记</h1>
-            <p className="text-gray-500 text-sm mt-1">朝圣者们的真实旅行故事</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t("community.guides.title")}</h1>
+            <p className="text-gray-500 text-sm mt-1">{t("community.guides.subtitle")}</p>
           </div>
           <Link
             href="/community/guides/write"
             className="px-5 py-2.5 bg-[#0066FF] text-white rounded-full text-sm font-semibold hover:bg-[#0052CC] transition-colors shadow-sm"
           >
-            ✍️ 写游记
+            ✍️ {t("community.writeGuide")}
           </Link>
         </div>
 
@@ -107,7 +121,7 @@ export default function GuidesPage() {
         <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
           {/* Sort */}
           <div className="flex items-center gap-4 mb-4">
-            <span className="text-sm text-gray-500 shrink-0">排序:</span>
+            <span className="text-sm text-gray-500 shrink-0">{t("community.guides.sortLabel")}</span>
             <div className="flex gap-2">
               {SORT_OPTIONS.map((opt) => (
                 <button
@@ -126,24 +140,24 @@ export default function GuidesPage() {
           </div>
           {/* Tags */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-gray-500 shrink-0">标签:</span>
+            <span className="text-sm text-gray-500 shrink-0">{t("community.guides.tagLabel")}</span>
             <button
               onClick={() => { setTag(""); setPage(1); }}
               className={`px-3 py-1 rounded-full text-xs transition-colors ${
                 !tag ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              全部
+              {t("community.guides.allTag")}
             </button>
-            {POPULAR_TAGS.map((t) => (
+            {POPULAR_TAGS.map((item) => (
               <button
-                key={t}
-                onClick={() => { setTag(t); setPage(1); }}
+                key={item.value}
+                onClick={() => { setTag(item.value); setPage(1); }}
                 className={`px-3 py-1 rounded-full text-xs transition-colors ${
-                  tag === t ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  tag === item.value ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                {t}
+                {t(`community.guides.${item.key}`)}
               </button>
             ))}
           </div>
@@ -151,13 +165,13 @@ export default function GuidesPage() {
 
         {/* Content */}
         {loading ? (
-          <div className="text-center py-20 text-gray-400">加载中...</div>
+          <div className="text-center py-20 text-gray-400">{t("community.loading")}</div>
         ) : error ? (
           <div className="text-center py-20 text-red-400">{error}</div>
         ) : guides.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <div className="text-5xl mb-4">📖</div>
-            <div>暂无游记，快来写第一篇吧！</div>
+            <div>{t("community.emptyGuides")}</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -173,7 +187,7 @@ export default function GuidesPage() {
               disabled={page === 1}
               className="px-4 py-2 rounded-lg bg-white shadow-sm text-sm text-gray-600 disabled:opacity-40 hover:bg-gray-50"
             >
-              上一页
+              {t("community.guides.prevPage")}
             </button>
             <span className="px-4 py-2 text-sm text-gray-600">
               {page} / {totalPages}
@@ -183,7 +197,7 @@ export default function GuidesPage() {
               disabled={page === totalPages}
               className="px-4 py-2 rounded-lg bg-white shadow-sm text-sm text-gray-600 disabled:opacity-40 hover:bg-gray-50"
             >
-              下一页
+              {t("community.guides.nextPage")}
             </button>
           </div>
         )}

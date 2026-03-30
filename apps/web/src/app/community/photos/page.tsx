@@ -3,11 +3,13 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { fetchPhotoWall, type PhotoItem } from "@/lib/api";
 
 const PAGE_SIZE = 18;
 
 export default function PhotoWallPage() {
+  const { t } = useTranslation();
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -27,7 +29,7 @@ export default function PhotoWallPage() {
         }
         setTotal(res.total ?? 0);
       })
-      .catch(() => setError("加载失败，请稍后再试"))
+      .catch(() => setError(t("community.loadError")))
       .finally(() => setLoading(false));
   }, [page]);
 
@@ -38,8 +40,8 @@ export default function PhotoWallPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">照片墙</h1>
-          <p className="text-gray-500 text-sm mt-1">朝圣者镜头下的圣地之美</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("community.photos.title")}</h1>
+          <p className="text-gray-500 text-sm mt-1">{t("community.photos.subtitle")}</p>
         </div>
 
         {/* Error */}
@@ -51,7 +53,7 @@ export default function PhotoWallPage() {
         {!loading && !error && photos.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-5xl mb-4">📷</div>
-            <div>暂无照片</div>
+            <div>{t("community.emptyPhotos")}</div>
           </div>
         )}
 
@@ -94,16 +96,16 @@ export default function PhotoWallPage() {
         {!error && (
           <div className="mt-10 text-center">
             {loading ? (
-              <div className="text-gray-400 text-sm">加载中...</div>
+              <div className="text-gray-400 text-sm">{t("community.loading")}</div>
             ) : hasMore ? (
               <button
                 onClick={() => setPage((p) => p + 1)}
                 className="px-8 py-3 bg-white shadow-sm rounded-full text-sm text-[#0066FF] font-medium hover:shadow-md transition-shadow border border-gray-100"
               >
-                加载更多
+                {t("community.photos.loadMore")}
               </button>
             ) : photos.length > 0 ? (
-              <div className="text-gray-400 text-sm">已显示全部 {total} 张照片</div>
+              <div className="text-gray-400 text-sm">{t("community.photos.showAll").replace("{total}", String(total))}</div>
             ) : null}
           </div>
         )}

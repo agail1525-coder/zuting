@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchCollections,
   createCollection,
@@ -27,6 +28,7 @@ function CollectionCard({
   collection: Collection;
   onDelete: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const gradientClass =
@@ -82,7 +84,7 @@ function CollectionCard({
           {/* Public badge */}
           {collection.isPublic && (
             <span className="absolute top-2 left-2 bg-blue-600/90 text-white text-xs px-2 py-0.5 rounded-full backdrop-blur-sm">
-              公开
+              {t("collections.card.public")}
             </span>
           )}
           {/* Delete button */}
@@ -90,7 +92,7 @@ function CollectionCard({
             onClick={handleDelete}
             disabled={deleting}
             className="absolute top-2 right-2 bg-black/50 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm"
-            aria-label="删除收藏夹"
+            aria-label={t("collections.card.deleteLabel")}
           >
             {confirmDelete ? (
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -117,7 +119,7 @@ function CollectionCard({
           )}
           <div className="flex items-center justify-between mt-3">
             <span className="text-xs text-gray-400">
-              {itemCount} 个收藏
+              {t("collections.card.items").replace("{count}", String(itemCount))}
             </span>
             <span className="text-xs text-gray-400">
               {new Date(collection.createdAt).toLocaleDateString("zh-CN")}
@@ -136,6 +138,7 @@ function CreateCollectionModal({
   onClose: () => void;
   onCreate: (collection: Collection) => void;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(false);
@@ -145,7 +148,7 @@ function CreateCollectionModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("请输入收藏夹名称");
+      setError(t("collections.modal.nameRequired"));
       return;
     }
     setLoading(true);
@@ -158,7 +161,7 @@ function CreateCollectionModal({
       });
       onCreate(collection);
     } catch {
-      setError("创建失败，请重试");
+      setError(t("collections.modal.createFailed"));
       setLoading(false);
     }
   };
@@ -170,7 +173,7 @@ function CreateCollectionModal({
     >
       <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">创建收藏夹</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t("collections.modal.title")}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -185,13 +188,13 @@ function CreateCollectionModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              名称 <span className="text-red-500">*</span>
+              {t("collections.modal.nameLabel")} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="例如：朝圣心愿清单"
+              placeholder={t("collections.modal.namePlaceholder")}
               maxLength={50}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -199,12 +202,12 @@ function CreateCollectionModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              描述（选填）
+              {t("collections.modal.descLabel")}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="简短描述这个收藏夹..."
+              placeholder={t("collections.modal.descPlaceholder")}
               rows={3}
               maxLength={200}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -221,7 +224,7 @@ function CreateCollectionModal({
                 className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isPublic ? "translate-x-5" : "translate-x-1"}`}
               />
             </button>
-            <span className="text-sm text-gray-700">公开收藏夹（他人可查看）</span>
+            <span className="text-sm text-gray-700">{t("collections.modal.publicToggle")}</span>
           </div>
 
           {error && (
@@ -234,14 +237,14 @@ function CreateCollectionModal({
               onClick={onClose}
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              取消
+              {t("collections.modal.cancel")}
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition-colors disabled:opacity-50"
             >
-              {loading ? "创建中..." : "创建"}
+              {loading ? t("collections.modal.creating") : t("collections.modal.create")}
             </button>
           </div>
         </form>
@@ -251,6 +254,7 @@ function CreateCollectionModal({
 }
 
 export default function CollectionsPage() {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -294,8 +298,8 @@ export default function CollectionsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">我的收藏夹</h1>
-            <p className="text-sm text-gray-500 mt-1">收藏圣地、祖庭和祖师，规划你的朝圣之旅</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t("collections.title")}</h1>
+            <p className="text-sm text-gray-500 mt-1">{t("collections.subtitle")}</p>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
@@ -305,7 +309,7 @@ export default function CollectionsPage() {
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            创建收藏夹
+            {t("collections.createBtn")}
           </button>
         </div>
 
@@ -321,13 +325,13 @@ export default function CollectionsPage() {
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
               </svg>
             </div>
-            <h2 className="text-lg font-medium text-gray-700 mb-2">还没有收藏夹</h2>
-            <p className="text-sm text-gray-400 mb-6">创建一个开始收藏你喜欢的圣地和祖庭吧</p>
+            <h2 className="text-lg font-medium text-gray-700 mb-2">{t("collections.empty.title")}</h2>
+            <p className="text-sm text-gray-400 mb-6">{t("collections.empty.desc")}</p>
             <button
               onClick={() => setShowCreateModal(true)}
               className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-sm transition-colors"
             >
-              创建第一个收藏夹
+              {t("collections.empty.cta")}
             </button>
           </div>
         ) : (

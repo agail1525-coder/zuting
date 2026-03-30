@@ -15,6 +15,7 @@ import {
   type GuideComment,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import ShareButton from "@/components/ShareButton";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
@@ -29,6 +30,7 @@ function formatDate(dateStr: string) {
 export default function GuideDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [guide, setGuide] = useState<GuideItem | null>(null);
   const [comments, setComments] = useState<GuideComment[]>([]);
@@ -59,7 +61,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
             .catch(() => {});
         }
       })
-      .catch(() => setError("加载失败，请稍后再试"))
+      .catch(() => setError(t("community.loadError")))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -96,7 +98,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
-        <div className="text-gray-400">加载中...</div>
+        <div className="text-gray-400">{t("community.loading")}</div>
       </main>
     );
   }
@@ -106,9 +108,9 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
       <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
         <div className="text-center text-red-400">
           <div className="text-5xl mb-4">⚠️</div>
-          <div>{error || "游记不存在"}</div>
+          <div>{error || t("community.guide.notFound")}</div>
           <Link href="/community/guides" className="mt-4 inline-block text-[#0066FF] hover:underline">
-            返回游记列表
+            {t("community.guide.backToList")}
           </Link>
         </div>
       </main>
@@ -123,9 +125,9 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
           <article className="flex-1 min-w-0">
             {/* Breadcrumb */}
             <nav className="text-sm text-gray-500 mb-6">
-              <Link href="/community" className="hover:text-[#0066FF]">社区</Link>
+              <Link href="/community" className="hover:text-[#0066FF]">{t("community.breadcrumb")}</Link>
               {" > "}
-              <Link href="/community/guides" className="hover:text-[#0066FF]">游记</Link>
+              <Link href="/community/guides" className="hover:text-[#0066FF]">{t("community.guides")}</Link>
               {" > "}
               <span className="text-gray-700">{guide.title}</span>
             </nav>
@@ -150,7 +152,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                 )}
               </div>
               <div>
-                <div className="font-semibold text-gray-900">{guide.user?.nickname || "匿名"}</div>
+                <div className="font-semibold text-gray-900">{guide.user?.nickname || t("community.anonymous")}</div>
                 <div className="text-sm text-gray-500">
                   {guide.publishedAt ? formatDate(guide.publishedAt) : formatDate(guide.createdAt)}
                 </div>
@@ -185,7 +187,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                     : "bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-500"
                 }`}
               >
-                {liked ? "❤️" : "🤍"} 点赞 ({likeCount})
+                {liked ? "❤️" : "🤍"} {t("community.guide.like")} ({likeCount})
               </button>
               <ShareButton
                 title={guide.title}
@@ -198,7 +200,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Comments */}
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-4">评论 ({comments.length})</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">{t("community.guide.comments")} ({comments.length})</h2>
 
               {/* Comment input */}
               {user ? (
@@ -210,7 +212,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                     <textarea
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="分享你的想法..."
+                      placeholder={t("community.guide.commentPlaceholder")}
                       rows={3}
                       className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
                     />
@@ -220,21 +222,21 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                         disabled={!commentText.trim() || submitting}
                         className="px-4 py-2 bg-[#0066FF] text-white rounded-full text-sm font-medium disabled:opacity-40 hover:bg-[#0052CC] transition-colors"
                       >
-                        {submitting ? "发送中..." : "发表评论"}
+                        {submitting ? t("community.guide.submitting") : t("community.guide.submitComment")}
                       </button>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="mb-6 p-4 bg-blue-50 rounded-xl text-sm text-center text-blue-700">
-                  <Link href="/login" className="font-semibold hover:underline">登录</Link> 后才能发表评论
+                  <Link href="/login" className="font-semibold hover:underline">{t("community.loginRequired")}</Link>{t("community.guide.loginToComment")}
                 </div>
               )}
 
               {/* Comment list */}
               <div className="space-y-4">
                 {comments.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">暂无评论，快来抢沙发！</div>
+                  <div className="text-center py-8 text-gray-400">{t("community.guide.noComments")}</div>
                 ) : (
                   comments.map((c) => (
                     <div key={c.id} className="flex gap-3">
@@ -257,7 +259,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
             <div className="sticky top-24 space-y-6">
               {related.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm p-5">
-                  <h3 className="font-bold text-gray-900 mb-4">相关游记</h3>
+                  <h3 className="font-bold text-gray-900 mb-4">{t("community.guide.relatedGuides")}</h3>
                   <div className="space-y-3">
                     {related.slice(0, 3).map((r) => (
                       <Link key={r.id} href={`/community/guides/${r.id}`} className="flex gap-3 group">
@@ -280,13 +282,13 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
               )}
               <div className="bg-white rounded-xl shadow-sm p-5">
-                <h3 className="font-bold text-gray-900 mb-3">加入社区</h3>
-                <p className="text-sm text-gray-500 mb-4">记录你的朝圣旅程，分享给全球同行者</p>
+                <h3 className="font-bold text-gray-900 mb-3">{t("community.guide.joinCommunity")}</h3>
+                <p className="text-sm text-gray-500 mb-4">{t("community.guide.joinCommunityDesc")}</p>
                 <Link
                   href="/community/guides/write"
                   className="block w-full text-center px-4 py-2.5 bg-[#0066FF] text-white rounded-full text-sm font-semibold hover:bg-[#0052CC] transition-colors"
                 >
-                  ✍️ 写游记
+                  ✍️ {t("community.guide.writeGuide")}
                 </Link>
               </div>
             </div>

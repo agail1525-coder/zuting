@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchPriceCalendar, fetchRoutes, type PriceCalendarItem } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
 interface EntityOption {
   type: string;
@@ -32,10 +33,24 @@ function getPriceColor(price: number, prices: number[]): string {
   return "bg-yellow-50 text-yellow-700 border-yellow-200";
 }
 
-const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
-const MONTH_NAMES = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-
 export default function PriceCalendarPage() {
+  const { t } = useTranslation();
+
+  const WEEKDAYS = [
+    t("prices.calendar.weekdays.sun"),
+    t("prices.calendar.weekdays.mon"),
+    t("prices.calendar.weekdays.tue"),
+    t("prices.calendar.weekdays.wed"),
+    t("prices.calendar.weekdays.thu"),
+    t("prices.calendar.weekdays.fri"),
+    t("prices.calendar.weekdays.sat"),
+  ];
+  const MONTH_NAMES = [
+    t("prices.calendar.months.jan"), t("prices.calendar.months.feb"), t("prices.calendar.months.mar"),
+    t("prices.calendar.months.apr"), t("prices.calendar.months.may"), t("prices.calendar.months.jun"),
+    t("prices.calendar.months.jul"), t("prices.calendar.months.aug"), t("prices.calendar.months.sep"),
+    t("prices.calendar.months.oct"), t("prices.calendar.months.nov"), t("prices.calendar.months.dec"),
+  ];
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -67,13 +82,13 @@ export default function PriceCalendarPage() {
         } else {
           setEntityOptions([]);
           setSelectedEntity(null);
-          setError("暂无可用路线");
+          setError(t("prices.calendar.noRoutes"));
         }
       } catch {
         if (cancelled) return;
         setEntityOptions([]);
         setSelectedEntity(null);
-        setError("无法加载路线列表");
+        setError(t("prices.calendar.routeLoadFail"));
       } finally {
         if (!cancelled) setLoadingRoutes(false);
       }
@@ -110,7 +125,7 @@ export default function PriceCalendarPage() {
       }
       setCalendarData(mock);
       setIsDemo(true);
-      setError("⚠ 演示数据 — 价格日历API暂不可用，以下为模拟价格");
+      setError("⚠ " + t("prices.calendar.demoError"));
     } finally {
       setLoading(false);
     }
@@ -149,18 +164,18 @@ export default function PriceCalendarPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          返回价格工具
+          {t("prices.backToPrices")}
         </Link>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">价格日历</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("prices.calendar.title")}</h1>
 
         {/* Entity selector */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm">
-          <label className="block text-sm text-gray-600 mb-2 font-medium">选择路线</label>
+          <label className="block text-sm text-gray-600 mb-2 font-medium">{t("prices.calendar.selectRoute")}</label>
           {loadingRoutes ? (
-            <div className="text-sm text-gray-400 py-2">加载路线列表...</div>
+            <div className="text-sm text-gray-400 py-2">{t("prices.calendar.loadingRoutes")}</div>
           ) : entityOptions.length === 0 ? (
-            <div className="text-sm text-gray-400 py-2">暂无可用路线</div>
+            <div className="text-sm text-gray-400 py-2">{t("prices.calendar.noRoutes")}</div>
           ) : (
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
@@ -176,7 +191,7 @@ export default function PriceCalendarPage() {
             </select>
           )}
           {isDemo && (
-            <div className="mt-2 text-xs text-amber-600">当前显示为演示数据，实际价格以API为准</div>
+            <div className="mt-2 text-xs text-amber-600">{t("prices.calendar.demoNotice")}</div>
           )}
         </div>
 
@@ -187,19 +202,19 @@ export default function PriceCalendarPage() {
             <button
               onClick={prevMonth}
               className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
-              aria-label="上月"
+              aria-label={t("prices.calendar.prevMonth")}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <h2 className="text-lg font-bold text-gray-900">
-              {year}年 {MONTH_NAMES[month]}
+              {t("prices.calendar.yearMonth").replace("{year}", String(year)).replace("{month}", MONTH_NAMES[month])}
             </h2>
             <button
               onClick={nextMonth}
               className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
-              aria-label="下月"
+              aria-label={t("prices.calendar.nextMonth")}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -222,7 +237,7 @@ export default function PriceCalendarPage() {
 
           {/* Calendar grid */}
           {loading ? (
-            <div className="h-64 flex items-center justify-center text-gray-400 text-sm">加载中...</div>
+            <div className="h-64 flex items-center justify-center text-gray-400 text-sm">{t("prices.calendar.loading")}</div>
           ) : (
             <div className="grid grid-cols-7 gap-1">
               {cells.map((day, idx) => {
@@ -260,19 +275,19 @@ export default function PriceCalendarPage() {
             <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200 text-sm">
               <div className="font-semibold text-blue-900">{selectedDay}</div>
               <div className="text-blue-700 mt-1">
-                价格: <strong>{formatPrice(calendarData[selectedDay])}</strong>
+                {t("prices.calendar.price")}: <strong>{formatPrice(calendarData[selectedDay])}</strong>
                 {calendarData[selectedDay] === minPrice && (
-                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">最低价</span>
+                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">{t("prices.calendar.lowestPrice")}</span>
                 )}
                 {calendarData[selectedDay] === maxPrice && (
-                  <span className="ml-2 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full">最高价</span>
+                  <span className="ml-2 text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full">{t("prices.calendar.highestPrice")}</span>
                 )}
               </div>
               <Link
                 href={`/prices/alerts`}
                 className="mt-2 inline-block text-xs text-[#0066FF] hover:underline"
               >
-                设置价格提醒 →
+                {t("prices.calendar.setAlert")}
               </Link>
             </div>
           )}
@@ -281,11 +296,11 @@ export default function PriceCalendarPage() {
           {prices.length > 0 && (
             <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
               <div className="text-center">
-                <div className="text-xs text-gray-400">本月最低</div>
+                <div className="text-xs text-gray-400">{t("prices.calendar.monthLowest")}</div>
                 <div className="text-lg font-bold text-green-600">{formatPrice(minPrice)}</div>
               </div>
               <div className="text-center">
-                <div className="text-xs text-gray-400">本月最高</div>
+                <div className="text-xs text-gray-400">{t("prices.calendar.monthHighest")}</div>
                 <div className="text-lg font-bold text-red-600">{formatPrice(maxPrice)}</div>
               </div>
             </div>
@@ -296,19 +311,19 @@ export default function PriceCalendarPage() {
         <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded bg-green-50 border border-green-200" />
-            最低 20% 价位
+            {t("prices.calendar.legend.low")}
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded bg-yellow-50 border border-yellow-200" />
-            中等价位
+            {t("prices.calendar.legend.mid")}
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded bg-red-50 border border-red-200" />
-            最高 20% 价位
+            {t("prices.calendar.legend.high")}
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded bg-gray-50 border border-gray-200" />
-            暂无数据
+            {t("prices.calendar.legend.noData")}
           </div>
         </div>
       </div>

@@ -6,19 +6,21 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createGuide, publishGuide } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import MarkdownEditor from "@/components/MarkdownEditor";
-
-const GUIDE_CATEGORIES = [
-  { value: "", label: "选择分类..." },
-  { value: "pilgrimage-diary", label: "朝圣日记" },
-  { value: "travel-tips", label: "旅行贴士" },
-  { value: "cultural-insight", label: "文化洞察" },
-  { value: "route-review", label: "路线评测" },
-];
 
 export default function WriteGuidePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const GUIDE_CATEGORIES = [
+    { value: "", label: t("community.guide.categorySelect") },
+    { value: "pilgrimage-diary", label: t("community.guide.categoryPilgrimageDiary") },
+    { value: "travel-tips", label: t("community.guide.categoryTravelTips") },
+    { value: "cultural-insight", label: t("community.guide.categoryCulturalInsight") },
+    { value: "route-review", label: t("community.guide.categoryRouteReview") },
+  ];
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -39,13 +41,13 @@ export default function WriteGuidePage() {
   function parseTags(): string[] {
     return tagsInput
       .split(",")
-      .map((t) => t.trim())
+      .map((s) => s.trim())
       .filter(Boolean);
   }
 
   async function handleSaveDraft() {
     if (!title.trim() || !content.trim()) {
-      setMessage({ type: "error", text: "标题和内容不能为空" });
+      setMessage({ type: "error", text: t("community.guide.titleContentRequired") });
       return;
     }
     setSaving(true);
@@ -58,9 +60,9 @@ export default function WriteGuidePage() {
         tags: parseTags(),
       });
       setSavedId(guide.id);
-      setMessage({ type: "success", text: "草稿已保存！" });
+      setMessage({ type: "success", text: t("community.guide.draftSaved") });
     } catch {
-      setMessage({ type: "error", text: "保存失败，请稍后再试" });
+      setMessage({ type: "error", text: t("community.guide.saveFailed") });
     } finally {
       setSaving(false);
     }
@@ -68,7 +70,7 @@ export default function WriteGuidePage() {
 
   async function handlePublish() {
     if (!title.trim() || !content.trim()) {
-      setMessage({ type: "error", text: "标题和内容不能为空" });
+      setMessage({ type: "error", text: t("community.guide.titleContentRequired") });
       return;
     }
     setPublishing(true);
@@ -86,10 +88,10 @@ export default function WriteGuidePage() {
         setSavedId(id);
       }
       await publishGuide(id);
-      setMessage({ type: "success", text: "发布成功！" });
+      setMessage({ type: "success", text: t("community.guide.publishSuccess") });
       setTimeout(() => router.push(`/community/guides/${id}`), 1200);
     } catch {
-      setMessage({ type: "error", text: "发布失败，请稍后再试" });
+      setMessage({ type: "error", text: t("community.guide.publishFailed") });
     } finally {
       setPublishing(false);
     }
@@ -98,7 +100,7 @@ export default function WriteGuidePage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
-        <div className="text-gray-400">加载中...</div>
+        <div className="text-gray-400">{t("community.loading")}</div>
       </main>
     );
   }
@@ -110,21 +112,21 @@ export default function WriteGuidePage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">写游记</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("community.guide.write")}</h1>
           <div className="flex gap-3">
             <button
               onClick={handleSaveDraft}
               disabled={saving || publishing}
               className="px-5 py-2 rounded-full text-sm font-medium border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors"
             >
-              {saving ? "保存中..." : "保存草稿"}
+              {saving ? t("community.guide.saving") : t("community.guide.saveDraft")}
             </button>
             <button
               onClick={handlePublish}
               disabled={saving || publishing}
               className="px-5 py-2 rounded-full text-sm font-semibold bg-[#0066FF] text-white hover:bg-[#0052CC] disabled:opacity-40 transition-colors shadow-sm"
             >
-              {publishing ? "发布中..." : "发布"}
+              {publishing ? t("community.guide.publishing") : t("community.guide.publish")}
             </button>
           </div>
         </div>
@@ -143,11 +145,11 @@ export default function WriteGuidePage() {
         <div className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">标题 *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("community.guide.title")}</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="给你的游记起一个吸引人的标题..."
+              placeholder={t("community.guide.titlePlaceholder")}
               maxLength={100}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] text-lg font-medium"
             />
@@ -156,7 +158,7 @@ export default function WriteGuidePage() {
 
           {/* Cover Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">封面图片 URL（可选）</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("community.guide.coverImage")}</label>
             <input
               value={coverImage}
               onChange={(e) => setCoverImage(e.target.value)}
@@ -167,7 +169,7 @@ export default function WriteGuidePage() {
               <div className="mt-3 aspect-video rounded-xl overflow-hidden border border-gray-200">
                 <img
                   src={coverImage}
-                  alt="封面预览"
+                  alt={t("community.guide.coverPreview")}
                   className="w-full h-full object-cover"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                 />
@@ -177,7 +179,7 @@ export default function WriteGuidePage() {
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">分类</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("community.guide.category")}</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -191,11 +193,11 @@ export default function WriteGuidePage() {
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">标签（用逗号分隔）</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("community.guide.tags")}</label>
             <input
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="朝圣, 佛教, 印度, 旅行攻略"
+              placeholder={t("community.guide.tagsPlaceholder")}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
             />
             {parseTags().length > 0 && (
@@ -209,11 +211,11 @@ export default function WriteGuidePage() {
 
           {/* Content (Markdown Editor) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">内容 * <span className="text-gray-400 font-normal">（支持 Markdown）</span></label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t("community.guide.content")} <span className="text-gray-400 font-normal">{t("community.guide.contentMarkdown")}</span></label>
             <MarkdownEditor
               value={content}
               onChange={setContent}
-              placeholder="分享你的朝圣旅程，让更多人了解这片圣地..."
+              placeholder={t("community.guide.contentPlaceholder")}
               rows={20}
             />
           </div>
@@ -226,14 +228,14 @@ export default function WriteGuidePage() {
             disabled={saving || publishing}
             className="px-6 py-3 rounded-full text-sm font-medium border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors"
           >
-            {saving ? "保存中..." : "保存草稿"}
+            {saving ? t("community.guide.saving") : t("community.guide.saveDraft")}
           </button>
           <button
             onClick={handlePublish}
             disabled={saving || publishing}
             className="px-6 py-3 rounded-full text-sm font-semibold bg-[#0066FF] text-white hover:bg-[#0052CC] disabled:opacity-40 transition-colors shadow-md"
           >
-            {publishing ? "发布中..." : "立即发布"}
+            {publishing ? t("community.guide.publishing") : t("community.guide.publishNow")}
           </button>
         </div>
       </div>

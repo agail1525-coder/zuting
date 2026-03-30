@@ -3,14 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchPriceTrend, fetchRoutes, type PriceTrendPoint, type Route } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
 interface EntityOption { type: string; id: string; label: string }
-
-const PERIODS = [
-  { label: "7天", days: 7 },
-  { label: "30天", days: 30 },
-  { label: "90天", days: 90 },
-];
 
 function formatPrice(cents: number): string {
   return `¥${(cents / 100).toFixed(0)}`;
@@ -66,7 +61,7 @@ function TrendChart({
       className="w-full"
       style={{ maxHeight: height }}
       role="img"
-      aria-label="价格趋势折线图"
+      aria-label="Price trend chart"
     >
       {/* Grid lines */}
       {yTicks.map((tick, i) => (
@@ -140,6 +135,14 @@ function TrendChart({
 }
 
 export default function PriceTrendPage() {
+  const { t } = useTranslation();
+
+  const PERIODS = [
+    { label: t("prices.trend.days7"), days: 7 },
+    { label: t("prices.trend.days30"), days: 30 },
+    { label: t("prices.trend.days90"), days: 90 },
+  ];
+
   const [entityOptions, setEntityOptions] = useState<EntityOption[]>([]);
   const [selectedEntity, setSelectedEntity] = useState<EntityOption | null>(null);
   const [period, setPeriod] = useState(PERIODS[1]);
@@ -162,10 +165,10 @@ export default function PriceTrendPage() {
           setEntityOptions(opts);
           setSelectedEntity(opts[0]);
         } else {
-          setError("暂无可用路线");
+          setError(t("prices.trend.noRoutes"));
         }
       } catch {
-        setError("无法加载路线列表");
+        setError(t("prices.trend.noRoutes"));
       } finally {
         setLoadingRoutes(false);
       }
@@ -181,7 +184,7 @@ export default function PriceTrendPage() {
       setTrendData(data);
     } catch {
       setTrendData([]);
-      setError("暂无价格趋势数据");
+      setError(t("prices.trend.noTrend"));
     } finally {
       setLoading(false);
     }
@@ -204,17 +207,17 @@ export default function PriceTrendPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          返回价格工具
+          {t("prices.backToPrices")}
         </Link>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">价格趋势</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t("prices.trend.title")}</h1>
 
         {/* Controls */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 shadow-sm flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="block text-xs text-gray-500 mb-1.5 font-medium">路线</label>
+            <label className="block text-xs text-gray-500 mb-1.5 font-medium">{t("prices.trend.route")}</label>
             {loadingRoutes ? (
-              <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">加载路线中...</div>
+              <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">{t("prices.trend.loadingRoutes")}</div>
             ) : (
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
@@ -231,7 +234,7 @@ export default function PriceTrendPage() {
             )}
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1.5 font-medium">时间范围</label>
+            <label className="block text-xs text-gray-500 mb-1.5 font-medium">{t("prices.trend.timeRange")}</label>
             <div className="flex gap-1">
               {PERIODS.map(p => (
                 <button
@@ -260,7 +263,7 @@ export default function PriceTrendPage() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <div className="text-sm text-gray-500">当前价格</div>
+              <div className="text-sm text-gray-500">{t("prices.trend.currentPrice")}</div>
               <div className="text-3xl font-bold text-gray-900">{formatPrice(currentPrice)}</div>
             </div>
             {prices.length > 0 && (
@@ -271,17 +274,17 @@ export default function PriceTrendPage() {
                     ? "bg-red-50 text-red-700"
                     : "bg-gray-50 text-gray-600"
               }`}>
-                {changePct > 0 ? "+" : ""}{changePct.toFixed(1)}% 较{period.label}前
+                {changePct > 0 ? "+" : ""}{changePct.toFixed(1)}% {t("prices.trend.changeSuffix").replace("{period}", period.label)}
               </div>
             )}
           </div>
 
           {loading ? (
-            <div className="h-48 flex items-center justify-center text-gray-400 text-sm">加载中...</div>
+            <div className="h-48 flex items-center justify-center text-gray-400 text-sm">{t("prices.trend.loading")}</div>
           ) : trendData.length >= 2 ? (
             <TrendChart data={trendData} />
           ) : (
-            <div className="h-48 flex items-center justify-center text-gray-300 text-sm">暂无数据</div>
+            <div className="h-48 flex items-center justify-center text-gray-300 text-sm">{t("prices.trend.noData")}</div>
           )}
         </div>
 
@@ -289,15 +292,15 @@ export default function PriceTrendPage() {
         {prices.length > 0 && (
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-sm">
-              <div className="text-xs text-gray-400 mb-1">{period.label}最低</div>
+              <div className="text-xs text-gray-400 mb-1">{t("prices.trend.periodLowest").replace("{period}", period.label)}</div>
               <div className="text-lg font-bold text-green-600">{formatPrice(minPrice)}</div>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-sm">
-              <div className="text-xs text-gray-400 mb-1">{period.label}均价</div>
+              <div className="text-xs text-gray-400 mb-1">{t("prices.trend.periodAvg").replace("{period}", period.label)}</div>
               <div className="text-lg font-bold text-blue-600">{formatPrice(avgPrice)}</div>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 p-4 text-center shadow-sm">
-              <div className="text-xs text-gray-400 mb-1">{period.label}最高</div>
+              <div className="text-xs text-gray-400 mb-1">{t("prices.trend.periodHighest").replace("{period}", period.label)}</div>
               <div className="text-lg font-bold text-red-600">{formatPrice(maxPrice)}</div>
             </div>
           </div>
@@ -306,7 +309,7 @@ export default function PriceTrendPage() {
         {/* Price positioning */}
         {prices.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6 shadow-sm">
-            <div className="text-sm font-medium text-gray-700 mb-3">当前价格位置</div>
+            <div className="text-sm font-medium text-gray-700 mb-3">{t("prices.trend.pricePosition")}</div>
             <div className="relative h-3 bg-gradient-to-r from-green-200 via-yellow-200 to-red-200 rounded-full">
               {(() => {
                 const pct = ((currentPrice - minPrice) / (maxPrice - minPrice || 1)) * 100;
@@ -319,8 +322,8 @@ export default function PriceTrendPage() {
               })()}
             </div>
             <div className="flex justify-between text-xs text-gray-400 mt-1.5">
-              <span>历史低点</span>
-              <span>历史高点</span>
+              <span>{t("prices.trend.historyLow")}</span>
+              <span>{t("prices.trend.historyHigh")}</span>
             </div>
           </div>
         )}
@@ -334,7 +337,7 @@ export default function PriceTrendPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            设置价格提醒
+            {t("prices.trend.setAlert")}
           </Link>
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
   type AnswerItem,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -26,12 +27,14 @@ function AnswerCard({
   questionId,
   onAccept,
   onVote,
+  t,
 }: {
   answer: AnswerItem;
   isOwner: boolean;
   questionId: string;
   onAccept: (answerId: string) => void;
   onVote: (answerId: string) => void;
+  t: (key: string) => string;
 }) {
   return (
     <div className={`bg-white rounded-xl shadow-sm p-5 ${answer.isAccepted ? "ring-2 ring-green-400" : ""}`}>
@@ -53,7 +56,7 @@ function AnswerCard({
         <div className="flex-1 min-w-0">
           {answer.isAccepted && (
             <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 rounded text-xs font-medium mb-3">
-              ✓ 已采纳
+              ✓ {t("community.question.accepted")}
             </div>
           )}
           <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap mb-4">
@@ -66,7 +69,7 @@ function AnswerCard({
                 onClick={() => onAccept(answer.id)}
                 className="text-xs px-3 py-1 bg-green-50 text-green-700 rounded-full hover:bg-green-100 transition-colors font-medium"
               >
-                采纳为最佳答案
+                {t("community.question.acceptAnswer")}
               </button>
             )}
           </div>
@@ -79,6 +82,7 @@ function AnswerCard({
 export default function QuestionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const [question, setQuestion] = useState<QuestionDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -92,7 +96,7 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
     setLoading(true);
     fetchQuestion(id)
       .then((q) => setQuestion(q))
-      .catch(() => setError("加载失败，请稍后再试"))
+      .catch(() => setError(t("community.loadError")))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -104,9 +108,9 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
       const ans = await addAnswer(id, answerText.trim());
       setQuestion((prev) => prev ? { ...prev, answers: [...(prev.answers ?? []), ans], answerCount: (prev.answerCount ?? 0) + 1 } : prev);
       setAnswerText("");
-      setSubmitMsg("回答已提交！");
+      setSubmitMsg(t("community.question.answerSubmitted"));
     } catch {
-      setSubmitMsg("提交失败，请稍后再试");
+      setSubmitMsg(t("community.question.answerSubmitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -141,7 +145,7 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
-        <div className="text-gray-400">加载中...</div>
+        <div className="text-gray-400">{t("community.loading")}</div>
       </main>
     );
   }
@@ -151,8 +155,8 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
       <main className="min-h-screen bg-gray-50 pt-20 flex items-center justify-center">
         <div className="text-center text-red-400">
           <div className="text-5xl mb-4">⚠️</div>
-          <div>{error || "问题不存在"}</div>
-          <Link href="/community/questions" className="mt-4 inline-block text-[#0066FF] hover:underline">返回问答广场</Link>
+          <div>{error || t("community.question.notFound")}</div>
+          <Link href="/community/questions" className="mt-4 inline-block text-[#0066FF] hover:underline">{t("community.question.backToPlaza")}</Link>
         </div>
       </main>
     );
@@ -163,9 +167,9 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/community" className="hover:text-[#0066FF]">社区</Link>
+          <Link href="/community" className="hover:text-[#0066FF]">{t("community.breadcrumb")}</Link>
           {" > "}
-          <Link href="/community/questions" className="hover:text-[#0066FF]">问答</Link>
+          <Link href="/community/questions" className="hover:text-[#0066FF]">{t("community.questions")}</Link>
           {" > "}
           <span className="text-gray-700 line-clamp-1">{question.title}</span>
         </nav>
@@ -180,8 +184,8 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
             ))}
           </div>
           <div className="flex items-center gap-4 text-xs text-gray-400 border-t border-gray-100 pt-4">
-            <span>💬 {question.answerCount} 回答</span>
-            <span>👁 {question.viewCount} 浏览</span>
+            <span>💬 {question.answerCount} {t("community.question.answers")}</span>
+            <span>👁 {question.viewCount} {t("community.views")}</span>
             <span>{formatDate(question.createdAt)}</span>
           </div>
         </div>
@@ -189,12 +193,12 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
         {/* Answers */}
         <div className="mb-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">
-            {question.answers?.length || 0} 个回答
+            {question.answers?.length || 0}{t("community.question.answersCount")}
           </h2>
           {!question.answers || question.answers.length === 0 ? (
             <div className="text-center py-12 text-gray-400 bg-white rounded-xl shadow-sm">
               <div className="text-4xl mb-3">💬</div>
-              <div>暂无回答，来第一个回答吧！</div>
+              <div>{t("community.question.noAnswers")}</div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -209,6 +213,7 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
                     questionId={id}
                     onAccept={handleAccept}
                     onVote={handleVote}
+                    t={t}
                   />
                 ))}
             </div>
@@ -217,18 +222,18 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
 
         {/* Answer form */}
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="font-bold text-gray-900 mb-4">发表回答</h3>
+          <h3 className="font-bold text-gray-900 mb-4">{t("community.question.writeAnswer")}</h3>
           {user ? (
             <>
               {submitMsg && (
-                <div className={`mb-4 px-4 py-2.5 rounded-lg text-sm ${submitMsg.includes("失败") ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}>
+                <div className={`mb-4 px-4 py-2.5 rounded-lg text-sm ${submitMsg === t("community.question.answerSubmitFailed") ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}>
                   {submitMsg}
                 </div>
               )}
               <textarea
                 value={answerText}
                 onChange={(e) => setAnswerText(e.target.value)}
-                placeholder="分享你的知识和经验..."
+                placeholder={t("community.question.answerPlaceholder")}
                 rows={6}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] mb-4"
               />
@@ -238,13 +243,13 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
                   disabled={!answerText.trim() || submitting}
                   className="px-6 py-2.5 bg-[#0066FF] text-white rounded-full text-sm font-semibold disabled:opacity-40 hover:bg-[#0052CC] transition-colors"
                 >
-                  {submitting ? "提交中..." : "提交回答"}
+                  {submitting ? t("community.question.submitting") : t("community.question.submitAnswer")}
                 </button>
               </div>
             </>
           ) : (
             <div className="text-center py-6 text-sm text-blue-700 bg-blue-50 rounded-xl">
-              <Link href="/login" className="font-semibold hover:underline">登录</Link> 后才能发表回答
+              <Link href="/login" className="font-semibold hover:underline">{t("community.loginRequired")}</Link>{t("community.question.loginToAnswer")}
             </div>
           )}
         </div>

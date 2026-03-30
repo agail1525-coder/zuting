@@ -3,24 +3,13 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { fetchLeaderboard, type LeaderboardEntry } from "@/lib/api";
 
-const TYPE_OPTIONS = [
-  { key: "guide", label: "游记达人" },
-  { key: "review", label: "评价达人" },
-  { key: "pilgrim", label: "朝圣达人" },
-];
-
-const PERIOD_OPTIONS = [
-  { key: "week", label: "本周" },
-  { key: "month", label: "本月" },
-  { key: "all", label: "全部" },
-];
-
-const TYPE_LABELS: Record<string, { unit: string; icon: string; color: string }> = {
-  guide: { unit: "篇游记", icon: "📖", color: "text-blue-600" },
-  review: { unit: "条评价", icon: "⭐", color: "text-yellow-600" },
-  pilgrim: { unit: "个圣地", icon: "🕌", color: "text-purple-600" },
+const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
+  guide: { icon: "📖", color: "text-blue-600" },
+  review: { icon: "⭐", color: "text-yellow-600" },
+  pilgrim: { icon: "🕌", color: "text-purple-600" },
 };
 
 function PodiumCard({ entry, meta }: { entry: LeaderboardEntry; meta: { unit: string; icon: string; color: string } }) {
@@ -49,22 +38,42 @@ function PodiumCard({ entry, meta }: { entry: LeaderboardEntry; meta: { unit: st
 }
 
 export default function LeaderboardPage() {
+  const { t } = useTranslation();
   const [type, setType] = useState("guide");
   const [period, setPeriod] = useState("month");
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const TYPE_OPTIONS = [
+    { key: "guide", label: t("community.leaderboard.typeGuide") },
+    { key: "review", label: t("community.leaderboard.typeReview") },
+    { key: "pilgrim", label: t("community.leaderboard.typePilgrim") },
+  ];
+
+  const PERIOD_OPTIONS = [
+    { key: "week", label: t("community.leaderboard.periodWeek") },
+    { key: "month", label: t("community.leaderboard.periodMonth") },
+    { key: "all", label: t("community.leaderboard.periodAll") },
+  ];
+
+  const UNIT_LABELS: Record<string, string> = {
+    guide: t("community.leaderboard.unitGuides"),
+    review: t("community.leaderboard.unitReviews"),
+    pilgrim: t("community.leaderboard.unitSites"),
+  };
+
   useEffect(() => {
     setLoading(true);
     setError(null);
     fetchLeaderboard(type, period)
       .then((res) => setEntries(Array.isArray(res) ? res : []))
-      .catch(() => setError("加载失败，请稍后再试"))
+      .catch(() => setError(t("community.loadError")))
       .finally(() => setLoading(false));
   }, [type, period]);
 
-  const meta = TYPE_LABELS[type] || TYPE_LABELS.guide;
+  const icons = TYPE_ICONS[type] || TYPE_ICONS.guide;
+  const meta = { unit: UNIT_LABELS[type] || UNIT_LABELS.guide, ...icons };
   const top3 = entries.filter((e) => e.rank <= 3);
   const rest = entries.filter((e) => e.rank > 3);
 
@@ -73,8 +82,8 @@ export default function LeaderboardPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">社区排行榜</h1>
-          <p className="text-gray-500 text-sm">最活跃的朝圣者们</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">{t("community.leaderboard.title")}</h1>
+          <p className="text-gray-500 text-sm">{t("community.leaderboard.subtitle")}</p>
         </div>
 
         {/* Type tabs */}
@@ -108,13 +117,13 @@ export default function LeaderboardPage() {
         </div>
 
         {loading ? (
-          <div className="text-center py-20 text-gray-400">加载中...</div>
+          <div className="text-center py-20 text-gray-400">{t("community.loading")}</div>
         ) : error ? (
           <div className="text-center py-20 text-red-400">{error}</div>
         ) : entries.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <div className="text-5xl mb-4">🏆</div>
-            <div>暂无排行数据</div>
+            <div>{t("community.emptyLeaderboard")}</div>
           </div>
         ) : (
           <>

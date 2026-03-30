@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchMyPriceAlerts, createPriceAlert, deletePriceAlert, fetchRoutes, type PriceAlertItem, type Route } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
 interface EntityOption { type: string; id: string; name: string; currentPrice: number }
 
@@ -15,6 +16,7 @@ function formatDate(iso: string): string {
 }
 
 export default function PriceAlertsPage() {
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState<PriceAlertItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function PriceAlertsPage() {
       setAlerts(res.items || []);
     } catch {
       setAlerts([]);
-      setError("请登录后查看您的价格提醒");
+      setError(t("prices.alerts.loginRequired"));
     } finally {
       setLoading(false);
     }
@@ -71,7 +73,7 @@ export default function PriceAlertsPage() {
     if (!formEntity) return;
     const targetCents = Math.round(parseFloat(targetPriceStr) * 100);
     if (isNaN(targetCents) || targetCents <= 0) {
-      setFormError("请输入有效的目标价格");
+      setFormError(t("prices.alerts.invalidPrice"));
       return;
     }
     setSubmitting(true);
@@ -88,7 +90,7 @@ export default function PriceAlertsPage() {
       setShowForm(false);
       setTargetPriceStr("");
     } catch {
-      setFormError("创建失败，请登录后重试");
+      setFormError(t("prices.alerts.createFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -113,11 +115,11 @@ export default function PriceAlertsPage() {
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          返回价格工具
+          {t("prices.backToPrices")}
         </Link>
 
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">价格提醒</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("prices.alerts.title")}</h1>
           <button
             onClick={() => setShowForm(!showForm)}
             className="flex items-center gap-2 px-4 py-2 bg-[#0066FF] text-white rounded-full text-sm font-medium hover:bg-[#0052CC] transition-colors"
@@ -125,7 +127,7 @@ export default function PriceAlertsPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            创建提醒
+            {t("prices.alerts.createAlert")}
           </button>
         </div>
 
@@ -138,14 +140,14 @@ export default function PriceAlertsPage() {
         {/* Create form */}
         {showForm && (
           <div className="bg-white rounded-xl border border-[#0066FF]/20 p-5 mb-6 shadow-sm">
-            <h2 className="font-semibold text-gray-800 mb-4">新建价格提醒</h2>
+            <h2 className="font-semibold text-gray-800 mb-4">{t("prices.alerts.newAlert")}</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-600 mb-1.5">选择路线</label>
+                <label className="block text-sm text-gray-600 mb-1.5">{t("prices.alerts.selectRoute")}</label>
                 {loadingRoutes ? (
-                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">加载路线中...</div>
+                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">{t("prices.alerts.loadingRoutes")}</div>
                 ) : entityOptions.length === 0 ? (
-                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">暂无可用路线</div>
+                  <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400">{t("prices.alerts.noRoutes")}</div>
                 ) : (
                 <select
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
@@ -157,7 +159,7 @@ export default function PriceAlertsPage() {
                 >
                   {entityOptions.map(opt => (
                     <option key={opt.id} value={opt.id}>
-                      {opt.name} (当前: {formatPrice(opt.currentPrice)})
+                      {opt.name} ({t("prices.alerts.currentPriceLabel")}: {formatPrice(opt.currentPrice)})
                     </option>
                   ))}
                 </select>
@@ -165,10 +167,10 @@ export default function PriceAlertsPage() {
               </div>
               <div>
                 <label className="block text-sm text-gray-600 mb-1.5">
-                  目标价格 (元)
+                  {t("prices.alerts.targetPrice")}
                   {formEntity && (
                   <span className="text-gray-400 ml-2 text-xs">
-                    当前价: {formatPrice(formEntity.currentPrice)}
+                    {t("prices.alerts.currentPriceLabel")}: {formatPrice(formEntity.currentPrice)}
                   </span>
                   )}
                 </label>
@@ -191,13 +193,13 @@ export default function PriceAlertsPage() {
                   disabled={submitting}
                   className="flex-1 py-2 bg-[#0066FF] text-white rounded-lg text-sm font-medium hover:bg-[#0052CC] transition-colors disabled:opacity-50"
                 >
-                  {submitting ? "创建中..." : "确认创建"}
+                  {submitting ? t("prices.alerts.creating") : t("prices.alerts.confirm")}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setFormError(null); }}
                   className="px-5 py-2 border border-gray-300 text-gray-600 rounded-lg text-sm hover:bg-gray-50 transition-colors"
                 >
-                  取消
+                  {t("prices.alerts.cancel")}
                 </button>
               </div>
             </div>
@@ -205,12 +207,12 @@ export default function PriceAlertsPage() {
         )}
 
         {loading ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">加载中...</div>
+          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">{t("prices.alerts.loading")}</div>
         ) : alerts.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <div className="text-4xl mb-3">🔔</div>
-            <p className="text-gray-500 text-sm">暂无价格提醒</p>
-            <p className="text-gray-400 text-xs mt-1">点击「创建提醒」，当价格降至目标价时立即通知您</p>
+            <p className="text-gray-500 text-sm">{t("prices.alerts.empty")}</p>
+            <p className="text-gray-400 text-xs mt-1">{t("prices.alerts.emptyHint")}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -219,7 +221,7 @@ export default function PriceAlertsPage() {
               <div>
                 <h2 className="text-sm font-semibold text-green-700 mb-2 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  已触发 ({triggeredAlerts.length})
+                  {t("prices.alerts.triggered")} ({triggeredAlerts.length})
                 </h2>
                 <div className="space-y-3">
                   {triggeredAlerts.map(alert => (
@@ -233,7 +235,7 @@ export default function PriceAlertsPage() {
               <div>
                 <h2 className="text-sm font-semibold text-gray-600 mb-2 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-blue-400" />
-                  等待降价 ({activeAlerts.length})
+                  {t("prices.alerts.waiting")} ({activeAlerts.length})
                 </h2>
                 <div className="space-y-3">
                   {activeAlerts.map(alert => (
@@ -250,6 +252,7 @@ export default function PriceAlertsPage() {
 }
 
 function AlertCard({ alert, onDelete }: { alert: PriceAlertItem; onDelete: (id: string) => void }) {
+  const { t } = useTranslation();
   const isTriggered = alert.isTriggered;
   const diff = alert.currentPrice - alert.targetPrice;
   const pct = Math.round((diff / alert.currentPrice) * 100);
@@ -265,31 +268,31 @@ function AlertCard({ alert, onDelete }: { alert: PriceAlertItem; onDelete: (id: 
         <div className="font-medium text-gray-900 truncate">{alert.entityName}</div>
         <div className="flex items-center gap-3 mt-1.5 flex-wrap text-sm">
           <span className="text-gray-500">
-            目标价: <strong className="text-gray-800">{formatPrice(alert.targetPrice)}</strong>
+            {t("prices.alerts.targetPriceLabel")}: <strong className="text-gray-800">{formatPrice(alert.targetPrice)}</strong>
           </span>
           <span className="text-gray-400">·</span>
           <span className="text-gray-500">
-            当前: <strong className={isTriggered ? "text-green-700" : "text-gray-800"}>
+            {t("prices.alerts.currentLabel")}: <strong className={isTriggered ? "text-green-700" : "text-gray-800"}>
               {formatPrice(alert.currentPrice)}
             </strong>
           </span>
           {!isTriggered && diff > 0 && (
             <span className="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
-              还差 {formatPrice(diff)} ({pct}%)
+              {t("prices.alerts.remaining").replace("{price}", formatPrice(diff)).replace("{pct}", String(pct))}
             </span>
           )}
           {isTriggered && (
             <span className="text-xs text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
-              已达目标价
+              {t("prices.alerts.reached")}
             </span>
           )}
         </div>
-        <div className="text-xs text-gray-400 mt-1">创建于 {formatDate(alert.createdAt)}</div>
+        <div className="text-xs text-gray-400 mt-1">{t("prices.alerts.createdAt").replace("{date}", formatDate(alert.createdAt))}</div>
       </div>
       <button
         onClick={() => onDelete(alert.id)}
         className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 shrink-0"
-        aria-label="删除提醒"
+        aria-label={t("prices.alerts.deleteLabel")}
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
