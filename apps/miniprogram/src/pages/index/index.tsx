@@ -87,9 +87,9 @@ export default function IndexPage() {
         fetchHolySites(),
         fetchTemples(),
         fetchPatriarchs(),
-        fetchPopularItems(undefined, 8).catch(() => [] as RecommendedItem[]),
-        fetchTrending().catch(() => ({ hotGuides: [] as GuideItem[], hotQuestions: [] })),
-        fetchPromotions().catch(() => ({ data: [] as PromotionItem[], total: 0, page: 1, limit: 20 })),
+        fetchPopularItems(undefined, 8).catch((err) => { console.error('Load popular failed:', err); return [] as RecommendedItem[] }),
+        fetchTrending().catch((err) => { console.error('Load trending failed:', err); return { hotGuides: [] as GuideItem[], hotQuestions: [] } }),
+        fetchPromotions().catch((err) => { console.error('Load promotions failed:', err); return { data: [] as PromotionItem[], total: 0, page: 1, limit: 20 } }),
       ])
       setReligions(religionList)
       setFeaturedRoutes(routeList)

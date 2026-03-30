@@ -39,7 +39,7 @@ export default function MapScreen() {
     ]).then(([s, r]) => {
       setSites(s);
       setReligions(r);
-    }).catch(() => {}).finally(() => setLoading(false));
+    }).catch((err) => { console.error('Load map data failed:', err); }).finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {

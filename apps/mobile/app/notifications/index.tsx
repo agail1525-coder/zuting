@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { api, Notification } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
@@ -34,14 +34,14 @@ export default function NotificationsScreen() {
     try {
       await api.markNotificationRead(id);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-    } catch {}
+    } catch { Alert.alert('提示', '操作失败，请重试'); }
   };
 
   const markAllRead = async () => {
     try {
       await api.markAllNotificationsRead();
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    } catch {}
+    } catch { Alert.alert('提示', '操作失败，请重试'); }
   };
 
   const hasUnread = notifications.some(n => !n.read);

@@ -26,7 +26,7 @@ export default function SaveButton({ entityType, entityId, size = 'normal' }: Sa
         setItemId(status.itemId)
         setCollectionId(status.collectionId)
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Check saved failed:', err) })
   }, [entityType, entityId])
 
   const handleToggle = useCallback(async () => {

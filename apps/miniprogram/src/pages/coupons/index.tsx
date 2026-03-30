@@ -116,9 +116,9 @@ export default function CouponsPage() {
     setLoading(true)
     try {
       const [availRes, mineRes, usedRes] = await Promise.all([
-        fetchAvailableCoupons(1).catch(() => ({ data: [], total: 0, page: 1, limit: 20 })),
-        fetchMyCoupons('ACTIVE').catch(() => ({ data: [], total: 0, page: 1, limit: 20 })),
-        fetchMyCoupons('USED').catch(() => ({ data: [], total: 0, page: 1, limit: 20 })),
+        fetchAvailableCoupons(1).catch((err) => { console.error('Load coupons failed:', err); return { data: [], total: 0, page: 1, limit: 20 } }),
+        fetchMyCoupons('ACTIVE').catch((err) => { console.error('Load coupons failed:', err); return { data: [], total: 0, page: 1, limit: 20 } }),
+        fetchMyCoupons('USED').catch((err) => { console.error('Load coupons failed:', err); return { data: [], total: 0, page: 1, limit: 20 } }),
       ])
       setAvailableCoupons(availRes.data || [])
       setMyCoupons(mineRes.data || [])

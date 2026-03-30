@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
-import { Route, fetchRouteBySlug, createTrip, createOrder, payOrder } from '../../lib/api'
+import { Route, fetchRouteBySlug, createTrip, createOrder, payOrder, verifyCoupon } from '../../lib/api'
 import { isLoggedIn } from '../../lib/auth'
 import './index.scss'
 
@@ -39,7 +39,9 @@ export default function CheckoutPage() {
     }
     fetchRouteBySlug(slug)
       .then(setRoute)
-      .catch(() => {})
+      .catch(() => {
+        Taro.showToast({ title: '加载路线失败', icon: 'none' })
+      })
       .finally(() => setLoading(false))
   }, [slug])
 
@@ -60,26 +62,33 @@ export default function CheckoutPage() {
   const subtotal = unitPrice * personCount
   const finalAmount = Math.max(0, subtotal - couponDiscount)
 
-  const handleApplyCoupon = () => {
+  const handleApplyCoupon = async () => {
     const code = couponCode.trim().toUpperCase()
     if (!code) {
       Taro.showToast({ title: '请输入优惠码', icon: 'none' })
       return
     }
-    // Simulate coupon validation: codes starting with "JOINUS" give 100 off
-    if (code.startsWith('JOINUS')) {
-      setCouponDiscount(100)
-      setCouponApplied(true)
-      Taro.showToast({ title: '优惠码已应用 -¥100', icon: 'success' })
-    } else if (code.startsWith('ZT')) {
-      const pct = 0.1
-      setCouponDiscount(Math.floor(subtotal * pct))
-      setCouponApplied(true)
-      Taro.showToast({ title: `九折优惠已应用`, icon: 'success' })
-    } else {
-      Taro.showToast({ title: '无效优惠码', icon: 'none' })
+    try {
+      Taro.showLoading({ title: '验证中...' })
+      const result = await verifyCoupon(code, Math.round(subtotal * 100))
+      Taro.hideLoading()
+      if (result.valid) {
+        const discount = result.discountType === 'PERCENTAGE'
+          ? Math.floor(subtotal * result.discount / 100)
+          : result.discount / 100
+        setCouponDiscount(discount)
+        setCouponApplied(true)
+        Taro.showToast({ title: `优惠码已应用 -¥${discount}`, icon: 'success' })
+      } else {
+        setCouponApplied(false)
+        setCouponDiscount(0)
+        Taro.showToast({ title: result.message || '无效优惠码', icon: 'none' })
+      }
+    } catch {
+      Taro.hideLoading()
       setCouponApplied(false)
       setCouponDiscount(0)
+      Taro.showToast({ title: '优惠码验证失败，请重试', icon: 'none' })
     }
   }
 
@@ -130,18 +139,12 @@ export default function CheckoutPage() {
         note: note.trim() || undefined,
       })
 
-      // Simulate WeChat Pay flow
-      if (payMethod === 'WECHAT_PAY') {
-        Taro.showLoading({ title: '正在唤起支付...' })
-        await new Promise(r => setTimeout(r, 1500))
-        Taro.hideLoading()
-        // Simulate success
-        await payOrder(order.id, payMethod).catch(() => {})
-      } else {
-        await payOrder(order.id, payMethod).catch(() => {})
-      }
+      // Call payment API
+      Taro.showLoading({ title: '正在处理支付...' })
+      await payOrder(order.id, payMethod)
+      Taro.hideLoading()
 
-      Taro.showToast({ title: '支付成功 🎉', icon: 'success' })
+      Taro.showToast({ title: '支付成功', icon: 'success' })
       setTimeout(() => {
         Taro.navigateTo({ url: '/pages/trips/index' })
       }, 1500)

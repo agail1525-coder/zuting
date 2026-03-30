@@ -52,7 +52,7 @@ export default function JournalCreateScreen() {
             setTrips(items.map((t) => ({ id: t.id, title: t.title })));
           }
         })
-        .catch(() => {})
+        .catch((err) => { console.error('Load trips failed:', err); })
         .finally(() => {
           if (!cancelled) setTripsLoading(false);
         });

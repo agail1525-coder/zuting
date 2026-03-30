@@ -71,14 +71,17 @@ export class AnalyticsService {
       this.prisma.order.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
+        take: 10000,
       }),
       this.prisma.trip.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
+        take: 10000,
       }),
       this.prisma.user.findMany({
         where: { createdAt: { gte: startDate } },
         select: { createdAt: true },
+        take: 10000,
       }),
     ]);
 

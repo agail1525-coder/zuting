@@ -66,7 +66,7 @@ export default function SearchPage() {
   useEffect(() => {
     fetchHotKeywords()
       .then(setHotKeywords)
-      .catch(() => {})
+      .catch(() => { Taro.showToast({ title: '搜索失败，请重试', icon: 'none' }) })
   }, [])
 
   const doSearch = useCallback(async (q: string, type: SearchType) => {

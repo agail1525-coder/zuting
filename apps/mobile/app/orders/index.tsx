@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { api, OrderDetail } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
@@ -71,7 +71,7 @@ export default function OrdersScreen() {
               try {
                 await api.cancelOrder(item.id);
                 loadOrders();
-              } catch {}
+              } catch { Alert.alert('提示', '取消订单失败，请重试'); }
             }}
           >
             <Text style={s.cancelBtnText}>取消订单</Text>

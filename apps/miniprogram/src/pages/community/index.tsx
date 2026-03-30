@@ -33,7 +33,8 @@ export default function CommunityPage() {
       setLoadingGuides(true)
       const res = await fetchGuides({ sort: 'hot', page: 1 })
       setGuides(Array.isArray(res?.items) ? res.items : [])
-    } catch {
+    } catch (err) {
+      console.error('Load community data failed:', err)
       setGuides([])
     } finally {
       setLoadingGuides(false)
@@ -45,7 +46,8 @@ export default function CommunityPage() {
       setLoadingQuestions(true)
       const res = await fetchQuestions({ sort: 'latest', page: 1 })
       setQuestions(Array.isArray(res?.items) ? res.items : [])
-    } catch {
+    } catch (err) {
+      console.error('Load community data failed:', err)
       setQuestions([])
     } finally {
       setLoadingQuestions(false)
@@ -57,7 +59,8 @@ export default function CommunityPage() {
       setLoadingLeaderboard(true)
       const data = await fetchLeaderboard('guides', 'month')
       setLeaderboard(Array.isArray(data) ? data : [])
-    } catch {
+    } catch (err) {
+      console.error('Load community data failed:', err)
       setLeaderboard([])
     } finally {
       setLoadingLeaderboard(false)

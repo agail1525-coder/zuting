@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -50,9 +51,7 @@ export default function QuestionDetailScreen() {
         prev ? { ...prev, answers: [...(prev.answers ?? []), newAnswer], answerCount: (prev.answerCount ?? 0) + 1 } : prev
       );
       setAnswerText('');
-    } catch {
-      // silent
-    } finally {
+    } catch { Alert.alert('提示', '操作失败'); } finally {
       setSubmitting(false);
     }
   };
@@ -71,9 +70,7 @@ export default function QuestionDetailScreen() {
           ),
         };
       });
-    } catch {
-      // silent
-    }
+    } catch { Alert.alert('提示', '操作失败'); }
   };
 
   if (loading) {

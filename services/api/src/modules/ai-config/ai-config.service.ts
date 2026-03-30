@@ -17,6 +17,7 @@ export class AiConfigService {
   async getAll() {
     return this.prisma.aiConfig.findMany({
       orderBy: [{ category: 'asc' }, { key: 'asc' }],
+      take: 500,
     });
   }
 
@@ -61,6 +62,7 @@ export class AiConfigService {
     // Batch fetch from DB (cache misses are fine for batch)
     const configs = await this.prisma.aiConfig.findMany({
       where: { key: { in: keys } },
+      take: 500,
     });
     for (const c of configs) {
       result[c.key] = c.value;

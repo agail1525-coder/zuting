@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import {
   AppNotification, fetchNotifications,
   markNotificationRead, markAllNotificationsRead
@@ -41,14 +42,14 @@ export default function NotificationsPage() {
     try {
       await markNotificationRead(id)
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-    } catch {}
+    } catch { Taro.showToast({ title: '操作失败', icon: 'none' }) }
   }
 
   const handleMarkAllRead = async () => {
     try {
       await markAllNotificationsRead()
       setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-    } catch {}
+    } catch { Taro.showToast({ title: '操作失败', icon: 'none' }) }
   }
 
   if (!isLoggedIn()) {

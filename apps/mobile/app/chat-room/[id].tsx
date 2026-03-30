@@ -54,7 +54,7 @@ export default function ChatRoomScreen() {
   useEffect(() => {
     loadMessages();
     if (id) {
-      markChatRead(id).catch(() => {});
+      markChatRead(id).catch((err) => { console.error('Mark read failed:', err); });
     }
   }, [id, loadMessages]);
 

@@ -85,7 +85,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
         setStats(statsData)
         setReviews(reviewsData.data)
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Load reviews failed:', err) })
       .finally(() => setLoading(false))
   }
 

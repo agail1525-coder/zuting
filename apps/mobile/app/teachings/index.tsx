@@ -14,7 +14,7 @@ export default function TeachingsListScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => { api.getReligions().then(setReligions).catch(() => {}); }, []);
+  useEffect(() => { api.getReligions().then(setReligions).catch((err) => { console.error('Load religions failed:', err); }); }, []);
 
   const fetchData = useCallback(async (religionId?: string) => {
     try {

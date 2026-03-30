@@ -849,6 +849,17 @@ export function fetchMyCoupons(status?: string) {
   return request<UserCouponListResponse>('/coupons/my/claimed', status ? { status } : undefined)
 }
 
+export interface VerifyCouponResult {
+  valid: boolean
+  discount: number
+  discountType: 'FIXED' | 'PERCENTAGE'
+  message?: string
+}
+
+export function verifyCoupon(code: string, orderAmount: number) {
+  return postRequest<VerifyCouponResult>('/coupons/verify', { code, orderAmount })
+}
+
 export function fetchPromotions(type?: string) {
   return request<PromotionListResponse>('/promotions', type ? { type } : undefined)
 }

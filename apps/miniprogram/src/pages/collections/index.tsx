@@ -74,7 +74,7 @@ export default function CollectionsPage() {
         .catch(() => {
           Taro.showToast({ title: '删除失败', icon: 'none' })
         })
-    }).catch(() => {})
+    }).catch(() => { Taro.showToast({ title: '删除失败，请重试', icon: 'none' }) })
   }, [])
 
   if (!getAccessToken()) {

@@ -39,7 +39,7 @@ export default function ChatRoomPage() {
   useEffect(() => {
     loadMessages()
     if (roomId) {
-      markChatRead(roomId).catch(() => {})
+      markChatRead(roomId).catch((err) => { console.error('Mark read failed:', err) })
     }
   }, [roomId])
 

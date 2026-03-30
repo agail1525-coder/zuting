@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -68,9 +69,7 @@ export default function GuideDetailScreen() {
         setLikeCount(c => c + 1);
       }
       setLiked(prev => !prev);
-    } catch {
-      // silent
-    }
+    } catch { Alert.alert('提示', '操作失败'); }
   };
 
   const handleComment = async () => {
@@ -80,9 +79,7 @@ export default function GuideDetailScreen() {
       const newComment = await addGuideComment(id, commentText.trim());
       setComments(prev => [newComment, ...prev]);
       setCommentText('');
-    } catch {
-      // silent
-    } finally {
+    } catch { Alert.alert('提示', '操作失败'); } finally {
       setSubmitting(false);
     }
   };

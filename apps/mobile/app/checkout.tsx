@@ -61,7 +61,7 @@ export default function CheckoutScreen() {
         setTrip(tripData);
         setPromotions(promoData.items ?? []);
       })
-      .catch(() => {})
+      .catch((err) => { console.error('Load promotions failed:', err); })
       .finally(() => setLoading(false));
   }, [tripId]);
 

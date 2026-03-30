@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -59,9 +60,7 @@ export default function CouponsScreen() {
         const res = await fetchMyCoupons('USED');
         setUsedCoupons(res.items ?? []);
       }
-    } catch {
-      // silent
-    } finally {
+    } catch { Alert.alert('提示', '加载优惠券失败'); } finally {
       setLoading(false);
     }
   }, []);
@@ -77,9 +76,7 @@ export default function CouponsScreen() {
       // refresh both tabs
       load('available');
       load('mine');
-    } catch (err) {
-      // Could show a toast here
-    } finally {
+    } catch (err) { Alert.alert('提示', '领取失败，请重试'); } finally {
       setClaimingId(null);
     }
   };

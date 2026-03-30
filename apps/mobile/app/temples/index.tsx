@@ -15,7 +15,7 @@ export default function TemplesListScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    api.getReligions().then(setReligions).catch(() => {});
+    api.getReligions().then(setReligions).catch((err) => { console.error('Load religions failed:', err); });
   }, []);
 
   const fetchData = useCallback(async (religionId?: string) => {

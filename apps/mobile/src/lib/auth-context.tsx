@@ -107,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await fetch(`${API_URL}/auth/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-      }).catch(() => {});
+      }).catch((err) => { console.error('Logout failed:', err); });
     }
     await clearTokens();
     setUser(null);

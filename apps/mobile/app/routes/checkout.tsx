@@ -24,7 +24,7 @@ export default function RouteCheckoutScreen() {
     if (!slug) return;
     api.getRouteBySlug(slug)
       .then(setRoute)
-      .catch(() => {})
+      .catch(() => { Alert.alert('提示', '加载路线信息失败'); })
       .finally(() => setLoading(false));
   }, [slug]);
 
