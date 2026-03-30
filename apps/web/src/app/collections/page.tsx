@@ -12,6 +12,7 @@ import {
   type Collection,
 } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const GRADIENT_PLACEHOLDERS = [
   "from-blue-500 to-indigo-600",
@@ -356,6 +357,7 @@ export default function CollectionsPage() {
           onCreate={handleCreate}
         />
       )}
+      <MobileNav />
     </div>
   );
 }

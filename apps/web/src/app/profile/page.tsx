@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { updateProfile } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 export default function ProfilePage() {
   const { user, loading, logout, refreshUser } = useAuth();
@@ -106,8 +107,16 @@ export default function ProfilePage() {
     );
   }
 
+  const EXTRA_LINKS = [
+    { icon: "🎫", label: t("nav.coupons") || "优惠券", href: "/coupons", desc: "查看可用优惠" },
+    { icon: "📦", label: t("profile.myOrders") || "我的订单", href: "/orders", desc: "订单管理" },
+    { icon: "❤️", label: t("profile.myCollections") || "我的收藏", href: "/collections", desc: "收藏的圣地路线" },
+    { icon: "💬", label: t("profile.messages") || "消息", href: "/messages", desc: "私信与通知" },
+  ];
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-2xl mx-auto px-4 py-8">
       {/* Toast */}
       {toast && (
         <div
@@ -242,6 +251,44 @@ export default function ProfilePage() {
         ))}
       </div>
 
+      {/* Quick Links (对标Trip.com/Agoda) */}
+      {user && (
+        <div className="grid grid-cols-2 gap-3 mb-8">
+          {EXTRA_LINKS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-xl bg-white shadow-sm border border-gray-100 p-4 hover:shadow-md transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-lg">{item.icon}</span>
+                <div>
+                  <h3 className="text-gray-900 font-medium text-sm">{item.label}</h3>
+                  <p className="text-gray-400 text-xs">{item.desc}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* Membership CTA */}
+      {user && (
+        <Link href="/membership" className="block mb-8 group">
+          <div className="bg-gradient-to-r from-[#D4A855] to-amber-500 rounded-2xl p-5 text-white relative overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative flex items-center justify-between">
+              <div>
+                <p className="text-white/80 text-xs">会员中心</p>
+                <p className="text-lg font-bold mt-1 group-hover:translate-x-1 transition-transform">查看会员权益 →</p>
+                <p className="text-white/60 text-xs mt-1">签到赚积分 · 专属折扣 · 积分商城</p>
+              </div>
+              <span className="text-4xl">👑</span>
+            </div>
+          </div>
+        </Link>
+      )}
+
       {/* Auth Section */}
       {user ? (
         <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6 text-center">
@@ -277,6 +324,8 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
+      </div>
+      <MobileNav />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 import {
   fetchSearch,
   fetchSearchSuggestions,
@@ -699,6 +700,7 @@ export default function SearchPage() {
           )}
         </>
       )}
+      <MobileNav />
     </div>
   );
 }

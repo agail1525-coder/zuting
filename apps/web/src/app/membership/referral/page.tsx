@@ -6,6 +6,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import Link from "next/link";
+import MobileNav from "@/components/MobileNav";
 import {
   fetchMyInviteCode,
   fetchReferralStats,
@@ -123,10 +125,11 @@ export default function ReferralPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t("referral.title")}</h1>
+        <h1 className="text-3xl font-serif font-bold text-[#0066FF]">{t("referral.title")}</h1>
         <p className="text-gray-500 text-sm mt-1">{t("referral.subtitle")}</p>
       </div>
 
@@ -280,6 +283,37 @@ export default function ReferralPage() {
           </div>
         )}
       </div>
+
+      {/* How it works (对标AmEx/Priceline) */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <h2 className="text-base font-semibold text-gray-900 mb-4">推荐奖励规则</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="text-center p-4 rounded-xl bg-blue-50/50">
+            <span className="text-2xl block mb-2">📤</span>
+            <p className="text-sm font-medium text-gray-900">分享邀请码</p>
+            <p className="text-xs text-gray-500 mt-1">好友注册时输入你的邀请码</p>
+          </div>
+          <div className="text-center p-4 rounded-xl bg-green-50/50">
+            <span className="text-2xl block mb-2">🛒</span>
+            <p className="text-sm font-medium text-gray-900">好友下单</p>
+            <p className="text-xs text-gray-500 mt-1">好友预订行程并完成支付</p>
+          </div>
+          <div className="text-center p-4 rounded-xl bg-amber-50/50">
+            <span className="text-2xl block mb-2">💰</span>
+            <p className="text-sm font-medium text-gray-900">获得佣金</p>
+            <p className="text-xs text-gray-500 mt-1">一级10%，二级5%，自动到账</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="text-center pt-4">
+        <Link href="/membership" className="text-sm text-[#0066FF] hover:underline">
+          ← 返回会员中心
+        </Link>
+      </div>
+      </div>
+      <MobileNav />
     </div>
   );
 }
