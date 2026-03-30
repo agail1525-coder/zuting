@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import ShareButton from "@/components/ShareButton";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import OptimizedImage from "@/components/OptimizedImage";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -135,7 +136,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
             {/* Hero Cover */}
             {guide.coverImage && (
               <div className="aspect-video rounded-2xl overflow-hidden mb-8 shadow-md">
-                <img src={guide.coverImage} alt={guide.title} className="w-full h-full object-cover" />
+                <OptimizedImage src={guide.coverImage} alt={guide.title} width={800} height={450} className="w-full h-full object-cover" />
               </div>
             )}
 
@@ -146,7 +147,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
               <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-blue-600 shrink-0">
                 {guide.user?.avatar ? (
-                  <img src={guide.user.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                  <OptimizedImage src={guide.user.avatar} alt="" width={48} height={48} className="w-full h-full rounded-full object-cover" />
                 ) : (
                   guide.user?.nickname?.charAt(0) || "?"
                 )}
@@ -265,7 +266,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
                       <Link key={r.id} href={`/community/guides/${r.id}`} className="flex gap-3 group">
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                           {r.coverImage ? (
-                            <img src={r.coverImage} alt="" className="w-full h-full object-cover" />
+                            <OptimizedImage src={r.coverImage} alt="" width={64} height={64} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-xl">🕌</div>
                           )}

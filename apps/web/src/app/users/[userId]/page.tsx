@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { fetchUserProfile, fetchUserGuides, type UserProfile, type GuideItem } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const PILGRIM_LEVELS: Record<number, { label: string; color: string }> = {
   1: { label: "初级朝圣者", color: "bg-gray-100 text-gray-600" },
@@ -29,7 +30,7 @@ function GuideCard({ guide }: { guide: GuideItem }) {
     <Link href={`/community/guides/${guide.id}`} className="flex gap-3 group bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
       <div className="w-20 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
         {guide.coverImage ? (
-          <img src={guide.coverImage} alt="" className="w-full h-full object-cover" />
+          <OptimizedImage src={guide.coverImage} alt="" width={400} height={300} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-2xl">📖</div>
         )}
@@ -112,7 +113,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
             {/* Avatar */}
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-3xl font-bold text-blue-600 shrink-0 shadow-md">
               {profile.avatar ? (
-                <img src={profile.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                <OptimizedImage src={profile.avatar} alt="" width={80} height={80} className="w-full h-full rounded-full object-cover" />
               ) : (
                 (profile.displayName || profile.nickname || "?").charAt(0)
               )}

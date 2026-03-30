@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import ShareButton from "@/components/ShareButton";
+import OptimizedImage from "@/components/OptimizedImage";
 import { fetchMerchantDetail, type Merchant } from "@/lib/api";
 
 function StarRating({ rating }: { rating: number }) {
@@ -87,7 +88,7 @@ export default function MerchantDetailPage() {
           <div className="flex flex-col sm:flex-row items-start gap-6 mt-4">
             <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden shrink-0">
               {merchant.logo ? (
-                <img src={merchant.logo} alt={merchant.name} className="w-full h-full object-cover" />
+                <OptimizedImage src={merchant.logo} alt={merchant.name} width={120} height={120} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-4xl">
                   {merchant.type === "TEMPLE" ? "🏛️" : merchant.type === "GUIDE" ? "🧭" : merchant.type === "ACCOMMODATION" ? "🏨" : "🚐"}

@@ -15,6 +15,7 @@ import {
   type PhotoItem,
   type LeaderboardEntry,
 } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 type Tab = "guides" | "questions" | "photos" | "leaderboard";
 
@@ -24,9 +25,11 @@ function GuideCard({ guide }: { guide: GuideItem }) {
     <Link href={`/community/guides/${guide.id}`} className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
       <div className="aspect-video bg-gray-100 overflow-hidden">
         {guide.coverImage ? (
-          <img
+          <OptimizedImage
             src={guide.coverImage}
             alt={guide.title}
+            width={400}
+            height={300}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
@@ -94,7 +97,7 @@ function PhotoGrid({ photos }: { photos: PhotoItem[] }) {
             className="break-inside-avoid cursor-pointer rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             onClick={() => setExpanded(photo)}
           >
-            <img src={photo.url} alt="" className="w-full object-cover" />
+            <OptimizedImage src={photo.url} alt="" width={400} height={300} className="w-full object-cover" />
             <div className="bg-white px-3 py-2 text-xs text-gray-500">{photo.userName}</div>
           </div>
         ))}
@@ -104,7 +107,7 @@ function PhotoGrid({ photos }: { photos: PhotoItem[] }) {
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={() => setExpanded(null)}
         >
-          <img src={expanded.url} alt="" className="max-w-full max-h-full rounded-xl shadow-2xl" />
+          <OptimizedImage src={expanded.url} alt="" width={800} height={600} className="max-w-full max-h-full rounded-xl shadow-2xl" />
         </div>
       )}
     </>
@@ -121,7 +124,7 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
           </div>
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-600 shrink-0">
             {entry.avatar ? (
-              <img src={entry.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+              <OptimizedImage src={entry.avatar} alt="" width={40} height={40} className="w-full h-full rounded-full object-cover" />
             ) : (
               entry.nickname.charAt(0)
             )}

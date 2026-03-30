@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { updateProfile } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function ProfilePage() {
   const { user, loading, logout, refreshUser } = useAuth();
@@ -124,7 +125,7 @@ export default function ProfilePage() {
       <div className="text-center mb-8 relative">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#0066FF]/30 to-[#0066FF]/10 border-2 border-[#0066FF]/20 flex items-center justify-center text-3xl mx-auto mb-4">
           {user?.avatar ? (
-            <img src={user.avatar} alt={user.nickname} className="w-full h-full rounded-full object-cover" />
+            <OptimizedImage src={user.avatar} alt={user.nickname} width={80} height={80} className="w-full h-full rounded-full object-cover" />
           ) : (
             "🏛"
           )}

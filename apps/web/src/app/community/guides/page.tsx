@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { fetchGuides, type GuideItem } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const POPULAR_TAGS = [
   { value: "朝圣", key: "tagPilgrimage" },
@@ -29,9 +30,11 @@ function GuideCard({ guide }: { guide: GuideItem }) {
     >
       <div className="aspect-video bg-gray-100 overflow-hidden">
         {guide.coverImage ? (
-          <img
+          <OptimizedImage
             src={guide.coverImage}
             alt={guide.title}
+            width={400}
+            height={300}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (

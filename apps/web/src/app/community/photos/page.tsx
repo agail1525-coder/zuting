@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { fetchPhotoWall, type PhotoItem } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const PAGE_SIZE = 18;
 
@@ -66,17 +67,18 @@ export default function PhotoWallPage() {
                 className="break-inside-avoid cursor-pointer rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group"
                 onClick={() => setExpanded(photo)}
               >
-                <img
+                <OptimizedImage
                   src={photo.url}
                   alt=""
-                  loading="lazy"
+                  width={400}
+                  height={300}
                   className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="bg-white px-3 py-2">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600 shrink-0">
                       {photo.userAvatar ? (
-                        <img src={photo.userAvatar} alt="" className="w-full h-full rounded-full object-cover" />
+                        <OptimizedImage src={photo.userAvatar} alt="" width={20} height={20} className="w-full h-full rounded-full object-cover" />
                       ) : (
                         photo.userName?.charAt(0) || "?"
                       )}
@@ -127,9 +129,11 @@ export default function PhotoWallPage() {
             >
               ✕
             </button>
-            <img
+            <OptimizedImage
               src={expanded.url}
               alt=""
+              width={800}
+              height={600}
               className="w-full rounded-2xl shadow-2xl object-contain max-h-[80vh]"
             />
             <div className="bg-white rounded-b-2xl px-5 py-3 flex items-center gap-3">

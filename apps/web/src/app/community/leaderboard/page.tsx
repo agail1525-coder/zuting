@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { fetchLeaderboard, type LeaderboardEntry } from "@/lib/api";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
   guide: { icon: "📖", color: "text-blue-600" },
@@ -25,7 +26,7 @@ function PodiumCard({ entry, meta }: { entry: LeaderboardEntry; meta: { unit: st
       <div className="text-3xl mb-2">{style.badge}</div>
       <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center text-xl font-bold text-[#0066FF] mb-2 border-2 border-white">
         {entry.avatar ? (
-          <img src={entry.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+          <OptimizedImage src={entry.avatar} alt="" width={56} height={56} className="w-full h-full rounded-full object-cover" />
         ) : (
           entry.nickname.charAt(0)
         )}
@@ -153,7 +154,7 @@ export default function LeaderboardPage() {
                     <div className="text-sm font-bold text-gray-400 w-6 text-center">#{entry.rank}</div>
                     <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-600 shrink-0">
                       {entry.avatar ? (
-                        <img src={entry.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                        <OptimizedImage src={entry.avatar} alt="" width={36} height={36} className="w-full h-full rounded-full object-cover" />
                       ) : (
                         entry.nickname.charAt(0)
                       )}
