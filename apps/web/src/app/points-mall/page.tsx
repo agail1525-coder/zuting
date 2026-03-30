@@ -2,11 +2,13 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 import {
   fetchPointsProducts,
   fetchMyMembership,
@@ -149,6 +151,7 @@ export default function PointsMallPage() {
   const [confirmProduct, setConfirmProduct] = useState<PointsProductItem | null>(null);
   const [exchanging, setExchanging] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");
@@ -191,13 +194,37 @@ export default function PointsMallPage() {
     }
   };
 
+  // Client-side search
+  const displayProducts = useMemo(() => {
+    if (!searchQuery.trim()) return products;
+    const q = searchQuery.toLowerCase();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q)
+    );
+  }, [products, searchQuery]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const inStock = products.filter((p) => p.stock > 0).length;
+    const cheapest = products.reduce((min, p) => Math.min(min, p.pointsCost), Infinity);
+    return { total: products.length, inStock, cheapest: cheapest === Infinity ? 0 : cheapest };
+  }, [products]);
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("pointsMall.title")}</h1>
-          <p className="text-gray-500 text-sm mt-0.5">{t("pointsMall.subtitle")}</p>
+          <h1 className="text-3xl font-serif font-bold text-[#0066FF]">{t("pointsMall.title")}</h1>
+          <p className="text-gray-500 text-sm mt-0.5">
+            {t("pointsMall.subtitle")}
+            {products.length > 0 && (
+              <span className="ml-2 text-gray-400">· {stats.inStock} 件可兑 · {stats.cheapest} 积分起</span>
+            )}
+          </p>
         </div>
         {membership && (
           <div className="text-right">
@@ -205,6 +232,39 @@ export default function PointsMallPage() {
             <p className="text-2xl font-bold text-[#D4A855]">{membership.availablePoints.toLocaleString()}</p>
           </div>
         )}
+      </div>
+
+      {/* Points Balance Card */}
+      {membership && (
+        <div className="mb-6 bg-gradient-to-r from-[#D4A855] to-amber-500 rounded-2xl p-5 text-white relative overflow-hidden">
+          <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="relative flex items-center justify-between">
+            <div>
+              <p className="text-white/80 text-sm">可用积分</p>
+              <p className="text-3xl font-bold mt-1">{membership.availablePoints.toLocaleString()}</p>
+              <p className="text-white/60 text-xs mt-1">{membership.levelName} · 累计 {membership.totalPoints.toLocaleString()} 积分</p>
+            </div>
+            <Link href="/membership" className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-medium transition-colors border border-white/30">
+              赚取积分 →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Search */}
+      <div className="mb-4">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="搜索商品名称..."
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+          />
+        </div>
       </div>
 
       {error && (
@@ -246,10 +306,34 @@ export default function PointsMallPage() {
           <p className="text-sm">{t("pointsMall.noProducts")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} onExchange={setConfirmProduct} />
-          ))}
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {displayProducts.map((p) => (
+              <ProductCard key={p.id} product={p} onExchange={setConfirmProduct} />
+            ))}
+          </div>
+          {searchQuery && displayProducts.length === 0 && products.length > 0 && (
+            <div className="text-center py-12 text-gray-400">
+              <div className="text-4xl mb-3">🔍</div>
+              <p>没有找到匹配的商品</p>
+              <button onClick={() => setSearchQuery("")} className="mt-2 text-sm text-[#0066FF] hover:underline">清除搜索</button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Bottom CTA */}
+      {!loading && products.length > 0 && (
+        <div className="mt-8 bg-gradient-to-r from-[#D4A855]/10 to-amber-50 rounded-2xl p-6 border border-[#D4A855]/20 text-center">
+          <span className="text-2xl block mb-2">🏆</span>
+          <h3 className="text-base font-semibold text-gray-900">积分不够？轻松赚取更多</h3>
+          <p className="text-gray-500 text-xs mt-1">每日签到、写日志、发评价都能获得积分</p>
+          <Link
+            href="/membership"
+            className="inline-block mt-4 px-6 py-2.5 bg-[#D4A855] text-white font-semibold rounded-xl text-sm hover:bg-[#C4983F] transition-colors"
+          >
+            查看赚分攻略 →
+          </Link>
         </div>
       )}
 
@@ -263,6 +347,8 @@ export default function PointsMallPage() {
           loading={exchanging}
         />
       )}
+      </div>
+      <MobileNav />
     </div>
   );
 }

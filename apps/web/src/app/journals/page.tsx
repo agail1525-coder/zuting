@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { fetchJournals, type JournalItem } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const MOOD_EMOJI: Record<string, { emoji: string; key: string }> = {
   "觉悟": { emoji: "🪷", key: "journal.mood.awakening" },
@@ -32,6 +33,8 @@ export default function JournalsPage() {
   const [journals, setJournals] = useState<JournalItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [moodFilter, setMoodFilter] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -78,18 +81,50 @@ export default function JournalsPage() {
     );
   }
 
+  // Client-side filtering
+  const displayJournals = useMemo(() => {
+    let result = journals;
+    if (moodFilter) result = result.filter((j) => j.mood === moodFilter);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.content.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [journals, searchQuery, moodFilter]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const moods: Record<string, number> = {};
+    let publicCount = 0;
+    journals.forEach((j) => {
+      if (j.mood) moods[j.mood] = (moods[j.mood] || 0) + 1;
+      if (j.isPublic) publicCount++;
+    });
+    return { total: journals.length, publicCount, moods };
+  }, [journals]);
+
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-serif font-bold text-[#0066FF]">
             {t("journal.listTitle")}
           </h1>
           <p className="text-gray-500 mt-1 text-sm">
             {t("journal.listSubtitle")}
+            {journals.length > 0 && (
+              <span className="ml-2 text-gray-400">
+                · {stats.total} 篇日志 · {stats.publicCount} 篇公开
+              </span>
+            )}
           </p>
         </div>
         <Link
@@ -99,6 +134,49 @@ export default function JournalsPage() {
           {t("journal.writeJournal")}
         </Link>
       </div>
+
+      {/* Search + Mood Filter */}
+      {journals.length > 0 && (
+        <div className="space-y-3 mb-6">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索日志标题或内容..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setMoodFilter(null)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                !moodFilter ? "bg-[#0066FF] text-white" : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              全部心境
+            </button>
+            {Object.entries(MOOD_EMOJI).map(([mood, info]) => {
+              const count = stats.moods[mood] || 0;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={mood}
+                  onClick={() => setMoodFilter(moodFilter === mood ? null : mood)}
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                    moodFilter === mood ? "bg-[#0066FF] text-white" : "bg-white text-gray-500 border border-gray-200 hover:bg-gray-50"
+                  }`}
+                >
+                  {info.emoji} {mood} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Error */}
       {error && (
@@ -126,10 +204,21 @@ export default function JournalsPage() {
         </div>
       )}
 
+      {/* Search empty */}
+      {!error && journals.length > 0 && displayJournals.length === 0 && (
+        <div className="text-center py-16 text-gray-400">
+          <div className="text-4xl mb-3">🔍</div>
+          <p>没有找到匹配的日志</p>
+          <button onClick={() => { setSearchQuery(""); setMoodFilter(null); }} className="mt-2 text-sm text-[#0066FF] hover:underline">
+            清除筛选
+          </button>
+        </div>
+      )}
+
       {/* Journal Cards */}
-      {journals.length > 0 && (
+      {displayJournals.length > 0 && (
         <div className="space-y-4">
-          {journals.map((journal, i) => {
+          {displayJournals.map((journal, i) => {
             const moodInfo = journal.mood ? MOOD_EMOJI[journal.mood] : null;
             const moodEmoji = moodInfo?.emoji || "📝";
             return (
@@ -194,6 +283,23 @@ export default function JournalsPage() {
           })}
         </div>
       )}
+
+      {/* Bottom CTA */}
+      {!error && journals.length > 0 && (
+        <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10 text-center">
+          <span className="text-2xl block mb-2">🏛</span>
+          <h3 className="text-base font-semibold text-gray-900">探索更多圣地，记录更多感悟</h3>
+          <p className="text-gray-500 text-xs mt-1">每一次朝圣都值得记录</p>
+          <Link
+            href="/holy-sites"
+            className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"
+          >
+            浏览圣地 →
+          </Link>
+        </div>
+      )}
+      </div>
+      <MobileNav />
     </div>
   );
 }

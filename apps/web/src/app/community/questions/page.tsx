@@ -2,11 +2,12 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { fetchQuestions, createQuestion, type QuestionItem } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 const SORT_KEYS = ["latest", "hot", "unanswered"] as const;
 
@@ -147,6 +148,7 @@ export default function QuestionsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAsk, setShowAsk] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const PAGE_SIZE = 15;
 
@@ -166,14 +168,40 @@ export default function QuestionsPage() {
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
+  // Client-side search
+  const displayQuestions = useMemo(() => {
+    if (!searchQuery.trim()) return questions;
+    const q = searchQuery.toLowerCase();
+    return questions.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        item.content.toLowerCase().includes(q) ||
+        item.tags.some((t) => t.toLowerCase().includes(q))
+    );
+  }, [questions, searchQuery]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const unanswered = questions.filter((q) => q.answerCount === 0).length;
+    const totalAnswers = questions.reduce((sum, q) => sum + q.answerCount, 0);
+    return { total, unanswered, totalAnswers };
+  }, [questions, total]);
+
   return (
-    <main className="min-h-screen bg-gray-50 pt-20">
+    <main className="min-h-screen bg-gray-50 pb-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t("community.question.plaza")}</h1>
-            <p className="text-gray-500 text-sm mt-1">{t("community.question.plazaDesc")}</p>
+            <h1 className="text-3xl font-serif font-bold text-[#0066FF]">{t("community.question.plaza")}</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              {t("community.question.plazaDesc")}
+              {total > 0 && (
+                <span className="ml-2 text-gray-400">
+                  · {stats.total} 个问题 · {stats.unanswered} 个待解答
+                </span>
+              )}
+            </p>
           </div>
           <button
             onClick={() => {
@@ -187,6 +215,22 @@ export default function QuestionsPage() {
           >
             ❓ {t("community.question.ask")}
           </button>
+        </div>
+
+        {/* Search */}
+        <div className="mb-4">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索问题标题、内容或标签..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+            />
+          </div>
         </div>
 
         {/* Filters */}
@@ -238,9 +282,18 @@ export default function QuestionsPage() {
             <div>{t("community.question.noQuestions")}</div>
           </div>
         ) : (
-          <div className="space-y-3">
-            {questions.map((q) => <QuestionCard key={q.id} q={q} t={t} />)}
-          </div>
+          <>
+            <div className="space-y-3">
+              {displayQuestions.map((q) => <QuestionCard key={q.id} q={q} t={t} />)}
+            </div>
+            {searchQuery && displayQuestions.length === 0 && questions.length > 0 && (
+              <div className="text-center py-12 text-gray-400">
+                <div className="text-4xl mb-3">🔍</div>
+                <p>没有找到匹配的问题</p>
+                <button onClick={() => setSearchQuery("")} className="mt-2 text-sm text-[#0066FF] hover:underline">清除搜索</button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Pagination */}
@@ -265,6 +318,23 @@ export default function QuestionsPage() {
         )}
       </div>
 
+      {/* Bottom CTA */}
+      {!loading && !error && questions.length > 0 && (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10 text-center">
+            <span className="text-2xl block mb-2">💡</span>
+            <h3 className="text-base font-semibold text-gray-900">找不到答案？试试AI助手</h3>
+            <p className="text-gray-500 text-xs mt-1">小鸿AI可以回答各种朝圣相关问题</p>
+            <Link
+              href="/chat"
+              className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"
+            >
+              ✨ 问问小鸿 →
+            </Link>
+          </div>
+        </div>
+      )}
+
       {showAsk && (
         <AskModal
           t={t}
@@ -275,6 +345,7 @@ export default function QuestionsPage() {
           }}
         />
       )}
+      <MobileNav />
     </main>
   );
 }
