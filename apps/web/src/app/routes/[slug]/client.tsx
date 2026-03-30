@@ -57,6 +57,56 @@ const TRUST_BADGES = [
   { icon: "🔒", label: "安全支付", sub: "加密保障" },
 ];
 
+const RELIGION_ICONS: Record<string, string> = {
+  佛教: "☸️", 道教: "☯️", 基督教: "✝️", 伊斯兰教: "☪️",
+  印度教: "🕉️", 犹太教: "✡️", 儒教: "📜", 锡克教: "🪯",
+  神道教: "⛩️", 藏传佛教: "🏔️", 巴哈伊教: "✨",
+};
+
+const FAQ_ITEMS = [
+  { q: "如何预订这条路线？", a: "选择出发日期和人数后点击「立即预订」，完成支付后即可收到确认邮件和电子票。" },
+  { q: "可以定制行程吗？", a: "可以！点击「AI规划师咨询」，小鸿AI会根据您的需求定制专属行程，或联系客服进行人工定制。" },
+  { q: "需要准备什么？", a: "请查看上方「出行贴士」板块了解天气、穿着和礼仪建议。我们会在出发前3天发送详细行前须知。" },
+  { q: "团队规模是多少？", a: "每团通常6-15人，确保深度体验。也支持私人包团，价格另议。" },
+  { q: "包含餐饮和住宿吗？", a: "请查看上方「费用包含」板块了解具体包含项目。一般包含全程住宿和部分餐饮。" },
+  { q: "取消预订如何退款？", a: "出发前14天全额退款，7-13天退80%，3-6天退50%。详见「取消与退款政策」板块。" },
+];
+
+/* ─── FAQAccordion sub-component ─── */
+
+function FAQAccordion() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  return (
+    <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+      <h2 className="text-xl font-bold text-gray-900 mb-5">常见问题</h2>
+      <div className="divide-y divide-gray-100">
+        {FAQ_ITEMS.map((item, i) => (
+          <div key={i}>
+            <button
+              onClick={() => setOpenIdx(openIdx === i ? null : i)}
+              className="w-full flex items-center justify-between py-4 text-left group"
+            >
+              <span className="font-medium text-gray-800 group-hover:text-[#0066FF] transition-colors pr-4">
+                {item.q}
+              </span>
+              <span
+                className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${
+                  openIdx === i ? "rotate-180" : ""
+                }`}
+              >
+                ▾
+              </span>
+            </button>
+            {openIdx === i && (
+              <p className="pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ─── SimilarRoutes sub-component ─── */
 
 function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; category: string }) {
@@ -222,8 +272,22 @@ function BookingWidget({ route }: { route: Route }) {
         />
       </div>
 
-      <p className="text-xs text-gray-400 text-center mt-3">
-        已有 {route.bookCount} 人预订 · 预订后14天内免费取消
+      {/* Scarcity indicator */}
+      <div className="mt-3 flex items-center justify-center gap-1.5 text-xs">
+        <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+        <span className="text-red-600 font-medium">仅剩少量名额</span>
+        <span className="text-gray-400">· 本周{route.bookCount}人预订</span>
+      </div>
+
+      {/* Points display */}
+      <div className="mt-2 text-center">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs border border-amber-200">
+          🪙 预订可赚 {Math.floor(unitPrice * guests * 0.05)} 积分
+        </span>
+      </div>
+
+      <p className="text-xs text-gray-400 text-center mt-2">
+        预订后14天内免费取消
       </p>
     </div>
   );
@@ -307,6 +371,36 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               ))}
             </div>
           </div>
+
+          {/* ========== Religion Affiliation ========== */}
+          {route.religion && (
+            <div className="mt-6 bg-white shadow-sm border border-gray-100 rounded-2xl p-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                  style={{ backgroundColor: `${route.religion.color ?? "#0066FF"}15` }}
+                >
+                  {RELIGION_ICONS[route.religion.name] ?? "🙏"}
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">所属信仰体系</p>
+                  <Link
+                    href={`/religions/${route.religion.slug}`}
+                    className="font-semibold text-gray-900 hover:text-[#0066FF] transition-colors"
+                  >
+                    {route.religion.name}
+                    <span className="text-sm text-gray-400 ml-2">{route.religion.nameEn}</span>
+                  </Link>
+                </div>
+                <Link
+                  href={`/religions/${route.religion.slug}`}
+                  className="ml-auto text-sm text-[#0066FF] hover:underline"
+                >
+                  了解更多 →
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* ========== Highlights ========== */}
           <div className="flex flex-wrap gap-2 mt-8">
@@ -477,6 +571,9 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           <div className="mt-10">
             <ReviewSection targetType="ROUTE" targetId={route.id} />
           </div>
+
+          {/* ========== FAQ Accordion ========== */}
+          <FAQAccordion />
 
           {/* ========== Q&A Section ========== */}
           <div className="mt-10">
