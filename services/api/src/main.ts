@@ -11,8 +11,69 @@ import { SentryExceptionFilter } from './common/filters/sentry-exception.filter'
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { initSentry } from './common/sentry.init';
 
+// Validate critical environment variables before app creation
+function validateEnv(): void {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  // DATABASE_URL — required in production, warn in dev
+  if (!process.env.DATABASE_URL) {
+    if (isProduction) {
+      errors.push('DATABASE_URL is not set. PostgreSQL connection string is required.');
+    } else {
+      warnings.push('DATABASE_URL is not set — Prisma will fall back to default or fail to connect.');
+    }
+  }
+
+  // JWT_SECRET — must not be default in production
+  const jwtSecret = process.env.JWT_SECRET || '';
+  if (!jwtSecret || jwtSecret === 'change-me-in-production') {
+    if (isProduction) {
+      errors.push(
+        'JWT_SECRET is missing or using the insecure default "change-me-in-production". ' +
+        'Set a strong, unique secret for production.',
+      );
+    } else {
+      warnings.push('JWT_SECRET is not set or using default — set a strong secret before deploying.');
+    }
+  }
+
+  // REDIS_URL — optional, warn if missing
+  if (!process.env.REDIS_URL) {
+    warnings.push('REDIS_URL is not set — defaulting to localhost:6380.');
+  }
+
+  // API_PORT — optional, info if missing
+  if (!process.env.API_PORT) {
+    warnings.push('API_PORT is not set — defaulting to 3002.');
+  }
+
+  // Print warnings
+  for (const w of warnings) {
+    console.warn(`⚠ ENV: ${w}`);
+  }
+
+  // In production, fail fast on critical errors
+  if (errors.length > 0) {
+    console.error(
+      '\n╔══════════════════════════════════════════════════════════════╗\n' +
+      '║  FATAL: Missing critical environment variables!             ║\n' +
+      '╚══════════════════════════════════════════════════════════════╝',
+    );
+    for (const e of errors) {
+      console.error(`  ✗ ${e}`);
+    }
+    console.error('');
+    process.exit(1);
+  }
+}
+
 // Initialize Sentry before app creation (must be first)
 initSentry();
+
+// Validate environment variables before creating the app
+validateEnv();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
