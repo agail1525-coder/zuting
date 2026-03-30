@@ -2,10 +2,11 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { fetchPromotions, type PromotionItem } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 type TabKey = "all" | "FLASH_SALE" | "EARLY_BIRD" | "DISCOUNT";
 
@@ -95,7 +96,6 @@ function FlashSaleCard({ promo }: PromoCardProps) {
         {promo.description && (
           <p className="text-xs text-gray-500 mb-3 line-clamp-2">{promo.description}</p>
         )}
-        {/* Discount display */}
         <div className="flex items-center gap-2 mb-3">
           <span className="text-lg font-bold text-red-500">
             {promo.discountType === "PERCENT"
@@ -106,12 +106,10 @@ function FlashSaleCard({ promo }: PromoCardProps) {
             <span className="text-xs text-gray-400">{t("promotions.minSpend", { min: (promo.minAmount / 100).toFixed(0) })}</span>
           )}
         </div>
-        {/* Countdown */}
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xs text-gray-500">{t("promotions.endsIn")}</span>
           <CountdownBadge endAt={promo.endAt} />
         </div>
-        {/* Quota bar */}
         {promo.totalQuota > 0 && (
           <QuotaBar used={promo.usedQuota} total={promo.totalQuota} />
         )}
@@ -234,6 +232,7 @@ export default function PromotionsPage() {
   const [promotions, setPromotions] = useState<PromotionItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const tabs: { key: TabKey; label: string; icon: string }[] = [
     { key: "all", label: t("promotions.tabAll"), icon: "🎯" },
@@ -259,62 +258,191 @@ export default function PromotionsPage() {
     load(activeTab);
   }, [activeTab, load]);
 
+  // Client-side search
+  const displayPromos = useMemo(() => {
+    if (!searchQuery.trim()) return promotions;
+    const q = searchQuery.toLowerCase();
+    return promotions.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q)
+    );
+  }, [promotions, searchQuery]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const flash = promotions.filter((p) => p.type?.toUpperCase() === "FLASH_SALE").length;
+    const earlyBird = promotions.filter((p) => p.type?.toUpperCase() === "EARLY_BIRD").length;
+    const expiring = promotions.filter((p) => {
+      const diff = new Date(p.endAt).getTime() - Date.now();
+      return diff > 0 && diff < 24 * 60 * 60 * 1000;
+    }).length;
+    return { total: promotions.length, flash, earlyBird, expiring };
+  }, [promotions]);
+
+  // Tab counts
+  const tabCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: promotions.length };
+    promotions.forEach((p) => {
+      const type = p.type?.toUpperCase() ?? "DISCOUNT";
+      counts[type] = (counts[type] || 0) + 1;
+    });
+    return counts;
+  }, [promotions]);
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          {t("nav.deals")}
-        </h1>
-        <p className="text-gray-500 text-sm">{t("promotions.subtitle")}</p>
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Header with stats */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-serif font-bold text-[#0066FF] mb-2">
+            {t("nav.deals")}
+          </h1>
+          <p className="text-gray-500 text-sm">{t("promotions.subtitle")}</p>
+          {promotions.length > 0 && (
+            <div className="flex items-center gap-4 mt-3 text-sm text-gray-400">
+              <span>🎯 {stats.total} 个活动</span>
+              {stats.flash > 0 && <span>⚡ {stats.flash} 个限时抢</span>}
+              {stats.expiring > 0 && (
+                <span className="text-orange-500">🔥 {stats.expiring} 个即将结束</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Flash sale banner (对标Priceline/Agoda) */}
+        {stats.flash > 0 && activeTab === "all" && (
+          <div className="mb-6 bg-gradient-to-r from-red-500 to-orange-400 rounded-2xl p-5 text-white relative overflow-hidden">
+            <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-2xl">⚡</span>
+                  <h2 className="text-lg font-bold">限时闪购</h2>
+                </div>
+                <p className="text-white/80 text-sm">{stats.flash} 个闪购活动进行中，手慢无！</p>
+              </div>
+              <button
+                onClick={() => setActiveTab("FLASH_SALE")}
+                className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-semibold transition-colors border border-white/30"
+              >
+                查看全部 →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Search */}
+        <div className="mb-4">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索活动名称或描述..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+            />
+          </div>
+        </div>
+
+        {/* Tabs with counts */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+          {tabs.map((tab) => {
+            const count = tabCounts[tab.key] || 0;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  activeTab === tab.key
+                    ? "bg-[#0066FF] text-white shadow-sm"
+                    : "bg-white border border-gray-200 text-gray-600 hover:border-[#0066FF]/40 hover:text-[#0066FF]"
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+                {count > 0 && (
+                  <span className={`text-xs ${activeTab === tab.key ? "text-white/70" : "text-gray-400"}`}>
+                    ({count})
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Content */}
+        {loading ? (
+          <div className="py-20 text-center">
+            <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-gray-400 text-sm">{t("promotions.loading")}</p>
+          </div>
+        ) : displayPromos.length === 0 ? (
+          <div className="py-20 text-center">
+            <div className="text-5xl mb-4">{searchQuery ? "🔍" : "🎉"}</div>
+            <p className="text-gray-500 text-sm">
+              {searchQuery ? "没有找到匹配的活动" : t("promotions.empty")}
+            </p>
+            {searchQuery ? (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="mt-3 text-sm text-[#0066FF] hover:underline"
+              >
+                清除搜索
+              </button>
+            ) : (
+              <Link href="/holy-sites" className="mt-4 inline-block text-[#0066FF] text-sm hover:underline">
+                {t("promotions.browseAll")}
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {displayPromos.map((promo) => (
+              <PromoCard key={promo.id} promo={promo} />
+            ))}
+          </div>
+        )}
+
+        {/* Bottom CTA */}
+        {!loading && promotions.length > 0 && (
+          <div className="mt-12 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-center relative overflow-hidden">
+            <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#0066FF]/10 rounded-full blur-3xl" />
+            <div className="relative">
+              <span className="text-3xl block mb-3">🎁</span>
+              <h2 className="text-xl font-bold text-white">更多优惠等你发现</h2>
+              <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
+                领取优惠券，搭配活动使用，享受双重折扣
+              </p>
+              <div className="flex gap-3 justify-center mt-5">
+                <Link
+                  href="/coupons"
+                  className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
+                >
+                  领取优惠券 →
+                </Link>
+                <Link
+                  href="/routes"
+                  className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20 text-sm"
+                >
+                  浏览路线
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              activeTab === tab.key
-                ? "bg-[#0066FF] text-white shadow-sm"
-                : "bg-white border border-gray-200 text-gray-600 hover:border-[#0066FF]/40 hover:text-[#0066FF]"
-            }`}
-          >
-            <span>{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Error */}
-      {error && (
-        <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
-          {error}
-        </div>
-      )}
-
-      {/* Content */}
-      {loading ? (
-        <div className="py-20 text-center">
-          <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">{t("promotions.loading")}</p>
-        </div>
-      ) : promotions.length === 0 ? (
-        <div className="py-20 text-center">
-          <div className="text-5xl mb-4">🎉</div>
-          <p className="text-gray-500 text-sm">{t("promotions.empty")}</p>
-          <Link href="/holy-sites" className="mt-4 inline-block text-[#0066FF] text-sm hover:underline">
-            {t("promotions.browseAll")}
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {promotions.map((promo) => (
-            <PromoCard key={promo.id} promo={promo} />
-          ))}
-        </div>
-      )}
+      <MobileNav />
     </div>
   );
 }
