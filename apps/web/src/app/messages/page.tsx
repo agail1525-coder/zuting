@@ -11,6 +11,7 @@ import {
   ChatRoom,
   ChatMessage,
 } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 function formatMessageTime(dateStr: string): string {
   const date = new Date(dateStr);
@@ -440,6 +441,7 @@ export default function MessagesPage() {
           )}
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

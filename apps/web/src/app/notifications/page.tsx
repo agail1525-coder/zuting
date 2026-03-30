@@ -11,6 +11,7 @@ import {
   deleteNotification,
   type Notification,
 } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 export const dynamic = "force-dynamic";
 
@@ -347,6 +348,7 @@ export default function NotificationsPage() {
           </button>
         </div>
       )}
+      <MobileNav />
     </div>
   );
 }

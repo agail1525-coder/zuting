@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchPriceTrend, fetchRoutes, type PriceTrendPoint, type Route } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 interface EntityOption { type: string; id: string; label: string }
 
@@ -341,6 +342,7 @@ export default function PriceTrendPage() {
           </Link>
         </div>
       </div>
+      <MobileNav />
     </main>
   );
 }

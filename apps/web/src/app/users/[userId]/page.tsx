@@ -6,6 +6,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { fetchUserProfile, fetchUserGuides, type UserProfile, type GuideItem } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const PILGRIM_LEVELS: Record<number, { label: string; color: string }> = {
   1: { label: "初级朝圣者", color: "bg-gray-100 text-gray-600" },
@@ -192,6 +193,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
           )}
         </div>
       </div>
+      <MobileNav />
     </main>
   );
 }

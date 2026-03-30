@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { fetchMerchants, type Merchant } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const MERCHANT_TYPES = [
   { key: "", labelKey: "common.all" },
@@ -240,6 +241,7 @@ export default function MerchantsPage() {
           </>
         )}
       </div>
+      <MobileNav />
     </main>
   );
 }

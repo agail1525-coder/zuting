@@ -9,6 +9,7 @@ import { useTranslation } from "@/lib/i18n";
 import ShareButton from "@/components/ShareButton";
 import OptimizedImage from "@/components/OptimizedImage";
 import { fetchMerchantDetail, type Merchant } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -223,6 +224,7 @@ export default function MerchantDetailPage() {
           </div>
         </section>
       </div>
+      <MobileNav />
     </main>
   );
 }

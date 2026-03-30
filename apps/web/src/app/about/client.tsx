@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 export default function AboutClient() {
   const { t } = useTranslation();
@@ -98,6 +99,7 @@ export default function AboutClient() {
           </p>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

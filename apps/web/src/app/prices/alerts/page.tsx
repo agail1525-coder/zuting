@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchMyPriceAlerts, createPriceAlert, deletePriceAlert, fetchRoutes, type PriceAlertItem, type Route } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 interface EntityOption { type: string; id: string; name: string; currentPrice: number }
 
@@ -247,6 +248,7 @@ export default function PriceAlertsPage() {
           </div>
         )}
       </div>
+      <MobileNav />
     </main>
   );
 }

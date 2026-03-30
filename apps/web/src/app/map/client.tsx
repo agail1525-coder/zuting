@@ -7,6 +7,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import type { Religion, HolySite } from "@/lib/api";
 import DataLoadError from "@/components/DataLoadError";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 interface Props {
   religions: Religion[];
@@ -228,6 +229,7 @@ export default function MapClient({ religions, holySites, error }: Props) {
           interactive
         />
       </div>
+      <MobileNav />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 export default function PricesPage() {
   const { t } = useTranslation();
@@ -60,6 +61,7 @@ export default function PricesPage() {
           </ul>
         </div>
       </section>
+      <MobileNav />
     </main>
   );
 }

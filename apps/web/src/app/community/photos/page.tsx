@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { fetchPhotoWall, type PhotoItem } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const PAGE_SIZE = 18;
 
@@ -150,6 +151,7 @@ export default function PhotoWallPage() {
           </div>
         </div>
       )}
+      <MobileNav />
     </main>
   );
 }

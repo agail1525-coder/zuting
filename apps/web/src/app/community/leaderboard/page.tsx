@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { fetchLeaderboard, type LeaderboardEntry } from "@/lib/api";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 const TYPE_ICONS: Record<string, { icon: string; color: string }> = {
   guide: { icon: "📖", color: "text-blue-600" },
@@ -169,6 +170,7 @@ export default function LeaderboardPage() {
           </>
         )}
       </div>
+      <MobileNav />
     </main>
   );
 }

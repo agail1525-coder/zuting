@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { fetchPriceCompare, fetchRoutes, type PriceCompareItem } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 interface RouteOption {
   type: string;
@@ -282,6 +283,7 @@ export default function PriceComparePage() {
           {t("prices.compare.disclaimer")}
         </p>
       </div>
+      <MobileNav />
     </main>
   );
 }
