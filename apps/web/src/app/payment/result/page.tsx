@@ -6,6 +6,7 @@ import Link from "next/link";
 import { fetchOrder, type OrderDetail } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 type ResultState = "loading" | "success" | "pending" | "failed";
 
@@ -87,6 +88,7 @@ export default function PaymentResultPage() {
   if (state === "success") {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <MobileNav />
         <div className="w-full max-w-md text-center">
           <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
             {/* Green checkmark */}
@@ -163,6 +165,7 @@ export default function PaymentResultPage() {
     const reachedMax = pollCount.current >= MAX_POLLS;
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <MobileNav />
         <div className="w-full max-w-md text-center">
           <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
             {!reachedMax ? (
@@ -223,6 +226,7 @@ export default function PaymentResultPage() {
   // Failed
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <MobileNav />
       <div className="w-full max-w-md text-center">
         <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-8">
           {/* Red X */}

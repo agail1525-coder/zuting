@@ -1,5 +1,7 @@
 "use client";
 
+import MobileNav from "@/components/MobileNav";
+
 export default function OfflinePage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -14,6 +16,7 @@ export default function OfflinePage() {
           重试连接
         </button>
       </div>
+      <MobileNav />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   type CollectionItem,
   type CollectionEntityType,
 } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 const ENTITY_TYPE_LABELS: Record<CollectionEntityType, string> = {
   HOLY_SITE: "圣地",
@@ -177,6 +178,7 @@ export default function SharedCollectionPage({
           </div>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 export default function WriteGuidePage() {
   const { user, loading } = useAuth();
@@ -241,6 +242,7 @@ export default function WriteGuidePage() {
           </button>
         </div>
       </div>
+      <MobileNav />
     </main>
   );
 }

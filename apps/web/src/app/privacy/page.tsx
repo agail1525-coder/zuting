@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   title: "隐私政策",
@@ -279,6 +280,7 @@ export default function PrivacyPage() {
           本隐私政策自2026年3月25日起生效。
         </p>
       </div>
+      <MobileNav />
     </div>
   );
 }

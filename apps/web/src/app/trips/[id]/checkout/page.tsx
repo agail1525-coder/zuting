@@ -12,6 +12,7 @@ import {
   createPayment,
   type TripDetail,
 } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 type PaymentGateway = "wechat" | "alipay" | "stripe";
 
@@ -371,6 +372,7 @@ export default function CheckoutPage() {
       <p className="text-center text-gray-400 text-xs mt-4">
         {t("checkout.agreementText")}
       </p>
+      <MobileNav />
     </div>
   );
 }

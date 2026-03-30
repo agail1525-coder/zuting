@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   title: "用户协议",
@@ -284,6 +285,7 @@ export default function TermsPage() {
           本用户协议自2026年3月25日起生效。
         </p>
       </div>
+      <MobileNav />
     </div>
   );
 }

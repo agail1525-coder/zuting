@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { fetchTrips, createJournal } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 interface TripOption {
   id: string;
@@ -250,6 +251,7 @@ export default function JournalCreatePage() {
           </div>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

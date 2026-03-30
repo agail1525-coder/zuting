@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import ShareButton from "@/components/ShareButton";
 import { fetchPackage, bookPackage, type PackageItem } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 function formatPrice(cents: number) {
   return `¥${(cents / 100).toFixed(0)}`;
@@ -301,6 +302,7 @@ export default function PackageDetailPage() {
           </div>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

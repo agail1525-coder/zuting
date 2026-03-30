@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { createTrip } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 export default function TripCreatePage() {
   const { user, loading: authLoading } = useAuth();
@@ -242,6 +243,7 @@ export default function TripCreatePage() {
           </div>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

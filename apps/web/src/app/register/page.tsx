@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useTranslation } from '@/lib/i18n';
 import SocialLoginButtons from '@/components/SocialLoginButtons';
+import MobileNav from '@/components/MobileNav';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -175,6 +176,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+      <MobileNav />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { fetchOrder, cancelOrder, type OrderDetail } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 type ResultState = "loading" | "success" | "failed" | "processing";
 
@@ -102,6 +103,7 @@ export default function CheckoutResultPage() {
   if (state === "success") {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <MobileNav />
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
             <div className="w-20 h-20 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center mx-auto mb-6">
@@ -165,6 +167,7 @@ export default function CheckoutResultPage() {
   if (state === "processing") {
     return (
       <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <MobileNav />
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
             <div className="w-16 h-16 border-4 border-[#0066FF]/20 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-6" />
@@ -202,6 +205,7 @@ export default function CheckoutResultPage() {
   // Failed state
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <MobileNav />
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
           <div className="w-20 h-20 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mx-auto mb-6">
