@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { fetchMerchants, type Merchant } from "@/lib/api";
@@ -113,6 +113,7 @@ export default function MerchantsPage() {
   const [error, setError] = useState(false);
   const [activeType, setActiveType] = useState("");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -128,6 +129,24 @@ export default function MerchantsPage() {
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
+  const displayMerchants = useMemo(() => {
+    if (!search.trim()) return merchants;
+    const q = search.toLowerCase();
+    return merchants.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        m.description?.toLowerCase().includes(q) ||
+        m.address?.toLowerCase().includes(q)
+    );
+  }, [merchants, search]);
+
+  const stats = useMemo(() => {
+    const avgRating = merchants.length > 0
+      ? merchants.reduce((sum, m) => sum + m.rating, 0) / merchants.length
+      : 0;
+    return { total, avgRating };
+  }, [merchants, total]);
+
   return (
     <main className="min-h-screen bg-gray-50 pt-20">
       {/* Hero */}
@@ -137,6 +156,27 @@ export default function MerchantsPage() {
           <p className="text-blue-100 text-lg max-w-2xl mx-auto">
             {t("merchant.subtitle") || "Discover trusted partners for your spiritual journey"}
           </p>
+
+          {/* Stats */}
+          {!loading && total > 0 && (
+            <div className="flex items-center justify-center gap-8 mt-6">
+              <div>
+                <p className="text-2xl font-bold">{total}</p>
+                <p className="text-blue-200 text-xs">认证商家</p>
+              </div>
+              <div className="w-px h-8 bg-white/20" />
+              <div>
+                <p className="text-2xl font-bold">{stats.avgRating.toFixed(1)} ★</p>
+                <p className="text-blue-200 text-xs">平均评分</p>
+              </div>
+              <div className="w-px h-8 bg-white/20" />
+              <div>
+                <p className="text-2xl font-bold">4</p>
+                <p className="text-blue-200 text-xs">服务类型</p>
+              </div>
+            </div>
+          )}
+
           <Link
             href="/merchants/register"
             className="inline-block mt-6 px-6 py-3 bg-white text-[#0066FF] font-semibold rounded-full hover:bg-blue-50 transition-colors shadow-lg"
@@ -146,22 +186,31 @@ export default function MerchantsPage() {
         </div>
       </section>
 
-      {/* Filters */}
+      {/* Filters + Search */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5">
-        <div className="bg-white rounded-xl shadow-sm p-2 flex flex-wrap gap-1">
-          {MERCHANT_TYPES.map((mt) => (
-            <button
-              key={mt.key}
-              onClick={() => { setActiveType(mt.key); setPage(1); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeType === mt.key
-                  ? "bg-[#0066FF] text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              {mt.key ? t(mt.labelKey) : (t("common.all") || "All")}
-            </button>
-          ))}
+        <div className="bg-white rounded-xl shadow-sm p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex flex-wrap gap-1 flex-1">
+            {MERCHANT_TYPES.map((mt) => (
+              <button
+                key={mt.key}
+                onClick={() => { setActiveType(mt.key); setPage(1); }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeType === mt.key
+                    ? "bg-[#0066FF] text-white"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {mt.key ? t(mt.labelKey) : (t("common.all") || "All")}
+              </button>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="搜索商家名称..."
+            className="w-full sm:w-56 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF]"
+          />
         </div>
       </div>
 
@@ -195,10 +244,21 @@ export default function MerchantsPage() {
             <div className="text-6xl mb-4">🏪</div>
             <p className="text-gray-500 text-lg">{t("common.empty") || "No merchants found"}</p>
           </div>
+        ) : displayMerchants.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-5xl mb-4">🔍</div>
+            <p className="text-gray-500">未找到匹配「{search}」的商家</p>
+            <button
+              onClick={() => setSearch("")}
+              className="mt-4 text-[#0066FF] hover:underline text-sm"
+            >
+              清除搜索
+            </button>
+          </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {merchants.map((m) => (
+              {displayMerchants.map((m) => (
                 <MerchantCard key={m.id} merchant={m} t={t} />
               ))}
             </div>
