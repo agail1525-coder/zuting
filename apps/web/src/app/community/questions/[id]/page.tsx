@@ -14,6 +14,7 @@ import {
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import MobileNav from "@/components/MobileNav";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -254,6 +255,7 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
           )}
         </div>
       </div>
+      <MobileNav />
     </main>
   );
 }

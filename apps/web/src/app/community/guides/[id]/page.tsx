@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import ShareButton from "@/components/ShareButton";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+import MobileNav from "@/components/MobileNav";
 import OptimizedImage from "@/components/OptimizedImage";
 
 function formatDate(dateStr: string) {
@@ -296,6 +297,7 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
           </aside>
         </div>
       </div>
+      <MobileNav />
     </main>
   );
 }

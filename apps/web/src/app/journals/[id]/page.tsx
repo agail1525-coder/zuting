@@ -7,6 +7,7 @@ import { fetchJournal, updateJournal, deleteJournal, type JournalDetail, type Up
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
+import MobileNav from "@/components/MobileNav";
 
 export const dynamic = "force-dynamic";
 
@@ -323,6 +324,7 @@ export default function JournalDetailPage() {
           </>
         )}
       </article>
+      <MobileNav />
     </div>
   );
 }

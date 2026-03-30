@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth-context";
 import { registerMerchant } from "@/lib/api";
+import MobileNav from "@/components/MobileNav";
 
 const MERCHANT_TYPES = ["TEMPLE", "GUIDE", "ACCOMMODATION", "TRANSPORT"] as const;
 
@@ -232,6 +233,7 @@ export default function MerchantRegisterPage() {
           </p>
         </form>
       </div>
+      <MobileNav />
     </main>
   );
 }
