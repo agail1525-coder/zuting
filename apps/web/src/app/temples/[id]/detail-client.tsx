@@ -10,8 +10,17 @@ import RelatedEntities from "@/components/RelatedEntities";
 import MediaTour from "@/components/MediaTour";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
+import SocialProof from "@/components/SocialProof";
+import QASection from "@/components/QASection";
 import { recordView } from "@/lib/api";
 import type { Temple } from "@/lib/api";
+
+const VISITOR_TIPS = [
+  { icon: "⏰", text: "建议预留2-3小时参访，避开节假日高峰" },
+  { icon: "👔", text: "请穿着得体，避免暴露服装，部分场所需脱鞋" },
+  { icon: "📷", text: "殿堂内通常禁止拍照，请尊重宗教场所规定" },
+  { icon: "🤫", text: "保持安静肃穆，不大声喧哗" },
+];
 
 const RELIGION_GRADIENT: Record<string, string> = {
   buddhism: "from-amber-800/30 to-amber-950/50",
@@ -115,6 +124,11 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
 
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 -mt-4 relative z-10 pb-24">
+        {/* Social Proof */}
+        <div className="mb-6">
+          <SocialProof entityType="TEMPLE" entityId={temple.id} variant="banner" />
+        </div>
+
         {/* Description Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6">
           <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">{t("detail.description") || "祖庭介绍"}</h2>
@@ -192,15 +206,54 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
           </div>
         )}
 
+        {/* Visitor Tips */}
+        <div className="bg-amber-50 rounded-2xl p-6 border border-amber-200 mb-6">
+          <h2 className="text-lg font-bold text-amber-600 mb-3">参访须知</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {VISITOR_TIPS.map((tip, i) => (
+              <div key={i} className="flex items-start gap-2 text-sm text-amber-700">
+                <span className="mt-0.5 text-lg">{tip.icon}</span>
+                <span>{tip.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Multimedia Tour */}
         <MediaTour entityType="TEMPLE" entityId={temple.id} />
 
         {/* Reviews Section */}
-        <ReviewSection targetType="temple" targetId={temple.id} />
+        <div className="mt-6">
+          <ReviewSection targetType="TEMPLE" targetId={temple.id} />
+        </div>
+
+        {/* Q&A Section */}
+        <div className="mt-8">
+          <QASection entityType="TEMPLE" entityId={temple.id} />
+        </div>
 
         {/* Related Entities */}
-        <div className="mt-6">
+        <div className="mt-8">
           <RelatedEntities entityType="TEMPLE" entityId={temple.id} title="你可能还喜欢" />
+        </div>
+
+        {/* Pilgrim Journal CTA */}
+        <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">📖</span>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">朝圣日志</h2>
+                <p className="text-sm text-gray-500">记录您对{temple.name}的参访体验</p>
+              </div>
+            </div>
+            <Link
+              href="/journals"
+              className="px-4 py-2 rounded-xl bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
+            >
+              写日记
+            </Link>
+          </div>
         </div>
 
         {/* CTA */}
