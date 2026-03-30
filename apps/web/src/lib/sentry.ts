@@ -47,7 +47,7 @@ export function initSentry() {
       sendDefaultPii: false,
       integrations: [],
     });
-    console.log('[Sentry] Initialized for Web');
+    // Sentry initialized
   });
 }
 

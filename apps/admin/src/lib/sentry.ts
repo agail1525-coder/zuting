@@ -33,7 +33,7 @@ export function initSentry() {
           environment: import.meta.env.MODE || 'development',
           tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
         });
-        console.log('[Sentry] Initialized for Admin');
+        // Sentry initialized
       })
       .catch(() => {
         // @sentry/react not installed
