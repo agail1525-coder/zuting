@@ -1715,6 +1715,394 @@ async function main() {
   }
   console.log(`  ✓ ${patriarchs.length} patriarchs created`);
 
+  // ── 4b. 曹洞宗传承法脉 (Caodong Zen Lineage) ──
+  console.log('Creating Caodong Zen patriarchs...');
+  const buddhismId = religionMap['buddhism'];
+
+  // === Gen 1: 洞山良价 ===
+  const dongshan = await prisma.patriarch.create({
+    data: {
+      name: '洞山良价',
+      nameEn: 'Dongshan Liangjie',
+      religionId: buddhismId,
+      dates: '807-869',
+      title: '悟本禅师',
+      school: '曹洞宗',
+      generation: 1,
+      teacherId: null,
+      biography: '洞山良价，唐代高僧，会稽（今浙江绍兴）人，俗姓兪。幼年出家，初从五泄山灵默参学，后参南泉普愿、沩山灵祐，终于云岩昙晟处得法。因过溪涉水见影而大悟，作著名的"过水偈"。后住江西宜丰洞山，大弘禅法，创立曹洞宗。其五位君臣法门，以正偏互涉五位阐释真俗不二之理，为曹洞宗核心教义。咸通十年（869）示寂，敕谥"悟本禅师"，塔名"慧觉之塔"。',
+      coreTeaching: '正偏互涉，五位叠起。以正位（空、理、体）与偏位（色、事、用）五种关系阐释万法实相。',
+      achievements: '创立曹洞宗，为禅宗五家之一。创建五位君臣法门，以正偏五位阐释体用关系。门下弟子五百至千人。其法脉传至日本为曹洞宗（道元开创），影响深远。',
+      templeNames: [{ name: '洞山普利禅寺', nameEn: 'Dongshan Puli Temple', role: '创建', location: '江西宜丰' }],
+      koans: [
+        { title: '过水偈', content: '切忌从他觅，迢迢与我疏。我今独自往，处处得逢渠。渠今正是我，我今不是渠。应须恁么会，方得契如如。', source: '洞山语录' },
+        { title: '麻三斤', content: '僧问：如何是佛？师曰：麻三斤。', source: '五灯会元' },
+      ],
+      classicQuotes: ['切忌从他觅，迢迢与我疏', '渠今正是我，我今不是渠', '应须恁么会，方得契如如'],
+      works: [
+        { title: '宝镜三昧', description: '376字偈颂，阐明理事不二' },
+        { title: '五位君臣', description: '五位法门，曹洞宗核心教义' },
+        { title: '洞山语录', description: '禅师说法问答集录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 2: 曹山本寂 ===
+  const caoshan = await prisma.patriarch.create({
+    data: {
+      name: '曹山本寂',
+      nameEn: 'Caoshan Benji',
+      religionId: buddhismId,
+      dates: '840-901',
+      title: '元证禅师',
+      school: '曹洞宗',
+      generation: 2,
+      teacherId: dongshan.id,
+      biography: '曹山本寂，泉州（今福建）人，俗姓黄。十九岁入灵石寺，二十五岁受具足戒。后参洞山良价，被赞为"大器之法器"。离洞山后，住江西抚州曹山（禾山），号曹山，命名以敬六祖慧能之曹溪。住山三十一年，大阐曹洞宗旨。天复元年（901）示寂，世寿六十二，敕谥"元证禅师"，塔名"福圆塔"。',
+      coreTeaching: '五位君臣，君为体，臣为用，以主客、宾主、偏正互涉阐释悟道层次。',
+      achievements: '曹洞宗联合创始人。将洞山五位法门系统化为五位君臣学说，以君臣比喻真俗关系。"曹洞"之"曹"即取自曹山。然其法脉数代后失传，曹洞宗存续法脉实由云居道膺一系传下。',
+      templeNames: [{ name: '曹山宝积寺', nameEn: 'Caoshan Baoji Temple', role: '创建', location: '江西宜黄' }],
+      koans: [{ title: '如何是佛', content: '僧问：如何是佛？师曰：你面前便是。', source: '曹山语录' }],
+      classicQuotes: ['君（正位）为体，臣（偏位）为用，君臣道合方为究竟', '学者先须知有佛向上事，然后放下便是'],
+      works: [
+        { title: '曹山语录', description: '禅师说法集录' },
+        { title: '五位君臣颂', description: '阐释五位法门诗偈' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 2: 云居道膺 ===
+  const yunju = await prisma.patriarch.create({
+    data: {
+      name: '云居道膺',
+      nameEn: 'Yunju Daoying',
+      religionId: buddhismId,
+      dates: '835-902',
+      title: '弘觉禅师',
+      school: '曹洞宗',
+      generation: 2,
+      teacherId: dongshan.id,
+      biography: '云居道膺，幽州范阳（今河北涿县）人。二十五岁于延寿寺受戒，精通律学，后转参禅宗。至洞山良价处得法。后于江西永修云居山建真如禅寺，住山弘法三十年，门下聚僧一千五百众。天复二年（902）示寂，建塔于博鱼山。其法脉为曹洞宗唯一存续正统。',
+      coreTeaching: '如如不动，在用不迷。继承洞山正偏五位，以默照功夫为修行法要。',
+      achievements: '洞山良价弟子，于云居山建真如禅寺，住山三十年，门徒一千五百人。曹洞宗存续法脉皆从道膺一系传下，为曹洞宗传承关键人物。',
+      templeNames: [{ name: '云居山真如禅寺', nameEn: 'Yunju Zhenru Temple', role: '创建', location: '江西永修' }],
+      koans: [{ title: '如如之事', content: '师示众曰：如如之事，已是变也。', source: '传灯录' }],
+      classicQuotes: ['如如之事，已是变也', '但办肯心，必不相赚'],
+      works: [{ title: '云居道膺语录', description: '禅师问答集录' }],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 3: 同安道丕 ===
+  const tonganDaopi = await prisma.patriarch.create({
+    data: {
+      name: '同安道丕',
+      nameEn: 'Tongan Daopi',
+      religionId: buddhismId,
+      dates: '约10世纪',
+      title: '道丕禅师',
+      school: '曹洞宗',
+      generation: 3,
+      teacherId: yunju.id,
+      biography: '同安道丕，五代时期禅僧，云居道膺法嗣。住江西南昌凤栖山同安院弘法，承继曹洞宗旨，为曹洞宗第三世传人，法脉传同安观志。',
+      coreTeaching: '承继洞山正偏五位，默照绵密，不立文字。',
+      achievements: '曹洞宗第三世，继承云居道膺法脉，住同安院弘法。',
+      templeNames: [{ name: '同安院', nameEn: 'Tongan Monastery', role: '驻锡', location: '江西南昌凤栖山' }],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 4: 同安观志 ===
+  const tonganGuanzhi = await prisma.patriarch.create({
+    data: {
+      name: '同安观志',
+      nameEn: 'Tongan Guanzhi',
+      religionId: buddhismId,
+      dates: '约10世纪',
+      title: '观志禅师',
+      school: '曹洞宗',
+      generation: 4,
+      teacherId: tonganDaopi.id,
+      biography: '同安观志，五代时期禅僧，同安道丕法嗣。继住同安院，为曹洞宗第四世传人，法脉传梁山缘观。',
+      coreTeaching: '承继曹洞宗默照家风，绵密用功。',
+      achievements: '曹洞宗第四世，同安道丕法嗣，传法于梁山缘观。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 5: 梁山缘观 ===
+  const liangshan = await prisma.patriarch.create({
+    data: {
+      name: '梁山缘观',
+      nameEn: 'Liangshan Yuanguan',
+      religionId: buddhismId,
+      dates: '约10世纪',
+      title: '缘观禅师',
+      school: '曹洞宗',
+      generation: 5,
+      teacherId: tonganGuanzhi.id,
+      biography: '梁山缘观，五代至北宋初期禅僧，同安观志法嗣。住梁山弘法，为曹洞宗第五世传人，法脉传大阳警玄。',
+      coreTeaching: '承继曹洞宗旨，正偏兼带，默照双运。',
+      achievements: '曹洞宗第五世，同安观志法嗣，传法于大阳警玄。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 6: 大阳警玄 ===
+  const dayang = await prisma.patriarch.create({
+    data: {
+      name: '大阳警玄',
+      nameEn: 'Dayang Jingxuan',
+      religionId: buddhismId,
+      dates: '943-1027',
+      title: '警玄禅师',
+      school: '曹洞宗',
+      generation: 6,
+      teacherId: liangshan.id,
+      biography: '大阳警玄，北宋高僧。参梁山缘观得法，住大阳山弘曹洞宗旨。至晚年门下无堪受法者，恐曹洞法脉断绝，遂将皮履、直裰、法语托付临济宗浮山法远，嘱其代觅法器传授。景德四年（1007）《传灯录》收录其事迹。天圣五年（1027）示寂。',
+      coreTeaching: '守护法脉，宁托他宗亦不令正法断绝。',
+      achievements: '曹洞宗第六世，为当时最后一位曹洞宗在世传人。晚年无直系法嗣，将法衣、顶相、偈颂托付临济宗浮山法远代传，开禅宗史上跨宗派传法之先例。',
+      templeNames: [{ name: '大阳山', nameEn: 'Dayang Mountain', role: '驻锡', location: '湖北应城' }],
+      koans: [{ title: '嘱法浮山', content: '警玄晚年无嗣，将法脉托付临济宗浮山法远代传，创禅宗史上跨宗派代传先例。', source: '禅林僧宝传' }],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 7: 投子义青 ===
+  const touzi = await prisma.patriarch.create({
+    data: {
+      name: '投子义青',
+      nameEn: 'Touzi Yiqing',
+      religionId: buddhismId,
+      dates: '1032-1083',
+      title: '义青禅师',
+      school: '曹洞宗',
+      generation: 7,
+      teacherId: dayang.id,
+      biography: '投子义青，河南偃师人，俗姓李。七岁出家于妙相寺，习唯识、华严。后参浮山法远，法远出大阳警玄所托法衣、顶相示之，义青当下大悟，接续曹洞法脉。住安徽投子山禅院弘法。元丰六年（1083）示寂。',
+      coreTeaching: '接续正法，不论来源。体用一如，默照观心。',
+      achievements: '曹洞宗第七世，从临济宗浮山法远处接受大阳警玄所托曹洞法脉，使几近断绝的曹洞宗重新延续。七岁出家，先学唯识、华严，后转参禅。',
+      templeNames: [{ name: '投子山禅院', nameEn: 'Touzi Chan Monastery', role: '驻锡', location: '安徽桐城' }],
+      koans: [{ title: '投子悟道', content: '法远出大阳法衣示之，义青当下大悟，接续曹洞法脉。', source: '续传灯录' }],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 8: 芙蓉道楷 ===
+  const furong = await prisma.patriarch.create({
+    data: {
+      name: '芙蓉道楷',
+      nameEn: 'Furong Daokai',
+      religionId: buddhismId,
+      dates: '1043-1118',
+      title: '道楷禅师',
+      school: '曹洞宗',
+      generation: 8,
+      teacherId: touzi.id,
+      biography: '芙蓉道楷，山东沂州（今临沂）人。初习道教长生术，后转入佛门。参投子义青得法。住芙蓉湖华严禅院弘法，门下极盛。度僧九十三人，开默照禅之先河。政和八年（1118）示寂。',
+      coreTeaching: '默照禅——默默忘言，昭昭现前。静坐观照，不立文字。',
+      achievements: '曹洞宗第八世，成功使曹洞宗从近于断绝恢复至显赫。度僧九十三人。开创默照禅修行体系。早年曾修道教长生术，后转入禅宗。政和七年（1117）受赐御匾。',
+      templeNames: [{ name: '芙蓉湖华严禅院', nameEn: 'Furong Huayan Temple', role: '驻锡', location: '山东沂州' }],
+      koans: [],
+      classicQuotes: ['默默忘言，昭昭现前', '但办肯心，必不相赚'],
+      works: [{ title: '芙蓉道楷语录', description: '禅师说法集录' }],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 9: 丹霞子淳 ===
+  const danxia = await prisma.patriarch.create({
+    data: {
+      name: '丹霞子淳',
+      nameEn: 'Danxia Zichun',
+      religionId: buddhismId,
+      dates: '1064-1117',
+      title: '子淳禅师',
+      school: '曹洞宗',
+      generation: 9,
+      teacherId: furong.id,
+      biography: '丹霞子淳，北宋禅僧，芙蓉道楷法嗣。住湖北丹霞山弘法，为曹洞宗第九世传人。传法于宏智正觉，对曹洞宗默照禅的系统化有重要推动作用。',
+      coreTeaching: '承继默照家风，绵密观照，直下承当。',
+      achievements: '曹洞宗第九世，芙蓉道楷法嗣，传法于宏智正觉。',
+      templeNames: [{ name: '丹霞山', nameEn: 'Danxia Mountain', role: '驻锡', location: '湖北武汉' }],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 10: 宏智正觉 ===
+  const hongzhi = await prisma.patriarch.create({
+    data: {
+      name: '宏智正觉',
+      nameEn: 'Hongzhi Zhengjue',
+      religionId: buddhismId,
+      dates: '1091-1157',
+      title: '宏智禅师',
+      school: '曹洞宗',
+      generation: 10,
+      teacherId: danxia.id,
+      biography: '宏智正觉，隰州（今山西隰县）人。参丹霞子淳得法。住浙江天童景德禅寺三十年，聚僧千余。全面系统化默照禅，著《默照铭》为纲领。与临济宗大慧宗杲各倡默照、看话两禅，为禅宗史上著名法门之争。绍兴二十七年（1157）示寂。',
+      coreTeaching: '默照禅——默坐观照，不用公案话头，直下承当，本来面目自然现前。',
+      achievements: '曹洞宗第十世，全面系统化默照禅修行法门。住天童寺三十年，门下千余僧。与临济宗大慧宗杲的看话禅之争，确立了禅宗两大修行路线。',
+      templeNames: [{ name: '天童景德禅寺', nameEn: 'Tiantong Jingde Temple', role: '住持三十年', location: '浙江宁波' }],
+      koans: [{ title: '默照铭', content: '默默忘言，昭昭现前。鉴时廓尔，体处灵然。', source: '宏智禅师广录' }],
+      classicQuotes: ['默默忘言，昭昭现前', '鉴时廓尔，体处灵然', '水清彻底兮，鱼行迟迟；空阔莫涯兮，鸟飞杳杳'],
+      works: [
+        { title: '宏智禅师广录', description: '九卷，宋代刊行' },
+        { title: '默照铭', description: '默照禅纲领性文献' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 13: 天童如净 ===
+  const rujing = await prisma.patriarch.create({
+    data: {
+      name: '天童如净',
+      nameEn: 'Tiantong Rujing',
+      religionId: buddhismId,
+      dates: '1163-1228',
+      title: '如净禅师',
+      school: '曹洞宗',
+      generation: 13,
+      teacherId: null,
+      biography: '天童如净，南宋僧。嘉定十七年（1224）受请住持天童景德禅寺。为人清俭，不自高于众僧，著常服黑袍。宝庆三年（1227）传法于日本僧道元（1200-1253），道元归国后创立日本曹洞宗，影响至今。绍定元年（1228）示寂。',
+      coreTeaching: '只管打坐，身心脱落。不假外缘，直下承当。',
+      achievements: '曹洞宗重要传人。嘉定十七年（1224）住持天童寺。宝庆三年（1227）传法于日本僧道元，道元归国创立日本曹洞宗（Soto Zen），为日本最大佛教宗派之一。为人谦逊，拒受紫衣。',
+      templeNames: [{ name: '天童景德禅寺', nameEn: 'Tiantong Jingde Temple', role: '住持', location: '浙江宁波' }],
+      koans: [{ title: '只管打坐', content: '参禅只须打坐，坐禅乃是身心脱落。不用烧香、礼拜、念佛、修忏、看经。', source: '如净语录' }],
+      classicQuotes: ['坐禅乃是身心脱落', '参禅不用烧香礼拜念佛修忏看经，只须打坐'],
+      works: [{ title: '如净语录', description: '禅师说法记录' }],
+      imageUrl: null,
+    },
+  });
+
+  // === Northern line: 万松行秀 ===
+  const wansong = await prisma.patriarch.create({
+    data: {
+      name: '万松行秀',
+      nameEn: 'Wansong Xingxiu',
+      religionId: buddhismId,
+      dates: '1166-1246',
+      title: '万松老人',
+      school: '曹洞宗',
+      generation: null,
+      teacherId: null,
+      biography: '万松行秀，金元时期高僧，活跃于开封、北京一带。编著《从容录》（又名《从容庵录》），收录天童宏智正觉所拈百则公案并加评唱，与临济宗圆悟克勤之《碧岩录》齐名，为禅宗两大公案集。淳祐六年（1246）示寂。',
+      coreTeaching: '以古人公案启迪学人，从容不迫中见本来面目。',
+      achievements: '北方曹洞宗重要传人，金元时期代表人物。编著《从容录》百则公案评唱，为曹洞宗最重要的公案集之一。',
+      templeNames: [{ name: '万松寺', nameEn: 'Wansong Temple', role: '驻锡', location: '北京/开封' }],
+      koans: [{ title: '从容录', content: '编纂百则公案并加评唱，与《碧岩录》齐名，为曹洞宗最重要公案集。', source: '从容录序' }],
+      classicQuotes: [],
+      works: [
+        { title: '从容录', description: '百则公案评唱，曹洞宗最重要公案集之一，与临济宗《碧岩录》齐名' },
+        { title: '万松老人评唱天童觉和尚颂古从容庵录', description: '全名' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === Northern line: 雪庭福裕 ===
+  const xueting = await prisma.patriarch.create({
+    data: {
+      name: '雪庭福裕',
+      nameEn: 'Xueting Fuyu',
+      religionId: buddhismId,
+      dates: '?-1274',
+      title: '国师',
+      school: '曹洞宗',
+      generation: null,
+      teacherId: wansong.id,
+      biography: '雪庭福裕，元代高僧。参万松行秀得法。受元世祖忽必烈封为国师，奉命重建嵩山少林寺及周围被战火毁坏的佛寺。制定少林寺七十字辈分传承偈，为中国禅宗寺院辈分制度之始。至元十一年（1274）示寂。',
+      coreTeaching: '禅武一如，以禅入武，以武悟禅。',
+      achievements: '元代曹洞宗代表。受忽必烈封为"国师"，受命重建嵩山少林寺及周围佛寺。制定少林寺僧人辈分字号传承制度，沿用至今。将少林寺确立为曹洞宗北方重要道场。',
+      templeNames: [{ name: '嵩山少林寺', nameEn: 'Songshan Shaolin Temple', role: '住持', location: '河南登封' }],
+      koans: [],
+      classicQuotes: ['福慧智子觉，了本圆可悟', '这是少林寺僧人辈分字号偈，沿用至今'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 47: 虚云古岩 ===
+  const xuyun = await prisma.patriarch.create({
+    data: {
+      name: '虚云古岩',
+      nameEn: 'Xuyun',
+      religionId: buddhismId,
+      dates: '1840-1959',
+      title: '虚云老和尚',
+      school: '曹洞宗',
+      generation: 47,
+      teacherId: null,
+      biography: '虚云，俗姓萧，福建泉州人。十九岁于鼓山涌泉寺出家。一生坐阅五帝四朝，历经清末、民国、新中国三个时代。朝五台、峨眉、九华、普陀四大名山，三步一拜朝五台山。遍参名宿，苦行精修。于高旻寺禅七中，因杯子扑落地而豁然大悟。一生重建大小道场数十座：重建南华寺（1934-1943，建殿堂243间、造佛像670尊）、重建云门山大觉寺（1943-1951）、重建云居山真如禅寺。兼承禅宗五宗法脉，为史上唯一之人。1953年任中国佛教协会名誉会长。1959年于云居山真如寺安详示寂，世寿一百二十岁。',
+      coreTeaching: '参禅的秘诀就是——看话头。看话头就是一个"疑"字。疑者，疑此一念未生以前是什么。',
+      achievements: '近代禅宗最伟大的复兴者。兼承禅宗五宗法脉（曹洞、临济、云门、法眼、沩仰），为禅宗史上唯一一人。重建大小道场数十座，其中南华寺、云门寺、云居寺为最著名。1953年任中国佛教协会名誉会长。世寿一百二十岁（传统说法），为近代佛教界最具影响力人物。',
+      templeNames: [
+        { name: '云居山真如禅寺', nameEn: 'Yunju Zhenru Temple', role: '重建', location: '江西永修' },
+        { name: '南华禅寺', nameEn: 'Nanhua Temple', role: '重建', location: '广东韶关' },
+        { name: '云门山大觉禅寺', nameEn: 'Yunmen Dajue Temple', role: '重建', location: '广东乳源' },
+        { name: '鸡足山祝圣寺', nameEn: 'Zhusheng Temple', role: '重建', location: '云南大理' },
+        { name: '鼓山涌泉寺', nameEn: 'Gushan Yongquan Temple', role: '驻锡', location: '福建福州' },
+      ],
+      koans: [{ title: '杯子落地', content: '杯子扑落地，响声明沥沥。虚空粉碎也，狂心当下息。', source: '虚云和尚年谱' }],
+      classicQuotes: ['杯子扑落地，响声明沥沥。虚空粉碎也，狂心当下息。', '修行须是铁汉，着手心头便判', '坐阅五帝四朝，不觉沧桑几度'],
+      works: [
+        { title: '虚云和尚年谱', description: '自传编年史' },
+        { title: '虚云和尚法汇', description: '法语、开示、书信集' },
+        { title: '虚云和尚方便开示', description: '禅修指导集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === Gen 48: 圆瑛宏悟 ===
+  const yuanying = await prisma.patriarch.create({
+    data: {
+      name: '圆瑛宏悟',
+      nameEn: 'Yuanying',
+      religionId: buddhismId,
+      dates: '1878-1953',
+      title: '楞严座主',
+      school: '曹洞宗',
+      generation: 48,
+      teacherId: null,
+      biography: '圆瑛，福建古田人，俗名吴昌发。于福州梅峰寺剃度出家，于涌泉寺受具足戒。师从冶开禅师参禅四年。一生精研楞严经，创办圆明楞严专宗学院。1953年当选中国佛教协会首任会长。同年九月圆寂，世寿七十五岁。',
+      coreTeaching: '禅净双修，以楞严经为修行纲要。',
+      achievements: '中国佛教协会首任会长（1953年当选）。创办圆明楞严专宗学院（1945），专弘楞严经。一生致力于佛教组织建设和人才培养。',
+      templeNames: [{ name: '鼓山涌泉寺', nameEn: 'Gushan Yongquan Temple', role: '住持', location: '福建福州' }],
+      koans: [],
+      classicQuotes: ['求福求慧求生净土，念佛念法念侣僧伽'],
+      works: [
+        { title: '圆瑛大师全集', description: '七卷本，佛学著述总集' },
+        { title: '楞严经讲义', description: '楞严经系统注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const caodongCount = 16;
+  console.log(`  ✓ ${caodongCount} Caodong Zen patriarchs created`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();

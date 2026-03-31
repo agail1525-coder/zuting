@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsInt, IsArray } from 'class-validator';
 
 export class CreatePatriarchDto {
   @ApiProperty({ example: '释迦牟尼' })
@@ -33,6 +33,42 @@ export class CreatePatriarchDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+
+  @ApiPropertyOptional({ example: '曹洞宗' })
+  @IsOptional()
+  @IsString()
+  school?: string;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  @IsInt()
+  generation?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  teacherId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  koans?: Record<string, unknown>[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  achievements?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  templeNames?: Record<string, unknown>[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  classicQuotes?: string[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  works?: Record<string, unknown>[];
 
   @ApiProperty()
   @IsString()

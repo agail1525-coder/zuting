@@ -75,6 +75,16 @@ export interface Temple {
   religion?: Religion;
 }
 
+export interface PatriarchRef {
+  id: string;
+  name: string;
+  nameEn: string | null;
+  title?: string | null;
+  imageUrl?: string | null;
+  generation?: number | null;
+  dates?: string | null;
+}
+
 export interface Patriarch {
   id: string;
   name: string;
@@ -86,6 +96,17 @@ export interface Patriarch {
   imageUrl: string | null;
   religionId: string;
   religion?: Religion;
+  // Zen lineage fields
+  school?: string | null;
+  generation?: number | null;
+  teacherId?: string | null;
+  teacher?: PatriarchRef | null;
+  disciples?: PatriarchRef[];
+  koans?: { title: string; content: string; source?: string }[] | null;
+  achievements?: string | null;
+  templeNames?: { name: string; nameEn?: string; role?: string; location?: string }[] | null;
+  classicQuotes?: string[] | null;
+  works?: { title: string; description?: string }[] | null;
 }
 
 export interface Teaching {
@@ -163,10 +184,12 @@ export async function fetchTemple(id: string): Promise<Temple> {
 // --- Patriarchs ---
 
 export async function fetchPatriarchs(
-  religionId?: string
+  religionId?: string,
+  school?: string,
 ): Promise<Patriarch[]> {
   const params = new URLSearchParams({ limit: "100" });
   if (religionId) params.set("religionId", religionId);
+  if (school) params.set("school", school);
   const res = await fetchJson<PaginatedResponse<Patriarch> | Patriarch[]>(`/api/patriarchs?${params}`);
   if (Array.isArray(res)) return res;
   return res?.items || [];

@@ -162,10 +162,24 @@ model Patriarch {
   coreTeaching String  @db.Text
   imageUrl     String?
 
+  // Zen lineage fields
+  school        String?   // 禅宗流派: 曹洞宗/临济宗/云门宗/法眼宗/沩仰宗
+  generation    Int?      // 传承世次
+  teacherId     String?   // 师承 (self-reference)
+  teacher       Patriarch?  @relation("PatriarchLineage", fields: [teacherId], references: [id])
+  disciples     Patriarch[] @relation("PatriarchLineage")
+  koans         Json?     // [{title, content, source}]
+  achievements  String?   @db.Text
+  templeNames   Json?     // [{name, nameEn, role, location}]
+  classicQuotes Json?     // [string]
+  works         Json?     // [{title, description}]
+
   religionId String
   religion   Religion @relation(fields: [religionId], references: [id])
 
   @@index([religionId])
+  @@index([teacherId])
+  @@index([school])
 }
 
 model Teaching {

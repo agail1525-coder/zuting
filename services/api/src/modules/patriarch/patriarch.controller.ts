@@ -16,11 +16,13 @@ export class PatriarchController {
   @Public()
   @ApiOperation({ summary: '获取所有祖师 / Get all patriarchs' })
   @ApiQuery({ name: 'religionId', required: false })
+  @ApiQuery({ name: 'school', required: false, description: '禅宗流派 e.g. 曹洞宗' })
   findAll(
     @Query() pagination: PaginationQueryDto,
     @Query('religionId') religionId?: string,
+    @Query('school') school?: string,
   ) {
-    return this.patriarchService.findAll(religionId, pagination.page, pagination.limit);
+    return this.patriarchService.findAll(religionId, pagination.page, pagination.limit, school);
   }
 
   @Get(':id')

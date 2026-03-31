@@ -809,7 +809,13 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
             <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
               {t("patriarchs.cta.subtitle")}
             </p>
-            <div className="flex gap-3 justify-center mt-5">
+            <div className="flex gap-3 justify-center mt-5 flex-wrap">
+              <Link
+                href="/zen-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ☸ 曹洞宗传承法脉
+              </Link>
               <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
