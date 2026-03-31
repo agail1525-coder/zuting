@@ -116,7 +116,7 @@ export default function TripsPage() {
           </h1>
           <p className="text-gray-500 mt-1 text-sm">
             {t("trips.pageSubtitle")}
-            {trips.length > 0 && <span className="ml-2 text-gray-400">· 共 {trips.length} 个行程</span>}
+            {trips.length > 0 && <span className="ml-2 text-gray-400">· {t("trips.totalCount", { count: trips.length })}</span>}
           </p>
         </div>
         <Link
@@ -126,6 +126,28 @@ export default function TripsPage() {
           + {t("trips.createNew")}
         </Link>
       </div>
+
+      {/* Stats Dashboard */}
+      {trips.length > 0 && (
+        <div className="grid grid-cols-4 gap-3 mb-6">
+          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
+            <p className="text-2xl font-bold text-[#0066FF]">{trips.length}</p>
+            <p className="text-xs text-gray-500">{t("trips.stats.total")}</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
+            <p className="text-2xl font-bold text-emerald-600">{tripStats.statusCounts['COMPLETED'] || 0}</p>
+            <p className="text-xs text-gray-500">{t("trips.stats.completed")}</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
+            <p className="text-2xl font-bold text-[#0066FF]">{tripStats.statusCounts['IN_PROGRESS'] || 0}</p>
+            <p className="text-xs text-gray-500">{t("trips.stats.active")}</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
+            <p className="text-2xl font-bold text-gray-900">{trips.reduce((sum, tr) => sum + tr.sites.length, 0)}</p>
+            <p className="text-xs text-gray-500">{t("trips.stats.sitesVisited")}</p>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
@@ -162,7 +184,7 @@ export default function TripsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜索行程名称或目的地..."
+            placeholder={t("trips.searchPlaceholder")}
             className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
           />
         </div>
@@ -207,9 +229,13 @@ export default function TripsPage() {
                 style={{ animationDelay: `${i * 0.08}s` }}
               >
                 <div className="flex items-start gap-4">
-                  {/* Cover Emoji */}
-                  <div className="w-14 h-14 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-2xl shrink-0">
-                    🏛
+                  {/* Cover Image */}
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 shrink-0">
+                    {trip.sites[0]?.site?.imageUrl ? (
+                      <img src={trip.sites[0].site.imageUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-2xl">🏛</div>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -232,22 +258,44 @@ export default function TripsPage() {
                         </span>
                       )}
                     </div>
+
+                    {/* Site Tags */}
+                    {trip.sites.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {trip.sites.slice(0, 3).map((s) => (
+                          <span key={s.id} className="px-2 py-0.5 bg-gray-50 text-gray-500 text-xs rounded-full">
+                            {s.site?.name || t("trips.unknownSite")}
+                          </span>
+                        ))}
+                        {trip.sites.length > 3 && (
+                          <span className="px-2 py-0.5 text-gray-400 text-xs">+{trip.sites.length - 3}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Arrow */}
-                  <svg
-                    className="w-5 h-5 text-gray-400 shrink-0 mt-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
+                  {/* Arrow + Quick Actions */}
+                  <div className="flex flex-col items-end gap-1 shrink-0 mt-1">
+                    <svg
+                      className="w-5 h-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                    {trip.status === 'DRAFT' && (
+                      <span className="text-xs text-[#0066FF] font-medium whitespace-nowrap">{t("trips.continueEditing")}</span>
+                    )}
+                    {trip.status === 'CONFIRMED' && (
+                      <span className="text-xs text-emerald-600 font-medium whitespace-nowrap">{t("trips.goToPay")}</span>
+                    )}
+                  </div>
                 </div>
               </Link>
             );
@@ -264,7 +312,7 @@ export default function TripsPage() {
             href="/routes"
             className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"
           >
-            浏览路线开始规划 →
+            {t("trips.browseRoutes")}
           </Link>
         </div>
       )}
@@ -273,9 +321,9 @@ export default function TripsPage() {
       {!loading && !error && trips.length > 0 && displayTrips.length === 0 && (
         <div className="text-center py-16 text-gray-400">
           <div className="text-4xl mb-3">🔍</div>
-          <p>没有找到匹配的行程</p>
+          <p>{t("trips.searchEmpty")}</p>
           <button onClick={() => setSearchQuery("")} className="mt-2 text-sm text-[#0066FF] hover:underline">
-            清除搜索
+            {t("trips.clearSearch")}
           </button>
         </div>
       )}

@@ -2,7 +2,6 @@
   "site.title": "Joinus",
   "site.subtitle": "Join Us, Explore the World",
   "site.description": "A global cultural travel platform for deep exploration of human civilization and sacred heritage sites",
-
   "nav.home": "Home",
   "nav.routes": "Routes",
   "nav.destinations": "Destinations",
@@ -24,7 +23,6 @@
   "nav.profile": "Profile",
   "nav.login": "Sign In",
   "nav.register": "Sign Up",
-
   "auth.login": "Sign In",
   "auth.register": "Sign Up",
   "auth.phone": "Phone Number",
@@ -39,19 +37,16 @@
   "auth.agreeTerms": "I have read and agree to the",
   "auth.termsOfService": "Terms of Service",
   "auth.privacyPolicy": "Privacy Policy",
-
   "hero.headline": "Join Us, Explore the World",
   "hero.subtitle": "A Deep Exploration of Human Civilization and Religious Culture",
   "hero.cta": "Start Your Journey",
   "hero.explore": "Explore Faiths",
-
   "stats.faiths": "Faiths",
   "stats.holySites": "Holy Sites",
   "stats.temples": "Temples",
   "stats.seals": "Seals",
   "stats.patriarchs": "Patriarchs",
   "stats.teachings": "Teachings",
-
   "section.featuredSites": "Featured Holy Sites",
   "section.twelveReligions": "Twelve Great Faiths",
   "section.allReligions": "All Faiths",
@@ -60,16 +55,13 @@
   "section.allPatriarchs": "All Patriarchs",
   "section.allTeachings": "All Teachings",
   "section.thirtySeals": "Caoxi 30 Seals of Vow & Destiny",
-
   "religion.holySites": "Holy Sites",
   "religion.temples": "Temples",
   "religion.patriarchs": "Patriarchs",
   "religion.teachings": "Teachings",
-
   "filter.all": "All",
   "filter.byReligion": "Filter by Faith",
   "filter.bySeries": "Filter by Series",
-
   "seal.series.CHUYIN": "Initial Seals",
   "seal.series.ZHONGYIN": "Middle Seals",
   "seal.series.YINGUOYIN": "Karmic Seals",
@@ -81,7 +73,6 @@
   "seal.vow": "Seal Vow",
   "seal.prev": "Previous Seal",
   "seal.next": "Next Seal",
-
   "detail.coordinates": "Coordinates",
   "detail.country": "Country",
   "detail.foundingDate": "Founded",
@@ -96,7 +87,6 @@
   "detail.backToList": "Back to list",
   "detail.relatedTeachings": "Related Teachings",
   "detail.mapPlaceholder": "Map View",
-
   "trip.create": "Create Trip",
   "trip.title": "Trip Title",
   "trip.startDate": "Departure Date",
@@ -117,7 +107,6 @@
   "trip.status.CANCELLED": "Cancelled",
   "trip.status.REFUNDING": "Refunding",
   "trip.status.REFUNDED": "Refunded",
-
   "order.pending": "Pending Payment",
   "order.paid": "Paid",
   "order.cancelled": "Cancelled",
@@ -129,7 +118,6 @@
   "order.status.REFUNDING": "Refunding",
   "order.status.REFUNDED": "Refunded",
   "order.status.COMPLETED": "Completed",
-
   "trips.pageTitle": "My Pilgrimages",
   "trips.pageSubtitle": "Plan and record every spiritual journey",
   "trips.createNew": "Create New Trip",
@@ -142,7 +130,18 @@
   "trips.tab.confirmed": "Confirmed",
   "trips.tab.inProgress": "In Progress",
   "trips.tab.completed": "Completed",
-
+  "trips.totalCount": "{{count}} trips total",
+  "trips.searchPlaceholder": "Search trips or destinations...",
+  "trips.browseRoutes": "Browse routes to start planning →",
+  "trips.searchEmpty": "No matching trips found",
+  "trips.clearSearch": "Clear search",
+  "trips.stats.total": "Total Trips",
+  "trips.stats.completed": "Completed",
+  "trips.stats.active": "Active",
+  "trips.stats.sitesVisited": "Destinations",
+  "trips.unknownSite": "Unknown site",
+  "trips.continueEditing": "Continue editing",
+  "trips.goToPay": "Pay now",
   "tripDetail.loading": "Loading trip details...",
   "tripDetail.notFound": "Trip not found",
   "tripDetail.loadError": "Failed to load",
@@ -171,7 +170,6 @@
   "tripDetail.status.CANCELLED": "Cancelled",
   "tripDetail.status.REFUNDING": "Refunding",
   "tripDetail.status.REFUNDED": "Refunded",
-
   "orders.pageTitle": "My Orders",
   "orders.pageSubtitle": "View all your order records",
   "orders.empty": "No orders yet",
@@ -213,7 +211,6 @@
   "orders.paymentAlipay": "Alipay",
   "orders.paymentStripe": "Stripe",
   "orders.paymentBankTransfer": "Bank Transfer",
-
   "payment.wechat": "WeChat Pay",
   "payment.alipay": "Alipay",
   "payment.stripe": "Credit Card",
@@ -221,7 +218,6 @@
   "payment.success": "Payment Successful",
   "payment.failed": "Payment Failed",
   "payment.processing": "Processing payment...",
-
   "paymentResult.querying": "Checking payment status...",
   "paymentResult.missingOrder": "Missing order information",
   "paymentResult.queryFailed": "Query failed",
@@ -241,17 +237,14 @@
   "paymentResult.failedDefault": "Payment was not completed or has been cancelled",
   "paymentResult.retryPayment": "Retry Payment",
   "paymentResult.viewOrders": "View Orders",
-
   "journal.create": "Write Journal",
   "journal.title": "Title",
   "journal.content": "Content",
   "journal.mood": "Mood",
   "journal.public": "Public",
   "journal.private": "Private",
-
   "review.write": "Write Review",
   "review.rating": "Rating",
-
   "chat.placeholder": "Ask your question...",
   "chat.loginRequired": "Please sign in to start a conversation",
   "chat.welcome": "Hello! I'm Xiaohong, your wise pilgrimage travel assistant.",
@@ -271,13 +264,11 @@
   "chat.suggestion.seals": "How to practice the 30 Seals",
   "chat.suggestion.taoism": "Taoist ancestral temples",
   "chat.suggestion.practice": "Today's spiritual guidance",
-
   "profile.stats.trips": "Trips",
   "profile.stats.orders": "Orders",
   "profile.stats.journals": "Journals",
   "profile.stats.practices": "Practices",
   "profile.loginPrompt": "Sign in to sync your pilgrimage data",
-
   "map.title": "Global Holy Sites Map",
   "map.holySiteCount": "{filtered} / {total} Holy Sites",
   "map.filterByFaith": "Filter by Faith",
@@ -286,7 +277,6 @@
   "map.close": "Close",
   "map.viewDetail": "View Details",
   "map.viewAllSites": "View All Holy Sites",
-
   "home.hero.title": "Joinus",
   "home.hero.subtitle": "Join Us, Explore the World — A Deep Cultural Travel Experience Platform",
   "home.stats.religions": "Faiths",
@@ -329,7 +319,6 @@
   "home.trustSites": "Holy Sites",
   "home.trustSeals": "Practice Seals",
   "home.trustLanguages": "Languages",
-
   "common.loading": "Loading...",
   "common.error": "Something went wrong",
   "common.retry": "Retry",
@@ -344,7 +333,6 @@
   "common.search": "Search",
   "common.filter": "Filter",
   "common.all": "All",
-
   "footer.mission": "Join Us, Explore the World",
   "footer.rights": "All rights reserved",
   "footer.contact": "Contact",
@@ -353,7 +341,6 @@
   "footer.terms": "Terms of Service",
   "footer.explore": "Explore",
   "footer.support": "Support",
-
   "home.searchPlaceholder": "Search destinations, routes, or cultural keywords...",
   "home.search": "Search",
   "home.featuredRoutes": "Featured Routes",
@@ -375,7 +362,6 @@
   "home.ctaDesc": "Ancient wisdom, traveling together. From Zen to the Silk Road, from Jerusalem to Kyoto.",
   "home.browseRoutes": "Browse Routes",
   "home.aiPlan": "AI Plans for You",
-
   "home.heroTitle": "Help 1 Million People Visit Ancestral Temples",
   "home.heroSubtitle": "Explore 60+ cultural sacred sites worldwide, experience a journey of ancient wisdom",
   "home.startPlanning": "Start Planning",
@@ -383,7 +369,6 @@
   "home.days": "D",
   "home.nights": "N",
   "home.perPerson": "/person",
-
   "home.searchTab.sites": "Holy Sites",
   "home.searchTab.sitesPlaceholder": "Search holy sites, temples, destinations...",
   "home.searchTab.routes": "Cultural Routes",
@@ -392,7 +377,6 @@
   "home.searchTab.aiPlaceholder": "Describe your travel needs, e.g.: 3-day Zen route, budget $800...",
   "home.searchTab.wiki": "Cultural Wiki",
   "home.searchTab.wikiPlaceholder": "Search religions, masters, teachings...",
-
   "home.category.zen": "Zen Routes",
   "home.category.buddhist": "Buddhist Sites",
   "home.category.taoist": "Taoist Heritage",
@@ -401,7 +385,6 @@
   "home.category.crossCultural": "Cross-Cultural",
   "home.category.aiPlanning": "AI Planning",
   "home.category.wiki": "Cultural Wiki",
-
   "home.categoryLabel.zen": "Zen",
   "home.categoryLabel.buddhist": "Buddhist",
   "home.categoryLabel.taoist": "Taoist",
@@ -409,32 +392,26 @@
   "home.categoryLabel.islamic": "Islamic",
   "home.categoryLabel.crossCultural": "Cross-Cultural",
   "home.categoryLabel.hindu": "Hindu",
-
   "home.exploreTab.all": "All",
   "home.exploreTab.buddhism": "Buddhism",
   "home.exploreTab.taoism": "Taoism",
   "home.exploreTab.christianity": "Christianity",
   "home.exploreTab.islam": "Islam",
   "home.exploreTab.hinduism": "Hinduism",
-
   "home.exploreByTradition": "Explore by Tradition",
   "home.exploreByTraditionDesc": "Dive into 12 cultural traditions and find your pilgrimage path",
   "home.temple": "Temple",
   "home.holySite": "Holy Site",
-
   "home.flashDeal.title": "Flash Deals",
   "home.flashDeal.subtitle": "Limited-time route discounts",
   "home.flashDeal.remaining": "Ends in",
   "home.flashDeal.viewAll": "View All Deals →",
-
   "home.aiPlannerLabel": "AI Travel Planner",
   "home.chatDemo.userMsg": "I want a Zen route, 3-5 days, budget under $800",
   "home.chatDemo.aiMsg": "I recommend the \"Sixth Patriarch Huineng Route\" — 5 days/4 nights visiting Guoen Temple → Nanhua Temple → Guangxiao Temple, from $480/person. Want to see the full itinerary?",
-
   "home.templesAndPatriarchs": "Temples & Patriarchs",
   "home.famousTemples": "Famous Temples",
   "home.historicPatriarchs": "Historic Patriarchs",
-
   "home.communityUpdates": "Community Updates",
   "home.communityUpdatesDesc": "Real stories from pilgrims around the world",
   "home.enterCommunity": "Enter Community",
@@ -443,31 +420,24 @@
   "home.traveler": "Traveler",
   "home.answers": "answers",
   "home.views": "views",
-
   "home.travelJournals": "Travel Journals",
   "home.travelJournalsDesc": "First-hand pilgrimage experiences from travelers",
   "home.viewMore": "View More",
-
   "home.dailyWisdom": "Daily Wisdom",
   "home.exploreMoreWisdom": "Explore More Wisdom",
-
   "home.downloadApp": "Download Joinus APP",
   "home.downloadAppDesc": "Plan your cultural journey anytime, anywhere — offline maps + audio guides",
-
   "home.trust.registeredUsers": "Registered Users",
   "home.trust.realReviews": "Real Reviews",
   "home.trust.positiveRate": "Positive Rate",
   "home.trust.supportOnline": "Support Online",
   "home.trust.securityInfo": "SSL Encryption · Data Privacy · 7-Day Refund · PCI DSS Certified",
-
   "home.payment.wechat": "WeChat Pay",
   "home.payment.alipay": "Alipay",
   "home.payment.unionpay": "UnionPay",
-
   "home.newsletter.emailPlaceholder": "Enter your email address",
   "home.newsletter.subscribe": "Subscribe",
   "home.newsletter.hint": "Get exclusive deals and new route alerts. Unsubscribe anytime.",
-
   "auth.phonePlaceholder": "Enter phone number",
   "auth.passwordPlaceholder": "Enter password (min 6 characters)",
   "auth.nicknamePlaceholder": "Enter nickname",
@@ -486,7 +456,6 @@
   "auth.registerNow": "Sign up now",
   "auth.oauthFailed": "Third-party login failed, please try again",
   "auth.and": "and",
-
   "journal.createTitle": "Write Pilgrimage Journal",
   "journal.createSubtitle": "Record your spiritual inspirations and awakenings",
   "journal.titlePlaceholder": "e.g., Enlightenment under the Bodhi Tree",
@@ -535,7 +504,6 @@
   "journal.moodNone": "None",
   "journal.publicVisible": "Publicly visible",
   "journal.tripLoadFailed": "Failed to load trips",
-
   "trip.createTitle": "Create New Trip",
   "trip.createSubtitle": "Plan your ancestral temple pilgrimage",
   "trip.titlePlaceholder": "e.g., Eastern Zen Temple Pilgrimage",
@@ -552,7 +520,6 @@
   "trip.labelTitleRequired": "Trip Title *",
   "trip.labelStartDateRequired": "Departure Date *",
   "trip.labelEndDateRequired": "Return Date *",
-
   "checkout.title": "Order Confirmation",
   "checkout.subtitle": "Please verify trip details and complete payment",
   "checkout.couponPlaceholder": "Enter coupon code (optional)",
@@ -580,7 +547,6 @@
   "checkout.pending": "TBD",
   "checkout.persons": "person(s)",
   "checkout.sites": "site(s)",
-
   "review.contentPlaceholder": "Share your pilgrimage experience...",
   "review.ratingLabel": "Rating:",
   "review.stars": "stars",
@@ -601,23 +567,18 @@
   "review.subScores.guideQuality": "Guide Quality",
   "review.subScores.authenticity": "Historical Authenticity",
   "review.subDimensions": "Sub-scores",
-
   "socialProof.monthlyVisitors": "{count} pilgrims visited this month",
   "socialProof.viewingNow": "{count} viewing now",
   "socialProof.pilgrims": "pilgrims visited this month",
   "socialProof.viewing": "viewing now",
-
   "ugcPhotos.title": "Community Photos",
   "ugcPhotos.viewAll": "View all community photos",
-
   "qa.title": "Traveler Q&A",
   "qa.askQuestion": "Ask a Question",
   "qa.noQuestions": "No questions yet. Be the first to ask!",
   "qa.answers": "answers",
-
   "gallery.viewAll": "View all photos",
   "gallery.photos": "photos",
-
   "encyclopedia.templesSubtitle": "Explore Ancestral Temples Worldwide",
   "encyclopedia.holySitesSubtitle": "Explore Sacred Sites Across Faiths",
   "encyclopedia.patriarchsSubtitle": "Discover Spiritual Masters & Founders",
@@ -626,7 +587,6 @@
   "encyclopedia.sort": "Sort",
   "encyclopedia.results": "results",
   "encyclopedia.loadMore": "Load More",
-
   "rankings.title": "Rankings",
   "rankings.subtitle": "Top recommended holy sites and routes",
   "rankings.bestSites": "Best Holy Sites",
@@ -636,19 +596,16 @@
   "rankings.empty": "No ranking data yet",
   "rankings.days": "days",
   "rankings.nights": "nights",
-
   "chat.feature.faiths": "12 Traditions",
   "chat.feature.sites": "60+ Holy Sites",
   "chat.feature.temples": "27 Ancestral Temples",
   "chat.feature.routes": "Route Planning",
-
   "priceForecast.title": "Price Trend",
   "priceForecast.goodDeal": "Good time to book",
   "priceForecast.waitMaybe": "Price may drop",
   "priceForecast.confidence": "confidence",
   "priceForecast.lowest": "Lowest",
   "priceForecast.average": "Average",
-
   "profile.nicknamePlaceholder": "Enter nickname",
   "profile.pilgrim": "Pilgrim",
   "profile.motto": "Walk the path of peace with a pilgrim's heart",
@@ -673,12 +630,10 @@
   "profile.myJournalsDesc": "Spiritual reflections",
   "profile.aboutLabel": "About",
   "profile.aboutDesc": "Joinus Cultural Travel Platform",
-
   "notFound.title": "Page Not Found",
   "notFound.description": "The page you're looking for may have been moved or doesn't exist. Try going back to the homepage to explore more.",
   "notFound.exploreFaiths": "Explore Faiths",
   "notFound.suggestions": "Pages you might be interested in",
-
   "about.title": "About Us",
   "about.subtitle": "About Us",
   "about.vision.title": "Our Vision",
@@ -703,7 +658,6 @@
   "about.contact.hours": "Business Hours",
   "about.contact.hoursValue": "Monday to Friday, 9:00 AM - 6:00 PM (GMT+8)",
   "about.icp": "ICP Filing Under Review",
-
   "search.title": "Search",
   "search.subtitle": "Search across religions, holy sites, temples, patriarchs, teachings, and seals",
   "search.placeholder": "Search keywords...",
@@ -727,17 +681,14 @@
   "search.type.patriarch": "Patriarch",
   "search.type.teaching": "Teaching",
   "search.type.seal": "Seal",
-
   "loading": "Loading...",
   "error": "Failed to load",
   "notFound": "Not found",
-
   "nav.deals": "Deals",
   "nav.coupons": "Coupons",
   "nav.packages": "Packages",
   "nav.prices": "Price Tools",
   "nav.membership": "Membership",
-
   "coupon.center": "Coupon Center",
   "coupon.available": "Available",
   "coupon.mine": "My Coupons",
@@ -750,7 +701,6 @@
   "coupon.noAvailable": "No coupons available",
   "coupon.noMine": "No active coupons",
   "coupon.noUsed": "No used coupons",
-
   "promotion.title": "Promotions",
   "promotion.all": "All",
   "promotion.flashSale": "Flash Sale",
@@ -759,7 +709,6 @@
   "promotion.noPromotion": "No active promotions",
   "promotion.quota": "Remaining",
   "promotion.ends": "Ends in",
-
   "share.button": "Share",
   "share.title": "Share to",
   "share.wechat": "WeChat",
@@ -807,7 +756,6 @@
   "chat.yesterday": "Yesterday",
   "chat.merchant": "Merchant Inquiry",
   "chat.contactMerchant": "Contact Merchant",
-
   "media.tour": "Virtual Tour",
   "media.video": "Video",
   "media.panorama": "360° View",
@@ -815,7 +763,6 @@
   "media.play": "Play",
   "media.pause": "Pause",
   "media.noContent": "No tour content yet",
-
   "community.breadcrumb": "Community",
   "community.guides": "Guides",
   "community.questions": "Q&A",
@@ -824,7 +771,6 @@
   "community.anonymous": "Anonymous",
   "community.loginRequired": "Log in",
   "community.views": "views",
-
   "community.guide.write": "Write Guide",
   "community.guide.title": "Title *",
   "community.guide.titlePlaceholder": "Give your guide an attractive title...",
@@ -864,7 +810,6 @@
   "community.guide.joinCommunity": "Join Community",
   "community.guide.joinCommunityDesc": "Record your pilgrimage journey and share with fellow travelers worldwide",
   "community.guide.writeGuide": "Write Guide",
-
   "community.question.plaza": "Q&A Forum",
   "community.question.plazaDesc": "Ask the community for help, share your knowledge",
   "community.question.ask": "Ask",
@@ -904,7 +849,6 @@
   "community.question.answerSubmitFailed": "Submission failed, please try again later",
   "community.question.submitAnswer": "Submit Answer",
   "community.question.loginToAnswer": " to post an answer",
-
   "community.title": "Pilgrim Community",
   "community.subtitle": "Share travel stories, explore religious culture, meet fellow travelers",
   "community.writeGuide": "Write Guide",
@@ -922,7 +866,6 @@
   "community.viewAllQuestions": "View All Q&A →",
   "community.viewMorePhotos": "View More Photos →",
   "community.viewFullLeaderboard": "View Full Leaderboard →",
-
   "community.guides.title": "Travel Guides",
   "community.guides.subtitle": "Real travel stories from pilgrims",
   "community.guides.sortLabel": "Sort:",
@@ -943,7 +886,6 @@
   "community.guides.tagTravelTips": "Travel Tips",
   "community.guides.tagFood": "Food",
   "community.guides.tagAccommodation": "Accommodation",
-
   "community.leaderboard.title": "Community Leaderboard",
   "community.leaderboard.subtitle": "Most active pilgrims",
   "community.leaderboard.typeGuide": "Guide Expert",
@@ -955,12 +897,10 @@
   "community.leaderboard.unitGuides": "guides",
   "community.leaderboard.unitReviews": "reviews",
   "community.leaderboard.unitSites": "sites",
-
   "community.photos.title": "Photo Wall",
   "community.photos.subtitle": "The beauty of sacred sites through pilgrims' lenses",
   "community.photos.loadMore": "Load More",
   "community.photos.showAll": "Showing all {total} photos",
-
   "prices.hub.title": "Price Tools",
   "prices.hub.subtitle": "Compare prices, set alerts, view calendars and trends — all in one place",
   "prices.hub.calendar": "Price Calendar",
@@ -978,7 +918,6 @@
   "prices.hub.tip3": "Use <strong>Price Alerts</strong> to set a target price and wait for the best deal",
   "prices.hub.tip4": "Use <strong>Price Trends</strong> to analyze historical data and spot lows",
   "prices.backToPrices": "Back to Price Tools",
-
   "prices.calendar.title": "Price Calendar",
   "prices.calendar.selectRoute": "Select Route",
   "prices.calendar.loadingRoutes": "Loading routes...",
@@ -1019,7 +958,6 @@
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
   "prices.calendar.yearMonth": "{month} {year}",
-
   "prices.compare.title": "Price Compare",
   "prices.compare.selectRoutes": "Select routes (up to 4)",
   "prices.compare.loadingRoutes": "Loading routes...",
@@ -1040,7 +978,6 @@
   "prices.compare.setAlert": "Set Alert",
   "prices.compare.disclaimer": "* Prices are for reference only. Member prices require login.",
   "prices.compare.apiError": "API connection failed. Showing simulated demo data.",
-
   "prices.trend.title": "Price Trends",
   "prices.trend.route": "Route",
   "prices.trend.timeRange": "Time Range",
@@ -1062,7 +999,6 @@
   "prices.trend.days7": "7 Days",
   "prices.trend.days30": "30 Days",
   "prices.trend.days90": "90 Days",
-
   "prices.alerts.title": "Price Alerts",
   "prices.alerts.createAlert": "Create Alert",
   "prices.alerts.newAlert": "New Price Alert",
@@ -1088,7 +1024,6 @@
   "prices.alerts.loginRequired": "Please login to view your price alerts",
   "prices.alerts.createFailed": "Failed to create. Please login and try again.",
   "prices.alerts.deleteLabel": "Delete alert",
-
   "collections.title": "My Collections",
   "collections.subtitle": "Save holy sites, temples and patriarchs for your pilgrimage",
   "collections.createBtn": "Create Collection",
@@ -1109,17 +1044,14 @@
   "collections.modal.cancel": "Cancel",
   "collections.modal.creating": "Creating...",
   "collections.modal.create": "Create",
-
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -1128,7 +1060,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -1157,7 +1088,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1188,7 +1118,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "promotions.subtitle": "Flash sales, early bird specials, and limited-time offers — all in one place",
   "promotions.tabAll": "All",
   "promotions.tabFlashSale": "Flash Sale",
@@ -1212,7 +1141,6 @@
   "promotions.daysLeft": "Only {days} day(s) left",
   "promotions.bookEarlySave": "Book early and save {saving}",
   "promotions.eventDeadline": "Event ends {date}",
-
   "coupons.subtitle": "Claim exclusive coupons and save more",
   "coupons.tabAvailable": "Available",
   "coupons.tabMine": "My Coupons",
@@ -1233,7 +1161,6 @@
   "coupons.emptyAvailable": "No coupons available right now",
   "coupons.emptyMine": "No coupons in your wallet",
   "coupons.emptyUsed": "No used coupons",
-
   "checkout.couponInvalid": "Invalid coupon",
   "checkout.verifyError": "Verification failed",
   "checkout.submitError": "Submission failed",
@@ -1251,10 +1178,8 @@
   "checkout.percentDiscount": "{value}% discount",
   "checkout.fixedDiscount": "Save ¥{value}",
   "checkout.viewAllPromotions": "View all promotions",
-
   "coupons.fixedUnit": "off",
   "coupons.percentUnit": "% off",
-
   "referral.title": "Referral Center",
   "referral.subtitle": "Invite friends, share rewards",
   "referral.myInviteCode": "My Invite Code",
@@ -1284,7 +1209,6 @@
   "referral.statusPending": "Pending",
   "referral.statusSettled": "Settled",
   "referral.statusCancelled": "Cancelled",
-
   "pointsMall.title": "Points Mall",
   "pointsMall.subtitle": "Redeem points for exclusive perks and gifts",
   "pointsMall.availablePoints": "Available Points",
@@ -1309,7 +1233,6 @@
   "pointsMall.loadFailed": "Failed to load",
   "pointsMall.loading": "Loading...",
   "pointsMall.noProducts": "No products available",
-
   "common.home": "Home",
   "common.viewAll": "View All →",
   "common.viewDetails": "View Details →",
@@ -1358,13 +1281,11 @@
   "common.weeklyViews": "{count} views this week",
   "common.limitedOffer": "Limited: Book routes including this site for early bird discount",
   "common.limitedOfferTemple": "Limited: Book routes including this temple for early bird discount",
-
   "rating.excellent": "Excellent",
   "rating.great": "Great",
   "rating.veryGood": "Very Good",
   "rating.good": "Good",
   "rating.average": "Average",
-
   "nav.overview": "Overview",
   "nav.routeBooking": "Routes",
   "nav.reviews": "Reviews",
@@ -1380,7 +1301,6 @@
   "nav.dailyItinerary": "Daily Itinerary",
   "nav.costBreakdown": "Costs",
   "nav.travelTips": "Travel Tips",
-
   "holysite.intro": "About This Holy Site",
   "holysite.routesIncluding": "Routes Including This Site",
   "holysite.pilgrimReview": "Pilgrim reviews of {name}",
@@ -1406,7 +1326,6 @@
   "holysite.dressCode": "Dress modestly, no photography inside halls",
   "holysite.recentlyBookable": "Available Soon",
   "holysite.askAiPlan": "Plan a pilgrimage route including \"{name}\"",
-
   "temple.intro": "About This Temple",
   "temple.sameFaithTemples": "Same Faith Temples",
   "temple.recommendedRoutes": "Recommended Pilgrimage Routes",
@@ -1429,7 +1348,6 @@
   "temple.recommendedGuides": "Recommended Guides",
   "temple.relatedTemples": "{religion} Related Temples",
   "temple.askAiPlan": "Plan a pilgrimage route including \"{name}\" temple",
-
   "patriarch.overview": "Quick Facts",
   "patriarch.titleLabel": "Title",
   "patriarch.eraLabel": "Era",
@@ -1447,7 +1365,6 @@
   "patriarch.pilgrimage": "Visit in Person",
   "patriarch.pilgrimageDesc": "Visit related temples and practice sites",
   "patriarch.askAiIntro": "Tell me about {name}'s life and core teachings",
-
   "teaching.sourceLabel": "Source:",
   "teaching.practiceInsight": "Practice Insights",
   "teaching.insight1": "This teaching is a core doctrine of {religion} heritage",
@@ -1458,7 +1375,6 @@
   "teaching.recordInsightDesc": "Write your thoughts about this teaching in your journal",
   "teaching.askAi": "Ask AI About This Teaching",
   "teaching.backToList": "Back to Teachings",
-
   "route.category.ZEN": "Zen Route",
   "route.category.BUDDHIST": "Buddhist Sites",
   "route.category.TAOIST": "Taoist Origins",
@@ -1528,7 +1444,6 @@
   "route.accessibleTransport": "Accessible Transport",
   "route.signLanguage": "Sign Language",
   "route.reviewCount": "reviews",
-
   "etiquette.title": "Visitor Etiquette Guide",
   "etiquette.dressCode": "Dress Code",
   "etiquette.dressDesc": "Dress modestly, cover shoulders and knees",
@@ -1547,7 +1462,6 @@
   "etiquette.shoesDescShort": "Some halls require shoe removal",
   "etiquette.taboos": "Taboos",
   "etiquette.taboosDesc": "Do not touch statues or point at deities",
-
   "bestTime.title": "Best Time to Visit",
   "bestTime.best": "Best",
   "bestTime.suitable": "Good",
@@ -1564,7 +1478,6 @@
   "bestTime.month10": "Oct",
   "bestTime.month11": "Nov",
   "bestTime.month12": "Dec",
-
   "accessibility.title": "Accessibility",
   "accessibility.wheelchair": "Wheelchair Access",
   "accessibility.restroom": "Accessible Restrooms",
@@ -1572,7 +1485,6 @@
   "accessibility.seniorFriendly": "Senior Friendly",
   "accessibility.stroller": "Stroller Access",
   "accessibility.signLanguage": "Sign Language Tours",
-
   "packing.title": "Packing Checklist",
   "packing.idPassport": "Valid ID / Passport",
   "packing.walkingShoes": "Comfortable walking shoes",
@@ -1582,14 +1494,12 @@
   "packing.camera": "Camera (check photo rules)",
   "packing.rainGear": "Rain gear (weather permitting)",
   "packing.cash": "Small cash / Change",
-
   "traveler.distribution": "Traveler Type Distribution",
   "traveler.solo": "Solo Pilgrim",
   "traveler.family": "Family",
   "traveler.couple": "Couple",
   "traveler.friends": "Friends",
   "traveler.group": "Group",
-
   "templeDetail.viewLargeImage": "View Large",
   "templeDetail.ratingExcellent": "Excellent",
   "templeDetail.ratingGreat": "Great",
@@ -1722,7 +1632,6 @@
   "templeDetail.relatedTemples": "{{religion}} Related Temples",
   "templeDetail.moreRecommendations": "More Recommendations",
   "templeDetail.youMayAlsoLike": "You May Also Like",
-
   "patriarchDetail.ratingExcellent": "Excellent",
   "patriarchDetail.ratingGreat": "Great",
   "patriarchDetail.ratingGood": "Good",
@@ -1768,7 +1677,6 @@
   "patriarchDetail.learnTeachingDesc": "Deep dive into core teachings and related wisdom",
   "patriarchDetail.learnPilgrimage": "Pilgrimage",
   "patriarchDetail.learnPilgrimageDesc": "Visit related temples and monasteries in person",
-
   "teachingDetail.source": "Source",
   "teachingDetail.tradition": "tradition",
   "teachingDetail.practiceInsights": "💡 Practice Insights",
@@ -1789,7 +1697,6 @@
   "teachingDetail.faqRecord": "How to record practice insights?",
   "teachingDetail.faqRecordAnswer": "The platform provides a Pilgrim Journal feature to record your reflections anytime. These records are valuable personal resources and can be shared with the community.",
   "teachingDetail.sameSeriesTeachings": "Related Teachings",
-
   "routeDetail.collapse": "Collapse ▲",
   "routeDetail.expandAll": "Show All ▼",
   "routeDetail.faq": "FAQ",
@@ -1915,5 +1822,54 @@
   "holySites.ctaAI": "AI Recommendations",
   "holySites.ctaRoutes": "Browse Routes",
   "holySites.gridView": "Grid View",
-  "holySites.mapView": "Map View"
+  "holySites.mapView": "Map View",
+  "common.days": " days",
+  "prices.stats.routes": "Premium Routes",
+  "prices.stats.monitoring": "Real-time Monitoring",
+  "prices.stats.maxSave": "Save Up To",
+  "prices.useNow": "Use Now",
+  "prices.popularRoutes": "Popular Route Prices",
+  "prices.popularRoutesDesc": "Updated in real-time to help you find the best travel timing",
+  "prices.perPerson": "/person",
+  "prices.viewTrend": "View Price Trend",
+  "prices.noData": "No price data available",
+  "prices.savingTips": "Saving Tips",
+  "prices.tip1.title": "Book 60 Days Ahead",
+  "prices.tip1.desc": "Data shows booking 2 months in advance can save 15-25% on route costs",
+  "prices.tip1.stat": "Save 15-25%",
+  "prices.tip2.title": "Travel Off-Peak",
+  "prices.tip2.desc": "Avoid peak seasons like holidays — same routes can be 30%+ cheaper",
+  "prices.tip2.stat": "Save 30%+",
+  "prices.tip3.title": "Group Discounts",
+  "prices.tip3.desc": "Groups of 3+ enjoy team discounts, with select routes at 10% off",
+  "prices.tip3.stat": "10% Off",
+  "prices.tip4.title": "Set Alerts",
+  "prices.tip4.desc": "Use price alerts to get notified the moment your favorite route drops",
+  "prices.tip4.stat": "Real-time",
+  "prices.howItWorks": "Smart Pricing in 3 Steps",
+  "prices.step1.title": "Choose a Route",
+  "prices.step1.desc": "Browse our curated pilgrimage routes and pick your dream destination",
+  "prices.step2.title": "Compare Prices",
+  "prices.step2.desc": "Check the price calendar and trend charts to find the best time and lowest price",
+  "prices.step3.title": "Set Alerts",
+  "prices.step3.desc": "Enable drop alerts and get notified instantly when prices hit your target",
+  "prices.faq": "FAQ",
+  "prices.faq1.q": "How often are prices updated?",
+  "prices.faq1.a": "Our system monitors price changes 24/7 to ensure you always see the latest prices. Prices may fluctuate more during holidays and peak seasons.",
+  "prices.faq2.q": "How do I get the lowest price?",
+  "prices.faq2.a": "We recommend booking 60+ days ahead, using the price calendar to find historical low periods, and enabling drop alerts. Groups of 3+ also get extra discounts.",
+  "prices.faq3.q": "What does the price include?",
+  "prices.faq3.a": "Route prices typically include transportation, accommodation, entrance fees, and guide services. Exact inclusions vary by route. Visa fees and personal expenses are not included.",
+  "prices.faq4.q": "What payment methods are supported?",
+  "prices.faq4.a": "We support WeChat Pay, Alipay, Visa/Mastercard, and UnionPay, covering major domestic and international payment channels.",
+  "prices.ctaTitle": "Don't Miss the Best Price",
+  "prices.ctaDesc": "Set price alerts and get notified the moment your favorite route drops",
+  "prices.ctaBtn": "Enable Price Alerts",
+  "prices.priceLevel": "Price Level",
+  "prices.levelLow": "Low",
+  "prices.levelMid": "Mid",
+  "prices.levelHigh": "High",
+  "prices.lowestPrice": "Lowest Price",
+  "prices.avgPrice": "Average Price",
+  "prices.routeCount": "Available Routes"
 }
