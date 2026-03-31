@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import PhotoMosaic from "@/components/PhotoMosaic";
@@ -18,6 +19,7 @@ import { fetchRoutes, fetchPatriarchs, fetchTeachings } from "@/lib/api";
 
 /* ─── static maps ─── */
 
+// Note: These labels are used by key lookup; i18n keys defined as routeDetail.category.*
 const CATEGORY_LABELS: Record<string, string> = {
   ZEN: "禅宗路线",
   BUDDHIST: "佛教圣地",
@@ -57,6 +59,7 @@ const RELIGION_ICONS: Record<string, string> = {
 
 /* ─── Expandable Description ─── */
 function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: number }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const needsTruncation = text.length > maxLength;
   return (
@@ -66,31 +69,30 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
       </p>
       {needsTruncation && (
         <button onClick={() => setExpanded(!expanded)} className="mt-3 text-[#3264ff] hover:text-[#0052CC] text-sm font-medium transition-colors">
-          {expanded ? "收起 ▲" : "展开全部 ▼"}
+          {expanded ? t("routeDetail.collapse") : t("routeDetail.expandAll")}
         </button>
       )}
     </div>
   );
 }
 
-const FAQ_ITEMS = [
-  { q: "如何预订这条路线？", a: "选择出发日期和人数后点击「立即预订」，完成支付后即可收到确认邮件和电子票。" },
-  { q: "可以定制行程吗？", a: "可以！点击「AI规划师咨询」，小鸿AI会根据您的需求定制专属行程，或联系客服进行人工定制。" },
-  { q: "需要准备什么？", a: "请查看上方「出行贴士」板块了解天气、穿着和礼仪建议。我们会在出发前3天发送详细行前须知。" },
-  { q: "团队规模是多少？", a: "每团通常6-15人，确保深度体验。也支持私人包团，价格另议。" },
-  { q: "包含餐饮和住宿吗？", a: "请查看上方「费用包含」板块了解具体包含项目。一般包含全程住宿和部分餐饮。" },
-  { q: "取消预订如何退款？", a: "出发前14天全额退款，7-13天退80%，3-6天退50%。详见「取消与退款政策」板块。" },
-];
+// FAQ_ITEMS are populated with t() inside the component
+const FAQ_KEYS = ["howToBook", "customTrip", "whatToPrepare", "groupSize", "mealsIncluded", "cancellation"];
 
 /* ─── FAQAccordion sub-component ─── */
 
 function FAQAccordion() {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const faqItems = FAQ_KEYS.map((key) => ({
+    q: t(`routeDetail.faq${key.charAt(0).toUpperCase() + key.slice(1)}`),
+    a: t(`routeDetail.faq${key.charAt(0).toUpperCase() + key.slice(1)}Answer`),
+  }));
   return (
     <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-      <h2 className="text-xl font-bold text-gray-900 mb-5">常见问题</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-5">{t("routeDetail.faq")}</h2>
       <div className="divide-y divide-gray-100">
-        {FAQ_ITEMS.map((item, i) => (
+        {faqItems.map((item, i) => (
           <div key={i}>
             <button
               onClick={() => setOpenIdx(openIdx === i ? null : i)}
@@ -120,6 +122,7 @@ function FAQAccordion() {
 /* ─── RelatedCulture sub-component ─── */
 
 function RelatedCulture({ religionId }: { religionId: string | null }) {
+  const { t } = useTranslation();
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
   const [teachings, setTeachings] = useState<Teaching[]>([]);
 
@@ -137,11 +140,11 @@ function RelatedCulture({ religionId }: { religionId: string | null }) {
 
   return (
     <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-      <h2 className="text-xl font-bold text-gray-900 mb-5">相关文化</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-5">{t("routeDetail.relatedCulture")}</h2>
       <div className="grid md:grid-cols-2 gap-6">
         {patriarchs.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-3">相关祖师</h3>
+            <h3 className="text-sm font-semibold text-gray-500 mb-3">{t("routeDetail.relatedPatriarchs")}</h3>
             <div className="space-y-3">
               {patriarchs.map((p) => (
                 <Link
@@ -163,7 +166,7 @@ function RelatedCulture({ religionId }: { religionId: string | null }) {
         )}
         {teachings.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-3">相关祖训</h3>
+            <h3 className="text-sm font-semibold text-gray-500 mb-3">{t("routeDetail.relatedTeachings")}</h3>
             <div className="space-y-3">
               {teachings.map((t) => (
                 <Link
@@ -188,6 +191,7 @@ function RelatedCulture({ religionId }: { religionId: string | null }) {
 /* ─── XiaohongFloat sub-component ─── */
 
 function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -195,7 +199,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-[#3264ff] text-white rounded-full shadow-xl shadow-blue-500/30 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
-        title="问问小鸿"
+        title={t("routeDetail.askXiaohong")}
       >
         🤖
       </button>
@@ -204,17 +208,17 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
       {open && (
         <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-lg shadow-xl border border-[#dadfe6] overflow-hidden">
           <div className="bg-[#3264ff] text-white px-4 py-3 flex items-center justify-between">
-            <span className="font-semibold text-sm">小鸿AI · 路线顾问</span>
+            <span className="font-semibold text-sm">{t("routeDetail.aiRouteAdvisor")}</span>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">✕</button>
           </div>
           <div className="p-4 space-y-2">
-            <p className="text-sm text-gray-600">关于「{routeTitle}」，你想了解什么？</p>
+            <p className="text-sm text-gray-600">{t("routeDetail.whatToKnow", { title: routeTitle })}</p>
             <div className="space-y-1.5">
               {[
-                "这条路线适合老人吗？",
-                "有什么必带物品？",
-                "住宿条件怎么样？",
-                "能否定制延长行程？",
+                t("routeDetail.aiQ1"),
+                t("routeDetail.aiQ2"),
+                t("routeDetail.aiQ3"),
+                t("routeDetail.aiQ4"),
               ].map((q) => (
                 <Link
                   key={q}
@@ -229,7 +233,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
               href={`/chat?q=${encodeURIComponent(`我想了解路线"${routeTitle}"的详细信息`)}`}
               className="block text-center text-sm text-[#3264ff] font-medium mt-2 hover:underline"
             >
-              打开完整聊天 →
+              {t("routeDetail.openFullChat")} →
             </Link>
           </div>
         </div>
@@ -241,6 +245,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
 /* ─── SimilarRoutes sub-component ─── */
 
 function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; category: string }) {
+  const { t } = useTranslation();
   const [routes, setRoutes] = useState<Route[]>([]);
 
   useEffect(() => {
@@ -256,9 +261,9 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold text-gray-900">你可能也喜欢</h2>
+        <h2 className="text-xl font-bold text-gray-900">{t("routeDetail.youMayAlsoLike")}</h2>
         <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">
-          查看全部 →
+          {t("routeDetail.viewAll")} →
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -359,13 +364,14 @@ function SectionNav({ sections }: { sections: { id: string; label: string }[] })
 /* ─── P2. 热门徽章 ─── */
 
 function PopularityBadge({ count }: { count: number }) {
+  const { t } = useTranslation();
   if (count <= 0) return null;
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ff6600]/10 border border-[#ff6600]/20">
       <svg className="w-3 h-3 text-[#ff6600]" fill="currentColor" viewBox="0 0 20 20">
         <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
       </svg>
-      <span className="text-xs font-bold text-[#ff6600]">{count}+ 人已预订</span>
+      <span className="text-xs font-bold text-[#ff6600]">{count}+ {t("routeDetail.booked")}</span>
     </span>
   );
 }
@@ -373,17 +379,18 @@ function PopularityBadge({ count }: { count: number }) {
 /* ─── P5. 无障碍信息 ─── */
 
 function AccessibilityInfo() {
+  const { t } = useTranslation();
   const items = [
-    { available: true, label: "轮椅友好" },
-    { available: true, label: "老年人适宜" },
-    { available: false, label: "婴儿车通行" },
-    { available: true, label: "接送服务" },
-    { available: true, label: "无障碍交通" },
-    { available: false, label: "手语导览" },
+    { available: true, label: t("routeDetail.wheelchairFriendly") },
+    { available: true, label: t("routeDetail.elderlyFriendly") },
+    { available: false, label: t("routeDetail.strollerAccess") },
+    { available: true, label: t("routeDetail.pickupService") },
+    { available: true, label: t("routeDetail.accessibleTransport") },
+    { available: false, label: t("routeDetail.signLanguageTour") },
   ];
   return (
     <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-      <h2 className="text-base font-bold text-[#0f294d] mb-3">无障碍与适用性</h2>
+      <h2 className="text-base font-bold text-[#0f294d] mb-3">{t("routeDetail.accessibilityTitle")}</h2>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-1.5 text-xs">
@@ -403,11 +410,12 @@ function AccessibilityInfo() {
 /* ─── P6. 支付方式图标 ─── */
 
 function PaymentMethodIcons() {
+  const { t } = useTranslation();
   return (
     <div className="mt-3 pt-3 border-t border-gray-100">
-      <p className="text-[10px] text-[#8592a6] mb-2">支持支付方式</p>
+      <p className="text-[10px] text-[#8592a6] mb-2">{t("routeDetail.supportedPayments")}</p>
       <div className="flex items-center gap-2">
-        {["微信支付", "支付宝", "Visa", "银联"].map((m) => (
+        {[t("routeDetail.wechatPay"), t("routeDetail.alipay"), "Visa", t("routeDetail.unionPay")].map((m) => (
           <span key={m} className="px-2 py-1 bg-[#f5f7fa] rounded text-[10px] text-[#455873] border border-gray-100">{m}</span>
         ))}
       </div>
@@ -418,16 +426,17 @@ function PaymentMethodIcons() {
 /* ─── P10. 旅行者类型标签 ─── */
 
 function TravelerTypeTags() {
+  const { t } = useTranslation();
   const types = [
-    { label: "独行朝圣", pct: 30 },
-    { label: "家庭出行", pct: 25 },
-    { label: "情侣同行", pct: 20 },
-    { label: "朋友结伴", pct: 18 },
-    { label: "团队参访", pct: 7 },
+    { label: t("routeDetail.travelerSolo"), pct: 30 },
+    { label: t("routeDetail.travelerFamily"), pct: 25 },
+    { label: t("routeDetail.travelerCouple"), pct: 20 },
+    { label: t("routeDetail.travelerFriends"), pct: 18 },
+    { label: t("routeDetail.travelerGroup"), pct: 7 },
   ];
   return (
     <div className="mb-4 p-4 bg-[#f5f7fa] rounded-xl">
-      <p className="text-sm font-medium text-[#0f294d] mb-3">旅行者类型分布</p>
+      <p className="text-sm font-medium text-[#0f294d] mb-3">{t("routeDetail.travelerDistribution")}</p>
       <div className="space-y-2">
         {types.map((t) => (
           <div key={t.label} className="flex items-center gap-3">
@@ -446,20 +455,21 @@ function TravelerTypeTags() {
 /* ─── P10. 领队信息卡 (Airbnb/GetYourGuide/Trip.com) ─── */
 
 function GuideProfile() {
+  const { t } = useTranslation();
   return (
     <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-      <h2 className="text-base font-bold text-[#0f294d] mb-4">专业领队</h2>
+      <h2 className="text-base font-bold text-[#0f294d] mb-4">{t("routeDetail.professionalGuide")}</h2>
       <div className="flex items-start gap-4">
         <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#3264ff] to-blue-400 flex items-center justify-center text-white text-xl font-bold shrink-0">
-          导
+          {t("routeDetail.guideIcon")}
         </div>
         <div className="flex-1">
-          <p className="font-bold text-[#0f294d]">资深朝圣领队</p>
-          <p className="text-sm text-[#8592a6] mt-0.5">5年+ 带队经验 · 精通中英双语</p>
+          <p className="font-bold text-[#0f294d]">{t("routeDetail.seniorGuide")}</p>
+          <p className="text-sm text-[#8592a6] mt-0.5">{t("routeDetail.guideExperience")}</p>
           <div className="flex flex-wrap gap-2 mt-2">
-            <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-xs border border-green-100">认证领队</span>
-            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs border border-blue-100">文化专家</span>
-            <span className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs border border-amber-100">急救认证</span>
+            <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-xs border border-green-100">{t("routeDetail.certifiedGuide")}</span>
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs border border-blue-100">{t("routeDetail.cultureExpert")}</span>
+            <span className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs border border-amber-100">{t("routeDetail.firstAidCert")}</span>
           </div>
           <div className="flex items-center gap-1 mt-2">
             <div className="flex gap-0.5">
@@ -468,7 +478,7 @@ function GuideProfile() {
               ))}
             </div>
             <span className="text-xs text-[#0f294d] font-medium ml-1">5.0</span>
-            <span className="text-xs text-[#8592a6]">· 98%好评率</span>
+            <span className="text-xs text-[#8592a6]">· {t("routeDetail.approvalRate")}</span>
           </div>
         </div>
       </div>
@@ -479,6 +489,7 @@ function GuideProfile() {
 /* ─── BookingWidget sub-component ─── */
 
 function BookingWidget({ route }: { route: Route }) {
+  const { t } = useTranslation();
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -500,15 +511,15 @@ function BookingWidget({ route }: { route: Route }) {
   const formatLabel = (d: Date) => `${d.getMonth() + 1}月${d.getDate()}日`;
 
   const quickDates = [
-    { label: "今天", value: formatQuickDate(today), sub: formatLabel(today) },
-    { label: "明天", value: formatQuickDate(tomorrow), sub: formatLabel(tomorrow) },
-    { label: "后天", value: formatQuickDate(dayAfter), sub: formatLabel(dayAfter) },
+    { label: t("routeDetail.today"), value: formatQuickDate(today), sub: formatLabel(today) },
+    { label: t("routeDetail.tomorrow"), value: formatQuickDate(tomorrow), sub: formatLabel(tomorrow) },
+    { label: t("routeDetail.dayAfter"), value: formatQuickDate(dayAfter), sub: formatLabel(dayAfter) },
   ];
 
   return (
     <div className="bg-white border border-[#dadfe6] rounded-lg p-4 md:min-w-[300px]">
       <div className="text-center mb-4">
-        <p className="text-sm text-gray-500">起价</p>
+        <p className="text-sm text-gray-500">{t("routeDetail.startingPrice")}</p>
         <p className="text-3xl font-bold text-gray-900 mt-1">
           ¥{unitPrice.toLocaleString()}
           <span className="text-base font-normal text-gray-500">/人</span>
@@ -518,7 +529,7 @@ function BookingWidget({ route }: { route: Route }) {
       {/* Quick Date Tabs (Trip.com style) */}
       <div className="space-y-3">
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-2">出发日期</label>
+          <label className="block text-xs font-medium text-gray-500 mb-2">{t("routeDetail.departureDate")}</label>
           <div className="flex gap-2 mb-2">
             {quickDates.map((qd) => (
               <button
@@ -542,7 +553,7 @@ function BookingWidget({ route }: { route: Route }) {
                   : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#3264ff]/30"
               }`}
             >
-              <span className="block">选日期</span>
+              <span className="block">{t("routeDetail.pickDate")}</span>
               <span className={`block text-[10px] mt-0.5 ${showDatePicker ? "text-white/80" : "text-gray-400"}`}>▾</span>
             </button>
           </div>
@@ -557,7 +568,7 @@ function BookingWidget({ route }: { route: Route }) {
           )}
         </div>
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">出行人数</label>
+          <label className="block text-xs font-medium text-gray-500 mb-1">{t("routeDetail.travelers")}</label>
           <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
             <button
               onClick={() => setGuests((g) => Math.max(1, g - 1))}
@@ -591,13 +602,13 @@ function BookingWidget({ route }: { route: Route }) {
           href={`/routes/checkout?route=${route.slug}&date=${date}&guests=${guests}`}
           className="block w-full py-3 rounded-lg bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold text-center transition-colors shadow-[0_4px_20px_rgba(15,41,77,0.12)]"
         >
-          {date ? "立即预订" : "选择日期预订"}
+          {date ? t("routeDetail.bookNow") : t("routeDetail.selectDateToBook")}
         </Link>
         <Link
           href="/chat"
           className="block w-full py-2.5 rounded-xl border border-[#3264ff] text-[#3264ff] hover:bg-[#3264ff]/5 font-medium text-center text-sm transition-colors"
         >
-          AI规划师咨询
+          {t("routeDetail.aiPlannerConsult")}
         </Link>
       </div>
 
@@ -617,7 +628,7 @@ function BookingWidget({ route }: { route: Route }) {
       {/* Scarcity indicator */}
       <div className="mt-3 flex items-center justify-center gap-1.5 text-xs">
         <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-        <span className="text-red-600 font-medium">仅剩少量名额</span>
+        <span className="text-red-600 font-medium">{t("routeDetail.limitedSpots")}</span>
         <span className="text-gray-400">· 本周{route.bookCount}人预订</span>
       </div>
 
@@ -629,7 +640,7 @@ function BookingWidget({ route }: { route: Route }) {
       </div>
 
       <p className="text-xs text-gray-400 text-center mt-2">
-        预订后14天内免费取消
+        {t("routeDetail.freeCancellation14")}
       </p>
 
       {/* 支付方式 */}
@@ -641,6 +652,7 @@ function BookingWidget({ route }: { route: Route }) {
 /* ─── main page ─── */
 
 export default function RouteDetailClient({ route }: { route: Route }) {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-white">
       <main className="pt-16 pb-24">
@@ -648,9 +660,9 @@ export default function RouteDetailClient({ route }: { route: Route }) {
         <div className="max-w-[1120px] mx-auto px-4 pt-4 pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-[#8592a6]">
-              <Link href="/" className="hover:text-[#3264ff]">首页</Link>
+              <Link href="/" className="hover:text-[#3264ff]">{t("nav.home")}</Link>
               <span>&gt;</span>
-              <Link href="/routes" className="hover:text-[#3264ff]">路线</Link>
+              <Link href="/routes" className="hover:text-[#3264ff]">{t("nav.routes")}</Link>
               <span>&gt;</span>
               <span className="text-[#0f294d]">{route.title}</span>
             </div>
@@ -671,13 +683,13 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
         {/* Sticky跳转导航栏 */}
         <SectionNav sections={[
-          { id: "sec-info", label: "概览" },
-          { id: "sec-desc", label: "路线介绍" },
-          { id: "sec-itinerary", label: "逐日行程" },
-          { id: "sec-included", label: "费用明细" },
-          { id: "sec-tips", label: "出行贴士" },
-          { id: "reviews", label: "评价" },
-          { id: "sec-faq", label: "常见问题" },
+          { id: "sec-info", label: t("routeDetail.navOverview") },
+          { id: "sec-desc", label: t("routeDetail.navDescription") },
+          { id: "sec-itinerary", label: t("routeDetail.navItinerary") },
+          { id: "sec-included", label: t("routeDetail.navCostDetails") },
+          { id: "sec-tips", label: t("routeDetail.navTips") },
+          { id: "reviews", label: t("routeDetail.navReviews") },
+          { id: "sec-faq", label: t("routeDetail.navFaq") },
         ]} />
 
         {/* ═══ S4. 标题信息区 + 两栏布局 ═══ */}
@@ -718,15 +730,15 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               <div className="py-4 border-b border-[#dadfe6] space-y-2">
                 <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                   <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                  <span className="font-medium">行程:</span> {route.duration}天{route.nights}晚
+                  <span className="font-medium">{t("routeDetail.duration")}:</span> {route.duration}{t("routeDetail.days")}{route.nights}{t("routeDetail.nights")}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                   <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07-1.41 1.41M8.34 15.66l-1.41 1.41m12.14 0-1.41-1.41M8.34 8.34 6.93 6.93" /></svg>
-                  <span className="font-medium">最佳季节:</span> {route.season}
+                  <span className="font-medium">{t("routeDetail.bestSeason")}:</span> {route.season}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                   <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
-                  <span className="font-medium">团队规模:</span> {route.groupSize}
+                  <span className="font-medium">{t("routeDetail.groupSize")}:</span> {route.groupSize}
                 </div>
               </div>
 
@@ -741,7 +753,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   {RELIGION_ICONS[route.religion.name] ?? "🙏"}
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">所属信仰体系</p>
+                  <p className="text-sm text-gray-500">{t("routeDetail.faithSystem")}</p>
                   <Link
                     href={`/religions/${route.religion.slug}`}
                     className="font-semibold text-gray-900 hover:text-[#3264ff] transition-colors"
@@ -754,7 +766,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   href={`/religions/${route.religion.slug}`}
                   className="ml-auto text-sm text-[#3264ff] hover:underline"
                 >
-                  了解更多 →
+                  {t("routeDetail.learnMore")} →
                 </Link>
               </div>
             </div>
@@ -782,7 +794,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Description ========== */}
           <div id="sec-desc" className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">路线介绍</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("routeDetail.routeDescription")}</h2>
             <ExpandableText text={route.description} maxLength={300} />
           </div>
 
@@ -794,7 +806,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Interactive Route Map ========== */}
           {route.sites && route.sites.length > 0 && (
             <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">路线地图</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">{t("routeDetail.routeMap")}</h2>
               <p className="text-sm text-gray-500 mb-4">
                 途经 {route.sites.length} 个圣地，全程 {route.duration} 天 {route.nights} 晚
               </p>
@@ -805,7 +817,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Image Gallery (Mosaic) ========== */}
           {route.images && route.images.length > 0 && (
             <div className="mt-6">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-3">路线图集</h2>
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("routeDetail.photoGallery")}</h2>
               <PhotoMosaic images={route.images} alt={route.title} />
             </div>
           )}
@@ -817,7 +829,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Itinerary ========== */}
           <div id="sec-itinerary" className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">逐日行程</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">{t("routeDetail.dailyItinerary")}</h2>
             <div className="space-y-6">
               {(route.itinerary as ItineraryDay[]).map((day) => (
                 <div
@@ -856,7 +868,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Included / Excluded ========== */}
           <div id="sec-included" className="mt-6 grid md:grid-cols-2 gap-4">
             <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">费用包含</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">{t("routeDetail.included")}</h2>
               <ul className="space-y-2">
                 {route.included.map((item, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
@@ -866,7 +878,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               </ul>
             </div>
             <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">费用不含</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">{t("routeDetail.excluded")}</h2>
               <ul className="space-y-2">
                 {route.excluded.map((item, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
@@ -879,7 +891,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Cancellation Policy ========== */}
           <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-            <h2 className="text-base font-bold text-[#0f294d] mb-3">取消与退款政策</h2>
+            <h2 className="text-base font-bold text-[#0f294d] mb-3">{t("routeDetail.cancellationPolicy")}</h2>
             <div className="space-y-2">
               {CANCELLATION_POLICIES.map((p, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm text-[#455873]">
@@ -899,7 +911,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Tips ========== */}
           {route.tips.length > 0 && (
             <div id="sec-tips" className="mt-6 bg-amber-50 rounded-lg p-4 border border-amber-200">
-              <h2 className="text-lg font-bold text-amber-600 mb-3">出行贴士</h2>
+              <h2 className="text-lg font-bold text-amber-600 mb-3">{t("routeDetail.travelTips")}</h2>
               <ul className="space-y-2">
                 {route.tips.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-amber-700">
@@ -913,7 +925,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Related Sites ========== */}
           {route.sites && route.sites.length > 0 && (
             <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">途经圣地</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">{t("routeDetail.sitesAlong")}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {route.sites.map((rs) => (
                   <Link
@@ -945,15 +957,15 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📖</span>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">朝圣者日志</h2>
-                  <p className="text-sm text-gray-500">查看走过此路线的朝圣者们的记录与感悟</p>
+                  <h2 className="text-lg font-bold text-gray-900">{t("routeDetail.pilgrimJournals")}</h2>
+                  <p className="text-sm text-gray-500">{t("routeDetail.pilgrimJournalsDesc")}</p>
                 </div>
               </div>
               <Link
                 href="/journals"
                 className="px-4 py-2 rounded-xl bg-[#3264ff] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
               >
-                查看日志
+                {t("routeDetail.viewJournals")}
               </Link>
             </div>
           </div>
@@ -997,7 +1009,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             href={`/routes/checkout?route=${route.slug}`}
             className="px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
           >
-            立即预订
+            {t("routeDetail.bookNow")}
           </Link>
         </div>
       </main>

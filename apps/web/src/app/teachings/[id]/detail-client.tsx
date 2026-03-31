@@ -21,16 +21,17 @@ const RELIGION_ICONS: Record<string, string> = {
 /* ═══ FAQ手风琴 ═══ */
 
 function FAQSection({ teachingName, religionName }: { teachingName: string; religionName?: string }) {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `"${teachingName}"的核心含义是什么？`, a: `此祖训是${religionName ?? "传统"}文化的核心教义之一，蕴含着对修行和人生的深刻洞见。建议结合原文和释义深入理解，或使用AI助手获取更详细的解读。` },
-    { q: "如何在日常中践行此祖训？", a: "可以每日诵读此祖训并静心思考其含义，在日常生活和工作中寻找实践的机会。朝圣途中结合实际体验，会有更深的体悟。" },
-    { q: "有哪些相关的修行建议？", a: "建议结合同系祖训一起学习，了解完整的教义体系。可以参加相关寺院的讲座活动，或在社区中与其他修行者交流心得。" },
-    { q: "如何记录修行感悟？", a: "平台提供朝圣日志功能，可以随时记录您对祖训的感悟。这些记录不仅是个人修行的宝贵资料，也可以分享给社区帮助他人。" },
+    { q: t("teachingDetail.faqCoreMeaning", { name: teachingName }), a: t("teachingDetail.faqCoreMeaningAnswer", { religion: religionName ?? t("teachingDetail.tradition") }) },
+    { q: t("teachingDetail.faqPractice"), a: t("teachingDetail.faqPracticeAnswer") },
+    { q: t("teachingDetail.faqSuggestions"), a: t("teachingDetail.faqSuggestionsAnswer") },
+    { q: t("teachingDetail.faqRecord"), a: t("teachingDetail.faqRecordAnswer") },
   ];
   return (
     <div className="mt-10">
-      <h2 className="text-xl font-bold text-gray-900 mb-4">常见问题</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">{t("teachingDetail.faq")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
         {faqs.map((faq, i) => (
           <div key={i}>
@@ -52,6 +53,7 @@ function FAQSection({ teachingName, religionName }: { teachingName: string; reli
 }
 
 function SimilarTeachings({ currentId, religionId }: { currentId: string; religionId: string }) {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Teaching[]>([]);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ function SimilarTeachings({ currentId, religionId }: { currentId: string; religi
 
   return (
     <div className="mt-10">
-      <h2 className="text-xl font-bold text-gray-900 mb-5">同系祖训</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-5">{t("teachingDetail.sameSeriesTeachings")}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {items.map((t) => (
           <Link
@@ -129,7 +131,7 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
               {teaching.name}
             </h1>
             {teaching.sourceText && (
-              <p className="text-white/50 mt-3 text-sm">出处: {teaching.sourceText}</p>
+              <p className="text-white/50 mt-3 text-sm">{t("teachingDetail.source")}: {teaching.sourceText}</p>
             )}
 
             {/* Action buttons */}
@@ -176,19 +178,19 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
 
           {/* ========== Key Insights ========== */}
           <div className="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
-            <h2 className="text-lg font-bold text-amber-700 mb-3">💡 修行启示</h2>
+            <h2 className="text-lg font-bold text-amber-700 mb-3">{t("teachingDetail.practiceInsights")}</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-2 text-sm text-amber-800">
                 <span className="mt-0.5 text-amber-500">•</span>
-                <span>此祖训为{teaching.religion?.name ?? "传统"}文化传承的核心教义之一</span>
+                <span>{t("teachingDetail.insightCore", { religion: teaching.religion?.name ?? t("teachingDetail.tradition") })}</span>
               </div>
               <div className="flex items-start gap-2 text-sm text-amber-800">
                 <span className="mt-0.5 text-amber-500">•</span>
-                <span>建议在朝圣途中反复诵读体悟，结合实际修行加深理解</span>
+                <span>{t("teachingDetail.insightRecite")}</span>
               </div>
               <div className="flex items-start gap-2 text-sm text-amber-800">
                 <span className="mt-0.5 text-amber-500">•</span>
-                <span>可在朝圣日志中记录自己对此祖训的感悟与心得</span>
+                <span>{t("teachingDetail.insightJournal")}</span>
               </div>
             </div>
           </div>
@@ -250,15 +252,15 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📖</span>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">记录感悟</h2>
-                  <p className="text-sm text-gray-500">在朝圣日志中写下你对此祖训的体悟</p>
+                  <h2 className="text-lg font-bold text-gray-900">{t("teachingDetail.recordInsights")}</h2>
+                  <p className="text-sm text-gray-500">{t("teachingDetail.recordInsightsDesc")}</p>
                 </div>
               </div>
               <Link
                 href="/journals"
                 className="px-4 py-2 rounded-xl bg-[#3264ff] text-white text-sm font-medium hover:bg-[#2854e0] transition-colors shadow-sm"
               >
-                写日记
+                {t("teachingDetail.writeJournal")}
               </Link>
             </div>
           </div>
@@ -269,7 +271,7 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
               href="/chat"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
             >
-              ✨ 向小鸿AI请教此祖训
+              {t("teachingDetail.askAiAbout")}
             </Link>
             <Link
               href="/teachings"

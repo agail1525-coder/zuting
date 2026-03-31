@@ -32,7 +32,8 @@ function JoinusBestBadge() {
 
 function GreenDotRating({ rating, count }: { rating: number; count: number }) {
   const filled = Math.round(rating);
-  const label = rating >= 4.5 ? "卓越" : rating >= 4 ? "优秀" : rating >= 3.5 ? "很好" : rating >= 3 ? "不错" : "一般";
+  const { t } = useTranslation();
+  const label = rating >= 4.5 ? t("patriarchDetail.ratingExcellent") : rating >= 4 ? t("patriarchDetail.ratingGreat") : rating >= 3.5 ? t("patriarchDetail.ratingGood") : rating >= 3 ? t("patriarchDetail.ratingOk") : t("patriarchDetail.ratingAverage");
   return (
     <div className="flex items-center gap-2">
       <div className="flex gap-0.5">
@@ -42,7 +43,7 @@ function GreenDotRating({ rating, count }: { rating: number; count: number }) {
       </div>
       <span className="text-sm font-bold text-[#0f294d]">{rating.toFixed(1)}/5</span>
       <span className="text-sm font-medium text-[#00b341]">{label}</span>
-      <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">({count}条评价)</a>
+      <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">({count}{t("patriarchDetail.reviewCount")})</a>
     </div>
   );
 }
@@ -50,6 +51,7 @@ function GreenDotRating({ rating, count }: { rating: number; count: number }) {
 /* ═══ 评分分布图 ═══ */
 
 function RatingDistribution({ stats }: { stats: ReviewStats }) {
+  const { t } = useTranslation();
   const dist = [
     { star: 5, pct: 70 }, { star: 4, pct: 20 }, { star: 3, pct: 6 }, { star: 2, pct: 3 }, { star: 1, pct: 1 },
   ];
@@ -62,7 +64,7 @@ function RatingDistribution({ stats }: { stats: ReviewStats }) {
             <span key={i} className={`w-2 h-2 rounded-full ${i <= Math.round(stats.averageRating) ? "bg-[#00b341]" : "bg-gray-300"}`} />
           ))}
         </div>
-        <p className="text-xs text-[#8592a6] mt-1">{stats.totalCount}条评价</p>
+        <p className="text-xs text-[#8592a6] mt-1">{stats.totalCount}{t("patriarchDetail.reviewCount")}</p>
       </div>
       <div className="flex-1 space-y-1.5">
         {dist.map((d) => (
@@ -82,6 +84,7 @@ function RatingDistribution({ stats }: { stats: ReviewStats }) {
 /* ═══ 相关祖训 ═══ */
 
 function RelatedTeachings({ religionId }: { religionId: string }) {
+  const { t } = useTranslation();
   const [teachings, setTeachings] = useState<Teaching[]>([]);
   useEffect(() => {
     fetchTeachings(religionId)
@@ -93,7 +96,7 @@ function RelatedTeachings({ religionId }: { religionId: string }) {
 
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">相关祖训</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("patriarchDetail.relatedTeachings")}</h2>
       <div className="space-y-3">
         {teachings.map((t) => (
           <Link key={t.id} href={`/teachings/${t.id}`}
@@ -111,16 +114,17 @@ function RelatedTeachings({ religionId }: { religionId: string }) {
 /* ═══ FAQ手风琴 ═══ */
 
 function FAQSection({ patriarchName }: { patriarchName: string }) {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `${patriarchName}的主要贡献是什么？`, a: `${patriarchName}作为一代宗师，在宗教思想传播、教义体系构建方面做出了重要贡献，其思想影响深远，至今仍是信众修行的重要指导。` },
-    { q: "如何参访相关遗迹？", a: "可通过AI规划师获取包含相关祖庭、道场的朝圣路线推荐，实地感受祖师的弘法足迹。" },
-    { q: "有哪些相关著作可以阅读？", a: "建议从核心教义入手，逐步深入相关经典著作。平台的祖训板块收录了重要的原文语录和现代翻译。" },
-    { q: "如何深入学习其教义？", a: "除了阅读祖训，还可以参加相关寺院举办的讲座、禅修活动，在实修中体会祖师的教导精髓。" },
+    { q: t("patriarchDetail.faqContribution", { name: patriarchName }), a: t("patriarchDetail.faqContributionAnswer", { name: patriarchName }) },
+    { q: t("patriarchDetail.faqVisitRelics"), a: t("patriarchDetail.faqVisitRelicsAnswer") },
+    { q: t("patriarchDetail.faqReadings"), a: t("patriarchDetail.faqReadingsAnswer") },
+    { q: t("patriarchDetail.faqDeepStudy"), a: t("patriarchDetail.faqDeepStudyAnswer") },
   ];
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">常见问题</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("patriarchDetail.faq")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {faqs.map((faq, i) => (
           <div key={i}>
@@ -190,13 +194,14 @@ function SectionNav({ sections }: { sections: { id: string; label: string }[] })
 /* ═══ P2. 热门徽章 ═══ */
 
 function PopularityBadge({ count }: { count: number }) {
+  const { t } = useTranslation();
   if (count <= 0) return null;
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ff6600]/10 border border-[#ff6600]/20">
       <svg className="w-3 h-3 text-[#ff6600]" fill="currentColor" viewBox="0 0 20 20">
         <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
       </svg>
-      <span className="text-xs font-bold text-[#ff6600]">本周{count}人浏览</span>
+      <span className="text-xs font-bold text-[#ff6600]">{t("patriarchDetail.weeklyViews", { count })}</span>
     </span>
   );
 }
@@ -204,14 +209,15 @@ function PopularityBadge({ count }: { count: number }) {
 /* ═══ 学习路径建议 ═══ */
 
 function LearningPath({ patriarchName, religionName }: { patriarchName: string; religionName?: string }) {
+  const { t } = useTranslation();
   const steps = [
-    { step: "01", title: "了解生平", desc: `阅读${patriarchName}的生平事迹和历史背景`, href: "#sec-bio" },
-    { step: "02", title: "学习教义", desc: "深入研究核心教义和相关祖训", href: "#sec-teaching" },
-    { step: "03", title: "实地朝圣", desc: "参访相关祖庭和道场，实地感受", href: "/routes" },
+    { step: "01", title: t("patriarchDetail.learnBio"), desc: t("patriarchDetail.learnBioDesc", { name: patriarchName }), href: "#sec-bio" },
+    { step: "02", title: t("patriarchDetail.learnTeaching"), desc: t("patriarchDetail.learnTeachingDesc"), href: "#sec-teaching" },
+    { step: "03", title: t("patriarchDetail.learnPilgrimage"), desc: t("patriarchDetail.learnPilgrimageDesc"), href: "/routes" },
   ];
   return (
     <div className="mt-6 p-5 bg-[#f5f7fa] rounded-xl border border-gray-100">
-      <h2 className="text-base font-bold text-[#0f294d] mb-4">学习路径建议</h2>
+      <h2 className="text-base font-bold text-[#0f294d] mb-4">{t("patriarchDetail.learningPath")}</h2>
       <div className="space-y-3">
         {steps.map((s) => (
           <Link key={s.step} href={s.href} className="flex items-start gap-3 group">
@@ -232,12 +238,13 @@ function LearningPath({ patriarchName, religionName }: { patriarchName: string; 
 /* ═══ Sticky 侧边栏 ═══ */
 
 function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
+  const { t } = useTranslation();
   const religionColor = patriarch.religion?.color ?? "#3264ff";
   return (
     <div className="sticky top-20">
       {/* 快速信息卡 */}
       <div className="bg-white rounded-xl border border-gray-200 p-5" style={{ boxShadow: "0 4px 20px rgba(15,41,77,0.12)" }}>
-        <h3 className="text-base font-bold text-[#0f294d] mb-4">祖师速览</h3>
+        <h3 className="text-base font-bold text-[#0f294d] mb-4">{t("patriarchDetail.quickOverview")}</h3>
         <div className="space-y-3">
           {patriarch.title && (
             <div className="flex items-center gap-3">
@@ -245,7 +252,7 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
                 <svg className="w-4 h-4 text-[#8592a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               </div>
               <div>
-                <p className="text-xs text-[#8592a6]">称号</p>
+                <p className="text-xs text-[#8592a6]">{t("patriarchDetail.titleLabel")}</p>
                 <p className="text-sm font-medium text-[#0f294d]">{patriarch.title}</p>
               </div>
             </div>
@@ -256,7 +263,7 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
                 <svg className="w-4 h-4 text-[#8592a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
               </div>
               <div>
-                <p className="text-xs text-[#8592a6]">年代</p>
+                <p className="text-xs text-[#8592a6]">{t("patriarchDetail.eraLabel")}</p>
                 <p className="text-sm font-medium text-[#0f294d]">{patriarch.dates}</p>
               </div>
             </div>
@@ -266,7 +273,7 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
               <span className="text-sm">{patriarch.religion?.symbol || "🕉"}</span>
             </div>
             <div>
-              <p className="text-xs text-[#8592a6]">信仰传统</p>
+              <p className="text-xs text-[#8592a6]">{t("patriarchDetail.faithTradition")}</p>
               <p className="text-sm font-medium text-[#0f294d]">{patriarch.religion?.name || "-"}</p>
             </div>
           </div>
@@ -275,8 +282,8 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
               <svg className="w-4 h-4 text-[#8592a6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
             </div>
             <div>
-              <p className="text-xs text-[#8592a6]">传承</p>
-              <p className="text-sm font-medium text-[#0f294d]">开宗立派</p>
+              <p className="text-xs text-[#8592a6]">{t("patriarchDetail.lineage")}</p>
+              <p className="text-sm font-medium text-[#0f294d]">{t("patriarchDetail.schoolFounder")}</p>
             </div>
           </div>
         </div>
@@ -285,10 +292,10 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
           href={`/chat?q=${encodeURIComponent(`请介绍${patriarch.name}的生平和核心教义`)}`}
           className="mt-4 block w-full py-3 rounded-lg bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold text-center transition-colors text-sm"
         >
-          AI深度解读
+          {t("patriarchDetail.aiDeepAnalysis")}
         </Link>
         <Link href="/routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
-          查看朝圣路线
+          {t("patriarchDetail.viewPilgrimageRoutes")}
         </Link>
 
         <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-gray-100">
@@ -302,10 +309,10 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
         <div className="flex items-center gap-3">
           <svg className="w-6 h-6 text-[#3264ff] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-[#0f294d]">朝圣日志</p>
-            <p className="text-xs text-[#8592a6]">记录参访感悟</p>
+            <p className="text-sm font-semibold text-[#0f294d]">{t("patriarchDetail.pilgrimJournal")}</p>
+            <p className="text-xs text-[#8592a6]">{t("patriarchDetail.recordInsights")}</p>
           </div>
-          <Link href="/journals" className="px-3 py-1.5 rounded-lg bg-[#3264ff] text-white text-xs font-medium hover:bg-[#2854e0] transition-colors">写日记</Link>
+          <Link href="/journals" className="px-3 py-1.5 rounded-lg bg-[#3264ff] text-white text-xs font-medium hover:bg-[#2854e0] transition-colors">{t("patriarchDetail.writeJournal")}</Link>
         </div>
       </div>
     </div>
@@ -332,8 +339,8 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
       <div className="max-w-[1120px] mx-auto px-4 pt-20 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-[#8592a6]">
-            <Link href="/" className="hover:text-[#3264ff]">首页</Link><span>&gt;</span>
-            <Link href="/patriarchs" className="hover:text-[#3264ff]">{t("nav.patriarchs") || "祖师"}</Link><span>&gt;</span>
+            <Link href="/" className="hover:text-[#3264ff]">{t("nav.home")}</Link><span>&gt;</span>
+            <Link href="/patriarchs" className="hover:text-[#3264ff]">{t("nav.patriarchs")}</Link><span>&gt;</span>
             {patriarch.religion && (<><Link href={`/religions/${patriarch.religion.slug}`} className="hover:text-[#3264ff]">{patriarch.religion.name}</Link><span>&gt;</span></>)}
             <span className="text-[#0f294d]">{patriarch.name}</span>
           </div>
@@ -372,12 +379,12 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
 
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
-        { id: "sec-info", label: "概览" },
-        { id: "sec-bio", label: "生平事迹" },
-        { id: "sec-teaching", label: "核心教义" },
-        { id: "sec-teachings", label: "相关祖训" },
-        { id: "reviews", label: "评价" },
-        { id: "sec-faq", label: "常见问题" },
+        { id: "sec-info", label: t("patriarchDetail.navOverview") },
+        { id: "sec-bio", label: t("patriarchDetail.navBiography") },
+        { id: "sec-teaching", label: t("patriarchDetail.navCoreTeaching") },
+        { id: "sec-teachings", label: t("patriarchDetail.navRelatedTeachings") },
+        { id: "reviews", label: t("patriarchDetail.navReviews") },
+        { id: "sec-faq", label: t("patriarchDetail.navFaq") },
       ]} />
 
       {/* ═══ 两栏布局 ═══ */}
@@ -429,13 +436,13 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
 
             {/* 生平事迹 */}
             <div id="sec-bio" className="mt-6">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-3">生平事迹</h2>
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("patriarchDetail.biography")}</h2>
               <p className="text-sm text-[#0f294d] leading-relaxed whitespace-pre-line">{patriarch.biography}</p>
             </div>
 
             {/* 核心教义 */}
             <div id="sec-teaching" className="mt-6">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-3">核心教义</h2>
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("patriarchDetail.coreTeaching")}</h2>
               <blockquote className="text-sm text-[#455873] leading-relaxed whitespace-pre-line font-serif italic border-l-4 border-[#3264ff]/30 pl-5 py-2 bg-[#f5f7fa] rounded-r-lg">
                 {patriarch.coreTeaching}
               </blockquote>
@@ -462,7 +469,7 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
                   <p className="font-semibold text-[#0f294d]">{patriarch.religion.name}</p>
                   <p className="text-sm text-[#8592a6]">{patriarch.religion.nameEn}</p>
                 </div>
-                <Link href={`/religions/${patriarch.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">了解更多 →</Link>
+                <Link href={`/religions/${patriarch.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">{t("patriarchDetail.learnMore")} →</Link>
               </div>
             )}
 
@@ -486,7 +493,7 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
 
             {/* 相关推荐 */}
             <div className="mt-6">
-              <RelatedEntities entityType="PATRIARCH" entityId={patriarch.id} title="相关推荐" />
+              <RelatedEntities entityType="PATRIARCH" entityId={patriarch.id} title={t("patriarchDetail.relatedRecommendations")} />
             </div>
           </div>
 
@@ -504,7 +511,7 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
             <div className="flex items-center gap-1 text-sm">
               <span className="px-1 py-0.5 rounded text-[10px] font-bold bg-[#00b341] text-white">{reviewStats.averageRating.toFixed(1)}</span>
               <span className="text-[#0f294d] font-medium">
-                {reviewStats.averageRating >= 4.5 ? "卓越" : reviewStats.averageRating >= 4 ? "优秀" : "很好"}
+                {reviewStats.averageRating >= 4.5 ? t("patriarchDetail.ratingExcellent") : reviewStats.averageRating >= 4 ? t("patriarchDetail.ratingGreat") : t("patriarchDetail.ratingGood")}
               </span>
             </div>
           ) : (
@@ -515,7 +522,7 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
           href={`/chat?q=${encodeURIComponent(`请介绍${patriarch.name}的生平和核心教义`)}`}
           className="px-5 py-2.5 bg-[#3264ff] hover:bg-[#2854e0] text-white font-bold rounded-lg text-sm transition-colors"
         >
-          AI深度解读
+          {t("patriarchDetail.aiDeepAnalysis")}
         </Link>
       </div>
 

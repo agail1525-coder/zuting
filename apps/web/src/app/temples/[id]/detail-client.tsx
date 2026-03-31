@@ -19,6 +19,7 @@ import type { Temple, Route, ReviewStats, Review, HolySite } from "@/lib/api";
 /* ═══ Trip.com 画廊 — 左大图+右竖排 ═══ */
 
 function GalleryGrid({ image, name, religion }: { image: string | null; name: string; religion?: { symbol?: string | null } }) {
+  const { t } = useTranslation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   if (!image) {
@@ -36,7 +37,7 @@ function GalleryGrid({ image, name, religion }: { image: string | null; name: st
         <OptimizedImage src={image} alt={name} fill className="object-cover" priority />
         <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm flex items-center gap-1.5">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
-          查看大图
+          {t("templeDetail.viewLargeImage")}
         </div>
       </div>
       {lightboxOpen && (
@@ -68,7 +69,8 @@ function JoinusBestBadge() {
 
 function GreenDotRating({ rating, count }: { rating: number; count: number }) {
   const filled = Math.round(rating);
-  const label = rating >= 4.5 ? "卓越" : rating >= 4 ? "优秀" : rating >= 3.5 ? "很好" : rating >= 3 ? "不错" : "一般";
+  const { t } = useTranslation();
+  const label = rating >= 4.5 ? t("templeDetail.ratingExcellent") : rating >= 4 ? t("templeDetail.ratingGreat") : rating >= 3.5 ? t("templeDetail.ratingGood") : rating >= 3 ? t("templeDetail.ratingOk") : t("templeDetail.ratingAverage");
   return (
     <div className="flex items-center gap-2">
       <div className="flex gap-0.5">
@@ -78,7 +80,7 @@ function GreenDotRating({ rating, count }: { rating: number; count: number }) {
       </div>
       <span className="text-sm font-bold text-[#0f294d]">{rating.toFixed(1)}/5</span>
       <span className="text-sm font-medium text-[#00b341]">{label}</span>
-      <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">({count}条评价)</a>
+      <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">({count}{t("templeDetail.reviewCount")})</a>
     </div>
   );
 }
@@ -86,13 +88,14 @@ function GreenDotRating({ rating, count }: { rating: number; count: number }) {
 /* ═══ 公告横幅 ═══ */
 
 function AnnouncementBanner() {
+  const { t } = useTranslation();
   return (
     <div className="bg-[#fff8e6] border border-[#ffe4a0] rounded-lg px-4 py-2.5 flex items-center gap-2 mb-4">
       <svg className="w-4 h-4 text-[#8b6914] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
       </svg>
-      <span className="text-sm text-[#8b6914] flex-1">限时优惠：预订包含此祖庭的路线享早鸟折扣</span>
-      <Link href="/promotions" className="text-sm text-[#3264ff] hover:underline font-medium whitespace-nowrap">查看详情 →</Link>
+      <span className="text-sm text-[#8b6914] flex-1">{t("templeDetail.announcementText")}</span>
+      <Link href="/promotions" className="text-sm text-[#3264ff] hover:underline font-medium whitespace-nowrap">{t("templeDetail.viewDetails")} →</Link>
     </div>
   );
 }
@@ -100,6 +103,7 @@ function AnnouncementBanner() {
 /* ═══ 评分分布图 ═══ */
 
 function RatingDistribution({ stats }: { stats: ReviewStats }) {
+  const { t } = useTranslation();
   const dist = [
     { star: 5, pct: 68 }, { star: 4, pct: 22 }, { star: 3, pct: 6 }, { star: 2, pct: 3 }, { star: 1, pct: 1 },
   ];
@@ -112,7 +116,7 @@ function RatingDistribution({ stats }: { stats: ReviewStats }) {
             <span key={i} className={`w-2 h-2 rounded-full ${i <= Math.round(stats.averageRating) ? "bg-[#00b341]" : "bg-gray-300"}`} />
           ))}
         </div>
-        <p className="text-xs text-[#8592a6] mt-1">{stats.totalCount}条评价</p>
+        <p className="text-xs text-[#8592a6] mt-1">{stats.totalCount}{t("templeDetail.reviewCount")}</p>
       </div>
       <div className="flex-1 space-y-1.5">
         {dist.map((d) => (
@@ -132,6 +136,7 @@ function RatingDistribution({ stats }: { stats: ReviewStats }) {
 /* ═══ 评价预览 ═══ */
 
 function ReviewPreview({ targetType, targetId, name }: { targetType: string; targetId: string; name: string }) {
+  const { t } = useTranslation();
   const [review, setReview] = useState<Review | null>(null);
   useEffect(() => {
     fetchReviews(targetType, targetId, 1)
@@ -139,12 +144,12 @@ function ReviewPreview({ targetType, targetId, name }: { targetType: string; tar
       .catch(() => {});
   }, [targetType, targetId]);
   if (!review) return null;
-  const label = review.rating >= 4.5 ? "卓越" : review.rating >= 4 ? "优秀" : review.rating >= 3 ? "不错" : "一般";
+  const label = review.rating >= 4.5 ? t("templeDetail.ratingExcellent") : review.rating >= 4 ? t("templeDetail.ratingGreat") : review.rating >= 3 ? t("templeDetail.ratingOk") : t("templeDetail.ratingAverage");
   return (
     <div className="border border-gray-200 rounded-xl p-4 mt-6">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-medium text-[#8592a6]">朝圣者对{name}的评价</p>
-        <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">查看更多评价</a>
+        <p className="text-sm font-medium text-[#8592a6]">{t("templeDetail.pilgrimReviewOf", { name })}</p>
+        <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">{t("templeDetail.viewMoreReviews")}</a>
       </div>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-[#00b341] text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -152,7 +157,7 @@ function ReviewPreview({ targetType, targetId, name }: { targetType: string; tar
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-[#0f294d]">{review.user?.nickname || "匿名用户"}</span>
+            <span className="text-sm font-medium text-[#0f294d]">{review.user?.nickname || t("templeDetail.anonymousUser")}</span>
             <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-[#00b341] text-white">{review.rating.toFixed(1)}/5</span>
             <span className="text-sm text-[#00b341] font-medium">{label}</span>
           </div>
@@ -166,6 +171,7 @@ function ReviewPreview({ targetType, targetId, name }: { targetType: string; tar
 /* ═══ 推荐路线区 — Trip.com Tickets风格 ═══ */
 
 function RelatedRoutes() {
+  const { t } = useTranslation();
   const [routes, setRoutes] = useState<Route[]>([]);
   useEffect(() => {
     fetchRoutes({ pageSize: 4, sort: "rating" })
@@ -180,10 +186,10 @@ function RelatedRoutes() {
     <div className="mt-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg font-bold text-[#0f294d]">推荐朝圣路线</h2>
-          <p className="text-sm text-[#8592a6] mt-0.5">从 <span className="text-[#ff6600] font-bold">¥{(lowestPrice / 100).toLocaleString()}</span>/人起</p>
+          <h2 className="text-lg font-bold text-[#0f294d]">{t("templeDetail.recommendedRoutes")}</h2>
+          <p className="text-sm text-[#8592a6] mt-0.5">{t("templeDetail.fromPrice")} <span className="text-[#ff6600] font-bold">¥{(lowestPrice / 100).toLocaleString()}</span>{t("templeDetail.perPerson")}</p>
         </div>
-        <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">查看全部 →</Link>
+        <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">{t("templeDetail.viewAll")} →</Link>
       </div>
       <div className="space-y-3">
         {routes.map((r) => {
@@ -193,22 +199,22 @@ function RelatedRoutes() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <Link href={`/routes/${r.slug}`} className="text-base font-bold text-[#0f294d] hover:text-[#3264ff] transition-colors">{r.title}</Link>
-                  {r.bookCount > 0 && <span className="text-xs text-[#8592a6] ml-2">{r.bookCount}+ 人已预订</span>}
+                  {r.bookCount > 0 && <span className="text-xs text-[#8592a6] ml-2">{r.bookCount}+ {t("templeDetail.booked")}</span>}
                   <p className="text-sm text-[#8592a6] mt-1">{r.subtitle}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="px-2 py-0.5 text-xs rounded bg-blue-50 text-blue-600 border border-blue-100">{r.duration}天{r.nights}晚</span>
                     <span className="px-2 py-0.5 text-xs rounded bg-green-50 text-green-600 border border-green-100 flex items-center gap-0.5">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 12l2 2 4-4" /></svg>
-                      即时确认
+                      {t("templeDetail.instantConfirm")}
                     </span>
-                    <span className="px-2 py-0.5 text-xs rounded bg-gray-50 text-gray-600 border border-gray-100">14天免费取消</span>
+                    <span className="px-2 py-0.5 text-xs rounded bg-gray-50 text-gray-600 border border-gray-100">{t("templeDetail.freeCancellation14")}</span>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-xs text-[#8592a6]">起价</p>
+                  <p className="text-xs text-[#8592a6]">{t("templeDetail.startingPrice")}</p>
                   <p className="text-2xl font-bold text-[#ff6600]">¥{price}</p>
                   <Link href={`/routes/${r.slug}`} className="mt-2 inline-block px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white text-sm font-bold rounded-lg transition-colors">
-                    立即预订
+                    {t("templeDetail.bookNow")}
                   </Link>
                 </div>
               </div>
@@ -223,17 +229,18 @@ function RelatedRoutes() {
 /* ═══ FAQ手风琴 ═══ */
 
 function FAQSection({ templeName, country }: { templeName: string; country: string }) {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `如何到达${templeName}？`, a: `${templeName}位于${country}，可通过公共交通或自驾前往。建议提前查看具体交通路线。推荐使用AI规划师获取详细交通方案。` },
-    { q: "最佳参访时间是什么时候？", a: "一般推荐春秋两季参访，天气宜人且游客相对较少。重要宗教节日期间会有特殊法会活动。" },
-    { q: "需要购买门票吗？", a: "不同祖庭的门票政策各异。部分寺院免费开放，部分收取香火费用。具体请查看路线详情或咨询AI规划师。" },
-    { q: "可以参加法会活动吗？", a: "多数祖庭定期举办法会、禅修等宗教活动，欢迎信众参与。具体活动安排请提前咨询寺院客堂。" },
-    { q: "有素斋提供吗？", a: "大部分祖庭设有斋堂，提供素斋餐饮。部分祖庭还提供挂单住宿服务，需提前预约。" },
+    { q: t("templeDetail.faqHowToReach", { name: templeName }), a: t("templeDetail.faqHowToReachAnswer", { name: templeName, country }) },
+    { q: t("templeDetail.faqBestTime"), a: t("templeDetail.faqBestTimeAnswer") },
+    { q: t("templeDetail.faqTickets"), a: t("templeDetail.faqTicketsAnswer") },
+    { q: t("templeDetail.faqCeremonies"), a: t("templeDetail.faqCeremoniesAnswer") },
+    { q: t("templeDetail.faqVegetarian"), a: t("templeDetail.faqVegetarianAnswer") },
   ];
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">常见问题</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("templeDetail.faq")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {faqs.map((faq, i) => (
           <div key={i}>
@@ -257,16 +264,17 @@ function FAQSection({ templeName, country }: { templeName: string; country: stri
 /* ═══ 同信仰祖庭推荐 ═══ */
 
 function NearbyTemples({ current }: { current: Temple }) {
+  const { t } = useTranslation();
   const [temples, setTemples] = useState<Temple[]>([]);
   useEffect(() => {
     fetchTemples(current.religionId)
-      .then((data) => setTemples(data.filter((t) => t.id !== current.id).slice(0, 6)))
+      .then((data) => setTemples(data.filter((tpl) => tpl.id !== current.id).slice(0, 6)))
       .catch(() => {});
   }, [current.id, current.religionId]);
   if (temples.length === 0) return null;
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">同信仰祖庭</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("templeDetail.sameReligionTemples")}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {temples.map((t) => (
           <Link key={t.id} href={`/temples/${t.id}`} className="group block">
@@ -295,6 +303,7 @@ function NearbyTemples({ current }: { current: Temple }) {
 /* ═══ Sticky CTA — Trip.com风格 ═══ */
 
 function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: number | null }) {
+  const { t } = useTranslation();
   const mapSite: HolySite | null = temple.latitude && temple.longitude ? {
     id: temple.id, name: temple.name, nameEn: temple.nameEn || "",
     country: temple.country, latitude: temple.latitude, longitude: temple.longitude,
@@ -307,33 +316,33 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
       <div className="bg-white rounded-xl border border-gray-200 p-5" style={{ boxShadow: "0 4px 20px rgba(15,41,77,0.12)" }}>
         {lowestPrice !== null && lowestPrice > 0 ? (
           <>
-            <p className="text-xs text-[#8592a6]">路线起价</p>
+            <p className="text-xs text-[#8592a6]">{t("templeDetail.routeStartingPrice")}</p>
             <p className="text-3xl font-bold text-[#ff6600]">¥{(lowestPrice / 100).toLocaleString()}</p>
-            <p className="text-xs text-[#8592a6]">每人起</p>
+            <p className="text-xs text-[#8592a6]">{t("templeDetail.perPersonFrom")}</p>
             <Link href="#routes" className="mt-4 block w-full py-3 rounded-lg bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold text-center transition-colors text-base">
-              立即预订
+              {t("templeDetail.bookNow")}
             </Link>
           </>
         ) : (
           <>
-            <p className="text-center text-sm text-[#8592a6]">探访祖庭</p>
+            <p className="text-center text-sm text-[#8592a6]">{t("templeDetail.visitTemple")}</p>
             <p className="text-center text-lg font-bold text-[#0f294d] mt-1">{temple.name}</p>
-            {temple.foundingDate && <p className="text-center text-sm text-[#8592a6] mt-0.5">始建于 {temple.foundingDate}</p>}
+            {temple.foundingDate && <p className="text-center text-sm text-[#8592a6] mt-0.5">{t("templeDetail.foundedIn")} {temple.foundingDate}</p>}
           </>
         )}
         <Link
           href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"祖庭的朝圣路线`)}`}
           className="mt-3 block w-full py-2.5 rounded-lg bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold text-center transition-colors text-sm"
         >
-          AI规划师咨询
+          {t("templeDetail.aiPlannerConsult")}
         </Link>
         <Link href="/routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
-          查看朝圣路线
+          {t("templeDetail.viewPilgrimageRoutes")}
         </Link>
 
         {/* 保障标签 */}
         <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-          {["即时确认", "14天免费取消", "安全支付保障"].map((label) => (
+          {[t("templeDetail.instantConfirm"), t("templeDetail.freeCancellation14"), t("templeDetail.securePayment")].map((label) => (
             <div key={label} className="flex items-center gap-2 text-xs text-[#455873]">
               <svg className="w-3.5 h-3.5 text-[#00b341] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
               {label}
@@ -356,7 +365,7 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
             <WorldMapDynamic holySites={[mapSite]} height="144px" selectedSiteId={temple.id} interactive={false} />
           </div>
           <Link href={`/map?lat=${temple.latitude}&lng=${temple.longitude}`} className="block text-center text-sm text-[#3264ff] hover:underline py-2 border-t border-gray-100">
-            查看大地图 →
+            {t("templeDetail.viewFullMap")} →
           </Link>
         </div>
       )}
@@ -366,10 +375,10 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
         <div className="flex items-center gap-3">
           <svg className="w-6 h-6 text-[#3264ff] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-[#0f294d]">朝圣日志</p>
-            <p className="text-xs text-[#8592a6]">记录参访体验</p>
+            <p className="text-sm font-semibold text-[#0f294d]">{t("templeDetail.pilgrimJournal")}</p>
+            <p className="text-xs text-[#8592a6]">{t("templeDetail.recordVisitExperience")}</p>
           </div>
-          <Link href="/journals" className="px-3 py-1.5 rounded-lg bg-[#3264ff] text-white text-xs font-medium hover:bg-[#2854e0] transition-colors">写日记</Link>
+          <Link href="/journals" className="px-3 py-1.5 rounded-lg bg-[#3264ff] text-white text-xs font-medium hover:bg-[#2854e0] transition-colors">{t("templeDetail.writeJournal")}</Link>
         </div>
       </div>
     </div>
@@ -379,6 +388,7 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
 /* ═══ ExpandableText ═══ */
 
 function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: number }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const need = text.length > maxLength;
   return (
@@ -388,7 +398,7 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
       </p>
       {need && (
         <button onClick={() => setExpanded(!expanded)} className="mt-2 text-[#3264ff] hover:underline text-sm font-medium">
-          {expanded ? "收起 △" : "展开全部 ▽"}
+          {expanded ? t("templeDetail.collapse") : t("templeDetail.expandAll")}
         </button>
       )}
     </div>
@@ -444,13 +454,14 @@ function SectionNav({ sections }: { sections: { id: string; label: string }[] })
 /* ═══ P2. 热门徽章 ═══ */
 
 function PopularityBadge({ count }: { count: number }) {
+  const { t } = useTranslation();
   if (count <= 0) return null;
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ff6600]/10 border border-[#ff6600]/20">
       <svg className="w-3 h-3 text-[#ff6600]" fill="currentColor" viewBox="0 0 20 20">
         <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
       </svg>
-      <span className="text-xs font-bold text-[#ff6600]">本周{count}人浏览</span>
+      <span className="text-xs font-bold text-[#ff6600]">{t("templeDetail.weeklyViews", { count })}</span>
     </span>
   );
 }
@@ -458,17 +469,18 @@ function PopularityBadge({ count }: { count: number }) {
 /* ═══ P3. 文化礼仪指南 ═══ */
 
 function CulturalEtiquette() {
+  const { t } = useTranslation();
   const rules = [
-    { icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", title: "着装规范", desc: "穿着得体，遮盖肩膀和膝盖" },
-    { icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z", title: "拍照须知", desc: "殿堂内禁止拍照和使用闪光灯" },
-    { icon: "M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z", title: "保持安静", desc: "殿堂内保持肃静，手机调为静音" },
-    { icon: "M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11", title: "参拜礼仪", desc: "请遵循当地宗教参拜方式" },
-    { icon: "M13 10V3L4 14h7v7l9-11h-7z", title: "脱鞋区域", desc: "部分殿堂需脱鞋进入" },
-    { icon: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636", title: "禁忌事项", desc: "勿触摸佛像，勿用手指向神像" },
+    { icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", title: t("templeDetail.dressCode"), desc: t("templeDetail.dressCodeDesc") },
+    { icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z", title: t("templeDetail.photoRules"), desc: t("templeDetail.photoRulesDesc") },
+    { icon: "M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z", title: t("templeDetail.keepQuiet"), desc: t("templeDetail.keepQuietDesc") },
+    { icon: "M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11", title: t("templeDetail.worshipEtiquette"), desc: t("templeDetail.worshipEtiquetteDesc") },
+    { icon: "M13 10V3L4 14h7v7l9-11h-7z", title: t("templeDetail.shoesOff"), desc: t("templeDetail.shoesOffDesc") },
+    { icon: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636", title: t("templeDetail.taboos"), desc: t("templeDetail.taboosDesc") },
   ];
   return (
     <div className="mt-6" id="sec-etiquette">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">参访礼仪指南</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("templeDetail.visitEtiquetteGuide")}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {rules.map((r, i) => (
           <div key={i} className="p-3 bg-[#f5f7fa] rounded-xl border border-gray-100">
@@ -487,7 +499,8 @@ function CulturalEtiquette() {
 /* ═══ P4. 最佳到访时间 ═══ */
 
 function BestTimeToVisit() {
-  const months = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  const { t } = useTranslation();
+  const months = [t("templeDetail.month1"),t("templeDetail.month2"),t("templeDetail.month3"),t("templeDetail.month4"),t("templeDetail.month5"),t("templeDetail.month6"),t("templeDetail.month7"),t("templeDetail.month8"),t("templeDetail.month9"),t("templeDetail.month10"),t("templeDetail.month11"),t("templeDetail.month12")];
   const heat = [3,3,4,5,5,3,2,2,4,5,5,3];
   const currentMonth = new Date().getMonth();
   const colors = ["bg-gray-200","bg-gray-200","bg-green-100","bg-green-200","bg-green-300","bg-green-400"];
@@ -495,7 +508,7 @@ function BestTimeToVisit() {
     <div className="mt-4 p-4 bg-[#f5f7fa] rounded-xl border border-gray-100">
       <div className="flex items-center gap-2 mb-3">
         <svg className="w-4 h-4 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-        <span className="text-sm font-medium text-[#0f294d]">最佳到访时间</span>
+        <span className="text-sm font-medium text-[#0f294d]">{t("templeDetail.bestTimeToVisit")}</span>
       </div>
       <div className="grid grid-cols-12 gap-1">
         {months.map((m, i) => (
@@ -506,9 +519,9 @@ function BestTimeToVisit() {
         ))}
       </div>
       <div className="flex items-center gap-3 mt-2 text-[10px] text-[#8592a6]">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-400" /> 最佳</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-200" /> 适宜</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-gray-200" /> 一般</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-400" /> {t("templeDetail.best")}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-200" /> {t("templeDetail.suitable")}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-gray-200" /> {t("templeDetail.average")}</span>
       </div>
     </div>
   );
@@ -517,17 +530,18 @@ function BestTimeToVisit() {
 /* ═══ P5. 无障碍信息 ═══ */
 
 function AccessibilityInfo() {
+  const { t } = useTranslation();
   const items = [
-    { available: true, label: "轮椅通道" },
-    { available: true, label: "无障碍洗手间" },
-    { available: false, label: "盲文指引" },
-    { available: true, label: "老年人友好" },
-    { available: true, label: "婴儿车通行" },
-    { available: false, label: "手语导览" },
+    { available: true, label: t("templeDetail.wheelchairAccess") },
+    { available: true, label: t("templeDetail.accessibleRestroom") },
+    { available: false, label: t("templeDetail.brailleGuide") },
+    { available: true, label: t("templeDetail.elderlyFriendly") },
+    { available: true, label: t("templeDetail.strollerAccess") },
+    { available: false, label: t("templeDetail.signLanguageTour") },
   ];
   return (
     <div className="mt-4">
-      <h3 className="text-sm font-bold text-[#0f294d] mb-2">无障碍设施</h3>
+      <h3 className="text-sm font-bold text-[#0f294d] mb-2">{t("templeDetail.accessibilityFacilities")}</h3>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-1.5 text-xs">
@@ -547,11 +561,12 @@ function AccessibilityInfo() {
 /* ═══ P6. 支付方式图标 ═══ */
 
 function PaymentMethodIcons() {
+  const { t } = useTranslation();
   return (
     <div className="mt-3 pt-3 border-t border-gray-100">
-      <p className="text-[10px] text-[#8592a6] mb-2">支持支付方式</p>
+      <p className="text-[10px] text-[#8592a6] mb-2">{t("templeDetail.supportedPayments")}</p>
       <div className="flex items-center gap-2">
-        {["微信支付", "支付宝", "Visa", "银联"].map((m) => (
+        {[t("templeDetail.wechatPay"), t("templeDetail.alipay"), "Visa", t("templeDetail.unionPay")].map((m) => (
           <span key={m} className="px-2 py-1 bg-[#f5f7fa] rounded text-[10px] text-[#455873] border border-gray-100">{m}</span>
         ))}
       </div>
@@ -562,19 +577,20 @@ function PaymentMethodIcons() {
 /* ═══ P7. 出行准备清单 ═══ */
 
 function PackingChecklist() {
+  const { t } = useTranslation();
   const items = [
-    { checked: true, label: "有效身份证件/护照" },
-    { checked: true, label: "舒适的步行鞋" },
-    { checked: true, label: "防晒帽/遮阳伞" },
-    { checked: true, label: "饮用水" },
-    { checked: true, label: "得体的长袖衣物" },
-    { checked: false, label: "相机（注意拍照规定）" },
-    { checked: false, label: "雨具（视天气）" },
-    { checked: false, label: "小额现金/零钱" },
+    { checked: true, label: t("templeDetail.packingId") },
+    { checked: true, label: t("templeDetail.packingShoes") },
+    { checked: true, label: t("templeDetail.packingSunHat") },
+    { checked: true, label: t("templeDetail.packingWater") },
+    { checked: true, label: t("templeDetail.packingClothing") },
+    { checked: false, label: t("templeDetail.packingCamera") },
+    { checked: false, label: t("templeDetail.packingRainGear") },
+    { checked: false, label: t("templeDetail.packingCash") },
   ];
   return (
     <div className="mt-6" id="sec-packing">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-3">出行准备清单</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("templeDetail.packingChecklist")}</h2>
       <div className="grid grid-cols-2 gap-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
@@ -594,16 +610,17 @@ function PackingChecklist() {
 /* ═══ P10. 旅行者类型标签 ═══ */
 
 function TravelerTypeTags() {
+  const { t } = useTranslation();
   const types = [
-    { label: "独行朝圣", pct: 35 },
-    { label: "家庭出行", pct: 25 },
-    { label: "情侣同行", pct: 20 },
-    { label: "朋友结伴", pct: 15 },
-    { label: "团队参访", pct: 5 },
+    { label: t("templeDetail.travelerSolo"), pct: 35 },
+    { label: t("templeDetail.travelerFamily"), pct: 25 },
+    { label: t("templeDetail.travelerCouple"), pct: 20 },
+    { label: t("templeDetail.travelerFriends"), pct: 15 },
+    { label: t("templeDetail.travelerGroup"), pct: 5 },
   ];
   return (
     <div className="mb-4 p-4 bg-[#f5f7fa] rounded-xl">
-      <p className="text-sm font-medium text-[#0f294d] mb-3">旅行者类型分布</p>
+      <p className="text-sm font-medium text-[#0f294d] mb-3">{t("templeDetail.travelerDistribution")}</p>
       <div className="space-y-2">
         {types.map((t) => (
           <div key={t.label} className="flex items-center gap-3">
@@ -622,16 +639,17 @@ function TravelerTypeTags() {
 /* ═══ 更多推荐手风琴 ═══ */
 
 function MoreRecommendations({ religion, country }: { religion?: string; country: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState<string | null>(null);
   const items = [
-    { key: "nearby", label: `${country}附近祖庭` },
-    { key: "routes", label: "热门朝圣路线" },
-    { key: "guides", label: "推荐朝圣攻略" },
-    ...(religion ? [{ key: "religion", label: `${religion}相关祖庭` }] : []),
+    { key: "nearby", label: t("templeDetail.nearbyTemples", { country }) },
+    { key: "routes", label: t("templeDetail.popularRoutes") },
+    { key: "guides", label: t("templeDetail.recommendedGuides") },
+    ...(religion ? [{ key: "religion", label: t("templeDetail.relatedTemples", { religion }) }] : []),
   ];
   return (
     <div className="mt-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">更多推荐</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("templeDetail.moreRecommendations")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {items.map((item) => (
           <button key={item.key} onClick={() => setOpen(open === item.key ? null : item.key)}
@@ -683,8 +701,8 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
       <div className="max-w-[1120px] mx-auto px-4 pt-20 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-[#8592a6]">
-            <Link href="/" className="hover:text-[#3264ff]">首页</Link><span>&gt;</span>
-            <Link href="/temples" className="hover:text-[#3264ff]">{t("nav.temples") || "祖庭"}</Link><span>&gt;</span>
+            <Link href="/" className="hover:text-[#3264ff]">{t("nav.home")}</Link><span>&gt;</span>
+            <Link href="/temples" className="hover:text-[#3264ff]">{t("nav.temples")}</Link><span>&gt;</span>
             {temple.religion && (<><Link href={`/religions/${temple.religion.slug}`} className="hover:text-[#3264ff]">{temple.religion.name}</Link><span>&gt;</span></>)}
             <span className="text-[#0f294d]">{temple.name}</span>
           </div>
@@ -704,14 +722,14 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
 
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
-        { id: "sec-info", label: "概览" },
-        { id: "routes", label: "路线预订" },
-        { id: "sec-intro", label: "祖庭介绍" },
-        { id: "reviews", label: "评价" },
-        { id: "sec-facilities", label: "设施" },
-        { id: "sec-etiquette", label: "参访礼仪" },
-        { id: "sec-packing", label: "出行准备" },
-        { id: "sec-faq", label: "常见问题" },
+        { id: "sec-info", label: t("templeDetail.navOverview") },
+        { id: "routes", label: t("templeDetail.navRouteBooking") },
+        { id: "sec-intro", label: t("templeDetail.navIntro") },
+        { id: "reviews", label: t("templeDetail.navReviews") },
+        { id: "sec-facilities", label: t("templeDetail.navFacilities") },
+        { id: "sec-etiquette", label: t("templeDetail.navEtiquette") },
+        { id: "sec-packing", label: t("templeDetail.navPacking") },
+        { id: "sec-faq", label: t("templeDetail.navFaq") },
       ]} />
 
       {/* 两栏布局 */}
@@ -754,7 +772,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                 {temple.foundingDate && (
                   <span className="px-2.5 py-1 bg-[#f5f7fa] text-[#455873] rounded text-xs flex items-center gap-1">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                    始建于 {temple.foundingDate}{foundingAge ? ` · 距今${foundingAge}年` : ""}
+                    {t("templeDetail.foundedIn")} {temple.foundingDate}{foundingAge ? ` · ${t("templeDetail.yearsAgo", { years: foundingAge })}` : ""}
                   </span>
                 )}
               </div>
@@ -766,10 +784,10 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#00b341]" />
-                  <span className="font-medium text-[#00b341]">开放参观</span>
+                  <span className="font-medium text-[#00b341]">{t("templeDetail.openForVisit")}</span>
                 </span>
                 <span className="text-[#8592a6]">·</span>
-                <span className="text-[#455873]">建议参访时长 2-3小时</span>
+                <span className="text-[#455873]">{t("templeDetail.suggestedDuration")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -779,18 +797,18 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                   )}
                 </span>
                 {temple.latitude && temple.longitude && (
-                  <Link href={`/map?lat=${temple.latitude}&lng=${temple.longitude}`} className="text-[#3264ff] hover:underline text-sm">查看地图</Link>
+                  <Link href={`/map?lat=${temple.latitude}&lng=${temple.longitude}`} className="text-[#3264ff] hover:underline text-sm">{t("templeDetail.viewMap")}</Link>
                 )}
               </div>
               {temple.foundingDate && (
                 <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                   <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                  <span>建立时间: {temple.foundingDate}{foundingAge ? ` (距今约${foundingAge}年)` : ""}</span>
+                  <span>{t("templeDetail.foundedTime")}: {temple.foundingDate}{foundingAge ? ` (${t("templeDetail.approxYearsAgo", { years: foundingAge })})` : ""}</span>
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-                <span>着装要求: 得体着装，部分殿堂需脱鞋</span>
+                <span>{t("templeDetail.dressRequirement")}</span>
               </div>
 
               {/* 最佳到访时间热力图 */}
@@ -807,7 +825,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
 
             {/* 介绍 */}
             <div id="sec-intro" className="mt-6">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-3">祖庭介绍</h2>
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("templeDetail.templeIntroduction")}</h2>
               <ExpandableText text={temple.description} maxLength={300} />
             </div>
 
@@ -819,7 +837,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                   <p className="font-semibold text-[#0f294d]">{temple.religion.name}</p>
                   <p className="text-sm text-[#8592a6]">{temple.religion.nameEn}</p>
                 </div>
-                <Link href={`/religions/${temple.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">了解更多 →</Link>
+                <Link href={`/religions/${temple.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">{t("templeDetail.learnMore")} →</Link>
               </div>
             )}
 
@@ -836,11 +854,11 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
 
             {/* 设施 */}
             <div id="sec-facilities" className="mt-6">
-              <h2 className="text-base font-bold text-[#0f294d] mb-3">设施与服务</h2>
+              <h2 className="text-base font-bold text-[#0f294d] mb-3">{t("templeDetail.facilitiesAndServices")}</h2>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "停车场" }, { label: "洗手间" }, { label: "无障碍通道" },
-                  { label: "茶室/斋堂" }, { label: "法物流通处" }, { label: "导览讲解" },
+                  { label: t("templeDetail.parking") }, { label: t("templeDetail.restroom") }, { label: t("templeDetail.accessiblePath") },
+                  { label: t("templeDetail.teaRoom") }, { label: t("templeDetail.religiousGoods") }, { label: t("templeDetail.guidedTour") },
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
                     <svg className="w-4 h-4 text-[#00b341] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -867,7 +885,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
             <div className="mt-6"><UGCPhotoWall targetType="TEMPLE" targetId={temple.id} /></div>
             <div className="mt-6"><QASection entityType="TEMPLE" entityId={temple.id} /></div>
             <NearbyTemples current={temple} />
-            <div className="mt-6"><RelatedEntities entityType="TEMPLE" entityId={temple.id} title="你可能也喜欢" /></div>
+            <div className="mt-6"><RelatedEntities entityType="TEMPLE" entityId={temple.id} title={t("templeDetail.youMayAlsoLike")} /></div>
             <MoreRecommendations religion={temple.religion?.name} country={temple.country} />
           </div>
 
@@ -883,14 +901,14 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
         <div className="flex-1 min-w-0">
           {lowestPrice !== null && lowestPrice > 0 ? (
             <div>
-              <span className="text-xs text-[#8592a6]">起价 </span>
+              <span className="text-xs text-[#8592a6]">{t("templeDetail.startingPrice")} </span>
               <span className="text-lg font-bold text-[#ff6600]">¥{(lowestPrice / 100).toLocaleString()}</span>
             </div>
           ) : reviewStats && reviewStats.totalCount > 0 ? (
             <div className="flex items-center gap-1 text-sm">
               <span className="px-1 py-0.5 rounded text-[10px] font-bold bg-[#00b341] text-white">{reviewStats.averageRating.toFixed(1)}</span>
               <span className="text-[#0f294d] font-medium">
-                {reviewStats.averageRating >= 4.5 ? "卓越" : reviewStats.averageRating >= 4 ? "优秀" : "很好"}
+                {reviewStats.averageRating >= 4.5 ? t("templeDetail.ratingExcellent") : reviewStats.averageRating >= 4 ? t("templeDetail.ratingGreat") : t("templeDetail.ratingGood")}
               </span>
             </div>
           ) : (
@@ -901,7 +919,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
           href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"的朝圣路线`)}`}
           className="px-5 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
         >
-          立即预订
+          {t("templeDetail.bookNow")}
         </Link>
       </div>
       <MobileNav />
