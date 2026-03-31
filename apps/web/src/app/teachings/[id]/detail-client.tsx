@@ -18,6 +18,39 @@ const RELIGION_ICONS: Record<string, string> = {
   神道教: "⛩️", 藏传佛教: "🏔️", 巴哈伊教: "✨",
 };
 
+/* ═══ FAQ手风琴 ═══ */
+
+function FAQSection({ teachingName, religionName }: { teachingName: string; religionName?: string }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const faqs = [
+    { q: `"${teachingName}"的核心含义是什么？`, a: `此祖训是${religionName ?? "传统"}文化的核心教义之一，蕴含着对修行和人生的深刻洞见。建议结合原文和释义深入理解，或使用AI助手获取更详细的解读。` },
+    { q: "如何在日常中践行此祖训？", a: "可以每日诵读此祖训并静心思考其含义，在日常生活和工作中寻找实践的机会。朝圣途中结合实际体验，会有更深的体悟。" },
+    { q: "有哪些相关的修行建议？", a: "建议结合同系祖训一起学习，了解完整的教义体系。可以参加相关寺院的讲座活动，或在社区中与其他修行者交流心得。" },
+    { q: "如何记录修行感悟？", a: "平台提供朝圣日志功能，可以随时记录您对祖训的感悟。这些记录不仅是个人修行的宝贵资料，也可以分享给社区帮助他人。" },
+  ];
+  return (
+    <div className="mt-10">
+      <h2 className="text-xl font-bold text-gray-900 mb-4">常见问题</h2>
+      <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
+        {faqs.map((faq, i) => (
+          <div key={i}>
+            <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
+              className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[#f5f7fa] transition-colors">
+              <span className="font-medium text-[#0f294d] text-sm pr-4">{faq.q}</span>
+              <svg className={`w-4 h-4 text-[#8592a6] shrink-0 transition-transform ${openIdx === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openIdx === i && (
+              <div className="px-4 pb-4"><p className="text-sm text-[#455873] leading-relaxed">{faq.a}</p></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function SimilarTeachings({ currentId, religionId }: { currentId: string; religionId: string }) {
   const [items, setItems] = useState<Teaching[]>([]);
 
@@ -37,9 +70,9 @@ function SimilarTeachings({ currentId, religionId }: { currentId: string; religi
           <Link
             key={t.id}
             href={`/teachings/${t.id}`}
-            className="block bg-white rounded-xl p-5 border border-gray-100 hover:border-[#0066FF]/30 hover:shadow-sm transition-all group"
+            className="block bg-white rounded-xl p-5 border border-gray-100 hover:border-[#3264ff]/30 hover:shadow-sm transition-all group"
           >
-            <p className="font-medium text-gray-900 line-clamp-2 group-hover:text-[#0066FF] transition-colors">
+            <p className="font-medium text-gray-900 line-clamp-2 group-hover:text-[#3264ff] transition-colors">
               {t.name}
             </p>
             <p className="text-sm text-gray-500 mt-2 line-clamp-2">{t.originalText}</p>
@@ -55,7 +88,7 @@ function SimilarTeachings({ currentId, religionId }: { currentId: string; religi
 
 export default function TeachingDetailClient({ teaching }: { teaching: Teaching }) {
   const { t } = useTranslation();
-  const religionColor = teaching.religion?.color ?? "#0066FF";
+  const religionColor = teaching.religion?.color ?? "#3264ff";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,10 +154,10 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
 
           {/* ========== Original Text (featured) ========== */}
           <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h2 className="text-[#0066FF] font-serif font-bold text-xl mb-4">
+            <h2 className="text-[#3264ff] font-serif font-bold text-xl mb-4">
               {t("detail.originalText") || "原文"}
             </h2>
-            <blockquote className="text-gray-700 font-serif text-lg leading-relaxed whitespace-pre-line border-l-2 border-[#0066FF]/30 pl-6">
+            <blockquote className="text-gray-700 font-serif text-lg leading-relaxed whitespace-pre-line border-l-2 border-[#3264ff]/30 pl-6">
               {teaching.originalText}
             </blockquote>
           </div>
@@ -132,7 +165,7 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
           {/* ========== Translation / 释义 ========== */}
           {teaching.translationCn && (
             <div className="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-[#0066FF] font-serif font-bold text-lg mb-3">
+              <h2 className="text-[#3264ff] font-serif font-bold text-lg mb-3">
                 {t("detail.translation") || "释义"}
               </h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">
@@ -203,13 +236,16 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
             <QASection entityType="TEACHING" entityId={teaching.id} />
           </div>
 
+          {/* ========== FAQ ========== */}
+          <FAQSection teachingName={teaching.name} religionName={teaching.religion?.name} />
+
           {/* ========== Similar Teachings ========== */}
           {teaching.religionId && (
             <SimilarTeachings currentId={teaching.id} religionId={teaching.religionId} />
           )}
 
           {/* ========== Pilgrim Journal CTA ========== */}
-          <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10">
+          <div className="mt-8 bg-gradient-to-r from-[#3264ff]/5 to-blue-50 rounded-2xl p-6 border border-[#3264ff]/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📖</span>
@@ -220,7 +256,7 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
               </div>
               <Link
                 href="/journals"
-                className="px-4 py-2 rounded-xl bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
+                className="px-4 py-2 rounded-xl bg-[#3264ff] text-white text-sm font-medium hover:bg-[#2854e0] transition-colors shadow-sm"
               >
                 写日记
               </Link>
@@ -231,7 +267,7 @@ export default function TeachingDetailClient({ teaching }: { teaching: Teaching 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/chat"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
             >
               ✨ 向小鸿AI请教此祖训
             </Link>

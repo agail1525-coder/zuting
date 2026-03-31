@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import HolySiteCard from "@/components/HolySiteCard";
@@ -30,6 +30,85 @@ interface Props {
 
 type Tab = "holySites" | "temples" | "patriarchs" | "teachings";
 
+/* ═══ Sticky跳转导航栏 ═══ */
+
+function SectionNav({ sections }: { sections: { id: string; label: string }[] }) {
+  const [active, setActive] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-100px 0px -60% 0px" }
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [sections]);
+
+  if (!visible) return null;
+
+  return (
+    <div className="sticky top-[64px] z-30 bg-white border-b border-[#dadfe6] shadow-sm">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex gap-6 overflow-x-auto scrollbar-none">
+          {sections.map((s) => (
+            <a key={s.id} href={`#${s.id}`}
+              className={`py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                active === s.id ? "border-[#3264ff] text-[#3264ff]" : "border-transparent text-[#8592a6] hover:text-[#0f294d]"
+              }`}>{s.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ FAQ手风琴 ═══ */
+
+function FAQSection({ religionName }: { religionName: string }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const faqs = [
+    { q: `${religionName}的核心信仰是什么？`, a: `${religionName}有着悠久的历史和深厚的文化传承，其核心教义涵盖了对宇宙、生命和修行的独特理解。详细内容可通过平台的祖训和祖师板块深入了解。` },
+    { q: "如何开始了解这个信仰？", a: "建议从浏览相关圣地和祖庭开始，了解信仰的历史脉络。同时可以阅读祖训板块的经典原文，或使用AI规划师获取个性化的学习路径。" },
+    { q: "有哪些朝圣路线推荐？", a: "平台提供多条精品朝圣路线，涵盖各大信仰的核心圣地。可以通过路线板块筛选相关路线，或咨询AI规划师获取个性化推荐。" },
+    { q: "如何参与社区交流？", a: "欢迎在社区板块发表攻略、提问和分享照片。您也可以在朝圣日志中记录您的参访体验，与其他朝圣者交流心得。" },
+  ];
+  return (
+    <div className="mt-10" id="sec-faq">
+      <h2 className="text-xl font-bold text-gray-900 mb-4">常见问题</h2>
+      <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
+        {faqs.map((faq, i) => (
+          <div key={i}>
+            <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
+              className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[#f5f7fa] transition-colors">
+              <span className="font-medium text-[#0f294d] text-sm pr-4">{faq.q}</span>
+              <svg className={`w-4 h-4 text-[#8592a6] shrink-0 transition-transform ${openIdx === i ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openIdx === i && (
+              <div className="px-4 pb-4"><p className="text-sm text-[#455873] leading-relaxed">{faq.a}</p></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ReligionDetailClient({
   religion,
   holySites,
@@ -39,7 +118,7 @@ export default function ReligionDetailClient({
 }: Props) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("holySites");
-  const color = religion.color ?? "#0066FF";
+  const color = religion.color ?? "#3264ff";
   const totalItems = holySites.length + temples.length + patriarchs.length + teachings.length;
 
   const tabs: { key: Tab; label: string; count: number; icon: string }[] = [
@@ -60,7 +139,7 @@ export default function ReligionDetailClient({
         <div className="relative max-w-5xl mx-auto px-4 text-center">
           {/* Breadcrumb */}
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-6">
-            <Link href="/religions" className="hover:text-[#0066FF] transition-colors">
+            <Link href="/religions" className="hover:text-[#3264ff] transition-colors">
               {t("nav.religions") || "信仰"}
             </Link>
             <span>/</span>
@@ -98,7 +177,7 @@ export default function ReligionDetailClient({
                 className="text-center group cursor-pointer"
               >
                 <span className="text-2xl block mb-1">{tab.icon}</span>
-                <p className="text-2xl font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors">
+                <p className="text-2xl font-bold text-gray-900 group-hover:text-[#3264ff] transition-colors">
                   {tab.count}
                 </p>
                 <p className="text-gray-500 text-sm">{tab.label}</p>
@@ -107,6 +186,14 @@ export default function ReligionDetailClient({
           </div>
         </div>
       </div>
+
+      {/* Sticky跳转导航栏 */}
+      <SectionNav sections={[
+        { id: "sec-content", label: "内容浏览" },
+        { id: "sec-media", label: "多媒体" },
+        { id: "sec-reviews", label: "评价" },
+        { id: "sec-faq", label: "常见问题" },
+      ]} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         {/* ========== Social Proof ========== */}
@@ -144,6 +231,7 @@ export default function ReligionDetailClient({
         </div>
 
         {/* ========== Tab Content ========== */}
+        <div id="sec-content">
         {activeTab === "holySites" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {holySites.map((site) => (
@@ -174,7 +262,7 @@ export default function ReligionDetailClient({
               const icon = RELIGION_ICONS[religion.name] ?? "📜";
               return (
                 <Link key={teaching.id} href={`/teachings/${teaching.id}`}>
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 group cursor-pointer h-full flex overflow-hidden hover:shadow-md hover:border-[#0066FF]/20 transition-all">
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 group cursor-pointer h-full flex overflow-hidden hover:shadow-md hover:border-[#3264ff]/20 transition-all">
                     <div
                       className="w-14 flex-shrink-0 flex items-center justify-center"
                       style={{ backgroundColor: `${color}10` }}
@@ -182,7 +270,7 @@ export default function ReligionDetailClient({
                       <span className="text-xl">{icon}</span>
                     </div>
                     <div className="p-5 flex-1">
-                      <h3 className="font-serif font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors mb-2">
+                      <h3 className="font-serif font-bold text-gray-900 group-hover:text-[#3264ff] transition-colors mb-2">
                         {teaching.name}
                       </h3>
                       <p className="text-gray-500 text-sm font-serif leading-relaxed line-clamp-3">
@@ -199,13 +287,15 @@ export default function ReligionDetailClient({
           </div>
         )}
 
+        </div>{/* end sec-content */}
+
         {/* ========== Multimedia Tour ========== */}
-        <div className="mt-10">
+        <div id="sec-media" className="mt-10">
           <MediaTour entityType="RELIGION" entityId={religion.id} />
         </div>
 
         {/* ========== Reviews ========== */}
-        <div className="mt-10">
+        <div id="sec-reviews" className="mt-10">
           <ReviewSection targetType="RELIGION" targetId={religion.id} />
         </div>
 
@@ -214,11 +304,14 @@ export default function ReligionDetailClient({
           <QASection entityType="RELIGION" entityId={religion.id} />
         </div>
 
+        {/* ========== FAQ ========== */}
+        <FAQSection religionName={religion.name} />
+
         {/* ========== Bottom CTAs ========== */}
         <div className="text-center mt-12 space-y-4">
           <Link
             href={`/chat?q=${encodeURIComponent(`我想了解${religion.name}的朝圣路线`)}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
           >
             ✨ 探索{religion.name}朝圣路线
           </Link>

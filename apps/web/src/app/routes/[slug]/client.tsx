@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
@@ -65,7 +65,7 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
         {expanded || !needsTruncation ? text : text.slice(0, maxLength) + "..."}
       </p>
       {needsTruncation && (
-        <button onClick={() => setExpanded(!expanded)} className="mt-3 text-[#0066FF] hover:text-[#0052CC] text-sm font-medium transition-colors">
+        <button onClick={() => setExpanded(!expanded)} className="mt-3 text-[#3264ff] hover:text-[#0052CC] text-sm font-medium transition-colors">
           {expanded ? "收起 ▲" : "展开全部 ▼"}
         </button>
       )}
@@ -96,7 +96,7 @@ function FAQAccordion() {
               onClick={() => setOpenIdx(openIdx === i ? null : i)}
               className="w-full flex items-center justify-between py-4 text-left group"
             >
-              <span className="font-medium text-gray-800 group-hover:text-[#0066FF] transition-colors pr-4">
+              <span className="font-medium text-gray-800 group-hover:text-[#3264ff] transition-colors pr-4">
                 {item.q}
               </span>
               <span
@@ -194,7 +194,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-xl shadow-blue-500/30 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-[#3264ff] text-white rounded-full shadow-xl shadow-blue-500/30 flex items-center justify-center text-2xl hover:scale-110 transition-transform"
         title="问问小鸿"
       >
         🤖
@@ -203,7 +203,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
       {/* Quick panel */}
       {open && (
         <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-lg shadow-xl border border-[#dadfe6] overflow-hidden">
-          <div className="bg-[#0066FF] text-white px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#3264ff] text-white px-4 py-3 flex items-center justify-between">
             <span className="font-semibold text-sm">小鸿AI · 路线顾问</span>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">✕</button>
           </div>
@@ -219,7 +219,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
                 <Link
                   key={q}
                   href={`/chat?q=${encodeURIComponent(`关于路线"${routeTitle}"：${q}`)}`}
-                  className="block px-3 py-2 text-sm text-[#0066FF] bg-[#0066FF]/5 rounded-lg hover:bg-[#0066FF]/10 transition-colors border border-[#0066FF]/10"
+                  className="block px-3 py-2 text-sm text-[#3264ff] bg-[#3264ff]/5 rounded-lg hover:bg-[#3264ff]/10 transition-colors border border-[#3264ff]/10"
                 >
                   {q}
                 </Link>
@@ -227,7 +227,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
             </div>
             <Link
               href={`/chat?q=${encodeURIComponent(`我想了解路线"${routeTitle}"的详细信息`)}`}
-              className="block text-center text-sm text-[#0066FF] font-medium mt-2 hover:underline"
+              className="block text-center text-sm text-[#3264ff] font-medium mt-2 hover:underline"
             >
               打开完整聊天 →
             </Link>
@@ -257,7 +257,7 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
     <div className="mt-10">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-bold text-gray-900">你可能也喜欢</h2>
-        <Link href="/routes" className="text-sm text-[#0066FF] hover:underline">
+        <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">
           查看全部 →
         </Link>
       </div>
@@ -288,12 +288,12 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
                   </div>
                 </div>
                 <div className="p-3">
-                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-[#0066FF] transition-colors line-clamp-1">
+                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-[#3264ff] transition-colors line-clamp-1">
                     {r.title}
                   </h3>
                   <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.subtitle}</p>
                   <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                    <span className="text-sm font-bold text-[#0066FF]">¥{p}<span className="text-xs font-normal text-gray-400">/人</span></span>
+                    <span className="text-sm font-bold text-[#3264ff]">¥{p}<span className="text-xs font-normal text-gray-400">/人</span></span>
                     {r.rating && (
                       <span className="flex items-center gap-0.5 text-xs text-gray-500">
                         <span className="text-amber-400">★</span> {r.rating.toFixed(1)}
@@ -305,6 +305,172 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
             </Link>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── P1. Sticky跳转导航栏 ─── */
+
+function SectionNav({ sections }: { sections: { id: string; label: string }[] }) {
+  const [active, setActive] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setVisible(window.scrollY > 500);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-100px 0px -60% 0px" }
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [sections]);
+
+  if (!visible) return null;
+
+  return (
+    <div className="sticky top-[64px] z-30 bg-white border-b border-[#dadfe6] shadow-sm">
+      <div className="max-w-[1120px] mx-auto px-4">
+        <div className="flex gap-6 overflow-x-auto scrollbar-none">
+          {sections.map((s) => (
+            <a key={s.id} href={`#${s.id}`}
+              className={`py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                active === s.id ? "border-[#3264ff] text-[#3264ff]" : "border-transparent text-[#8592a6] hover:text-[#0f294d]"
+              }`}>{s.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── P2. 热门徽章 ─── */
+
+function PopularityBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ff6600]/10 border border-[#ff6600]/20">
+      <svg className="w-3 h-3 text-[#ff6600]" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
+      </svg>
+      <span className="text-xs font-bold text-[#ff6600]">{count}+ 人已预订</span>
+    </span>
+  );
+}
+
+/* ─── P5. 无障碍信息 ─── */
+
+function AccessibilityInfo() {
+  const items = [
+    { available: true, label: "轮椅友好" },
+    { available: true, label: "老年人适宜" },
+    { available: false, label: "婴儿车通行" },
+    { available: true, label: "接送服务" },
+    { available: true, label: "无障碍交通" },
+    { available: false, label: "手语导览" },
+  ];
+  return (
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3">无障碍与适用性</h2>
+      <div className="grid grid-cols-3 gap-2">
+        {items.map((item, i) => (
+          <div key={i} className="flex items-center gap-1.5 text-xs">
+            {item.available ? (
+              <svg className="w-3.5 h-3.5 text-[#00b341] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+            ) : (
+              <svg className="w-3.5 h-3.5 text-gray-300 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+            )}
+            <span className={item.available ? "text-[#0f294d]" : "text-[#8592a6]"}>{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── P6. 支付方式图标 ─── */
+
+function PaymentMethodIcons() {
+  return (
+    <div className="mt-3 pt-3 border-t border-gray-100">
+      <p className="text-[10px] text-[#8592a6] mb-2">支持支付方式</p>
+      <div className="flex items-center gap-2">
+        {["微信支付", "支付宝", "Visa", "银联"].map((m) => (
+          <span key={m} className="px-2 py-1 bg-[#f5f7fa] rounded text-[10px] text-[#455873] border border-gray-100">{m}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── P10. 旅行者类型标签 ─── */
+
+function TravelerTypeTags() {
+  const types = [
+    { label: "独行朝圣", pct: 30 },
+    { label: "家庭出行", pct: 25 },
+    { label: "情侣同行", pct: 20 },
+    { label: "朋友结伴", pct: 18 },
+    { label: "团队参访", pct: 7 },
+  ];
+  return (
+    <div className="mb-4 p-4 bg-[#f5f7fa] rounded-xl">
+      <p className="text-sm font-medium text-[#0f294d] mb-3">旅行者类型分布</p>
+      <div className="space-y-2">
+        {types.map((t) => (
+          <div key={t.label} className="flex items-center gap-3">
+            <span className="text-xs text-[#455873] w-20">{t.label}</span>
+            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-full bg-[#3264ff] rounded-full" style={{ width: `${t.pct}%` }} />
+            </div>
+            <span className="text-xs text-[#8592a6] w-8 text-right">{t.pct}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── P10. 领队信息卡 (Airbnb/GetYourGuide/Trip.com) ─── */
+
+function GuideProfile() {
+  return (
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+      <h2 className="text-base font-bold text-[#0f294d] mb-4">专业领队</h2>
+      <div className="flex items-start gap-4">
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#3264ff] to-blue-400 flex items-center justify-center text-white text-xl font-bold shrink-0">
+          导
+        </div>
+        <div className="flex-1">
+          <p className="font-bold text-[#0f294d]">资深朝圣领队</p>
+          <p className="text-sm text-[#8592a6] mt-0.5">5年+ 带队经验 · 精通中英双语</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-xs border border-green-100">认证领队</span>
+            <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs border border-blue-100">文化专家</span>
+            <span className="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs border border-amber-100">急救认证</span>
+          </div>
+          <div className="flex items-center gap-1 mt-2">
+            <div className="flex gap-0.5">
+              {[1,2,3,4,5].map(i => (
+                <span key={i} className={`w-2 h-2 rounded-full ${i <= 5 ? "bg-[#00b341]" : "bg-gray-200"}`} />
+              ))}
+            </div>
+            <span className="text-xs text-[#0f294d] font-medium ml-1">5.0</span>
+            <span className="text-xs text-[#8592a6]">· 98%好评率</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -360,8 +526,8 @@ function BookingWidget({ route }: { route: Route }) {
                 onClick={() => { setDate(qd.value); setShowDatePicker(false); }}
                 className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors border ${
                   date === qd.value
-                    ? "bg-[#0066FF] text-white border-[#0066FF]"
-                    : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#0066FF]/30"
+                    ? "bg-[#3264ff] text-white border-[#3264ff]"
+                    : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#3264ff]/30"
                 }`}
               >
                 <span className="block">{qd.label}</span>
@@ -372,8 +538,8 @@ function BookingWidget({ route }: { route: Route }) {
               onClick={() => setShowDatePicker(!showDatePicker)}
               className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors border ${
                 showDatePicker || (date && !quickDates.some(q => q.value === date))
-                  ? "bg-[#0066FF] text-white border-[#0066FF]"
-                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#0066FF]/30"
+                  ? "bg-[#3264ff] text-white border-[#3264ff]"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#3264ff]/30"
               }`}
             >
               <span className="block">选日期</span>
@@ -386,7 +552,7 @@ function BookingWidget({ route }: { route: Route }) {
               value={date}
               min={minDateStr}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3264ff]/30 focus:border-[#3264ff]"
             />
           )}
         </div>
@@ -423,13 +589,13 @@ function BookingWidget({ route }: { route: Route }) {
       <div className="mt-4 space-y-2">
         <Link
           href={`/routes/checkout?route=${route.slug}&date=${date}&guests=${guests}`}
-          className="block w-full py-3 rounded-lg bg-[#3264ff] hover:bg-[#264cc2] text-white font-semibold text-center transition-colors shadow-[0_4px_20px_rgba(15,41,77,0.12)]"
+          className="block w-full py-3 rounded-lg bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold text-center transition-colors shadow-[0_4px_20px_rgba(15,41,77,0.12)]"
         >
           {date ? "立即预订" : "选择日期预订"}
         </Link>
         <Link
           href="/chat"
-          className="block w-full py-2.5 rounded-xl border border-[#0066FF] text-[#0066FF] hover:bg-[#0066FF]/5 font-medium text-center text-sm transition-colors"
+          className="block w-full py-2.5 rounded-xl border border-[#3264ff] text-[#3264ff] hover:bg-[#3264ff]/5 font-medium text-center text-sm transition-colors"
         >
           AI规划师咨询
         </Link>
@@ -465,6 +631,9 @@ function BookingWidget({ route }: { route: Route }) {
       <p className="text-xs text-gray-400 text-center mt-2">
         预订后14天内免费取消
       </p>
+
+      {/* 支付方式 */}
+      <PaymentMethodIcons />
     </div>
   );
 }
@@ -500,17 +669,33 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           ) : null}
         </div>
 
+        {/* Sticky跳转导航栏 */}
+        <SectionNav sections={[
+          { id: "sec-info", label: "概览" },
+          { id: "sec-desc", label: "路线介绍" },
+          { id: "sec-itinerary", label: "逐日行程" },
+          { id: "sec-included", label: "费用明细" },
+          { id: "sec-tips", label: "出行贴士" },
+          { id: "reviews", label: "评价" },
+          { id: "sec-faq", label: "常见问题" },
+        ]} />
+
         {/* ═══ S4. 标题信息区 + 两栏布局 ═══ */}
         <div className="max-w-[1120px] mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* ── 左侧主内容 ── */}
             <div className="flex-1 min-w-0">
               {/* 标题区 */}
-              <div className="pb-5 border-b border-gray-200">
+              <div id="sec-info" className="pb-5 border-b border-gray-200">
                 <div className="flex items-start gap-3">
-                  <h1 className="text-2xl font-bold text-[#0f294d] flex-1">{route.title}</h1>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <PopularityBadge count={route.bookCount} />
+                    </div>
+                    <h1 className="text-2xl font-bold text-[#0f294d]">{route.title}</h1>
+                  </div>
                   <SaveButton entityType="ROUTE" entityId={route.slug ?? route.id} size="md" />
-                </div>
+                </div>{/* end flex items-start */}
                 <p className="text-base text-[#8592a6] mt-1">{route.subtitle}</p>
                 {route.titleEn && <p className="text-sm text-[#8592a6] mt-0.5">{route.titleEn}</p>}
 
@@ -559,7 +744,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   <p className="text-sm text-gray-500">所属信仰体系</p>
                   <Link
                     href={`/religions/${route.religion.slug}`}
-                    className="font-semibold text-gray-900 hover:text-[#0066FF] transition-colors"
+                    className="font-semibold text-gray-900 hover:text-[#3264ff] transition-colors"
                   >
                     {route.religion.name}
                     <span className="text-sm text-gray-400 ml-2">{route.religion.nameEn}</span>
@@ -567,7 +752,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                 </div>
                 <Link
                   href={`/religions/${route.religion.slug}`}
-                  className="ml-auto text-sm text-[#0066FF] hover:underline"
+                  className="ml-auto text-sm text-[#3264ff] hover:underline"
                 >
                   了解更多 →
                 </Link>
@@ -580,12 +765,15 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             {route.highlights.map((h) => (
               <span
                 key={h}
-                className="px-3 py-1.5 bg-[#0066FF]/5 text-[#0066FF] rounded-full text-sm font-medium border border-[#0066FF]/20"
+                className="px-3 py-1.5 bg-[#3264ff]/5 text-[#3264ff] rounded-full text-sm font-medium border border-[#3264ff]/20"
               >
                 {h}
               </span>
             ))}
           </div>
+
+          {/* ========== 专业领队信息 ========== */}
+          <GuideProfile />
 
           {/* ========== Price Forecast (mobile visible too) ========== */}
           <div className="mt-6">
@@ -593,7 +781,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Description ========== */}
-          <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+          <div id="sec-desc" className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
             <h2 className="text-xl font-bold text-gray-900 mb-4">路线介绍</h2>
             <ExpandableText text={route.description} maxLength={300} />
           </div>
@@ -628,15 +816,15 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Itinerary ========== */}
-          <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+          <div id="sec-itinerary" className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
             <h2 className="text-xl font-bold text-gray-900 mb-6">逐日行程</h2>
             <div className="space-y-6">
               {(route.itinerary as ItineraryDay[]).map((day) => (
                 <div
                   key={day.day}
-                  className="relative pl-8 pb-6 border-l-2 border-[#0066FF]/30 last:border-transparent"
+                  className="relative pl-8 pb-6 border-l-2 border-[#3264ff]/30 last:border-transparent"
                 >
-                  <div className="absolute -left-3 top-0 w-6 h-6 bg-[#0066FF] rounded-full flex items-center justify-center shadow-sm">
+                  <div className="absolute -left-3 top-0 w-6 h-6 bg-[#3264ff] rounded-full flex items-center justify-center shadow-sm">
                     <span className="text-white text-xs font-bold">{day.day}</span>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -666,7 +854,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Included / Excluded ========== */}
-          <div className="mt-6 grid md:grid-cols-2 gap-4">
+          <div id="sec-included" className="mt-6 grid md:grid-cols-2 gap-4">
             <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
               <h2 className="text-lg font-bold text-gray-900 mb-4">费用包含</h2>
               <ul className="space-y-2">
@@ -705,9 +893,12 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             </p>
           </div>
 
+          {/* ========== 无障碍与适用性 ========== */}
+          <AccessibilityInfo />
+
           {/* ========== Tips ========== */}
           {route.tips.length > 0 && (
-            <div className="mt-6 bg-amber-50 rounded-lg p-4 border border-amber-200">
+            <div id="sec-tips" className="mt-6 bg-amber-50 rounded-lg p-4 border border-amber-200">
               <h2 className="text-lg font-bold text-amber-600 mb-3">出行贴士</h2>
               <ul className="space-y-2">
                 {route.tips.map((tip, i) => (
@@ -728,9 +919,9 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   <Link
                     key={rs.id}
                     href="/holy-sites"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 hover:border-[#0066FF]/30"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 hover:border-[#3264ff]/30"
                   >
-                    <div className="w-10 h-10 bg-[#0066FF]/10 rounded-lg flex items-center justify-center text-[#0066FF] font-bold text-sm border border-[#0066FF]/20">
+                    <div className="w-10 h-10 bg-[#3264ff]/10 rounded-lg flex items-center justify-center text-[#3264ff] font-bold text-sm border border-[#3264ff]/20">
                       D{rs.day}
                     </div>
                     <div>
@@ -760,7 +951,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               </div>
               <Link
                 href="/journals"
-                className="px-4 py-2 rounded-xl bg-[#0066FF] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
+                className="px-4 py-2 rounded-xl bg-[#3264ff] text-white text-sm font-medium hover:bg-[#0052CC] transition-colors shadow-sm"
               >
                 查看日志
               </Link>
@@ -769,11 +960,14 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Reviews (UGC) ========== */}
           <div id="reviews" className="mt-10">
+            <TravelerTypeTags />
             <ReviewSection targetType="ROUTE" targetId={route.id} />
           </div>
 
           {/* ========== FAQ Accordion ========== */}
-          <FAQAccordion />
+          <div id="sec-faq">
+            <FAQAccordion />
+          </div>
 
           {/* ========== Q&A Section ========== */}
           <div className="mt-10">
@@ -801,7 +995,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
           <Link
             href={`/routes/checkout?route=${route.slug}`}
-            className="px-6 py-2.5 bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold rounded-lg text-sm transition-colors"
+            className="px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
           >
             立即预订
           </Link>

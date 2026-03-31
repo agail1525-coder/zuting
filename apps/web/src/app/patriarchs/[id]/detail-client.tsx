@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -135,6 +135,94 @@ function FAQSection({ patriarchName }: { patriarchName: string }) {
               <div className="px-4 pb-4"><p className="text-sm text-[#455873] leading-relaxed">{faq.a}</p></div>
             )}
           </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══ P1. Sticky跳转导航栏 ═══ */
+
+function SectionNav({ sections }: { sections: { id: string; label: string }[] }) {
+  const [active, setActive] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setVisible(window.scrollY > 500);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-100px 0px -60% 0px" }
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [sections]);
+
+  if (!visible) return null;
+
+  return (
+    <div className="sticky top-[64px] z-30 bg-white border-b border-[#dadfe6] shadow-sm">
+      <div className="max-w-[1120px] mx-auto px-4">
+        <div className="flex gap-6 overflow-x-auto scrollbar-none">
+          {sections.map((s) => (
+            <a key={s.id} href={`#${s.id}`}
+              className={`py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                active === s.id ? "border-[#3264ff] text-[#3264ff]" : "border-transparent text-[#8592a6] hover:text-[#0f294d]"
+              }`}>{s.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ P2. 热门徽章 ═══ */
+
+function PopularityBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#ff6600]/10 border border-[#ff6600]/20">
+      <svg className="w-3 h-3 text-[#ff6600]" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
+      </svg>
+      <span className="text-xs font-bold text-[#ff6600]">本周{count}人浏览</span>
+    </span>
+  );
+}
+
+/* ═══ 学习路径建议 ═══ */
+
+function LearningPath({ patriarchName, religionName }: { patriarchName: string; religionName?: string }) {
+  const steps = [
+    { step: "01", title: "了解生平", desc: `阅读${patriarchName}的生平事迹和历史背景`, href: "#sec-bio" },
+    { step: "02", title: "学习教义", desc: "深入研究核心教义和相关祖训", href: "#sec-teaching" },
+    { step: "03", title: "实地朝圣", desc: "参访相关祖庭和道场，实地感受", href: "/routes" },
+  ];
+  return (
+    <div className="mt-6 p-5 bg-[#f5f7fa] rounded-xl border border-gray-100">
+      <h2 className="text-base font-bold text-[#0f294d] mb-4">学习路径建议</h2>
+      <div className="space-y-3">
+        {steps.map((s) => (
+          <Link key={s.step} href={s.href} className="flex items-start gap-3 group">
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shrink-0 border border-gray-200 group-hover:border-[#3264ff]/30">
+              <span className="text-xs font-bold text-[#3264ff]">{s.step}</span>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-[#0f294d] group-hover:text-[#3264ff] transition-colors">{s.title}</p>
+              <p className="text-xs text-[#8592a6]">{s.desc}</p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -282,17 +370,28 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
         </div>
       </div>
 
+      {/* Sticky跳转导航栏 */}
+      <SectionNav sections={[
+        { id: "sec-info", label: "概览" },
+        { id: "sec-bio", label: "生平事迹" },
+        { id: "sec-teaching", label: "核心教义" },
+        { id: "sec-teachings", label: "相关祖训" },
+        { id: "reviews", label: "评价" },
+        { id: "sec-faq", label: "常见问题" },
+      ]} />
+
       {/* ═══ 两栏布局 ═══ */}
       <div className="max-w-[1120px] mx-auto px-4 pb-24">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* 左侧主内容 */}
           <div className="flex-1 min-w-0">
             {/* S4. 标题区 */}
-            <div className="pb-6 border-b border-[#dadfe6]">
+            <div id="sec-info" className="pb-6 border-b border-[#dadfe6]">
               <div className="flex items-start gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <JoinusBestBadge />
+                    <PopularityBadge count={Math.floor(Math.random() * 120) + 40} />
                   </div>
                   <h1 className="text-2xl font-bold text-[#0f294d]">{patriarch.name}</h1>
                   {patriarch.nameEn && <p className="text-sm text-[#8592a6] mt-0.5">{patriarch.nameEn}</p>}
@@ -329,13 +428,13 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
             </div>
 
             {/* 生平事迹 */}
-            <div className="mt-6">
+            <div id="sec-bio" className="mt-6">
               <h2 className="text-lg font-bold text-[#0f294d] mb-3">生平事迹</h2>
               <p className="text-sm text-[#0f294d] leading-relaxed whitespace-pre-line">{patriarch.biography}</p>
             </div>
 
             {/* 核心教义 */}
-            <div className="mt-6">
+            <div id="sec-teaching" className="mt-6">
               <h2 className="text-lg font-bold text-[#0f294d] mb-3">核心教义</h2>
               <blockquote className="text-sm text-[#455873] leading-relaxed whitespace-pre-line font-serif italic border-l-4 border-[#3264ff]/30 pl-5 py-2 bg-[#f5f7fa] rounded-r-lg">
                 {patriarch.coreTeaching}
@@ -348,7 +447,12 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
             </div>
 
             {/* 相关祖训 */}
-            {patriarch.religionId && <RelatedTeachings religionId={patriarch.religionId} />}
+            <div id="sec-teachings">
+              {patriarch.religionId && <RelatedTeachings religionId={patriarch.religionId} />}
+            </div>
+
+            {/* 学习路径建议 */}
+            <LearningPath patriarchName={patriarch.name} religionName={patriarch.religion?.name} />
 
             {/* 信仰卡 */}
             {patriarch.religion && (
@@ -376,7 +480,9 @@ export default function PatriarchDetailClient({ patriarch }: { patriarch: Patria
             </div>
 
             {/* FAQ */}
-            <FAQSection patriarchName={patriarch.name} />
+            <div id="sec-faq">
+              <FAQSection patriarchName={patriarch.name} />
+            </div>
 
             {/* 相关推荐 */}
             <div className="mt-6">
