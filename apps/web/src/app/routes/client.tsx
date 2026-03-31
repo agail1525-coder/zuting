@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import type { Route, PaginatedRoutes } from "@/lib/api";
 import { fetchRoutes } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
+
+/* ── Lazy-load Leaflet map (SSR-safe) ── */
+const RouteMapView = dynamic(() => import("./route-map-view"), { ssr: false });
 
 function getCategories(t: (key: string) => string) {
   return [
@@ -80,7 +84,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   CULTURAL_HERITAGE: { bg: "bg-teal-50",  text: "text-teal-700" },
 };
 
-/* Skeleton card for loading state */
+/* ── Skeleton card for loading state ── */
 function RouteCardSkeleton() {
   return (
     <div className="shadow-sm border border-gray-100 rounded-2xl overflow-hidden bg-white animate-pulse">
@@ -101,98 +105,341 @@ function RouteCardSkeleton() {
   );
 }
 
-function RouteCard({ route, t, categories, difficultyLabels }: { route: Route; t: (key: string) => string; categories: ReturnType<typeof getCategories>; difficultyLabels: Record<string, string> }) {
+/* ── Route Card ── */
+function RouteCard({
+  route,
+  t,
+  categories,
+  difficultyLabels,
+  compareIds,
+  onToggleCompare,
+}: {
+  route: Route;
+  t: (key: string) => string;
+  categories: ReturnType<typeof getCategories>;
+  difficultyLabels: Record<string, string>;
+  compareIds: string[];
+  onToggleCompare: (id: string) => void;
+}) {
   const price = (route.priceFrom / 100).toLocaleString();
   const categoryLabel = categories.find((c) => c.value === route.category)?.label ?? route.category;
   const colors = CATEGORY_COLORS[route.category] ?? { bg: "bg-gray-100", text: "text-gray-700" };
+  const isComparing = compareIds.includes(route.id);
+
+  // Feature 4: Best Seller / Top Rated badges
+  const isBestSeller = route.bookCount > 30;
+  const isTopRated = !isBestSeller && (route.rating ?? 0) >= 4.5 && route.reviewCount > 5;
+
+  // Feature 5: Early bird savings estimate (10% of price)
+  const earlyBirdSaving = Math.round(route.priceFrom / 100 * 0.1);
 
   return (
-    <Link href={`/routes/${route.slug}`} className="group block">
-      <div className="shadow-sm border border-gray-100 rounded-2xl overflow-hidden bg-white hover:shadow-md transition-all duration-300">
-        <div className="relative h-48 overflow-hidden">
-          {route.coverImage ? (
-            <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <span className="text-6xl opacity-30">
-                {categories.find((c) => c.value === route.category)?.icon ?? "🌏"}
-              </span>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          {/* Urgency / popularity badges */}
-          {route.bookCount > 50 && (
-            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-lg animate-pulse">
-              {t("routes.badge.hot")}
-            </div>
-          )}
-          {route.bookCount > 10 && route.bookCount <= 50 && (
-            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500 text-white shadow">
-              {t("routes.badge.weeklyBookings").replace("{count}", String(route.bookCount))}
-            </div>
-          )}
-          <div className="absolute top-3 left-3 flex gap-2">
-            <span className={`px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10 ${colors.bg} ${colors.text}`}>
-              {categoryLabel}
-            </span>
-            <span className="px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-black/30 text-white border border-white/10">
-              {t("routes.card.daysNights").replace("{days}", String(route.duration)).replace("{nights}", String(route.nights))}
-            </span>
-          </div>
-          {/* Review count badge */}
-          {route.reviewCount > 0 && (
-            <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px]">
-              {t("routes.card.reviewCount").replace("{count}", String(route.reviewCount))}
-            </div>
-          )}
-        </div>
+    <div className="group relative">
+      <Link href={`/routes/${route.slug}`} className="block">
+        <div className="shadow-sm border border-gray-100 rounded-2xl overflow-hidden bg-white hover:shadow-md transition-all duration-300">
+          <div className="relative h-48 overflow-hidden">
+            {route.coverImage ? (
+              <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <span className="text-6xl opacity-30">
+                  {categories.find((c) => c.value === route.category)?.icon ?? "🌏"}
+                </span>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
 
-        <div className="p-4">
-          <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors">
-            {route.title}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1 line-clamp-2">{route.subtitle}</p>
+            {/* Feature 4: Best Seller / Top Rated badge */}
+            {isBestSeller && (
+              <span className="absolute top-3 left-3 px-2.5 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-full z-10 shadow-lg">
+                {t("routes.bestSeller")}
+              </span>
+            )}
+            {isTopRated && (
+              <span className="absolute top-3 left-3 px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-bold rounded-full z-10 shadow-lg">
+                {t("routes.topRated")}
+              </span>
+            )}
 
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {route.highlights.slice(0, 3).map((h) => (
-              <span key={h} className="px-2 py-0.5 text-xs bg-[#0066FF]/10 text-[#0066FF] rounded border border-[#0066FF]/20">
-                {h}
+            {/* Urgency / popularity badges */}
+            {route.bookCount > 50 && (
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-lg animate-pulse">
+                {t("routes.badge.hot")}
+              </div>
+            )}
+            {route.bookCount > 10 && route.bookCount <= 50 && (
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500 text-white shadow">
+                {t("routes.badge.weeklyBookings").replace("{count}", String(route.bookCount))}
+              </div>
+            )}
+            <div className={`absolute ${isBestSeller || isTopRated ? "top-11" : "top-3"} left-3 flex gap-2`}>
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10 ${colors.bg} ${colors.text}`}>
+                {categoryLabel}
               </span>
-            ))}
-            {route.highlights.length > 3 && (
-              <span className="px-2 py-0.5 text-xs bg-gray-100 text-gray-400 rounded">
-                +{route.highlights.length - 3}
+              <span className="px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-black/30 text-white border border-white/10">
+                {t("routes.card.daysNights").replace("{days}", String(route.duration)).replace("{nights}", String(route.nights))}
               </span>
+            </div>
+            {/* Review count badge */}
+            {route.reviewCount > 0 && (
+              <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px]">
+                {t("routes.card.reviewCount").replace("{count}", String(route.reviewCount))}
+              </div>
             )}
           </div>
 
-          {/* Season + Group info */}
-          <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
-            {route.season && <span>📅 {route.season}</span>}
-            {route.groupSize && <span>👥 {route.groupSize}</span>}
-          </div>
+          <div className="p-4">
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors">
+              {route.title}
+            </h3>
+            <p className="text-sm text-gray-500 mt-1 line-clamp-2">{route.subtitle}</p>
 
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-            <div>
-              <span className="text-xs text-gray-400">{t("routes.card.priceFrom")}</span>
-              <span className="text-lg font-bold text-[#0066FF] ml-1">¥{price}</span>
-              <span className="text-xs text-gray-400">{t("routes.card.perPerson")}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              {route.rating && (
-                <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-[#0066FF]/10 rounded text-[#0066FF] font-bold text-xs">
-                  ★ {route.rating.toFixed(1)}
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {route.highlights.slice(0, 3).map((h) => (
+                <span key={h} className="px-2 py-0.5 text-xs bg-[#0066FF]/10 text-[#0066FF] rounded border border-[#0066FF]/20">
+                  {h}
+                </span>
+              ))}
+              {route.highlights.length > 3 && (
+                <span className="px-2 py-0.5 text-xs bg-gray-100 text-gray-400 rounded">
+                  +{route.highlights.length - 3}
                 </span>
               )}
-              <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100">{difficultyLabels[route.difficulty] ?? route.difficulty}</span>
+            </div>
+
+            {/* Season + Group info */}
+            <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
+              {route.season && <span>📅 {route.season}</span>}
+              {route.groupSize && <span>👥 {route.groupSize}</span>}
+            </div>
+
+            {/* Feature 5: Early bird savings */}
+            {earlyBirdSaving > 50 && (
+              <div className="mt-2 flex items-center gap-1.5 text-xs text-green-600">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{t("routes.bookEarlyDiscount")}</span>
+                <span className="font-semibold">{t("routes.savingsEstimate").replace("{amount}", earlyBirdSaving.toLocaleString())}</span>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+              <div>
+                <span className="text-xs text-gray-400">{t("routes.card.priceFrom")}</span>
+                <span className="text-lg font-bold text-[#0066FF] ml-1">¥{price}</span>
+                <span className="text-xs text-gray-400">{t("routes.card.perPerson")}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                {route.rating && (
+                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-[#0066FF]/10 rounded text-[#0066FF] font-bold text-xs">
+                    ★ {route.rating.toFixed(1)}
+                  </span>
+                )}
+                <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100">{difficultyLabels[route.difficulty] ?? route.difficulty}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {/* Feature 3: Compare toggle button */}
+      <button
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleCompare(route.id); }}
+        className={`absolute top-[196px] right-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-medium transition-all border ${
+          isComparing
+            ? "bg-[#0066FF] text-white border-[#0066FF] shadow-md"
+            : "bg-white/90 text-gray-600 border-gray-200 hover:border-[#0066FF] hover:text-[#0066FF] opacity-0 group-hover:opacity-100"
+        }`}
+      >
+        {isComparing ? t("routes.compare.remove") : t("routes.compare.add")}
+      </button>
+    </div>
   );
 }
 
+/* ── Comparison Panel ── */
+function ComparisonBar({
+  routes,
+  compareIds,
+  t,
+  difficultyLabels,
+  onRemove,
+  onClear,
+}: {
+  routes: Route[];
+  compareIds: string[];
+  t: (key: string) => string;
+  difficultyLabels: Record<string, string>;
+  onRemove: (id: string) => void;
+  onClear: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const compareRoutes = compareIds.map((id) => routes.find((r) => r.id === id)).filter(Boolean) as Route[];
+
+  if (compareIds.length === 0) return null;
+
+  return (
+    <div className="fixed bottom-16 sm:bottom-0 left-0 right-0 z-50">
+      {/* Expanded comparison table */}
+      {expanded && (
+        <div className="bg-white border-t border-gray-200 shadow-2xl max-h-[60vh] overflow-auto">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">{t("routes.compare.title")}</h3>
+              <button onClick={() => setExpanded(false)} className="text-sm text-gray-500 hover:text-gray-700">
+                {t("routes.compare.close")}
+              </button>
+            </div>
+            <div className="grid gap-4" style={{ gridTemplateColumns: `120px repeat(${compareRoutes.length}, 1fr)` }}>
+              {/* Header row */}
+              <div />
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center">
+                  <Link href={`/routes/${r.slug}`} className="text-sm font-bold text-gray-900 hover:text-[#0066FF] line-clamp-2">{r.title}</Link>
+                  <button onClick={() => onRemove(r.id)} className="block mx-auto mt-1 text-[10px] text-red-500 hover:underline">{t("routes.compare.remove")}</button>
+                </div>
+              ))}
+              {/* Price */}
+              <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.price")}</div>
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center text-sm font-bold text-[#0066FF]">¥{(r.priceFrom / 100).toLocaleString()}</div>
+              ))}
+              {/* Duration */}
+              <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.duration")}</div>
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center text-sm text-gray-700">{r.duration}{t("routes.duration.short").replace("1-3", "")}</div>
+              ))}
+              {/* Difficulty */}
+              <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.difficulty")}</div>
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center text-sm text-gray-700">{difficultyLabels[r.difficulty] ?? r.difficulty}</div>
+              ))}
+              {/* Rating */}
+              <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.rating")}</div>
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center text-sm text-gray-700">
+                  {r.rating ? `★ ${r.rating.toFixed(1)}` : t("routes.compare.noRating")}
+                </div>
+              ))}
+              {/* Highlights */}
+              <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.highlights")}</div>
+              {compareRoutes.map((r) => (
+                <div key={r.id} className="text-center">
+                  <div className="flex flex-wrap justify-center gap-1">
+                    {r.highlights.slice(0, 4).map((h) => (
+                      <span key={h} className="px-1.5 py-0.5 text-[10px] bg-[#0066FF]/10 text-[#0066FF] rounded">{h}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Collapsed bar */}
+      <div className="bg-white border-t border-gray-200 shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-gray-700">
+              {t("routes.compare.count").replace("{count}", String(compareIds.length))}
+            </span>
+            <div className="flex -space-x-2">
+              {compareRoutes.slice(0, 3).map((r) => (
+                <div key={r.id} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 overflow-hidden">
+                  {r.coverImage ? (
+                    <OptimizedImage src={r.coverImage} alt={r.title} width={32} height={32} className="object-cover w-full h-full" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs">🌏</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button onClick={onClear} className="text-xs text-gray-500 hover:text-gray-700 px-3 py-1.5">
+              {t("routes.compare.clear")}
+            </button>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="px-4 py-2 bg-[#0066FF] text-white text-sm font-medium rounded-lg hover:bg-[#0052CC] transition-colors"
+            >
+              {t("routes.compare.view")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Price Range Filter ── */
+function PriceRangeFilter({
+  minPrice,
+  maxPrice,
+  priceRange,
+  onPriceRangeChange,
+  onReset,
+  t,
+}: {
+  minPrice: number;
+  maxPrice: number;
+  priceRange: [number, number];
+  onPriceRangeChange: (range: [number, number]) => void;
+  onReset: () => void;
+  t: (key: string) => string;
+}) {
+  const isActive = priceRange[0] > minPrice || priceRange[1] < maxPrice;
+
+  return (
+    <div className="flex items-center gap-2 flex-wrap">
+      <span className="text-xs text-gray-500 font-medium">{t("routes.priceRange.label")}:</span>
+      <div className="flex items-center gap-1.5">
+        <input
+          type="number"
+          min={minPrice}
+          max={priceRange[1]}
+          value={priceRange[0]}
+          onChange={(e) => onPriceRangeChange([Math.max(minPrice, Number(e.target.value)), priceRange[1]])}
+          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-[#0066FF]/40"
+          placeholder={String(minPrice)}
+        />
+        <span className="text-gray-300">—</span>
+        <input
+          type="number"
+          min={priceRange[0]}
+          max={maxPrice}
+          value={priceRange[1]}
+          onChange={(e) => onPriceRangeChange([priceRange[0], Math.min(maxPrice, Number(e.target.value))])}
+          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-[#0066FF]/40"
+          placeholder={String(maxPrice)}
+        />
+      </div>
+      {/* Visual bar */}
+      <div className="hidden sm:flex items-center gap-1 flex-1 min-w-[100px] max-w-[200px]">
+        <span className="text-[10px] text-gray-400">¥{minPrice.toLocaleString()}</span>
+        <div className="flex-1 h-1.5 bg-gray-200 rounded-full relative">
+          <div
+            className="absolute h-full bg-[#0066FF] rounded-full"
+            style={{
+              left: `${((priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`,
+              right: `${100 - ((priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100}%`,
+            }}
+          />
+        </div>
+        <span className="text-[10px] text-gray-400">¥{maxPrice.toLocaleString()}</span>
+      </div>
+      {isActive && (
+        <button onClick={onReset} className="text-[10px] text-[#0066FF] hover:underline">
+          {t("routes.priceRange.reset")}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ── Main Component ── */
 interface Props {
   initialData: PaginatedRoutes;
   error?: boolean;
@@ -219,7 +466,31 @@ export default function RoutesClient({ initialData, error }: Props) {
   const [loading, setLoading] = useState(false);
   const PAGE_SIZE = 12;
 
-  // Client-side filtering for search and duration (server handles category/difficulty/sort/page)
+  // Feature 1: Map view toggle
+  const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
+
+  // Feature 2: Price range filter
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 999999]);
+  const [priceInitialized, setPriceInitialized] = useState(false);
+
+  // Feature 3: Compare bar
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+
+  // Price stats
+  const priceStats = useMemo(() => {
+    if (routes.length === 0) return null;
+    const prices = routes.map((r) => r.priceFrom / 100);
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    // Initialize price range on first load
+    if (!priceInitialized && min < max) {
+      setPriceRange([min, max]);
+      setPriceInitialized(true);
+    }
+    return { min, max };
+  }, [routes, priceInitialized]);
+
+  // Client-side filtering for search, duration, and price
   const displayRoutes = useMemo(() => {
     let items = routes;
     // Client-side search
@@ -236,15 +507,18 @@ export default function RoutesClient({ initialData, error }: Props) {
     if (durationFilter === "1-3") items = items.filter((r) => r.duration <= 3);
     else if (durationFilter === "4-7") items = items.filter((r) => r.duration >= 4 && r.duration <= 7);
     else if (durationFilter === "8+") items = items.filter((r) => r.duration >= 8);
+    // Feature 2: Price range filter
+    if (priceStats) {
+      const [minP, maxP] = priceRange;
+      if (minP > priceStats.min || maxP < priceStats.max) {
+        items = items.filter((r) => {
+          const p = r.priceFrom / 100;
+          return p >= minP && p <= maxP;
+        });
+      }
+    }
     return items;
-  }, [routes, search, durationFilter]);
-
-  // Price stats
-  const priceStats = useMemo(() => {
-    if (routes.length === 0) return null;
-    const prices = routes.map((r) => r.priceFrom / 100);
-    return { min: Math.min(...prices), max: Math.max(...prices) };
-  }, [routes]);
+  }, [routes, search, durationFilter, priceRange, priceStats]);
 
   const loadRoutes = async (cat: string, diff: string, s: string, p: number) => {
     setLoading(true);
@@ -289,10 +563,20 @@ export default function RoutesClient({ initialData, error }: Props) {
     setSort("createdAt");
     setSearch("");
     setPage(1);
+    if (priceStats) setPriceRange([priceStats.min, priceStats.max]);
     loadRoutes("", "", "createdAt", 1);
   };
 
-  const hasActiveFilters = !!(category || difficulty || durationFilter || search);
+  const handleToggleCompare = useCallback((id: string) => {
+    setCompareIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 3) return prev; // max 3
+      return [...prev, id];
+    });
+  }, []);
+
+  const hasActiveFilters = !!(category || difficulty || durationFilter || search ||
+    (priceStats && (priceRange[0] > priceStats.min || priceRange[1] < priceStats.max)));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -364,7 +648,7 @@ export default function RoutesClient({ initialData, error }: Props) {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 items-center">
               <select
                 value={difficulty}
                 onChange={(e) => handleFilter(undefined, e.target.value, undefined)}
@@ -388,13 +672,53 @@ export default function RoutesClient({ initialData, error }: Props) {
               <select
                 value={sort}
                 onChange={(e) => handleFilter(undefined, undefined, e.target.value)}
-                className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/40 ml-auto"
+                className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/40"
               >
                 {sortOptions.map((s) => (
                   <option key={s.value} value={s.value}>{s.label}</option>
                 ))}
               </select>
+
+              {/* Feature 1: Grid/Map toggle */}
+              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5 ml-auto">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    viewMode === "grid" ? "bg-white text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  {t("routes.viewGrid")}
+                </button>
+                <button
+                  onClick={() => setViewMode("map")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    viewMode === "map" ? "bg-white text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  {t("routes.viewMap")}
+                </button>
+              </div>
             </div>
+
+            {/* Feature 2: Price Range Filter */}
+            {priceStats && priceStats.min < priceStats.max && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <PriceRangeFilter
+                  minPrice={priceStats.min}
+                  maxPrice={priceStats.max}
+                  priceRange={priceRange}
+                  onPriceRangeChange={setPriceRange}
+                  onReset={() => setPriceRange([priceStats.min, priceStats.max])}
+                  t={t}
+                />
+              </div>
+            )}
 
             {/* Active filters summary */}
             {hasActiveFilters && (
@@ -408,7 +732,7 @@ export default function RoutesClient({ initialData, error }: Props) {
           </div>
         </div>
 
-        {/* Route Grid */}
+        {/* Route Grid / Map */}
         <div className="max-w-6xl mx-auto px-4 mt-8">
           {error && (
             <div className="text-center py-12 text-gray-500">
@@ -437,10 +761,24 @@ export default function RoutesClient({ initialData, error }: Props) {
             </div>
           )}
 
-          {!loading && displayRoutes.length > 0 && (
+          {/* Feature 1: Map View */}
+          {!loading && !error && viewMode === "map" && displayRoutes.length > 0 && (
+            <RouteMapView routes={displayRoutes} t={t} />
+          )}
+
+          {/* Grid View */}
+          {!loading && viewMode === "grid" && displayRoutes.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayRoutes.map((route) => (
-                <RouteCard key={route.id} route={route} t={t} categories={categories} difficultyLabels={difficultyLabels} />
+                <RouteCard
+                  key={route.id}
+                  route={route}
+                  t={t}
+                  categories={categories}
+                  difficultyLabels={difficultyLabels}
+                  compareIds={compareIds}
+                  onToggleCompare={handleToggleCompare}
+                />
               ))}
             </div>
           )}
@@ -515,6 +853,17 @@ export default function RoutesClient({ initialData, error }: Props) {
           </div>
         </div>
       </main>
+
+      {/* Feature 3: Comparison Bar */}
+      <ComparisonBar
+        routes={routes}
+        compareIds={compareIds}
+        t={t}
+        difficultyLabels={difficultyLabels}
+        onRemove={(id) => setCompareIds((prev) => prev.filter((x) => x !== id))}
+        onClear={() => setCompareIds([])}
+      />
+
       <MobileNav />
     </div>
   );

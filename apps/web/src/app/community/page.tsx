@@ -30,6 +30,13 @@ const TRENDING_TOPIC_KEYS = [
   { key: "vegetarianGuide", color: "#f97316" },
 ];
 
+function ContributorBadge({ count }: { count: number }) {
+  const { t } = useTranslation();
+  if (count >= 50) return <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded inline-flex items-center gap-0.5 ml-1">{t("community.topContributor")}</span>;
+  if (count >= 10) return <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[9px] font-bold rounded inline-flex items-center gap-0.5 ml-1">{t("community.activeWriter")}</span>;
+  return null;
+}
+
 function GuideCard({ guide, featured }: { guide: GuideItem; featured?: boolean }) {
   const { t } = useTranslation();
   return (
@@ -72,6 +79,7 @@ function GuideCard({ guide, featured }: { guide: GuideItem; featured?: boolean }
             <span className="text-gray-500 text-xs">
               {guide.user?.nickname || t("community.anonymous")}
             </span>
+            <ContributorBadge count={(guide.likeCount ?? 0) + (guide.commentCount ?? 0)} />
           </div>
           <div className="flex items-center gap-3 text-gray-400 text-xs">
             <span>❤️ {guide.likeCount}</span>
@@ -196,7 +204,10 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-gray-900 text-sm">{entry.nickname}</div>
+            <div className="font-medium text-gray-900 text-sm flex items-center flex-wrap">
+              {entry.nickname}
+              <ContributorBadge count={entry.count} />
+            </div>
           </div>
           <div className="text-right">
             <div className="font-bold text-[#0066FF] text-lg">{entry.count}</div>
@@ -270,6 +281,43 @@ export default function CommunityPage() {
     );
   }, [questions, searchQuery]);
 
+  // --- Trending Tags Cloud: extract from guides + questions ---
+  const trendingTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    guides.forEach((g) => {
+      // Extract words from titles as pseudo-tags
+      const words = g.title.split(/[\s,，、·]+/).filter((w) => w.length >= 2 && w.length <= 10);
+      words.slice(0, 2).forEach((w) => tagSet.add(w));
+    });
+    questions.forEach((q) => {
+      q.tags.forEach((tag) => tagSet.add(tag));
+    });
+    // Fallback static tags when no data
+    if (tagSet.size === 0) {
+      [
+        t("community.topic.zenPilgrimage"),
+        t("community.topic.buddhistSites"),
+        t("community.topic.taoistMountains"),
+        t("community.topic.crossCulturalJourney"),
+        t("community.topic.firstPilgrimage"),
+        t("community.topic.vegetarianGuide"),
+        t("community.guides.tagPilgrimage"),
+        t("community.guides.tagBuddhism"),
+        t("community.guides.tagTaoism"),
+      ].forEach((tag) => tagSet.add(tag));
+    }
+    return Array.from(tagSet).slice(0, 12);
+  }, [guides, questions, t]);
+
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+  };
+
+  // --- Weekly Digest counts ---
+  const newGuidesCount = guides.length;
+  const newQuestionsCount = questions.length;
+  const newPhotosCount = photos.length;
+
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: "guides", label: t("community.tabGuides"), icon: "📖" },
     { id: "questions", label: t("community.tabQuestions"), icon: "❓" },
@@ -341,6 +389,60 @@ export default function CommunityPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* ========== Trending Tags Cloud (TripAdvisor style) ========== */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {trendingTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              className={`px-3 py-1.5 rounded-full text-xs transition-all border ${
+                searchQuery === tag
+                  ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30 font-semibold"
+                  : "bg-white border-gray-200 text-gray-600 hover:bg-[#0066FF]/5 hover:text-[#0066FF] hover:border-[#0066FF]/20"
+              }`}
+            >
+              #{tag}
+            </button>
+          ))}
+        </div>
+
+        {/* ========== Weekly Digest Banner ========== */}
+        <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
+          <h3 className="font-bold text-gray-900 text-sm">{t("community.weeklyDigest")}</h3>
+          <div className="grid grid-cols-3 gap-4 mt-3">
+            <div className="text-center">
+              <p className="text-xl font-bold text-[#0066FF]">{newGuidesCount}</p>
+              <p className="text-[10px] text-gray-500">{t("community.newGuides")}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-purple-600">{newQuestionsCount}</p>
+              <p className="text-[10px] text-gray-500">{t("community.newQuestions")}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xl font-bold text-green-600">{newPhotosCount}</p>
+              <p className="text-[10px] text-gray-500">{t("community.newPhotos")}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ========== Photo Contest Widget ========== */}
+        {photos.length > 0 && (
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-gray-900">{t("community.photoContest")}</h3>
+                <p className="text-sm text-gray-500">{t("community.photoContestDesc")}</p>
+              </div>
+              <button
+                onClick={() => setTab("photos")}
+                className="text-sm text-purple-600 font-medium hover:text-purple-700 transition-colors whitespace-nowrap"
+              >
+                {t("community.viewPhotos")}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ========== Tabs ========== */}
         <div className="flex gap-1 bg-white rounded-xl shadow-sm p-1 mb-6 overflow-x-auto">
           {tabs.map((item) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import EncyclopediaToolbar from "@/components/EncyclopediaToolbar";
@@ -58,6 +58,39 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
   const [sort, setSort] = useState("name-asc");
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareList, setCompareList] = useState<string[]>([]);
+  const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
+
+  // Load recently viewed from localStorage
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('zuting_recently_viewed') || '[]');
+      const siteIds = stored
+        .filter((r: { type: string }) => r.type === 'holy-sites')
+        .map((r: { id: string }) => r.id)
+        .slice(0, 4);
+      setRecentlyViewed(siteIds);
+    } catch { /* ignore */ }
+  }, []);
+
+  const toggleCompare = (id: string) => {
+    setCompareList((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 3) return prev;
+      return [...prev, id];
+    });
+  };
+
+  const compareSites = useMemo(
+    () => holySites.filter((s) => compareList.includes(s.id)),
+    [holySites, compareList]
+  );
+
+  const recentSites = useMemo(
+    () => recentlyViewed.map((id) => holySites.find((s) => s.id === id)).filter(Boolean) as HolySite[],
+    [holySites, recentlyViewed]
+  );
 
   const SORT_OPTIONS = useMemo(() => [
     { value: "name-asc", label: t("holySites.sort.nameAsc") },
@@ -188,6 +221,41 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
           </div>
         </div>
 
+        {/* ══════ Photo Mosaic Header (Airbnb-style) ══════ */}
+        {!hasActiveFilters && holySites.length >= 5 && (
+          <div className="grid grid-cols-4 grid-rows-2 gap-1 h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+            <div className="col-span-2 row-span-2 relative">
+              {holySites[0].imageUrl ? (
+                <img src={holySites[0].imageUrl} alt={holySites[0].name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                  <span className="text-6xl opacity-30">{holySites[0].religion?.symbol || "🏛"}</span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute bottom-4 left-4">
+                <h3 className="text-white font-bold text-lg">{holySites[0].name}</h3>
+                <p className="text-white/80 text-sm">{holySites[0].country}</p>
+              </div>
+            </div>
+            {holySites.slice(1, 5).map((site) => (
+              <div key={site.id} className="relative overflow-hidden">
+                {site.imageUrl ? (
+                  <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <span className="text-3xl opacity-30">{site.religion?.symbol || "🏛"}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/10 hover:bg-black/0 transition-colors" />
+                <div className="absolute bottom-2 left-2">
+                  <p className="text-white text-xs font-medium drop-shadow-md">{site.name}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* ══════ Faith Category Slider (Airbnb-style) ══════ */}
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide mb-6">
           {faithCategories.map((r) => (
@@ -253,28 +321,44 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
+                    viewMode === "grid" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  {t("holySites.gridView")}
+                </button>
+                <button
+                  onClick={() => setViewMode("map")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
+                    viewMode === "map" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                  {t("holySites.mapView")}
+                </button>
+              </div>
+              {/* Compare toggle (Kayak-style) */}
               <button
-                onClick={() => setViewMode("grid")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
-                  viewMode === "grid" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                onClick={() => { setCompareMode(!compareMode); if (compareMode) setCompareList([]); }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                  compareMode
+                    ? "bg-[#0066FF] text-white border-[#0066FF] shadow-sm"
+                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300"
                 }`}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                {t("holySites.gridView")}
-              </button>
-              <button
-                onClick={() => setViewMode("map")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
-                  viewMode === "map" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                </svg>
-                {t("holySites.mapView")}
+                {compareMode ? t("holySites.compareExit") : t("holySites.compare")}
               </button>
             </div>
 
@@ -297,6 +381,39 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
 
         {viewMode === "grid" ? (
           <>
+            {/* ══════ Recently Viewed (Airbnb-style) ══════ */}
+            {!hasActiveFilters && recentSites.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {t("holySites.recentlyViewed")}
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {recentSites.map((site) => (
+                    <Link key={site.id} href={`/holy-sites/${site.id}`} className="group">
+                      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all">
+                        <div className="h-28 relative overflow-hidden">
+                          {site.imageUrl ? (
+                            <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                              <span className="text-3xl opacity-30">{site.religion?.symbol || "🏛"}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-2.5">
+                          <h3 className="text-sm font-semibold text-gray-900 truncate group-hover:text-[#0066FF] transition-colors">{site.name}</h3>
+                          <p className="text-xs text-gray-400 truncate">{site.country}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* ══════ Featured Section (only when no filters) ══════ */}
             {!hasActiveFilters && featured.length > 0 && (
               <div className="mb-8">
@@ -344,9 +461,35 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             )}
 
             {/* ══════ Grid ══════ */}
+            {/* Compare info bar */}
+            {compareMode && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
+                <span className="text-sm text-blue-700 font-medium">
+                  {t("holySites.compareMode")} — {t("holySites.compareSelected").replace("{{count}}", String(compareList.length))}
+                </span>
+                {compareList.length >= 2 && (
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById("compare-panel");
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-4 py-1.5 bg-[#0066FF] text-white text-sm font-medium rounded-lg hover:bg-[#0052CC] transition-colors"
+                  >
+                    {t("holySites.compareNow")}
+                  </button>
+                )}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.slice(0, visibleCount).map((site) => (
-                <HolySiteCard key={site.id} site={site} />
+                <HolySiteCard
+                  key={site.id}
+                  site={site}
+                  compareMode={compareMode}
+                  isCompared={compareList.includes(site.id)}
+                  onToggleCompare={toggleCompare}
+                />
               ))}
             </div>
 
@@ -387,6 +530,111 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
         ) : (
           <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
             <WorldMapDynamic holySites={filtered} religions={religions} height="600px" interactive />
+          </div>
+        )}
+
+        {/* ══════ Comparison Panel (Kayak-style) ══════ */}
+        {compareMode && compareList.length >= 2 && (
+          <div id="compare-panel" className="mt-8 mb-8 bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+            <div className="p-4 bg-gray-50 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900">{t("holySites.compareTitle")}</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left p-4 w-36 text-gray-400 font-normal"></th>
+                    {compareSites.map((site) => (
+                      <th key={site.id} className="p-4 text-center min-w-[200px]">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-20 h-20 rounded-xl overflow-hidden">
+                            {site.imageUrl ? (
+                              <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full bg-gray-100 flex items-center justify-center text-2xl">{site.religion?.symbol || "🏛"}</div>
+                            )}
+                          </div>
+                          <span className="font-bold text-gray-900">{site.name}</span>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-gray-100">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareRating")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center">
+                        {site.reviewStats?.averageRating ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-[#0066FF]/10 text-[#0066FF] rounded-md font-bold">
+                            ★ {site.reviewStats.averageRating.toFixed(1)}
+                          </span>
+                        ) : <span className="text-gray-300">—</span>}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100 bg-gray-50/50">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareReviews")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center text-gray-700">
+                        {site.reviewStats?.reviewCount ?? 0}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareCountry")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center text-gray-700">{site.country}</td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100 bg-gray-50/50">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareFaith")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center">
+                        <span style={{ color: site.religion?.color ?? '#0066FF' }}>{site.religion?.symbol} {site.religion?.name}</span>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.comparePrice")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center text-gray-700">
+                        {site.ticketPrice != null ? (site.ticketPrice === 0 ? t("holySites.free") : `¥${site.ticketPrice}`) : <span className="text-gray-300">—</span>}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100 bg-gray-50/50">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareDuration")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center text-gray-700">
+                        {site.visitDuration || <span className="text-gray-300">—</span>}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-100">
+                    <td className="p-4 text-gray-500 font-medium">{t("holySites.compareSeason")}</td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center text-gray-700">
+                        {site.bestSeason || <span className="text-gray-300">—</span>}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr className="border-t border-gray-200">
+                    <td className="p-4"></td>
+                    {compareSites.map((site) => (
+                      <td key={site.id} className="p-4 text-center">
+                        <Link
+                          href={`/holy-sites/${site.id}`}
+                          className="inline-flex px-4 py-2 bg-[#0066FF] text-white text-sm font-medium rounded-lg hover:bg-[#0052CC] transition-colors"
+                        >
+                          {t("holySites.compareView")}
+                        </Link>
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 

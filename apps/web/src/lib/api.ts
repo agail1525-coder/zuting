@@ -58,6 +58,7 @@ export interface HolySite {
   };
   ticketPrice?: number | null;
   visitDuration?: string | null;
+  bestSeason?: string | null;
 }
 
 export interface Temple {
