@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
 
+// Curated marketing stats reflecting actual platform content (see seed data in CLAUDE.md)
 const PLATFORM_STATS = [
   { icon: "🕌", value: "60+", labelKey: "about.stats.holySites" },
   { icon: "🏛", value: "27+", labelKey: "about.stats.temples" },

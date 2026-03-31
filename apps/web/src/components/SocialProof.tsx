@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
 
 interface SocialProofProps {
@@ -9,30 +8,28 @@ interface SocialProofProps {
   variant?: "inline" | "banner";
 }
 
-export default function SocialProof({ entityType, entityId, variant = "inline" }: SocialProofProps) {
+/**
+ * SocialProof — displays a static "popular destination" trust badge.
+ *
+ * Previously this component fabricated visitor counts from a hash of entityId.
+ * Since there is no public-facing page-view tracking API, we now show an honest
+ * static badge without fake numbers.  When a real analytics endpoint becomes
+ * available for public page-view counts, this component should be updated to
+ * consume it.
+ */
+export default function SocialProof({ entityType, entityId: _entityId, variant = "inline" }: SocialProofProps) {
   const { t } = useTranslation();
-  const [monthlyVisitors, setMonthlyVisitors] = useState(0);
-  const [viewingNow, setViewingNow] = useState(0);
 
-  useEffect(() => {
-    // Simulated social proof data based on entity hash for consistent display
-    const hash = entityId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    setMonthlyVisitors(120 + (hash % 380));
-    setViewingNow(3 + (hash % 12));
-  }, [entityId]);
+  const label = t("socialProof.popular") || "热门目的地";
 
   if (variant === "banner") {
     return (
       <div className="flex items-center gap-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm">
         <span className="flex items-center gap-1.5 text-amber-700 font-medium">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
           </svg>
-          {monthlyVisitors} {t("socialProof.pilgrims") || "位朝圣者本月到访"}
-        </span>
-        <span className="flex items-center gap-1.5 text-green-600">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          {viewingNow} {t("socialProof.viewing") || "人正在浏览"}
+          {label}
         </span>
       </div>
     );
@@ -42,13 +39,9 @@ export default function SocialProof({ entityType, entityId, variant = "inline" }
     <div className="flex flex-wrap items-center gap-3 text-sm">
       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200 font-medium">
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
         </svg>
-        {monthlyVisitors} {t("socialProof.pilgrims") || "位朝圣者本月到访"}
-      </span>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-600 rounded-full border border-green-200">
-        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-        {viewingNow} {t("socialProof.viewing") || "人正在浏览"}
+        {label}
       </span>
     </div>
   );

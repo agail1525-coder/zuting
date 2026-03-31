@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useDidShow, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import {
-  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem, GuideItem, PromotionItem,
+  Religion, Route, HolySite, Temple, Patriarch, RecommendedItem, GuideItem, PromotionItem, Journal,
   fetchReligions, fetchFeaturedRoutes, fetchHolySites, fetchTemples, fetchPatriarchs,
-  fetchPopularItems, fetchTrending, fetchPromotions,
+  fetchPopularItems, fetchTrending, fetchPromotions, fetchJournals,
 } from '../../lib/api'
 import './index.scss'
 
@@ -37,12 +37,6 @@ const PLATFORM_HIGHLIGHTS = [
   { icon: '📝', title: '朝圣日志', desc: '记录旅途故事' },
 ]
 
-const PILGRIM_STORIES = [
-  { siteName: '南华寺', author: '慧明', title: '六祖故里三日记', excerpt: '在南华寺的晨钟暮鼓中感悟禅意...' },
-  { siteName: '耶路撒冷', author: 'David', title: '圣城朝圣之路', excerpt: '踏上这片古老的土地，感受千年信仰...' },
-  { siteName: '武当山', author: '清风', title: '问道武当七日行', excerpt: '太极发源地的山水与道法自然...' },
-  { siteName: '菩提伽耶', author: 'Ananda', title: '菩提树下的觉悟', excerpt: '佛陀成道之地，感受最纯粹的宁静...' },
-]
 
 const REC_TABS = [
   { key: 'temples', label: '祖庭' },
@@ -61,6 +55,7 @@ export default function IndexPage() {
   const [popularItems, setPopularItems] = useState<RecommendedItem[]>([])
   const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([])
   const [activePromotions, setActivePromotions] = useState<PromotionItem[]>([])
+  const [publicJournals, setPublicJournals] = useState<Journal[]>([])
   const [loading, setLoading] = useState(true)
   const [activeSearchTab, setActiveSearchTab] = useState('sites')
   const [activeRecTab, setActiveRecTab] = useState('temples')
@@ -81,7 +76,7 @@ export default function IndexPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [religionList, routeList, siteList, templeList, patriarchList, popularList, trendingData, promoData] = await Promise.all([
+      const [religionList, routeList, siteList, templeList, patriarchList, popularList, trendingData, promoData, journalsData] = await Promise.all([
         fetchReligions(),
         fetchFeaturedRoutes(6),
         fetchHolySites(),
@@ -90,6 +85,7 @@ export default function IndexPage() {
         fetchPopularItems(undefined, 8).catch((err) => { console.error('Load popular failed:', err); return [] as RecommendedItem[] }),
         fetchTrending().catch((err) => { console.error('Load trending failed:', err); return { hotGuides: [] as GuideItem[], hotQuestions: [] } }),
         fetchPromotions().catch((err) => { console.error('Load promotions failed:', err); return { data: [] as PromotionItem[], total: 0, page: 1, limit: 20 } }),
+        fetchJournals({ isPublic: 'true', limit: '4' }).catch((err) => { console.error('Load journals failed:', err); return { items: [] as Journal[], total: 0, page: 1, limit: 4 } }),
       ])
       setReligions(religionList)
       setFeaturedRoutes(routeList)
@@ -99,6 +95,7 @@ export default function IndexPage() {
       setPopularItems(popularList)
       setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : [])
       setActivePromotions(Array.isArray(promoData?.data) ? promoData.data.slice(0, 3) : [])
+      setPublicJournals(Array.isArray(journalsData?.items) ? journalsData.items.slice(0, 4) : [])
     } catch (err) {
       console.error('Failed to load data:', err)
       Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
@@ -310,46 +307,51 @@ export default function IndexPage() {
         ))}
       </View>
 
-      {/* ── 4. Pilgrim Stories ── */}
-      <View className='section-header'>
-        <Text className='section-title'>朝圣故事</Text>
-        <Text
-          className='section-more'
-          onClick={() => Taro.navigateTo({ url: '/pages/journals/index' })}
-        >
-          查看全部 &gt;
-        </Text>
-      </View>
-      <ScrollView className='story-scroll' scrollX>
-        {PILGRIM_STORIES.map(story => {
-          const matchedSite = holySites.find(s => s.name.includes(story.siteName))
-          return (
-            <View
-              key={story.siteName}
-              className='story-card'
+      {/* ── 4. Pilgrim Stories (from API: public journals) ── */}
+      {publicJournals.length > 0 && (
+        <>
+          <View className='section-header'>
+            <Text className='section-title'>朝圣故事</Text>
+            <Text
+              className='section-more'
               onClick={() => Taro.navigateTo({ url: '/pages/journals/index' })}
             >
-              {matchedSite?.imageUrl ? (
-                <Image className='story-card__image' src={matchedSite.imageUrl} mode='aspectFill' lazyLoad />
-              ) : (
-                <View className='story-card__image story-card__image--placeholder'>
-                  <Text className='story-card__placeholder-icon'>🏔</Text>
-                </View>
-              )}
-              <View className='story-card__body'>
-                <View className='story-card__author'>
-                  <View className='story-card__avatar'>
-                    <Text className='story-card__avatar-text'>{story.author[0]}</Text>
+              查看全部 &gt;
+            </Text>
+          </View>
+          <ScrollView className='story-scroll' scrollX>
+            {publicJournals.map(journal => {
+              const firstImage = Array.isArray(journal.images) && journal.images.length > 0 ? journal.images[0] : null
+              const authorName = journal.user?.nickname ?? '匿名'
+              return (
+                <View
+                  key={journal.id}
+                  className='story-card'
+                  onClick={() => Taro.navigateTo({ url: `/pages/journal-detail/index?id=${journal.id}` })}
+                >
+                  {firstImage ? (
+                    <Image className='story-card__image' src={firstImage} mode='aspectFill' lazyLoad />
+                  ) : (
+                    <View className='story-card__image story-card__image--placeholder'>
+                      <Text className='story-card__placeholder-icon'>📝</Text>
+                    </View>
+                  )}
+                  <View className='story-card__body'>
+                    <View className='story-card__author'>
+                      <View className='story-card__avatar'>
+                        <Text className='story-card__avatar-text'>{authorName[0]}</Text>
+                      </View>
+                      <Text className='story-card__author-name'>{authorName}</Text>
+                    </View>
+                    <Text className='story-card__title'>{journal.title}</Text>
+                    <Text className='story-card__excerpt'>{journal.content}</Text>
                   </View>
-                  <Text className='story-card__author-name'>{story.author}</Text>
                 </View>
-                <Text className='story-card__title'>{story.title}</Text>
-                <Text className='story-card__excerpt'>{story.excerpt}</Text>
-              </View>
-            </View>
-          )
-        })}
-      </ScrollView>
+              )
+            })}
+          </ScrollView>
+        </>
+      )}
 
       {/* ── 5. Featured Routes ── */}
       <View className='section-header'>

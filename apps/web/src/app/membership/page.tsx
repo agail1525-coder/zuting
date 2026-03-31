@@ -252,6 +252,7 @@ export default function MembershipPage() {
       </div>
 
       {/* ══════ Missions Board (对标Booking Genius/Agoda任务系统) ══════ */}
+      {/* 静态展示：待后端API接入 — 任务列表为规划中的功能预览，完成状态仅签到项为实时数据 */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <span>🎯</span> {t("membership.missions") || "每日任务"}
@@ -383,6 +384,7 @@ export default function MembershipPage() {
       )}
 
       {/* ══════ Member Exclusive Deals (对标Booking Genius优惠) ══════ */}
+      {/* 静态展示：待后端API接入 — 会员专属权益为规划中的功能预览，后续接入促销/优惠券API实现动态展示 */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <span>💎</span> {t("membership.exclusiveDeals") || "会员专属"}

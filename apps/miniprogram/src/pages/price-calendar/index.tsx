@@ -33,43 +33,11 @@ function fmt(price: number): string {
   return `¥${(price / 100).toFixed(0)}`
 }
 
-/* ── Offline calendar generation (fallback when API unavailable) ── */
-function buildFallbackCalendar(
-  routeId: string,
-  year: number,
-  month: number,
-  basePrice: number,
-): PriceCalendarResponse {
-  const daysCount = getDaysInMonth(year, month)
-  const days: PriceCalendarDay[] = []
-  for (let d = 1; d <= daysCount; d++) {
-    const date = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-    // Weekend = high, mid-week = low, rest = medium
-    const weekday = new Date(date).getDay()
-    const isWeekend = weekday === 0 || weekday === 6
-    const isMidWeek = weekday === 2 || weekday === 3
-    const multiplier = isWeekend ? 1.3 : isMidWeek ? 0.85 : 1.0
-    const price = Math.round(basePrice * multiplier)
-    const level: PriceCalendarDay['level'] = isWeekend ? 'high' : isMidWeek ? 'low' : 'medium'
-    days.push({ date, price, level, available: true })
-  }
-  const prices = days.map(d => d.price as number)
-  return {
-    routeId,
-    year,
-    month,
-    days,
-    minPrice: Math.min(...prices),
-    maxPrice: Math.max(...prices),
-  }
-}
 
 export default function PriceCalendarPage() {
   const router = useRouter()
   const routeId = router.params.routeId || ''
   const routeTitle = router.params.routeTitle ? decodeURIComponent(router.params.routeTitle) : '路线价格'
-  const basePriceParam = Number(router.params.basePrice || 0)
-
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth() + 1)
@@ -90,9 +58,8 @@ export default function PriceCalendarPage() {
       const data = await fetchPriceCalendar(routeId, y, m)
       setCalData(data)
     } catch {
-      // Fallback: build a mock calendar from base price
-      const fallback = buildFallbackCalendar(routeId, y, m, basePriceParam || 100000)
-      setCalData(fallback)
+      setCalData(null)
+      Taro.showToast({ title: '暂无价格数据', icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -274,6 +241,12 @@ export default function PriceCalendarPage() {
       {loading ? (
         <View className='cal-loading'>
           <Text className='cal-loading__text'>加载价格中...</Text>
+        </View>
+      ) : !calData ? (
+        <View className='cal-empty'>
+          <Text className='cal-empty__icon'>📅</Text>
+          <Text className='cal-empty__title'>暂无价格数据</Text>
+          <Text className='cal-empty__desc'>该路线本月尚未发布价格</Text>
         </View>
       ) : (
         <View className='cal-grid'>

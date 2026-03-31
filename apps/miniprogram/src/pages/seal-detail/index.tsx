@@ -14,6 +14,10 @@ const SERIES_COLORS: Record<string, string> = {
 
 const SERIES_ORDER = ['初印系', '中印系', '印果印', '成道印', '归源印']
 
+// Curated editorial content: general practice guidance applicable to all seals.
+// The Seal model has a `practice` field with seal-specific practice text;
+// these tips complement it with universal daily practice suggestions.
+// TODO: Consider moving to a CMS or API endpoint when editorial content management is available.
 const PRACTICE_TIPS = [
   { icon: '🧘', title: '静坐观照', desc: '每日清晨静坐15分钟，观照此印要义' },
   { icon: '📖', title: '持诵偈颂', desc: '将偈颂熟记于心，行住坐卧中默诵' },

@@ -47,25 +47,6 @@ function Sparkline({ data }: { data: { date: string; price: number }[] }) {
   );
 }
 
-function generateMockItem(id: string, label: string): PriceCompareItem {
-  const base = 79800 + Math.floor(Math.random() * 50000);
-  const trend = Array.from({ length: 14 }, (_, i) => ({
-    date: new Date(Date.now() - (13 - i) * 86400000).toISOString().slice(0, 10),
-    price: base + Math.floor(Math.random() * 20000) - 10000,
-  }));
-  const trendPrices = trend.map(t => t.price);
-  return {
-    entityId: id,
-    name: label,
-    currentPrice: base,
-    minPrice: Math.min(...trendPrices),
-    maxPrice: Math.max(...trendPrices),
-    avgPrice: Math.round(trendPrices.reduce((a, b) => a + b, 0) / trendPrices.length),
-    memberPrice: Math.round(base * 0.92),
-    duration: 5 + Math.floor(Math.random() * 5),
-    trend,
-  };
-}
 
 export default function PriceComparePage() {
   const { t } = useTranslation();
@@ -84,7 +65,6 @@ export default function PriceComparePage() {
   const [loading, setLoading] = useState(false);
   const [routesLoading, setRoutesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [usingMock, setUsingMock] = useState(false);
 
   // Load available routes on mount
   useEffect(() => {
@@ -119,19 +99,12 @@ export default function PriceComparePage() {
     if (selected.length < 2) return;
     setLoading(true);
     setError(null);
-    setUsingMock(false);
     try {
       const data = await fetchPriceCompare("route", selected);
       setItems(data);
     } catch {
-      // Fallback mock — keep UI functional but warn user
-      const mocks = selected.map(id => {
-        const opt = routeOptions.find(p => p.id === id);
-        return generateMockItem(id, opt?.label ?? id);
-      });
-      setItems(mocks);
-      setUsingMock(true);
-      setError("⚠ " + t("prices.compare.apiError"));
+      setItems([]);
+      setError(t("prices.compare.apiError"));
     } finally {
       setLoading(false);
     }
@@ -196,15 +169,10 @@ export default function PriceComparePage() {
           )}
         </div>
 
-        {usingMock && error && (
+        {error && (
           <div className="text-sm text-orange-700 bg-orange-50 rounded-lg px-4 py-3 mb-4 border border-orange-300 flex items-start gap-2">
             <span className="shrink-0 mt-0.5">&#9888;</span>
             <span>{error}</span>
-          </div>
-        )}
-        {!usingMock && error && (
-          <div className="text-xs text-yellow-600 bg-yellow-50 rounded-lg px-3 py-2 mb-4 border border-yellow-200">
-            {error}
           </div>
         )}
 
@@ -277,6 +245,8 @@ export default function PriceComparePage() {
               </tbody>
             </table>
           </div>
+        ) : items.length === 0 && error ? (
+          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">暂无价格数据</div>
         ) : null}
 
         <p className="mt-4 text-xs text-gray-400">

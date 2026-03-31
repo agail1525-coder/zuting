@@ -388,24 +388,53 @@ export default function PromotionsPage() {
             <p className="text-gray-400 text-sm">{t("promotions.loading")}</p>
           </div>
         ) : displayPromos.length === 0 ? (
-          <div className="py-20 text-center">
-            <div className="text-5xl mb-4">{searchQuery ? "🔍" : "🎉"}</div>
-            <p className="text-gray-500 text-sm">
-              {searchQuery ? "没有找到匹配的活动" : t("promotions.empty")}
-            </p>
-            {searchQuery ? (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="mt-3 text-sm text-[#0066FF] hover:underline"
-              >
-                清除搜索
-              </button>
-            ) : (
-              <Link href="/holy-sites" className="mt-4 inline-block text-[#0066FF] text-sm hover:underline">
-                {t("promotions.browseAll")}
-              </Link>
-            )}
-          </div>
+          <>
+            <div className="py-10 text-center">
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" /></svg>
+              </div>
+              <p className="font-medium text-gray-900 mb-1">
+                {searchQuery ? "没有找到匹配的活动" : "暂无进行中的促销活动"}
+              </p>
+              <p className="text-sm text-gray-500">
+                {searchQuery ? "" : "新的优惠活动即将推出，敬请期待"}
+              </p>
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="mt-3 text-sm text-[#0066FF] hover:underline">清除搜索</button>
+              )}
+            </div>
+
+            {/* How to save */}
+            <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">省钱小妙招</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9", title: "开启通知", desc: "打开促销通知，第一时间获取优惠信息" },
+                  { icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", title: "收藏心仪路线", desc: "收藏喜欢的路线，降价时自动提醒" },
+                  { icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", title: "邀请好友", desc: "邀请朋友注册，双方均可获得优惠券" },
+                ].map((item, i) => (
+                  <div key={i} className="text-center">
+                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-6 h-6 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} /></svg>
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h3>
+                    <p className="text-xs text-gray-500">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom CTA */}
+            <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
+              <h2 className="text-2xl font-bold mb-2">别错过任何优惠</h2>
+              <p className="text-blue-100 mb-5">领取优惠券，随时抵扣路线费用</p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Link href="/coupons" className="px-6 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">领取优惠券</Link>
+                <Link href="/routes" className="px-6 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">浏览路线</Link>
+              </div>
+            </div>
+          </>
+
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {displayPromos.map((promo) => (

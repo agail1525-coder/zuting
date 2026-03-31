@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, fetchGuides, GuideItem } from '../../src/lib/api';
+import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, fetchGuides, GuideItem, Journal } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
@@ -45,12 +45,6 @@ const PLATFORM_HIGHLIGHTS = [
   { icon: 'journal' as const, title: '朝圣日志', desc: '记录旅途故事', route: '/journals' },
 ];
 
-const PILGRIM_STORIES = [
-  { siteName: '南华寺', author: '慧明', title: '六祖故里三日记', excerpt: '在南华寺的晨钟暮鼓中感悟禅意...' },
-  { siteName: '耶路撒冷', author: 'David', title: '圣城朝圣之路', excerpt: '踏上这片古老的土地，感受千年信仰...' },
-  { siteName: '武当山', author: '清风', title: '问道武当七日行', excerpt: '太极发源地的山水与道法自然...' },
-  { siteName: '菩提伽耶', author: 'Ananda', title: '菩提树下的觉悟', excerpt: '佛陀成道之地，感受最纯粹的宁静...' },
-];
 
 const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; label: string; route: string }[] = [
   { key: 'journals', icon: 'journal', label: '朝圣日志', route: '/journals' },
@@ -77,6 +71,7 @@ export default function HomeScreen() {
   const [popularItems, setPopularItems] = useState<RecommendationItem[]>([]);
   const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([]);
   const [popularGuides, setPopularGuides] = useState<GuideItem[]>([]);
+  const [publicJournals, setPublicJournals] = useState<Journal[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeSearchTab, setActiveSearchTab] = useState('sites');
@@ -84,7 +79,7 @@ export default function HomeScreen() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData, trendingData, guidesData] = await Promise.all([
+      const [routesData, religionsData, sitesData, templesData, patriarchsData, popularData, trendingData, guidesData, journalsData] = await Promise.all([
         api.getFeaturedRoutes(6),
         api.getReligions(),
         api.getHolySites(),
@@ -93,6 +88,7 @@ export default function HomeScreen() {
         api.fetchPopularItems(undefined, 10).catch(() => [] as RecommendationItem[]),
         fetchTrending().catch(() => ({ hotGuides: [], hotQuestions: [] })),
         fetchGuides({ sort: 'hot' }).catch(() => ({ items: [], total: 0 })),
+        api.getJournals({ isPublic: 'true', limit: '4' }).catch(() => ({ data: [] as Journal[], total: 0 })),
       ]);
       setFeaturedRoutes(routesData);
       setReligions(religionsData);
@@ -102,6 +98,7 @@ export default function HomeScreen() {
       setPopularItems(popularData);
       setTrendingGuides(Array.isArray(trendingData?.hotGuides) ? trendingData.hotGuides.slice(0, 3) : []);
       setPopularGuides(Array.isArray(guidesData?.items) ? guidesData.items.slice(0, 6) : []);
+      setPublicJournals(Array.isArray(journalsData?.data) ? journalsData.data.slice(0, 4) : []);
     } catch (err) {
       console.error('Failed to fetch home data:', err);
     } finally {
@@ -222,44 +219,49 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      {/* ── 4. Pilgrim Stories ── */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>朝圣故事</Text>
-        <Pressable onPress={() => router.push('/journals' as never)}>
-          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
-        </Pressable>
-      </View>
-      <FlatList
-        data={PILGRIM_STORIES}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.storyList}
-        keyExtractor={item => item.siteName}
-        renderItem={({ item }) => {
-          const matchedSite = holySites.find(s => (s.name ?? '').includes(item.siteName));
-          return (
-            <Pressable style={styles.storyCard} onPress={() => router.push('/journals' as never)}>
-              {matchedSite?.imageUrl ? (
-                <Image source={{ uri: matchedSite.imageUrl }} style={styles.storyImage} resizeMode="cover" />
-              ) : (
-                <View style={[styles.storyImage, styles.storyImagePlaceholder]}>
-                  <Ionicons name="image" size={28} color="#CBD5E1" />
-                </View>
-              )}
-              <View style={styles.storyOverlay}>
-                <View style={styles.storyAuthorRow}>
-                  <View style={styles.storyAvatar}>
-                    <Text style={styles.storyAvatarText}>{item.author[0]}</Text>
-                  </View>
-                  <Text style={styles.storyAuthorName}>{item.author}</Text>
-                </View>
-                <Text style={styles.storyTitle} numberOfLines={1}>{item.title}</Text>
-                <Text style={styles.storyExcerpt} numberOfLines={2}>{item.excerpt}</Text>
-              </View>
+      {/* ── 4. Pilgrim Stories (from API: public journals) ── */}
+      {publicJournals.length > 0 && (
+        <>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>朝圣故事</Text>
+            <Pressable onPress={() => router.push('/journals' as never)}>
+              <Text style={styles.sectionMore}>查看全部 &gt;</Text>
             </Pressable>
-          );
-        }}
-      />
+          </View>
+          <FlatList
+            data={publicJournals}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.storyList}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => {
+              const firstImage = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null;
+              const authorName = item.user?.nickname ?? '匿名';
+              return (
+                <Pressable style={styles.storyCard} onPress={() => router.push(`/journal/${item.id}` as never)}>
+                  {firstImage ? (
+                    <Image source={{ uri: firstImage }} style={styles.storyImage} resizeMode="cover" />
+                  ) : (
+                    <View style={[styles.storyImage, styles.storyImagePlaceholder]}>
+                      <Ionicons name="image" size={28} color="#CBD5E1" />
+                    </View>
+                  )}
+                  <View style={styles.storyOverlay}>
+                    <View style={styles.storyAuthorRow}>
+                      <View style={styles.storyAvatar}>
+                        <Text style={styles.storyAvatarText}>{authorName[0]}</Text>
+                      </View>
+                      <Text style={styles.storyAuthorName}>{authorName}</Text>
+                    </View>
+                    <Text style={styles.storyTitle} numberOfLines={1}>{item.title}</Text>
+                    <Text style={styles.storyExcerpt} numberOfLines={2}>{item.content}</Text>
+                  </View>
+                </Pressable>
+              );
+            }}
+          />
+        </>
+      )}
 
       {/* ── 5. Featured Routes ── */}
       <View style={styles.sectionHeader}>

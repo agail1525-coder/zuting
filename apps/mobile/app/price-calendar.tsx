@@ -42,23 +42,6 @@ function buildCalendarGrid(
   return cells;
 }
 
-function buildMockCalendar(year: number, month: number): PriceCalendarDay[] {
-  const totalDays = new Date(year, month, 0).getDate();
-  const basePrices = [2980, 3280, 2680, 3580, 2880, 3180, 2780];
-  const result: PriceCalendarDay[] = [];
-  for (let i = 1; i <= totalDays; i++) {
-    const price = basePrices[i % basePrices.length];
-    const level: PriceLevel =
-      price < 2900 ? 'cheap' : price > 3300 ? 'expensive' : 'normal';
-    result.push({
-      date: `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-      price,
-      level,
-      available: i % 7 !== 0,
-    });
-  }
-  return result;
-}
 
 export default function PriceCalendarScreen() {
   const now = new Date();
@@ -100,7 +83,7 @@ export default function PriceCalendarScreen() {
       })
       .catch(() => {
         if (!cancelled) {
-          setDays(buildMockCalendar(year, month));
+          setDays([]);
           setError(true);
         }
       })
@@ -245,7 +228,16 @@ export default function PriceCalendarScreen() {
 
       {error && (
         <View style={styles.errorBox}>
-          <Text style={styles.errorText}>价格数据加载失败，显示示例数据</Text>
+          <Ionicons name="alert-circle-outline" size={20} color="#B91C1C" />
+          <Text style={styles.errorText}>暂无价格数据，请稍后重试</Text>
+        </View>
+      )}
+
+      {!loading && !error && days.length === 0 && (
+        <View style={styles.emptyBox}>
+          <Ionicons name="calendar-outline" size={36} color={colors.textMuted} />
+          <Text style={styles.emptyText}>暂无价格数据</Text>
+          <Text style={styles.emptySubtext}>该路线本月尚未发布价格</Text>
         </View>
       )}
     </ScrollView>
@@ -400,6 +392,9 @@ const styles = StyleSheet.create({
   },
   bookBtnText: { color: '#FFFFFF', fontSize: fontSize.lg, fontWeight: '700' },
   errorBox: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'center',
     marginHorizontal: spacing.md,
     marginTop: spacing.md,
     padding: spacing.md,
@@ -407,4 +402,13 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
   },
   errorText: { color: '#B91C1C', fontSize: fontSize.sm, textAlign: 'center' },
+  emptyBox: {
+    marginHorizontal: spacing.md,
+    marginTop: spacing.xl,
+    padding: spacing.xl,
+    alignItems: 'center',
+    gap: 8,
+  },
+  emptyText: { color: colors.textPrimary, fontSize: fontSize.lg, fontWeight: '600' },
+  emptySubtext: { color: colors.textMuted, fontSize: fontSize.sm },
 });

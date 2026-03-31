@@ -21,7 +21,6 @@ const MENU_ITEMS = [
   { icon: '\u{1F4D6}', label: '朝圣日记', desc: '记录修行感悟', action: 'journals', url: '/pages/journals/index' },
   { icon: '\u2665', label: '我的收藏', desc: '收藏的圣地与祖庭', action: 'collections', url: '/pages/collections/index' },
   { icon: '\u{1F5FA}', label: '圣地地图', desc: '全球圣地分布', action: 'map', url: '/pages/map/index' },
-  { icon: '\u{1F30F}', label: '语言设置', desc: '简体中文', action: 'language' },
   { icon: '\u{1F514}', label: '通知设置', desc: '管理推送通知', action: 'notifications' },
   { icon: '\u{2139}\u{FE0F}', label: '关于我们', desc: '了解祖庭之旅', action: 'about', url: '/pages/about/index' },
   { icon: '\u{1F4AC}', label: '意见反馈', desc: '帮助我们改进', action: 'feedback' },
@@ -138,14 +137,6 @@ export default function ProfilePage() {
           showCancel: false,
           confirmText: '好的'
         })
-        break
-      case 'language':
-        Taro.showActionSheet({
-          itemList: ['简体中文', 'English'],
-        }).then((res) => {
-          const lang = res.tapIndex === 0 ? '简体中文' : 'English'
-          Taro.showToast({ title: `已切换为${lang}`, icon: 'success' })
-        }).catch(() => { /* user cancelled */ })
         break
       case 'notifications':
         Taro.openSetting()
