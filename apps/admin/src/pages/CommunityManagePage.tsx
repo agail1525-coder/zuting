@@ -7,7 +7,7 @@ import { EyeOutlined, StopOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title } = Typography;
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+const BASE = import.meta.env.VITE_API_URL || '/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -109,7 +109,7 @@ function GuidesTab() {
       const params = new URLSearchParams({ page: String(p), limit: '20' });
       if (status !== 'ALL') params.set('status', status);
       const result = await apiGet<PagedResult<Guide>>(
-        `${API_BASE}/api/guides?${params.toString()}`,
+        `${BASE}/guides?${params.toString()}`,
       );
       setData(Array.isArray(result?.items) ? result.items : []);
       setTotal(result?.total ?? 0);
@@ -129,7 +129,7 @@ function GuidesTab() {
 
   const handleHide = async (id: string) => {
     try {
-      await apiPatch(`${API_BASE}/api/guides/${id}`, { status: 'HIDDEN' });
+      await apiPatch(`${BASE}/guides/${id}`, { status: 'HIDDEN' });
       message.success('已隐藏');
       void fetchGuides();
     } catch {
@@ -139,7 +139,7 @@ function GuidesTab() {
 
   const handleDelete = async (id: string) => {
     try {
-      await apiDelete(`${API_BASE}/api/guides/${id}`);
+      await apiDelete(`${BASE}/guides/${id}`);
       message.success('已删除');
       void fetchGuides();
     } catch {
@@ -299,7 +299,7 @@ function QuestionsTab() {
       const params = new URLSearchParams({ page: String(p), limit: '20' });
       if (status !== 'ALL') params.set('status', status);
       const result = await apiGet<PagedResult<Question>>(
-        `${API_BASE}/api/questions?${params.toString()}`,
+        `${BASE}/questions?${params.toString()}`,
       );
       setData(Array.isArray(result?.items) ? result.items : []);
       setTotal(result?.total ?? 0);
@@ -318,7 +318,7 @@ function QuestionsTab() {
 
   const handleClose = async (id: string) => {
     try {
-      await apiPatch(`${API_BASE}/api/questions/${id}`, { status: 'CLOSED' });
+      await apiPatch(`${BASE}/questions/${id}`, { status: 'CLOSED' });
       message.success('已关闭');
       void fetchQuestions();
     } catch {
@@ -328,7 +328,7 @@ function QuestionsTab() {
 
   const handleDelete = async (id: string) => {
     try {
-      await apiDelete(`${API_BASE}/api/questions/${id}`);
+      await apiDelete(`${BASE}/questions/${id}`);
       message.success('已删除');
       void fetchQuestions();
     } catch {

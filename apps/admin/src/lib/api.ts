@@ -227,14 +227,19 @@ export const refundOrder = (id: string) =>
   fetchJson<Order>(`/orders/${id}/refund`, { method: 'POST' });
 
 // ---- Reviews ----
-export const getReviews = (page = 1, limit = 20, targetType?: string, targetId?: string) => {
+export const getReviews = (page = 1, limit = 20, targetType?: string, status?: string) => {
   const params = new URLSearchParams({ page: String(page), limit: String(limit) });
   if (targetType) params.set('targetType', targetType);
-  if (targetId) params.set('targetId', targetId);
+  if (status) params.set('status', status);
   return fetchJson<{ data: Review[]; total: number; page: number; limit: number }>(
-    `/reviews?${params.toString()}`,
+    `/reviews/admin?${params.toString()}`,
   );
 };
+export const moderateReview = (id: string, status: string) =>
+  fetchJson<Review>(`/reviews/${id}/moderate`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  });
 export const deleteReview = (id: string) =>
   fetchJson<DeleteResponse>(`/reviews/${id}`, { method: 'DELETE' });
 
@@ -257,6 +262,8 @@ export const getJournals = (page = 1, limit = 20) => {
 };
 export const updateJournal = (id: string, data: { isPublic?: boolean }) =>
   fetchJson<{ id: string }>(`/journals/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+export const deleteJournal = (id: string) =>
+  fetchJson<DeleteResponse>(`/journals/${id}`, { method: 'DELETE' });
 
 // ---- AI Config ----
 export interface AiConfig {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table, Card, Typography, Tag, Rate, Select, Popconfirm, Button, Image, message, Space, Tabs, Tooltip } from 'antd';
-import { DeleteOutlined, CheckOutlined, CloseOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, CheckOutlined, CloseOutlined, EyeInvisibleOutlined, LoadingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getReviews, deleteReview } from '../lib/api';
+import { getReviews, deleteReview, moderateReview } from '../lib/api';
 import type { Review } from '../types';
 import dayjs from 'dayjs';
 
@@ -39,12 +39,13 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('');
   const [activeTab, setActiveTab] = useState<ReviewStatus>('ALL');
-  // Local status management (no backend status field yet)
-  const [localStatus, setLocalStatus] = useState<Record<string, ReviewStatus>>({});
+  // Track which review IDs have an in-flight moderation request
+  const [moderatingIds, setModerating] = useState<Set<string>>(new Set());
 
   const fetchReviews = (p = page, ps = pageSize) => {
     setLoading(true);
-    getReviews(p, ps, filterType || undefined)
+    const statusFilter = activeTab === 'ALL' ? undefined : activeTab;
+    getReviews(p, ps, filterType || undefined, statusFilter)
       .then((res) => { setData(res.data); setTotal(res.total); })
       .catch((err: unknown) => {
         message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误'));
@@ -53,7 +54,7 @@ export default function ReviewsPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchReviews(page, pageSize); }, [page, pageSize, filterType]);
+  useEffect(() => { fetchReviews(page, pageSize); }, [page, pageSize, filterType, activeTab]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -65,31 +66,41 @@ export default function ReviewsPage() {
     }
   };
 
-  const handleStatusChange = (id: string, status: ReviewStatus) => {
-    setLocalStatus((prev) => ({ ...prev, [id]: status }));
-    const labels: Record<ReviewStatus, string> = {
-      ALL: '', PENDING: '已标记待审核', APPROVED: '已通过审核', REJECTED: '已拒绝', HIDDEN: '已隐藏',
-    };
-    if (labels[status]) message.success(labels[status]);
+  const handleModerate = async (id: string, status: 'APPROVED' | 'REJECTED' | 'HIDDEN') => {
+    setModerating((prev) => new Set(prev).add(id));
+    try {
+      await moderateReview(id, status);
+      const labels: Record<string, string> = {
+        APPROVED: '已通过审核',
+        REJECTED: '已拒绝',
+        HIDDEN: '已隐藏',
+      };
+      message.success(labels[status]);
+      fetchReviews(page, pageSize);
+    } catch (err: unknown) {
+      message.error('操作失败: ' + (err instanceof Error ? err.message : '网络错误'));
+    } finally {
+      setModerating((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   };
 
-  const getEffectiveStatus = (id: string): ReviewStatus =>
-    localStatus[id] ?? 'PENDING';
+  const getEffectiveStatus = (review: Review): ReviewStatus => {
+    const s = review.status as ReviewStatus;
+    return STATUS_CONFIG[s] ? s : 'PENDING';
+  };
 
-  const filteredData = data.filter((r) => {
-    if (activeTab === 'ALL') return true;
-    return getEffectiveStatus(r.id) === activeTab;
-  });
-
-  const tabItems = (Object.keys(STATUS_CONFIG) as ReviewStatus[]).map((key) => {
-    const count = key === 'ALL'
-      ? data.length
-      : data.filter((r) => getEffectiveStatus(r.id) === key).length;
-    return {
-      key,
-      label: `${STATUS_CONFIG[key].label}${count > 0 ? ` (${count})` : ''}`,
-    };
-  });
+  // Tab counts come from the total when filtering by status on the server.
+  // We only show the count for the active tab since server-side filtering is used.
+  const tabItems = (Object.keys(STATUS_CONFIG) as ReviewStatus[]).map((key) => ({
+    key,
+    label: key === activeTab
+      ? `${STATUS_CONFIG[key].label} (${total})`
+      : STATUS_CONFIG[key].label,
+  }));
 
   const columns: ColumnsType<Review> = [
     {
@@ -156,7 +167,7 @@ export default function ReviewsPage() {
       key: 'status',
       width: 100,
       render: (_: unknown, record: Review) => {
-        const s = getEffectiveStatus(record.id);
+        const s = getEffectiveStatus(record);
         const cfg = STATUS_CONFIG[s];
         return cfg.color ? (
           <Tag color={cfg.color}>{cfg.label}</Tag>
@@ -197,17 +208,19 @@ export default function ReviewsPage() {
       key: 'action',
       width: 140,
       render: (_: unknown, record: Review) => {
-        const s = getEffectiveStatus(record.id);
+        const s = getEffectiveStatus(record);
+        const isBusy = moderatingIds.has(record.id);
         return (
           <Space size={4}>
             {s !== 'APPROVED' && (
               <Tooltip title="通过">
                 <Button
                   type="text"
-                  icon={<CheckOutlined />}
+                  icon={isBusy ? <LoadingOutlined /> : <CheckOutlined />}
                   size="small"
                   style={{ color: '#52C41A' }}
-                  onClick={() => handleStatusChange(record.id, 'APPROVED')}
+                  disabled={isBusy}
+                  onClick={() => handleModerate(record.id, 'APPROVED')}
                 />
               </Tooltip>
             )}
@@ -215,10 +228,11 @@ export default function ReviewsPage() {
               <Tooltip title="拒绝">
                 <Button
                   type="text"
-                  icon={<CloseOutlined />}
+                  icon={isBusy ? <LoadingOutlined /> : <CloseOutlined />}
                   size="small"
                   danger
-                  onClick={() => handleStatusChange(record.id, 'REJECTED')}
+                  disabled={isBusy}
+                  onClick={() => handleModerate(record.id, 'REJECTED')}
                 />
               </Tooltip>
             )}
@@ -226,10 +240,11 @@ export default function ReviewsPage() {
               <Tooltip title="隐藏">
                 <Button
                   type="text"
-                  icon={<EyeInvisibleOutlined />}
+                  icon={isBusy ? <LoadingOutlined /> : <EyeInvisibleOutlined />}
                   size="small"
                   style={{ color: '#888' }}
-                  onClick={() => handleStatusChange(record.id, 'HIDDEN')}
+                  disabled={isBusy}
+                  onClick={() => handleModerate(record.id, 'HIDDEN')}
                 />
               </Tooltip>
             )}
@@ -241,7 +256,7 @@ export default function ReviewsPage() {
               okButtonProps={{ danger: true }}
             >
               <Tooltip title="删除">
-                <Button type="text" danger icon={<DeleteOutlined />} size="small" />
+                <Button type="text" danger icon={<DeleteOutlined />} size="small" disabled={isBusy} />
               </Tooltip>
             </Popconfirm>
           </Space>
@@ -274,14 +289,14 @@ export default function ReviewsPage() {
         <div style={{ paddingLeft: 16, paddingRight: 16 }}>
           <Table
             columns={columns}
-            dataSource={filteredData}
+            dataSource={data}
             rowKey="id"
             loading={loading}
             locale={{ emptyText: '暂无评价数据' }}
             pagination={{
               current: page,
               pageSize,
-              total: activeTab === 'ALL' ? total : filteredData.length,
+              total,
               showSizeChanger: true,
               showTotal: (t) => `共 ${t} 条`,
               onChange: (p, ps) => { setPage(p); setPageSize(ps); },

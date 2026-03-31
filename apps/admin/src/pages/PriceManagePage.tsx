@@ -1,22 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Tabs,
   Table,
-  Button,
   Select,
   Space,
   Typography,
   Tag,
-  Upload,
   message,
+  Button,
+  Popconfirm,
+  Spin,
+  Empty,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { UploadOutlined, DollarOutlined } from '@ant-design/icons';
+import { DollarOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-// ── 价格快照 ───────────────────────────────────────────────────────────────────
+const BASE = import.meta.env.VITE_API_URL || '/api';
+
+function getAuthHeaders(): HeadersInit {
+  const token = localStorage.getItem('token');
+  return token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json' };
+}
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface PriceSnapshot {
   id: string;
@@ -25,274 +36,243 @@ interface PriceSnapshot {
   date: string;
   price: number;
   currency: string;
+  createdAt: string;
 }
 
-const MOCK_SNAPSHOTS: PriceSnapshot[] = [
-  { id: '1', entityType: '圣地', entityId: 'site-001', date: '2026-03-25', price: 299, currency: 'CNY' },
-  { id: '2', entityType: '祖庭', entityId: 'temple-002', date: '2026-03-26', price: 199, currency: 'CNY' },
-  { id: '3', entityType: '行程', entityId: 'trip-003', date: '2026-03-27', price: 1299, currency: 'CNY' },
-  { id: '4', entityType: '路线', entityId: 'route-004', date: '2026-03-28', price: 499, currency: 'CNY' },
-  { id: '5', entityType: '圣地', entityId: 'site-005', date: '2026-03-29', price: 349, currency: 'CNY' },
-];
+interface PriceAlert {
+  id: string;
+  userId: string;
+  entityType: string;
+  entityId: string;
+  entityName: string;
+  targetPrice: number;
+  currentPrice: number;
+  isTriggered: boolean;
+  triggeredAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
 
-const ENTITY_TYPE_OPTIONS = ['全部', '圣地', '祖庭', '行程', '路线'];
+interface PagedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
 
-const snapshotColumns: ColumnsType<PriceSnapshot> = [
-  {
-    title: '实体类型',
-    dataIndex: 'entityType',
-    key: 'entityType',
-    width: 100,
-    render: (v: string) => <Tag color="blue">{v}</Tag>,
-  },
-  {
-    title: '实体ID',
-    dataIndex: 'entityId',
-    key: 'entityId',
-    ellipsis: true,
-  },
-  {
-    title: '日期',
-    dataIndex: 'date',
-    key: 'date',
-    width: 130,
-  },
-  {
-    title: '价格',
-    dataIndex: 'price',
-    key: 'price',
-    width: 110,
-    render: (v: number) => (
-      <span style={{ color: '#D4A855', fontWeight: 600 }}>
-        {v.toLocaleString()}
-      </span>
-    ),
-  },
-  {
-    title: '货币',
-    dataIndex: 'currency',
-    key: 'currency',
-    width: 80,
-  },
-];
+const ENTITY_TYPES = ['全部', 'ROUTE', 'PACKAGE'];
+
+// ── Snapshots Tab ─────────────────────────────────────────────────────────────
 
 function SnapshotsTab() {
-  const [filterType, setFilterType] = useState<string>('全部');
+  const [data, setData] = useState<PagedResult<PriceSnapshot>>({ items: [], total: 0, page: 1, pageSize: 20 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState('全部');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
-  const filtered =
-    filterType === '全部'
-      ? MOCK_SNAPSHOTS
-      : MOCK_SNAPSHOTS.filter((s) => s.entityType === filterType);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+      if (filterType !== '全部') params.set('entityType', filterType);
+      const res = await fetch(`${BASE}/prices/snapshots?${params}`, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json: PagedResult<PriceSnapshot> = await res.json();
+      setData(json);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '请求失败';
+      setError(msg);
+      message.error(`加载快照失败: ${msg}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, filterType]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const columns: ColumnsType<PriceSnapshot> = [
+    {
+      title: '实体类型', dataIndex: 'entityType', key: 'entityType', width: 100,
+      render: (v: string) => <Tag color="blue">{v}</Tag>,
+    },
+    { title: '实体ID', dataIndex: 'entityId', key: 'entityId', ellipsis: true },
+    {
+      title: '日期', dataIndex: 'date', key: 'date', width: 130,
+      render: (v: string) => (v ? new Date(v).toLocaleDateString('zh-CN') : '-'),
+    },
+    {
+      title: '价格 (分)', dataIndex: 'price', key: 'price', width: 120,
+      render: (v: number) => (
+        <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>
+      ),
+    },
+    { title: '货币', dataIndex: 'currency', key: 'currency', width: 80 },
+    {
+      title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 170,
+      render: (v: string) => (
+        <span style={{ color: '#999', fontSize: 12 }}>{v ? new Date(v).toLocaleString('zh-CN') : '-'}</span>
+      ),
+    },
+  ];
+
+  if (error && data.items.length === 0) {
+    return <Empty description={`加载失败: ${error}`}><Button onClick={fetchData}>重试</Button></Empty>;
+  }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Space>
           <span style={{ color: '#999' }}>实体类型:</span>
-          <Select
-            value={filterType}
-            onChange={setFilterType}
-            style={{ width: 120 }}
-          >
-            {ENTITY_TYPE_OPTIONS.map((t) => (
-              <Option key={t} value={t}>
-                {t}
-              </Option>
-            ))}
+          <Select value={filterType} onChange={(v) => { setFilterType(v); setPage(1); }} style={{ width: 120 }}>
+            {ENTITY_TYPES.map((t) => <Option key={t} value={t}>{t}</Option>)}
           </Select>
         </Space>
-        <Upload
-          accept=".csv,.json"
-          showUploadList={false}
-          beforeUpload={(file) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              try {
-                const text = e.target?.result as string;
-                let rows: PriceSnapshot[] = [];
-                if (file.name.endsWith('.json')) {
-                  rows = JSON.parse(text);
-                } else {
-                  const lines = text.split('\n').filter(Boolean);
-                  const header = lines[0].split(',');
-                  rows = lines.slice(1).map(line => {
-                    const cols = line.split(',');
-                    const obj: Record<string, string> = {};
-                    header.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').trim(); });
-                    return {
-                      id: obj.id || `import-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-                      entityType: obj.entityType || 'ROUTE',
-                      entityId: obj.entityId || '',
-                      date: obj.date || new Date().toISOString().slice(0, 10),
-                      price: Number(obj.price) || 0,
-                      currency: obj.currency || 'CNY',
-                    };
-                  });
-                }
-                message.success(`已解析 ${rows.length} 条价格记录（前端预览，需后端API持久化）`);
-              } catch {
-                message.error('文件解析失败，请检查格式');
-              }
-            };
-            reader.readAsText(file);
-            return false;
-          }}
-        >
-          <Button icon={<UploadOutlined />} type="primary">
-            导入价格数据
-          </Button>
-        </Upload>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading}>刷新</Button>
       </div>
-      <Table<PriceSnapshot>
-        dataSource={filtered}
-        columns={snapshotColumns}
-        rowKey="id"
-        pagination={{ pageSize: 10, showSizeChanger: true }}
-        size="middle"
-      />
+      <Spin spinning={loading}>
+        <Table<PriceSnapshot>
+          dataSource={data.items}
+          columns={columns}
+          rowKey="id"
+          pagination={{
+            current: page,
+            pageSize,
+            total: data.total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
+          size="middle"
+          locale={{ emptyText: <Empty description="暂无价格快照数据" /> }}
+        />
+      </Spin>
     </div>
   );
 }
 
-// ── 价格提醒 ───────────────────────────────────────────────────────────────────
-
-type AlertStatus = '等待中' | '已触发';
-
-interface PriceAlert {
-  id: string;
-  user: string;
-  entityName: string;
-  targetPrice: number;
-  currentPrice: number;
-  status: AlertStatus;
-  createdAt: string;
-}
-
-const MOCK_ALERTS: PriceAlert[] = [
-  {
-    id: 'a1',
-    user: '张三',
-    entityName: '布达拉宫朝圣之旅',
-    targetPrice: 999,
-    currentPrice: 1199,
-    status: '等待中',
-    createdAt: '2026-03-20 10:00',
-  },
-  {
-    id: 'a2',
-    user: '李四',
-    entityName: '麦加朝圣行程',
-    targetPrice: 3000,
-    currentPrice: 2880,
-    status: '已触发',
-    createdAt: '2026-03-18 14:30',
-  },
-  {
-    id: 'a3',
-    user: '王五',
-    entityName: '耶路撒冷圣城游',
-    targetPrice: 2500,
-    currentPrice: 2700,
-    status: '等待中',
-    createdAt: '2026-03-22 09:15',
-  },
-  {
-    id: 'a4',
-    user: '赵六',
-    entityName: '恒河朝圣路线',
-    targetPrice: 800,
-    currentPrice: 780,
-    status: '已触发',
-    createdAt: '2026-03-25 16:45',
-  },
-  {
-    id: 'a5',
-    user: '陈七',
-    entityName: '少林寺禅修体验',
-    targetPrice: 500,
-    currentPrice: 550,
-    status: '等待中',
-    createdAt: '2026-03-27 11:20',
-  },
-];
-
-const alertColumns: ColumnsType<PriceAlert> = [
-  {
-    title: '用户',
-    dataIndex: 'user',
-    key: 'user',
-    width: 90,
-  },
-  {
-    title: '实体名称',
-    dataIndex: 'entityName',
-    key: 'entityName',
-    ellipsis: true,
-  },
-  {
-    title: '目标价',
-    dataIndex: 'targetPrice',
-    key: 'targetPrice',
-    width: 110,
-    render: (v: number) => (
-      <span style={{ color: '#52C41A', fontWeight: 600 }}>
-        ¥{v.toLocaleString()}
-      </span>
-    ),
-  },
-  {
-    title: '当前价',
-    dataIndex: 'currentPrice',
-    key: 'currentPrice',
-    width: 110,
-    render: (v: number) => (
-      <span style={{ color: '#D4A855', fontWeight: 600 }}>
-        ¥{v.toLocaleString()}
-      </span>
-    ),
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'status',
-    width: 100,
-    render: (v: AlertStatus) => (
-      <Tag color={v === '已触发' ? 'green' : 'orange'}>{v}</Tag>
-    ),
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-    width: 160,
-    render: (v: string) => <span style={{ color: '#999', fontSize: 12 }}>{v}</span>,
-  },
-];
+// ── Alerts Tab ────────────────────────────────────────────────────────────────
 
 function AlertsTab() {
+  const [data, setData] = useState<PagedResult<PriceAlert>>({ items: [], total: 0, page: 1, pageSize: 20 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+      const res = await fetch(`${BASE}/price-alerts/all?${params}`, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json: PagedResult<PriceAlert> = await res.json();
+      setData(json);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '请求失败';
+      setError(msg);
+      message.error(`加载提醒失败: ${msg}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`${BASE}/price-alerts/admin/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      message.success('提醒已删除');
+      fetchData();
+    } catch (e) {
+      message.error(`删除失败: ${e instanceof Error ? e.message : '未知错误'}`);
+    }
+  };
+
+  const columns: ColumnsType<PriceAlert> = [
+    { title: '用户ID', dataIndex: 'userId', key: 'userId', width: 120, ellipsis: true },
+    { title: '实体名称', dataIndex: 'entityName', key: 'entityName', ellipsis: true },
+    {
+      title: '实体类型', dataIndex: 'entityType', key: 'entityType', width: 100,
+      render: (v: string) => <Tag color="blue">{v}</Tag>,
+    },
+    {
+      title: '目标价 (分)', dataIndex: 'targetPrice', key: 'targetPrice', width: 120,
+      render: (v: number) => <span style={{ color: '#52C41A', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>,
+    },
+    {
+      title: '当前价 (分)', dataIndex: 'currentPrice', key: 'currentPrice', width: 120,
+      render: (v: number) => <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>,
+    },
+    {
+      title: '状态', dataIndex: 'isTriggered', key: 'isTriggered', width: 90,
+      render: (v: boolean, r: PriceAlert) => (
+        <Tag color={!r.isActive ? 'default' : v ? 'green' : 'orange'}>
+          {!r.isActive ? '已删除' : v ? '已触发' : '等待中'}
+        </Tag>
+      ),
+    },
+    {
+      title: '创建时间', dataIndex: 'createdAt', key: 'createdAt', width: 170,
+      render: (v: string) => <span style={{ color: '#999', fontSize: 12 }}>{v ? new Date(v).toLocaleString('zh-CN') : '-'}</span>,
+    },
+    {
+      title: '操作', key: 'actions', width: 80,
+      render: (_: unknown, record: PriceAlert) => (
+        record.isActive ? (
+          <Popconfirm title="确定删除此提醒?" onConfirm={() => handleDelete(record.id)} okText="删除" cancelText="取消">
+            <Button type="link" danger icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
+        ) : <span style={{ color: '#999' }}>-</span>
+      ),
+    },
+  ];
+
+  if (error && data.items.length === 0) {
+    return <Empty description={`加载失败: ${error}`}><Button onClick={fetchData}>重试</Button></Empty>;
+  }
+
   return (
-    <Table<PriceAlert>
-      dataSource={MOCK_ALERTS}
-      columns={alertColumns}
-      rowKey="id"
-      pagination={{ pageSize: 10, showSizeChanger: true }}
-      size="middle"
-    />
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading}>刷新</Button>
+      </div>
+      <Spin spinning={loading}>
+        <Table<PriceAlert>
+          dataSource={data.items}
+          columns={columns}
+          rowKey="id"
+          pagination={{
+            current: page,
+            pageSize,
+            total: data.total,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+            onChange: (p, ps) => { setPage(p); setPageSize(ps); },
+          }}
+          size="middle"
+          locale={{ emptyText: <Empty description="暂无价格提醒数据" /> }}
+        />
+      </Spin>
+    </div>
   );
 }
 
-// ── 主页面 ────────────────────────────────────────────────────────────────────
+// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function PriceManagePage() {
   const tabItems = [
     {
       key: 'snapshots',
-      label: (
-        <span>
-          <DollarOutlined style={{ marginRight: 6 }} />
-          价格快照
-        </span>
-      ),
+      label: <span><DollarOutlined style={{ marginRight: 6 }} />价格快照</span>,
       children: <SnapshotsTab />,
     },
     {
@@ -304,9 +284,7 @@ export default function PriceManagePage() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
-        价格管理
-      </Title>
+      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>价格管理</Title>
       <Tabs defaultActiveKey="snapshots" items={tabItems} />
     </div>
   );

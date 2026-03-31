@@ -224,4 +224,44 @@ export class PriceService {
 
     return { message: '提醒已删除' };
   }
+
+  // ──────────────── Admin ────────────────
+
+  async listSnapshots(page: number, pageSize: number, entityType?: string) {
+    const where = entityType ? { entityType } : {};
+    const [items, total] = await Promise.all([
+      this.prisma.priceSnapshot.findMany({
+        where,
+        orderBy: { date: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.priceSnapshot.count({ where }),
+    ]);
+    return { items, total, page, pageSize };
+  }
+
+  async listAlerts(page: number, pageSize: number) {
+    const [items, total] = await Promise.all([
+      this.prisma.priceAlert.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.priceAlert.count(),
+    ]);
+    return { items, total, page, pageSize };
+  }
+
+  async adminDeleteAlert(id: string) {
+    const alert = await this.prisma.priceAlert.findUnique({ where: { id } });
+    if (!alert) {
+      throw new NotFoundException(`价格提醒 ${id} 不存在`);
+    }
+    await this.prisma.priceAlert.update({
+      where: { id },
+      data: { isActive: false },
+    });
+    return { message: '提醒已删除' };
+  }
 }

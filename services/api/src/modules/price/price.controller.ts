@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +20,8 @@ import {
 import { PriceService } from './price.service';
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { CalendarQueryDto } from './dto/calendar-query.dto';
 import { CompareQueryDto } from './dto/compare-query.dto';
 import { TrendQueryDto } from './dto/trend-query.dto';
@@ -237,5 +240,57 @@ export class PriceController {
     @CurrentUser('id') userId: string,
   ) {
     return this.priceService.deleteAlert(id, userId);
+  }
+
+  // ──────────────── Admin endpoints ────────────────
+
+  @Get('prices/snapshots')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '[Admin] 价格快照列表' })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'pageSize', required: false, example: 20 })
+  @ApiQuery({ name: 'entityType', required: false, example: 'ROUTE' })
+  @ApiResponse({ status: 200, description: '快照列表' })
+  listSnapshots(
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('entityType') entityType?: string,
+  ) {
+    return this.priceService.listSnapshots(
+      Number(page) || 1,
+      Math.min(Number(pageSize) || 20, 100),
+      entityType,
+    );
+  }
+
+  @Get('price-alerts/all')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '[Admin] 全部价格提醒列表' })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'pageSize', required: false, example: 20 })
+  @ApiResponse({ status: 200, description: '提醒列表' })
+  listAlerts(
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.priceService.listAlerts(
+      Number(page) || 1,
+      Math.min(Number(pageSize) || 20, 100),
+    );
+  }
+
+  @Delete('price-alerts/admin/:id')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '[Admin] 删除任意价格提醒' })
+  @ApiParam({ name: 'id', description: 'PriceAlert ID' })
+  @ApiResponse({ status: 200, description: '已删除' })
+  adminDeleteAlert(@Param('id') id: string) {
+    return this.priceService.adminDeleteAlert(id);
   }
 }

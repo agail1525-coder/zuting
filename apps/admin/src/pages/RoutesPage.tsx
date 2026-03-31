@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Button, Space, message, Popconfirm, Select } from 'antd';
-import { PlusOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Table, Card, Typography, Tag, Button, Space, message, Popconfirm, Select, Modal, Form, Input, InputNumber } from 'antd';
+import { PlusOutlined, DeleteOutlined, ReloadOutlined, EditOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getRoutes, deleteRoute } from '../lib/api';
+import { getRoutes, createRoute, updateRoute, deleteRoute } from '../lib/api';
 import type { AdminRoute } from '../types';
 
 const { Title } = Typography;
+const { TextArea } = Input;
 
 const CATEGORY_MAP: Record<string, { color: string; label: string }> = {
   ZEN: { color: 'gold', label: '禅宗' },
@@ -31,6 +32,22 @@ const STATUS_MAP: Record<string, { color: string; label: string }> = {
   ARCHIVED: { color: 'default', label: '已归档' },
 };
 
+interface RouteFormValues {
+  slug: string;
+  title: string;
+  titleEn: string;
+  subtitle: string;
+  category: string;
+  difficulty: string;
+  duration: number;
+  nights: number;
+  priceFrom: number;
+  season: string;
+  groupSize: string;
+  description: string;
+  status?: string;
+}
+
 export default function RoutesPage() {
   const [data, setData] = useState<AdminRoute[]>([]);
   const [total, setTotal] = useState(0);
@@ -38,6 +55,10 @@ export default function RoutesPage() {
   const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<string | undefined>();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState<AdminRoute | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [form] = Form.useForm<RouteFormValues>();
 
   const load = (p = page, ps = pageSize, cat = category) => {
     setLoading(true);
@@ -61,6 +82,61 @@ export default function RoutesPage() {
         load();
       })
       .catch(() => message.error('删除失败'));
+  };
+
+  const openCreate = () => {
+    setEditing(null);
+    form.resetFields();
+    form.setFieldsValue({ status: 'DRAFT', difficulty: 'MODERATE', duration: 3, nights: 2, priceFrom: 0 });
+    setModalOpen(true);
+  };
+
+  const openEdit = (record: AdminRoute) => {
+    setEditing(record);
+    form.setFieldsValue({
+      slug: record.slug,
+      title: record.title,
+      titleEn: record.titleEn,
+      subtitle: record.subtitle,
+      category: record.category,
+      difficulty: record.difficulty,
+      duration: record.duration,
+      nights: record.nights,
+      priceFrom: record.priceFrom,
+      season: record.season,
+      groupSize: record.groupSize,
+      description: record.description,
+      status: record.status,
+    });
+    setModalOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      setSubmitting(true);
+      const payload: Record<string, unknown> = {
+        ...values,
+        highlights: [],
+        included: [],
+        excluded: [],
+        itinerary: [],
+      };
+      if (editing) {
+        await updateRoute(editing.id, payload);
+        message.success('更新成功');
+      } else {
+        await createRoute(payload);
+        message.success('创建成功');
+      }
+      setModalOpen(false);
+      load();
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'errorFields' in err) return;
+      message.error(editing ? '更新失败' : '创建失败');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const columns: ColumnsType<AdminRoute> = [
@@ -127,11 +203,14 @@ export default function RoutesPage() {
     },
     {
       title: '操作',
-      width: 80,
+      width: 120,
       render: (_: unknown, record) => (
-        <Popconfirm title="确认删除?" onConfirm={() => handleDelete(record.id)}>
-          <Button type="link" danger icon={<DeleteOutlined />} size="small" />
-        </Popconfirm>
+        <Space>
+          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
+          <Popconfirm title="确认删除?" onConfirm={() => handleDelete(record.id)}>
+            <Button type="link" danger icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
@@ -151,6 +230,7 @@ export default function RoutesPage() {
               options={Object.entries(CATEGORY_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
             />
             <Button icon={<ReloadOutlined />} onClick={() => load()}>刷新</Button>
+            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>新建路线</Button>
           </Space>
         </Space>
         <Table<AdminRoute>
@@ -170,6 +250,75 @@ export default function RoutesPage() {
           size="middle"
         />
       </Space>
+
+      <Modal
+        title={editing ? '编辑路线' : '新建路线'}
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        onOk={handleSubmit}
+        confirmLoading={submitting}
+        okText={editing ? '保存' : '创建'}
+        cancelText="取消"
+        width={640}
+        destroyOnClose
+      >
+        <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
+          <Form.Item name="title" label="路线名称" rules={[{ required: true, message: '请输入路线名称' }]}>
+            <Input placeholder="例：六祖慧能路线" />
+          </Form.Item>
+          <Form.Item name="titleEn" label="英文名称" rules={[{ required: true, message: '请输入英文名称' }]}>
+            <Input placeholder="例：Sixth Patriarch Huineng Route" />
+          </Form.Item>
+          <Form.Item name="slug" label="Slug" rules={[{ required: true, message: '请输入Slug' }]}>
+            <Input placeholder="例：sixth-patriarch-huineng" />
+          </Form.Item>
+          <Form.Item name="subtitle" label="副标题" rules={[{ required: true, message: '请输入副标题' }]}>
+            <Input placeholder="例：追随六祖足迹，体验禅宗精髓" />
+          </Form.Item>
+          <Space size="middle" style={{ width: '100%' }}>
+            <Form.Item name="category" label="分类" rules={[{ required: true, message: '请选择分类' }]} style={{ width: 180 }}>
+              <Select
+                placeholder="选择分类"
+                options={Object.entries(CATEGORY_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
+              />
+            </Form.Item>
+            <Form.Item name="difficulty" label="难度" rules={[{ required: true, message: '请选择难度' }]} style={{ width: 140 }}>
+              <Select
+                placeholder="选择难度"
+                options={Object.entries(DIFFICULTY_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
+              />
+            </Form.Item>
+            <Form.Item name="status" label="状态" style={{ width: 140 }}>
+              <Select
+                placeholder="选择状态"
+                options={Object.entries(STATUS_MAP).map(([k, v]) => ({ value: k, label: v.label }))}
+              />
+            </Form.Item>
+          </Space>
+          <Space size="middle" style={{ width: '100%' }}>
+            <Form.Item name="duration" label="天数" rules={[{ required: true, message: '请输入天数' }]} style={{ width: 120 }}>
+              <InputNumber min={1} max={30} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item name="nights" label="晚数" rules={[{ required: true, message: '请输入晚数' }]} style={{ width: 120 }}>
+              <InputNumber min={0} max={29} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item name="priceFrom" label="起价(分)" rules={[{ required: true, message: '请输入起价' }]} style={{ width: 160 }}>
+              <InputNumber min={0} style={{ width: '100%' }} placeholder="例：328000" />
+            </Form.Item>
+          </Space>
+          <Space size="middle" style={{ width: '100%' }}>
+            <Form.Item name="season" label="适宜季节" rules={[{ required: true, message: '请输入适宜季节' }]} style={{ flex: 1 }}>
+              <Input placeholder="例：春秋两季" />
+            </Form.Item>
+            <Form.Item name="groupSize" label="团队规模" rules={[{ required: true, message: '请输入团队规模' }]} style={{ flex: 1 }}>
+              <Input placeholder="例：2-8人小团" />
+            </Form.Item>
+          </Space>
+          <Form.Item name="description" label="路线描述" rules={[{ required: true, message: '请输入路线描述' }]}>
+            <TextArea rows={4} placeholder="详细路线介绍..." />
+          </Form.Item>
+        </Form>
+      </Modal>
     </Card>
   );
 }

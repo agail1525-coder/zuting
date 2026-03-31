@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 const { Title } = Typography;
 const { Option } = Select;
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+const BASE = import.meta.env.VITE_API_URL || '/api';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('token');
@@ -142,7 +142,7 @@ function PromotionsTab() {
     setLoading(true);
     try {
       const res = await fetch(
-        `${API_BASE}/api/promotions?page=${p}&limit=20`,
+        `${BASE}/promotions?page=${p}&limit=20`,
         { headers: getAuthHeaders() },
       );
       if (!res.ok) throw new Error('加载失败');
@@ -206,8 +206,8 @@ function PromotionsTab() {
     };
     try {
       const url = editRecord
-        ? `${API_BASE}/api/promotions/${editRecord.id}`
-        : `${API_BASE}/api/promotions`;
+        ? `${BASE}/promotions/${editRecord.id}`
+        : `${BASE}/promotions`;
       const method = editRecord ? 'PATCH' : 'POST';
       const res = await fetch(url, {
         method,
@@ -227,7 +227,7 @@ function PromotionsTab() {
 
   async function handleDeactivate(id: string) {
     try {
-      const res = await fetch(`${API_BASE}/api/promotions/${id}`, {
+      const res = await fetch(`${BASE}/promotions/${id}`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify({ status: 'INACTIVE' }),
@@ -242,7 +242,7 @@ function PromotionsTab() {
 
   async function handleDelete(id: string) {
     try {
-      const res = await fetch(`${API_BASE}/api/promotions/${id}`, {
+      const res = await fetch(`${BASE}/promotions/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
@@ -446,7 +446,7 @@ function CouponsTab() {
     setLoading(true);
     try {
       const res = await fetch(
-        `${API_BASE}/api/coupons?page=${p}&limit=20`,
+        `${BASE}/coupons?page=${p}&limit=20`,
         { headers: getAuthHeaders() },
       );
       if (!res.ok) throw new Error('加载失败');
@@ -504,8 +504,8 @@ function CouponsTab() {
     };
     try {
       const url = editRecord
-        ? `${API_BASE}/api/coupons/${editRecord.id}`
-        : `${API_BASE}/api/coupons`;
+        ? `${BASE}/coupons/${editRecord.id}`
+        : `${BASE}/coupons`;
       const method = editRecord ? 'PATCH' : 'POST';
       const res = await fetch(url, {
         method,
@@ -525,7 +525,7 @@ function CouponsTab() {
 
   async function handleDeactivate(id: string) {
     try {
-      const res = await fetch(`${API_BASE}/api/coupons/${id}`, {
+      const res = await fetch(`${BASE}/coupons/${id}`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
         body: JSON.stringify({ status: 'INACTIVE' }),

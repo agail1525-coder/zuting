@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Switch, Input, Select, Space, message } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Card, Typography, Tag, Switch, Input, Select, Space, Button, Popconfirm, Modal, Tooltip, message } from 'antd';
+import { SearchOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getJournals, updateJournal } from '../lib/api';
+import { getJournals, updateJournal, deleteJournal } from '../lib/api';
 import type { Journal } from '../types';
 import dayjs from 'dayjs';
 
@@ -16,6 +16,8 @@ export default function JournalsPage() {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [publicFilter, setPublicFilter] = useState<string>('all');
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailRecord, setDetailRecord] = useState<Journal | null>(null);
 
   const fetchJournals = (p = page, ps = pageSize) => {
     setLoading(true);
@@ -37,12 +39,31 @@ export default function JournalsPage() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteJournal(id);
+      message.success('已删除日志');
+      fetchJournals(page, pageSize);
+    } catch {
+      message.error('删除失败');
+    }
+  };
+
+  const showDetail = (record: Journal) => {
+    setDetailRecord(record);
+    setDetailOpen(true);
+  };
+
   const columns: ColumnsType<Journal> = [
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      render: (text: string) => <span style={{ fontWeight: 600 }}>{text || '无标题'}</span>,
+      render: (text: string, record: Journal) => (
+        <a onClick={() => showDetail(record)} style={{ fontWeight: 600, color: '#D4A855' }}>
+          {text || '无标题'}
+        </a>
+      ),
     },
     {
       title: '作者',
@@ -94,6 +115,29 @@ export default function JournalsPage() {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (v: string) => v ? dayjs(v).format('YYYY-MM-DD') : '-',
+    },
+    {
+      title: '操作',
+      key: 'actions',
+      width: 100,
+      render: (_: unknown, record: Journal) => (
+        <Space>
+          <Tooltip title="查看详情">
+            <Button type="text" icon={<EyeOutlined />} size="small" onClick={() => showDetail(record)} />
+          </Tooltip>
+          <Popconfirm
+            title="确认删除此日志?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="删除"
+            cancelText="取消"
+            okButtonProps={{ danger: true }}
+          >
+            <Tooltip title="删除">
+              <Button type="text" danger icon={<DeleteOutlined />} size="small" />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -154,6 +198,27 @@ export default function JournalsPage() {
           size="middle"
         />
       </Card>
+
+      <Modal
+        title={detailRecord?.title || '日志详情'}
+        open={detailOpen}
+        onCancel={() => setDetailOpen(false)}
+        footer={null}
+        width={640}
+      >
+        {detailRecord && (
+          <div>
+            <p><strong>作者:</strong> {detailRecord.user?.name || detailRecord.author || '-'}</p>
+            <p><strong>地点:</strong> {detailRecord.location || '-'}</p>
+            <p><strong>状态:</strong> {detailRecord.status === 'PUBLISHED' ? '已发布' : detailRecord.status === 'DRAFT' ? '草稿' : (detailRecord.status || '未知')}</p>
+            <p><strong>公开:</strong> {detailRecord.isPublic ? '是' : '否'}</p>
+            <p><strong>发布日期:</strong> {detailRecord.createdAt ? dayjs(detailRecord.createdAt).format('YYYY-MM-DD HH:mm') : '-'}</p>
+            <div style={{ marginTop: 16, padding: 16, background: '#1a1a2e', borderRadius: 8, whiteSpace: 'pre-wrap', color: '#ccc', maxHeight: 400, overflow: 'auto' }}>
+              {detailRecord.content || '暂无内容'}
+            </div>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }

@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { ModerateReviewDto } from './dto/moderate-review.dto';
 import { CreateReplyDto } from './dto/create-reply.dto';
 
 @Injectable()
@@ -88,6 +89,54 @@ export class ReviewService {
     ]);
 
     return { data, total, page, limit };
+  }
+
+  /** Admin: list all reviews with optional status filter */
+  async findAllAdmin(params: {
+    page?: number;
+    limit?: number;
+    targetType?: string;
+    status?: string;
+  }) {
+    const { page = 1, limit = 20, targetType, status } = params;
+    const take = Math.min(limit, 100);
+    const where: Prisma.ReviewWhereInput = {};
+    if (targetType) where.targetType = targetType;
+    if (status) where.status = status;
+
+    const [data, total] = await Promise.all([
+      this.prisma.review.findMany({
+        where,
+        include: {
+          user: { select: { id: true, nickname: true, avatar: true } },
+          replies: {
+            include: { user: { select: { id: true, nickname: true, avatar: true } } },
+            orderBy: { createdAt: 'asc' as const },
+          },
+          _count: { select: { votes: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * take,
+        take,
+      }),
+      this.prisma.review.count({ where }),
+    ]);
+
+    return { data, total, page, limit };
+  }
+
+  /** Admin: moderate a review (approve/reject/hide) */
+  async moderate(id: string, dto: ModerateReviewDto) {
+    const review = await this.prisma.review.findUnique({ where: { id } });
+    if (!review) throw new NotFoundException(`Review ${id} not found`);
+
+    return this.prisma.review.update({
+      where: { id },
+      data: { status: dto.status },
+      include: {
+        user: { select: { id: true, nickname: true, avatar: true } },
+      },
+    });
   }
 
   /** Get current user's reviews */

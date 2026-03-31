@@ -10,6 +10,8 @@ import {
   Statistic,
   Space,
   Button,
+  Alert,
+  message,
 } from 'antd';
 import {
   BarChartOutlined,
@@ -88,56 +90,18 @@ async function fetchJSON<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-// --------------- Mock data generators (used when API not available) ---------------
+// --------------- Empty defaults (used when API fails) ---------------
 
-function mockOverview(): OverviewData {
-  return {
-    users: 12_580,
-    trips: 3_842,
-    orders: 1_267,
-    revenue: 896_400,
-    reviews: 4_210,
-    guides: 86,
-    merchants: 42,
-    shares: 7_320,
-  };
-}
-
-function mockTrends(): TrendPoint[] {
-  const data: TrendPoint[] = [];
-  const now = new Date();
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    data.push({
-      date: `${d.getMonth() + 1}/${d.getDate()}`,
-      orders: Math.floor(Math.random() * 50) + 20,
-      trips: Math.floor(Math.random() * 80) + 30,
-      newUsers: Math.floor(Math.random() * 120) + 40,
-    });
-  }
-  return data;
-}
-
-function mockFunnel(): FunnelStage[] {
-  return [
-    { stage: '注册用户', count: 12580, rate: 100 },
-    { stage: '创建行程', count: 3842, rate: 30.5 },
-    { stage: '提交订单', count: 1267, rate: 10.1 },
-    { stage: '完成支付', count: 896, rate: 7.1 },
-  ];
-}
-
-function mockTopContent(): TopContentItem[] {
-  const types = ['圣地', '祖庭', '祖师', '信仰', '路线'];
-  return Array.from({ length: 10 }, (_, i) => ({
-    rank: i + 1,
-    entityType: types[i % types.length] ?? '圣地',
-    entityId: `#${1000 + i}`,
-    count: Math.floor(Math.random() * 5000) + 500,
-  })).sort((a, b) => b.count - a.count)
-    .map((item, idx) => ({ ...item, rank: idx + 1 }));
-}
+const EMPTY_OVERVIEW: OverviewData = {
+  users: 0,
+  trips: 0,
+  orders: 0,
+  revenue: 0,
+  reviews: 0,
+  guides: 0,
+  merchants: 0,
+  shares: 0,
+};
 
 // --------------- KPI card config ---------------
 
@@ -174,10 +138,12 @@ export default function AnalyticsDashboardPage() {
   const [topContent, setTopContent] = useState<TopContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [partialErrors, setPartialErrors] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setPartialErrors([]);
     try {
       const [ov, tr, fu, tc] = await Promise.allSettled([
         fetchJSON<OverviewData>('/analytics/overview'),
@@ -186,17 +152,47 @@ export default function AnalyticsDashboardPage() {
         fetchJSON<TopContentItem[]>('/analytics/top-content'),
       ]);
 
-      setOverview(ov.status === 'fulfilled' ? ov.value : mockOverview());
-      setTrends(tr.status === 'fulfilled' ? (Array.isArray(tr.value) ? tr.value : []) : mockTrends());
-      setFunnel(fu.status === 'fulfilled' ? (Array.isArray(fu.value) ? fu.value : []) : mockFunnel());
-      setTopContent(tc.status === 'fulfilled' ? (Array.isArray(tc.value) ? tc.value : []) : mockTopContent());
+      const errors: string[] = [];
+
+      if (ov.status === 'fulfilled') {
+        setOverview(ov.value);
+      } else {
+        setOverview(EMPTY_OVERVIEW);
+        errors.push('概览数据加载失败');
+      }
+
+      if (tr.status === 'fulfilled') {
+        setTrends(Array.isArray(tr.value) ? tr.value : []);
+      } else {
+        setTrends([]);
+        errors.push('趋势数据加载失败');
+      }
+
+      if (fu.status === 'fulfilled') {
+        setFunnel(Array.isArray(fu.value) ? fu.value : []);
+      } else {
+        setFunnel([]);
+        errors.push('漏斗数据加载失败');
+      }
+
+      if (tc.status === 'fulfilled') {
+        setTopContent(Array.isArray(tc.value) ? tc.value : []);
+      } else {
+        setTopContent([]);
+        errors.push('热门内容加载失败');
+      }
+
+      if (errors.length > 0) {
+        setPartialErrors(errors);
+        void message.warning(`部分数据加载失败: ${errors.join(', ')}`);
+      }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : '加载失败');
-      // Fallback to mock
-      setOverview(mockOverview());
-      setTrends(mockTrends());
-      setFunnel(mockFunnel());
-      setTopContent(mockTopContent());
+      const msg = e instanceof Error ? e.message : '加载失败';
+      setError(msg);
+      setOverview(null);
+      setTrends([]);
+      setFunnel([]);
+      setTopContent([]);
     } finally {
       setLoading(false);
     }
@@ -290,6 +286,18 @@ export default function AnalyticsDashboardPage() {
           刷新
         </Button>
       </div>
+
+      {/* Partial failure warning */}
+      {partialErrors.length > 0 && (
+        <Alert
+          message="部分数据不可用"
+          description={`以下接口加载失败，对应数据显示为零: ${partialErrors.join(', ')}。请点击刷新重试。`}
+          type="warning"
+          showIcon
+          closable
+          style={{ marginBottom: 16 }}
+        />
+      )}
 
       {/* Section 1: Overview KPIs */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>

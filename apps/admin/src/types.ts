@@ -197,6 +197,7 @@ export interface Review {
   rating: number;
   content?: string;
   images: string[];
+  status: string;
   createdAt: string;
   updatedAt: string;
   user?: { id: string; nickname: string; avatar?: string };

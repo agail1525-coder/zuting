@@ -46,6 +46,10 @@ interface LanguageRow {
 }
 
 /* ---------- Static language data ---------- */
+// NOTE: The supported language list is static config (7 fixed languages).
+// TODO: When a translations stats API is available (e.g. GET /translations/coverage),
+// fetch real translation coverage/completeness per language instead of hardcoding "Complete".
+// Currently no i18n/translation module exists in services/api/src/modules/.
 
 const LANGUAGES: LanguageRow[] = [
   { key: 'zh', language: '中文', code: 'zh-CN', direction: 'LTR', status: 'Complete' },

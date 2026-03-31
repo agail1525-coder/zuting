@@ -413,6 +413,7 @@ model Review {
   rating       Int      // 1-5
   content      String?  @db.Text
   images       String[]
+  status       String   @default("PENDING") // PENDING / APPROVED / REJECTED / HIDDEN
   helpfulCount Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -422,6 +423,7 @@ model Review {
 
   @@unique([userId, targetType, targetId])
   @@index([targetType, targetId])
+  @@index([status])
 }
 
 // ========== 评价回复 ==========

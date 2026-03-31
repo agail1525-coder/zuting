@@ -9,6 +9,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,10 +21,13 @@ import {
 } from '@nestjs/swagger';
 import { ReviewService } from './review.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { ModerateReviewDto } from './dto/moderate-review.dto';
 import { CreateReplyDto } from './dto/create-reply.dto';
 
 @ApiTags('reviews')
@@ -47,6 +51,56 @@ export class ReviewController {
     @Body() dto: CreateReviewDto,
   ) {
     return this.reviewService.create(userId, dto);
+  }
+
+  @Get('admin')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Admin: list all reviews',
+    description:
+      '管理员获取所有评价列表，支持按类型和状态筛选。\n\n' +
+      'Admin endpoint to list all reviews with optional targetType and status filters.',
+  })
+  @ApiQuery({ name: 'targetType', required: false, enum: ['TRIP', 'GUIDE', 'SITE'] })
+  @ApiQuery({ name: 'status', required: false, enum: ['PENDING', 'APPROVED', 'REJECTED', 'HIDDEN'] })
+  @ApiResponse({ status: 200, description: 'Paginated list of reviews / 评价列表（分页）' })
+  @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
+  @ApiResponse({ status: 403, description: 'Forbidden — admin only / 仅限管理员' })
+  findAllAdmin(
+    @Query('targetType') targetType: string,
+    @Query('status') status: string,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.reviewService.findAllAdmin({
+      targetType,
+      status,
+      page: pagination.page,
+      limit: pagination.limit,
+    });
+  }
+
+  @Patch(':id/moderate')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Admin: moderate a review',
+    description:
+      '管理员审核评价，可以通过、拒绝或隐藏评价。\n\n' +
+      'Admin moderation endpoint to approve, reject, or hide a review.',
+  })
+  @ApiParam({ name: 'id', description: 'Review ID (评价ID)' })
+  @ApiResponse({ status: 200, description: 'Review moderated successfully / 评价审核成功' })
+  @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
+  @ApiResponse({ status: 403, description: 'Forbidden — admin only / 仅限管理员' })
+  @ApiResponse({ status: 404, description: 'Review not found / 评价不存在' })
+  moderate(
+    @Param('id') id: string,
+    @Body() dto: ModerateReviewDto,
+  ) {
+    return this.reviewService.moderate(id, dto);
   }
 
   @Public()
