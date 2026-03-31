@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,6 +7,7 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +26,13 @@ const TYPE_TABS = [
   { key: 'ADVENTURE', label: '探索探险' },
 ];
 
+const TRUST_BADGES = [
+  { icon: 'shield-checkmark-outline' as const, label: '官方认证' },
+  { icon: 'refresh-outline' as const, label: '随时退改' },
+  { icon: 'headset-outline' as const, label: '全程服务' },
+  { icon: 'lock-closed-outline' as const, label: '安全保障' },
+];
+
 export default function PackagesScreen() {
   const router = useRouter();
   const [packages, setPackages] = useState<PackageItem[]>([]);
@@ -32,6 +40,7 @@ export default function PackagesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState('');
 
   const load = useCallback(async (t: string) => {
     try {
@@ -55,8 +64,42 @@ export default function PackagesScreen() {
     setLoading(true);
   };
 
+  // Stats
+  const stats = useMemo(() => {
+    if (packages.length === 0) return { total: 0, minPrice: 0, maxPrice: 0 };
+    const prices = packages.map(p => p.priceFrom);
+    return {
+      total: total,
+      minPrice: Math.min(...prices),
+      maxPrice: Math.max(...prices),
+    };
+  }, [packages, total]);
+
+  // Filtered list
+  const filtered = useMemo(() => {
+    if (!search.trim()) return packages;
+    const q = search.trim().toLowerCase();
+    return packages.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      (p.subtitle ?? '').toLowerCase().includes(q)
+    );
+  }, [packages, search]);
+
   return (
     <View style={styles.container}>
+      {/* Search Input */}
+      <View style={styles.searchRow}>
+        <Ionicons name="search-outline" size={16} color="#9CA3AF" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="搜索套餐名称..."
+          placeholderTextColor="#9CA3AF"
+          value={search}
+          onChangeText={setSearch}
+          clearButtonMode="while-editing"
+        />
+      </View>
+
       {/* Type Filter Tabs */}
       <FlatList
         data={TYPE_TABS}
@@ -80,19 +123,59 @@ export default function PackagesScreen() {
         <View style={styles.center}>
           <ActivityIndicator size="large" color={PRIMARY} />
         </View>
-      ) : packages.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <View style={styles.center}>
           <Ionicons name="cube-outline" size={48} color={colors.textMuted} />
-          <Text style={styles.emptyText}>暂无套餐</Text>
+          {search.trim() ? (
+            <>
+              <Text style={styles.emptyText}>未找到"{search}"相关套餐</Text>
+              <Text style={styles.emptySubText}>换个关键词试试</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.emptyText}>暂无套餐</Text>
+              <Text style={styles.emptySubText}>请稍后再来</Text>
+            </>
+          )}
         </View>
       ) : (
         <FlatList
-          data={packages}
+          data={filtered}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           ListHeaderComponent={
-            <Text style={styles.resultCount}>共 {total} 个套餐</Text>
+            <>
+              {/* Stats */}
+              <View style={styles.statsRow}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>{stats.total}</Text>
+                  <Text style={styles.statLabel}>全部套餐</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>¥{stats.minPrice.toLocaleString()}</Text>
+                  <Text style={styles.statLabel}>最低价起</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>¥{stats.maxPrice.toLocaleString()}</Text>
+                  <Text style={styles.statLabel}>最高价格</Text>
+                </View>
+              </View>
+
+              {/* Trust Badges */}
+              <View style={styles.trustRow}>
+                {TRUST_BADGES.map((badge, idx) => (
+                  <View key={idx} style={styles.trustBadge}>
+                    <Ionicons name={badge.icon} size={18} color={PRIMARY} />
+                    <Text style={styles.trustLabel}>{badge.label}</Text>
+                  </View>
+                ))}
+              </View>
+
+              <Text style={styles.resultCount}>共 {filtered.length} 个套餐</Text>
+            </>
           }
           renderItem={({ item }) => (
             <PackageCard item={item} onPress={() => router.push(`/packages/${item.id}` as never)} />
@@ -184,6 +267,22 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: spacing.md },
 
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 12,
+    height: 42,
+  },
+  searchIcon: { marginRight: 8 },
+  searchInput: { flex: 1, fontSize: 14, color: '#1A1A1A' },
+
   tabsList: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm },
   tab: {
     paddingHorizontal: spacing.md,
@@ -197,6 +296,32 @@ const styles = StyleSheet.create({
 
   list: { padding: spacing.md, paddingBottom: spacing.xxl, gap: spacing.md },
   resultCount: { fontSize: fontSize.sm, color: colors.textMuted, marginBottom: spacing.sm },
+
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  statItem: { flex: 1, alignItems: 'center' },
+  statNumber: { fontSize: 18, fontWeight: '800', color: PRIMARY },
+  statLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
+  statDivider: { width: 1, backgroundColor: '#E5E7EB', marginVertical: 4 },
+
+  trustRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  trustBadge: { flex: 1, alignItems: 'center', gap: 4 },
+  trustLabel: { fontSize: 11, color: colors.textSecondary, fontWeight: '500' },
 
   card: {
     backgroundColor: colors.backgroundCardSolid,
@@ -248,5 +373,6 @@ const styles = StyleSheet.create({
   detailBtn: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   detailBtnText: { fontSize: fontSize.md, color: PRIMARY, fontWeight: '600' },
 
-  emptyText: { fontSize: fontSize.lg, color: colors.textMuted },
+  emptyText: { fontSize: fontSize.lg, color: colors.textMuted, fontWeight: '600' },
+  emptySubText: { fontSize: fontSize.sm, color: colors.textMuted },
 });

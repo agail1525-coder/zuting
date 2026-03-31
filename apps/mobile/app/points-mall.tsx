@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -8,9 +8,11 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 import {
   fetchMyMembership,
@@ -26,12 +28,14 @@ const GOLD = '#D4A855';
 const CATEGORIES = ['全部', '优惠券', '实物礼品', '旅行增值', '会员权益'];
 
 export default function PointsMallScreen() {
+  const router = useRouter();
   const [membership, setMembership] = useState<MembershipData | null>(null);
   const [products, setProducts] = useState<PointsProductItem[]>([]);
   const [category, setCategory] = useState('全部');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [exchanging, setExchanging] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
   const load = useCallback(async (cat: string) => {
     try {
@@ -88,6 +92,25 @@ export default function PointsMallScreen() {
     );
   };
 
+  // Stats
+  const stats = useMemo(() => {
+    const inStock = products.filter(p => p.stock > 0).length;
+    const cheapest = products.length > 0
+      ? Math.min(...products.map(p => p.pointsCost))
+      : 0;
+    return { total: products.length, inStock, cheapest };
+  }, [products]);
+
+  // Filtered list
+  const filtered = useMemo(() => {
+    if (!search.trim()) return products;
+    const q = search.trim().toLowerCase();
+    return products.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.description ?? '').toLowerCase().includes(q)
+    );
+  }, [products, search]);
+
   return (
     <View style={styles.container}>
       {/* Points Header */}
@@ -99,6 +122,19 @@ export default function PointsMallScreen() {
         <Text style={styles.headerHint}>
           {membership?.levelName ?? '普通会员'}
         </Text>
+      </View>
+
+      {/* Search Input */}
+      <View style={styles.searchRow}>
+        <Ionicons name="search-outline" size={16} color="#9CA3AF" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="搜索商品名称..."
+          placeholderTextColor="#9CA3AF"
+          value={search}
+          onChangeText={setSearch}
+          clearButtonMode="while-editing"
+        />
       </View>
 
       {/* Category Filter */}
@@ -125,19 +161,57 @@ export default function PointsMallScreen() {
         <View style={styles.center}>
           <ActivityIndicator size="large" color={PRIMARY} />
         </View>
-      ) : products.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <View style={styles.center}>
           <Ionicons name="gift-outline" size={48} color={colors.textMuted} />
-          <Text style={styles.emptyText}>暂无商品</Text>
+          {search.trim() ? (
+            <>
+              <Text style={styles.emptyText}>未找到"{search}"相关商品</Text>
+              <Text style={styles.emptySubText}>换个关键词试试</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.emptyText}>暂无商品</Text>
+              <Text style={styles.emptySubText}>请稍后再来</Text>
+            </>
+          )}
         </View>
       ) : (
         <FlatList
-          data={products}
+          data={filtered}
           keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={styles.productGrid}
           columnWrapperStyle={styles.productRow}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListHeaderComponent={
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <Text style={styles.statNumber}>{stats.total}</Text>
+                <Text style={styles.statLabel}>全部商品</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={[styles.statNumber, { color: '#22C55E' }]}>{stats.inStock}</Text>
+                <Text style={styles.statLabel}>有货在售</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={[styles.statNumber, { color: GOLD }]}>{stats.cheapest.toLocaleString()}</Text>
+                <Text style={styles.statLabel}>最低积分</Text>
+              </View>
+            </View>
+          }
+          ListFooterComponent={
+            <View style={styles.bottomCTA}>
+              <Ionicons name="diamond-outline" size={24} color={GOLD} />
+              <Text style={styles.ctaTitle}>赚取更多积分</Text>
+              <Text style={styles.ctaSubtitle}>签到、消费、参与活动均可获得积分</Text>
+              <Pressable style={styles.ctaBtn} onPress={() => router.push('/membership' as any)}>
+                <Text style={styles.ctaBtnText}>赚取更多积分 →</Text>
+              </Pressable>
+            </View>
+          }
           renderItem={({ item }) => (
             <View style={styles.productCard}>
               {item.imageUrl ? (
@@ -200,6 +274,22 @@ const styles = StyleSheet.create({
   headerPoints: { fontSize: fontSize.xl, fontWeight: '800', color: GOLD },
   headerHint: { fontSize: fontSize.sm, color: colors.textMuted },
 
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 2,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 12,
+    height: 42,
+  },
+  searchIcon: { marginRight: 8 },
+  searchInput: { flex: 1, fontSize: 14, color: '#1A1A1A' },
+
   categoryList: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm },
   categoryTab: {
     paddingHorizontal: spacing.md,
@@ -210,6 +300,20 @@ const styles = StyleSheet.create({
   categoryTabActive: { backgroundColor: PRIMARY },
   categoryTabText: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '500' },
   categoryTabTextActive: { color: '#FFFFFF', fontWeight: '700' },
+
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingVertical: 14,
+    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  statItem: { flex: 1, alignItems: 'center' },
+  statNumber: { fontSize: 18, fontWeight: '800', color: PRIMARY },
+  statLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
+  statDivider: { width: 1, backgroundColor: '#E5E7EB', marginVertical: 4 },
 
   productGrid: { padding: spacing.sm, paddingBottom: spacing.xxl },
   productRow: { gap: spacing.sm },
@@ -255,5 +359,25 @@ const styles = StyleSheet.create({
   exchangeBtnLoading: { opacity: 0.7 },
   exchangeBtnText: { fontSize: fontSize.xs, fontWeight: '700', color: '#FFFFFF' },
 
-  emptyText: { fontSize: fontSize.lg, color: colors.textMuted },
+  emptyText: { fontSize: fontSize.lg, color: colors.textMuted, fontWeight: '600' },
+  emptySubText: { fontSize: fontSize.sm, color: colors.textMuted },
+
+  bottomCTA: {
+    marginTop: 16,
+    backgroundColor: '#0F172A',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    gap: 6,
+  },
+  ctaTitle: { fontSize: 18, fontWeight: '800', color: '#FFFFFF' },
+  ctaSubtitle: { fontSize: 13, color: '#94A3B8' },
+  ctaBtn: {
+    marginTop: 10,
+    backgroundColor: GOLD,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  ctaBtnText: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
 });

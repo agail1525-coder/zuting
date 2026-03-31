@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PromotionItem, fetchPromotions } from '../../lib/api'
@@ -133,9 +133,24 @@ function PromotionCard({ promo }: { promo: PromotionItem }) {
 export default function PromotionsPage() {
   const [activeTab, setActiveTab] = useState<PromoTab>('ALL')
   const [promotions, setPromotions] = useState<PromotionItem[]>([])
+  const [allPromotions, setAllPromotions] = useState<PromotionItem[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Load all promotions once for stats, and filtered for display
+  useEffect(() => {
+    loadAllForStats()
+  }, [])
+
   useEffect(() => { loadPromotions() }, [activeTab])
+
+  const loadAllForStats = async () => {
+    try {
+      const res = await fetchPromotions(undefined)
+      setAllPromotions(res.data || [])
+    } catch {
+      setAllPromotions([])
+    }
+  }
 
   const loadPromotions = async () => {
     setLoading(true)
@@ -151,8 +166,72 @@ export default function PromotionsPage() {
     }
   }
 
+  // Stats computed from allPromotions
+  const stats = useMemo(() => {
+    const now = new Date()
+    const flashSaleCount = allPromotions.filter(p => p.type === 'FLASH_SALE').length
+    const expiringSoonCount = allPromotions.filter(p => {
+      const end = new Date(p.endAt)
+      const diffHours = (end.getTime() - now.getTime()) / 3600000
+      return diffHours > 0 && diffHours <= 24
+    }).length
+    return { total: allPromotions.length, flashSaleCount, expiringSoonCount }
+  }, [allPromotions])
+
+  // Tab counts from allPromotions
+  const tabCounts = useMemo(() => {
+    const counts: Record<string, number> = { ALL: allPromotions.length }
+    TABS.forEach(({ key }) => {
+      if (key !== 'ALL') {
+        counts[key] = allPromotions.filter(p => p.type === key).length
+      }
+    })
+    return counts
+  }, [allPromotions])
+
+  const hasFlashSales = allPromotions.some(p => p.type === 'FLASH_SALE' && new Date(p.endAt) > new Date())
+
   return (
     <View className='promotions-page'>
+      {/* Stats Header */}
+      <View style={{ display: 'flex', flexDirection: 'row', gap: '16rpx', padding: '24rpx 32rpx 0' }}>
+        <View style={{ flex: 1, background: 'rgba(212,168,85,0.12)', borderRadius: '16rpx', padding: '20rpx', textAlign: 'center' }}>
+          <Text style={{ display: 'block', fontSize: '36rpx', fontWeight: 'bold', color: '#D4A855' }}>{stats.total}</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>全部活动</Text>
+        </View>
+        <View style={{ flex: 1, background: 'rgba(239,68,68,0.12)', borderRadius: '16rpx', padding: '20rpx', textAlign: 'center' }}>
+          <Text style={{ display: 'block', fontSize: '36rpx', fontWeight: 'bold', color: '#EF4444' }}>{stats.flashSaleCount}</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>⚡ 闪购</Text>
+        </View>
+        <View style={{ flex: 1, background: 'rgba(245,158,11,0.12)', borderRadius: '16rpx', padding: '20rpx', textAlign: 'center' }}>
+          <Text style={{ display: 'block', fontSize: '36rpx', fontWeight: 'bold', color: '#F59E0B' }}>{stats.expiringSoonCount}</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>即将到期</Text>
+        </View>
+      </View>
+
+      {/* Flash Sale Banner */}
+      {hasFlashSales && (
+        <View style={{
+          margin: '20rpx 32rpx 0',
+          padding: '24rpx 32rpx',
+          background: 'linear-gradient(135deg, #EF4444, #F97316)',
+          borderRadius: '16rpx',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '16rpx',
+        }}>
+          <Text style={{ fontSize: '40rpx' }}>⚡</Text>
+          <View>
+            <Text style={{ display: 'block', fontSize: '30rpx', fontWeight: 'bold', color: '#fff' }}>闪购进行中</Text>
+            <Text style={{ display: 'block', fontSize: '24rpx', color: 'rgba(255,255,255,0.85)', marginTop: '4rpx' }}>限时特价，抓紧时间！</Text>
+          </View>
+          <View style={{ marginLeft: 'auto' }}>
+            <Text style={{ fontSize: '24rpx', color: '#fff' }}>去抢购 →</Text>
+          </View>
+        </View>
+      )}
+
       {/* Tabs */}
       <View className='tabs'>
         <ScrollView scrollX className='tabs__scroll'>
@@ -163,7 +242,7 @@ export default function PromotionsPage() {
               onClick={() => setActiveTab(tab.key)}
             >
               <Text className={`tabs__text ${activeTab === tab.key ? 'tabs__text--active' : ''}`}>
-                {tab.label}
+                {tab.label} ({tabCounts[tab.key] ?? 0})
               </Text>
               {activeTab === tab.key && <View className='tabs__indicator' />}
             </View>
@@ -177,9 +256,22 @@ export default function PromotionsPage() {
           <View className='empty'>
             <Text className='empty__text'>加载中...</Text>
           </View>
+        ) : promotions.length === 0 && activeTab !== 'ALL' ? (
+          <View className='empty'>
+            <Text className='empty__icon'>🎯</Text>
+            <Text className='empty__text'>该分类暂无活动</Text>
+            <View
+              style={{ marginTop: '24rpx', padding: '16rpx 40rpx', background: 'rgba(212,168,85,0.15)', borderRadius: '40rpx' }}
+              onClick={() => setActiveTab('ALL')}
+            >
+              <Text style={{ color: '#D4A855', fontSize: '28rpx' }}>查看全部活动</Text>
+            </View>
+          </View>
         ) : promotions.length === 0 ? (
           <View className='empty'>
-            <Text className='empty__text'>暂无活动</Text>
+            <Text className='empty__icon'>🎪</Text>
+            <Text className='empty__text'>暂无进行中的活动</Text>
+            <Text style={{ display: 'block', fontSize: '24rpx', color: '#64748b', marginTop: '12rpx', textAlign: 'center' }}>敬请期待更多精彩优惠</Text>
           </View>
         ) : (
           promotions.map(p => <PromotionCard key={p.id} promo={p} />)

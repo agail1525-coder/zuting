@@ -1,14 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import {
   CouponItem,
   UserCouponItem,
@@ -40,12 +42,14 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 export default function CouponsScreen() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>('available');
   const [available, setAvailable] = useState<CouponItem[]>([]);
   const [myCoupons, setMyCoupons] = useState<UserCouponItem[]>([]);
   const [usedCoupons, setUsedCoupons] = useState<UserCouponItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
   const load = useCallback(async (tab: TabKey) => {
     setLoading(true);
@@ -73,13 +77,56 @@ export default function CouponsScreen() {
     setClaimingId(couponId);
     try {
       await claimCoupon(couponId);
-      // refresh both tabs
       load('available');
       load('mine');
-    } catch (err) { Alert.alert('提示', '领取失败，请重试'); } finally {
+    } catch { Alert.alert('提示', '领取失败，请重试'); } finally {
       setClaimingId(null);
     }
   };
+
+  // Wallet overview stats
+  const walletStats = useMemo(() => {
+    const totalFaceValue = myCoupons.reduce((sum, uc) => {
+      const c = uc.coupon;
+      return sum + (c.type === 'FIXED' ? c.value : 0);
+    }, 0);
+    const now = Date.now();
+    const expiringSoon = myCoupons.filter(uc => {
+      const diff = new Date(uc.coupon.endAt).getTime() - now;
+      return diff > 0 && diff < 7 * 24 * 3600000;
+    }).length;
+    return {
+      myCount: myCoupons.length,
+      totalFaceValue,
+      expiringSoon,
+    };
+  }, [myCoupons]);
+
+  // Tab counts
+  const tabCounts = useMemo(() => ({
+    available: available.length,
+    mine: myCoupons.length,
+    used: usedCoupons.length,
+  }), [available.length, myCoupons.length, usedCoupons.length]);
+
+  // Current raw data
+  const currentRaw: (CouponItem | UserCouponItem)[] =
+    activeTab === 'available' ? available : activeTab === 'mine' ? myCoupons : usedCoupons;
+
+  // Filtered data
+  const currentData = useMemo(() => {
+    if (!search.trim()) return currentRaw;
+    const q = search.trim().toLowerCase();
+    return currentRaw.filter(item => {
+      if (activeTab === 'available') {
+        const c = item as CouponItem;
+        return c.name.toLowerCase().includes(q);
+      } else {
+        const uc = item as UserCouponItem;
+        return uc.coupon.name.toLowerCase().includes(q);
+      }
+    });
+  }, [currentRaw, search, activeTab]);
 
   const renderAvailableCoupon = ({ item }: { item: CouponItem }) => {
     const accentColor = TYPE_COLORS[item.type] ?? '#0066FF';
@@ -151,11 +198,28 @@ export default function CouponsScreen() {
     );
   };
 
-  const currentData: CouponItem[] | UserCouponItem[] =
-    activeTab === 'available' ? available : activeTab === 'mine' ? myCoupons : usedCoupons;
-
   return (
     <View style={s.container}>
+      {/* Wallet Overview Card */}
+      <View style={s.walletCard}>
+        <View style={s.walletItem}>
+          <Text style={s.walletNumber}>{walletStats.myCount}</Text>
+          <Text style={s.walletLabel}>可用券</Text>
+        </View>
+        <View style={s.walletDivider} />
+        <View style={s.walletItem}>
+          <Text style={s.walletNumber}>¥{formatPrice(walletStats.totalFaceValue)}</Text>
+          <Text style={s.walletLabel}>券面总值</Text>
+        </View>
+        <View style={s.walletDivider} />
+        <View style={s.walletItem}>
+          <Text style={[s.walletNumber, walletStats.expiringSoon > 0 && { color: '#F59E0B' }]}>
+            {walletStats.expiringSoon}
+          </Text>
+          <Text style={s.walletLabel}>即将过期</Text>
+        </View>
+      </View>
+
       {/* Tabs */}
       <View style={s.tabBar}>
         {TABS.map(tab => (
@@ -167,8 +231,28 @@ export default function CouponsScreen() {
             <Text style={[s.tabText, activeTab === tab.key && s.tabTextActive]}>
               {tab.label}
             </Text>
+            {tabCounts[tab.key] > 0 && (
+              <View style={[s.tabBadge, activeTab === tab.key && s.tabBadgeActive]}>
+                <Text style={[s.tabBadgeText, activeTab === tab.key && s.tabBadgeTextActive]}>
+                  {tabCounts[tab.key]}
+                </Text>
+              </View>
+            )}
           </Pressable>
         ))}
+      </View>
+
+      {/* Search Input */}
+      <View style={s.searchRow}>
+        <Ionicons name="search-outline" size={16} color="#9CA3AF" style={s.searchIcon} />
+        <TextInput
+          style={s.searchInput}
+          placeholder="搜索优惠券..."
+          placeholderTextColor="#9CA3AF"
+          value={search}
+          onChangeText={setSearch}
+          clearButtonMode="while-editing"
+        />
       </View>
 
       {loading ? (
@@ -178,7 +262,17 @@ export default function CouponsScreen() {
       ) : currentData.length === 0 ? (
         <View style={s.emptyView}>
           <Ionicons name="pricetag-outline" size={48} color="#D1D5DB" />
-          <Text style={s.emptyText}>暂无优惠券</Text>
+          {search.trim() ? (
+            <>
+              <Text style={s.emptyText}>未找到"{search}"相关优惠券</Text>
+              <Text style={s.emptySubText}>换个关键词试试</Text>
+            </>
+          ) : (
+            <>
+              <Text style={s.emptyText}>暂无优惠券</Text>
+              <Text style={s.emptySubText}>去领取优惠券吧</Text>
+            </>
+          )}
         </View>
       ) : (
         <FlatList
@@ -191,6 +285,22 @@ export default function CouponsScreen() {
           }
           contentContainerStyle={s.listContent}
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+          ListFooterComponent={
+            <View style={s.bottomCTA}>
+              <Text style={s.ctaTitle}>发现更多优惠</Text>
+              <Text style={s.ctaSubtitle}>促销活动 · 限时折扣 · 专属特惠</Text>
+              <View style={s.ctaButtons}>
+                <Pressable style={s.ctaBtn} onPress={() => router.push('/promotions' as any)}>
+                  <Ionicons name="flash-outline" size={16} color="#FFFFFF" />
+                  <Text style={s.ctaBtnText}>查看促销</Text>
+                </Pressable>
+                <Pressable style={[s.ctaBtn, s.ctaBtnOutline]} onPress={() => router.push('/routes')}>
+                  <Ionicons name="map-outline" size={16} color="#D4A855" />
+                  <Text style={[s.ctaBtnText, { color: '#D4A855' }]}>浏览路线</Text>
+                </Pressable>
+              </View>
+            </View>
+          }
         />
       )}
     </View>
@@ -199,6 +309,18 @@ export default function CouponsScreen() {
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F5F5' },
+
+  walletCard: {
+    flexDirection: 'row',
+    backgroundColor: '#1D4ED8',
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+  },
+  walletItem: { flex: 1, alignItems: 'center' },
+  walletNumber: { fontSize: 20, fontWeight: '800', color: '#FFFFFF' },
+  walletLabel: { fontSize: 11, color: '#BFDBFE', marginTop: 3 },
+  walletDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.2)', marginVertical: 4 },
+
   tabBar: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
@@ -207,18 +329,51 @@ const s = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
-    paddingVertical: 14,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 14,
+    gap: 6,
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
   tabItemActive: { borderBottomColor: '#0066FF' },
   tabText: { fontSize: 14, color: '#6B7280', fontWeight: '500' },
   tabTextActive: { color: '#0066FF', fontWeight: '700' },
+  tabBadge: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 10,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    minWidth: 20,
+    alignItems: 'center',
+  },
+  tabBadgeActive: { backgroundColor: '#DBEAFE' },
+  tabBadgeText: { fontSize: 10, color: '#6B7280', fontWeight: '700' },
+  tabBadgeTextActive: { color: '#0066FF' },
+
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: 12,
+    height: 42,
+  },
+  searchIcon: { marginRight: 8 },
+  searchInput: { flex: 1, fontSize: 14, color: '#1A1A1A' },
+
   listContent: { padding: 16 },
   loadingView: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  emptyView: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
-  emptyText: { fontSize: 14, color: '#9CA3AF' },
+  emptyView: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 8, paddingTop: 60 },
+  emptyText: { fontSize: 15, color: '#6B7280', fontWeight: '600' },
+  emptySubText: { fontSize: 13, color: '#9CA3AF' },
+
   couponCard: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
@@ -261,4 +416,31 @@ const s = StyleSheet.create({
   statusBadgeContainer: { marginRight: 14 },
   statusBadgeText: { fontSize: 12, color: '#22C55E', fontWeight: '600' },
   statusBadgeUsed: { color: '#9CA3AF' },
+
+  bottomCTA: {
+    marginTop: 24,
+    backgroundColor: '#0F172A',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    gap: 6,
+  },
+  ctaTitle: { fontSize: 18, fontWeight: '800', color: '#FFFFFF' },
+  ctaSubtitle: { fontSize: 13, color: '#94A3B8', marginBottom: 8 },
+  ctaButtons: { flexDirection: 'row', gap: 12, marginTop: 4 },
+  ctaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#0066FF',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  ctaBtnOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#D4A855',
+  },
+  ctaBtnText: { fontSize: 14, color: '#FFFFFF', fontWeight: '600' },
 });

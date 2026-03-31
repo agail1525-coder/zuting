@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image } from '@tarojs/components'
+import { useState, useEffect, useMemo } from 'react'
+import { View, Text, ScrollView, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import {
   PointsProductItem, MembershipData,
@@ -21,6 +21,7 @@ export default function PointsMallPage() {
   const [activeCategory, setActiveCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [exchanging, setExchanging] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
 
   useEffect(() => { loadData('') }, [])
 
@@ -42,6 +43,7 @@ export default function PointsMallPage() {
 
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat)
+    setSearch('')
     loadData(cat)
   }
 
@@ -73,12 +75,46 @@ export default function PointsMallPage() {
     })
   }
 
+  // Stats
+  const stats = useMemo(() => ({
+    total: products.length,
+    inStock: products.filter(p => p.stock > 0).length,
+  }), [products])
+
+  // Client-side search filter
+  const displayProducts = useMemo(() => {
+    if (!search.trim()) return products
+    return products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+  }, [products, search])
+
   return (
     <View className='points-mall-page'>
       {/* Points Header */}
       <View className='points-header'>
         <Text className='points-header__label'>我的积分</Text>
         <Text className='points-header__num'>{(membership?.points ?? 0).toLocaleString()}</Text>
+      </View>
+
+      {/* Stats Row */}
+      <View style={{ display: 'flex', flexDirection: 'row', gap: '16rpx', padding: '16rpx 32rpx 0' }}>
+        <View style={{ flex: 1, background: 'rgba(212,168,85,0.12)', borderRadius: '14rpx', padding: '16rpx', textAlign: 'center' }}>
+          <Text style={{ display: 'block', fontSize: '32rpx', fontWeight: 'bold', color: '#D4A855' }}>{stats.total}</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>全部商品</Text>
+        </View>
+        <View style={{ flex: 1, background: 'rgba(16,185,129,0.12)', borderRadius: '14rpx', padding: '16rpx', textAlign: 'center' }}>
+          <Text style={{ display: 'block', fontSize: '32rpx', fontWeight: 'bold', color: '#10b981' }}>{stats.inStock}</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>有货商品</Text>
+        </View>
+      </View>
+
+      {/* Search Input */}
+      <View style={{ padding: '16rpx 32rpx' }}>
+        <Input
+          placeholder='搜索商品名称...'
+          value={search}
+          onInput={e => setSearch(e.detail.value)}
+          style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12rpx', padding: '16rpx 24rpx', fontSize: '28rpx', color: '#e2e8f0' }}
+        />
       </View>
 
       {/* Category Tabs */}
@@ -100,14 +136,26 @@ export default function PointsMallPage() {
           <View className='empty'>
             <Text className='empty__text'>加载中...</Text>
           </View>
-        ) : products.length === 0 ? (
+        ) : displayProducts.length === 0 && search.trim() ? (
+          <View className='empty'>
+            <Text className='empty__icon'>🔍</Text>
+            <Text className='empty__text'>未找到"{search}"相关商品</Text>
+            <View
+              style={{ marginTop: '24rpx', padding: '16rpx 40rpx', background: 'rgba(212,168,85,0.15)', borderRadius: '40rpx' }}
+              onClick={() => setSearch('')}
+            >
+              <Text style={{ color: '#D4A855', fontSize: '28rpx' }}>清除搜索</Text>
+            </View>
+          </View>
+        ) : displayProducts.length === 0 ? (
           <View className='empty'>
             <Text className='empty__icon'>🎁</Text>
             <Text className='empty__text'>暂无可兑换商品</Text>
+            <Text style={{ display: 'block', fontSize: '24rpx', color: '#64748b', marginTop: '12rpx', textAlign: 'center' }}>积累积分后即可兑换心仪好礼</Text>
           </View>
         ) : (
           <View className='product-grid'>
-            {products.map(product => {
+            {displayProducts.map(product => {
               const canAfford = (membership?.points ?? 0) >= product.pointsCost
               return (
                 <View key={product.id} className='product-card'>
@@ -144,6 +192,19 @@ export default function PointsMallPage() {
             })}
           </View>
         )}
+
+        {/* Bottom CTA — Earn More Points */}
+        {!loading && (
+          <View
+            style={{ margin: '32rpx', padding: '32rpx', background: 'linear-gradient(135deg, rgba(212,168,85,0.2), rgba(139,92,246,0.15))', borderRadius: '20rpx', textAlign: 'center' }}
+            onClick={() => Taro.navigateTo({ url: '/pages/membership/index' })}
+          >
+            <Text style={{ display: 'block', fontSize: '32rpx' }}>🌟</Text>
+            <Text style={{ display: 'block', fontSize: '30rpx', color: '#D4A855', fontWeight: 'bold', marginTop: '8rpx' }}>赚取更多积分</Text>
+            <Text style={{ display: 'block', fontSize: '24rpx', color: '#94a3b8', marginTop: '8rpx' }}>签到、完成行程、发布日记均可获得积分 →</Text>
+          </View>
+        )}
+
         <View style={{ height: '60rpx' }} />
       </ScrollView>
     </View>

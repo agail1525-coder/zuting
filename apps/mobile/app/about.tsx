@@ -1,6 +1,7 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 
 const FEATURES = [
@@ -12,9 +13,31 @@ const FEATURES = [
   { icon: 'chatbubble-ellipses-outline' as const, label: '小鸿AI', desc: '智能问答助手，随时解答宗教文化问题' },
 ];
 
+const PLATFORM_STATS = [
+  { value: '60+', label: '朝圣圣地' },
+  { value: '27+', label: '历史祖庭' },
+  { value: '12', label: '世界宗教' },
+  { value: '7', label: '支持语言' },
+  { value: '5', label: '跨端平台' },
+  { value: '10+', label: '精品路线' },
+];
+
+const TRUST_BADGES = [
+  { icon: 'shield-checkmark-outline' as const, label: '官方认证', desc: '正规合规运营' },
+  { icon: 'star-outline' as const, label: '精选内容', desc: '专家团队审核' },
+  { icon: 'globe-outline' as const, label: '全球覆盖', desc: '7国语言支持' },
+  { icon: 'heart-outline' as const, label: '用户至上', desc: '持续改善体验' },
+];
+
 export default function AboutScreen() {
+  const router = useRouter();
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Logo & Title */}
       <View style={styles.heroSection}>
         <View style={styles.logoContainer}>
@@ -22,6 +45,16 @@ export default function AboutScreen() {
         </View>
         <Text style={styles.title}>JOINUS.COM</Text>
         <Text style={styles.subtitle}>全球祖庭之旅</Text>
+      </View>
+
+      {/* Platform Stats Bar */}
+      <View style={styles.statsBar}>
+        {PLATFORM_STATS.map((stat, idx) => (
+          <View key={idx} style={styles.statItem}>
+            <Text style={styles.statValue}>{stat.value}</Text>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+          </View>
+        ))}
       </View>
 
       {/* Mission */}
@@ -57,6 +90,22 @@ export default function AboutScreen() {
         ))}
       </View>
 
+      {/* Trust Badges */}
+      <View style={styles.trustCard}>
+        <Text style={styles.cardTitle}>品质保证</Text>
+        <View style={styles.trustGrid}>
+          {TRUST_BADGES.map((badge, idx) => (
+            <View key={idx} style={styles.trustBadge}>
+              <View style={styles.trustIconWrap}>
+                <Ionicons name={badge.icon} size={24} color="#0066FF" />
+              </View>
+              <Text style={styles.trustLabel}>{badge.label}</Text>
+              <Text style={styles.trustDesc}>{badge.desc}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
       {/* Core Values */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>核心价值观</Text>
@@ -74,6 +123,22 @@ export default function AboutScreen() {
         <ContactRow label="邮箱" value="contact@zuting.com" />
         <ContactRow label="地址" value="广东省深圳市南山区" />
         <ContactRow label="服务时间" value="周一至周五 9:00-18:00" />
+      </View>
+
+      {/* Bottom CTA */}
+      <View style={styles.bottomCTA}>
+        <Text style={styles.ctaTitle}>开始你的朝圣之旅</Text>
+        <Text style={styles.ctaSubtitle}>探索全球圣地，体验宗教文化之美</Text>
+        <View style={styles.ctaButtons}>
+          <Pressable style={styles.ctaBtn} onPress={() => router.push('/holy-sites')}>
+            <Ionicons name="location-outline" size={16} color="#FFFFFF" />
+            <Text style={styles.ctaBtnText}>探索圣地</Text>
+          </Pressable>
+          <Pressable style={[styles.ctaBtn, styles.ctaBtnOutline]} onPress={() => router.push('/xiaohong' as any)}>
+            <Ionicons name="chatbubble-outline" size={16} color="#D4A855" />
+            <Text style={[styles.ctaBtnText, { color: '#D4A855' }]}>AI规划路线</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Version */}
@@ -112,11 +177,11 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom: spacing.xxl,
+    paddingHorizontal: spacing.md,
   },
   heroSection: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.md,
   },
   logoContainer: {
     width: 96,
@@ -140,9 +205,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: spacing.xs,
   },
+
+  statsBar: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: '#0F172A',
+    borderRadius: borderRadius.lg,
+    paddingVertical: 16,
+    marginBottom: spacing.md,
+  },
+  statItem: { width: '33.33%', alignItems: 'center', paddingVertical: 8 },
+  statValue: { fontSize: 22, fontWeight: '900', color: '#D4A855' },
+  statLabel: { fontSize: 11, color: '#94A3B8', marginTop: 2 },
+
   card: {
     backgroundColor: colors.backgroundCardSolid,
-    marginHorizontal: spacing.md,
     marginTop: spacing.md,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
@@ -203,6 +280,42 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
   },
+
+  trustCard: {
+    backgroundColor: colors.backgroundCardSolid,
+    marginTop: spacing.md,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  trustGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  trustBadge: {
+    width: '47%',
+    backgroundColor: '#F8FAFF',
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+  },
+  trustIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#EFF6FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  trustLabel: { fontSize: fontSize.md, fontWeight: '700', color: colors.textPrimary },
+  trustDesc: { fontSize: fontSize.xs, color: colors.textMuted, textAlign: 'center' },
+
   valueGrid: {
     gap: spacing.sm,
   },
@@ -241,6 +354,34 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: colors.textPrimary,
   },
+
+  bottomCTA: {
+    marginTop: spacing.lg,
+    backgroundColor: '#0F172A',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    gap: 6,
+  },
+  ctaTitle: { fontSize: 20, fontWeight: '800', color: '#FFFFFF' },
+  ctaSubtitle: { fontSize: 13, color: '#94A3B8', marginBottom: 8, textAlign: 'center' },
+  ctaButtons: { flexDirection: 'row', gap: 12, marginTop: 4 },
+  ctaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#0066FF',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  ctaBtnOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#D4A855',
+  },
+  ctaBtnText: { fontSize: 14, color: '#FFFFFF', fontWeight: '600' },
+
   footer: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
