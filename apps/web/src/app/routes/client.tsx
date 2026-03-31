@@ -6,40 +6,67 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import type { Route, PaginatedRoutes } from "@/lib/api";
 import { fetchRoutes } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
-const CATEGORIES = [
-  { value: "", label: "全部路线", icon: "🌏" },
-  { value: "ZEN", label: "禅宗路线", icon: "🏯" },
-  { value: "BUDDHIST", label: "佛教圣地", icon: "☸️" },
-  { value: "TAOIST", label: "道教寻根", icon: "☯️" },
-  { value: "CHRISTIAN", label: "基督文化", icon: "✝️" },
-  { value: "ISLAMIC", label: "伊斯兰文化", icon: "☪️" },
-  { value: "CROSS_CULTURAL", label: "跨文化融合", icon: "🌐" },
-  { value: "HINDU", label: "印度教", icon: "🕉️" },
-];
+function getCategories(t: (key: string) => string) {
+  return [
+    { value: "", label: t("routes.category.all"), icon: "🌏" },
+    { value: "ZEN", label: t("routes.category.zen"), icon: "🏯" },
+    { value: "BUDDHIST", label: t("routes.category.buddhist"), icon: "☸️" },
+    { value: "TAOIST", label: t("routes.category.taoist"), icon: "☯️" },
+    { value: "CHRISTIAN", label: t("routes.category.christian"), icon: "✝️" },
+    { value: "ISLAMIC", label: t("routes.category.islamic"), icon: "☪️" },
+    { value: "CROSS_CULTURAL", label: t("routes.category.crossCultural"), icon: "🌐" },
+    { value: "HINDU", label: t("routes.category.hindu"), icon: "🕉️" },
+  ];
+}
 
-const DIFFICULTIES = [
-  { value: "", label: "全部难度" },
-  { value: "EASY", label: "轻松" },
-  { value: "MODERATE", label: "适中" },
-  { value: "CHALLENGING", label: "挑战" },
-];
+function getDifficulties(t: (key: string) => string) {
+  return [
+    { value: "", label: t("routes.difficulty.all") },
+    { value: "EASY", label: t("routes.difficulty.easy") },
+    { value: "MODERATE", label: t("routes.difficulty.moderate") },
+    { value: "CHALLENGING", label: t("routes.difficulty.challenging") },
+  ];
+}
 
-const DURATION_FILTERS = [
-  { value: "", label: "全部时长" },
-  { value: "1-3", label: "1-3天" },
-  { value: "4-7", label: "4-7天" },
-  { value: "8+", label: "8天以上" },
-];
+function getDurationFilters(t: (key: string) => string) {
+  return [
+    { value: "", label: t("routes.duration.all") },
+    { value: "1-3", label: t("routes.duration.short") },
+    { value: "4-7", label: t("routes.duration.medium") },
+    { value: "8+", label: t("routes.duration.long") },
+  ];
+}
 
-const SORT_OPTIONS = [
-  { value: "createdAt", label: "最新发布" },
-  { value: "price", label: "价格低→高" },
-  { value: "price_desc", label: "价格高→低" },
-  { value: "rating", label: "评分最高" },
-  { value: "duration", label: "时长短→长" },
-  { value: "popular", label: "最受欢迎" },
-];
+function getSortOptions(t: (key: string) => string) {
+  return [
+    { value: "createdAt", label: t("routes.sort.newest") },
+    { value: "price", label: t("routes.sort.priceLow") },
+    { value: "price_desc", label: t("routes.sort.priceHigh") },
+    { value: "rating", label: t("routes.sort.topRated") },
+    { value: "duration", label: t("routes.sort.durationShort") },
+    { value: "popular", label: t("routes.sort.popular") },
+  ];
+}
+
+function getDifficultyLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    EASY: t("routes.difficulty.easy"),
+    MODERATE: t("routes.difficulty.moderate"),
+    CHALLENGING: t("routes.difficulty.challenging"),
+  };
+}
+
+function getTrustBadges(t: (key: string) => string) {
+  return [
+    { icon: "🛡️", text: t("routes.trust.freeCancel") },
+    { icon: "💰", text: t("routes.trust.bestPrice") },
+    { icon: "⚡", text: t("routes.trust.instantConfirm") },
+    { icon: "👨‍🏫", text: t("routes.trust.proGuide") },
+    { icon: "📱", text: t("routes.trust.eTicket") },
+  ];
+}
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   ZEN:            { bg: "bg-stone-100",   text: "text-stone-700" },
@@ -52,20 +79,6 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   JEWISH:         { bg: "bg-indigo-50",   text: "text-indigo-700" },
   CULTURAL_HERITAGE: { bg: "bg-teal-50",  text: "text-teal-700" },
 };
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: "轻松",
-  MODERATE: "适中",
-  CHALLENGING: "挑战",
-};
-
-const TRUST_BADGES = [
-  { icon: "🛡️", text: "无忧退改" },
-  { icon: "💰", text: "最优价保障" },
-  { icon: "⚡", text: "即时确认" },
-  { icon: "👨‍🏫", text: "专业领队" },
-  { icon: "📱", text: "电子凭证" },
-];
 
 /* Skeleton card for loading state */
 function RouteCardSkeleton() {
@@ -88,9 +101,9 @@ function RouteCardSkeleton() {
   );
 }
 
-function RouteCard({ route }: { route: Route }) {
+function RouteCard({ route, t, categories, difficultyLabels }: { route: Route; t: (key: string) => string; categories: ReturnType<typeof getCategories>; difficultyLabels: Record<string, string> }) {
   const price = (route.priceFrom / 100).toLocaleString();
-  const categoryLabel = CATEGORIES.find((c) => c.value === route.category)?.label ?? route.category;
+  const categoryLabel = categories.find((c) => c.value === route.category)?.label ?? route.category;
   const colors = CATEGORY_COLORS[route.category] ?? { bg: "bg-gray-100", text: "text-gray-700" };
 
   return (
@@ -102,7 +115,7 @@ function RouteCard({ route }: { route: Route }) {
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
               <span className="text-6xl opacity-30">
-                {CATEGORIES.find((c) => c.value === route.category)?.icon ?? "🌏"}
+                {categories.find((c) => c.value === route.category)?.icon ?? "🌏"}
               </span>
             </div>
           )}
@@ -110,12 +123,12 @@ function RouteCard({ route }: { route: Route }) {
           {/* Urgency / popularity badges */}
           {route.bookCount > 50 && (
             <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-lg animate-pulse">
-              热门
+              {t("routes.badge.hot")}
             </div>
           )}
           {route.bookCount > 10 && route.bookCount <= 50 && (
             <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500 text-white shadow">
-              本周{route.bookCount}人预订
+              {t("routes.badge.weeklyBookings").replace("{count}", String(route.bookCount))}
             </div>
           )}
           <div className="absolute top-3 left-3 flex gap-2">
@@ -123,13 +136,13 @@ function RouteCard({ route }: { route: Route }) {
               {categoryLabel}
             </span>
             <span className="px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-black/30 text-white border border-white/10">
-              {route.duration}天{route.nights}晚
+              {t("routes.card.daysNights").replace("{days}", String(route.duration)).replace("{nights}", String(route.nights))}
             </span>
           </div>
           {/* Review count badge */}
           {route.reviewCount > 0 && (
             <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px]">
-              {route.reviewCount}条评价
+              {t("routes.card.reviewCount").replace("{count}", String(route.reviewCount))}
             </div>
           )}
         </div>
@@ -161,9 +174,9 @@ function RouteCard({ route }: { route: Route }) {
 
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
             <div>
-              <span className="text-xs text-gray-400">起价</span>
+              <span className="text-xs text-gray-400">{t("routes.card.priceFrom")}</span>
               <span className="text-lg font-bold text-[#0066FF] ml-1">¥{price}</span>
-              <span className="text-xs text-gray-400">/人</span>
+              <span className="text-xs text-gray-400">{t("routes.card.perPerson")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               {route.rating && (
@@ -171,7 +184,7 @@ function RouteCard({ route }: { route: Route }) {
                   ★ {route.rating.toFixed(1)}
                 </span>
               )}
-              <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100">{DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100">{difficultyLabels[route.difficulty] ?? route.difficulty}</span>
             </div>
           </div>
         </div>
@@ -186,6 +199,15 @@ interface Props {
 }
 
 export default function RoutesClient({ initialData, error }: Props) {
+  const { t } = useTranslation();
+
+  const categories = useMemo(() => getCategories(t), [t]);
+  const difficulties = useMemo(() => getDifficulties(t), [t]);
+  const durationFilters = useMemo(() => getDurationFilters(t), [t]);
+  const sortOptions = useMemo(() => getSortOptions(t), [t]);
+  const difficultyLabels = useMemo(() => getDifficultyLabels(t), [t]);
+  const trustBadges = useMemo(() => getTrustBadges(t), [t]);
+
   const [routes, setRoutes] = useState(initialData.items);
   const [total, setTotal] = useState(initialData.total);
   const [category, setCategory] = useState("");
@@ -279,23 +301,23 @@ export default function RoutesClient({ initialData, error }: Props) {
         <div className="bg-white py-12 px-4">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-3xl md:text-4xl font-bold">
-              <span className="text-[#0066FF] font-bold">深度文化路线</span>
+              <span className="text-[#0066FF] font-bold">{t("routes.hero.title")}</span>
             </h1>
             <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-              精选{total}+条深度路线，跨越6大文化传统，带你走进全球最神圣的文化圣地
+              {t("routes.hero.subtitle").replace("{total}", String(total))}
             </p>
             {priceStats && (
               <p className="text-sm text-gray-400 mt-1">
-                路线价格 ¥{priceStats.min.toLocaleString()} — ¥{priceStats.max.toLocaleString()} /人
+                {t("routes.hero.priceRange").replace("{min}", priceStats.min.toLocaleString()).replace("{max}", priceStats.max.toLocaleString())}
               </p>
             )}
           </div>
         </div>
 
-        {/* ══════ Trust Badges (对标Booking/Expedia) ══════ */}
+        {/* Trust Badges */}
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            {TRUST_BADGES.map((b) => (
+            {trustBadges.map((b) => (
               <span key={b.text} className="flex items-center gap-1.5 text-sm text-gray-500">
                 <span>{b.icon}</span>
                 <span className="font-medium">{b.text}</span>
@@ -304,10 +326,10 @@ export default function RoutesClient({ initialData, error }: Props) {
           </div>
         </div>
 
-        {/* ══════ Category Tabs (对标Trip.com横向分类) ══════ */}
+        {/* Category Tabs */}
         <div className="max-w-6xl mx-auto px-4 mb-4">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button
                 key={c.value}
                 onClick={() => handleFilter(c.value, undefined, undefined)}
@@ -323,7 +345,7 @@ export default function RoutesClient({ initialData, error }: Props) {
           </div>
         </div>
 
-        {/* ══════ Filters Bar (Search + Difficulty + Duration + Sort) ══════ */}
+        {/* Filters Bar */}
         <div className="max-w-6xl mx-auto px-4">
           <div className="shadow-sm border border-gray-100 bg-white rounded-2xl p-4">
             {/* Search input */}
@@ -336,7 +358,7 @@ export default function RoutesClient({ initialData, error }: Props) {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="搜索路线名称、目的地、亮点..."
+                  placeholder={t("routes.search.placeholder")}
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
                 />
               </div>
@@ -348,7 +370,7 @@ export default function RoutesClient({ initialData, error }: Props) {
                 onChange={(e) => handleFilter(undefined, e.target.value, undefined)}
                 className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/40"
               >
-                {DIFFICULTIES.map((d) => (
+                {difficulties.map((d) => (
                   <option key={d.value} value={d.value}>{d.label}</option>
                 ))}
               </select>
@@ -358,7 +380,7 @@ export default function RoutesClient({ initialData, error }: Props) {
                 onChange={(e) => setDurationFilter(e.target.value)}
                 className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/40"
               >
-                {DURATION_FILTERS.map((d) => (
+                {durationFilters.map((d) => (
                   <option key={d.value} value={d.value}>{d.label}</option>
                 ))}
               </select>
@@ -368,7 +390,7 @@ export default function RoutesClient({ initialData, error }: Props) {
                 onChange={(e) => handleFilter(undefined, undefined, e.target.value)}
                 className="px-3 py-2 rounded-lg border border-gray-200 text-sm bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0066FF]/40 ml-auto"
               >
-                {SORT_OPTIONS.map((s) => (
+                {sortOptions.map((s) => (
                   <option key={s.value} value={s.value}>{s.label}</option>
                 ))}
               </select>
@@ -377,9 +399,9 @@ export default function RoutesClient({ initialData, error }: Props) {
             {/* Active filters summary */}
             {hasActiveFilters && (
               <div className="mt-3 flex items-center gap-2 text-sm">
-                <span className="text-gray-400">找到 {displayRoutes.length} 条路线</span>
+                <span className="text-gray-400">{t("routes.filter.found").replace("{count}", String(displayRoutes.length))}</span>
                 <button onClick={clearAllFilters} className="text-[#0066FF] hover:underline text-xs">
-                  清除全部筛选
+                  {t("routes.filter.clearAll")}
                 </button>
               </div>
             )}
@@ -391,7 +413,7 @@ export default function RoutesClient({ initialData, error }: Props) {
           {error && (
             <div className="text-center py-12 text-gray-500">
               <span className="text-4xl block mb-3">😞</span>
-              <p className="text-lg">数据加载失败，请稍后重试</p>
+              <p className="text-lg">{t("routes.error.loadFailed")}</p>
             </div>
           )}
 
@@ -407,10 +429,10 @@ export default function RoutesClient({ initialData, error }: Props) {
           {!error && !loading && displayRoutes.length === 0 && (
             <div className="text-center py-16 text-gray-500">
               <span className="text-5xl block mb-4">🔍</span>
-              <p className="text-lg">暂无符合条件的路线</p>
-              <p className="text-sm text-gray-400 mt-1">尝试调整筛选条件或搜索关键词</p>
+              <p className="text-lg">{t("routes.empty.title")}</p>
+              <p className="text-sm text-gray-400 mt-1">{t("routes.empty.subtitle")}</p>
               <button onClick={clearAllFilters} className="mt-4 text-[#0066FF] hover:underline text-sm">
-                清除全部筛选条件
+                {t("routes.empty.clearFilters")}
               </button>
             </div>
           )}
@@ -418,7 +440,7 @@ export default function RoutesClient({ initialData, error }: Props) {
           {!loading && displayRoutes.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayRoutes.map((route) => (
-                <RouteCard key={route.id} route={route} />
+                <RouteCard key={route.id} route={route} t={t} categories={categories} difficultyLabels={difficultyLabels} />
               ))}
             </div>
           )}
@@ -431,7 +453,7 @@ export default function RoutesClient({ initialData, error }: Props) {
                 disabled={page <= 1}
                 className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                上一页
+                {t("routes.pagination.prev")}
               </button>
               {Array.from({ length: Math.ceil(total / PAGE_SIZE) }, (_, i) => i + 1)
                 .filter((p) => p === 1 || p === Math.ceil(total / PAGE_SIZE) || Math.abs(p - page) <= 1)
@@ -456,37 +478,37 @@ export default function RoutesClient({ initialData, error }: Props) {
                 disabled={page >= Math.ceil(total / PAGE_SIZE)}
                 className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                下一页
+                {t("routes.pagination.next")}
               </button>
             </div>
           )}
           {!loading && total > 0 && (
             <p className="text-center text-sm text-gray-400 mt-4">
-              第 {page} 页 · 共 {total} 条路线
+              {t("routes.pagination.info").replace("{page}", String(page)).replace("{total}", String(total))}
             </p>
           )}
         </div>
 
-        {/* ══════ Bottom CTA (对标Booking/Trip.com) ══════ */}
+        {/* Bottom CTA */}
         <div className="max-w-6xl mx-auto px-4 mt-12">
           <div className="bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-8 border border-[#0066FF]/10">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-xl font-bold text-gray-900">没有找到心仪的路线？</h2>
-                <p className="text-gray-500 text-sm mt-1">让AI旅行规划师根据你的偏好定制专属朝圣路线，从时长到预算全方位匹配</p>
+                <h2 className="text-xl font-bold text-gray-900">{t("routes.cta.title")}</h2>
+                <p className="text-gray-500 text-sm mt-1">{t("routes.cta.subtitle")}</p>
               </div>
               <div className="flex gap-3">
                 <Link
                   href="/chat"
                   className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-500/20 text-sm"
                 >
-                  ✨ AI定制路线
+                  {t("routes.cta.aiCustomize")}
                 </Link>
                 <Link
                   href="/packages"
                   className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-colors border border-gray-200 text-sm"
                 >
-                  浏览套餐 →
+                  {t("routes.cta.browsePackages")}
                 </Link>
               </div>
             </div>

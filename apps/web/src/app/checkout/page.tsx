@@ -32,18 +32,22 @@ function Countdown({ seconds }: { seconds: number }) {
   );
 }
 
-const TRUST_BADGES = [
-  { icon: "🔒", label: "SSL加密" },
-  { icon: "🛡️", label: "安全支付" },
-  { icon: "✅", label: "退款保障" },
-  { icon: "📞", label: "7×24客服" },
-];
+function getTrustBadges(t: (key: string) => string) {
+  return [
+    { icon: "🔒", label: t("checkout.trustSsl") },
+    { icon: "🛡️", label: t("checkout.trustSecure") },
+    { icon: "✅", label: t("checkout.trustRefund") },
+    { icon: "📞", label: t("checkout.trustSupport") },
+  ];
+}
 
-const ADD_ONS = [
-  { id: "insurance", icon: "🛡️", name: "旅行保险", desc: "行程取消/延误/医疗全覆盖", price: 9900 },
-  { id: "transfer", icon: "🚗", name: "接送机服务", desc: "专车接送，无缝衔接", price: 19900 },
-  { id: "guide", icon: "🎧", name: "专属导览", desc: "AI语音导览+真人讲解", price: 4900 },
-];
+function getAddOns(t: (key: string) => string) {
+  return [
+    { id: "insurance", icon: "🛡️", name: t("checkout.addonInsurance"), desc: t("checkout.addonInsuranceDesc"), price: 9900 },
+    { id: "transfer", icon: "🚗", name: t("checkout.addonTransfer"), desc: t("checkout.addonTransferDesc"), price: 19900 },
+    { id: "guide", icon: "🎧", name: t("checkout.addonGuide"), desc: t("checkout.addonGuideDesc"), price: 4900 },
+  ];
+}
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
@@ -55,16 +59,19 @@ export default function CheckoutPage() {
   // Steps
   const [step, setStep] = useState(1);
   const STEPS = [
-    { num: 1, label: t("checkout.stepReview") || "确认行程" },
-    { num: 2, label: t("checkout.stepPayment") || "选择支付" },
-    { num: 3, label: t("checkout.stepConfirm") || "确认下单" },
+    { num: 1, label: t("checkout.stepReview") },
+    { num: 2, label: t("checkout.stepPayment") },
+    { num: 3, label: t("checkout.stepConfirm") },
   ];
 
   const PAYMENT_METHODS: { key: PaymentGateway; label: string; icon: string; desc: string }[] = [
-    { key: "wechat", label: t("payment.wechat"), icon: "💚", desc: "微信扫码支付" },
-    { key: "alipay", label: t("payment.alipay"), icon: "🔵", desc: "支付宝快捷支付" },
-    { key: "stripe", label: t("payment.stripe"), icon: "💳", desc: "Visa/Mastercard/银联" },
+    { key: "wechat", label: t("payment.wechat"), icon: "💚", desc: t("checkout.wechatDesc") },
+    { key: "alipay", label: t("payment.alipay"), icon: "🔵", desc: t("checkout.alipayDesc") },
+    { key: "stripe", label: t("payment.stripe"), icon: "💳", desc: t("checkout.stripeDesc") },
   ];
+
+  const TRUST_BADGES = getTrustBadges(t);
+  const ADD_ONS = getAddOns(t);
 
   const [trip, setTrip] = useState<TripDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -209,7 +216,7 @@ export default function CheckoutPage() {
         promotionId: selectedPromotion || undefined,
       });
       await createPayment(order.id, gateway);
-      toast.success(t("checkout.orderCreated") || "订单创建成功");
+      toast.success(t("checkout.orderCreated"));
       router.push(`/checkout/result?orderId=${order.id}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("checkout.submitError"));
@@ -321,9 +328,9 @@ export default function CheckoutPage() {
         </div>
 
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          {step === 1 && (t("checkout.stepReview") || "确认行程信息")}
-          {step === 2 && (t("checkout.stepPayment") || "选择支付方式")}
-          {step === 3 && (t("checkout.stepConfirm") || "确认并支付")}
+          {step === 1 && t("checkout.stepReviewTitle")}
+          {step === 2 && t("checkout.stepPaymentTitle")}
+          {step === 3 && t("checkout.stepConfirmTitle")}
         </h1>
 
         {error && (
@@ -382,35 +389,35 @@ export default function CheckoutPage() {
                 {/* Traveler Info */}
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                   <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    👤 旅客信息
+                    👤 {t("checkout.travelerInfo")}
                   </h2>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm text-gray-600 mb-1">联系人姓名</label>
+                      <label className="block text-sm text-gray-600 mb-1">{t("checkout.travelerNameLabel")}</label>
                       <input
                         type="text"
                         value={travelerName}
                         onChange={(e) => setTravelerName(e.target.value)}
-                        placeholder="请输入出行人姓名"
+                        placeholder={t("checkout.travelerNamePlaceholder")}
                         className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF]"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-600 mb-1">联系电话</label>
+                      <label className="block text-sm text-gray-600 mb-1">{t("checkout.travelerPhoneLabel")}</label>
                       <input
                         type="tel"
                         value={travelerPhone}
                         onChange={(e) => setTravelerPhone(e.target.value)}
-                        placeholder="请输入手机号码"
+                        placeholder={t("checkout.travelerPhonePlaceholder")}
                         className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF]"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-600 mb-1">备注 (可选)</label>
+                      <label className="block text-sm text-gray-600 mb-1">{t("checkout.travelerNoteLabel")}</label>
                       <textarea
                         value={travelerNote}
                         onChange={(e) => setTravelerNote(e.target.value)}
-                        placeholder="特殊需求、饮食禁忌等..."
+                        placeholder={t("checkout.travelerNotePlaceholder")}
                         rows={2}
                         className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#0066FF] focus:ring-1 focus:ring-[#0066FF] resize-none"
                       />
@@ -421,8 +428,8 @@ export default function CheckoutPage() {
                 {/* Add-on Services (对标Expedia/Trip.com) */}
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                   <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    ✨ 增值服务
-                    <span className="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">推荐</span>
+                    ✨ {t("checkout.addOnServices")}
+                    <span className="text-xs text-orange-500 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">{t("checkout.recommended")}</span>
                   </h2>
                   <div className="space-y-3">
                     {ADD_ONS.map((addon) => (
@@ -458,19 +465,19 @@ export default function CheckoutPage() {
                   <div className="flex items-start gap-3">
                     <span className="text-lg mt-0.5">📋</span>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900">取消政策</h3>
+                      <h3 className="text-sm font-semibold text-gray-900">{t("checkout.cancellationPolicy")}</h3>
                       <ul className="mt-2 space-y-1 text-xs text-gray-600">
                         <li className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                          出发前7天以上免费取消
+                          {t("checkout.cancelFree")}
                         </li>
                         <li className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                          出发前3-7天取消收取30%费用
+                          {t("checkout.cancelPartial")}
                         </li>
                         <li className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                          出发前3天内不可取消
+                          {t("checkout.cancelNone")}
                         </li>
                       </ul>
                     </div>
@@ -481,7 +488,7 @@ export default function CheckoutPage() {
                   onClick={() => setStep(2)}
                   className="w-full py-3.5 rounded-2xl bg-[#0066FF] text-white font-bold text-sm hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20"
                 >
-                  下一步：选择支付方式 →
+                  {t("checkout.nextPayment")}
                 </button>
               </>
             )}
@@ -634,13 +641,13 @@ export default function CheckoutPage() {
                     onClick={() => setStep(1)}
                     className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-600 font-medium text-sm hover:bg-gray-50 transition-colors"
                   >
-                    ← 返回上一步
+                    {t("checkout.prevStep")}
                   </button>
                   <button
                     onClick={() => setStep(3)}
                     className="flex-[2] py-3.5 rounded-2xl bg-[#0066FF] text-white font-bold text-sm hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20"
                   >
-                    下一步：确认订单 →
+                    {t("checkout.nextConfirm")}
                   </button>
                 </div>
               </>
@@ -651,35 +658,35 @@ export default function CheckoutPage() {
               <>
                 {/* Order Review Summary */}
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4">📝 订单确认</h2>
+                  <h2 className="text-base font-semibold text-gray-900 mb-4">📝 {t("checkout.orderReview")}</h2>
 
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">行程</span>
+                      <span className="text-gray-500">{t("checkout.labelTrip")}</span>
                       <span className="text-gray-900 font-medium">{trip.title}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">日期</span>
-                      <span className="text-gray-700">{trip.startDate ?? "待定"} ~ {trip.endDate ?? "待定"}</span>
+                      <span className="text-gray-500">{t("checkout.labelDate")}</span>
+                      <span className="text-gray-700">{trip.startDate ?? t("checkout.datePending")} ~ {trip.endDate ?? t("checkout.datePending")}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">人数</span>
-                      <span className="text-gray-700">{trip.persons ?? 1}人</span>
+                      <span className="text-gray-500">{t("checkout.labelPersons")}</span>
+                      <span className="text-gray-700">{t("checkout.personsCount", { count: trip.persons ?? 1 })}</span>
                     </div>
                     {travelerName && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">联系人</span>
+                        <span className="text-gray-500">{t("checkout.labelContact")}</span>
                         <span className="text-gray-700">{travelerName}</span>
                       </div>
                     )}
                     {travelerPhone && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">电话</span>
+                        <span className="text-gray-500">{t("checkout.labelPhone")}</span>
                         <span className="text-gray-700">{travelerPhone}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
-                      <span className="text-gray-500">支付方式</span>
+                      <span className="text-gray-500">{t("checkout.labelPayment")}</span>
                       <span className="text-gray-700">
                         {PAYMENT_METHODS.find((m) => m.key === gateway)?.icon}{" "}
                         {PAYMENT_METHODS.find((m) => m.key === gateway)?.label}
@@ -689,7 +696,7 @@ export default function CheckoutPage() {
 
                   {selectedAddOns.size > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-xs text-gray-400 mb-2">增值服务</p>
+                      <p className="text-xs text-gray-400 mb-2">{t("checkout.addOnServices")}</p>
                       <div className="flex flex-wrap gap-2">
                         {Array.from(selectedAddOns).map((id) => {
                           const addon = ADD_ONS.find((a) => a.id === id);
@@ -706,7 +713,7 @@ export default function CheckoutPage() {
 
                   {travelerNote && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-xs text-gray-400 mb-1">备注</p>
+                      <p className="text-xs text-gray-400 mb-1">{t("checkout.labelNote")}</p>
                       <p className="text-sm text-gray-600">{travelerNote}</p>
                     </div>
                   )}
@@ -714,19 +721,19 @@ export default function CheckoutPage() {
 
                 {/* Guarantee section */}
                 <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
-                  <h3 className="text-sm font-semibold mb-3">🛡️ 预订保障</h3>
+                  <h3 className="text-sm font-semibold mb-3">🛡️ {t("checkout.guarantee")}</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="text-green-400">✓</span> 价格保障，买贵退差
+                      <span className="text-green-400">✓</span> {t("checkout.guaranteePrice")}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="text-green-400">✓</span> 随时退改，灵活安排
+                      <span className="text-green-400">✓</span> {t("checkout.guaranteeFlexible")}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="text-green-400">✓</span> 真实评价，透明可信
+                      <span className="text-green-400">✓</span> {t("checkout.guaranteeReview")}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="text-green-400">✓</span> 全程客服，安心出行
+                      <span className="text-green-400">✓</span> {t("checkout.guaranteeSupport")}
                     </div>
                   </div>
                 </div>
@@ -736,7 +743,7 @@ export default function CheckoutPage() {
                     onClick={() => setStep(2)}
                     className="flex-1 py-3.5 rounded-2xl border border-gray-200 text-gray-600 font-medium text-sm hover:bg-gray-50 transition-colors"
                   >
-                    ← 修改支付
+                    {t("checkout.prevPayment")}
                   </button>
                   <button
                     onClick={handleSubmit}
@@ -788,7 +795,7 @@ export default function CheckoutPage() {
                   )}
                   {addOnTotal > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">增值服务</span>
+                      <span className="text-gray-500">{t("checkout.addOnServices")}</span>
                       <span className="text-gray-700">+¥{(addOnTotal / 100).toFixed(2)}</span>
                     </div>
                   )}
@@ -809,7 +816,7 @@ export default function CheckoutPage() {
                   </div>
                   {discountCents > 0 && (
                     <p className="text-xs text-green-600 text-right">
-                      已省 ¥{(discountCents / 100).toFixed(2)}
+                      {t("checkout.savedAmount", { amount: (discountCents / 100).toFixed(2) })}
                     </p>
                   )}
                 </div>
@@ -824,7 +831,7 @@ export default function CheckoutPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{trip.title}</p>
                     <p className="text-xs text-gray-400">
-                      {trip.sites?.length ?? 0} 个圣地 · {trip.persons ?? 1}人
+                      {t("checkout.miniTripInfo", { sites: trip.sites?.length ?? 0, persons: trip.persons ?? 1 })}
                     </p>
                   </div>
                 </div>
@@ -844,9 +851,9 @@ export default function CheckoutPage() {
 
               {/* Help */}
               <div className="text-center text-xs text-gray-400 space-y-1">
-                <p>遇到问题？</p>
+                <p>{t("checkout.needHelp")}</p>
                 <Link href="/chat" className="text-[#0066FF] hover:underline">
-                  联系在线客服 →
+                  {t("checkout.contactSupport")}
                 </Link>
               </div>
             </div>
