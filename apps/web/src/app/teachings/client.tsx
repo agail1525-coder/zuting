@@ -14,12 +14,14 @@ const RELIGION_ICONS: Record<string, string> = {
   神道教: "⛩️", 藏传佛教: "🏔️", 巴哈伊教: "✨",
 };
 
-const SORT_OPTIONS = [
-  { value: "name-asc", label: "名称 A→Z" },
-  { value: "name-desc", label: "名称 Z→A" },
-  { value: "source-asc", label: "按出处" },
-  { value: "religion", label: "按信仰" },
-];
+function useSortOptions(t: (key: string) => string) {
+  return [
+    { value: "name-asc", label: t("teachings.sort.nameAsc") },
+    { value: "name-desc", label: t("teachings.sort.nameDesc") },
+    { value: "source-asc", label: t("teachings.sort.source") },
+    { value: "religion", label: t("teachings.sort.religion") },
+  ];
+}
 
 const PAGE_SIZE = 12;
 
@@ -31,6 +33,7 @@ interface Props {
 
 export default function TeachingsClient({ religions, teachings, error }: Props) {
   const { t } = useTranslation();
+  const SORT_OPTIONS = useSortOptions(t);
   const [filter, setFilter] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("name-asc");
@@ -86,10 +89,10 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
             {t("section.allTeachings")}
           </h1>
           <p className="text-gray-500 text-lg">
-            {t("encyclopedia.teachingsSubtitle") || "聆听千年智慧之声"}
+            {t("encyclopedia.teachingsSubtitle")}
           </p>
           <p className="text-sm text-gray-400 mt-2">
-            共 {teachings.length} 条祖训 · 涵盖 {religions.length} 大信仰体系
+            {t("teachings.statsLine").replace("{total}", String(teachings.length)).replace("{religions}", String(religions.length))}
           </p>
         </div>
 
@@ -102,7 +105,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
               </div>
               <div className="relative">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/10 text-white/80 rounded-full text-xs font-medium mb-4 border border-white/10">
-                  ✨ 每日精选
+                  ✨ {t("teachings.dailyFeatured")}
                 </span>
                 <h2 className="text-2xl font-serif font-bold mb-3 group-hover:text-[#66A3FF] transition-colors">
                   {featured.name}
@@ -141,7 +144,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
             onSortChange={setSort}
             sortOptions={SORT_OPTIONS}
             resultCount={filtered.length}
-            placeholder="搜索经文名称、原文、出处..."
+            placeholder={t("teachings.searchPlaceholder")}
           />
         </div>
 
@@ -184,7 +187,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
                         <span />
                       )}
                       <span className="text-xs text-[#0066FF] opacity-0 group-hover:opacity-100 transition-opacity">
-                        深入阅读 →
+                        {t("teachings.readMore")}
                       </span>
                     </div>
                   </div>
@@ -198,7 +201,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-4xl block mb-4">📜</span>
-            <p className="text-gray-500">{t("common.noResults") || "暂无数据"}</p>
+            <p className="text-gray-500">{t("common.noResults")}</p>
             {(filter || search) && (
               <button
                 onClick={() => {
@@ -207,7 +210,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
                 }}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                清除筛选条件
+                {t("teachings.clearFilters")}
               </button>
             )}
           </div>
@@ -220,7 +223,7 @@ export default function TeachingsClient({ religions, teachings, error }: Props) 
               onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
               className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
             >
-              加载更多 ({filtered.length - visibleCount} 条)
+              {t("teachings.loadMore").replace("{count}", String(filtered.length - visibleCount))}
             </button>
           </div>
         )}

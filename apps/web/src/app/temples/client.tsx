@@ -9,12 +9,14 @@ import MobileNav from "@/components/MobileNav";
 import type { Religion, Temple } from "@/lib/api";
 import DataLoadError from "@/components/DataLoadError";
 
-const SORT_OPTIONS = [
-  { value: "name-asc", label: "名称 A→Z" },
-  { value: "name-desc", label: "名称 Z→A" },
-  { value: "country", label: "按国家" },
-  { value: "founded", label: "建立时间" },
-];
+function useSortOptions(t: (key: string) => string) {
+  return [
+    { value: "name-asc", label: t("temples.sort.nameAsc") },
+    { value: "name-desc", label: t("temples.sort.nameDesc") },
+    { value: "country", label: t("temples.sort.country") },
+    { value: "founded", label: t("temples.sort.founded") },
+  ];
+}
 
 const PAGE_SIZE = 12;
 
@@ -26,6 +28,7 @@ interface Props {
 
 export default function TemplesClient({ religions, temples, error }: Props) {
   const { t } = useTranslation();
+  const SORT_OPTIONS = useSortOptions(t);
   const [filter, setFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -91,11 +94,11 @@ export default function TemplesClient({ religions, temples, error }: Props) {
         {/* Header with stats */}
         <div className="text-center mb-6">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-3">{t("section.allTemples")}</h1>
-          <p className="text-gray-500 text-lg">{t("encyclopedia.templesSubtitle") || "探索全球宗教祖庭"}</p>
+          <p className="text-gray-500 text-lg">{t("encyclopedia.templesSubtitle")}</p>
           <div className="flex items-center justify-center gap-6 mt-3 text-sm text-gray-400">
-            <span>🏛 {stats.total} 座祖庭</span>
-            <span>🌍 {stats.countries} 个国家</span>
-            <span>🙏 {stats.religions} 大信仰</span>
+            <span>🏛 {stats.total} {t("temples.unitTemple")}</span>
+            <span>🌍 {stats.countries} {t("temples.unitCountry")}</span>
+            <span>🙏 {stats.religions} {t("temples.unitReligion")}</span>
           </div>
         </div>
 
@@ -109,7 +112,7 @@ export default function TemplesClient({ religions, temples, error }: Props) {
                 : "bg-white text-gray-500 hover:bg-gray-100 border border-gray-200"
             }`}
           >
-            🌏 所有国家
+            🌏 {t("temples.allCountries")}
           </button>
           {countries.map((c) => {
             const count = temples.filter((t) => t.country === c).length;
@@ -140,16 +143,16 @@ export default function TemplesClient({ religions, temples, error }: Props) {
             onSortChange={setSort}
             sortOptions={SORT_OPTIONS}
             resultCount={filtered.length}
-            placeholder="搜索祖庭名称、国家、描述..."
+            placeholder={t("temples.searchPlaceholder")}
           />
           {hasActiveFilters && (
             <div className="mt-3 flex items-center gap-2 text-sm">
-              <span className="text-gray-400">找到 {filtered.length} 座祖庭</span>
+              <span className="text-gray-400">{t("temples.foundCount").replace("{count}", String(filtered.length))}</span>
               <button
                 onClick={() => { setFilter(null); setCountryFilter(null); setSearch(""); }}
                 className="text-[#0066FF] hover:underline text-xs"
               >
-                清除全部筛选
+                {t("temples.clearAllFilters")}
               </button>
             </div>
           )}
@@ -164,13 +167,13 @@ export default function TemplesClient({ religions, temples, error }: Props) {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-5xl block mb-4">🔍</span>
-            <p className="text-gray-500 text-lg">{t("common.noResults") || "暂无匹配结果"}</p>
+            <p className="text-gray-500 text-lg">{t("common.noResults")}</p>
             {hasActiveFilters && (
               <button
                 onClick={() => { setFilter(null); setCountryFilter(null); setSearch(""); }}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                清除筛选条件
+                {t("temples.clearFilters")}
               </button>
             )}
           </div>
@@ -182,9 +185,9 @@ export default function TemplesClient({ religions, temples, error }: Props) {
               onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
               className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
             >
-              加载更多 ({filtered.length - visibleCount} 座)
+              {t("temples.loadMore").replace("{count}", String(filtered.length - visibleCount))}
             </button>
-            <p className="text-xs text-gray-400 mt-2">已展示 {Math.min(visibleCount, filtered.length)} / {filtered.length}</p>
+            <p className="text-xs text-gray-400 mt-2">{t("temples.showingCount").replace("{shown}", String(Math.min(visibleCount, filtered.length))).replace("{total}", String(filtered.length))}</p>
           </div>
         )}
 
@@ -192,14 +195,14 @@ export default function TemplesClient({ religions, temples, error }: Props) {
         <div className="mt-12 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-8 border border-[#0066FF]/10">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="flex-1 text-center md:text-left">
-              <h2 className="text-xl font-bold text-gray-900">想了解更多祖庭故事？</h2>
-              <p className="text-gray-500 text-sm mt-1">让AI旅行规划师帮你规划包含这些祖庭的朝圣路线</p>
+              <h2 className="text-xl font-bold text-gray-900">{t("temples.cta.title")}</h2>
+              <p className="text-gray-500 text-sm mt-1">{t("temples.cta.subtitle")}</p>
             </div>
             <Link
               href="/chat"
               className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-500/20 text-sm"
             >
-              ✨ AI规划祖庭路线
+              {t("temples.cta.aiPlan")}
             </Link>
           </div>
         </div>

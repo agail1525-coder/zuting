@@ -9,12 +9,14 @@ import MobileNav from "@/components/MobileNav";
 import type { Religion, Patriarch } from "@/lib/api";
 import DataLoadError from "@/components/DataLoadError";
 
-const SORT_OPTIONS = [
-  { value: "name-asc", label: "名称 A→Z" },
-  { value: "name-desc", label: "名称 Z→A" },
-  { value: "newest", label: "最新添加" },
-  { value: "religion", label: "按信仰" },
-];
+function useSortOptions(t: (key: string) => string) {
+  return [
+    { value: "name-asc", label: t("patriarchs.sort.nameAsc") },
+    { value: "name-desc", label: t("patriarchs.sort.nameDesc") },
+    { value: "newest", label: t("patriarchs.sort.newest") },
+    { value: "religion", label: t("patriarchs.sort.religion") },
+  ];
+}
 
 const PAGE_SIZE = 16;
 
@@ -26,6 +28,7 @@ interface Props {
 
 export default function PatriarchsClient({ religions, patriarchs, error }: Props) {
   const { t } = useTranslation();
+  const SORT_OPTIONS = useSortOptions(t);
   const [filter, setFilter] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("name-asc");
@@ -89,10 +92,10 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
         {/* Header with stats */}
         <div className="text-center mb-6">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#0066FF] mb-3">{t("section.allPatriarchs")}</h1>
-          <p className="text-gray-500 text-lg">{t("encyclopedia.patriarchsSubtitle") || "探索各信仰先贤圣者"}</p>
+          <p className="text-gray-500 text-lg">{t("encyclopedia.patriarchsSubtitle")}</p>
           <div className="flex items-center justify-center gap-6 mt-3 text-sm text-gray-400">
-            <span>🧘 {stats.total} 位先贤</span>
-            <span>🙏 {stats.religions} 大信仰</span>
+            <span>🧘 {stats.total} {t("patriarchs.unitPatriarch")}</span>
+            <span>🙏 {stats.religions} {t("patriarchs.unitReligion")}</span>
           </div>
         </div>
 
@@ -112,7 +115,7 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 )}
                 <div className="p-6 md:p-8 flex-1 relative">
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/10 text-white/80 rounded-full text-xs font-medium mb-3 border border-white/10">
-                    ✨ 每日精选
+                    ✨ {t("patriarchs.dailyFeatured")}
                   </span>
                   <h2 className="text-2xl font-serif font-bold text-white group-hover:text-[#66A3FF] transition-colors">
                     {featured.name}
@@ -147,16 +150,16 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
             onSortChange={setSort}
             sortOptions={SORT_OPTIONS}
             resultCount={filtered.length}
-            placeholder="搜索先贤名称、称号、年代、生平..."
+            placeholder={t("patriarchs.searchPlaceholder")}
           />
           {hasActiveFilters && (
             <div className="mt-3 flex items-center gap-2 text-sm">
-              <span className="text-gray-400">找到 {filtered.length} 位先贤</span>
+              <span className="text-gray-400">{t("patriarchs.foundCount").replace("{count}", String(filtered.length))}</span>
               <button
                 onClick={() => { setFilter(null); setSearch(""); }}
                 className="text-[#0066FF] hover:underline text-xs"
               >
-                清除筛选
+                {t("patriarchs.clearFilters")}
               </button>
             </div>
           )}
@@ -171,13 +174,13 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-5xl block mb-4">🔍</span>
-            <p className="text-gray-500 text-lg">{t("common.noResults") || "暂无匹配结果"}</p>
+            <p className="text-gray-500 text-lg">{t("common.noResults")}</p>
             {hasActiveFilters && (
               <button
                 onClick={() => { setFilter(null); setSearch(""); }}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                清除筛选条件
+                {t("patriarchs.clearFilters")}
               </button>
             )}
           </div>
@@ -189,9 +192,9 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
               onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
               className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
             >
-              加载更多 ({filtered.length - visibleCount} 位)
+              {t("patriarchs.loadMore").replace("{count}", String(filtered.length - visibleCount))}
             </button>
-            <p className="text-xs text-gray-400 mt-2">已展示 {Math.min(visibleCount, filtered.length)} / {filtered.length}</p>
+            <p className="text-xs text-gray-400 mt-2">{t("patriarchs.showingCount").replace("{shown}", String(Math.min(visibleCount, filtered.length))).replace("{total}", String(filtered.length))}</p>
           </div>
         )}
 
@@ -200,22 +203,22 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
           <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#0066FF]/10 rounded-full blur-3xl" />
           <div className="relative">
             <span className="text-3xl block mb-3">📚</span>
-            <h2 className="text-xl font-bold text-white">深入了解先贤智慧</h2>
+            <h2 className="text-xl font-bold text-white">{t("patriarchs.cta.title")}</h2>
             <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
-              探索各信仰传承的祖训与教义，让千年智慧指引你的朝圣之旅
+              {t("patriarchs.cta.subtitle")}
             </p>
             <div className="flex gap-3 justify-center mt-5">
               <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >
-                浏览祖训 →
+                {t("patriarchs.cta.browseTeachings")}
               </Link>
               <Link
                 href="/chat"
                 className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20 text-sm"
               >
-                ✨ AI讲解先贤
+                {t("patriarchs.cta.aiExplain")}
               </Link>
             </div>
           </div>

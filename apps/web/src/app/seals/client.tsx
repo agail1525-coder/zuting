@@ -17,13 +17,23 @@ const seriesOrder: SealSeries[] = [
   "GUIYUANYIN",
 ];
 
-const SERIES_META: Record<string, { label: string; icon: string; color: string; bgActive: string; desc: string }> = {
-  CHUYIN:      { label: "初印系", icon: "🌱", color: "blue",    bgActive: "bg-blue-500 text-white shadow-lg shadow-blue-500/20",    desc: "发心起步，种下觉悟之因" },
-  ZHONGYIN:    { label: "中印系", icon: "🌊", color: "emerald", bgActive: "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20", desc: "修行渐深，智慧初现" },
-  YINGUOYIN:   { label: "印果印", icon: "🔮", color: "amber",   bgActive: "bg-amber-500 text-white shadow-lg shadow-amber-500/20",   desc: "因果分明，行证并进" },
-  CHENGDAOYIN: { label: "成道印", icon: "💎", color: "purple",  bgActive: "bg-purple-500 text-white shadow-lg shadow-purple-500/20",  desc: "悟道证果，明心见性" },
-  GUIYUANYIN:  { label: "归源印", icon: "🌕", color: "rose",    bgActive: "bg-rose-500 text-white shadow-lg shadow-rose-500/20",      desc: "返本归源，圆满究竟" },
+const SERIES_STYLE: Record<string, { icon: string; color: string; bgActive: string }> = {
+  CHUYIN:      { icon: "🌱", color: "blue",    bgActive: "bg-blue-500 text-white shadow-lg shadow-blue-500/20" },
+  ZHONGYIN:    { icon: "🌊", color: "emerald", bgActive: "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20" },
+  YINGUOYIN:   { icon: "🔮", color: "amber",   bgActive: "bg-amber-500 text-white shadow-lg shadow-amber-500/20" },
+  CHENGDAOYIN: { icon: "💎", color: "purple",  bgActive: "bg-purple-500 text-white shadow-lg shadow-purple-500/20" },
+  GUIYUANYIN:  { icon: "🌕", color: "rose",    bgActive: "bg-rose-500 text-white shadow-lg shadow-rose-500/20" },
 };
+
+function useSeriesMeta(t: (key: string) => string) {
+  return {
+    CHUYIN:      { ...SERIES_STYLE.CHUYIN, label: t("seals.series.chuyin"), desc: t("seals.series.chuyinDesc") },
+    ZHONGYIN:    { ...SERIES_STYLE.ZHONGYIN, label: t("seals.series.zhongyin"), desc: t("seals.series.zhongyinDesc") },
+    YINGUOYIN:   { ...SERIES_STYLE.YINGUOYIN, label: t("seals.series.yinguoyin"), desc: t("seals.series.yinguoyinDesc") },
+    CHENGDAOYIN: { ...SERIES_STYLE.CHENGDAOYIN, label: t("seals.series.chengdaoyin"), desc: t("seals.series.chengdaoyinDesc") },
+    GUIYUANYIN:  { ...SERIES_STYLE.GUIYUANYIN, label: t("seals.series.guiyuanyin"), desc: t("seals.series.guiyuanyinDesc") },
+  };
+}
 
 const SERIES_DOT_COLORS: Record<string, string> = {
   CHUYIN: "bg-blue-400", ZHONGYIN: "bg-emerald-400", YINGUOYIN: "bg-amber-400",
@@ -35,12 +45,14 @@ const SERIES_RING_COLORS: Record<string, string> = {
   CHENGDAOYIN: "ring-purple-400", GUIYUANYIN: "ring-rose-400",
 };
 
-const SORT_OPTIONS = [
-  { value: "default", label: "默认排序" },
-  { value: "name-asc", label: "名称 A→Z" },
-  { value: "name-desc", label: "名称 Z→A" },
-  { value: "series", label: "按系列" },
-];
+function useSortOptions(t: (key: string) => string) {
+  return [
+    { value: "default", label: t("seals.sort.default") },
+    { value: "name-asc", label: t("seals.sort.nameAsc") },
+    { value: "name-desc", label: t("seals.sort.nameDesc") },
+    { value: "series", label: t("seals.sort.series") },
+  ];
+}
 
 interface Props {
   seals: Seal[];
@@ -48,7 +60,8 @@ interface Props {
 }
 
 /* Seal Detail Modal */
-function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void }) {
+function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void; t: (key: string) => string }) {
+  const SERIES_META = useSeriesMeta(t);
   const meta = SERIES_META[seal.series];
   const dotColor = SERIES_DOT_COLORS[seal.series] || "bg-gray-400";
 
@@ -79,7 +92,7 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
         <div className="p-6 space-y-5">
           {/* Poem */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">偈颂</h3>
+            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("seals.modal.poem")}</h3>
             <blockquote className="text-gray-800 font-serif text-lg leading-relaxed border-l-3 border-gray-200 pl-4 whitespace-pre-line">
               {seal.poem}
             </blockquote>
@@ -88,7 +101,7 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
           {/* Essence */}
           {seal.essence && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">要义</h3>
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("seals.modal.essence")}</h3>
               <p className="text-gray-700 leading-relaxed">{seal.essence}</p>
             </div>
           )}
@@ -97,7 +110,7 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
           {seal.practice && (
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
               <h3 className="text-sm font-semibold text-blue-600 mb-2 flex items-center gap-1.5">
-                🧘 修行法门
+                🧘 {t("seals.modal.practice")}
               </h3>
               <p className="text-gray-700 text-sm leading-relaxed">{seal.practice}</p>
             </div>
@@ -107,7 +120,7 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
           {seal.vow && (
             <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
               <h3 className="text-sm font-semibold text-amber-600 mb-2 flex items-center gap-1.5">
-                🙏 大愿
+                🙏 {t("seals.modal.vow")}
               </h3>
               <p className="text-gray-700 text-sm leading-relaxed">{seal.vow}</p>
             </div>
@@ -119,10 +132,10 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
               href={`/seals/${seal.id}`}
               className="flex-1 text-center px-4 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl hover:bg-[#0052CC] transition-colors text-sm"
             >
-              查看详情页
+              {t("seals.modal.viewDetail")}
             </Link>
             <ShareButton
-              title={`第${seal.id}印 · ${seal.name}`}
+              title={`${t("seals.unit")} ${seal.id} · ${seal.name}`}
               description={seal.poem}
               url={typeof window !== "undefined" ? `${window.location.origin}/seals/${seal.id}` : ""}
               entityType="HOLY_SITE"
@@ -138,6 +151,8 @@ function SealDetailModal({ seal, onClose }: { seal: Seal; onClose: () => void })
 
 export default function SealsClient({ seals, error }: Props) {
   const { t } = useTranslation();
+  const SERIES_META = useSeriesMeta(t);
+  const SORT_OPTIONS = useSortOptions(t);
   const [filter, setFilter] = useState<SealSeries | null>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
@@ -205,10 +220,10 @@ export default function SealsClient({ seals, error }: Props) {
             {t("section.thirtySeals")}
           </h1>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            曹溪愿命三十印 — 从发心到归源，修行的完整地图
+            {t("seals.subtitle")}
           </p>
           <p className="text-sm text-gray-400 mt-2">
-            共 {seals.length} 印 · {seriesOrder.length} 大系列
+            {t("seals.statsLine").replace("{total}", String(seals.length)).replace("{series}", String(seriesOrder.length))}
           </p>
         </div>
 
@@ -216,9 +231,9 @@ export default function SealsClient({ seals, error }: Props) {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-900 flex items-center gap-2">
-              <span className="text-xl">🗺️</span> 修行全景
+              <span className="text-xl">🗺️</span> {t("seals.progressOverview")}
             </h2>
-            <span className="text-sm text-gray-400">{seals.length}/30 印</span>
+            <span className="text-sm text-gray-400">{seals.length}/30 {t("seals.unit")}</span>
           </div>
           {/* Progress bar */}
           <div className="h-3 bg-gray-100 rounded-full overflow-hidden mb-5 flex">
@@ -227,7 +242,7 @@ export default function SealsClient({ seals, error }: Props) {
                 key={stat.series}
                 className={`h-full ${SERIES_DOT_COLORS[stat.series]?.replace("bg-", "bg-") || "bg-gray-300"}`}
                 style={{ width: `${(stat.count / 30) * 100}%` }}
-                title={`${stat.meta.label}: ${stat.count}印`}
+                title={`${stat.meta.label}: ${stat.count} ${t("seals.unit")}`}
               />
             ))}
           </div>
@@ -247,7 +262,7 @@ export default function SealsClient({ seals, error }: Props) {
                   <span className="text-lg">{stat.meta.icon}</span>
                   <span className="font-bold text-gray-900 text-sm">{stat.meta.label}</span>
                 </div>
-                <p className="text-xs text-gray-400">{stat.count} 印</p>
+                <p className="text-xs text-gray-400">{stat.count} {t("seals.unit")}</p>
                 <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{stat.meta.desc}</p>
               </button>
             ))}
@@ -266,7 +281,7 @@ export default function SealsClient({ seals, error }: Props) {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="搜索印名、偈颂、要义..."
+                placeholder={t("seals.searchPlaceholder")}
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
               />
             </div>
@@ -287,7 +302,7 @@ export default function SealsClient({ seals, error }: Props) {
                 className={`px-3 py-2 text-sm transition-colors ${
                   viewMode === "grid" ? "bg-[#0066FF] text-white" : "bg-white text-gray-600 hover:bg-gray-50"
                 }`}
-                title="网格视图"
+                title={t("seals.viewGrid")}
               >
                 ▦
               </button>
@@ -296,7 +311,7 @@ export default function SealsClient({ seals, error }: Props) {
                 className={`px-3 py-2 text-sm transition-colors ${
                   viewMode === "roadmap" ? "bg-[#0066FF] text-white" : "bg-white text-gray-600 hover:bg-gray-50"
                 }`}
-                title="路线图视图"
+                title={t("seals.viewRoadmap")}
               >
                 ⟶
               </button>
@@ -305,12 +320,12 @@ export default function SealsClient({ seals, error }: Props) {
           {/* Active filter summary */}
           {(filter || search) && (
             <div className="mt-3 flex items-center gap-2 text-sm">
-              <span className="text-gray-400">找到 {filtered.length} 印</span>
+              <span className="text-gray-400">{t("seals.foundCount").replace("{count}", String(filtered.length))}</span>
               <button
                 onClick={() => { setFilter(null); setSearch(""); }}
                 className="text-[#0066FF] hover:underline text-xs"
               >
-                清除筛选
+                {t("seals.clearFilters")}
               </button>
             </div>
           )}
@@ -357,7 +372,7 @@ export default function SealsClient({ seals, error }: Props) {
                   <h2 className="text-xl font-serif font-bold text-gray-700 flex items-center gap-3">
                     <span className="text-xl">{group.meta.icon}</span>
                     {group.meta.label}
-                    <span className="text-sm font-normal text-gray-400">({group.seals.length}印)</span>
+                    <span className="text-sm font-normal text-gray-400">({group.seals.length}{t("seals.unit")})</span>
                   </h2>
                   <p className="text-sm text-gray-400 hidden sm:block">{group.meta.desc}</p>
                 </div>
@@ -419,7 +434,7 @@ export default function SealsClient({ seals, error }: Props) {
                               </div>
                               <p className="text-gray-500 text-sm font-serif line-clamp-2 leading-relaxed">{seal.poem}</p>
                               <span className="text-xs text-[#0066FF] opacity-0 group-hover:opacity-100 transition-opacity mt-1 inline-block">
-                                点击查看详情 →
+                                {t("seals.clickToView")}
                               </span>
                             </button>
                           </div>
@@ -437,13 +452,13 @@ export default function SealsClient({ seals, error }: Props) {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <span className="text-5xl block mb-4">🔍</span>
-            <p className="text-gray-500 text-lg">{t("common.noResults") || "暂无匹配结果"}</p>
+            <p className="text-gray-500 text-lg">{t("common.noResults")}</p>
             {(filter || search) && (
               <button
                 onClick={() => { setFilter(null); setSearch(""); }}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                清除筛选条件
+                {t("seals.clearFilters")}
               </button>
             )}
           </div>
@@ -455,22 +470,22 @@ export default function SealsClient({ seals, error }: Props) {
           <div className="absolute -left-8 -bottom-8 w-40 h-40 bg-[#0066FF]/10 rounded-full blur-2xl" />
           <div className="relative">
             <span className="text-4xl block mb-3">🪷</span>
-            <h2 className="text-2xl font-serif font-bold text-white mb-2">开启你的三十印修行之旅</h2>
+            <h2 className="text-2xl font-serif font-bold text-white mb-2">{t("seals.cta.title")}</h2>
             <p className="text-gray-400 max-w-lg mx-auto mb-6">
-              三十印是从发心到归源的完整修行地图。走过祖庭，领悟每一印的智慧，在行走中觉醒。
+              {t("seals.cta.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/chat?q=请帮我规划一条三十印修行路线"
+                href={`/chat?q=${encodeURIComponent(t("seals.cta.aiQuery"))}`}
                 className="px-6 py-3 bg-[#D4A855] hover:bg-[#C09A4A] text-white font-semibold rounded-xl transition-colors shadow-lg"
               >
-                ✨ AI规划三十印路线
+                {t("seals.cta.aiPlan")}
               </Link>
               <Link
                 href="/routes"
                 className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20"
               >
-                浏览朝圣路线 →
+                {t("seals.cta.browseRoutes")}
               </Link>
             </div>
           </div>
@@ -479,7 +494,7 @@ export default function SealsClient({ seals, error }: Props) {
 
       {/* Detail Modal */}
       {selectedSeal && (
-        <SealDetailModal seal={selectedSeal} onClose={() => setSelectedSeal(null)} />
+        <SealDetailModal seal={selectedSeal} onClose={() => setSelectedSeal(null)} t={t} />
       )}
 
       <MobileNav />
