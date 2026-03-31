@@ -29,7 +29,45 @@ export class HolySiteService {
       }),
       this.prisma.holySite.count({ where }),
     ]);
-    const result = { items, total, page, limit };
+
+    // Batch-aggregate review stats and collection counts for all sites
+    const siteIds = items.map(s => s.id);
+
+    const [reviewStats, collectionCounts] = await Promise.all([
+      siteIds.length > 0
+        ? this.prisma.review.groupBy({
+            by: ['targetId'],
+            where: { targetType: 'SITE', targetId: { in: siteIds }, status: 'APPROVED' },
+            _avg: { rating: true },
+            _count: { _all: true },
+          })
+        : [],
+      siteIds.length > 0
+        ? this.prisma.collectionItem.groupBy({
+            by: ['entityId'],
+            where: { entityType: 'HOLY_SITE', entityId: { in: siteIds } },
+            _count: { _all: true },
+          })
+        : [],
+    ]);
+
+    const reviewMap = new Map(
+      reviewStats.map(r => [
+        r.targetId,
+        { averageRating: Math.round((r._avg.rating ?? 0) * 10) / 10, reviewCount: r._count._all },
+      ]),
+    );
+    const collectionMap = new Map(
+      collectionCounts.map(c => [c.entityId, c._count._all]),
+    );
+
+    const enrichedItems = items.map(item => ({
+      ...item,
+      reviewStats: reviewMap.get(item.id) ?? { averageRating: 0, reviewCount: 0 },
+      collectionCount: collectionMap.get(item.id) ?? 0,
+    }));
+
+    const result = { items: enrichedItems, total, page, limit };
     await this.redis.setJSON(cacheKey, result, 1800); // 30 min
     return result;
   }

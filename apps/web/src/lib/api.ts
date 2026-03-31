@@ -52,6 +52,12 @@ export interface HolySite {
   soundEffect: string | null;
   religionId: string;
   religion?: Religion;
+  reviewStats?: {
+    averageRating: number;
+    reviewCount: number;
+  };
+  ticketPrice?: number | null;
+  visitDuration?: string | null;
 }
 
 export interface Temple {
