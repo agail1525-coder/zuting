@@ -64,6 +64,24 @@ const RELIGION_ICONS: Record<string, string> = {
   神道教: "⛩️", 藏传佛教: "🏔️", 巴哈伊教: "✨",
 };
 
+/* ─── Expandable Description ─── */
+function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsTruncation = text.length > maxLength;
+  return (
+    <div>
+      <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+        {expanded || !needsTruncation ? text : text.slice(0, maxLength) + "..."}
+      </p>
+      {needsTruncation && (
+        <button onClick={() => setExpanded(!expanded)} className="mt-3 text-[#0066FF] hover:text-[#0052CC] text-sm font-medium transition-colors">
+          {expanded ? "收起 ▲" : "展开全部 ▼"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 const FAQ_ITEMS = [
   { q: "如何预订这条路线？", a: "选择出发日期和人数后点击「立即预订」，完成支付后即可收到确认邮件和电子票。" },
   { q: "可以定制行程吗？", a: "可以！点击「AI规划师咨询」，小鸿AI会根据您的需求定制专属行程，或联系客服进行人工定制。" },
@@ -306,13 +324,29 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
 function BookingWidget({ route }: { route: Route }) {
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(1);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const unitPrice = route.priceFrom / 100;
   const total = unitPrice * guests;
 
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dayAfter = new Date(today);
+  dayAfter.setDate(dayAfter.getDate() + 2);
+
   const minDate = new Date();
   minDate.setDate(minDate.getDate() + 3);
   const minDateStr = minDate.toISOString().split("T")[0];
+
+  const formatQuickDate = (d: Date) => d.toISOString().split("T")[0];
+  const formatLabel = (d: Date) => `${d.getMonth() + 1}月${d.getDate()}日`;
+
+  const quickDates = [
+    { label: "今天", value: formatQuickDate(today), sub: formatLabel(today) },
+    { label: "明天", value: formatQuickDate(tomorrow), sub: formatLabel(tomorrow) },
+    { label: "后天", value: formatQuickDate(dayAfter), sub: formatLabel(dayAfter) },
+  ];
 
   return (
     <div className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 md:min-w-[300px]">
@@ -324,17 +358,46 @@ function BookingWidget({ route }: { route: Route }) {
         </p>
       </div>
 
-      {/* Date picker */}
+      {/* Quick Date Tabs (Trip.com style) */}
       <div className="space-y-3">
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">出发日期</label>
-          <input
-            type="date"
-            value={date}
-            min={minDateStr}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
-          />
+          <label className="block text-xs font-medium text-gray-500 mb-2">出发日期</label>
+          <div className="flex gap-2 mb-2">
+            {quickDates.map((qd) => (
+              <button
+                key={qd.value}
+                onClick={() => { setDate(qd.value); setShowDatePicker(false); }}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors border ${
+                  date === qd.value
+                    ? "bg-[#0066FF] text-white border-[#0066FF]"
+                    : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#0066FF]/30"
+                }`}
+              >
+                <span className="block">{qd.label}</span>
+                <span className={`block text-[10px] mt-0.5 ${date === qd.value ? "text-white/80" : "text-gray-400"}`}>{qd.sub}</span>
+              </button>
+            ))}
+            <button
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors border ${
+                showDatePicker || (date && !quickDates.some(q => q.value === date))
+                  ? "bg-[#0066FF] text-white border-[#0066FF]"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#0066FF]/30"
+              }`}
+            >
+              <span className="block">选日期</span>
+              <span className={`block text-[10px] mt-0.5 ${showDatePicker ? "text-white/80" : "text-gray-400"}`}>▾</span>
+            </button>
+          </div>
+          {showDatePicker && (
+            <input
+              type="date"
+              value={date}
+              min={minDateStr}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+            />
+          )}
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">出行人数</label>
@@ -544,7 +607,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Description ========== */}
           <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">路线介绍</h2>
-            <p className="text-gray-600 leading-relaxed whitespace-pre-line">{route.description}</p>
+            <ExpandableText text={route.description} maxLength={300} />
           </div>
 
           {/* ========== Social Proof ========== */}
