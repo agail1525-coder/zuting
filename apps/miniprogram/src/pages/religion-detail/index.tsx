@@ -63,16 +63,25 @@ export default function ReligionDetailPage() {
     )
   }
 
-  if (error) {
+  if (error || !religion) {
     return (
       <View className='container' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80rpx 40rpx' }}>
-        <Text style={{ fontSize: '32rpx', color: '#6B7280', marginBottom: '24rpx' }}>加载失败，请检查网络后重试</Text>
-        <View
-          hoverClass='card-hover'
-          style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
-          onClick={loadData}
-        >
-          <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重试</Text>
+        <Text style={{ fontSize: '32rpx', color: '#6B7280', marginBottom: '24rpx' }}>{error ? '加载失败，请检查网络后重试' : '内容不存在'}</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', gap: '24rpx' }}>
+          <View
+            hoverClass='card-hover'
+            style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
+            onClick={loadData}
+          >
+            <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重试</Text>
+          </View>
+          <View
+            hoverClass='card-hover'
+            style={{ padding: '16rpx 48rpx', backgroundColor: '#F3F4F6', borderRadius: '12rpx' }}
+            onClick={() => Taro.navigateBack()}
+          >
+            <Text style={{ fontSize: '28rpx', color: '#374151' }}>返回</Text>
+          </View>
         </View>
       </View>
     )

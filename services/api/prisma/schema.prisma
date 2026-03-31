@@ -131,6 +131,7 @@ model HolySite {
   routeSites RouteSite[]
 
   @@index([religionId])
+  @@index([latitude, longitude])
 }
 
 model Temple {
@@ -148,6 +149,7 @@ model Temple {
   religion   Religion @relation(fields: [religionId], references: [id])
 
   @@index([religionId])
+  @@index([latitude, longitude])
 }
 
 model Patriarch {

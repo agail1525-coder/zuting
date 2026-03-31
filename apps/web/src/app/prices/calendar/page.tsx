@@ -62,7 +62,6 @@ export default function PriceCalendarPage() {
   const [loadingRoutes, setLoadingRoutes] = useState(true);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
 
   // Load real routes from API on mount
   useEffect(() => {
@@ -102,7 +101,6 @@ export default function PriceCalendarPage() {
     if (!selectedEntity) return;
     setLoading(true);
     setError(null);
-    setIsDemo(false);
     const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
     const lastDay = getDaysInMonth(year, month);
     const endDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
@@ -117,16 +115,8 @@ export default function PriceCalendarPage() {
       items.forEach((item) => { map[item.date] = item.price; });
       setCalendarData(map);
     } catch {
-      // Fallback: generate demo data so UI is not blank
-      const mock: Record<string, number> = {};
-      const base = 89800;
-      for (let d = 1; d <= lastDay; d++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-        mock[dateStr] = base + Math.floor(Math.random() * 40000) - 10000;
-      }
-      setCalendarData(mock);
-      setIsDemo(true);
-      setError("⚠ " + t("prices.calendar.demoError"));
+      setCalendarData({});
+      setError(t("prices.calendar.noData") || "暂无价格数据");
     } finally {
       setLoading(false);
     }
@@ -190,9 +180,6 @@ export default function PriceCalendarPage() {
                 <option key={opt.id} value={opt.id}>{opt.label}</option>
               ))}
             </select>
-          )}
-          {isDemo && (
-            <div className="mt-2 text-xs text-amber-600">{t("prices.calendar.demoNotice")}</div>
           )}
         </div>
 

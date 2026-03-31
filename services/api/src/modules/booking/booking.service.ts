@@ -85,6 +85,43 @@ export class BookingService {
     });
   }
 
+  // Admin: update booking status
+  async adminUpdateStatus(id: string, status: string) {
+    const booking = await this.prisma.routeBooking.findUnique({ where: { id } });
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    const validStatuses: string[] = ['PENDING', 'CONFIRMED', 'PAID', 'CANCELLED', 'COMPLETED'];
+    if (!validStatuses.includes(status)) {
+      throw new BadRequestException(`Invalid status: ${status}. Must be one of: ${validStatuses.join(', ')}`);
+    }
+
+    // Validate transitions
+    const currentStatus = booking.status;
+    const allowedTransitions: Record<string, string[]> = {
+      PENDING: ['CONFIRMED', 'CANCELLED'],
+      CONFIRMED: ['PAID', 'CANCELLED'],
+      PAID: ['COMPLETED', 'CANCELLED'],
+      COMPLETED: [],
+      CANCELLED: [],
+    };
+
+    const allowed = allowedTransitions[currentStatus] ?? [];
+    if (!allowed.includes(status)) {
+      throw new BadRequestException(
+        `Cannot transition from ${currentStatus} to ${status}. Allowed: ${allowed.join(', ') || 'none (terminal state)'}`,
+      );
+    }
+
+    return this.prisma.routeBooking.update({
+      where: { id },
+      data: { status: status as BookingStatus },
+      include: {
+        route: { select: { title: true, slug: true } },
+        user: { select: { id: true, nickname: true } },
+      },
+    });
+  }
+
   // Admin: list all bookings
   async findAll(page = 1, pageSize = 20, status?: string) {
     const take = Math.min(pageSize, 50);

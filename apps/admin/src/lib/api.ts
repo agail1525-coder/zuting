@@ -215,16 +215,17 @@ export const transitionTrip = (id: string, action: string, reason?: string) =>
   });
 
 // ---- Orders ----
-export const getOrders = (page = 1, limit = 20, status?: string) => {
+export const getOrders = (page = 1, limit = 20, status?: string, search?: string) => {
   const params = new URLSearchParams({ page: String(page), limit: String(limit) });
   if (status) params.set('status', status);
+  if (search) params.set('search', search);
   return fetchJson<{ data: Order[]; total: number; page: number; limit: number }>(
-    `/orders?${params.toString()}`,
+    `/orders/admin?${params.toString()}`,
   );
 };
-export const getOrder = (id: string) => fetchJson<Order>(`/orders/${id}`);
+export const getOrder = (id: string) => fetchJson<Order>(`/orders/admin/${id}`);
 export const refundOrder = (id: string) =>
-  fetchJson<Order>(`/orders/${id}/refund`, { method: 'POST' });
+  fetchJson<Order>(`/orders/admin/${id}/refund`, { method: 'POST' });
 
 // ---- Reviews ----
 export const getReviews = (page = 1, limit = 20, targetType?: string, status?: string) => {
@@ -377,6 +378,12 @@ export const getBookings = (page = 1, limit = 20, status?: string) => {
     `/bookings/admin?${params.toString()}`,
   );
 };
+
+export const updateBookingStatus = (id: string, status: string) =>
+  fetchJson<AdminBooking>(`/bookings/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  });
 
 // ---- Media ----
 export interface CreateMediaDto {

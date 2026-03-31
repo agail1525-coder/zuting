@@ -119,6 +119,22 @@ export default function IndexPage() {
     ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.name, sub: p.dates, image: p.imageUrl }))
     : holySites.slice(0, 6).map(s => ({ id: s.id, name: s.name, sub: s.country, image: s.imageUrl }))
 
+  if (!loading && religions.length === 0 && featuredRoutes.length === 0 && holySites.length === 0) {
+    return (
+      <View className='index-page' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: '80rpx 40rpx' }}>
+        <Text style={{ fontSize: '36rpx', marginBottom: '16rpx' }}>😔</Text>
+        <Text style={{ fontSize: '30rpx', color: '#6B7280', marginBottom: '24rpx' }}>暂无数据，请检查网络</Text>
+        <View
+          hoverClass='card-hover'
+          style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
+          onClick={loadData}
+        >
+          <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重新加载</Text>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <ScrollView className='index-page' scrollY>
       {/* ── 1. Hero + Tab Search ── */}

@@ -5,7 +5,6 @@ import {
   Delete,
   Query,
   Body,
-  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,9 +13,9 @@ import {
   ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { Request } from 'express';
 import { SearchService, SearchType } from './search.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { SearchQueryDto } from './dto/search-query.dto';
 import { SearchSuggestionsDto } from './dto/search-suggestions.dto';
 import { MapSearchDto } from './dto/map-search.dto';
@@ -132,8 +131,7 @@ export class SearchController {
     },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
-  getHistory(@Req() req: Request) {
-    const userId = (req as any).user?.id as string;
+  getHistory(@CurrentUser('id') userId: string) {
     return this.searchService.getUserHistory(userId);
   }
 
@@ -147,8 +145,7 @@ export class SearchController {
   })
   @ApiResponse({ status: 201, description: 'Keyword recorded / 关键词已记录' })
   @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
-  addHistory(@Req() req: Request, @Body() dto: SearchHistoryDto) {
-    const userId = (req as any).user?.id as string;
+  addHistory(@CurrentUser('id') userId: string, @Body() dto: SearchHistoryDto) {
     return this.searchService.addToHistory(userId, dto.keyword);
   }
 
@@ -162,8 +159,7 @@ export class SearchController {
   })
   @ApiResponse({ status: 200, description: 'History cleared / 历史已清空' })
   @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
-  clearHistory(@Req() req: Request) {
-    const userId = (req as any).user?.id as string;
+  clearHistory(@CurrentUser('id') userId: string) {
     return this.searchService.clearHistory(userId);
   }
 

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionQueryDto } from './dto/question-query.dto';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 
@@ -96,6 +97,48 @@ export class QuestionService {
     });
 
     return question;
+  }
+
+  async update(id: string, userId: string, dto: UpdateQuestionDto) {
+    const question = await this.prisma.question.findUnique({
+      where: { id },
+    });
+    if (!question) {
+      throw new NotFoundException(`Question ${id} not found`);
+    }
+    if (question.userId !== userId) {
+      throw new ForbiddenException('Only the question author can edit this question');
+    }
+
+    const data: Record<string, unknown> = {};
+    if (dto.title !== undefined) data['title'] = dto.title;
+    if (dto.content !== undefined) data['content'] = dto.content;
+    if (dto.tags !== undefined) data['tags'] = dto.tags;
+
+    return this.prisma.question.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async remove(id: string, userId: string, userRole: string) {
+    const question = await this.prisma.question.findUnique({
+      where: { id },
+    });
+    if (!question) {
+      throw new NotFoundException(`Question ${id} not found`);
+    }
+    if (question.userId !== userId && userRole !== 'ADMIN') {
+      throw new ForbiddenException('Only the question author or an admin can delete this question');
+    }
+
+    // Delete answers first, then the question
+    await this.prisma.$transaction([
+      this.prisma.answer.deleteMany({ where: { questionId: id } }),
+      this.prisma.question.delete({ where: { id } }),
+    ]);
+
+    return { deleted: true };
   }
 
   async addAnswer(questionId: string, userId: string, dto: CreateAnswerDto) {

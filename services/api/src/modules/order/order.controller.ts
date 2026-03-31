@@ -5,6 +5,7 @@ import {
   Param,
   Query,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,6 +18,8 @@ import {
 } from '@nestjs/swagger';
 import type { OrderStatus } from '@prisma/client';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { OrderService } from './order.service';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -119,6 +122,85 @@ export class OrderController {
       page: pagination.page,
       limit: pagination.limit,
     });
+  }
+
+  @Get('admin')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Admin: list all orders',
+    description:
+      '管理员获取所有订单列表，不限用户，支持按状态和关键词筛选。\n\n' +
+      'Admin endpoint to list all orders across all users with optional status and search filters.',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Filter by order status. / 按订单状态筛选',
+    enum: ['PENDING', 'PAID', 'CANCELLED', 'REFUNDING', 'REFUNDED'],
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search by order number, user name, or trip title. / 按订单号、用户名或行程标题搜索',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated order list (all users). / 全部用户的分页订单列表。',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — admin only. / 仅限管理员。' })
+  findAllAdmin(
+    @Query() pagination: PaginationQueryDto,
+    @Query('status') status?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.orderService.findAllAdmin({
+      status: status as OrderStatus,
+      search,
+      page: pagination.page,
+      limit: pagination.limit,
+    });
+  }
+
+  @Get('admin/:id')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Admin: get any order detail',
+    description:
+      '管理员获取任意订单详情，无用户归属限制。\n\n' +
+      'Admin endpoint to get any order detail without ownership restriction.',
+  })
+  @ApiParam({ name: 'id', description: 'Order ID (CUID). / 订单ID' })
+  @ApiResponse({ status: 200, description: 'Order detail returned. / 订单详情返回成功。' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — admin only. / 仅限管理员。' })
+  @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
+  findOneAdmin(@Param('id') id: string) {
+    return this.orderService.findOneAdmin(id);
+  }
+
+  @Post('admin/:id/refund')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Admin: refund any paid order',
+    description:
+      '管理员为任意已支付订单发起退款，无用户归属限制。\n\n' +
+      'Admin endpoint to request a refund for any paid order without ownership restriction.',
+  })
+  @ApiParam({ name: 'id', description: 'Order ID (CUID). / 订单ID' })
+  @ApiResponse({ status: 201, description: 'Refund request submitted. / 退款申请已提交。' })
+  @ApiResponse({ status: 400, description: 'Order not in PAID status. / 订单不在已支付状态。' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — admin only. / 仅限管理员。' })
+  @ApiResponse({ status: 404, description: 'Order not found. / 订单不存在。' })
+  refundAdmin(@Param('id') id: string, @Body() dto: RefundOrderDto) {
+    return this.orderService.refundAdmin(id, dto.reason);
   }
 
   @Get(':id')

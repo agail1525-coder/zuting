@@ -43,16 +43,17 @@ export default function OrdersPage() {
     }, 300);
   };
 
-  const load = useCallback((p = page, ps = pageSize, status?: string) => {
+  const load = useCallback((p = page, ps = pageSize, status?: string, search?: string) => {
     setLoading(true);
     const apiStatus = status !== undefined ? status : (statusFilter === 'ALL' ? undefined : statusFilter);
-    getOrders(p, ps, apiStatus)
+    const apiSearch = search !== undefined ? search : debouncedSearch;
+    getOrders(p, ps, apiStatus, apiSearch || undefined)
       .then((res) => { setData(res.data); setTotal(res.total); })
       .catch((err: unknown) => { message.error('加载数据失败: ' + (err instanceof Error ? err.message : '网络错误')); setData([]); setTotal(0); })
       .finally(() => setLoading(false));
-  }, [page, pageSize, statusFilter]);
+  }, [page, pageSize, statusFilter, debouncedSearch]);
 
-  useEffect(() => { load(page, pageSize); }, [page, pageSize, statusFilter, load]);
+  useEffect(() => { load(page, pageSize); }, [page, pageSize, statusFilter, debouncedSearch, load]);
 
   // Client-side text search on loaded data
   const filteredData = useMemo(() => {

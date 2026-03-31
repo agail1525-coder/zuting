@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Table, Card, Typography, Tag, Button, Space, message, Select } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Table, Card, Typography, Tag, Button, Space, message, Select, Popconfirm } from 'antd';
+import { ReloadOutlined, CheckCircleOutlined, CloseCircleOutlined, DollarOutlined, TrophyOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getBookings } from '../lib/api';
+import { getBookings, updateBookingStatus } from '../lib/api';
 import type { AdminBooking } from '../types';
 import dayjs from 'dayjs';
 
@@ -22,7 +22,19 @@ export default function BookingsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    setActionLoading(id);
+    updateBookingStatus(id, newStatus)
+      .then(() => {
+        message.success('状态更新成功');
+        load();
+      })
+      .catch(() => message.error('状态更新失败'))
+      .finally(() => setActionLoading(null));
+  };
 
   const load = (p = page, ps = pageSize, status = statusFilter) => {
     setLoading(true);
@@ -90,6 +102,46 @@ export default function BookingsPage() {
       width: 160,
       render: (v: string) => dayjs(v).format('YYYY-MM-DD HH:mm'),
     },
+    {
+      title: '操作',
+      width: 200,
+      fixed: 'right' as const,
+      render: (_: unknown, record: AdminBooking) => {
+        const isLoading = actionLoading === record.id;
+        const btns: React.ReactNode[] = [];
+
+        if (record.status === 'PENDING') {
+          btns.push(
+            <Popconfirm key="confirm" title="确认此预订?" onConfirm={() => handleStatusChange(record.id, 'CONFIRMED')} okText="确认" cancelText="取消">
+              <Button type="link" size="small" icon={<CheckCircleOutlined />} loading={isLoading} style={{ color: '#52c41a' }}>确认</Button>
+            </Popconfirm>,
+          );
+        }
+        if (record.status === 'CONFIRMED') {
+          btns.push(
+            <Popconfirm key="paid" title="标记为已支付?" onConfirm={() => handleStatusChange(record.id, 'PAID')} okText="确认" cancelText="取消">
+              <Button type="link" size="small" icon={<DollarOutlined />} loading={isLoading} style={{ color: '#1677ff' }}>标记支付</Button>
+            </Popconfirm>,
+          );
+        }
+        if (record.status === 'PAID') {
+          btns.push(
+            <Popconfirm key="complete" title="标记为已完成?" onConfirm={() => handleStatusChange(record.id, 'COMPLETED')} okText="确认" cancelText="取消">
+              <Button type="link" size="small" icon={<TrophyOutlined />} loading={isLoading} style={{ color: '#52c41a' }}>完成</Button>
+            </Popconfirm>,
+          );
+        }
+        if (record.status !== 'CANCELLED' && record.status !== 'COMPLETED') {
+          btns.push(
+            <Popconfirm key="cancel" title="确认取消此预订?" okType="danger" onConfirm={() => handleStatusChange(record.id, 'CANCELLED')} okText="确认取消" cancelText="返回">
+              <Button type="link" size="small" danger icon={<CloseCircleOutlined />} loading={isLoading}>取消</Button>
+            </Popconfirm>,
+          );
+        }
+
+        return btns.length > 0 ? <Space size={0}>{btns}</Space> : <span style={{ color: '#999' }}>-</span>;
+      },
+    },
   ];
 
   return (
@@ -122,7 +174,7 @@ export default function BookingsPage() {
             showTotal: (t) => `共 ${t} 条`,
             onChange: (p, ps) => { setPage(p); setPageSize(ps); load(p, ps); },
           }}
-          scroll={{ x: 900 }}
+          scroll={{ x: 1100 }}
           size="middle"
         />
       </Space>

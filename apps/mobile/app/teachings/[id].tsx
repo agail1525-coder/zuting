@@ -37,6 +37,9 @@ export default function TeachingDetailScreen() {
       <View style={s.errorContainer}>
         <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
         <Text style={s.errorText}>{error ?? '祖训不存在'}</Text>
+        <Pressable onPress={() => router.back()}>
+          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+        </Pressable>
       </View>
     );
   }

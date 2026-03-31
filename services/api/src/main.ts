@@ -90,9 +90,9 @@ async function bootstrap() {
     .map((s) => s.trim())
     .filter(Boolean);
   const defaultOrigins = [
-    'http://localhost:3000',
-    'http://localhost:3003',
-    'http://localhost:8081',
+    ...(process.env.NODE_ENV !== 'production'
+      ? ['http://localhost:3000', 'http://localhost:3003', 'http://localhost:8081']
+      : []),
   ];
   const allOrigins = [
     ...new Set([...defaultOrigins, ...corsOrigins]),
@@ -110,7 +110,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
-    new ValidationPipe({ whitelist: true, transform: true }),
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );
   app.useGlobalFilters(new SentryExceptionFilter(), new AllExceptionsFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
@@ -180,18 +180,20 @@ async function bootstrap() {
     .addTag('uploads', 'File upload management for images and documents. / 图片与文档的文件上传管理。')
     .addTag('notifications', 'Push notifications and in-app message management. / 推送通知与应用内消息管理。')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'Zuting API Docs',
-    customfavIcon: 'https://zuting.org/favicon.ico',
-    swaggerOptions: {
-      persistAuthorization: true,
-      docExpansion: 'list',
-      filter: true,
-      showRequestDuration: true,
-      syntaxHighlight: { activate: true, theme: 'monokai' },
-    },
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document, {
+      customSiteTitle: 'Zuting API Docs',
+      customfavIcon: 'https://zuting.org/favicon.ico',
+      swaggerOptions: {
+        persistAuthorization: true,
+        docExpansion: 'list',
+        filter: true,
+        showRequestDuration: true,
+        syntaxHighlight: { activate: true, theme: 'monokai' },
+      },
+    });
+  }
 
   // Security: warn if JWT_SECRET is still the default value
   const jwtSecret = process.env.JWT_SECRET || '';

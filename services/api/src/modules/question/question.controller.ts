@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Param,
   Query,
   Body,
@@ -18,6 +20,7 @@ import { QuestionService } from './question.service';
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 import { QuestionQueryDto } from './dto/question-query.dto';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 
@@ -84,6 +87,57 @@ export class QuestionController {
   @ApiResponse({ status: 404, description: 'Question not found. / 问题不存在。' })
   findOne(@Param('id') id: string) {
     return this.questionService.findOne(id);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Edit own question',
+    description:
+      '编辑自己的问题（仅问题作者可操作）。可更新标题、内容、标签。\n\n' +
+      'Edit your own question. Only the question author can perform this action. Title, content, and tags can be updated.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Question ID (CUID). / 问题ID',
+    example: 'clx5abc0001ab12cd34ef56',
+  })
+  @ApiBody({ type: UpdateQuestionDto })
+  @ApiResponse({ status: 200, description: 'Question updated successfully. / 问题更新成功。' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — not the question author. / 权限不足——非问题作者。' })
+  @ApiResponse({ status: 404, description: 'Question not found. / 问题不存在。' })
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateQuestionDto,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.questionService.update(id, userId, dto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'Delete own question (or admin)',
+    description:
+      '删除自己的问题（仅问题作者或管理员可操作）。同时删除该问题下的所有回答。\n\n' +
+      'Delete your own question, or any question if you are an admin. All answers under the question will also be deleted.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Question ID (CUID). / 问题ID',
+    example: 'clx5abc0001ab12cd34ef56',
+  })
+  @ApiResponse({ status: 200, description: 'Question deleted successfully. / 问题删除成功。' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
+  @ApiResponse({ status: 403, description: 'Forbidden — not the question author or admin. / 权限不足。' })
+  @ApiResponse({ status: 404, description: 'Question not found. / 问题不存在。' })
+  remove(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @CurrentUser('role') userRole: string,
+  ) {
+    return this.questionService.remove(id, userId, userRole);
   }
 
   @Post(':id/answers')

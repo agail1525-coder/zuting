@@ -210,6 +210,7 @@ export class RecommendationService {
         const sites = await this.prisma.holySite.findMany({
           where: { id: { in: siteIds } },
           select: { religionId: true },
+          take: 20,
         });
         // Count most frequent religion
         const freq = new Map<string, number>();

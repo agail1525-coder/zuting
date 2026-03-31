@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, Body, Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Query, Body, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -52,6 +52,18 @@ export class BookingController {
       pageSize ? parseInt(pageSize) : 20,
       status,
     );
+  }
+
+  @Patch(':id/status')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '更新预订状态(Admin)', description: '管理员更新预订状态' })
+  @ApiParam({ name: 'id', description: '预订ID' })
+  @ApiBody({ schema: { type: 'object', properties: { status: { type: 'string', enum: ['PENDING', 'CONFIRMED', 'PAID', 'CANCELLED', 'COMPLETED'] } }, required: ['status'] } })
+  @ApiResponse({ status: 200, description: '预订状态已更新' })
+  @ApiResponse({ status: 400, description: '状态转换不合法' })
+  @ApiResponse({ status: 404, description: '预订不存在' })
+  adminUpdateStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.bookingService.adminUpdateStatus(id, status);
   }
 
   @Get(':id')

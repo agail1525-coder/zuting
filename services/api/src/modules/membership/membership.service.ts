@@ -219,6 +219,7 @@ export class MembershipService {
       },
       select: { createdAt: true, amount: true, description: true },
       orderBy: { createdAt: 'asc' },
+      take: 100,
     });
 
     // Deduplicate by date (only keep unique YYYY-MM-DD)

@@ -90,6 +90,60 @@ export class OrderService {
     return { data, total, page, limit };
   }
 
+  /** Admin: list all orders without userId filter */
+  async findAllAdmin(params: {
+    status?: OrderStatus;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const { status, search, page = 1, limit = 20 } = params;
+    const take = Math.min(limit, 100);
+    const where: Record<string, unknown> = {};
+    if (status) where.status = status;
+    if (search) {
+      where.OR = [
+        { orderNo: { contains: search, mode: 'insensitive' } },
+        { user: { nickname: { contains: search, mode: 'insensitive' } } },
+        { trip: { title: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          trip: { select: { id: true, title: true, status: true } },
+          user: { select: { id: true, nickname: true, email: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * take,
+        take,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { data, total, page, limit };
+  }
+
+  /** Admin: get any order detail without ownership check */
+  async findOneAdmin(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        trip: {
+          include: {
+            sites: { include: { site: true } },
+            user: { select: { id: true, nickname: true } },
+          },
+        },
+        user: { select: { id: true, nickname: true, email: true } },
+      },
+    });
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
+    return order;
+  }
+
   /** Get order detail — verifies ownership */
   async findOne(id: string, userId: string) {
     const order = await this.prisma.order.findUnique({
@@ -173,6 +227,35 @@ export class OrderService {
         cancelledAt: new Date(),
       },
     });
+  }
+
+  /** Admin: request a refund for any paid order */
+  async refundAdmin(id: string, reason?: string) {
+    const order = await this.prisma.order.findUnique({ where: { id } });
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
+
+    if (order.status !== OrderStatus.PAID) {
+      throw new BadRequestException(`Only PAID orders can be refunded. Current: ${order.status}`);
+    }
+
+    const updatedOrder = await this.prisma.order.update({
+      where: { id },
+      data: { status: OrderStatus.REFUNDING },
+    });
+
+    try {
+      await this.stateMachine.transition(
+        order.tripId,
+        TripStatus.REFUNDING,
+        'request_refund',
+        'system',
+        reason ?? `Admin refund requested for order ${order.orderNo}`,
+      );
+    } catch {
+      // Trip may already be in a state that doesn't allow this transition; that's OK
+    }
+
+    return updatedOrder;
   }
 
   /** Request a refund for a paid order */
