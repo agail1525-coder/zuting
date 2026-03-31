@@ -304,21 +304,48 @@ export default function PackagesPage() {
             <p className="text-gray-400 text-sm">加载中...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-20 text-center text-gray-400">
-            <div className="text-5xl mb-4">🌏</div>
-            <p className="text-sm">暂无套餐</p>
-            {(type || search) && (
-              <button
-                onClick={() => {
-                  setType("");
-                  setSearch("");
-                }}
-                className="mt-3 text-sm text-[#0066FF] hover:underline"
-              >
-                清除筛选条件
-              </button>
-            )}
-          </div>
+          <>
+            <div className="py-12 text-center text-gray-400">
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+              </div>
+              <p className="font-medium text-gray-900 mb-1">套餐即将上线</p>
+              <p className="text-sm text-gray-500">我们正在精心策划更多朝圣套餐，敬请期待</p>
+              {(type || search) && (
+                <button onClick={() => { setType(""); setSearch(""); }} className="mt-3 text-sm text-[#0066FF] hover:underline">清除筛选条件</button>
+              )}
+            </div>
+
+            {/* Showcase: What packages will include */}
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">精品套餐即将推出</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[
+                  { title: "禅修体验·五台山3日", type: "深度体验", duration: "3天2晚", price: "¥2,980", desc: "深入五台山核心寺院，体验晨钟暮鼓的禅修生活" },
+                  { title: "丝路朝圣·敦煌5日VIP", type: "尊享VIP", duration: "5天4晚", price: "¥8,980", desc: "专属导游+豪华住宿，探访莫高窟、月牙泉等丝路圣地" },
+                  { title: "东南亚佛教圣地7日团", type: "经典朝圣", duration: "7天6晚", price: "¥5,680", desc: "泰国+柬埔寨双国联游，探访吴哥窟、玉佛寺等经典圣地" },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                    <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                      <svg className="w-16 h-16 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-0.5 bg-[#0066FF] text-white text-xs rounded-full">{item.type}</span>
+                        <span className="text-xs text-gray-400">{item.duration}</span>
+                      </div>
+                      <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                      <p className="text-sm text-gray-500 mb-3">{item.desc}</p>
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                        <span className="text-lg font-bold text-[#0066FF]">{item.price}<span className="text-xs text-gray-400 font-normal">起</span></span>
+                        <span className="text-xs text-gray-400">即将上线</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((pkg) => (
@@ -327,14 +354,52 @@ export default function PackagesPage() {
           </div>
         )}
 
+        {/* Why choose packages */}
+        <div className="mt-14 bg-white rounded-2xl border border-gray-100 p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">为什么选择套餐</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", title: "免费取消", desc: "出发前7天可免费取消" },
+              { icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z", title: "最低价保障", desc: "同路线同日期最低价" },
+              { icon: "M13 10V3L4 14h7v7l9-11h-7z", title: "即时确认", desc: "下单后秒级确认出行" },
+              { icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", title: "专业导游", desc: "持证专业文化讲解员" },
+            ].map((item, i) => (
+              <div key={i} className="text-center">
+                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} /></svg>
+                </div>
+                <h3 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h3>
+                <p className="text-xs text-gray-500">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">常见问题</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { q: "套餐包含哪些服务？", a: "套餐通常包含交通、住宿、景点门票和专业导游。具体包含项以套餐详情页为准，部分套餐还提供餐饮和保险。" },
+              { q: "如何选择适合自己的套餐？", a: "可以根据预算、时间和体力状况筛选。经典朝圣适合首次出行，深度体验适合资深朝圣者，VIP提供最高品质服务。" },
+              { q: "套餐可以定制吗？", a: "可以！点击下方\"AI规划师定制\"按钮，描述您的需求，AI会为您量身打造专属套餐方案。" },
+              { q: "多人出行有优惠吗？", a: "3人以上同行可享团队折扣，部分套餐提供早鸟价和会员专属价，最高可节省25%。" },
+            ].map((item, i) => (
+              <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
+                <h3 className="font-bold text-gray-900 text-sm mb-2">{item.q}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Bottom CTA */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-gray-400 mb-3">找不到合适的？</p>
-          <Link
-            href="/chat"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
-          >
-            ✨ 让AI规划师定制专属套餐
+        <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
+          <h2 className="text-2xl font-bold mb-2">找不到合适的套餐？</h2>
+          <p className="text-blue-100 mb-5">告诉AI规划师你的需求，为你量身定制专属朝圣方案</p>
+          <Link href="/chat" className="inline-flex items-center gap-2 px-8 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            AI智能定制
           </Link>
         </div>
       </div>

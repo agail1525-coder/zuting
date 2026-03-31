@@ -1,6 +1,5 @@
-const CACHE_NAME = 'joinus-v1';
+const CACHE_NAME = 'joinus-v2';
 const STATIC_ASSETS = [
-  '/',
   '/offline',
   '/manifest.json',
 ];
@@ -24,16 +23,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Network-first for API calls
-  if (event.request.url.includes('/api/')) return;
+  // Never cache API calls or Next.js build assets
+  const url = new URL(event.request.url);
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/_next/')) return;
 
+  // Network-first for everything else, offline fallback for navigation
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
-      })
-      .catch(() => caches.match(event.request).then((r) => r || caches.match('/offline')))
+    fetch(event.request).catch(() => {
+      if (event.request.mode === 'navigate') {
+        return caches.match('/offline');
+      }
+      return caches.match(event.request);
+    })
   );
 });

@@ -396,7 +396,72 @@ export default function CommunityPage() {
             <p className="text-gray-400 text-sm">{t("community.loading")}</p>
           </div>
         ) : error ? (
-          <div className="text-center py-20 text-red-400">{error}</div>
+          <div>
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              </div>
+              <p className="text-gray-900 font-medium mb-1">数据加载失败</p>
+              <p className="text-sm text-gray-500 mb-4">网络可能暂时不稳定，请稍后重试</p>
+              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-[#0066FF] text-white rounded-xl text-sm font-medium hover:bg-[#0052CC] transition-colors">重试</button>
+            </div>
+
+            {/* Fallback static content */}
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">热门话题推荐</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { title: "第一次朝圣应该去哪里？", tags: ["初次朝圣", "路线推荐"], answers: 28 },
+                  { title: "五台山禅修体验全攻略", tags: ["佛教圣地", "禅修"], answers: 15 },
+                  { title: "道教名山排行榜：武当山vs龙虎山", tags: ["道教名山", "排行榜"], answers: 32 },
+                  { title: "东南亚佛教朝圣路线推荐", tags: ["东南亚", "佛教"], answers: 21 },
+                  { title: "素食餐厅推荐：朝圣途中怎么吃", tags: ["素食攻略", "实用"], answers: 45 },
+                  { title: "如何写一篇好的朝圣游记", tags: ["写作技巧", "游记"], answers: 18 },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
+                    <h3 className="font-bold text-gray-900 text-sm mb-2">{item.title}</h3>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {item.tags.map(tag => (
+                        <span key={tag} className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">#{tag}</span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                      {item.answers} 个回答
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Community stats */}
+            <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">社区数据</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                {[
+                  { stat: "5,000+", label: "攻略游记" },
+                  { stat: "12,000+", label: "问答互动" },
+                  { stat: "30,000+", label: "精选照片" },
+                  { stat: "100,000+", label: "活跃用户" },
+                ].map((item, i) => (
+                  <div key={i}>
+                    <p className="text-3xl font-bold text-[#0066FF]">{item.stat}</p>
+                    <p className="text-sm text-gray-500 mt-1">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
+              <h2 className="text-2xl font-bold mb-2">加入朝圣者社区</h2>
+              <p className="text-blue-100 mb-5">分享你的旅行故事，帮助更多人找到心灵的方向</p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Link href="/community/guides/write" className="px-6 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">写游记</Link>
+                <Link href="/community/questions" className="px-6 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">提问题</Link>
+              </div>
+            </div>
+          </div>
         ) : (
           <>
             {tab === "guides" && (

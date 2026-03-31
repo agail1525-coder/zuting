@@ -19,7 +19,6 @@ export default function OAuthCallbackPage() {
     if (errorParam) {
       const message = searchParams.get('message') || '认证失败';
       setError(message);
-      // Redirect to login after showing error
       setTimeout(() => router.push('/login'), 3000);
       return;
     }
@@ -37,27 +36,54 @@ export default function OAuthCallbackPage() {
 
   if (error) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="w-full max-w-md text-center">
-          <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
-            <div className="text-4xl mb-4">&#x26A0;&#xFE0F;</div>
-            <h1 className="text-xl font-serif text-red-400 mb-2">登录失败</h1>
-            <p className="text-temple-400 text-sm">{error}</p>
-            <p className="text-temple-500 text-xs mt-4">正在跳转到登录页...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900 mb-2">登录失败</h1>
+            <p className="text-gray-500 text-sm mb-4">{error}</p>
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+              <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              正在跳转到登录页...
+            </div>
           </div>
+          <p className="text-center text-xs text-gray-400 mt-4">
+            如持续出现问题，请联系客服或尝试其他登录方式
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-md text-center">
-        <div className="card-glow rounded-2xl bg-temple-800/60 border border-gold/10 p-8">
-          <div className="text-4xl mb-4 animate-pulse">&#x1F3DB;</div>
-          <h1 className="text-xl font-serif text-gradient-gold mb-2">正在登录...</h1>
-          <p className="text-temple-400 text-sm">正在处理认证</p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+          <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-[#0066FF] animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">正在登录...</h1>
+          <p className="text-gray-500 text-sm">正在验证您的身份，请稍候</p>
+          {/* Progress dots */}
+          <div className="flex justify-center gap-1.5 mt-6">
+            <div className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" style={{ animationDelay: '0.2s' }} />
+            <div className="w-2 h-2 rounded-full bg-[#0066FF] animate-pulse" style={{ animationDelay: '0.4s' }} />
+          </div>
         </div>
+        <p className="text-center text-xs text-gray-400 mt-4">
+          Joinus.com · 安全登录
+        </p>
       </div>
     </div>
   );

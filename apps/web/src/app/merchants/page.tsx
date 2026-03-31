@@ -240,10 +240,67 @@ export default function MerchantsPage() {
             </button>
           </div>
         ) : merchants.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🏪</div>
-            <p className="text-gray-500 text-lg">{t("common.empty") || "No merchants found"}</p>
-          </div>
+          <>
+            <div className="text-center py-10">
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+              </div>
+              <p className="font-medium text-gray-900 mb-1">商家入驻招募中</p>
+              <p className="text-sm text-gray-500 mb-4">我们正在邀请全球优质文化旅行服务商入驻平台</p>
+              <Link href="/merchants/register" className="inline-block px-6 py-2.5 bg-[#0066FF] text-white rounded-xl font-medium hover:bg-[#0052CC] transition-colors text-sm">
+                立即入驻
+              </Link>
+            </div>
+
+            {/* Merchant categories */}
+            <div className="mt-10">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">招募服务类型</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4", title: "寺庙道场", desc: "佛教寺院、道教宫观、教堂等宗教场所", count: "50+" },
+                  { icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z", title: "专业导游", desc: "持证文化讲解员、朝圣领队", count: "100+" },
+                  { icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", title: "住宿服务", desc: "禅修民宿、文化主题酒店、修行中心", count: "200+" },
+                  { icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4", title: "交通服务", desc: "朝圣专线巴士、包车、接送机", count: "30+" },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white rounded-xl p-5 border border-gray-100 text-center">
+                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-6 h-6 text-[#0066FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} /></svg>
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-xs text-gray-500 mb-2">{item.desc}</p>
+                    <span className="text-xs text-[#0066FF] font-medium">目标招募{item.count}家</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Benefits of joining */}
+            <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">入驻优势</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { title: "海量精准流量", desc: "平台汇聚全球朝圣爱好者，精准匹配您的服务", stat: "100,000+" },
+                  { title: "零佣金入驻", desc: "首年免平台服务费，零门槛开始您的线上业务", stat: "0%" },
+                  { title: "专属运营支持", desc: "提供店铺装修、营销策划、数据分析等全方位支持", stat: "7×24" },
+                ].map((item, i) => (
+                  <div key={i} className="text-center p-4">
+                    <div className="text-3xl font-bold text-[#0066FF] mb-2">{item.stat}</div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-sm text-gray-500">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
+              <h2 className="text-2xl font-bold mb-2">成为合作商家</h2>
+              <p className="text-blue-100 mb-5 max-w-xl mx-auto">加入全球最大的宗教文化旅行平台，连接百万朝圣者</p>
+              <Link href="/merchants/register" className="inline-block px-8 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">
+                免费申请入驻
+              </Link>
+            </div>
+          </>
         ) : displayMerchants.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🔍</div>

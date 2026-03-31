@@ -112,8 +112,9 @@ export interface Seal {
 // --- Religions ---
 
 export async function fetchReligions(): Promise<Religion[]> {
-  const res = await fetchJson<PaginatedResponse<Religion>>("/api/religions?limit=100");
-  return res.items;
+  const res = await fetchJson<PaginatedResponse<Religion> | Religion[]>("/api/religions?limit=100");
+  if (Array.isArray(res)) return res;
+  return res?.items || [];
 }
 
 export async function fetchReligion(slug: string): Promise<Religion> {
@@ -129,8 +130,9 @@ export async function fetchHolySites(
 ): Promise<HolySite[]> {
   const params = new URLSearchParams({ limit: "100" });
   if (religionId) params.set("religionId", religionId);
-  const res = await fetchJson<PaginatedResponse<HolySite>>(`/api/holy-sites?${params}`);
-  return res.items;
+  const res = await fetchJson<PaginatedResponse<HolySite> | HolySite[]>(`/api/holy-sites?${params}`);
+  if (Array.isArray(res)) return res;
+  return res?.items || [];
 }
 
 export async function fetchHolySite(id: string): Promise<HolySite> {
@@ -142,8 +144,9 @@ export async function fetchHolySite(id: string): Promise<HolySite> {
 export async function fetchTemples(religionId?: string): Promise<Temple[]> {
   const params = new URLSearchParams({ limit: "100" });
   if (religionId) params.set("religionId", religionId);
-  const res = await fetchJson<PaginatedResponse<Temple>>(`/api/temples?${params}`);
-  return res.items;
+  const res = await fetchJson<PaginatedResponse<Temple> | Temple[]>(`/api/temples?${params}`);
+  if (Array.isArray(res)) return res;
+  return res?.items || [];
 }
 
 export async function fetchTemple(id: string): Promise<Temple> {
@@ -157,8 +160,9 @@ export async function fetchPatriarchs(
 ): Promise<Patriarch[]> {
   const params = new URLSearchParams({ limit: "100" });
   if (religionId) params.set("religionId", religionId);
-  const res = await fetchJson<PaginatedResponse<Patriarch>>(`/api/patriarchs?${params}`);
-  return res.items;
+  const res = await fetchJson<PaginatedResponse<Patriarch> | Patriarch[]>(`/api/patriarchs?${params}`);
+  if (Array.isArray(res)) return res;
+  return res?.items || [];
 }
 
 export async function fetchPatriarch(id: string): Promise<Patriarch> {
@@ -172,8 +176,9 @@ export async function fetchTeachings(
 ): Promise<Teaching[]> {
   const params = new URLSearchParams({ limit: "100" });
   if (religionId) params.set("religionId", religionId);
-  const res = await fetchJson<PaginatedResponse<Teaching>>(`/api/teachings?${params}`);
-  return res.items;
+  const res = await fetchJson<PaginatedResponse<Teaching> | Teaching[]>(`/api/teachings?${params}`);
+  if (Array.isArray(res)) return res;
+  return res?.items || [];
 }
 
 export async function fetchTeaching(id: string): Promise<Teaching> {
@@ -1249,7 +1254,8 @@ export async function fetchRouteBySlug(slug: string): Promise<Route> {
 }
 
 export async function fetchFeaturedRoutes(limit = 8): Promise<Route[]> {
-  return fetchJson<Route[]>(`/api/routes/featured?limit=${limit}`);
+  const res = await fetchJson<Route[] | { items: Route[] }>(`/api/routes/featured?limit=${limit}`);
+  return Array.isArray(res) ? res : (res?.items || []);
 }
 
 export async function fetchRoutesBySite(siteId: string): Promise<Route[]> {

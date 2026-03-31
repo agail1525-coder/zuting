@@ -33,7 +33,7 @@ function getDetailHref(item: RecommendationItem): string {
 function RecommendCard({ item }: { item: RecommendationItem }) {
   return (
     <Link href={getDetailHref(item)} className="group">
-      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+      <div className="bg-white rounded-xl overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
         {/* Image */}
         <div className="relative h-44 overflow-hidden bg-gray-100">
           {item.imageUrl ? (
@@ -44,8 +44,8 @@ function RecommendCard({ item }: { item: RecommendationItem }) {
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-              <span className="text-5xl opacity-20">🏛</span>
+            <div className="w-full h-full flex items-center justify-center bg-gray-50">
+              <svg className="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
             </div>
           )}
           {/* Type badge */}
@@ -55,7 +55,7 @@ function RecommendCard({ item }: { item: RecommendationItem }) {
         </div>
         {/* Info */}
         <div className="p-4">
-          <h3 className="font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors line-clamp-1 text-sm">
+          <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1 text-sm">
             {item.name}
           </h3>
           <div className="flex items-center gap-2 mt-2">
@@ -66,8 +66,8 @@ function RecommendCard({ item }: { item: RecommendationItem }) {
               <span
                 className="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium"
                 style={{
-                  backgroundColor: item.religionColor ? `${item.religionColor}20` : "#0066FF20",
-                  color: item.religionColor ?? "#0066FF",
+                  backgroundColor: item.religionColor ? `${item.religionColor}20` : "#2563EB20",
+                  color: item.religionColor ?? "#2563EB",
                 }}
               >
                 {item.religionName}
@@ -83,7 +83,7 @@ function RecommendCard({ item }: { item: RecommendationItem }) {
 function SkeletonCard() {
   return (
     <div className="animate-pulse">
-      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
+      <div className="bg-white rounded-xl overflow-hidden">
         <div className="h-44 bg-gray-100" />
         <div className="p-4 space-y-2">
           <div className="h-3.5 bg-gray-100 rounded-full w-3/4" />
@@ -107,9 +107,10 @@ export default function HomepageRecommendations() {
     try {
       const res = await fetchHomepageRecommendations(BATCH_SIZE);
       // Rotate items based on offset for "换一批" functionality
-      const rotated = [...res.items.slice(currentOffset % Math.max(res.items.length, 1)), ...res.items.slice(0, currentOffset % Math.max(res.items.length, 1))];
+      const allItems = res?.items || [];
+      const rotated = [...allItems.slice(currentOffset % Math.max(allItems.length, 1)), ...allItems.slice(0, currentOffset % Math.max(allItems.length, 1))];
       setItems(rotated.slice(0, BATCH_SIZE));
-      setHasPersonalized(res.items.length > 0);
+      setHasPersonalized(allItems.length > 0);
     } catch {
       setItems([]);
     } finally {
@@ -144,7 +145,7 @@ export default function HomepageRecommendations() {
         <button
           onClick={handleRefresh}
           disabled={loading}
-          className="flex items-center gap-1.5 text-sm text-[#0066FF] hover:text-[#0052CC] font-medium transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 text-sm text-[#2563EB] hover:text-[#0052CC] font-medium transition-colors disabled:opacity-50"
           title="换一批"
         >
           <svg className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">

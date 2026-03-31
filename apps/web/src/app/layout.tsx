@@ -136,7 +136,10 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        regs.forEach(function(r) { r.update(); });
+      });
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
     });
   }
 `}} />
