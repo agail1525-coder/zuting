@@ -28,17 +28,17 @@ export default function PhotoMosaic({ images, alt }: PhotoMosaicProps) {
   return (
     <>
       {/* Mosaic Grid: 1 large + 4 small */}
-      <div className="rounded-2xl overflow-hidden cursor-pointer">
+      <div className="rounded-lg overflow-hidden cursor-pointer relative">
         {displayImages.length === 1 ? (
-          <div className="relative h-[400px] md:h-[500px]" onClick={() => openLightbox(0)}>
+          <div className="relative h-[368px]" onClick={() => openLightbox(0)}>
             <OptimizedImage src={displayImages[0]} alt={`${alt} 1`} fill className="object-cover" />
           </div>
         ) : displayImages.length <= 3 ? (
-          <div className="grid grid-cols-2 gap-1 h-[400px]">
+          <div className="grid grid-cols-2 gap-0.5 h-[368px]">
             <div className="relative" onClick={() => openLightbox(0)}>
               <OptimizedImage src={displayImages[0]} alt={`${alt} 1`} fill className="object-cover" />
             </div>
-            <div className="grid gap-1">
+            <div className="grid gap-0.5">
               {displayImages.slice(1).map((img, i) => (
                 <div key={i} className="relative" onClick={() => openLightbox(i + 1)}>
                   <OptimizedImage src={img} alt={`${alt} ${i + 2}`} fill className="object-cover" />
@@ -47,36 +47,35 @@ export default function PhotoMosaic({ images, alt }: PhotoMosaicProps) {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-4 grid-rows-2 gap-1 h-[400px] md:h-[460px]">
+          <div className="grid grid-cols-4 grid-rows-2 gap-0.5 h-[368px]">
             {/* Large left image spanning 2 rows + 2 cols */}
             <div className="col-span-2 row-span-2 relative" onClick={() => openLightbox(0)}>
-              <OptimizedImage src={displayImages[0]} alt={`${alt} 1`} fill className="object-cover hover:brightness-90 transition-all" />
+              <OptimizedImage src={displayImages[0]} alt={`${alt} 1`} fill className="object-cover hover:brightness-95 transition-all" />
             </div>
             {/* 4 smaller images on right */}
             {displayImages.slice(1, 5).map((img, i) => (
               <div key={i} className="relative" onClick={() => openLightbox(i + 1)}>
-                <OptimizedImage src={img} alt={`${alt} ${i + 2}`} fill className="object-cover hover:brightness-90 transition-all" />
-                {/* "View all" overlay on last image */}
+                <OptimizedImage src={img} alt={`${alt} ${i + 2}`} fill className="object-cover hover:brightness-95 transition-all" />
+                {/* "See more" overlay on last image */}
                 {i === 3 && remaining > 0 && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white font-semibold text-lg">+{remaining} 张</span>
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <span className="text-white font-medium text-sm">+{remaining} 张</span>
                   </div>
                 )}
               </div>
             ))}
           </div>
         )}
+        {/* Trip.com style "See more" button */}
+        {images.length > 1 && (
+          <button
+            onClick={() => openLightbox(0)}
+            className="absolute right-2 bottom-2 px-3 py-1 text-xs font-medium text-white bg-[rgba(15,41,77,0.7)] rounded hover:bg-[rgba(15,41,77,0.85)] transition-colors"
+          >
+            See more &gt;
+          </button>
+        )}
       </div>
-
-      {/* View all button */}
-      {images.length > 1 && (
-        <button
-          onClick={() => openLightbox(0)}
-          className="mt-3 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
-        >
-          查看全部 {images.length} 张照片
-        </button>
-      )}
 
       {/* Lightbox */}
       {lightboxOpen && (

@@ -29,20 +29,20 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#3264ff] shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl font-bold text-[#0066FF]">Joinus</span>
-            <span className="text-gray-400 font-light text-sm hidden sm:block">|</span>
-            <span className="text-gray-600 font-medium text-sm hidden sm:block">
+            <span className="text-2xl font-bold text-white">Joinus</span>
+            <span className="text-white/40 font-light text-sm hidden sm:block">|</span>
+            <span className="text-white/80 font-medium text-sm hidden sm:block">
               {t("site.title")}
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-0.5" role="navigation" aria-label="Main navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
               return (
@@ -52,10 +52,10 @@ export default function Header() {
                   aria-current={isActive ? "page" : undefined}
                   className={`px-3 py-2 text-sm transition-colors rounded-lg ${
                     link.highlight
-                      ? "text-[#0066FF] font-semibold hover:bg-blue-50 border border-[#0066FF]/20 hover:border-[#0066FF]/40"
+                      ? "text-white font-semibold hover:bg-white/15 border border-white/30 hover:border-white/50"
                       : isActive
-                        ? "text-[#0066FF] font-medium bg-blue-50/50"
-                        : "text-gray-600 hover:text-[#0066FF] hover:bg-gray-50"
+                        ? "text-white font-semibold bg-white/15"
+                        : "text-white/90 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   {t(link.key)}
@@ -65,10 +65,10 @@ export default function Header() {
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/search"
-              className="p-2 text-gray-500 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-gray-50"
+              className="p-2 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10"
               aria-label="Search"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,7 +77,7 @@ export default function Header() {
             </Link>
             <Link
               href="/messages"
-              className="p-2 text-gray-500 hover:text-[#0066FF] transition-colors rounded-lg hover:bg-gray-50 relative"
+              className="p-2 text-white/80 hover:text-white transition-colors rounded-lg hover:bg-white/10 relative"
               aria-label="Messages"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,24 +89,24 @@ export default function Header() {
             {!loading && (
               <Link
                 href={user ? "/profile" : "/login"}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors hover:bg-gray-50"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors hover:bg-white/10"
               >
                 {user ? (
                   <>
-                    <span className="w-7 h-7 rounded-full bg-[#0066FF] flex items-center justify-center text-xs text-white font-medium">
+                    <span className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs text-[#3264ff] font-medium">
                       {user.nickname.charAt(0)}
                     </span>
-                    <span className="text-gray-700 hidden sm:inline">{user.nickname}</span>
+                    <span className="text-white hidden sm:inline">{user.nickname}</span>
                   </>
                 ) : (
-                  <span className="px-4 py-1.5 bg-[#0066FF] text-white rounded-full text-sm font-medium hover:bg-[#0052CC] transition-colors">
+                  <span className="px-4 py-1.5 bg-white text-[#3264ff] rounded-full text-sm font-medium hover:bg-white/90 transition-colors">
                     {t("nav.login")}
                   </span>
                 )}
               </Link>
             )}
             <button
-              className="lg:hidden p-2 text-gray-600 hover:text-[#0066FF]"
+              className="lg:hidden p-2 text-white/90 hover:text-white"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-expanded={mobileOpen}
               aria-label="Toggle menu"
@@ -126,8 +126,8 @@ export default function Header() {
 
       {/* Mobile Nav */}
       {mobileOpen && (
-        <div className="lg:hidden bg-white/98 backdrop-blur-xl border-b border-gray-200">
-          <nav className="px-4 py-3 flex flex-col gap-1" role="navigation" aria-label="Mobile navigation">
+        <div className="lg:hidden bg-[#3264ff] border-t border-white/10">
+          <nav className="px-4 py-3 flex flex-col gap-0.5" role="navigation" aria-label="Mobile navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
               return (
@@ -137,10 +137,10 @@ export default function Header() {
                   aria-current={isActive ? "page" : undefined}
                   className={`px-3 py-2.5 transition-colors rounded-lg ${
                     link.highlight
-                      ? "text-[#0066FF] font-semibold hover:bg-blue-50"
+                      ? "text-white font-semibold hover:bg-white/15"
                       : isActive
-                        ? "text-[#0066FF] font-medium bg-blue-50/50"
-                        : "text-gray-600 hover:text-[#0066FF] hover:bg-gray-50"
+                        ? "text-white font-semibold bg-white/15"
+                        : "text-white/85 hover:text-white hover:bg-white/10"
                   }`}
                   onClick={() => setMobileOpen(false)}
                 >
@@ -150,7 +150,7 @@ export default function Header() {
             })}
             <Link
               href="/search"
-              className="px-3 py-2.5 transition-colors rounded-lg text-gray-600 hover:text-[#0066FF] hover:bg-gray-50 flex items-center gap-2"
+              className="px-3 py-2.5 transition-colors rounded-lg text-white/85 hover:text-white hover:bg-white/10 flex items-center gap-2"
               onClick={() => setMobileOpen(false)}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -160,7 +160,7 @@ export default function Header() {
             </Link>
             <Link
               href={user ? "/profile" : "/login"}
-              className="px-3 py-2.5 transition-colors rounded-lg text-[#0066FF] font-semibold hover:bg-blue-50 border-t border-gray-200 mt-1 pt-3"
+              className="px-3 py-2.5 transition-colors rounded-lg text-white font-semibold hover:bg-white/15 border-t border-white/15 mt-1 pt-3"
               onClick={() => setMobileOpen(false)}
             >
               {user ? `${user.nickname} - 个人中心` : "登录 / 注册"}

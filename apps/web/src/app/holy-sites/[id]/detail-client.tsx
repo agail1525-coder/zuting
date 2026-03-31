@@ -175,7 +175,7 @@ function AvailableRoutes({ siteId }: { siteId: string }) {
   if (loading || routes.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-[#0f294d]">包含此圣地的路线</h2>
         <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">查看全部 →</Link>
@@ -242,7 +242,7 @@ function NearbySites({ currentSite }: { currentSite: HolySite }) {
   if (sites.length === 0) return null;
 
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <h2 className="text-lg font-bold text-[#0f294d] mb-4">周边推荐</h2>
       <div className="flex gap-4 mb-4">
         {(["same", "nearby"] as const).map((t) => (
@@ -296,7 +296,7 @@ function MoreRecommendations({ religion, country }: { religion?: string; country
     ...(religion ? [{ key: "religion", label: `${religion}相关圣地` }] : []),
   ];
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <h2 className="text-lg font-bold text-[#0f294d] mb-4">更多推荐</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {items.map((item) => (
@@ -398,10 +398,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             )}
             <span className="text-[#0f294d]">{site.name}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[#8592a6] mr-1">分享</span>
-            <ShareButton title={site.name} description={site.description} url={`/holy-sites/${site.id}`} entityType="HOLY_SITE" entityId={site.id} />
-          </div>
+          <ShareButton title={site.name} description={site.description} url={`/holy-sites/${site.id}`} entityType="HOLY_SITE" entityId={site.id} />
         </div>
       </div>
 
@@ -417,7 +414,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
           <div className="flex-1 min-w-0">
 
             {/* S4. 标题信息区 */}
-            <div className="pb-6 border-b border-gray-200">
+            <div className="pb-6 border-b border-[#dadfe6]">
               <div className="flex items-start gap-3">
                 <h1 className="text-2xl font-bold text-[#0f294d] flex-1">{site.name}</h1>
                 <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
@@ -451,37 +448,24 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
               </div>
             </div>
 
-            {/* S5. 实用信息区 (紧凑列表) */}
-            <div className="py-5 border-b border-gray-200 space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">⏱</span>
-                <div>
-                  <span className="font-medium text-[#0f294d]">建议参访时长:</span>
-                  <span className="text-[#0f294d] ml-1">2-3小时</span>
-                </div>
+            {/* S5. 实用信息区 (Trip.com紧凑列表) */}
+            <div className="py-4 border-b border-[#dadfe6] space-y-2">
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                <span className="font-medium">建议参访时长:</span> 2-3小时
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">📍</span>
-                <div>
-                  <span className="font-medium text-[#0f294d]">地址:</span>
-                  <span className="text-[#0f294d] ml-1">{site.country}</span>
-                  <span className="text-[#8592a6] ml-1">({site.latitude.toFixed(4)}°N, {site.longitude.toFixed(4)}°E)</span>
-                  <Link href={`/map?lat=${site.latitude}&lng=${site.longitude}`} className="text-[#3264ff] ml-2 hover:underline">地图</Link>
-                </div>
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                <span className="font-medium">地址:</span> {site.country} <span className="text-[#8592a6]">({site.latitude.toFixed(4)}°N, {site.longitude.toFixed(4)}°E)</span>
+                <Link href={`/map?lat=${site.latitude}&lng=${site.longitude}`} className="text-[#3264ff] hover:underline">地图</Link>
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">🕐</span>
-                <div>
-                  <span className="font-medium text-[#0f294d]">时区:</span>
-                  <span className="text-[#0f294d] ml-1">UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}</span>
-                </div>
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                <span className="font-medium">时区:</span> UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">👔</span>
-                <div>
-                  <span className="font-medium text-[#0f294d]">着装要求:</span>
-                  <span className="text-[#0f294d] ml-1">得体着装，殿堂内禁止拍照</span>
-                </div>
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+                <span className="font-medium">着装要求:</span> 得体着装，殿堂内禁止拍照
               </div>
             </div>
 
@@ -492,7 +476,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             <AvailableRoutes siteId={site.id} />
 
             {/* S9. 圣地介绍 */}
-            <div className="mt-8">
+            <div className="mt-6">
               <h2 className="text-lg font-bold text-[#0f294d] mb-3">圣地介绍</h2>
               <ExpandableText text={site.description} maxLength={300} />
             </div>
@@ -510,26 +494,26 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             )}
 
             {/* Media Tour */}
-            <div className="mt-8">
+            <div className="mt-6">
               <MediaTour entityType="HOLY_SITE" entityId={site.id} />
             </div>
 
             {/* S8. 评价完整区 */}
-            <div id="reviews" className="mt-8">
+            <div id="reviews" className="mt-6">
               <ReviewSection targetType="holy-site" targetId={site.id} />
             </div>
 
             {/* S11. 设施与服务 */}
-            <div className="mt-8">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-4">设施与服务</h2>
-              <div className="grid grid-cols-3 gap-4">
+            <div className="mt-6">
+              <h2 className="text-base font-bold text-[#0f294d] mb-3">设施与服务</h2>
+              <div className="grid grid-cols-3 gap-3">
                 {[
-                  { icon: "🅿️", label: "停车场" }, { icon: "🚻", label: "洗手间" },
-                  { icon: "♿", label: "无障碍通道" }, { icon: "🎒", label: "寄存处" },
-                  { icon: "📖", label: "讲解服务" }, { icon: "📶", label: "WiFi" },
+                  { label: "停车场" }, { label: "洗手间" },
+                  { label: "无障碍通道" }, { label: "寄存处" },
+                  { label: "讲解服务" }, { label: "WiFi" },
                 ].map((f, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <span className="text-lg">{f.icon}</span>
+                  <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
+                    <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="text-sm text-[#0f294d]">{f.label}</span>
                   </div>
                 ))}
@@ -540,17 +524,17 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             <NearbySites currentSite={site} />
 
             {/* S12. UGC照片墙 */}
-            <div className="mt-8">
+            <div className="mt-6">
               <UGCPhotoWall targetType="holy-site" targetId={site.id} />
             </div>
 
             {/* Q&A */}
-            <div className="mt-8">
+            <div className="mt-6">
               <QASection entityType="HOLY_SITE" entityId={site.id} />
             </div>
 
             {/* S13. 你可能也喜欢 */}
-            <div className="mt-8">
+            <div className="mt-6">
               <RelatedEntities entityType="HOLY_SITE" entityId={site.id} title="你可能也喜欢" />
             </div>
 

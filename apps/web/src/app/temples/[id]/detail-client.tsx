@@ -76,7 +76,7 @@ function RelatedRoutes() {
   }, []);
   if (routes.length === 0) return null;
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-[#0f294d]">推荐朝圣路线</h2>
         <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">查看全部 →</Link>
@@ -121,7 +121,7 @@ function NearbyTemples({ current }: { current: Temple }) {
   }, [current.id, current.religionId]);
   if (temples.length === 0) return null;
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <h2 className="text-lg font-bold text-[#0f294d] mb-4">同信仰祖庭</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {temples.map((t) => (
@@ -187,9 +187,9 @@ function StickyCTACard({ temple }: { temple: Temple }) {
           </Link>
         </div>
       )}
-      <div className="mt-3 bg-white rounded-xl border border-gray-200 p-4" style={{ boxShadow: "0 2px 8px rgba(15,41,77,0.08)" }}>
+      <div className="mt-3 bg-white rounded-lg border border-[#dadfe6] p-3" style={{ boxShadow: "0 2px 8px rgba(15,41,77,0.08)" }}>
         <div className="flex items-center gap-3">
-          <span className="text-2xl">📖</span>
+          <svg className="w-6 h-6 text-[#3264ff] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
           <div className="flex-1">
             <p className="text-sm font-semibold text-[#0f294d]">朝圣日志</p>
             <p className="text-xs text-[#8592a6]">记录参访体验</p>
@@ -229,7 +229,7 @@ function MoreRecommendations({ religion, country }: { religion?: string; country
     ...(religion ? [{ key: "religion", label: `${religion}相关祖庭` }] : []),
   ];
   return (
-    <div className="mt-8">
+    <div className="mt-6">
       <h2 className="text-lg font-bold text-[#0f294d] mb-4">更多推荐</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {items.map((item) => (
@@ -272,10 +272,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
             {temple.religion && (<><Link href={`/religions/${temple.religion.slug}`} className="hover:text-[#3264ff]">{temple.religion.name}</Link><span>&gt;</span></>)}
             <span className="text-[#0f294d]">{temple.name}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-[#8592a6] mr-1">分享</span>
-            <ShareButton title={temple.name} description={temple.description} url={`/temples/${temple.id}`} entityType="TEMPLE" entityId={temple.id} />
-          </div>
+          <ShareButton title={temple.name} description={temple.description} url={`/temples/${temple.id}`} entityType="TEMPLE" entityId={temple.id} />
         </div>
       </div>
 
@@ -290,7 +287,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
           {/* 左侧主内容 */}
           <div className="flex-1 min-w-0">
             {/* S4. 标题 */}
-            <div className="pb-6 border-b border-gray-200">
+            <div className="pb-6 border-b border-[#dadfe6]">
               <div className="flex items-start gap-3">
                 <h1 className="text-2xl font-bold text-[#0f294d] flex-1">{temple.name}</h1>
                 <SaveButton entityType="TEMPLE" entityId={temple.id} size="md" />
@@ -316,17 +313,15 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
               </div>
             </div>
 
-            {/* S5. 实用信息 */}
-            <div className="py-5 border-b border-gray-200 space-y-3">
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">⏱</span>
-                <span className="font-medium text-[#0f294d]">建议参访时长:</span>
-                <span className="text-[#0f294d]">2-3小时</span>
+            {/* S5. 实用信息 (Trip.com紧凑列表) */}
+            <div className="py-4 border-b border-[#dadfe6] space-y-2">
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                <span className="font-medium">建议参访时长:</span> 2-3小时
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">📍</span>
-                <span className="font-medium text-[#0f294d]">地址:</span>
-                <span className="text-[#0f294d]">{temple.country}</span>
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                <span className="font-medium">地址:</span> {temple.country}
                 {temple.latitude && temple.longitude && (
                   <>
                     <span className="text-[#8592a6]">({temple.latitude.toFixed(4)}°N, {temple.longitude.toFixed(4)}°E)</span>
@@ -335,16 +330,14 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
                 )}
               </div>
               {temple.foundingDate && (
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="text-base">📅</span>
-                  <span className="font-medium text-[#0f294d]">建立时间:</span>
-                  <span className="text-[#0f294d]">{temple.foundingDate}</span>
+                <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                  <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+                  <span className="font-medium">建立时间:</span> {temple.foundingDate}
                 </div>
               )}
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-base">👔</span>
-                <span className="font-medium text-[#0f294d]">着装要求:</span>
-                <span className="text-[#0f294d]">得体着装，部分殿堂需脱鞋</span>
+              <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+                <span className="font-medium">着装要求:</span> 得体着装，部分殿堂需脱鞋
               </div>
             </div>
 
@@ -355,7 +348,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
             <RelatedRoutes />
 
             {/* 介绍 */}
-            <div className="mt-8">
+            <div className="mt-6">
               <h2 className="text-lg font-bold text-[#0f294d] mb-3">祖庭介绍</h2>
               <ExpandableText text={temple.description} maxLength={300} />
             </div>
@@ -372,31 +365,31 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
               </div>
             )}
 
-            <div className="mt-8"><MediaTour entityType="TEMPLE" entityId={temple.id} /></div>
+            <div className="mt-6"><MediaTour entityType="TEMPLE" entityId={temple.id} /></div>
 
             {/* 评价 */}
-            <div id="reviews" className="mt-8"><ReviewSection targetType="TEMPLE" targetId={temple.id} /></div>
+            <div id="reviews" className="mt-6"><ReviewSection targetType="TEMPLE" targetId={temple.id} /></div>
 
             {/* 设施 */}
-            <div className="mt-8">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-4">设施与服务</h2>
-              <div className="grid grid-cols-3 gap-4">
+            <div className="mt-6">
+              <h2 className="text-base font-bold text-[#0f294d] mb-3">设施与服务</h2>
+              <div className="grid grid-cols-3 gap-3">
                 {[
-                  { icon: "🅿️", label: "停车场" }, { icon: "🚻", label: "洗手间" }, { icon: "♿", label: "无障碍通道" },
-                  { icon: "🍵", label: "茶室/斋堂" }, { icon: "🛍️", label: "法物流通处" }, { icon: "📖", label: "导览讲解" },
+                  { label: "停车场" }, { label: "洗手间" }, { label: "无障碍通道" },
+                  { label: "茶室/斋堂" }, { label: "法物流通处" }, { label: "导览讲解" },
                 ].map((f, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <span className="text-lg">{f.icon}</span>
+                  <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
+                    <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="text-sm text-[#0f294d]">{f.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mt-8"><UGCPhotoWall targetType="TEMPLE" targetId={temple.id} /></div>
-            <div className="mt-8"><QASection entityType="TEMPLE" entityId={temple.id} /></div>
+            <div className="mt-6"><UGCPhotoWall targetType="TEMPLE" targetId={temple.id} /></div>
+            <div className="mt-6"><QASection entityType="TEMPLE" entityId={temple.id} /></div>
             <NearbyTemples current={temple} />
-            <div className="mt-8"><RelatedEntities entityType="TEMPLE" entityId={temple.id} title="你可能也喜欢" /></div>
+            <div className="mt-6"><RelatedEntities entityType="TEMPLE" entityId={temple.id} title="你可能也喜欢" /></div>
             <MoreRecommendations religion={temple.religion?.name} country={temple.country} />
           </div>
 

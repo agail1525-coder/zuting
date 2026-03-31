@@ -43,19 +43,10 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 };
 
 const CANCELLATION_POLICIES = [
-  { icon: "✅", text: "出发前14天：全额退款" },
-  { icon: "🔄", text: "出发前7-13天：退款80%" },
-  { icon: "⚠️", text: "出发前3-6天：退款50%" },
-  { icon: "❌", text: "出发前3天内：不可退款" },
-];
-
-const TRUST_BADGES = [
-  { icon: "🛡️", label: "免费取消", sub: "14天内" },
-  { icon: "⚡", label: "即时确认", sub: "预订秒确" },
-  { icon: "🎫", label: "电子票", sub: "无需打印" },
-  { icon: "👨‍🏫", label: "专业导游", sub: "持证上岗" },
-  { icon: "💬", label: "24/7客服", sub: "全天候" },
-  { icon: "🔒", label: "安全支付", sub: "加密保障" },
+  { text: "出发前14天：全额退款" },
+  { text: "出发前7-13天：退款80%" },
+  { text: "出发前3-6天：退款50%" },
+  { text: "出发前3天内：不可退款" },
 ];
 
 const RELIGION_ICONS: Record<string, string> = {
@@ -96,7 +87,7 @@ const FAQ_ITEMS = [
 function FAQAccordion() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
-    <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
       <h2 className="text-xl font-bold text-gray-900 mb-5">常见问题</h2>
       <div className="divide-y divide-gray-100">
         {FAQ_ITEMS.map((item, i) => (
@@ -145,7 +136,7 @@ function RelatedCulture({ religionId }: { religionId: string | null }) {
   if (!religionId || (patriarchs.length === 0 && teachings.length === 0)) return null;
 
   return (
-    <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
       <h2 className="text-xl font-bold text-gray-900 mb-5">相关文化</h2>
       <div className="grid md:grid-cols-2 gap-6">
         {patriarchs.length > 0 && (
@@ -211,7 +202,7 @@ function XiaohongFloat({ routeTitle }: { routeTitle: string }) {
 
       {/* Quick panel */}
       {open && (
-        <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        <div className="fixed bottom-40 right-6 z-50 w-80 bg-white rounded-lg shadow-xl border border-[#dadfe6] overflow-hidden">
           <div className="bg-[#0066FF] text-white px-4 py-3 flex items-center justify-between">
             <span className="font-semibold text-sm">小鸿AI · 路线顾问</span>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white">✕</button>
@@ -275,7 +266,7 @@ function SimilarRoutes({ currentRouteId, category }: { currentRouteId: string; c
           const p = (r.priceFrom / 100).toLocaleString();
           return (
             <Link key={r.id} href={`/routes/${r.slug}`} className="group block">
-              <div className="shadow-sm border border-gray-100 rounded-2xl overflow-hidden bg-white hover:shadow-md transition-all duration-300">
+              <div className="border border-[#dadfe6] rounded-lg overflow-hidden bg-white hover:shadow-md transition-all duration-300">
                 <div className="relative h-40 overflow-hidden">
                   {r.coverImage ? (
                     <OptimizedImage
@@ -349,7 +340,7 @@ function BookingWidget({ route }: { route: Route }) {
   ];
 
   return (
-    <div className="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 md:min-w-[300px]">
+    <div className="bg-white border border-[#dadfe6] rounded-lg p-4 md:min-w-[300px]">
       <div className="text-center mb-4">
         <p className="text-sm text-gray-500">起价</p>
         <p className="text-3xl font-bold text-gray-900 mt-1">
@@ -432,7 +423,7 @@ function BookingWidget({ route }: { route: Route }) {
       <div className="mt-4 space-y-2">
         <Link
           href={`/routes/checkout?route=${route.slug}&date=${date}&guests=${guests}`}
-          className="block w-full py-3 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold text-center transition-colors shadow-lg shadow-blue-500/20"
+          className="block w-full py-3 rounded-lg bg-[#3264ff] hover:bg-[#264cc2] text-white font-semibold text-center transition-colors shadow-[0_4px_20px_rgba(15,41,77,0.12)]"
         >
           {date ? "立即预订" : "选择日期预订"}
         </Link>
@@ -494,10 +485,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               <span>&gt;</span>
               <span className="text-[#0f294d]">{route.title}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[#8592a6] mr-1">分享</span>
-              <ShareButton title={route.title} description={route.subtitle} url={typeof window !== "undefined" ? window.location.href : ""} image={route.coverImage ?? undefined} entityType="ROUTE" entityId={route.slug ?? route.id} className="text-sm" />
-            </div>
+            <ShareButton title={route.title} description={route.subtitle} url={typeof window !== "undefined" ? window.location.href : ""} image={route.coverImage ?? undefined} entityType="ROUTE" entityId={route.slug ?? route.id} className="text-sm" />
           </div>
         </div>
 
@@ -541,44 +529,29 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                 </div>
               </div>
 
-              {/* S5. 实用信息 (紧凑列表) */}
-              <div className="py-5 border-b border-gray-200 space-y-3 text-sm">
-                <div className="flex items-center gap-3">
-                  <span className="text-base">📅</span>
-                  <span className="font-medium text-[#0f294d]">行程:</span>
-                  <span className="text-[#0f294d]">{route.duration}天{route.nights}晚</span>
+              {/* S5. 实用信息 (Trip.com紧凑列表) */}
+              <div className="py-4 border-b border-[#dadfe6] space-y-2">
+                <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                  <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+                  <span className="font-medium">行程:</span> {route.duration}天{route.nights}晚
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-base">🌤</span>
-                  <span className="font-medium text-[#0f294d]">最佳季节:</span>
-                  <span className="text-[#0f294d]">{route.season}</span>
+                <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                  <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07-1.41 1.41M8.34 15.66l-1.41 1.41m12.14 0-1.41-1.41M8.34 8.34 6.93 6.93" /></svg>
+                  <span className="font-medium">最佳季节:</span> {route.season}
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-base">👥</span>
-                  <span className="font-medium text-[#0f294d]">团队规模:</span>
-                  <span className="text-[#0f294d]">{route.groupSize}</span>
+                <div className="flex items-center gap-2 text-sm text-[#0f294d]">
+                  <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                  <span className="font-medium">团队规模:</span> {route.groupSize}
                 </div>
               </div>
-          {/* ========== Trust Badges ========== */}
-          <div className="mt-6 bg-white shadow-sm border border-gray-100 rounded-2xl p-4">
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-              {TRUST_BADGES.map((badge) => (
-                <div key={badge.label} className="flex flex-col items-center text-center gap-1">
-                  <span className="text-2xl">{badge.icon}</span>
-                  <span className="text-xs font-semibold text-gray-800">{badge.label}</span>
-                  <span className="text-[10px] text-gray-400">{badge.sub}</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* ========== Religion Affiliation ========== */}
           {route.religion && (
-            <div className="mt-6 bg-white shadow-sm border border-gray-100 rounded-2xl p-4">
+            <div className="mt-4 bg-white border border-[#dadfe6] rounded-lg p-4">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ backgroundColor: `${route.religion.color ?? "#0066FF"}15` }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                  style={{ backgroundColor: `${route.religion.color ?? "#3264ff"}15` }}
                 >
                   {RELIGION_ICONS[route.religion.name] ?? "🙏"}
                 </div>
@@ -603,7 +576,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           )}
 
           {/* ========== Highlights ========== */}
-          <div className="flex flex-wrap gap-2 mt-8">
+          <div className="flex flex-wrap gap-2 mt-6">
             {route.highlights.map((h) => (
               <span
                 key={h}
@@ -620,7 +593,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Description ========== */}
-          <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+          <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
             <h2 className="text-xl font-bold text-gray-900 mb-4">路线介绍</h2>
             <ExpandableText text={route.description} maxLength={300} />
           </div>
@@ -632,7 +605,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Interactive Route Map ========== */}
           {route.sites && route.sites.length > 0 && (
-            <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+            <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
               <h2 className="text-xl font-bold text-gray-900 mb-4">路线地图</h2>
               <p className="text-sm text-gray-500 mb-4">
                 途经 {route.sites.length} 个圣地，全程 {route.duration} 天 {route.nights} 晚
@@ -643,19 +616,19 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Image Gallery (Mosaic) ========== */}
           {route.images && route.images.length > 0 && (
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">路线图集</h2>
+            <div className="mt-6">
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">路线图集</h2>
               <PhotoMosaic images={route.images} alt={route.title} />
             </div>
           )}
 
           {/* ========== Multimedia Tour ========== */}
-          <div className="mt-8">
+          <div className="mt-6">
             <MediaTour entityType="ROUTE" entityId={route.id} />
           </div>
 
           {/* ========== Itinerary ========== */}
-          <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+          <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
             <h2 className="text-xl font-bold text-gray-900 mb-6">逐日行程</h2>
             <div className="space-y-6">
               {(route.itinerary as ItineraryDay[]).map((day) => (
@@ -663,7 +636,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   key={day.day}
                   className="relative pl-8 pb-6 border-l-2 border-[#0066FF]/30 last:border-transparent"
                 >
-                  <div className="absolute -left-3 top-0 w-6 h-6 bg-[#0066FF] rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <div className="absolute -left-3 top-0 w-6 h-6 bg-[#0066FF] rounded-full flex items-center justify-center shadow-sm">
                     <span className="text-white text-xs font-bold">{day.day}</span>
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -693,8 +666,8 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Included / Excluded ========== */}
-          <div className="mt-8 grid md:grid-cols-2 gap-6">
-            <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+          <div className="mt-6 grid md:grid-cols-2 gap-4">
+            <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
               <h2 className="text-lg font-bold text-gray-900 mb-4">费用包含</h2>
               <ul className="space-y-2">
                 {route.included.map((item, i) => (
@@ -704,7 +677,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                 ))}
               </ul>
             </div>
-            <div className="bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+            <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
               <h2 className="text-lg font-bold text-gray-900 mb-4">费用不含</h2>
               <ul className="space-y-2">
                 {route.excluded.map((item, i) => (
@@ -717,13 +690,13 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Cancellation Policy ========== */}
-          <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">取消与退款政策</h2>
-            <div className="space-y-3">
+          <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+            <h2 className="text-base font-bold text-[#0f294d] mb-3">取消与退款政策</h2>
+            <div className="space-y-2">
               {CANCELLATION_POLICIES.map((p, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span className="text-lg">{p.icon}</span>
-                  <span className="text-sm text-gray-600">{p.text}</span>
+                <div key={i} className="flex items-center gap-2 text-sm text-[#455873]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8592a6] shrink-0" />
+                  {p.text}
                 </div>
               ))}
             </div>
@@ -734,7 +707,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Tips ========== */}
           {route.tips.length > 0 && (
-            <div className="mt-8 bg-amber-50 rounded-2xl p-6 border border-amber-200">
+            <div className="mt-6 bg-amber-50 rounded-lg p-4 border border-amber-200">
               <h2 className="text-lg font-bold text-amber-600 mb-3">出行贴士</h2>
               <ul className="space-y-2">
                 {route.tips.map((tip, i) => (
@@ -748,7 +721,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
 
           {/* ========== Related Sites ========== */}
           {route.sites && route.sites.length > 0 && (
-            <div className="mt-8 bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+            <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
               <h2 className="text-lg font-bold text-gray-900 mb-4">途经圣地</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {route.sites.map((rs) => (
@@ -776,7 +749,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           <RelatedCulture religionId={route.religionId} />
 
           {/* ========== Pilgrim Journals ========== */}
-          <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10">
+          <div className="mt-6 bg-gradient-to-r from-[#3264ff]/5 to-blue-50 rounded-lg p-4 border border-[#3264ff]/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">📖</span>
