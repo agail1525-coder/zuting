@@ -21,20 +21,13 @@ import OptimizedImage from "@/components/OptimizedImage";
 type Tab = "guides" | "questions" | "photos" | "leaderboard";
 type GuideSort = "hot" | "latest" | "most_liked" | "most_viewed";
 
-const GUIDE_SORT_OPTIONS: { key: GuideSort; label: string }[] = [
-  { key: "hot", label: "🔥 热门" },
-  { key: "latest", label: "🕐 最新" },
-  { key: "most_liked", label: "❤️ 最多点赞" },
-  { key: "most_viewed", label: "👁 最多浏览" },
-];
-
-const TRENDING_TOPICS = [
-  { tag: "禅宗朝圣", color: "#f59e0b" },
-  { tag: "佛教圣地", color: "#ef4444" },
-  { tag: "道教名山", color: "#10b981" },
-  { tag: "跨文化之旅", color: "#8b5cf6" },
-  { tag: "初次朝圣", color: "#0066FF" },
-  { tag: "素食攻略", color: "#f97316" },
+const TRENDING_TOPIC_KEYS = [
+  { key: "zenPilgrimage", color: "#f59e0b" },
+  { key: "buddhistSites", color: "#ef4444" },
+  { key: "taoistMountains", color: "#10b981" },
+  { key: "crossCulturalJourney", color: "#8b5cf6" },
+  { key: "firstPilgrimage", color: "#0066FF" },
+  { key: "vegetarianGuide", color: "#f97316" },
 ];
 
 function GuideCard({ guide, featured }: { guide: GuideItem; featured?: boolean }) {
@@ -60,7 +53,7 @@ function GuideCard({ guide, featured }: { guide: GuideItem; featured?: boolean }
         )}
         {featured && (
           <div className="absolute top-2 left-2 px-2 py-0.5 bg-[#0066FF] text-white text-xs font-bold rounded-full">
-            精选
+            {t("community.featured")}
           </div>
         )}
       </div>
@@ -298,7 +291,7 @@ export default function CommunityPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜索攻略、问题、话题..."
+              placeholder={t("community.searchPlaceholder")}
               className="w-full px-4 py-3 pl-10 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15 backdrop-blur-sm"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">🔍</span>
@@ -330,16 +323,19 @@ export default function CommunityPage() {
 
           {/* Trending topics */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-white/60 text-xs">热门话题:</span>
-            {TRENDING_TOPICS.map((topic) => (
-              <button
-                key={topic.tag}
-                onClick={() => setSearchQuery(topic.tag)}
-                className="px-3 py-1 bg-white/10 text-white/80 rounded-full text-xs font-medium hover:bg-white/20 transition-colors border border-white/10"
-              >
-                #{topic.tag}
-              </button>
-            ))}
+            <span className="text-white/60 text-xs">{t("community.trendingTopics")}:</span>
+            {TRENDING_TOPIC_KEYS.map((topic) => {
+              const label = t(`community.topic.${topic.key}`);
+              return (
+                <button
+                  key={topic.key}
+                  onClick={() => setSearchQuery(label)}
+                  className="px-3 py-1 bg-white/10 text-white/80 rounded-full text-xs font-medium hover:bg-white/20 transition-colors border border-white/10"
+                >
+                  #{label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -363,11 +359,34 @@ export default function CommunityPage() {
           ))}
         </div>
 
+        {/* ========== Creator CTA Banner ========== */}
+        <div className="bg-gradient-to-r from-[#0066FF]/5 to-purple-500/5 rounded-xl p-5 mb-6 flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-gray-900">{t("community.createCta")}</h3>
+            <p className="text-sm text-gray-500 mt-0.5">{t("community.createCtaDesc")}</p>
+          </div>
+          <Link href="/community/guides/write" className="px-5 py-2.5 bg-[#0066FF] text-white rounded-lg text-sm font-medium hover:bg-[#0052CC] transition-colors whitespace-nowrap">
+            {t("community.writeGuide")}
+          </Link>
+        </div>
+
+        {/* ========== Community Stats Bar ========== */}
+        <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
+          <span>{t("community.stats.guides", { count: guides.length })}</span>
+          <span>{t("community.stats.questions", { count: questions.length })}</span>
+          <span>{t("community.stats.photos", { count: photos.length })}</span>
+        </div>
+
         {/* ========== Guide Sort Options ========== */}
         {tab === "guides" && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex gap-2">
-              {GUIDE_SORT_OPTIONS.map((opt) => (
+              {([
+                { key: "hot" as GuideSort, icon: "🔥", labelKey: "community.sort.hot" },
+                { key: "latest" as GuideSort, icon: "🕐", labelKey: "community.sort.latest" },
+                { key: "most_liked" as GuideSort, icon: "❤️", labelKey: "community.sort.mostLiked" },
+                { key: "most_viewed" as GuideSort, icon: "👁", labelKey: "community.sort.mostViewed" },
+              ]).map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setGuideSort(opt.key)}
@@ -377,13 +396,13 @@ export default function CommunityPage() {
                       : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                   }`}
                 >
-                  {opt.label}
+                  {opt.icon} {t(opt.labelKey)}
                 </button>
               ))}
             </div>
             {searchQuery && (
               <span className="text-xs text-gray-400">
-                {filteredGuides.length} 条结果
+                {t("community.searchResults", { count: filteredGuides.length })}
               </span>
             )}
           </div>
@@ -401,33 +420,33 @@ export default function CommunityPage() {
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
               </div>
-              <p className="text-gray-900 font-medium mb-1">数据加载失败</p>
-              <p className="text-sm text-gray-500 mb-4">网络可能暂时不稳定，请稍后重试</p>
-              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-[#0066FF] text-white rounded-xl text-sm font-medium hover:bg-[#0052CC] transition-colors">重试</button>
+              <p className="text-gray-900 font-medium mb-1">{t("community.error.title")}</p>
+              <p className="text-sm text-gray-500 mb-4">{t("community.error.description")}</p>
+              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-[#0066FF] text-white rounded-xl text-sm font-medium hover:bg-[#0052CC] transition-colors">{t("community.error.retry")}</button>
             </div>
 
             {/* Fallback static content */}
             <div className="mt-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">热门话题推荐</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("community.fallback.title")}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { title: "第一次朝圣应该去哪里？", tags: ["初次朝圣", "路线推荐"], answers: 28 },
-                  { title: "五台山禅修体验全攻略", tags: ["佛教圣地", "禅修"], answers: 15 },
-                  { title: "道教名山排行榜：武当山vs龙虎山", tags: ["道教名山", "排行榜"], answers: 32 },
-                  { title: "东南亚佛教朝圣路线推荐", tags: ["东南亚", "佛教"], answers: 21 },
-                  { title: "素食餐厅推荐：朝圣途中怎么吃", tags: ["素食攻略", "实用"], answers: 45 },
-                  { title: "如何写一篇好的朝圣游记", tags: ["写作技巧", "游记"], answers: 18 },
-                ].map((item, i) => (
+                {([
+                  { titleKey: "community.fallback.q1", tagKeys: ["community.fallback.q1Tag1", "community.fallback.q1Tag2"], answers: 28 },
+                  { titleKey: "community.fallback.q2", tagKeys: ["community.fallback.q2Tag1", "community.fallback.q2Tag2"], answers: 15 },
+                  { titleKey: "community.fallback.q3", tagKeys: ["community.fallback.q3Tag1", "community.fallback.q3Tag2"], answers: 32 },
+                  { titleKey: "community.fallback.q4", tagKeys: ["community.fallback.q4Tag1", "community.fallback.q4Tag2"], answers: 21 },
+                  { titleKey: "community.fallback.q5", tagKeys: ["community.fallback.q5Tag1", "community.fallback.q5Tag2"], answers: 45 },
+                  { titleKey: "community.fallback.q6", tagKeys: ["community.fallback.q6Tag1", "community.fallback.q6Tag2"], answers: 18 },
+                ]).map((item, i) => (
                   <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
-                    <h3 className="font-bold text-gray-900 text-sm mb-2">{item.title}</h3>
+                    <h3 className="font-bold text-gray-900 text-sm mb-2">{t(item.titleKey)}</h3>
                     <div className="flex flex-wrap gap-1 mb-3">
-                      {item.tags.map(tag => (
-                        <span key={tag} className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">#{tag}</span>
+                      {item.tagKeys.map(tagKey => (
+                        <span key={tagKey} className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">#{t(tagKey)}</span>
                       ))}
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-400">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-                      {item.answers} 个回答
+                      {t("community.fallback.answersCount", { count: item.answers })}
                     </div>
                   </div>
                 ))}
@@ -436,17 +455,17 @@ export default function CommunityPage() {
 
             {/* Community stats */}
             <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">社区数据</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t("community.statsSection.title")}</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 {[
-                  { stat: "5,000+", label: "攻略游记" },
-                  { stat: "12,000+", label: "问答互动" },
-                  { stat: "30,000+", label: "精选照片" },
-                  { stat: "100,000+", label: "活跃用户" },
+                  { stat: "5,000+", labelKey: "community.statsSection.guides" },
+                  { stat: "12,000+", labelKey: "community.statsSection.qna" },
+                  { stat: "30,000+", labelKey: "community.statsSection.photos" },
+                  { stat: "100,000+", labelKey: "community.statsSection.users" },
                 ].map((item, i) => (
                   <div key={i}>
                     <p className="text-3xl font-bold text-[#0066FF]">{item.stat}</p>
-                    <p className="text-sm text-gray-500 mt-1">{item.label}</p>
+                    <p className="text-sm text-gray-500 mt-1">{t(item.labelKey)}</p>
                   </div>
                 ))}
               </div>
@@ -454,11 +473,11 @@ export default function CommunityPage() {
 
             {/* CTA */}
             <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
-              <h2 className="text-2xl font-bold mb-2">加入朝圣者社区</h2>
-              <p className="text-blue-100 mb-5">分享你的旅行故事，帮助更多人找到心灵的方向</p>
+              <h2 className="text-2xl font-bold mb-2">{t("community.cta.joinTitle")}</h2>
+              <p className="text-blue-100 mb-5">{t("community.cta.joinDesc")}</p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <Link href="/community/guides/write" className="px-6 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">写游记</Link>
-                <Link href="/community/questions" className="px-6 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">提问题</Link>
+                <Link href="/community/guides/write" className="px-6 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">{t("community.writeGuide")}</Link>
+                <Link href="/community/questions" className="px-6 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">{t("community.askQuestion")}</Link>
               </div>
             </div>
           </div>
@@ -470,7 +489,7 @@ export default function CommunityPage() {
                   <div className="text-center py-20 text-gray-400">
                     <span className="text-4xl block mb-3">📖</span>
                     {searchQuery
-                      ? `没有找到 "${searchQuery}" 相关的攻略`
+                      ? t("community.noSearchResultsGuides", { query: searchQuery })
                       : t("community.emptyGuides")}
                   </div>
                 ) : (
@@ -497,7 +516,7 @@ export default function CommunityPage() {
                   <div className="text-center py-20 text-gray-400">
                     <span className="text-4xl block mb-3">❓</span>
                     {searchQuery
-                      ? `没有找到 "${searchQuery}" 相关的问题`
+                      ? t("community.noSearchResultsQuestions", { query: searchQuery })
                       : t("community.emptyQuestions")}
                   </div>
                 ) : (

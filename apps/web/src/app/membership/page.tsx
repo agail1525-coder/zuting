@@ -108,6 +108,85 @@ function CheckinCalendar({ year, month, checkedDates, t }: { year: number; month
   );
 }
 
+/* ══════ Quick Benefit Highlight Row ══════ */
+function BenefitHighlights({ level, t }: { level: number; t: (key: string) => string }) {
+  const benefits = useMemo(() => {
+    const base = [
+      { icon: "🏷️", label: t("membership.benefitDiscount"), value: level >= 3 ? "10%" : level >= 2 ? "5%" : "3%" },
+      { icon: "⚡", label: t("membership.benefitPoints"), value: level >= 4 ? "3x" : level >= 3 ? "2x" : "1.5x" },
+      { icon: "🎯", label: t("membership.benefitPriority"), value: level >= 3 ? "VIP" : level >= 2 ? "Fast" : "-" },
+      { icon: "💬", label: t("membership.benefitSupport"), value: level >= 4 ? "24/7" : level >= 2 ? "12h" : "-" },
+    ];
+    return base;
+  }, [level, t]);
+
+  return (
+    <div className="grid grid-cols-4 gap-2">
+      {benefits.map((b) => (
+        <div
+          key={b.label}
+          className="flex flex-col items-center gap-1.5 p-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20"
+        >
+          <span className="text-xl">{b.icon}</span>
+          <span className="text-xs text-blue-100 text-center leading-tight">{b.label}</span>
+          <span className="text-sm font-bold text-white">{b.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ══════ Level Progress Visualization ══════ */
+function LevelProgressVisualization({ levels, currentLevel, membership, t }: {
+  levels: LevelInfo[];
+  currentLevel: number;
+  membership: MembershipData;
+  t: (key: string) => string;
+}) {
+  return (
+    <div className="space-y-3">
+      {levels.map((lv) => {
+        const isMe = lv.level === currentLevel;
+        const isPast = lv.level < currentLevel;
+        const pct = isPast
+          ? 100
+          : isMe
+          ? lv.level < levels.length
+            ? Math.min(100, Math.round((membership.totalPoints / (levels.find((l) => l.level === lv.level + 1)?.minPoints ?? membership.totalPoints)) * 100))
+            : 100
+          : 0;
+        const color = LEVEL_COLORS[lv.level] ?? "#6B7280";
+
+        return (
+          <div key={lv.level} className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${isMe ? "bg-blue-50 border-blue-200 ring-1 ring-blue-300" : "bg-white border-gray-200"}`}>
+            <div className="shrink-0 w-20">
+              <LevelBadge level={lv.level} name={lv.name} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between text-xs text-gray-500 mb-1">
+                <span>{lv.minPoints.toLocaleString()} {t("membership.pointsUnit")}</span>
+                <span>{pct}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="h-2 rounded-full transition-all duration-700"
+                  style={{ width: `${pct}%`, backgroundColor: color }}
+                />
+              </div>
+            </div>
+            {isMe && (
+              <span className="shrink-0 text-xs font-bold text-[#0066FF] bg-blue-100 px-2 py-0.5 rounded-full">{t("membership.current")}</span>
+            )}
+            {isPast && (
+              <span className="shrink-0 text-green-500 text-sm">&#10003;</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function MembershipPage() {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
@@ -214,6 +293,13 @@ export default function MembershipPage() {
           </div>
         )}
 
+        {/* Quick Benefit Highlights */}
+        {membership && (
+          <div className="mt-5">
+            <BenefitHighlights level={membership.level} t={t} />
+          </div>
+        )}
+
         {/* Checkin */}
         <div className="mt-5 flex items-center gap-3">
           <button
@@ -255,15 +341,15 @@ export default function MembershipPage() {
       {/* 静态展示：待后端API接入 — 任务列表为规划中的功能预览，完成状态仅签到项为实时数据 */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <span>🎯</span> {t("membership.missions") || "每日任务"}
+          <span>🎯</span> {t("membership.missions")}
         </h2>
         <div className="space-y-2">
           {[
-            { icon: "✅", label: "每日签到", points: 10, done: calendarDates.has(`${year}-${String(month).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`) },
-            { icon: "📝", label: "写一篇朝圣日志", points: 50, done: false, href: "/journals/create" },
-            { icon: "⭐", label: "为路线写一条评价", points: 30, done: false, href: "/routes" },
-            { icon: "👥", label: "邀请一位好友注册", points: 100, done: false, href: "/membership/referral" },
-            { icon: "🛒", label: "预订一条路线", points: 200, done: false, href: "/routes" },
+            { icon: "✅", label: t("membership.missionCheckin"), points: 10, done: calendarDates.has(`${year}-${String(month).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`) },
+            { icon: "📝", label: t("membership.missionJournal"), points: 50, done: false, href: "/journals/create" },
+            { icon: "⭐", label: t("membership.missionReview"), points: 30, done: false, href: "/routes" },
+            { icon: "👥", label: t("membership.missionInvite"), points: 100, done: false, href: "/membership/referral" },
+            { icon: "🛒", label: t("membership.missionBooking"), points: 200, done: false, href: "/routes" },
           ].map((mission) => (
             <div
               key={mission.label}
@@ -284,7 +370,7 @@ export default function MembershipPage() {
               </span>
               {!mission.done && mission.href && (
                 <Link href={mission.href} className="text-xs text-[#0066FF] hover:underline shrink-0">
-                  去完成 →
+                  {t("membership.missionGo")}
                 </Link>
               )}
             </div>
@@ -299,13 +385,13 @@ export default function MembershipPage() {
             <div className="flex items-center gap-3">
               <span className="text-3xl">🔥</span>
               <div>
-                <p className="font-bold text-gray-900">{t("membership.streakTitle") || "连续签到"}</p>
-                <p className="text-sm text-gray-500">{t("membership.streakDesc") || "保持连续签到获取额外奖励"}</p>
+                <p className="font-bold text-gray-900">{t("membership.streakTitle")}</p>
+                <p className="text-sm text-gray-500">{t("membership.streakDesc")}</p>
               </div>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-[#D4A855]">{calendarDates.size}</p>
-              <p className="text-xs text-gray-400">{t("membership.daysThisMonth") || "本月签到天数"}</p>
+              <p className="text-xs text-gray-400">{t("membership.daysThisMonth")}</p>
             </div>
           </div>
           {/* Streak milestones */}
@@ -321,7 +407,7 @@ export default function MembershipPage() {
                       : "bg-white border border-gray-200 text-gray-400"
                   }`}
                 >
-                  {milestone}天{reached ? " ✓" : ""}
+                  {t("membership.milestoneDays", { n: milestone })}{reached ? " ✓" : ""}
                 </div>
               );
             })}
@@ -337,10 +423,22 @@ export default function MembershipPage() {
         <CheckinCalendar year={year} month={month} checkedDates={calendarDates} t={t} />
       </div>
 
-      {/* Level Comparison */}
-      {levels.length > 0 && (
+      {/* Level Progress Visualization */}
+      {levels.length > 0 && membership && (
         <div>
           <h2 className="text-base font-semibold text-gray-900 mb-3">{t("membership.levelPerks")}</h2>
+          <LevelProgressVisualization
+            levels={levels}
+            currentLevel={membership.level}
+            membership={membership}
+            t={t}
+          />
+        </div>
+      )}
+
+      {/* Level Comparison Table */}
+      {levels.length > 0 && (
+        <div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
               <thead>
@@ -387,14 +485,14 @@ export default function MembershipPage() {
       {/* 静态展示：待后端API接入 — 会员专属权益为规划中的功能预览，后续接入促销/优惠券API实现动态展示 */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <span>💎</span> {t("membership.exclusiveDeals") || "会员专属"}
+          <span>💎</span> {t("membership.exclusiveDeals")}
         </h2>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: "🎫", title: "会员专属优惠券", desc: "每月赠送3张折扣券", href: "/coupons", color: "from-blue-500/10 to-blue-600/10" },
-            { icon: "💰", title: "路线9折优惠", desc: "部分精选路线享专属折扣", href: "/routes", color: "from-amber-500/10 to-yellow-500/10" },
-            { icon: "⚡", title: "优先预订", desc: "新路线上线优先预订权", href: "/routes", color: "from-purple-500/10 to-violet-500/10" },
-            { icon: "🎁", title: "积分翻倍", desc: "消费积分翻倍累积", href: "/points-mall", color: "from-green-500/10 to-emerald-500/10" },
+            { icon: "🎫", title: t("membership.dealCouponTitle"), desc: t("membership.dealCouponDesc"), href: "/coupons", color: "from-blue-500/10 to-blue-600/10" },
+            { icon: "💰", title: t("membership.dealDiscountTitle"), desc: t("membership.dealDiscountDesc"), href: "/routes", color: "from-amber-500/10 to-yellow-500/10" },
+            { icon: "⚡", title: t("membership.dealPriorityTitle"), desc: t("membership.dealPriorityDesc"), href: "/routes", color: "from-purple-500/10 to-violet-500/10" },
+            { icon: "🎁", title: t("membership.dealPointsTitle"), desc: t("membership.dealPointsDesc"), href: "/points-mall", color: "from-green-500/10 to-emerald-500/10" },
           ].map((deal) => (
             <Link
               key={deal.title}
@@ -448,17 +546,17 @@ export default function MembershipPage() {
       {membership && nextLevel && (
         <div className="bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-xl p-5 border border-[#0066FF]/10 text-center">
           <p className="text-lg font-bold text-gray-900">
-            距离升级到 <span style={{ color: LEVEL_COLORS[nextLevel.level] }}>{nextLevel.name}</span> 还需
+            {t("membership.upgradeToNext", { level: nextLevel.name })}
           </p>
           <p className="text-3xl font-bold text-[#0066FF] mt-1">
-            {Math.max(0, nextLevel.minPoints - membership.totalPoints).toLocaleString()} 积分
+            {Math.max(0, nextLevel.minPoints - membership.totalPoints).toLocaleString()} {t("membership.pointsUnit")}
           </p>
-          <p className="text-sm text-gray-400 mt-2">完成每日任务、写评价、邀请好友加速升级</p>
+          <p className="text-sm text-gray-400 mt-2">{t("membership.upgradeHint")}</p>
           <Link
             href="/routes"
             className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm shadow-lg shadow-blue-500/20"
           >
-            浏览路线赚积分 →
+            {t("membership.browseRoutes")}
           </Link>
         </div>
       )}
