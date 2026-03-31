@@ -507,6 +507,79 @@ export default function MembershipPage() {
         </div>
       </div>
 
+      {/* ══════ Achievement Badges (gamification, 对标AmEx/Booking Genius) ══════ */}
+      <section>
+        <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <span>🏅</span> {t("membership.achievements")}
+        </h2>
+        <div className="grid grid-cols-4 gap-3">
+          {[
+            { icon: "🏛", name: t("membership.badge.firstVisit"), unlocked: true },
+            { icon: "📝", name: t("membership.badge.firstJournal"), unlocked: true },
+            { icon: "⭐", name: t("membership.badge.firstReview"), unlocked: false },
+            { icon: "🗺", name: t("membership.badge.fiveRoutes"), unlocked: false },
+            { icon: "🔥", name: t("membership.badge.weekStreak"), unlocked: true },
+            { icon: "🌍", name: t("membership.badge.threeContinents"), unlocked: false },
+            { icon: "📸", name: t("membership.badge.photoContributor"), unlocked: false },
+            { icon: "💎", name: t("membership.badge.vipMember"), unlocked: false },
+          ].map((badge, i) => (
+            <div key={i} className={`text-center p-3 rounded-xl border ${badge.unlocked ? 'bg-white border-amber-200' : 'bg-gray-50 border-gray-100 opacity-50'}`}>
+              <span className="text-2xl block mb-1">{badge.icon}</span>
+              <span className="text-[10px] text-gray-600 font-medium">{badge.name}</span>
+              {badge.unlocked && <span className="block text-[8px] text-amber-600 mt-0.5">&#10003; {t("membership.unlocked")}</span>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════ Referral Widget (viral growth) ══════ */}
+      <section className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-bold text-gray-900">{t("membership.referralTitle")}</h2>
+            <p className="text-sm text-gray-500 mt-1">{t("membership.referralDesc")}</p>
+          </div>
+          <Link href="/referral" className="px-5 py-2.5 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+            {t("membership.inviteFriends")}
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-4">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-purple-600">200</p>
+            <p className="text-xs text-gray-500">{t("membership.referralPoints")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-purple-600">&infin;</p>
+            <p className="text-xs text-gray-500">{t("membership.referralLimit")}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-purple-600">10%</p>
+            <p className="text-xs text-gray-500">{t("membership.referralBonus")}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ Points Activity Timeline ══════ */}
+      <section>
+        <h2 className="text-base font-semibold text-gray-900 mb-3">{t("membership.recentActivity")}</h2>
+        <div className="space-y-3">
+          {[
+            { action: t("membership.activity.checkin"), points: "+10", time: t("membership.activity.today"), icon: "✅" },
+            { action: t("membership.activity.review"), points: "+50", time: t("membership.activity.yesterday"), icon: "⭐" },
+            { action: t("membership.activity.booking"), points: "+200", time: t("membership.activity.3daysAgo"), icon: "🎫" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100">
+              <span className="text-lg">{item.icon}</span>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900">{item.action}</p>
+                <p className="text-xs text-gray-400">{item.time}</p>
+              </div>
+              <span className="text-sm font-bold text-green-600">{item.points}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Points History */}
       <div>
         <div className="flex items-center justify-between mb-3">
@@ -560,6 +633,15 @@ export default function MembershipPage() {
           </Link>
         </div>
       )}
+
+      {/* ══════ Member Exclusive VIP CTA ══════ */}
+      <section className="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl p-6 text-white text-center">
+        <h2 className="text-xl font-bold">{t("membership.vipCta")}</h2>
+        <p className="text-white/80 text-sm mt-2">{t("membership.vipCtaDesc")}</p>
+        <Link href="/routes" className="inline-block mt-4 px-8 py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors">
+          {t("membership.startJourney")}
+        </Link>
+      </section>
 
       <MobileNav />
     </div>

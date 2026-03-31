@@ -267,6 +267,24 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
+      {/* Keyframes for coupon animations */}
+      <style jsx>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-6px); }
+          40% { transform: translateX(6px); }
+          60% { transform: translateX(-4px); }
+          80% { transform: translateX(4px); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+          from { transform: scale(0); }
+          to { transform: scale(1); }
+        }
+      `}</style>
       {/* Top bar: Back + Countdown */}
       <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -325,6 +343,16 @@ export default function CheckoutPage() {
               )}
             </div>
           ))}
+        </div>
+
+        {/* Step Progress Bar Animation */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#0066FF] rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${((step) / 3) * 100}%` }}
+            />
+          </div>
         </div>
 
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
@@ -523,15 +551,24 @@ export default function CheckoutPage() {
                     </button>
                   </div>
                   {couponError && (
-                    <p className="text-red-500 text-xs mt-2">{couponError}</p>
+                    <div className="mt-2 animate-[shake_0.4s_ease-in-out]">
+                      <p className="text-red-500 text-xs flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        {couponError}
+                      </p>
+                    </div>
                   )}
                   {couponValid && (
-                    <p className="text-green-600 text-xs mt-2 flex items-center gap-1">
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      {t("checkout.couponValidMsg", { amount: (couponDiscount / 100).toFixed(2) })}
-                    </p>
+                    <div className="mt-2 animate-[fadeIn_0.3s_ease-out]">
+                      <p className="text-green-600 text-xs flex items-center gap-1">
+                        <svg className="w-4 h-4 animate-[scaleIn_0.3s_ease-out]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {t("checkout.couponValidMsg", { amount: (couponDiscount / 100).toFixed(2) })}
+                      </p>
+                    </div>
                   )}
                   <div className="mt-3">
                     <Link href="/coupons" className="text-xs text-[#0066FF] hover:underline">
@@ -623,6 +660,17 @@ export default function CheckoutPage() {
                         </div>
                       </label>
                     ))}
+                  </div>
+                </div>
+
+                {/* Security Reassurance Banner (Booking.com style) */}
+                <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200/50 rounded-xl mb-2">
+                  <svg className="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <div>
+                    <p className="font-medium text-green-800 text-sm">{t("checkout.securityTitle")}</p>
+                    <p className="text-green-600 text-xs">{t("checkout.securityDesc")}</p>
                   </div>
                 </div>
 
@@ -822,6 +870,17 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Smart Savings Display (Expedia style) */}
+              {(couponValid || promotionDiscount > 0) && discountCents > 0 && (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  <span className="text-green-600 text-sm font-bold">{t("checkout.youSave")}</span>
+                  <span className="text-green-700 font-bold text-base">¥{(discountCents / 100).toLocaleString()}</span>
+                </div>
+              )}
+
               {/* Mini trip card */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
                 <div className="flex items-center gap-3">
@@ -834,6 +893,11 @@ export default function CheckoutPage() {
                       {t("checkout.miniTripInfo", { sites: trip.sites?.length ?? 0, persons: trip.persons ?? 1 })}
                     </p>
                   </div>
+                </div>
+                {/* Urgency Indicator */}
+                <div className="flex items-center gap-2 text-xs text-orange-600 mt-3 pt-3 border-t border-gray-100">
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse" />
+                  {t("checkout.limitedAvailability")}
                 </div>
               </div>
 

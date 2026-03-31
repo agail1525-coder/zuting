@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth-context";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import HomepageRecommendations from "@/components/HomepageRecommendations";
@@ -225,11 +226,13 @@ function DestinationCard({ site }: { site: HolySite }) {
 
 export default function HomeClient({ religions, holySites, temples, patriarchs, featuredRoutes, teachings, error }: Props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearchTab, setActiveSearchTab] = useState<string>("sites");
   const [trendingGuides, setTrendingGuides] = useState<GuideItem[]>([]);
   const [trendingQuestions, setTrendingQuestions] = useState<QuestionItem[]>([]);
   const [exploreTab, setExploreTab] = useState("all");
+  const [recentlyViewed, setRecentlyViewed] = useState<Array<{ id: string; name: string; type: string; image?: string }>>([]);
 
   useEffect(() => {
     fetchTrending()
@@ -238,6 +241,14 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         if (Array.isArray(data?.hotQuestions)) setTrendingQuestions(data.hotQuestions.slice(0, 4));
       })
       .catch(() => {});
+  }, []);
+
+  // Recently Viewed (Airbnb style) — read from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("zuting_recently_viewed");
+      if (stored) setRecentlyViewed(JSON.parse(stored).slice(0, 4));
+    } catch { /* ignore */ }
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -290,6 +301,10 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       {/* ══════ Section 1: Hero + Search + Category Nav ══════ */}
       <section className="relative hero-bg pt-28 pb-20 md:pt-36 md:pb-28">
         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
+          {/* Personalized Greeting (Trip.com style) */}
+          {user && (
+            <p className="text-white/60 text-sm mb-2">{t("home.greeting", { name: user.nickname })}</p>
+          )}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white tracking-tight">
             {t("home.heroTitle")}
           </h1>
@@ -354,6 +369,32 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           </p>
         </div>
       </section>
+
+      {/* ══════ Social Proof Ticker (Booking.com style) ══════ */}
+      <div className="bg-white border-b border-gray-100 py-2.5 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center gap-2 text-sm text-gray-500 animate-marquee">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span>{t("home.socialProof")}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════ Seasonal Banner (Agoda style) ══════ */}
+      <div className="max-w-6xl mx-auto px-4 -mt-6 relative z-10 mb-8">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/50 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl" role="img" aria-label="cherry blossom">&#127800;</span>
+            <div>
+              <p className="font-bold text-gray-900 text-sm">{t("home.seasonalTitle")}</p>
+              <p className="text-xs text-gray-500">{t("home.seasonalDesc")}</p>
+            </div>
+          </div>
+          <Link href="/routes" className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors shrink-0">
+            {t("home.seasonalCta")}
+          </Link>
+        </div>
+      </div>
 
       {/* ══════ Section 2: Featured Routes ══════ */}
       {(featuredRoutes || []).length > 0 && (
@@ -647,6 +688,32 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </section>
       )}
 
+      {/* ══════ Testimonials (AmEx Travel style) ══════ */}
+      <section className="py-14 max-w-6xl mx-auto px-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">{t("home.testimonials")}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {([1, 2, 3] as const).map((i) => (
+            <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100">
+              <div className="flex items-center gap-1 mb-3">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <span key={s} className="text-amber-400">&#9733;</span>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm italic leading-relaxed">&ldquo;{t(`home.testimonial${i}.text`)}&rdquo;</p>
+              <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+                  {t(`home.testimonial${i}.name`)[0]}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{t(`home.testimonial${i}.name`)}</p>
+                  <p className="text-xs text-gray-500">{t(`home.testimonial${i}.route`)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ══════ Section 10: Trending Guides (visual cards) ══════ */}
       {trendingGuides.length > 0 && (
         <section className="py-14 max-w-6xl mx-auto px-4">
@@ -801,6 +868,37 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </div>
       </section>
 
+      {/* ══════ Recently Viewed (Airbnb style) ══════ */}
+      {recentlyViewed.length > 0 && (
+        <section className="py-14 max-w-6xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("home.recentlyViewed")}</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {recentlyViewed.map((item) => (
+              <Link key={item.id} href={`/${item.type}/${item.id}`} className="group">
+                <div className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="relative h-32 overflow-hidden bg-gray-50">
+                    {item.image ? (
+                      <OptimizedImage src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg className="w-8 h-8 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                    <p className="text-xs text-gray-400 mt-0.5 capitalize">{item.type.replace("-", " ")}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ══════ Section 15: Footer CTA + Newsletter ══════ */}
       <section className="py-14 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 text-center">
@@ -833,6 +931,17 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           </div>
         </div>
       </section>
+
+      {/* ══════ Floating AI Chat Button (Booking mobile style) ══════ */}
+      <Link
+        href="/chat"
+        className="fixed bottom-24 right-4 z-50 w-14 h-14 bg-[#0066FF] text-white rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center hover:scale-110 transition-transform md:bottom-8"
+        aria-label={t("home.aiChat")}
+      >
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </Link>
 
       <MobileNav />
     </div>
