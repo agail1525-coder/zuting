@@ -21,12 +21,14 @@ interface Props {
 
 /* ─── Constants ─── */
 
-const SEARCH_TABS = [
-  { key: "sites", label: "圣地朝圣", placeholder: "搜索圣地、寺庙、目的地..." },
-  { key: "routes", label: "文化路线", placeholder: "搜索路线名称、目的地..." },
-  { key: "ai", label: "AI规划", placeholder: "描述你的旅行需求，如：3天禅宗路线，预算5000..." },
-  { key: "wiki", label: "文化百科", placeholder: "搜索宗教、祖师、祖训..." },
-] as const;
+function getSearchTabs(t: (key: string) => string) {
+  return [
+    { key: "sites", label: t("home.searchTab.sites"), placeholder: t("home.searchTab.sitesPlaceholder") },
+    { key: "routes", label: t("home.searchTab.routes"), placeholder: t("home.searchTab.routesPlaceholder") },
+    { key: "ai", label: t("home.searchTab.ai"), placeholder: t("home.searchTab.aiPlaceholder") },
+    { key: "wiki", label: t("home.searchTab.wiki"), placeholder: t("home.searchTab.wikiPlaceholder") },
+  ] as const;
+}
 
 const CategorySvg = {
   zen: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3C7 8 4 12 4 15a8 8 0 0016 0c0-3-3-7-8-12z" />,
@@ -39,30 +41,38 @@ const CategorySvg = {
   book: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />,
 };
 
-const CATEGORY_ICONS = [
-  { label: "禅宗路线", svg: CategorySvg.zen, href: "/routes?category=ZEN" },
-  { label: "佛教圣地", svg: CategorySvg.buddhist, href: "/routes?category=BUDDHIST" },
-  { label: "道教寻根", svg: CategorySvg.taoist, href: "/routes?category=TAOIST" },
-  { label: "基督文化", svg: CategorySvg.christian, href: "/routes?category=CHRISTIAN" },
-  { label: "丝路探秘", svg: CategorySvg.islamic, href: "/routes?category=ISLAMIC" },
-  { label: "跨文化之旅", svg: CategorySvg.cross, href: "/routes?category=CROSS_CULTURAL" },
-  { label: "AI智能规划", svg: CategorySvg.ai, href: "/chat" },
-  { label: "文化百科", svg: CategorySvg.book, href: "/religions" },
-];
+function getCategoryIcons(t: (key: string) => string) {
+  return [
+    { label: t("home.category.zen"), svg: CategorySvg.zen, href: "/routes?category=ZEN" },
+    { label: t("home.category.buddhist"), svg: CategorySvg.buddhist, href: "/routes?category=BUDDHIST" },
+    { label: t("home.category.taoist"), svg: CategorySvg.taoist, href: "/routes?category=TAOIST" },
+    { label: t("home.category.christian"), svg: CategorySvg.christian, href: "/routes?category=CHRISTIAN" },
+    { label: t("home.category.islamic"), svg: CategorySvg.islamic, href: "/routes?category=ISLAMIC" },
+    { label: t("home.category.crossCultural"), svg: CategorySvg.cross, href: "/routes?category=CROSS_CULTURAL" },
+    { label: t("home.category.aiPlanning"), svg: CategorySvg.ai, href: "/chat" },
+    { label: t("home.category.wiki"), svg: CategorySvg.book, href: "/religions" },
+  ];
+}
 
-const CATEGORY_LABELS: Record<string, string> = {
-  ZEN: "禅宗", BUDDHIST: "佛教", TAOIST: "道教", CHRISTIAN: "基督教",
-  ISLAMIC: "伊斯兰", CROSS_CULTURAL: "跨文化", HINDU: "印度教",
-};
+function getCategoryLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    ZEN: t("home.categoryLabel.zen"), BUDDHIST: t("home.categoryLabel.buddhist"),
+    TAOIST: t("home.categoryLabel.taoist"), CHRISTIAN: t("home.categoryLabel.christian"),
+    ISLAMIC: t("home.categoryLabel.islamic"), CROSS_CULTURAL: t("home.categoryLabel.crossCultural"),
+    HINDU: t("home.categoryLabel.hindu"),
+  };
+}
 
-const EXPLORE_TABS = [
-  { key: "all", label: "全部" },
-  { key: "buddhism", label: "佛教" },
-  { key: "taoism", label: "道教" },
-  { key: "christianity", label: "基督教" },
-  { key: "islam", label: "伊斯兰教" },
-  { key: "hinduism", label: "印度教" },
-];
+function getExploreTabs(t: (key: string) => string) {
+  return [
+    { key: "all", label: t("home.exploreTab.all") },
+    { key: "buddhism", label: t("home.exploreTab.buddhism") },
+    { key: "taoism", label: t("home.exploreTab.taoism") },
+    { key: "christianity", label: t("home.exploreTab.christianity") },
+    { key: "islam", label: t("home.exploreTab.islam") },
+    { key: "hinduism", label: t("home.exploreTab.hinduism") },
+  ];
+}
 
 const RELIGION_KEYWORD_MAP: Record<string, string[]> = {
   buddhism: ["佛", "buddhis", "禅", "zen"],
@@ -74,8 +84,9 @@ const RELIGION_KEYWORD_MAP: Record<string, string[]> = {
 
 /* ─── Sub Components ─── */
 
-function RouteCard({ route }: { route: Route }) {
+function RouteCard({ route, t }: { route: Route; t: (key: string) => string }) {
   const price = (route.priceFrom / 100).toLocaleString();
+  const categoryLabels = getCategoryLabels(t);
   return (
     <Link href={`/routes/${route.slug}`} className="group">
       <div className="bg-white rounded-xl overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
@@ -91,7 +102,7 @@ function RouteCard({ route }: { route: Route }) {
           )}
           <div className="absolute top-3 left-3">
             <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm text-gray-600">
-              {CATEGORY_LABELS[route.category] ?? route.category} · {route.duration}天{route.nights}晚
+              {categoryLabels[route.category] ?? route.category} · {route.duration}{t("home.days")}{route.nights}{t("home.nights")}
             </span>
           </div>
         </div>
@@ -99,7 +110,7 @@ function RouteCard({ route }: { route: Route }) {
           <h3 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">{route.title}</h3>
           <p className="text-sm text-gray-500 mt-1 line-clamp-1">{route.subtitle}</p>
           <div className="flex items-center justify-between mt-3">
-            <span className="text-gray-900 font-bold">¥{price}<span className="text-xs text-gray-500 font-normal">/人起</span></span>
+            <span className="text-gray-900 font-bold">¥{price}<span className="text-xs text-gray-500 font-normal">{t("home.perPerson")}</span></span>
             {route.rating && (
               <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white text-xs font-bold">{route.rating.toFixed(1)}</span>
             )}
@@ -110,7 +121,7 @@ function RouteCard({ route }: { route: Route }) {
   );
 }
 
-function FlashDealBanner({ routes }: { routes: Route[] }) {
+function FlashDealBanner({ routes, t }: { routes: Route[]; t: (key: string) => string }) {
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
   const dealRoutes = useMemo(() => (routes || []).slice(0, 3), [routes]);
 
@@ -139,11 +150,11 @@ function FlashDealBanner({ routes }: { routes: Route[] }) {
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            <h2 className="text-base font-bold text-gray-900">限时特惠</h2>
-            <span className="text-xs text-gray-500">精选路线限时折扣</span>
+            <h2 className="text-base font-bold text-gray-900">{t("home.flashDeal.title")}</h2>
+            <span className="text-xs text-gray-500">{t("home.flashDeal.subtitle")}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-gray-500">剩余</span>
+            <span className="text-xs text-gray-500">{t("home.flashDeal.remaining")}</span>
             <span className="text-sm font-mono font-bold text-gray-900">
               {String(timeLeft.h).padStart(2, "0")}:{String(timeLeft.m).padStart(2, "0")}:{String(timeLeft.s).padStart(2, "0")}
             </span>
@@ -152,7 +163,6 @@ function FlashDealBanner({ routes }: { routes: Route[] }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
           {dealRoutes.map((route) => {
             const price = Math.round(route.priceFrom / 100);
-            const discountPrice = Math.round(price * 0.8);
             return (
               <Link key={route.id} href={`/routes/${route.slug}`} className="group p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start gap-3">
@@ -167,11 +177,9 @@ function FlashDealBanner({ routes }: { routes: Route[] }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm text-gray-900 line-clamp-1 group-hover:text-blue-600">{route.title}</h3>
-                    <p className="text-gray-500 text-xs mt-0.5">{route.duration}天{route.nights}晚</p>
+                    <p className="text-gray-500 text-xs mt-0.5">{route.duration}{t("home.days")}{route.nights}{t("home.nights")}</p>
                     <div className="flex items-baseline gap-2 mt-1.5">
-                      <span className="font-bold text-red-500">¥{discountPrice.toLocaleString()}</span>
-                      <span className="text-gray-400 text-xs line-through">¥{price.toLocaleString()}</span>
-                      <span className="bg-red-50 text-red-500 text-[10px] font-bold px-1.5 py-0.5 rounded">-20%</span>
+                      <span className="font-bold text-gray-900">¥{price.toLocaleString()}{t("home.perPerson")}</span>
                     </div>
                   </div>
                 </div>
@@ -181,7 +189,7 @@ function FlashDealBanner({ routes }: { routes: Route[] }) {
         </div>
         <div className="text-center py-3 border-t border-gray-100">
           <Link href="/promotions" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-            查看全部特惠 →
+            {t("home.flashDeal.viewAll")}
           </Link>
         </div>
       </div>
@@ -247,7 +255,10 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
     }
   };
 
-  const currentPlaceholder = SEARCH_TABS.find(t => t.key === activeSearchTab)?.placeholder || "";
+  const searchTabs = useMemo(() => getSearchTabs(t), [t]);
+  const categoryIcons = useMemo(() => getCategoryIcons(t), [t]);
+  const exploreTabs = useMemo(() => getExploreTabs(t), [t]);
+  const currentPlaceholder = searchTabs.find(tab => tab.key === activeSearchTab)?.placeholder || "";
   const destinations = (holySites || []).slice(0, 8);
   const safeTemples = temples || [];
   const safePatriarchs = patriarchs || [];
@@ -280,17 +291,17 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       <section className="relative hero-bg pt-28 pb-20 md:pt-36 md:pb-28">
         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white tracking-tight">
-            帮助100万人走祖庭
+            {t("home.heroTitle")}
           </h1>
           <p className="text-white/80 text-lg md:text-xl mt-4 max-w-2xl mx-auto">
-            探索全球60+文化圣地，体验千年智慧之旅
+            {t("home.heroSubtitle")}
           </p>
 
           {/* Search Card */}
           <div className="mt-8 max-w-2xl mx-auto">
             <div className="bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.15)] overflow-hidden">
               <div className="flex border-b border-gray-100">
-                {SEARCH_TABS.map((tab) => (
+                {searchTabs.map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => setActiveSearchTab(tab.key)}
@@ -322,7 +333,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                   type="submit"
                   className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm shrink-0"
                 >
-                  {activeSearchTab === "ai" ? "开始规划" : "搜索"}
+                  {activeSearchTab === "ai" ? t("home.startPlanning") : t("home.search")}
                 </button>
               </form>
             </div>
@@ -330,7 +341,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
 
           {/* Category Navigation */}
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-6">
-            {CATEGORY_ICONS.map((cat) => (
+            {categoryIcons.map((cat) => (
               <Link key={cat.label} href={cat.href} className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">{cat.svg}</svg>
                 <span>{cat.label}</span>
@@ -339,7 +350,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           </div>
 
           <p className="text-white/50 text-xs mt-5">
-            专业路线策划 · AI旅行顾问 · 12大文化传统 · 7语言支持
+            {t("home.heroTagline")}
           </p>
         </div>
       </section>
@@ -349,16 +360,16 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         <section className="py-14 max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.featuredRoutes") || "精选路线"}</h2>
-              <p className="text-base text-gray-500 mt-2">{t("home.featuredRoutesDesc") || "深度文化之旅，精心策划每一天"}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.featuredRoutes")}</h2>
+              <p className="text-base text-gray-500 mt-2">{t("home.featuredRoutesDesc")}</p>
             </div>
             <Link href="/routes" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-              {t("home.viewAll") || "查看全部"} →
+              {t("home.viewAll")} →
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {(featuredRoutes || []).slice(0, 8).map((route) => (
-              <RouteCard key={route.id} route={route} />
+              <RouteCard key={route.id} route={route} t={t} />
             ))}
           </div>
         </section>
@@ -370,15 +381,15 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900">按传统探索</h2>
-                <p className="text-base text-gray-500 mt-2">深入12大文化传统，发现属于你的朝圣之路</p>
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.exploreByTradition")}</h2>
+                <p className="text-base text-gray-500 mt-2">{t("home.exploreByTraditionDesc")}</p>
               </div>
               <Link href="/holy-sites" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors hidden md:block">
-                查看全部 →
+                {t("home.viewAll")} →
               </Link>
             </div>
             <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
-              {EXPLORE_TABS.map((tab) => (
+              {exploreTabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setExploreTab(tab.key)}
@@ -409,7 +420,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                       <div className="flex items-center gap-2 mt-0.5">
                         <span className="text-white/70 text-xs">{item.subtitle}</span>
                         <span className="text-white/50 text-xs">·</span>
-                        <span className="text-white/70 text-xs">{item.type === "temple" ? "祖庭" : "圣地"}</span>
+                        <span className="text-white/70 text-xs">{item.type === "temple" ? t("home.temple") : t("home.holySite")}</span>
                       </div>
                     </div>
                   </div>
@@ -421,23 +432,23 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       )}
 
       {/* ══════ Section 4: Flash Deals ══════ */}
-      <FlashDealBanner routes={featuredRoutes} />
+      <FlashDealBanner routes={featuredRoutes} t={t} />
 
       {/* ══════ Section 5: AI Planner Banner ══════ */}
       <section className="py-14 max-w-6xl mx-auto px-4">
         <div className="rounded-2xl overflow-hidden hero-bg">
           <div className="flex flex-col md:flex-row items-center p-8 md:p-12 gap-8">
             <div className="flex-1">
-              <span className="text-white/60 text-xs font-medium tracking-wider uppercase">AI Travel Planner</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mt-2 tracking-tight">{t("home.aiTitle") || "AI 智慧助手"}</h2>
+              <span className="text-white/60 text-xs font-medium tracking-wider uppercase">{t("home.aiPlannerLabel")}</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mt-2 tracking-tight">{t("home.aiTitle")}</h2>
               <p className="text-white/80 mt-3 text-base leading-relaxed">
-                {t("home.aiDesc") || "告诉小鸿你的偏好——文化类型、天数、预算，获得个性化路线推荐。还能帮你查询目的地攻略、规划逐日行程。"}
+                {t("home.aiDesc")}
               </p>
               <Link
                 href="/chat"
                 className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg transition-all hover:bg-gray-50 shadow-lg"
               >
-                {t("home.startAI") || "开始AI规划"}
+                {t("home.startAI")}
               </Link>
             </div>
             <div className="flex-1 max-w-md">
@@ -447,7 +458,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                     <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   </div>
                   <div className="bg-gray-50 rounded-lg rounded-tl-sm px-3 py-2 text-gray-900 text-sm flex-1">
-                    我想走一条禅宗路线，3-5天，预算5000以内
+                    {t("home.chatDemo.userMsg")}
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -455,7 +466,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                     <svg className="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                   </div>
                   <div className="bg-gray-50 rounded-lg rounded-tl-sm px-3 py-2 text-gray-900 text-sm flex-1">
-                    推荐「六祖慧能路线」5天4晚，走访国恩寺→南华寺→光孝寺，起价¥3,280/人。要看详细行程吗？
+                    {t("home.chatDemo.aiMsg")}
                   </div>
                 </div>
               </div>
@@ -469,11 +480,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         <section className="py-14 max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.popularDest") || "热门目的地"}</h2>
-              <p className="text-base text-gray-500 mt-2">{t("home.popularDestDesc") || "全球文化圣地等你探索"}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.popularDest")}</h2>
+              <p className="text-base text-gray-500 mt-2">{t("home.popularDestDesc")}</p>
             </div>
             <Link href="/holy-sites" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-              {t("home.viewAll") || "查看全部"} →
+              {t("home.viewAll")} →
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
@@ -488,14 +499,14 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       {(safeTemples.length > 0 || safePatriarchs.length > 0) && (
         <section className="py-14 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">祖庭与祖师</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">{t("home.templesAndPatriarchs")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Temples column */}
               {safeTemples.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-gray-900">知名祖庭</h3>
-                    <Link href="/temples" className="text-blue-600 hover:text-blue-700 text-sm font-medium">查看全部 →</Link>
+                    <h3 className="text-lg font-bold text-gray-900">{t("home.famousTemples")}</h3>
+                    <Link href="/temples" className="text-blue-600 hover:text-blue-700 text-sm font-medium">{t("home.viewAll")} →</Link>
                   </div>
                   <div className="space-y-3">
                     {safeTemples.slice(0, 5).map((temple) => (
@@ -523,8 +534,8 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               {safePatriarchs.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-gray-900">历代祖师</h3>
-                    <Link href="/patriarchs" className="text-blue-600 hover:text-blue-700 text-sm font-medium">查看全部 →</Link>
+                    <h3 className="text-lg font-bold text-gray-900">{t("home.historicPatriarchs")}</h3>
+                    <Link href="/patriarchs" className="text-blue-600 hover:text-blue-700 text-sm font-medium">{t("home.viewAll")} →</Link>
                   </div>
                   <div className="space-y-3">
                     {safePatriarchs.slice(0, 5).map((p) => (
@@ -562,18 +573,18 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900">社区动态</h2>
-                <p className="text-base text-gray-500 mt-2">来自全球朝圣者的真实分享</p>
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.communityUpdates")}</h2>
+                <p className="text-base text-gray-500 mt-2">{t("home.communityUpdatesDesc")}</p>
               </div>
               <Link href="/community" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-                进入社区 →
+                {t("home.enterCommunity")} →
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Guides column */}
               {trendingGuides.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">热门攻略</h3>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">{t("home.hotGuides")}</h3>
                   <div className="space-y-3">
                     {trendingGuides.map((guide) => (
                       <Link key={guide.id} href={`/guides/${guide.id}`} className="flex gap-3 p-3 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
@@ -589,7 +600,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-sm text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{guide.title}</h4>
                           <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
-                            <span>{guide.user?.nickname || "旅行者"}</span>
+                            <span>{guide.user?.nickname || t("home.traveler")}</span>
                             <span className="flex items-center gap-0.5">
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                               {guide.viewCount.toLocaleString()}
@@ -608,7 +619,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               {/* Questions column */}
               {trendingQuestions.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">热门问答</h3>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">{t("home.hotQuestions")}</h3>
                   <div className="space-y-3">
                     {trendingQuestions.map((q) => (
                       <Link key={q.id} href={`/questions/${q.id}`} className="block p-4 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
@@ -616,11 +627,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                         <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                           <span className="flex items-center gap-1">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-                            {q.answerCount} 回答
+                            {q.answerCount} {t("home.answers")}
                           </span>
                           <span className="flex items-center gap-1">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                            {q.viewCount.toLocaleString()} 浏览
+                            {q.viewCount.toLocaleString()} {t("home.views")}
                           </span>
                           {q.tags.length > 0 && (
                             <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-500">{q.tags[0]}</span>
@@ -641,11 +652,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         <section className="py-14 max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900">深度游记</h2>
-              <p className="text-base text-gray-500 mt-2">旅行者的第一手朝圣体验</p>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.travelJournals")}</h2>
+              <p className="text-base text-gray-500 mt-2">{t("home.travelJournalsDesc")}</p>
             </div>
             <Link href="/community" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-              查看更多 →
+              {t("home.viewMore")} →
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -666,7 +677,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                         {(guide.user?.nickname || "U")[0]}
                       </div>
                       <span className="text-xs text-white font-medium drop-shadow-sm">
-                        {guide.user?.nickname || "旅行者"}
+                        {guide.user?.nickname || t("home.traveler")}
                       </span>
                     </div>
                   </div>
@@ -694,7 +705,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       {dailyTeaching && (
         <section className="py-14 max-w-6xl mx-auto px-4">
           <div className="bg-gray-50 rounded-2xl p-8 md:p-12 text-center">
-            <span className="text-sm text-gray-400 tracking-widest uppercase font-medium">Daily Wisdom</span>
+            <span className="text-sm text-gray-400 tracking-widest uppercase font-medium">{t("home.dailyWisdom")}</span>
             <blockquote className="text-xl md:text-2xl font-serif text-gray-900 mt-4 leading-relaxed max-w-3xl mx-auto">
               &ldquo;{dailyTeaching.originalText}&rdquo;
             </blockquote>
@@ -702,7 +713,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <p className="text-gray-500 mt-3 text-sm">— {dailyTeaching.sourceText}{dailyTeaching.religion?.name ? ` · ${dailyTeaching.religion.name}` : ""}</p>
             )}
             <Link href="/teachings" className="inline-block mt-4 text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-              探索更多智慧 →
+              {t("home.exploreMoreWisdom")} →
             </Link>
           </div>
         </section>
@@ -716,8 +727,8 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900">下载 Joinus APP</h3>
-              <p className="text-sm text-gray-500 mt-0.5">随时随地规划你的文化之旅，离线地图+语音导览</p>
+              <h3 className="font-bold text-gray-900">{t("home.downloadApp")}</h3>
+              <p className="text-sm text-gray-500 mt-0.5">{t("home.downloadAppDesc")}</p>
             </div>
           </div>
           <div className="flex gap-3">
@@ -737,9 +748,9 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       {safeReligions.length > 0 && (
         <section className="py-14 max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.traditions") || "12大文化传统"}</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.traditions")}</h2>
             <Link href="/religions" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
-              {t("home.wikiLink") || "文化百科"} →
+              {t("home.wikiLink")} →
             </Link>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
@@ -763,29 +774,29 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <p className="text-3xl md:text-4xl font-bold text-gray-900">100,000+</p>
-              <p className="text-sm text-gray-500 mt-1">注册用户</p>
+              <p className="text-sm text-gray-500 mt-1">{t("home.trust.registeredUsers")}</p>
             </div>
             <div>
               <p className="text-3xl md:text-4xl font-bold text-gray-900">5,000+</p>
-              <p className="text-sm text-gray-500 mt-1">真实评价</p>
+              <p className="text-sm text-gray-500 mt-1">{t("home.trust.realReviews")}</p>
             </div>
             <div>
               <p className="text-3xl md:text-4xl font-bold text-gray-900">98%</p>
-              <p className="text-sm text-gray-500 mt-1">好评率</p>
+              <p className="text-sm text-gray-500 mt-1">{t("home.trust.positiveRate")}</p>
             </div>
             <div>
               <p className="text-3xl md:text-4xl font-bold text-gray-900">7×24</p>
-              <p className="text-sm text-gray-500 mt-1">客服在线</p>
+              <p className="text-sm text-gray-500 mt-1">{t("home.trust.supportOnline")}</p>
             </div>
           </div>
           {/* Payment methods */}
           <div className="flex flex-wrap justify-center gap-6 mt-8 items-center">
-            {["微信支付", "支付宝", "Visa", "Mastercard", "银联"].map((name) => (
+            {[t("home.payment.wechat"), t("home.payment.alipay"), "Visa", "Mastercard", t("home.payment.unionpay")].map((name) => (
               <span key={name} className="text-xs text-gray-400 font-medium px-3 py-1.5 bg-gray-50 rounded-md">{name}</span>
             ))}
           </div>
           <p className="text-center text-xs text-gray-400 mt-4">
-            SSL安全加密 · 隐私数据保护 · 7天无忧退款 · PCI DSS认证
+            {t("home.trust.securityInfo")}
           </p>
         </div>
       </section>
@@ -793,16 +804,16 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       {/* ══════ Section 15: Footer CTA + Newsletter ══════ */}
       <section className="py-14 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{t("home.ctaTitle") || "开启你的文化之旅"}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{t("home.ctaTitle")}</h2>
           <p className="text-base text-gray-500 mt-3 max-w-lg mx-auto">
-            {t("home.ctaDesc") || "千年智慧，一路同行。从禅宗到丝路，从耶路撒冷到京都，探索全球最深邃的文化旅行体验。"}
+            {t("home.ctaDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
             <Link href="/routes" className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors text-sm">
-              {t("home.browseRoutes") || "浏览路线"}
+              {t("home.browseRoutes")}
             </Link>
             <Link href="/chat" className="px-8 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-lg transition-colors text-sm shadow-sm">
-              {t("home.aiPlan") || "AI帮你规划"}
+              {t("home.aiPlan")}
             </Link>
           </div>
 
@@ -811,14 +822,14 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
             <div className="flex gap-2">
               <input
                 type="email"
-                placeholder="输入您的邮箱地址"
+                placeholder={t("home.newsletter.emailPlaceholder")}
                 className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/30"
               />
               <button className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm shrink-0">
-                订阅
+                {t("home.newsletter.subscribe")}
               </button>
             </div>
-            <p className="text-gray-400 text-xs mt-2">获取限时折扣与新路线通知，随时可取消</p>
+            <p className="text-gray-400 text-xs mt-2">{t("home.newsletter.hint")}</p>
           </div>
         </div>
       </section>
