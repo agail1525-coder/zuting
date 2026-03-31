@@ -23,7 +23,7 @@ const STATUS_STYLE: Record<
   CANCELLED: { color: "text-gray-500", bg: "bg-gray-100", border: "border-gray-200" },
   REFUNDING: { color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
   REFUNDED: { color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-  COMPLETED: { color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20" },
+  COMPLETED: { color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
 };
 
 const DEFAULT_STYLE = { color: "text-gray-500", bg: "bg-gray-100", border: "border-gray-200" };
@@ -73,6 +73,33 @@ const PAYMENT_METHOD_I18N: Record<string, string> = {
   bank_transfer: "orders.paymentBankTransfer",
 };
 
+type SortMode = "newest" | "oldest" | "amountDesc" | "amountAsc";
+
+// --- Download invoice as plain-text receipt (no external libs) ---
+function downloadInvoice(order: OrderDetail, t: (k: string) => string) {
+  const lines = [
+    "=".repeat(40),
+    `  ${t("orders.invoiceTitle")}`,
+    "=".repeat(40),
+    `${t("orders.invoicePlatform")}: JOINUS.COM`,
+    `${t("orders.invoiceOrderNo")}: ${order.orderNo}`,
+    `${t("orders.invoiceStatus")}: ${order.status}`,
+    `${t("orders.invoiceAmount")}: ${formatAmount(order.paidAmount ?? order.totalAmount)}`,
+    `${t("orders.invoiceDate")}: ${formatDateTime(order.paidAt ?? order.createdAt)}`,
+    "-".repeat(40),
+    `${t("orders.invoiceNote")}`,
+    "=".repeat(40),
+  ];
+  const content = lines.join("\n");
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `receipt-${order.orderNo}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // --- Confirmation Modal ---
 function ConfirmModal({
   open,
@@ -119,15 +146,165 @@ function ConfirmModal({
   );
 }
 
+// --- Review Prompt Banner ---
+function ReviewPromptBanner({
+  order,
+  onSkip,
+}: {
+  order: OrderDetail;
+  onSkip: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-3 px-4 py-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-lg shrink-0">⭐</span>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-amber-800">{t("orders.reviewPrompt.title")}</p>
+          <p className="text-xs text-amber-600 truncate">{t("orders.reviewPrompt.desc")}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <Link
+          href={`/trips/${order.trip?.id ?? ""}`}
+          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 transition-colors"
+        >
+          {t("orders.reviewPrompt.cta")}
+        </Link>
+        <button
+          onClick={() => onSkip(order.id)}
+          className="text-xs text-amber-500 hover:text-amber-700 transition-colors"
+        >
+          {t("orders.reviewPrompt.skip")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- Date Range Filter ---
+function DateRangeFilter({
+  fromDate,
+  toDate,
+  onFromChange,
+  onToChange,
+  onApply,
+  onClear,
+  isActive,
+}: {
+  fromDate: string;
+  toDate: string;
+  onFromChange: (v: string) => void;
+  onToChange: (v: string) => void;
+  onApply: () => void;
+  onClear: () => void;
+  isActive: boolean;
+}) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-all ${
+          isActive
+            ? "bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]"
+            : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+        }`}
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{isActive ? t("orders.dateFilter.active") : t("orders.dateFilter.label")}</span>
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-2 z-20 bg-white border border-gray-200 rounded-2xl p-4 shadow-xl w-72">
+          <p className="text-sm font-medium text-gray-700 mb-3">{t("orders.dateFilter.label")}</p>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs text-gray-400 block mb-1">{t("orders.dateFilter.from")}</label>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => onFromChange(e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 block mb-1">{t("orders.dateFilter.to")}</label>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => onToChange(e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => { onClear(); setOpen(false); }}
+              className="flex-1 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              {t("orders.dateFilter.clear")}
+            </button>
+            <button
+              onClick={() => { onApply(); setOpen(false); }}
+              className="flex-1 py-2 text-sm text-white bg-[#0066FF] rounded-lg hover:bg-[#0055DD] transition-colors"
+            >
+              {t("orders.dateFilter.apply")}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Sort Selector ---
+function SortSelector({
+  value,
+  onChange,
+}: {
+  value: SortMode;
+  onChange: (v: SortMode) => void;
+}) {
+  const { t } = useTranslation();
+  const options: { value: SortMode; label: string }[] = [
+    { value: "newest", label: t("orders.sort.newest") },
+    { value: "oldest", label: t("orders.sort.oldest") },
+    { value: "amountDesc", label: t("orders.sort.amountDesc") },
+    { value: "amountAsc", label: t("orders.sort.amountAsc") },
+  ];
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-gray-400 shrink-0">{t("orders.sortLabel")}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as SortMode)}
+        className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF] text-gray-700"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 // --- Order Detail Drawer ---
 function OrderDrawer({
   order,
   onClose,
   onAction,
+  onSkipReview,
+  skippedReviews,
 }: {
   order: OrderDetail | null;
   onClose: () => void;
   onAction: () => void;
+  onSkipReview: (id: string) => void;
+  skippedReviews: Set<string>;
 }) {
   const { t } = useTranslation();
   const [actionLoading, setActionLoading] = useState(false);
@@ -143,6 +320,9 @@ function OrderDrawer({
   const upperStatus = order.status?.toUpperCase() || "";
   const canCancel = upperStatus === "PENDING";
   const canRefund = upperStatus === "PAID";
+  const isCompleted = upperStatus === "COMPLETED";
+  const isPaid = upperStatus === "PAID";
+  const showReviewPrompt = isCompleted && !skippedReviews.has(order.id);
 
   const handleAction = async () => {
     if (!confirmModal) return;
@@ -220,12 +400,65 @@ function OrderDrawer({
           </div>
 
           {/* Status Badge */}
-          <div className="mb-6">
+          <div className="mb-4">
             <span
               className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium border ${sc.color} ${sc.bg} ${sc.border}`}
             >
               {statusLabel}
             </span>
+          </div>
+
+          {/* Review Prompt (for completed orders) */}
+          {showReviewPrompt && (
+            <div className="mb-4">
+              <ReviewPromptBanner order={order} onSkip={onSkipReview} />
+            </div>
+          )}
+
+          {/* Quick Actions Row */}
+          <div className="flex gap-2 mb-6 flex-wrap">
+            {/* Download Invoice (paid/completed/refunded orders) */}
+            {(upperStatus === "PAID" || upperStatus === "COMPLETED" || upperStatus === "REFUNDED") && (
+              <button
+                onClick={() => downloadInvoice(order, t)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                {t("orders.quickAction.invoice")}
+              </button>
+            )}
+            {/* Write Review (completed) */}
+            {isCompleted && order.trip?.id && (
+              <Link
+                href={`/trips/${order.trip.id}`}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 transition-colors"
+              >
+                <span>⭐</span>
+                {t("orders.quickAction.review")}
+              </Link>
+            )}
+            {/* Rebook (completed) */}
+            {isCompleted && (
+              <Link
+                href="/routes"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-700 hover:bg-green-100 transition-colors"
+              >
+                <span>🔄</span>
+                {t("orders.quickAction.reorder")}
+              </Link>
+            )}
+            {/* Contact Support (all statuses) */}
+            <Link
+              href="/messages"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              {t("orders.quickAction.contact")}
+            </Link>
           </div>
 
           {/* Order Info */}
@@ -271,6 +504,14 @@ function OrderDrawer({
               )}
             </div>
           </div>
+
+          {/* Paid Nudge */}
+          {isPaid && (
+            <div className="mb-4 px-3 py-2.5 rounded-xl bg-blue-50 border border-blue-100 text-xs text-blue-600 flex items-center gap-2">
+              <span className="text-base">✈️</span>
+              <span>{t("orders.tripConfirmedNudge")}</span>
+            </div>
+          )}
 
           {/* Associated Trip */}
           {order.trip && (
@@ -447,6 +688,12 @@ export default function OrdersPage() {
   const [drawerLoading, setDrawerLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("newest");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [appliedFrom, setAppliedFrom] = useState("");
+  const [appliedTo, setAppliedTo] = useState("");
+  const [skippedReviews, setSkippedReviews] = useState<Set<string>>(new Set());
 
   const STATUS_TABS = useMemo(() => getStatusTabs(t), [t]);
 
@@ -456,12 +703,14 @@ export default function OrdersPage() {
     }
   }, [authLoading, user, router]);
 
-  // Filtered orders
+  // Filtered + sorted orders
   const filteredOrders = useMemo(() => {
     let result = orders;
+
     if (statusFilter) {
       result = result.filter((o) => (o.status?.toUpperCase() || "") === statusFilter);
     }
+
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
@@ -470,8 +719,28 @@ export default function OrdersPage() {
           (o.trip?.title ?? "").toLowerCase().includes(q)
       );
     }
+
+    if (appliedFrom) {
+      const from = new Date(appliedFrom).getTime();
+      result = result.filter((o) => new Date(o.createdAt).getTime() >= from);
+    }
+
+    if (appliedTo) {
+      const to = new Date(appliedTo + "T23:59:59").getTime();
+      result = result.filter((o) => new Date(o.createdAt).getTime() <= to);
+    }
+
+    // Sort
+    result = [...result].sort((a, b) => {
+      if (sortMode === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      if (sortMode === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (sortMode === "amountDesc") return (b.totalAmount ?? 0) - (a.totalAmount ?? 0);
+      if (sortMode === "amountAsc") return (a.totalAmount ?? 0) - (b.totalAmount ?? 0);
+      return 0;
+    });
+
     return result;
-  }, [orders, statusFilter, searchQuery]);
+  }, [orders, statusFilter, searchQuery, appliedFrom, appliedTo, sortMode]);
 
   // Order stats
   const orderStats = useMemo(() => {
@@ -481,7 +750,8 @@ export default function OrdersPage() {
       const key = o.status?.toUpperCase() || "PENDING";
       statusCounts[key] = (statusCounts[key] || 0) + 1;
     });
-    return { totalSpent: total, statusCounts, count: orders.length };
+    const active = (statusCounts["PAID"] || 0) + (statusCounts["PENDING"] || 0);
+    return { totalSpent: total, statusCounts, count: orders.length, active };
   }, [orders]);
 
   const loadOrders = useCallback(async () => {
@@ -495,7 +765,7 @@ export default function OrdersPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!user) return;
@@ -518,6 +788,23 @@ export default function OrdersPage() {
     setSelectedOrder(null);
     loadOrders();
   };
+
+  const handleSkipReview = (id: string) => {
+    setSkippedReviews((prev) => new Set([...prev, id]));
+  };
+
+  const dateFilterActive = !!(appliedFrom || appliedTo);
+
+  const clearAllFilters = () => {
+    setStatusFilter("");
+    setSearchQuery("");
+    setAppliedFrom("");
+    setAppliedTo("");
+    setFromDate("");
+    setToDate("");
+  };
+
+  const hasAnyFilter = statusFilter || searchQuery || dateFilterActive;
 
   if (authLoading || loading) {
     return (
@@ -544,25 +831,29 @@ export default function OrdersPage() {
           <p className="text-gray-500 text-sm mt-2">{t("orders.pageSubtitle")}</p>
         </div>
 
-        {/* ══════ Order Stats Summary (对标Trip.com订单中心) ══════ */}
+        {/* ══════ Order Stats Summary — Booking style 4-card header ══════ */}
         {orders.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-4 gap-3 mb-6">
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
               <p className="text-2xl font-bold text-[#0066FF]">{orderStats.count}</p>
               <p className="text-xs text-gray-400 mt-1">{t("orders.stats.totalOrders")}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
-              <p className="text-2xl font-bold text-[#0066FF]">{formatAmount(orderStats.totalSpent)}</p>
+              <p className="text-lg font-bold text-[#0066FF]">{formatAmount(orderStats.totalSpent)}</p>
               <p className="text-xs text-gray-400 mt-1">{t("orders.stats.totalSpent")}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
-              <p className="text-2xl font-bold text-green-500">{orderStats.statusCounts["COMPLETED"] || 0}</p>
+              <p className="text-2xl font-bold text-emerald-500">{orderStats.statusCounts["COMPLETED"] || 0}</p>
               <p className="text-xs text-gray-400 mt-1">{t("orders.stats.completed")}</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
+              <p className="text-2xl font-bold text-blue-500">{orderStats.active}</p>
+              <p className="text-xs text-gray-400 mt-1">{t("orders.stats.active")}</p>
             </div>
           </div>
         )}
 
-        {/* ══════ Status Tabs (对标Booking/Ctrip核心模式) ══════ */}
+        {/* ══════ Status Tabs — Booking/Ctrip core pattern ══════ */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
           {STATUS_TABS.map((tab) => {
             const count = tab.value ? (orderStats.statusCounts[tab.value] || 0) : orders.length;
@@ -587,31 +878,49 @@ export default function OrdersPage() {
           })}
         </div>
 
-        {/* ══════ Search Bar ══════ */}
-        <div className="mb-6">
-          <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("orders.searchPlaceholder")}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+        {/* ══════ Search + Filters Bar — Expedia style ══════ */}
+        <div className="mb-6 space-y-3">
+          <div className="flex gap-2">
+            {/* Search input */}
+            <div className="relative flex-1">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t("orders.searchPlaceholder")}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+              />
+            </div>
+            {/* Date Range Filter */}
+            <DateRangeFilter
+              fromDate={fromDate}
+              toDate={toDate}
+              onFromChange={setFromDate}
+              onToChange={setToDate}
+              onApply={() => { setAppliedFrom(fromDate); setAppliedTo(toDate); }}
+              onClear={() => { setFromDate(""); setToDate(""); setAppliedFrom(""); setAppliedTo(""); }}
+              isActive={dateFilterActive}
             />
           </div>
-          {(statusFilter || searchQuery) && (
-            <div className="mt-2 flex items-center gap-2 text-sm">
-              <span className="text-gray-400">{t("orders.foundCount").replace("{count}", String(filteredOrders.length))}</span>
-              <button
-                onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
-                className="text-[#0066FF] hover:underline text-xs"
-              >
-                {t("orders.clearFilter")}
-              </button>
-            </div>
-          )}
+
+          {/* Sort + Filter summary row */}
+          <div className="flex items-center justify-between">
+            <SortSelector value={sortMode} onChange={setSortMode} />
+            {hasAnyFilter && (
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-gray-400 text-xs">{t("orders.foundCount").replace("{count}", String(filteredOrders.length))}</span>
+                <button
+                  onClick={clearAllFilters}
+                  className="text-[#0066FF] hover:underline text-xs"
+                >
+                  {t("orders.clearFilter")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Error */}
@@ -621,20 +930,30 @@ export default function OrdersPage() {
           </div>
         )}
 
-        {/* Empty State */}
+        {/* ══════ Empty State — Airbnb style with suggested CTAs ══════ */}
         {!error && orders.length === 0 && (
-          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
-            <div className="text-5xl mb-4">🏛</div>
-            <h2 className="text-xl font-serif text-gray-700 mb-3">{t("orders.empty")}</h2>
-            <p className="text-gray-500 text-sm mb-6">
-              {t("orders.emptyHint")}
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-10 text-center">
+            <div className="w-20 h-20 rounded-full bg-[#0066FF]/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-4xl">🏛</span>
+            </div>
+            <h2 className="text-xl font-serif text-gray-800 mb-2">{t("orders.emptyTitle")}</h2>
+            <p className="text-gray-500 text-sm mb-8 max-w-sm mx-auto">
+              {t("orders.emptySubtitle")}
             </p>
-            <Link
-              href="/trips"
-              className="inline-block px-6 py-3 rounded-xl bg-[#0066FF]/10 border border-[#0066FF]/30 text-[#0066FF] font-semibold hover:bg-[#0066FF]/20 transition-colors"
-            >
-              {t("orders.browseTrips")}
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/routes"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0055DD] transition-colors"
+              >
+                <span>🗺️</span> {t("orders.emptyCta1")}
+              </Link>
+              <Link
+                href="/holy-sites"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+              >
+                <span>✨</span> {t("orders.emptyCta2")}
+              </Link>
+            </div>
           </div>
         )}
 
@@ -644,7 +963,7 @@ export default function OrdersPage() {
             <div className="text-4xl mb-3">🔍</div>
             <p className="text-gray-500">{t("orders.noFilterResults")}</p>
             <button
-              onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
+              onClick={clearAllFilters}
               className="mt-3 text-sm text-[#0066FF] hover:underline"
             >
               {t("orders.clearFilter")}
@@ -659,19 +978,23 @@ export default function OrdersPage() {
           </div>
         )}
 
-        {/* Orders List */}
+        {/* ══════ Orders List ══════ */}
         {filteredOrders.length > 0 && (
           <div className="space-y-4">
             {filteredOrders.map((order) => {
               const sc = getStatusStyle(order.status);
               const orderStatusLabel = t(`order.status.${order.status?.toUpperCase() || "PENDING"}`);
-              // Trip countdown for upcoming paid orders
-              const isPaid = order.status?.toUpperCase() === "PAID";
+              const upperStatus = order.status?.toUpperCase() || "";
+              const isPaid = upperStatus === "PAID";
+              const isCompleted = upperStatus === "COMPLETED";
+              const showReviewCard = isCompleted && !skippedReviews.has(order.id);
+
               return (
                 <div
                   key={order.id}
-                  className="rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-colors"
+                  className="rounded-2xl bg-white shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
                 >
+                  {/* Title row */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base font-semibold text-gray-900 truncate">
@@ -688,24 +1011,58 @@ export default function OrdersPage() {
                     </span>
                   </div>
 
-                  {/* Upcoming trip nudge */}
+                  {/* Upcoming trip nudge for paid orders */}
                   {isPaid && (
                     <div className="mb-3 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100 text-xs text-blue-600 flex items-center gap-1.5">
                       <span>✈️</span> {t("orders.tripConfirmedNudge")}
                     </div>
                   )}
 
+                  {/* Review prompt for completed orders (inline card) */}
+                  {showReviewCard && (
+                    <div className="mb-3">
+                      <ReviewPromptBanner order={order} onSkip={handleSkipReview} />
+                    </div>
+                  )}
+
+                  {/* Trip route preview */}
+                  {order.trip?.sites && order.trip.sites.length > 0 && (
+                    <div className="mb-3 flex items-center gap-1 text-xs text-gray-400 overflow-hidden">
+                      <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      <span className="truncate">
+                        {order.trip.sites.map((s) => s.site.name).join(" → ")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Footer row: amount + date + actions */}
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-[#0066FF]">
-                      {formatAmount(order.totalAmount)}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">
+                    <div>
+                      <span className="text-lg font-bold text-[#0066FF]">
+                        {formatAmount(order.totalAmount)}
+                      </span>
+                      <span className="text-xs text-gray-400 ml-2">
                         {formatDate(order.createdAt)}
                       </span>
-                      {order.status?.toUpperCase() === "COMPLETED" && (
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Download receipt for paid/completed */}
+                      {(upperStatus === "PAID" || upperStatus === "COMPLETED") && (
+                        <button
+                          onClick={() => downloadInvoice(order, t)}
+                          title={t("orders.downloadInvoiceHint")}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                        </button>
+                      )}
+                      {isCompleted && (
                         <Link
-                          href={`/routes`}
+                          href="/routes"
                           className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors"
                         >
                           {t("orders.rebook")}
@@ -730,6 +1087,8 @@ export default function OrdersPage() {
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onAction={handleDrawerAction}
+          onSkipReview={handleSkipReview}
+          skippedReviews={skippedReviews}
         />
       </div>
       <MobileNav />
