@@ -1,17 +1,11 @@
-import { useState } from 'react'
-import { View, Text, Image, ScrollView } from '@tarojs/components'
+import { useState, useMemo } from 'react'
+import { View, Text, Image, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import {
   GuideItem, QuestionItem, LeaderboardEntry,
   fetchGuides, fetchQuestions, fetchLeaderboard,
 } from '../../lib/api'
 import './index.scss'
-
-const TABS = [
-  { key: 'guides', label: '游记' },
-  { key: 'questions', label: '问答' },
-  { key: 'leaderboard', label: '排行' },
-]
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('guides')
@@ -21,6 +15,7 @@ export default function CommunityPage() {
   const [loadingGuides, setLoadingGuides] = useState(false)
   const [loadingQuestions, setLoadingQuestions] = useState(false)
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useDidShow(() => {
     loadGuides()
@@ -67,6 +62,39 @@ export default function CommunityPage() {
     }
   }
 
+  // G4: Stats computed from data
+  const stats = useMemo(() => ({
+    totalGuides: guides.length,
+    totalQuestions: questions.length,
+    totalLeaderboard: leaderboard.length,
+  }), [guides, questions, leaderboard])
+
+  // G4: Tab counts
+  const TABS = useMemo(() => [
+    { key: 'guides', label: '游记', count: stats.totalGuides },
+    { key: 'questions', label: '问答', count: stats.totalQuestions },
+    { key: 'leaderboard', label: '排行', count: stats.totalLeaderboard },
+  ], [stats])
+
+  // G4: Client-side search filtering
+  const filteredGuides = useMemo(() => {
+    if (!searchQuery.trim()) return guides
+    const q = searchQuery.trim().toLowerCase()
+    return guides.filter(
+      g => g.title.toLowerCase().includes(q) ||
+        (g.tags ?? []).some(t => t.toLowerCase().includes(q))
+    )
+  }, [guides, searchQuery])
+
+  const filteredQuestions = useMemo(() => {
+    if (!searchQuery.trim()) return questions
+    const q = searchQuery.trim().toLowerCase()
+    return questions.filter(
+      item => item.title.toLowerCase().includes(q) ||
+        (item.tags ?? []).some(t => t.toLowerCase().includes(q))
+    )
+  }, [questions, searchQuery])
+
   const getRankClass = (rank: number) => {
     if (rank === 1) return 'leaderboard__rank--gold'
     if (rank === 2) return 'leaderboard__rank--silver'
@@ -88,9 +116,44 @@ export default function CommunityPage() {
     }
   }
 
+  const isSearchActive = searchQuery.trim().length > 0
+
   return (
     <ScrollView className='community-page' scrollY>
-      {/* ── Tabs ── */}
+      {/* G4: Stats Row */}
+      <View className='stats-row'>
+        <View className='stats-row__item'>
+          <Text className='stats-row__value'>{stats.totalGuides}</Text>
+          <Text className='stats-row__label'>游记</Text>
+        </View>
+        <View className='stats-row__divider' />
+        <View className='stats-row__item'>
+          <Text className='stats-row__value'>{stats.totalQuestions}</Text>
+          <Text className='stats-row__label'>问答</Text>
+        </View>
+        <View className='stats-row__divider' />
+        <View className='stats-row__item'>
+          <Text className='stats-row__value'>{stats.totalGuides + stats.totalQuestions}</Text>
+          <Text className='stats-row__label'>总内容</Text>
+        </View>
+      </View>
+
+      {/* G4: Search Input */}
+      <View className='search-bar'>
+        <Text className='search-bar__icon'>&#x1F50D;</Text>
+        <Input
+          className='search-bar__input'
+          placeholder='搜索游记、问答...'
+          placeholderClass='search-bar__placeholder'
+          value={searchQuery}
+          onInput={e => setSearchQuery(e.detail.value)}
+        />
+        {searchQuery.length > 0 && (
+          <Text className='search-bar__clear' onClick={() => setSearchQuery('')}>&#x2715;</Text>
+        )}
+      </View>
+
+      {/* G4: Tabs with counts */}
       <View className='tabs'>
         {TABS.map(tab => (
           <View
@@ -100,6 +163,9 @@ export default function CommunityPage() {
           >
             <Text className={`tabs__text ${activeTab === tab.key ? 'tabs__text--active' : ''}`}>
               {tab.label}
+              {tab.count > 0 && (
+                <Text className='tabs__count'> {tab.count}</Text>
+              )}
             </Text>
             {activeTab === tab.key && <View className='tabs__indicator' />}
           </View>
@@ -118,12 +184,31 @@ export default function CommunityPage() {
               <Text className='loading__text'>加载中...</Text>
             </View>
           ) : guides.length === 0 ? (
+            /* G4: Data-empty state */
             <View className='empty'>
               <Text className='empty__icon'>📖</Text>
               <Text className='empty__text'>暂无游记，快来分享你的旅行故事</Text>
+              <View
+                className='empty__btn'
+                onClick={() => Taro.navigateTo({ url: '/pages/guide-edit/index' })}
+              >
+                <Text className='empty__btn-text'>写游记</Text>
+              </View>
+            </View>
+          ) : isSearchActive && filteredGuides.length === 0 ? (
+            /* G4: Search-empty state */
+            <View className='empty'>
+              <Text className='empty__icon'>&#x1F50D;</Text>
+              <Text className='empty__text'>未找到匹配的游记</Text>
+              <View
+                className='empty__btn'
+                onClick={() => setSearchQuery('')}
+              >
+                <Text className='empty__btn-text'>清除搜索</Text>
+              </View>
             </View>
           ) : (
-            guides.map(guide => (
+            (isSearchActive ? filteredGuides : guides).map(guide => (
               <View
                 key={guide.id}
                 className='guide-card'
@@ -183,12 +268,31 @@ export default function CommunityPage() {
               <Text className='loading__text'>加载中...</Text>
             </View>
           ) : questions.length === 0 ? (
+            /* G4: Data-empty state */
             <View className='empty'>
               <Text className='empty__icon'>❓</Text>
               <Text className='empty__text'>暂无问题，欢迎提出你的疑惑</Text>
+              <View
+                className='empty__btn'
+                onClick={() => Taro.navigateTo({ url: '/pages/question-create/index' })}
+              >
+                <Text className='empty__btn-text'>提个问题</Text>
+              </View>
+            </View>
+          ) : isSearchActive && filteredQuestions.length === 0 ? (
+            /* G4: Search-empty state */
+            <View className='empty'>
+              <Text className='empty__icon'>&#x1F50D;</Text>
+              <Text className='empty__text'>未找到匹配的问答</Text>
+              <View
+                className='empty__btn'
+                onClick={() => setSearchQuery('')}
+              >
+                <Text className='empty__btn-text'>清除搜索</Text>
+              </View>
             </View>
           ) : (
-            questions.map(q => (
+            (isSearchActive ? filteredQuestions : questions).map(q => (
               <View
                 key={q.id}
                 className='question-card'
@@ -262,6 +366,17 @@ export default function CommunityPage() {
           )}
         </View>
       )}
+
+      {/* G4: Bottom CTA */}
+      <View className='bottom-cta'>
+        <Text className='bottom-cta__text'>分享你的朝圣故事，与旅行者一起交流</Text>
+        <View
+          className='bottom-cta__btn'
+          onClick={() => Taro.navigateTo({ url: '/pages/guide-edit/index' })}
+        >
+          <Text className='bottom-cta__btn-text'>写游记</Text>
+        </View>
+      </View>
 
       <View style={{ height: '60rpx' }} />
     </ScrollView>

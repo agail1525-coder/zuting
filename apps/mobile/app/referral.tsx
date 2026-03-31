@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,9 +10,11 @@ import {
   Share,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 import {
   fetchMyInviteCode,
@@ -25,13 +27,16 @@ import {
 
 const PRIMARY = '#0066FF';
 const GREEN = '#22C55E';
+const GOLD = '#F59E0B';
 
 export default function ReferralScreen() {
+  const router = useRouter();
   const [inviteCode, setInviteCode] = useState<InviteCodeData | null>(null);
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [team, setTeam] = useState<ReferralTeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -53,9 +58,26 @@ export default function ReferralScreen() {
 
   const onRefresh = () => { setRefreshing(true); void load(); };
 
+  // G4: Enhanced stats computed from data
+  const enhancedStats = useMemo(() => ({
+    totalReferrals: stats?.totalInvited ?? 0,
+    commissionEarned: stats?.totalEarnings ?? 0,
+    pendingRewards: stats?.pendingEarnings ?? 0,
+    level1: stats?.level1Count ?? 0,
+    level2: stats?.level2Count ?? 0,
+  }), [stats]);
+
+  // G4: Client-side search filtering for team
+  const filteredTeam = useMemo(() => {
+    if (!searchQuery.trim()) return team;
+    const q = searchQuery.trim().toLowerCase();
+    return team.filter(m => m.nickname.toLowerCase().includes(q));
+  }, [team, searchQuery]);
+
+  const isSearchActive = searchQuery.trim().length > 0;
+
   const handleCopy = () => {
     if (!inviteCode) return;
-    // Use Clipboard from React Native (available in RN 0.72+)
     Clipboard.setString(inviteCode.code);
     Alert.alert('已复制', `邀请码 ${inviteCode.code} 已复制到剪贴板`);
   };
@@ -66,6 +88,12 @@ export default function ReferralScreen() {
       message: `加入祖庭旅行平台，探索世界圣地！使用我的邀请码 ${inviteCode.code} 注册，双方均可获得积分奖励。${inviteCode.link}`,
       url: inviteCode.link,
     });
+  };
+
+  const handleShareWechat = () => {
+    if (!inviteCode) return;
+    Clipboard.setString(`我的JOINUS邀请码：${inviteCode.code}，复制后打开APP注册即可获得积分奖励！`);
+    Alert.alert('已复制', '分享文案已复制，可粘贴到微信发送给好友');
   };
 
   if (loading) {
@@ -93,42 +121,83 @@ export default function ReferralScreen() {
           </Pressable>
         </View>
         <Text style={styles.codeUsed}>已被使用 {inviteCode?.usedCount ?? 0} 次</Text>
-        <Pressable style={styles.shareBtn} onPress={handleShare}>
-          <Ionicons name="share-social" size={20} color="#FFFFFF" />
-          <Text style={styles.shareBtnText}>分享邀请链接</Text>
-        </Pressable>
-      </View>
 
-      {/* Stats */}
-      <View style={styles.statsCard}>
-        <StatsItem label="总邀请人数" value={stats?.totalInvited ?? 0} color={PRIMARY} />
-        <StatsDivider />
-        <StatsItem label="一级好友" value={stats?.level1Count ?? 0} color={GREEN} />
-        <StatsDivider />
-        <StatsItem label="二级好友" value={stats?.level2Count ?? 0} color="#F59E0B" />
-        <StatsDivider />
-        <StatsItem label="累计收益(积分)" value={stats?.totalEarnings ?? 0} color="#EC4899" />
-      </View>
-
-      {stats && stats.pendingEarnings > 0 && (
-        <View style={styles.pendingBanner}>
-          <Ionicons name="time" size={16} color={PRIMARY} />
-          <Text style={styles.pendingText}>待结算收益: {stats.pendingEarnings} 积分</Text>
+        {/* G4: Quick share buttons */}
+        <View style={styles.shareRow}>
+          <Pressable style={styles.shareBtn} onPress={handleShare}>
+            <Ionicons name="share-social" size={18} color="#FFFFFF" />
+            <Text style={styles.shareBtnText}>系统分享</Text>
+          </Pressable>
+          <Pressable style={[styles.shareBtn, styles.shareBtnAlt]} onPress={handleShareWechat}>
+            <Ionicons name="chatbubble-ellipses" size={18} color="#FFFFFF" />
+            <Text style={styles.shareBtnText}>复制文案</Text>
+          </Pressable>
         </View>
-      )}
+      </View>
+
+      {/* G4: Enhanced Stats Card */}
+      <View style={styles.statsCard}>
+        <StatsItem label="总邀请" value={enhancedStats.totalReferrals} color={PRIMARY} icon="people" />
+        <StatsDivider />
+        <StatsItem label="累计收益" value={enhancedStats.commissionEarned} color={GREEN} icon="wallet" />
+        <StatsDivider />
+        <StatsItem label="待结算" value={enhancedStats.pendingRewards} color={GOLD} icon="time" />
+      </View>
+
+      {/* G4: Level breakdown */}
+      <View style={styles.levelRow}>
+        <View style={[styles.levelCard, { borderLeftColor: GREEN }]}>
+          <Text style={styles.levelValue}>{enhancedStats.level1}</Text>
+          <Text style={styles.levelLabel}>一级好友</Text>
+        </View>
+        <View style={[styles.levelCard, { borderLeftColor: GOLD }]}>
+          <Text style={styles.levelValue}>{enhancedStats.level2}</Text>
+          <Text style={styles.levelLabel}>二级好友</Text>
+        </View>
+      </View>
 
       {/* Team List */}
       <View style={styles.teamSection}>
         <Text style={styles.sectionTitle}>我的团队 ({team.length} 人)</Text>
+
+        {/* G4: Search for team members */}
+        {team.length > 0 && (
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={16} color={colors.textMuted} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="搜索团队成员..."
+              placeholderTextColor={colors.textMuted}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <Pressable onPress={() => setSearchQuery('')}>
+                <Ionicons name="close-circle" size={16} color={colors.textMuted} />
+              </Pressable>
+            )}
+          </View>
+        )}
+
         {team.length === 0 ? (
+          /* G4: Data-empty state */
           <View style={styles.emptyCard}>
             <Ionicons name="people-outline" size={40} color={colors.textMuted} />
             <Text style={styles.emptyText}>还没有邀请到好友</Text>
             <Text style={styles.emptyHint}>分享邀请码，邀请好友加入</Text>
           </View>
+        ) : isSearchActive && filteredTeam.length === 0 ? (
+          /* G4: Search-empty state */
+          <View style={styles.emptyCard}>
+            <Ionicons name="search" size={40} color={colors.textMuted} />
+            <Text style={styles.emptyText}>未找到匹配的成员</Text>
+            <Pressable style={styles.clearSearchBtn} onPress={() => setSearchQuery('')}>
+              <Text style={styles.clearSearchText}>清除搜索</Text>
+            </Pressable>
+          </View>
         ) : (
           <FlatList
-            data={team}
+            data={filteredTeam}
             keyExtractor={(item) => item.id}
             scrollEnabled={false}
             renderItem={({ item }) => (
@@ -161,13 +230,23 @@ export default function ReferralScreen() {
         <Text style={styles.rulesText}>• 二级好友下单，您获得订单金额 1% 的积分奖励</Text>
         <Text style={styles.rulesText}>• 积分可在积分商城兑换礼品或优惠券</Text>
       </View>
+
+      {/* G4: Bottom CTA */}
+      <View style={styles.bottomCta}>
+        <Text style={styles.bottomCtaText}>邀请更多好友，赚取更多积分</Text>
+        <Pressable style={styles.bottomCtaBtn} onPress={handleShare}>
+          <Ionicons name="share-social" size={18} color="#FFFFFF" />
+          <Text style={styles.bottomCtaBtnText}>立即邀请好友</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
 
-function StatsItem({ label, value, color }: { label: string; value: number; color: string }) {
+function StatsItem({ label, value, color, icon }: { label: string; value: number; color: string; icon: string }) {
   return (
     <View style={styles.statsItem}>
+      <Ionicons name={icon as any} size={16} color={color} style={{ marginBottom: 2 }} />
       <Text style={[styles.statsValue, { color }]}>{value.toLocaleString()}</Text>
       <Text style={styles.statsLabel}>{label}</Text>
     </View>
@@ -202,18 +281,29 @@ const styles = StyleSheet.create({
   },
   copyBtnText: { color: '#FFFFFF', fontSize: fontSize.sm, fontWeight: '600' },
   codeUsed: { color: 'rgba(255,255,255,0.7)', fontSize: fontSize.sm, marginBottom: spacing.md },
+
+  // G4: Quick share row
+  shareRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
   shareBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: spacing.xs,
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: spacing.sm + 4,
+    paddingVertical: spacing.sm + 2,
     borderRadius: borderRadius.full,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.4)',
   },
-  shareBtnText: { color: '#FFFFFF', fontSize: fontSize.lg, fontWeight: '700' },
+  shareBtnAlt: {
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(255,255,255,0.25)',
+  },
+  shareBtnText: { color: '#FFFFFF', fontSize: fontSize.md, fontWeight: '600' },
 
   statsCard: {
     flexDirection: 'row',
@@ -231,15 +321,51 @@ const styles = StyleSheet.create({
   statsLabel: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2, textAlign: 'center' },
   statsDivider: { width: 1, backgroundColor: '#E5E7EB', alignSelf: 'stretch' },
 
-  pendingBanner: {
+  // G4: Level breakdown row
+  levelRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: `${PRIMARY}12`,
+  },
+  levelCard: {
+    flex: 1,
+    backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.md,
     padding: spacing.md,
+    borderLeftWidth: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  pendingText: { color: PRIMARY, fontSize: fontSize.md, fontWeight: '600' },
+  levelValue: {
+    fontSize: fontSize.xl,
+    fontWeight: '800',
+    color: colors.textPrimary,
+  },
+  levelLabel: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+
+  // G4: Search bar
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs + 2,
+    gap: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: fontSize.sm,
+    color: colors.textPrimary,
+    padding: 0,
+  },
 
   teamSection: { gap: spacing.sm },
   sectionTitle: { fontSize: fontSize.lg, fontWeight: '700', color: colors.textPrimary },
@@ -252,6 +378,19 @@ const styles = StyleSheet.create({
   },
   emptyText: { fontSize: fontSize.lg, color: colors.textSecondary, fontWeight: '600' },
   emptyHint: { fontSize: fontSize.sm, color: colors.textMuted },
+
+  // G4: Clear search button
+  clearSearchBtn: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+    backgroundColor: `${PRIMARY}15`,
+  },
+  clearSearchText: {
+    color: PRIMARY,
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+  },
 
   teamItem: {
     flexDirection: 'row',
@@ -284,4 +423,31 @@ const styles = StyleSheet.create({
   },
   rulesTitle: { fontSize: fontSize.lg, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.xs },
   rulesText: { fontSize: fontSize.sm, color: colors.textSecondary, lineHeight: 20 },
+
+  // G4: Bottom CTA
+  bottomCta: {
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    gap: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  bottomCtaText: {
+    fontSize: fontSize.md,
+    color: colors.textMuted,
+  },
+  bottomCtaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: PRIMARY,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm + 4,
+    borderRadius: borderRadius.full,
+  },
+  bottomCtaBtnText: {
+    color: '#FFFFFF',
+    fontSize: fontSize.lg,
+    fontWeight: '700',
+  },
 });

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -15,12 +15,15 @@ import { useRouter } from 'expo-router';
 import { api, Collection } from '../../src/lib/api';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
+const PRIMARY = '#0066FF';
+
 export default function CollectionsScreen() {
   const router = useRouter();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const load = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -38,6 +41,24 @@ export default function CollectionsScreen() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  // G4: Stats computed from data
+  const stats = useMemo(() => {
+    const totalCollections = collections.length;
+    const totalItems = collections.reduce((sum, c) => sum + (c._count?.items ?? c.items?.length ?? 0), 0);
+    return { totalCollections, totalItems };
+  }, [collections]);
+
+  // G4: Client-side search filtering
+  const filteredCollections = useMemo(() => {
+    if (!searchQuery.trim()) return collections;
+    const q = searchQuery.trim().toLowerCase();
+    return collections.filter(
+      c => c.name.toLowerCase().includes(q) || (c.description ?? '').toLowerCase().includes(q)
+    );
+  }, [collections, searchQuery]);
+
+  const isSearchActive = searchQuery.trim().length > 0;
 
   const handleCreate = useCallback(() => {
     Alert.prompt(
@@ -91,7 +112,7 @@ export default function CollectionsScreen() {
     return (
       <Pressable
         style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-        onPress={() => router.push(`/collections/${item.id}` as never)}
+        onPress={() => router.push(`/collections/${item.id}` as any)}
         onLongPress={() => handleDelete(item.id, item.name)}
       >
         <View style={styles.cardIconWrapper}>
@@ -102,7 +123,7 @@ export default function CollectionsScreen() {
             <Text style={styles.cardName} numberOfLines={1}>{item.name}</Text>
             {item.isPublic && (
               <View style={styles.publicBadge}>
-                <Ionicons name="globe-outline" size={10} color="#0066FF" />
+                <Ionicons name="globe-outline" size={10} color={PRIMARY} />
                 <Text style={styles.publicBadgeText}>公开</Text>
               </View>
             )}
@@ -142,19 +163,82 @@ export default function CollectionsScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={collections}
+        data={filteredCollections}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => load(true)} tintColor={colors.gold} />
         }
+        ListHeaderComponent={
+          collections.length > 0 ? (
+            <View>
+              {/* G4: Stats Overview */}
+              <View style={styles.statsRow}>
+                <View style={styles.statsItem}>
+                  <Text style={styles.statsValue}>{stats.totalCollections}</Text>
+                  <Text style={styles.statsLabel}>收藏夹</Text>
+                </View>
+                <View style={styles.statsDivider} />
+                <View style={styles.statsItem}>
+                  <Text style={styles.statsValue}>{stats.totalItems}</Text>
+                  <Text style={styles.statsLabel}>总收藏</Text>
+                </View>
+              </View>
+
+              {/* G4: Search TextInput */}
+              <View style={styles.searchBar}>
+                <Ionicons name="search" size={18} color={colors.textMuted} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="搜索收藏夹..."
+                  placeholderTextColor={colors.textMuted}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                {searchQuery.length > 0 && (
+                  <Pressable onPress={() => setSearchQuery('')}>
+                    <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          ) : null
+        }
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Ionicons name="heart-outline" size={64} color={colors.textMuted} />
-            <Text style={styles.emptyTitle}>还没有收藏夹</Text>
-            <Text style={styles.emptySubtitle}>点击右下角"+"创建第一个收藏夹</Text>
-          </View>
+          isSearchActive ? (
+            /* G4: Search-empty state */
+            <View style={styles.empty}>
+              <Ionicons name="search" size={64} color={colors.textMuted} />
+              <Text style={styles.emptyTitle}>未找到匹配的收藏夹</Text>
+              <Text style={styles.emptySubtitle}>试试其他关键词，或清除搜索条件</Text>
+              <Pressable style={styles.ctaBtn} onPress={() => setSearchQuery('')}>
+                <Text style={styles.ctaBtnText}>清除搜索</Text>
+              </Pressable>
+            </View>
+          ) : (
+            /* G4: Data-empty state */
+            <View style={styles.empty}>
+              <Ionicons name="heart-outline" size={64} color={colors.textMuted} />
+              <Text style={styles.emptyTitle}>还没有收藏夹</Text>
+              <Text style={styles.emptySubtitle}>点击右下角"+"创建第一个收藏夹</Text>
+            </View>
+          )
+        }
+        ListFooterComponent={
+          filteredCollections.length > 0 ? (
+            /* G4: Bottom CTA */
+            <View style={styles.bottomCta}>
+              <Text style={styles.bottomCtaText}>发现更多值得收藏的圣地</Text>
+              <Pressable
+                style={styles.ctaBtn}
+                onPress={() => router.push('/holy-sites' as any)}
+              >
+                <Ionicons name="compass-outline" size={18} color="#FFFFFF" />
+                <Text style={styles.ctaBtnText}>探索圣地</Text>
+              </Pressable>
+            </View>
+          ) : null
         }
       />
 
@@ -182,6 +266,60 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     paddingBottom: 100,
   },
+
+  // G4: Stats row
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.xl,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  statsItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statsValue: {
+    fontSize: fontSize.xl,
+    fontWeight: '800',
+    color: PRIMARY,
+  },
+  statsLabel: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  statsDivider: {
+    width: 1,
+    backgroundColor: '#E5E7EB',
+    alignSelf: 'stretch',
+  },
+
+  // G4: Search bar
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    marginBottom: spacing.md,
+    gap: spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: fontSize.md,
+    color: colors.textPrimary,
+    padding: 0,
+  },
+
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -200,7 +338,7 @@ const styles = StyleSheet.create({
   },
   cardPressed: {
     opacity: 0.85,
-    borderColor: '#0066FF',
+    borderColor: PRIMARY,
   },
   cardIconWrapper: {
     width: 52,
@@ -238,7 +376,7 @@ const styles = StyleSheet.create({
   },
   publicBadgeText: {
     fontSize: fontSize.xs,
-    color: '#0066FF',
+    color: PRIMARY,
     fontWeight: '500',
   },
   cardDesc: {
@@ -284,6 +422,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: spacing.xl,
   },
+
+  // G4: Bottom CTA
+  bottomCta: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+    gap: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+    marginTop: spacing.md,
+  },
+  bottomCtaText: {
+    fontSize: fontSize.md,
+    color: colors.textMuted,
+  },
+  ctaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: PRIMARY,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
+    borderRadius: borderRadius.full,
+  },
+  ctaBtnText: {
+    color: '#FFFFFF',
+    fontSize: fontSize.md,
+    fontWeight: '600',
+  },
+
   fab: {
     position: 'absolute',
     right: spacing.lg,
@@ -291,10 +458,10 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#0066FF',
+    backgroundColor: PRIMARY,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#0066FF',
+    shadowColor: PRIMARY,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 8,

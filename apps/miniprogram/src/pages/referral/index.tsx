@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import {
   fetchMyInviteCode,
@@ -35,6 +35,7 @@ export default function ReferralPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('level1')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -59,6 +60,36 @@ export default function ReferralPage() {
   }, [])
 
   useEffect(() => { loadData() }, [loadData])
+
+  // G4: Enhanced stats computed from data
+  const enhancedStats = useMemo(() => ({
+    totalInvites: stats?.totalInvites ?? 0,
+    totalEarned: stats?.totalRewards ?? 0,
+    pendingRewards: stats?.monthlyRewards ?? 0,
+    level1Count: stats?.level1Count ?? 0,
+    level2Count: stats?.level2Count ?? 0,
+  }), [stats])
+
+  // G4: Client-side search filtering
+  const filteredLevel1 = useMemo(() => {
+    if (!searchQuery.trim()) return level1
+    const q = searchQuery.trim().toLowerCase()
+    return level1.filter(m => m.inviteeId.toLowerCase().includes(q))
+  }, [level1, searchQuery])
+
+  const filteredLevel2 = useMemo(() => {
+    if (!searchQuery.trim()) return level2
+    const q = searchQuery.trim().toLowerCase()
+    return level2.filter(m => m.inviteeId.toLowerCase().includes(q))
+  }, [level2, searchQuery])
+
+  const filteredRewards = useMemo(() => {
+    if (!searchQuery.trim()) return rewards
+    const q = searchQuery.trim().toLowerCase()
+    return rewards.filter(r => r.orderId.toLowerCase().includes(q) || (STATUS_LABEL[r.status] ?? '').includes(q))
+  }, [rewards, searchQuery])
+
+  const isSearchActive = searchQuery.trim().length > 0
 
   const handleCopy = () => {
     if (!inviteCode) return
@@ -115,31 +146,35 @@ export default function ReferralPage() {
         </View>
       )}
 
-      {/* Stats Grid */}
-      {stats && (
-        <View className='stats-grid'>
-          <View className='stat-card'>
-            <Text className='stat-card__label'>总邀请</Text>
-            <Text className='stat-card__value'>{stats.totalInvites}<Text className='stat-card__unit'>人</Text></Text>
-          </View>
-          <View className='stat-card'>
-            <Text className='stat-card__label'>一级下线</Text>
-            <Text className='stat-card__value'>{stats.level1Count}<Text className='stat-card__unit'>人</Text></Text>
-          </View>
-          <View className='stat-card'>
-            <Text className='stat-card__label'>二级下线</Text>
-            <Text className='stat-card__value'>{stats.level2Count}<Text className='stat-card__unit'>人</Text></Text>
-          </View>
-          <View className='stat-card'>
-            <Text className='stat-card__label'>累计收益</Text>
-            <Text className='stat-card__value'>{stats.totalRewards}<Text className='stat-card__unit'>分</Text></Text>
-          </View>
-          <View className='stat-card'>
-            <Text className='stat-card__label'>本月收益</Text>
-            <Text className='stat-card__value stat-card__value--accent'>{stats.monthlyRewards}<Text className='stat-card__unit'>分</Text></Text>
-          </View>
+      {/* G4: Enhanced Stats Row */}
+      <View className='enhanced-stats'>
+        <View className='enhanced-stats__item'>
+          <Text className='enhanced-stats__value enhanced-stats__value--primary'>{enhancedStats.totalInvites}</Text>
+          <Text className='enhanced-stats__label'>总邀请</Text>
         </View>
-      )}
+        <View className='enhanced-stats__divider' />
+        <View className='enhanced-stats__item'>
+          <Text className='enhanced-stats__value enhanced-stats__value--green'>{enhancedStats.totalEarned}</Text>
+          <Text className='enhanced-stats__label'>累计收益</Text>
+        </View>
+        <View className='enhanced-stats__divider' />
+        <View className='enhanced-stats__item'>
+          <Text className='enhanced-stats__value enhanced-stats__value--gold'>{enhancedStats.pendingRewards}</Text>
+          <Text className='enhanced-stats__label'>本月收益</Text>
+        </View>
+      </View>
+
+      {/* G4: Level breakdown */}
+      <View className='level-breakdown'>
+        <View className='level-breakdown__card level-breakdown__card--l1'>
+          <Text className='level-breakdown__value'>{enhancedStats.level1Count}</Text>
+          <Text className='level-breakdown__label'>一级好友</Text>
+        </View>
+        <View className='level-breakdown__card level-breakdown__card--l2'>
+          <Text className='level-breakdown__value'>{enhancedStats.level2Count}</Text>
+          <Text className='level-breakdown__label'>二级好友</Text>
+        </View>
+      </View>
 
       {/* Distribution Rules */}
       <View className='rules-card'>
@@ -160,6 +195,21 @@ export default function ReferralPage() {
           <Text className='rule-item__icon'>🏆</Text>
           <Text className='rule-item__text'>积分可在积分商城兑换优惠券、专属体验等</Text>
         </View>
+      </View>
+
+      {/* G4: Search Input for tabs */}
+      <View className='search-bar'>
+        <Text className='search-bar__icon'>&#x1F50D;</Text>
+        <Input
+          className='search-bar__input'
+          placeholder='搜索成员或订单...'
+          placeholderClass='search-bar__placeholder'
+          value={searchQuery}
+          onInput={e => setSearchQuery(e.detail.value)}
+        />
+        {searchQuery.length > 0 && (
+          <Text className='search-bar__clear' onClick={() => setSearchQuery('')}>&#x2715;</Text>
+        )}
       </View>
 
       {/* Tabs */}
@@ -185,8 +235,14 @@ export default function ReferralPage() {
                 <Text className='empty-state__icon'>👥</Text>
                 <Text className='empty-state__text'>暂无一级下线，快去邀请好友吧</Text>
               </View>
+            ) : isSearchActive && filteredLevel1.length === 0 ? (
+              <View className='empty-state'>
+                <Text className='empty-state__icon'>&#x1F50D;</Text>
+                <Text className='empty-state__text'>未找到匹配的成员</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+              </View>
             ) : (
-              level1.map(m => (
+              (isSearchActive ? filteredLevel1 : level1).map(m => (
                 <View key={m.id} className='member-row'>
                   <View className='member-row__left'>
                     <View className='member-row__avatar member-row__avatar--l1'>
@@ -212,8 +268,14 @@ export default function ReferralPage() {
                 <Text className='empty-state__icon'>👥</Text>
                 <Text className='empty-state__text'>暂无二级下线</Text>
               </View>
+            ) : isSearchActive && filteredLevel2.length === 0 ? (
+              <View className='empty-state'>
+                <Text className='empty-state__icon'>&#x1F50D;</Text>
+                <Text className='empty-state__text'>未找到匹配的成员</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+              </View>
             ) : (
-              level2.map(m => (
+              (isSearchActive ? filteredLevel2 : level2).map(m => (
                 <View key={m.id} className='member-row'>
                   <View className='member-row__left'>
                     <View className='member-row__avatar member-row__avatar--l2'>
@@ -239,8 +301,14 @@ export default function ReferralPage() {
                 <Text className='empty-state__icon'>💎</Text>
                 <Text className='empty-state__text'>暂无奖励记录</Text>
               </View>
+            ) : isSearchActive && filteredRewards.length === 0 ? (
+              <View className='empty-state'>
+                <Text className='empty-state__icon'>&#x1F50D;</Text>
+                <Text className='empty-state__text'>未找到匹配的记录</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+              </View>
             ) : (
-              rewards.map(r => (
+              (isSearchActive ? filteredRewards : rewards).map(r => (
                 <View key={r.id} className='reward-row'>
                   <View className='reward-row__left'>
                     <Text className='reward-row__desc'>
@@ -259,6 +327,14 @@ export default function ReferralPage() {
             )}
           </View>
         )}
+      </View>
+
+      {/* G4: Bottom CTA */}
+      <View className='bottom-cta'>
+        <Text className='bottom-cta__text'>邀请更多好友，赚取更多积分</Text>
+        <View className='bottom-cta__btn' onClick={handleShare}>
+          <Text className='bottom-cta__btn-text'>立即邀请好友</Text>
+        </View>
       </View>
 
       <View style={{ height: '60rpx' }} />

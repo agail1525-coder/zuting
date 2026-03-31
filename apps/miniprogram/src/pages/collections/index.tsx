@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { Collection, fetchCollections, createCollection, deleteCollection } from '../../lib/api'
@@ -13,6 +13,7 @@ export default function CollectionsPage() {
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
   const [creating, setCreating] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const loadCollections = useCallback(async () => {
     if (!getAccessToken()) {
@@ -34,6 +35,22 @@ export default function CollectionsPage() {
   useDidShow(() => {
     loadCollections()
   })
+
+  // G4: Stats computed from data
+  const stats = useMemo(() => {
+    const totalCollections = collections.length
+    const totalItems = collections.reduce((sum, c) => sum + (c.itemCount ?? 0), 0)
+    return { totalCollections, totalItems }
+  }, [collections])
+
+  // G4: Client-side search filtering
+  const filteredCollections = useMemo(() => {
+    if (!searchQuery.trim()) return collections
+    const q = searchQuery.trim().toLowerCase()
+    return collections.filter(
+      c => c.name.toLowerCase().includes(q) || (c.description ?? '').toLowerCase().includes(q)
+    )
+  }, [collections, searchQuery])
 
   const handleCreate = useCallback(async () => {
     if (!newName.trim()) {
@@ -108,6 +125,38 @@ export default function CollectionsPage() {
         </View>
       </View>
 
+      {/* G4: Stats Row */}
+      {!loading && !error && collections.length > 0 && (
+        <View className='stats-row'>
+          <View className='stats-row__item'>
+            <Text className='stats-row__value'>{stats.totalCollections}</Text>
+            <Text className='stats-row__label'>收藏夹</Text>
+          </View>
+          <View className='stats-row__divider' />
+          <View className='stats-row__item'>
+            <Text className='stats-row__value'>{stats.totalItems}</Text>
+            <Text className='stats-row__label'>总收藏</Text>
+          </View>
+        </View>
+      )}
+
+      {/* G4: Search Input */}
+      {!loading && !error && collections.length > 0 && (
+        <View className='search-bar'>
+          <Text className='search-bar__icon'>&#x1F50D;</Text>
+          <Input
+            className='search-bar__input'
+            placeholder='搜索收藏夹...'
+            placeholderClass='search-bar__placeholder'
+            value={searchQuery}
+            onInput={e => setSearchQuery(e.detail.value)}
+          />
+          {searchQuery.length > 0 && (
+            <Text className='search-bar__clear' onClick={() => setSearchQuery('')}>&#x2715;</Text>
+          )}
+        </View>
+      )}
+
       {loading && (
         <View className='loading-wrap'>
           <Text className='loading-wrap__text'>加载中...</Text>
@@ -124,6 +173,7 @@ export default function CollectionsPage() {
       {!loading && !error && (
         <ScrollView className='collections-list' scrollY>
           {collections.length === 0 ? (
+            /* G4: Data-empty state */
             <View className='empty-state'>
               <Text className='empty-state__icon'>&#x2665;</Text>
               <Text className='empty-state__title'>还没有收藏夹</Text>
@@ -135,9 +185,22 @@ export default function CollectionsPage() {
                 <Text className='empty-state__btn-text'>新建收藏夹</Text>
               </View>
             </View>
+          ) : filteredCollections.length === 0 ? (
+            /* G4: Search-empty state */
+            <View className='empty-state'>
+              <Text className='empty-state__icon'>&#x1F50D;</Text>
+              <Text className='empty-state__title'>未找到匹配的收藏夹</Text>
+              <Text className='empty-state__desc'>试试其他关键词，或清除搜索条件</Text>
+              <View
+                className='empty-state__btn'
+                onClick={() => setSearchQuery('')}
+              >
+                <Text className='empty-state__btn-text'>清除搜索</Text>
+              </View>
+            </View>
           ) : (
             <>
-              {collections.map(col => (
+              {filteredCollections.map(col => (
                 <View
                   key={col.id}
                   className='collection-card'
@@ -171,6 +234,18 @@ export default function CollectionsPage() {
                   </View>
                 </View>
               ))}
+
+              {/* G4: Bottom CTA */}
+              <View className='bottom-cta'>
+                <Text className='bottom-cta__text'>发现更多值得收藏的圣地</Text>
+                <View
+                  className='bottom-cta__btn'
+                  onClick={() => Taro.switchTab({ url: '/pages/holy-sites/index' })}
+                >
+                  <Text className='bottom-cta__btn-text'>探索圣地</Text>
+                </View>
+              </View>
+
               <View style={{ height: '80rpx' }} />
             </>
           )}
