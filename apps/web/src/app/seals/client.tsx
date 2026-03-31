@@ -25,6 +25,15 @@ const SERIES_STYLE: Record<string, { icon: string; color: string; bgActive: stri
   GUIYUANYIN:  { icon: "🌕", color: "rose",    bgActive: "bg-rose-500 text-white shadow-lg shadow-rose-500/20" },
 };
 
+// Difficulty level by series — no new API needed, derived from series position
+const SERIES_DIFFICULTY: Record<SealSeries, "beginner" | "intermediate" | "advanced"> = {
+  CHUYIN:      "beginner",
+  ZHONGYIN:    "beginner",
+  YINGUOYIN:   "intermediate",
+  CHENGDAOYIN: "advanced",
+  GUIYUANYIN:  "advanced",
+};
+
 function useSeriesMeta(t: (key: string) => string) {
   return {
     CHUYIN:      { ...SERIES_STYLE.CHUYIN, label: t("seals.series.chuyin"), desc: t("seals.series.chuyinDesc") },
@@ -45,21 +54,62 @@ const SERIES_RING_COLORS: Record<string, string> = {
   CHENGDAOYIN: "ring-purple-400", GUIYUANYIN: "ring-rose-400",
 };
 
+const SERIES_GRADIENT: Record<string, string> = {
+  CHUYIN: "from-blue-500 to-cyan-500",
+  ZHONGYIN: "from-emerald-500 to-teal-500",
+  YINGUOYIN: "from-amber-500 to-orange-500",
+  CHENGDAOYIN: "from-purple-500 to-violet-500",
+  GUIYUANYIN: "from-rose-500 to-pink-500",
+};
+
+// Difficulty badge styles
+const DIFFICULTY_STYLE: Record<"beginner" | "intermediate" | "advanced", { label: string; enLabel: string; bg: string; text: string; icon: string }> = {
+  beginner:     { label: "入门", enLabel: "Beginner",     bg: "bg-green-100",  text: "text-green-700",  icon: "🌱" },
+  intermediate: { label: "进阶", enLabel: "Intermediate", bg: "bg-amber-100",  text: "text-amber-700",  icon: "🔥" },
+  advanced:     { label: "深修", enLabel: "Advanced",     bg: "bg-purple-100", text: "text-purple-700", icon: "💎" },
+};
+
 function useSortOptions(t: (key: string) => string) {
   return [
     { value: "default", label: t("seals.sort.default") },
     { value: "name-asc", label: t("seals.sort.nameAsc") },
     { value: "name-desc", label: t("seals.sort.nameDesc") },
     { value: "series", label: t("seals.sort.series") },
+    { value: "difficulty-asc", label: t("seals.sort.difficultyAsc") },
+    { value: "difficulty-desc", label: t("seals.sort.difficultyDesc") },
   ];
 }
+
+// Day-of-week seal rotation — purely client-side, no API
+function getDailySeal(seals: Seal[]): Seal | null {
+  if (!seals.length) return null;
+  const dayOfYear = Math.floor(Date.now() / 86400000);
+  return seals[dayOfYear % seals.length];
+}
+
+const DIFFICULTY_ORDER: Record<"beginner" | "intermediate" | "advanced", number> = {
+  beginner: 0, intermediate: 1, advanced: 2,
+};
 
 interface Props {
   seals: Seal[];
   error?: boolean;
 }
 
-/* Seal Detail Modal */
+/* ─── Difficulty Badge ─── */
+function DifficultyBadge({ series, t }: { series: SealSeries; t: (key: string) => string }) {
+  const level = SERIES_DIFFICULTY[series];
+  const style = DIFFICULTY_STYLE[level];
+  const labelKey = `seals.difficulty.${level}` as const;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text}`}>
+      <span>{style.icon}</span>
+      {t(labelKey)}
+    </span>
+  );
+}
+
+/* ─── Seal Detail Modal ─── */
 function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void; t: (key: string) => string }) {
   const SERIES_META = useSeriesMeta(t);
   const meta = SERIES_META[seal.series];
@@ -69,7 +119,7 @@ function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl"
+        className="relative bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -78,9 +128,10 @@ function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void
           <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
             ✕
           </button>
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
             <span className="text-sm text-white/60">{meta?.label}</span>
+            <DifficultyBadge series={seal.series} t={t} />
           </div>
           <span className="text-4xl font-serif font-bold text-white/30 block mb-1">
             {String(seal.id).padStart(2, "0")}
@@ -93,7 +144,7 @@ function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void
           {/* Poem */}
           <div>
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">{t("seals.modal.poem")}</h3>
-            <blockquote className="text-gray-800 font-serif text-lg leading-relaxed border-l-3 border-gray-200 pl-4 whitespace-pre-line">
+            <blockquote className="text-gray-800 font-serif text-lg leading-relaxed border-l-4 border-gray-200 pl-4 whitespace-pre-line">
               {seal.poem}
             </blockquote>
           </div>
@@ -126,6 +177,24 @@ function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void
             </div>
           )}
 
+          {/* Meditation Timer CTA */}
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⏱️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-indigo-700 mb-0.5">{t("seals.modal.meditationTitle")}</p>
+                <p className="text-xs text-indigo-500 mb-2">{t("seals.modal.meditationDesc")}</p>
+                <Link
+                  href={`/chat?q=${encodeURIComponent(t("seals.modal.meditationQuery").replace("{name}", seal.name))}`}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 hover:text-indigo-900 hover:underline transition-colors"
+                  onClick={onClose}
+                >
+                  {t("seals.modal.meditationCta")} →
+                </Link>
+              </div>
+            </div>
+          </div>
+
           {/* Actions */}
           <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
             <Link
@@ -149,6 +218,169 @@ function SealDetailModal({ seal, onClose, t }: { seal: Seal; onClose: () => void
   );
 }
 
+/* ─── Daily Seal Banner ─── */
+function DailySealBanner({ seal, onOpen, t }: { seal: Seal; onOpen: () => void; t: (key: string) => string }) {
+  const gradient = SERIES_GRADIENT[seal.series] || "from-blue-500 to-purple-500";
+  const icon = SERIES_STYLE[seal.series]?.icon || "🙏";
+  const dotColor = SERIES_DOT_COLORS[seal.series] || "bg-gray-400";
+
+  return (
+    <div className={`bg-gradient-to-r ${gradient} rounded-2xl p-5 mb-8 text-white relative overflow-hidden shadow-lg`}>
+      {/* Background decoration */}
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[120px] opacity-10 select-none">{icon}</div>
+      <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+
+      <div className="relative flex items-start gap-4">
+        {/* Left: label */}
+        <div className="shrink-0 flex flex-col items-center gap-1">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">{icon}</div>
+          <span className="text-[10px] uppercase tracking-wide text-white/70 font-semibold">{t("seals.daily.label")}</span>
+        </div>
+
+        {/* Right: content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className={`text-xs font-bold bg-white/20 rounded-full px-2 py-0.5`}>
+              {t("seals.unit")} {String(seal.id).padStart(2, "0")}
+            </span>
+            <DifficultyBadge series={seal.series} t={t} />
+          </div>
+          <h3 className="text-lg font-serif font-bold mb-1">{seal.name}</h3>
+          <p className="text-white/80 text-sm font-serif line-clamp-2 leading-relaxed">{seal.poem}</p>
+          <div className="mt-3 flex items-center gap-3 flex-wrap">
+            <button
+              onClick={onOpen}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors"
+            >
+              🔍 {t("seals.daily.explore")}
+            </button>
+            <Link
+              href={`/seals/${seal.id}`}
+              className="inline-flex items-center gap-1 text-sm text-white/80 hover:text-white transition-colors font-medium"
+            >
+              {t("seals.daily.fullPage")} →
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Series Journey Map ─── */
+function SeriesJourneyMap({
+  seriesStats,
+  filter,
+  onSelectSeries,
+  t,
+}: {
+  seriesStats: { series: SealSeries; count: number; meta: { icon: string; label: string; desc: string } }[];
+  filter: SealSeries | null;
+  onSelectSeries: (s: SealSeries | null) => void;
+  t: (key: string) => string;
+}) {
+  const totalSeals = seriesStats.reduce((sum, s) => sum + s.count, 0);
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-bold text-gray-900 flex items-center gap-2">
+          <span className="text-xl">🗺️</span> {t("seals.progressOverview")}
+        </h2>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-400">{totalSeals}/30 {t("seals.unitCount")}</span>
+        </div>
+      </div>
+
+      {/* Segmented progress bar */}
+      <div className="h-3 bg-gray-100 rounded-full overflow-hidden mb-5 flex gap-0.5">
+        {seriesStats.map((stat) => (
+          <button
+            key={stat.series}
+            onClick={() => onSelectSeries(filter === stat.series ? null : stat.series)}
+            className={`h-full transition-all ${SERIES_DOT_COLORS[stat.series] || "bg-gray-300"} ${
+              filter === stat.series ? "opacity-100 ring-2 ring-offset-1 ring-gray-400" : "opacity-80 hover:opacity-100"
+            }`}
+            style={{ width: `${(stat.count / 30) * 100}%` }}
+            title={`${stat.meta.label}: ${stat.count}`}
+          />
+        ))}
+      </div>
+
+      {/* Series path — horizontal journey map */}
+      <div className="relative">
+        {/* Connecting line */}
+        <div className="absolute top-[28px] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-blue-200 via-amber-200 to-rose-200 hidden sm:block" />
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {seriesStats.map((stat, idx) => {
+            const isActive = filter === stat.series;
+            const level = SERIES_DIFFICULTY[stat.series];
+            const diffStyle = DIFFICULTY_STYLE[level];
+            // Achievement: series fully loaded (we compare count to seals in series — for demo: 6 seals per series)
+            const isComplete = stat.count >= 6;
+
+            return (
+              <button
+                key={stat.series}
+                onClick={() => onSelectSeries(filter === stat.series ? null : stat.series)}
+                className={`relative text-left rounded-xl p-3 border transition-all group ${
+                  isActive
+                    ? `${SERIES_RING_COLORS[stat.series]} ring-2 bg-white shadow-md`
+                    : "border-gray-100 bg-gray-50 hover:bg-white hover:shadow-sm"
+                }`}
+              >
+                {/* Step indicator */}
+                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-white border border-gray-200 text-[10px] font-bold text-gray-500 flex items-center justify-center shadow-sm">
+                  {idx + 1}
+                </div>
+
+                {/* Achievement badge */}
+                {isComplete && (
+                  <div className="absolute -top-1 -left-1">
+                    <span className="text-base" title={t("seals.achievement.seriesComplete").replace("{series}", stat.meta.label)}>🏅</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-xl">{stat.meta.icon}</span>
+                  <span className="font-bold text-gray-900 text-xs leading-tight">{stat.meta.label}</span>
+                </div>
+
+                {/* Difficulty micro-badge */}
+                <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${diffStyle.bg} ${diffStyle.text} mb-1.5`}>
+                  {diffStyle.icon} {t(`seals.difficulty.${level}`)}
+                </span>
+
+                <p className="text-xs text-gray-400 line-clamp-1">{stat.meta.desc}</p>
+                <div className="mt-1.5 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-gray-600">{stat.count} {t("seals.unitCount")}</span>
+                  {/* Mini progress dots */}
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: Math.min(stat.count, 6) }).map((_, i) => (
+                      <div key={i} className={`w-1.5 h-1.5 rounded-full ${SERIES_DOT_COLORS[stat.series]}`} />
+                    ))}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Journey path label */}
+        <div className="mt-3 flex items-center justify-center gap-2 text-xs text-gray-400">
+          <span>←</span>
+          <span>{t("seals.journey.start")}</span>
+          <div className="flex-1 border-t border-dashed border-gray-200 max-w-xs" />
+          <span>{t("seals.journey.end")}</span>
+          <span>→</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Component ─── */
 export default function SealsClient({ seals, error }: Props) {
   const { t } = useTranslation();
   const SERIES_META = useSeriesMeta(t);
@@ -158,6 +390,9 @@ export default function SealsClient({ seals, error }: Props) {
   const [sort, setSort] = useState("default");
   const [selectedSeal, setSelectedSeal] = useState<Seal | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "roadmap">("grid");
+  const [showDailyBanner, setShowDailyBanner] = useState(true);
+
+  const dailySeal = useMemo(() => getDailySeal(seals), [seals]);
 
   const filtered = useMemo(() => {
     let result = seals;
@@ -173,6 +408,16 @@ export default function SealsClient({ seals, error }: Props) {
     }
     if (sort === "name-asc") result = [...result].sort((a, b) => a.name.localeCompare(b.name, "zh"));
     if (sort === "name-desc") result = [...result].sort((a, b) => b.name.localeCompare(a.name, "zh"));
+    if (sort === "difficulty-asc") {
+      result = [...result].sort(
+        (a, b) => DIFFICULTY_ORDER[SERIES_DIFFICULTY[a.series]] - DIFFICULTY_ORDER[SERIES_DIFFICULTY[b.series]]
+      );
+    }
+    if (sort === "difficulty-desc") {
+      result = [...result].sort(
+        (a, b) => DIFFICULTY_ORDER[SERIES_DIFFICULTY[b.series]] - DIFFICULTY_ORDER[SERIES_DIFFICULTY[a.series]]
+      );
+    }
     return result;
   }, [seals, filter, search, sort]);
 
@@ -185,7 +430,7 @@ export default function SealsClient({ seals, error }: Props) {
         seals: filtered.filter((s) => s.series === series),
       }))
       .filter((g) => !filter || g.series === filter);
-  }, [filtered, filter]);
+  }, [filtered, filter, SERIES_META]);
 
   // Series stats for progress
   const seriesStats = useMemo(() => {
@@ -193,7 +438,7 @@ export default function SealsClient({ seals, error }: Props) {
       const count = seals.filter((s) => s.series === series).length;
       return { series, count, meta: SERIES_META[series] };
     });
-  }, [seals]);
+  }, [seals, SERIES_META]);
 
   if (error) {
     return (
@@ -225,49 +470,45 @@ export default function SealsClient({ seals, error }: Props) {
           <p className="text-sm text-gray-400 mt-2">
             {t("seals.statsLine").replace("{total}", String(seals.length)).replace("{series}", String(seriesOrder.length))}
           </p>
+          {/* Difficulty legend */}
+          <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
+            <span className="text-xs text-gray-400">{t("seals.difficulty.legend")}:</span>
+            {(["beginner", "intermediate", "advanced"] as const).map((level) => {
+              const s = DIFFICULTY_STYLE[level];
+              return (
+                <span key={level} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${s.bg} ${s.text}`}>
+                  {s.icon} {t(`seals.difficulty.${level}`)}
+                </span>
+              );
+            })}
+          </div>
         </div>
 
-        {/* ══════ Progress Overview (对标Duolingo/TripAdvisor成就系统) ══════ */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-gray-900 flex items-center gap-2">
-              <span className="text-xl">🗺️</span> {t("seals.progressOverview")}
-            </h2>
-            <span className="text-sm text-gray-400">{seals.length}/30 {t("seals.unit")}</span>
+        {/* ══════ Daily Seal Recommendation (对标TripAdvisor "Today's Pick") ══════ */}
+        {showDailyBanner && dailySeal && (
+          <div className="relative">
+            <button
+              onClick={() => setShowDailyBanner(false)}
+              className="absolute top-3 right-3 z-10 w-6 h-6 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center text-white text-xs transition-colors"
+              aria-label={t("seals.daily.dismiss")}
+            >
+              ✕
+            </button>
+            <DailySealBanner
+              seal={dailySeal}
+              onOpen={() => setSelectedSeal(dailySeal)}
+              t={t}
+            />
           </div>
-          {/* Progress bar */}
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden mb-5 flex">
-            {seriesStats.map((stat) => (
-              <div
-                key={stat.series}
-                className={`h-full ${SERIES_DOT_COLORS[stat.series]?.replace("bg-", "bg-") || "bg-gray-300"}`}
-                style={{ width: `${(stat.count / 30) * 100}%` }}
-                title={`${stat.meta.label}: ${stat.count} ${t("seals.unit")}`}
-              />
-            ))}
-          </div>
-          {/* Series overview cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            {seriesStats.map((stat) => (
-              <button
-                key={stat.series}
-                onClick={() => setFilter(filter === stat.series ? null : stat.series)}
-                className={`text-left rounded-xl p-3 border transition-all ${
-                  filter === stat.series
-                    ? `${SERIES_RING_COLORS[stat.series]} ring-2 bg-white shadow-md`
-                    : "border-gray-100 bg-gray-50 hover:bg-white hover:shadow-sm"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{stat.meta.icon}</span>
-                  <span className="font-bold text-gray-900 text-sm">{stat.meta.label}</span>
-                </div>
-                <p className="text-xs text-gray-400">{stat.count} {t("seals.unit")}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{stat.meta.desc}</p>
-              </button>
-            ))}
-          </div>
-        </div>
+        )}
+
+        {/* ══════ Series Journey Map (对标Duolingo学习路径+TripAdvisor成就系统) ══════ */}
+        <SeriesJourneyMap
+          seriesStats={seriesStats}
+          filter={filter}
+          onSelectSeries={setFilter}
+          t={t}
+        />
 
         {/* ══════ Toolbar: Search + Sort + View Toggle ══════ */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-8">
@@ -319,8 +560,13 @@ export default function SealsClient({ seals, error }: Props) {
           </div>
           {/* Active filter summary */}
           {(filter || search) && (
-            <div className="mt-3 flex items-center gap-2 text-sm">
+            <div className="mt-3 flex items-center gap-2 text-sm flex-wrap">
               <span className="text-gray-400">{t("seals.foundCount").replace("{count}", String(filtered.length))}</span>
+              {filter && (
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${DIFFICULTY_STYLE[SERIES_DIFFICULTY[filter]].bg} ${DIFFICULTY_STYLE[SERIES_DIFFICULTY[filter]].text}`}>
+                  {SERIES_META[filter].icon} {SERIES_META[filter].label}
+                </span>
+              )}
               <button
                 onClick={() => { setFilter(null); setSearch(""); }}
                 className="text-[#0066FF] hover:underline text-xs"
@@ -372,7 +618,8 @@ export default function SealsClient({ seals, error }: Props) {
                   <h2 className="text-xl font-serif font-bold text-gray-700 flex items-center gap-3">
                     <span className="text-xl">{group.meta.icon}</span>
                     {group.meta.label}
-                    <span className="text-sm font-normal text-gray-400">({group.seals.length}{t("seals.unit")})</span>
+                    <span className="text-sm font-normal text-gray-400">({group.seals.length} {t("seals.unitCount")})</span>
+                    <DifficultyBadge series={group.series} t={t} />
                   </h2>
                   <p className="text-sm text-gray-400 hidden sm:block">{group.meta.desc}</p>
                 </div>
@@ -404,6 +651,7 @@ export default function SealsClient({ seals, error }: Props) {
                       <span className="text-xl">{group.meta.icon}</span>
                       <span className="font-bold text-gray-900">{group.meta.label}</span>
                       <span className="text-xs text-gray-400">({group.seals.length})</span>
+                      <DifficultyBadge series={group.series} t={t} />
                     </div>
                   </div>
 
@@ -424,7 +672,7 @@ export default function SealsClient({ seals, error }: Props) {
                               onClick={() => setSelectedSeal(seal)}
                               className="w-full text-left bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-[#0066FF]/20 transition-all group"
                             >
-                              <div className="flex items-center gap-2 mb-1">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
                                 <span className="text-lg font-serif font-bold text-gray-300">
                                   {String(seal.id).padStart(2, "0")}
                                 </span>
@@ -433,9 +681,12 @@ export default function SealsClient({ seals, error }: Props) {
                                 </h3>
                               </div>
                               <p className="text-gray-500 text-sm font-serif line-clamp-2 leading-relaxed">{seal.poem}</p>
-                              <span className="text-xs text-[#0066FF] opacity-0 group-hover:opacity-100 transition-opacity mt-1 inline-block">
-                                {t("seals.clickToView")}
-                              </span>
+                              <div className="mt-2 flex items-center justify-between">
+                                <DifficultyBadge series={seal.series} t={t} />
+                                <span className="text-xs text-[#0066FF] opacity-0 group-hover:opacity-100 transition-opacity">
+                                  {t("seals.clickToView")}
+                                </span>
+                              </div>
                             </button>
                           </div>
                         </div>
@@ -464,8 +715,42 @@ export default function SealsClient({ seals, error }: Props) {
           </div>
         )}
 
+        {/* ══════ Achievement & Series Completion Summary ══════ */}
+        {!filter && !search && (
+          <div className="mt-10 mb-4 bg-gradient-to-r from-yellow-50 to-amber-50 border border-amber-100 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">🏅</span>
+              <h3 className="font-bold text-amber-900">{t("seals.achievement.title")}</h3>
+            </div>
+            <p className="text-sm text-amber-700 mb-3">{t("seals.achievement.desc")}</p>
+            <div className="flex flex-wrap gap-3">
+              {seriesStats.map((stat) => {
+                const isComplete = stat.count >= 6;
+                return (
+                  <div
+                    key={stat.series}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm transition-all ${
+                      isComplete
+                        ? `bg-gradient-to-r ${SERIES_GRADIENT[stat.series]} text-white border-transparent shadow-sm`
+                        : "bg-white text-gray-500 border-gray-200"
+                    }`}
+                  >
+                    <span>{stat.meta.icon}</span>
+                    <span className="font-medium">{stat.meta.label}</span>
+                    {isComplete && <span className="ml-1">🏅</span>}
+                    {!isComplete && <span className="text-xs text-gray-400">{stat.count}/6</span>}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-amber-600 mt-3">
+              {t("seals.achievement.hint")}
+            </p>
+          </div>
+        )}
+
         {/* ══════ Journey CTA ══════ */}
-        <div className="mt-12 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-center relative overflow-hidden">
+        <div className="mt-8 bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-center relative overflow-hidden">
           <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#D4A855]/10 rounded-full blur-3xl" />
           <div className="absolute -left-8 -bottom-8 w-40 h-40 bg-[#0066FF]/10 rounded-full blur-2xl" />
           <div className="relative">
@@ -486,6 +771,13 @@ export default function SealsClient({ seals, error }: Props) {
                 className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20"
               >
                 {t("seals.cta.browseRoutes")}
+              </Link>
+              {/* Meditation CTA */}
+              <Link
+                href={`/chat?q=${encodeURIComponent(t("seals.cta.meditationQuery"))}`}
+                className="px-6 py-3 bg-indigo-600/80 hover:bg-indigo-600 text-white font-medium rounded-xl transition-colors border border-indigo-500/30"
+              >
+                ⏱️ {t("seals.cta.meditation")}
               </Link>
             </div>
           </div>
