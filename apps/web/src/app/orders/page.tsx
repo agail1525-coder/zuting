@@ -422,15 +422,17 @@ function InfoRow({
   );
 }
 
-const STATUS_TABS = [
-  { value: "", label: "全部", icon: "📋" },
-  { value: "PENDING", label: "待支付", icon: "⏳" },
-  { value: "PAID", label: "已支付", icon: "✅" },
-  { value: "COMPLETED", label: "已完成", icon: "🎉" },
-  { value: "CANCELLED", label: "已取消", icon: "❌" },
-  { value: "REFUNDING", label: "退款中", icon: "🔄" },
-  { value: "REFUNDED", label: "已退款", icon: "💰" },
-];
+function getStatusTabs(t: (key: string) => string) {
+  return [
+    { value: "", label: t("orders.tab.all"), icon: "📋" },
+    { value: "PENDING", label: t("orders.tab.pending"), icon: "⏳" },
+    { value: "PAID", label: t("orders.tab.paid"), icon: "✅" },
+    { value: "COMPLETED", label: t("orders.tab.completed"), icon: "🎉" },
+    { value: "CANCELLED", label: t("orders.tab.cancelled"), icon: "❌" },
+    { value: "REFUNDING", label: t("orders.tab.refunding"), icon: "🔄" },
+    { value: "REFUNDED", label: t("orders.tab.refunded"), icon: "💰" },
+  ];
+}
 
 // --- Main Page ---
 export default function OrdersPage() {
@@ -445,6 +447,8 @@ export default function OrdersPage() {
   const [drawerLoading, setDrawerLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const STATUS_TABS = useMemo(() => getStatusTabs(t), [t]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -545,15 +549,15 @@ export default function OrdersPage() {
           <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
               <p className="text-2xl font-bold text-[#0066FF]">{orderStats.count}</p>
-              <p className="text-xs text-gray-400 mt-1">总订单</p>
+              <p className="text-xs text-gray-400 mt-1">{t("orders.stats.totalOrders")}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
               <p className="text-2xl font-bold text-[#0066FF]">{formatAmount(orderStats.totalSpent)}</p>
-              <p className="text-xs text-gray-400 mt-1">总消费</p>
+              <p className="text-xs text-gray-400 mt-1">{t("orders.stats.totalSpent")}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
               <p className="text-2xl font-bold text-green-500">{orderStats.statusCounts["COMPLETED"] || 0}</p>
-              <p className="text-xs text-gray-400 mt-1">已完成</p>
+              <p className="text-xs text-gray-400 mt-1">{t("orders.stats.completed")}</p>
             </div>
           </div>
         )}
@@ -593,18 +597,18 @@ export default function OrdersPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜索订单号或行程名称..."
+              placeholder={t("orders.searchPlaceholder")}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
             />
           </div>
           {(statusFilter || searchQuery) && (
             <div className="mt-2 flex items-center gap-2 text-sm">
-              <span className="text-gray-400">找到 {filteredOrders.length} 个订单</span>
+              <span className="text-gray-400">{t("orders.foundCount").replace("{count}", String(filteredOrders.length))}</span>
               <button
                 onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
                 className="text-[#0066FF] hover:underline text-xs"
               >
-                清除筛选
+                {t("orders.clearFilter")}
               </button>
             </div>
           )}
@@ -638,12 +642,12 @@ export default function OrdersPage() {
         {!error && orders.length > 0 && filteredOrders.length === 0 && (
           <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-12 text-center">
             <div className="text-4xl mb-3">🔍</div>
-            <p className="text-gray-500">没有找到符合条件的订单</p>
+            <p className="text-gray-500">{t("orders.noFilterResults")}</p>
             <button
               onClick={() => { setStatusFilter(""); setSearchQuery(""); }}
               className="mt-3 text-sm text-[#0066FF] hover:underline"
             >
-              清除筛选条件
+              {t("orders.clearFilter")}
             </button>
           </div>
         )}
@@ -687,7 +691,7 @@ export default function OrdersPage() {
                   {/* Upcoming trip nudge */}
                   {isPaid && (
                     <div className="mb-3 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100 text-xs text-blue-600 flex items-center gap-1.5">
-                      <span>✈️</span> 您的行程已确认，祝旅途愉快！
+                      <span>✈️</span> {t("orders.tripConfirmedNudge")}
                     </div>
                   )}
 
@@ -704,7 +708,7 @@ export default function OrdersPage() {
                           href={`/routes`}
                           className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors"
                         >
-                          再次预订
+                          {t("orders.rebook")}
                         </Link>
                       )}
                       <button

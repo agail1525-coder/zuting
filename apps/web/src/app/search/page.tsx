@@ -48,20 +48,30 @@ const TYPE_BADGE_STYLES: Record<string, string> = {
   seal: "bg-yellow-50 text-yellow-700 border-yellow-200",
 };
 
-const TYPE_LABEL_ZH: Record<string, string> = {
-  religion: "信仰",
-  "holy-site": "圣地",
-  temple: "祖庭",
-  patriarch: "祖师",
-  teaching: "祖训",
-  seal: "印",
-};
-
-const COUNTRY_OPTIONS = [
-  "中国", "印度", "日本", "以色列", "沙特", "土耳其",
-  "意大利", "西班牙", "法国", "德国", "英国", "柬埔寨",
-  "缅甸", "印尼", "尼泊尔", "不丹", "澳大利亚", "秘鲁",
-  "墨西哥", "美国", "巴勒斯坦", "巴基斯坦", "伊拉克",
+const COUNTRY_I18N_KEYS = [
+  "search.country.china",
+  "search.country.india",
+  "search.country.japan",
+  "search.country.israel",
+  "search.country.saudiArabia",
+  "search.country.turkey",
+  "search.country.italy",
+  "search.country.spain",
+  "search.country.france",
+  "search.country.germany",
+  "search.country.uk",
+  "search.country.cambodia",
+  "search.country.myanmar",
+  "search.country.indonesia",
+  "search.country.nepal",
+  "search.country.bhutan",
+  "search.country.australia",
+  "search.country.peru",
+  "search.country.mexico",
+  "search.country.usa",
+  "search.country.palestine",
+  "search.country.pakistan",
+  "search.country.iraq",
 ] as const;
 
 function getDetailHref(item: SearchResultItem | SearchSuggestion): string {
@@ -303,7 +313,7 @@ export default function SearchPage() {
             {showHotKeywords && (
               <div className="p-4">
                 <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">
-                  热门搜索 / Hot Searches
+                  {t("search.hotSearches")}
                 </p>
                 {hotLoading ? (
                   <div className="flex gap-2">
@@ -341,7 +351,7 @@ export default function SearchPage() {
                     {suggestions.entities.length > 0 && (
                       <div>
                         <p className="px-4 pt-3 pb-1 text-xs text-gray-400 font-medium uppercase tracking-wide">
-                          相关结果 / Results
+                          {t("search.relatedResults")}
                         </p>
                         {suggestions.entities.map((entity) => (
                           <Link
@@ -374,7 +384,7 @@ export default function SearchPage() {
                                 TYPE_BADGE_STYLES[entity.type] || "bg-gray-100 text-gray-600 border-gray-200"
                               }`}
                             >
-                              {TYPE_LABEL_ZH[entity.type] || entity.type}
+                              {t(TYPE_I18N_KEYS[entity.type] || `search.type.${entity.type}`)}
                             </span>
                           </Link>
                         ))}
@@ -384,7 +394,7 @@ export default function SearchPage() {
                     {suggestions.keywords.length > 0 && (
                       <div className="border-t border-gray-100">
                         <p className="px-4 pt-3 pb-1 text-xs text-gray-400 font-medium uppercase tracking-wide">
-                          搜索建议 / Suggestions
+                          {t("search.searchSuggestions")}
                         </p>
                         {suggestions.keywords.map((kw) => (
                           <button
@@ -435,7 +445,7 @@ export default function SearchPage() {
             onChange={(e) => { setReligionId(e.target.value); setPage(1); }}
             className="px-3 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#0066FF]/50 transition-colors"
           >
-            <option value="">全部信仰 / All</option>
+            <option value="">{t("search.filterAllReligions")}</option>
             {religions.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.symbol ? `${r.symbol} ` : ""}{r.name}
@@ -449,9 +459,9 @@ export default function SearchPage() {
             onChange={(e) => { setCountry(e.target.value); setPage(1); }}
             className="px-3 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-[#0066FF]/50 transition-colors"
           >
-            <option value="">全部国家 / Country</option>
-            {COUNTRY_OPTIONS.map((c) => (
-              <option key={c} value={c}>{c}</option>
+            <option value="">{t("search.filterAllCountries")}</option>
+            {COUNTRY_I18N_KEYS.map((key) => (
+              <option key={key} value={t(key)}>{t(key)}</option>
             ))}
           </select>
 
@@ -465,7 +475,7 @@ export default function SearchPage() {
                   : "bg-white text-gray-500 hover:text-[#0066FF]"
               }`}
             >
-              相关度
+              {t("search.sortRelevance")}
             </button>
             <div className="w-px bg-gray-200" />
             <button
@@ -476,7 +486,7 @@ export default function SearchPage() {
                   : "bg-white text-gray-500 hover:text-[#0066FF]"
               }`}
             >
-              名称
+              {t("search.sortName")}
             </button>
             <div className="w-px bg-gray-200" />
             <button
@@ -487,7 +497,7 @@ export default function SearchPage() {
                   : "bg-white text-gray-500 hover:text-[#0066FF]"
               }`}
             >
-              热门
+              {t("search.sortPopular")}
             </button>
           </div>
 
@@ -495,7 +505,7 @@ export default function SearchPage() {
           <button
             onClick={() => { setSortOrder((prev) => prev === "asc" ? "desc" : "asc"); setPage(1); }}
             className="px-2.5 py-2 rounded-lg text-sm border border-gray-200 bg-white text-gray-500 hover:text-[#0066FF] hover:border-[#0066FF]/30 transition-colors"
-            title={sortOrder === "asc" ? "升序 / Ascending" : "降序 / Descending"}
+            title={sortOrder === "asc" ? t("search.sortAsc") : t("search.sortDesc")}
           >
             {sortOrder === "asc" ? (
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -526,7 +536,7 @@ export default function SearchPage() {
             onClick={() => doSearch(query, activeType, page, religionId, sort, country, sortOrder)}
             className="mt-4 px-6 py-2 rounded-lg border border-[#0066FF]/30 text-[#0066FF] hover:bg-[#0066FF]/10 transition-all"
           >
-            重试 / Retry
+            {t("search.retry")}
           </button>
         </div>
       )}
@@ -543,7 +553,7 @@ export default function SearchPage() {
           {hotKeywords.length > 0 && (
             <div className="bg-white border border-gray-100 rounded-2xl p-6 max-w-2xl mx-auto">
               <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
-                热门搜索 / Hot Searches
+                {t("search.hotSearches")}
               </h2>
               {hotLoading ? (
                 <div className="flex flex-wrap gap-2">
@@ -582,6 +592,39 @@ export default function SearchPage() {
             {t("search.noResults").replace("{query}", query)}
           </p>
           <p className="text-gray-400 text-sm mt-1">{t("search.noResultsHint")}</p>
+
+          {/* Search Tips */}
+          <div className="mt-8 max-w-md mx-auto bg-white border border-gray-100 rounded-2xl p-6 text-left">
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              {t("search.tips.title")}
+            </h3>
+            <ul className="space-y-2">
+              <li className="flex items-start gap-2 text-sm text-gray-500">
+                <svg className="w-4 h-4 text-[#0066FF]/60 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t("search.tips.broaderTerms")}
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-500">
+                <svg className="w-4 h-4 text-[#0066FF]/60 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t("search.tips.checkSpelling")}
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-500">
+                <svg className="w-4 h-4 text-[#0066FF]/60 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t("search.tips.differentFilters")}
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-500">
+                <svg className="w-4 h-4 text-[#0066FF]/60 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {t("search.tips.fewerWords")}
+              </li>
+            </ul>
+          </div>
         </div>
       )}
 
