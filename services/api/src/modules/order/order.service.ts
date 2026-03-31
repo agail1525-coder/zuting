@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OrderStatus, TripStatus } from '@prisma/client';
+import { BookingStatus, OrderStatus, TripStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TripStateMachine } from '../../common/trip-state-machine';
 import { generateOrderNo } from '../../common/utils';
@@ -200,14 +200,22 @@ export class OrderService {
       },
     });
 
-    // Transition trip to PAID status
-    await this.stateMachine.transition(
-      order.tripId,
-      TripStatus.PAID,
-      'payment_success',
-      'system',
-      `Order ${order.orderNo} paid`,
-    );
+    // Transition trip to PAID status (only for trip-based orders)
+    if (order.tripId) {
+      await this.stateMachine.transition(
+        order.tripId,
+        TripStatus.PAID,
+        'payment_success',
+        'system',
+        `Order ${order.orderNo} paid`,
+      );
+    }
+
+    // Update linked route bookings to PAID
+    await this.prisma.routeBooking.updateMany({
+      where: { orderId: id, status: BookingStatus.CONFIRMED },
+      data: { status: BookingStatus.PAID },
+    });
 
     return updatedOrder;
   }
@@ -243,16 +251,19 @@ export class OrderService {
       data: { status: OrderStatus.REFUNDING },
     });
 
-    try {
-      await this.stateMachine.transition(
-        order.tripId,
-        TripStatus.REFUNDING,
-        'request_refund',
-        'system',
-        reason ?? `Admin refund requested for order ${order.orderNo}`,
-      );
-    } catch {
-      // Trip may already be in a state that doesn't allow this transition; that's OK
+    // Transition trip to REFUNDING (only for trip-based orders)
+    if (order.tripId) {
+      try {
+        await this.stateMachine.transition(
+          order.tripId,
+          TripStatus.REFUNDING,
+          'request_refund',
+          'system',
+          reason ?? `Admin refund requested for order ${order.orderNo}`,
+        );
+      } catch {
+        // Trip may already be in a state that doesn't allow this transition; that's OK
+      }
     }
 
     return updatedOrder;
@@ -272,17 +283,19 @@ export class OrderService {
       data: { status: OrderStatus.REFUNDING },
     });
 
-    // Transition trip to REFUNDING
-    try {
-      await this.stateMachine.transition(
-        order.tripId,
-        TripStatus.REFUNDING,
-        'request_refund',
-        'system',
-        reason ?? `Refund requested for order ${order.orderNo}`,
-      );
-    } catch {
-      // Trip may already be in a state that doesn't allow this transition; that's OK
+    // Transition trip to REFUNDING (only for trip-based orders)
+    if (order.tripId) {
+      try {
+        await this.stateMachine.transition(
+          order.tripId,
+          TripStatus.REFUNDING,
+          'request_refund',
+          'system',
+          reason ?? `Refund requested for order ${order.orderNo}`,
+        );
+      } catch {
+        // Trip may already be in a state that doesn't allow this transition; that's OK
+      }
     }
 
     return updatedOrder;

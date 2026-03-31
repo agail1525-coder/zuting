@@ -14,6 +14,7 @@ import {
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import MobileNav from "@/components/MobileNav";
 
 function formatDate(dateStr: string) {
@@ -110,8 +111,10 @@ export default function QuestionDetailPage({ params }: { params: Promise<{ id: s
       setQuestion((prev) => prev ? { ...prev, answers: [...(prev.answers ?? []), ans], answerCount: (prev.answerCount ?? 0) + 1 } : prev);
       setAnswerText("");
       setSubmitMsg(t("community.question.answerSubmitted"));
+      toast.success(t("community.question.answerSubmitted"));
     } catch {
       setSubmitMsg(t("community.question.answerSubmitFailed"));
+      toast.error(t("community.question.answerSubmitFailed"));
     } finally {
       setSubmitting(false);
     }

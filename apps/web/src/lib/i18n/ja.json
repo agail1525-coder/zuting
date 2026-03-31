@@ -380,9 +380,12 @@
   "review.subScores.guideQuality": "ガイドの質",
   "review.subScores.authenticity": "歴史的真正性",
   "review.subDimensions": "詳細評価",
+  "socialProof.monthlyVisitors": "今月{count}人の巡礼者が訪問",
+  "socialProof.viewingNow": "{count}人が閲覧中",
   "socialProof.pilgrims": "人の巡礼者が今月訪問",
   "socialProof.viewing": "人が閲覧中",
   "ugcPhotos.title": "コミュニティ写真",
+  "ugcPhotos.viewAll": "コミュニティ写真をすべて見る",
   "qa.title": "旅行者Q&A",
   "qa.askQuestion": "質問する",
   "qa.noQuestions": "まだ質問はありません。最初の質問者になりましょう！",
@@ -393,6 +396,14 @@
   "encyclopedia.holySitesSubtitle": "世界の聖地を探索",
   "encyclopedia.patriarchsSubtitle": "各信仰の先賢を探索",
   "encyclopedia.teachingsSubtitle": "千年の智慧に耳を傾ける",
+  "encyclopedia.search": "検索",
+  "encyclopedia.sort": "並び替え",
+  "encyclopedia.results": "件の結果",
+  "encyclopedia.loadMore": "もっと見る",
+  "rankings.title": "ランキング",
+  "rankings.subtitle": "巡礼者に最も推薦される聖地とルート",
+  "rankings.bestSites": "おすすめ聖地",
+  "rankings.bestRoutes": "おすすめルート",
   "profile.nicknamePlaceholder": "ニックネームを入力",
   "profile.pilgrim": "巡礼者",
   "profile.motto": "巡礼の心で平和の道を歩む",
@@ -930,7 +941,6 @@
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
-
   "rankings.loadError": "読み込みに失敗しました",
   "rankings.retry": "再試行",
   "rankings.empty": "ランキングデータなし",
@@ -940,17 +950,20 @@
   "chat.feature.sites": "60+聖地",
   "chat.feature.temples": "27祖庭",
   "chat.feature.routes": "ルート計画",
-
+  "priceForecast.title": "価格トレンド",
+  "priceForecast.goodDeal": "今が予約のチャンス",
+  "priceForecast.waitMaybe": "価格が下がる可能性あり",
+  "priceForecast.confidence": "信頼度",
+  "priceForecast.lowest": "過去最安値",
+  "priceForecast.average": "平均",
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -959,7 +972,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -988,7 +1000,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1019,7 +1030,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "promotions.subtitle": "タイムセール、早割、フラッシュセールを一覧で確認",
   "promotions.tabAll": "すべて",
   "promotions.tabFlashSale": "フラッシュセール",
@@ -1043,7 +1053,6 @@
   "promotions.daysLeft": "残り{days}日",
   "promotions.bookEarlySave": "早期予約で{saving}お得",
   "promotions.eventDeadline": "イベント終了 {date}",
-
   "coupons.subtitle": "限定クーポンを取得してさらにお得に",
   "coupons.tabAvailable": "取得可能",
   "coupons.tabMine": "マイクーポン",
@@ -1064,7 +1073,6 @@
   "coupons.emptyAvailable": "現在取得可能なクーポンはありません",
   "coupons.emptyMine": "クーポンがありません",
   "coupons.emptyUsed": "使用済みクーポンはありません",
-
   "checkout.couponInvalid": "無効なクーポンです",
   "checkout.verifyError": "検証に失敗しました",
   "checkout.submitError": "送信に失敗しました",
@@ -1082,10 +1090,8 @@
   "checkout.percentDiscount": "{value}%割引",
   "checkout.fixedDiscount": "¥{value}引き",
   "checkout.viewAllPromotions": "すべてのプロモーションを見る",
-
   "coupons.fixedUnit": "引き",
   "coupons.percentUnit": "割引",
-
   "referral.title": "紹介センター",
   "referral.subtitle": "友達を招待して報酬を共有",
   "referral.myInviteCode": "マイ招待コード",
@@ -1115,7 +1121,6 @@
   "referral.statusPending": "未精算",
   "referral.statusSettled": "精算済み",
   "referral.statusCancelled": "キャンセル済み",
-
   "pointsMall.title": "ポイントモール",
   "pointsMall.subtitle": "ポイントで特典やギフトと交換",
   "pointsMall.availablePoints": "利用可能ポイント",

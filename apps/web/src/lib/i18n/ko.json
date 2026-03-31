@@ -380,9 +380,12 @@
   "review.subScores.guideQuality": "가이드 품질",
   "review.subScores.authenticity": "역사적 진정성",
   "review.subDimensions": "세부 평점",
+  "socialProof.monthlyVisitors": "이번 달 {count}명의 순례자가 방문",
+  "socialProof.viewingNow": "{count}명이 보는 중",
   "socialProof.pilgrims": "명의 순례자가 이번 달 방문",
   "socialProof.viewing": "명이 보는 중",
   "ugcPhotos.title": "커뮤니티 사진",
+  "ugcPhotos.viewAll": "커뮤니티 사진 모두 보기",
   "qa.title": "여행자 Q&A",
   "qa.askQuestion": "질문하기",
   "qa.noQuestions": "아직 질문이 없습니다. 첫 번째 질문자가 되세요!",
@@ -393,6 +396,14 @@
   "encyclopedia.holySitesSubtitle": "전 세계 성지를 탐험하세요",
   "encyclopedia.patriarchsSubtitle": "각 신앙의 선현을 만나세요",
   "encyclopedia.teachingsSubtitle": "천년의 지혜를 들어보세요",
+  "encyclopedia.search": "검색",
+  "encyclopedia.sort": "정렬",
+  "encyclopedia.results": "개 결과",
+  "encyclopedia.loadMore": "더 보기",
+  "rankings.title": "랭킹",
+  "rankings.subtitle": "순례자들이 가장 추천하는 성지와 루트",
+  "rankings.bestSites": "베스트 성지",
+  "rankings.bestRoutes": "베스트 루트",
   "profile.nicknamePlaceholder": "닉네임 입력",
   "profile.pilgrim": "순례자",
   "profile.motto": "순례의 마음으로 평화의 길을 걷다",
@@ -930,7 +941,6 @@
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
-
   "rankings.loadError": "로딩 실패, 새로고침하세요",
   "rankings.retry": "재시도",
   "rankings.empty": "순위 데이터 없음",
@@ -940,17 +950,20 @@
   "chat.feature.sites": "60+ 성지",
   "chat.feature.temples": "27 조정",
   "chat.feature.routes": "경로 계획",
-
+  "priceForecast.title": "가격 추이",
+  "priceForecast.goodDeal": "지금 예약하기 좋은 시기",
+  "priceForecast.waitMaybe": "가격이 내려갈 수 있습니다",
+  "priceForecast.confidence": "신뢰도",
+  "priceForecast.lowest": "역대 최저가",
+  "priceForecast.average": "평균",
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -959,7 +972,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -988,7 +1000,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1019,7 +1030,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "promotions.subtitle": "타임세일, 얼리버드, 한정 할인을 한눈에",
   "promotions.tabAll": "전체",
   "promotions.tabFlashSale": "타임세일",
@@ -1043,7 +1053,6 @@
   "promotions.daysLeft": "남은 {days}일",
   "promotions.bookEarlySave": "조기 예약 시 {saving} 절약",
   "promotions.eventDeadline": "이벤트 종료 {date}",
-
   "coupons.subtitle": "전용 쿠폰을 받고 더 많이 절약하세요",
   "coupons.tabAvailable": "수령 가능",
   "coupons.tabMine": "내 쿠폰",
@@ -1064,7 +1073,6 @@
   "coupons.emptyAvailable": "현재 수령 가능한 쿠폰이 없습니다",
   "coupons.emptyMine": "보유한 쿠폰이 없습니다",
   "coupons.emptyUsed": "사용한 쿠폰이 없습니다",
-
   "checkout.couponInvalid": "유효하지 않은 쿠폰입니다",
   "checkout.verifyError": "검증 실패",
   "checkout.submitError": "제출 실패",
@@ -1082,10 +1090,8 @@
   "checkout.percentDiscount": "{value}% 할인",
   "checkout.fixedDiscount": "¥{value} 할인",
   "checkout.viewAllPromotions": "모든 프로모션 보기",
-
   "coupons.fixedUnit": "할인",
   "coupons.percentUnit": "% 할인",
-
   "referral.title": "추천 센터",
   "referral.subtitle": "친구를 초대하고 보상을 공유하세요",
   "referral.myInviteCode": "내 초대 코드",
@@ -1115,7 +1121,6 @@
   "referral.statusPending": "정산 대기",
   "referral.statusSettled": "정산 완료",
   "referral.statusCancelled": "취소됨",
-
   "pointsMall.title": "포인트몰",
   "pointsMall.subtitle": "포인트로 특별 혜택과 선물을 교환하세요",
   "pointsMall.availablePoints": "사용 가능 포인트",

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import {
   quickSave,
   checkSaved,
@@ -36,12 +37,6 @@ export default function SaveButton({
   const [savedCollectionId, setSavedCollectionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pressed, setPressed] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
-
-  const showToast = useCallback((msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2500);
-  }, []);
 
   // Check saved state on mount (only when logged in)
   useEffect(() => {
@@ -61,7 +56,7 @@ export default function SaveButton({
 
   const handleClick = async () => {
     if (!user) {
-      showToast(t("save.loginRequired"));
+      toast.warning(t("save.loginRequired"));
       return;
     }
     if (loading) return;
@@ -83,7 +78,7 @@ export default function SaveButton({
         if (check.collections.length > 0) {
           setSavedCollectionId(check.collections[0].id);
         }
-        showToast(t("save.saved"));
+        toast.success(t("save.saved"));
       } else {
         // Remove from collection
         if (savedCollectionId && savedItemId) {
@@ -97,10 +92,10 @@ export default function SaveButton({
         }
         setSaved(false);
         setSavedItemId(null);
-        showToast(t("save.unsaved"));
+        toast.success(t("save.unsaved"));
       }
     } catch {
-      showToast(t("save.error"));
+      toast.error(t("save.error"));
     } finally {
       setLoading(false);
     }
@@ -158,14 +153,6 @@ export default function SaveButton({
         )}
       </button>
 
-      {/* Toast notification */}
-      {toast && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap">
-          <span className="bg-gray-900 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-lg">
-            {toast}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

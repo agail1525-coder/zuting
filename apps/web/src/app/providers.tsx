@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileNav from "@/components/MobileNav";
+import ToastContainer from "@/components/Toast";
 import { WebVitals } from "./web-vitals";
 import { SentryInit } from "./sentry-init";
 
@@ -20,6 +21,7 @@ export default function ClientProviders({ children }: { children: React.ReactNod
         <main id="main-content" className="min-h-screen pt-16 pb-16 md:pb-0">{children}</main>
         <Footer />
         <MobileNav />
+        <ToastContainer />
         <WebVitals />
       </AuthProvider>
     </I18nProvider>

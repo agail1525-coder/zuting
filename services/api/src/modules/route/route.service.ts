@@ -1,12 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { RouteCategory, RouteDifficulty, RouteStatus } from '@prisma/client';
 
 @Injectable()
 export class RouteService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(RouteService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
+  ) {}
 
   private readonly includeRelations = {
     religion: { select: { name: true, nameEn: true, slug: true, color: true } },
@@ -42,6 +48,17 @@ export class RouteService {
       sort = 'createdAt',
     } = query;
 
+    // Only cache default published-route queries (no custom status filter)
+    const isDefaultPublished = !status;
+    const cacheKey = isDefaultPublished
+      ? `route:list:${category ?? ''}:${difficulty ?? ''}:${religionId ?? ''}:${minDuration ?? ''}:${maxDuration ?? ''}:${page}:${pageSize}:${sort}`
+      : null;
+
+    if (cacheKey) {
+      const cached = await this.redis.getJSON(cacheKey);
+      if (cached) return cached;
+    }
+
     const where: Record<string, unknown> = {};
     if (category) where.category = category as RouteCategory;
     if (difficulty) where.difficulty = difficulty as RouteDifficulty;
@@ -74,29 +91,48 @@ export class RouteService {
       this.prisma.route.count({ where }),
     ]);
 
-    return { items, total, page, pageSize: take };
+    const result = { items, total, page, pageSize: take };
+    if (cacheKey) {
+      await this.redis.setJSON(cacheKey, result, 900); // 15 min
+    }
+    return result;
   }
 
   async findBySlug(slug: string) {
+    const cacheKey = `route:slug:${slug}`;
+    const cached = await this.redis.getJSON(cacheKey);
+    if (cached) return cached;
+
     const route = await this.prisma.route.findUnique({
       where: { slug },
       include: this.includeRelations,
     });
     if (!route) throw new NotFoundException('Route not found');
+    await this.redis.setJSON(cacheKey, route, 900); // 15 min
     return route;
   }
 
   async findFeatured(limit = 8) {
-    return this.prisma.route.findMany({
+    const cacheKey = `route:featured:${limit}`;
+    const cached = await this.redis.getJSON(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.prisma.route.findMany({
       where: { status: RouteStatus.PUBLISHED },
       include: this.includeRelations,
       orderBy: [{ bookCount: 'desc' }, { rating: 'desc' }],
       take: Math.min(limit, 20),
     });
+    await this.redis.setJSON(cacheKey, result, 900); // 15 min
+    return result;
   }
 
   async findBySite(siteId: string) {
-    return this.prisma.route.findMany({
+    const cacheKey = `route:site:${siteId}`;
+    const cached = await this.redis.getJSON(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.prisma.route.findMany({
       where: {
         status: RouteStatus.PUBLISHED,
         sites: { some: { siteId } },
@@ -104,10 +140,12 @@ export class RouteService {
       include: this.includeRelations,
       take: 20,
     });
+    await this.redis.setJSON(cacheKey, result, 900); // 15 min
+    return result;
   }
 
   async create(dto: CreateRouteDto) {
-    return this.prisma.route.create({
+    const result = await this.prisma.route.create({
       data: {
         slug: dto.slug,
         title: dto.title,
@@ -132,6 +170,8 @@ export class RouteService {
         religionId: dto.religionId,
       },
     });
+    await this.invalidateCache();
+    return result;
   }
 
   async update(id: string, dto: UpdateRouteDto) {
@@ -139,10 +179,24 @@ export class RouteService {
     if (dto.category) data.category = dto.category as RouteCategory;
     if (dto.difficulty) data.difficulty = dto.difficulty as RouteDifficulty;
     if (dto.status) data.status = dto.status as RouteStatus;
-    return this.prisma.route.update({ where: { id }, data });
+    const result = await this.prisma.route.update({ where: { id }, data });
+    await this.invalidateCache();
+    return result;
   }
 
   async remove(id: string) {
-    return this.prisma.route.delete({ where: { id } });
+    const result = await this.prisma.route.delete({ where: { id } });
+    await this.invalidateCache();
+    return result;
+  }
+
+  private async invalidateCache() {
+    try {
+      const client = this.redis.getClient();
+      const keys = await client.keys('route:*');
+      if (keys.length > 0) await this.redis.del(...keys);
+    } catch (err) {
+      this.logger.warn('Failed to invalidate route cache', err);
+    }
   }
 }

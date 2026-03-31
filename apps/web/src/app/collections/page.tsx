@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import {
   fetchCollections,
   createCollection,
@@ -51,7 +52,9 @@ function CollectionCard({
     try {
       await deleteCollection(collection.id);
       onDelete(collection.id);
+      toast.success(t("collections.card.deleted") || "收藏夹已删除");
     } catch {
+      toast.error(t("collections.card.deleteFailed") || "删除失败");
       setDeleting(false);
       setConfirmDelete(false);
     }
@@ -163,6 +166,7 @@ function CreateCollectionModal({
         description: description.trim() || undefined,
         isPublic,
       });
+      toast.success(t("collections.modal.createSuccess") || "收藏夹创建成功");
       onCreate(collection);
     } catch {
       setError(t("collections.modal.createFailed"));

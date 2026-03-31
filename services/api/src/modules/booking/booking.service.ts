@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { BookingStatus } from '@prisma/client';
+import { generateOrderNo } from '../../common/utils';
 
 @Injectable()
 export class BookingService {
+  private readonly logger = new Logger(BookingService.name);
+
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateBookingDto) {
@@ -112,12 +115,42 @@ export class BookingService {
       );
     }
 
+    // When confirming a booking, create a linked Order for payment
+    if (status === 'CONFIRMED' && !booking.orderId) {
+      const order = await this.prisma.order.create({
+        data: {
+          orderNo: generateOrderNo(),
+          userId: booking.userId,
+          totalAmount: booking.totalPrice,
+          status: 'PENDING',
+        },
+      });
+
+      this.logger.log(
+        `Order ${order.orderNo} created for booking ${id} (amount: ${order.totalAmount})`,
+      );
+
+      return this.prisma.routeBooking.update({
+        where: { id },
+        data: {
+          status: status as BookingStatus,
+          orderId: order.id,
+        },
+        include: {
+          route: { select: { title: true, slug: true } },
+          user: { select: { id: true, nickname: true } },
+          order: true,
+        },
+      });
+    }
+
     return this.prisma.routeBooking.update({
       where: { id },
       data: { status: status as BookingStatus },
       include: {
         route: { select: { title: true, slug: true } },
         user: { select: { id: true, nickname: true } },
+        order: true,
       },
     });
   }

@@ -380,9 +380,12 @@
   "review.subScores.guideQuality": "गाइड गुणवत्ता",
   "review.subScores.authenticity": "ऐतिहासिक प्रामाणिकता",
   "review.subDimensions": "उप-स्कोर",
+  "socialProof.monthlyVisitors": "इस महीने {count} तीर्थयात्री आए",
+  "socialProof.viewingNow": "{count} लोग अभी देख रहे हैं",
   "socialProof.pilgrims": "तीर्थयात्री इस महीने आए",
   "socialProof.viewing": "लोग देख रहे हैं",
   "ugcPhotos.title": "समुदाय फ़ोटो",
+  "ugcPhotos.viewAll": "सभी समुदाय फ़ोटो देखें",
   "qa.title": "यात्री प्रश्नोत्तर",
   "qa.askQuestion": "प्रश्न पूछें",
   "qa.noQuestions": "अभी तक कोई प्रश्न नहीं। पहले पूछने वाले बनें!",
@@ -393,6 +396,14 @@
   "encyclopedia.holySitesSubtitle": "दुनिया भर के पवित्र स्थलों का अन्वेषण करें",
   "encyclopedia.patriarchsSubtitle": "विभिन्न धर्मों के संस्थापकों से मिलें",
   "encyclopedia.teachingsSubtitle": "हजारों साल की बुद्धि सुनें",
+  "encyclopedia.search": "खोजें",
+  "encyclopedia.sort": "क्रमबद्ध करें",
+  "encyclopedia.results": "परिणाम",
+  "encyclopedia.loadMore": "और लोड करें",
+  "rankings.title": "रैंकिंग",
+  "rankings.subtitle": "तीर्थयात्रियों द्वारा सर्वाधिक अनुशंसित पवित्र स्थल और मार्ग",
+  "rankings.bestSites": "सर्वश्रेष्ठ पवित्र स्थल",
+  "rankings.bestRoutes": "सर्वश्रेष्ठ मार्ग",
   "profile.nicknamePlaceholder": "उपनाम दर्ज करें",
   "profile.pilgrim": "तीर्थयात्री",
   "profile.motto": "तीर्थयात्री के हृदय से शांति का मार्ग चलें",
@@ -930,7 +941,6 @@
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
-
   "rankings.loadError": "Failed to load, please refresh",
   "rankings.retry": "Retry",
   "rankings.empty": "No ranking data yet",
@@ -940,17 +950,20 @@
   "chat.feature.sites": "60+ Holy Sites",
   "chat.feature.temples": "27 Ancestral Temples",
   "chat.feature.routes": "Route Planning",
-
+  "priceForecast.title": "मूल्य रुझान",
+  "priceForecast.goodDeal": "बुकिंग के लिए अच्छा समय",
+  "priceForecast.waitMaybe": "कीमत गिर सकती है",
+  "priceForecast.confidence": "विश्वसनीयता",
+  "priceForecast.lowest": "न्यूनतम",
+  "priceForecast.average": "औसत",
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -959,7 +972,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -988,7 +1000,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1019,7 +1030,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "referral.title": "रेफरल केंद्र",
   "referral.subtitle": "दोस्तों को आमंत्रित करें, पुरस्कार साझा करें",
   "referral.myInviteCode": "मेरा आमंत्रण कोड",
@@ -1049,7 +1059,6 @@
   "referral.statusPending": "लंबित",
   "referral.statusSettled": "निपटारा",
   "referral.statusCancelled": "रद्द",
-
   "pointsMall.title": "पॉइंट मॉल",
   "pointsMall.subtitle": "पॉइंट से विशेष लाभ और उपहार प्राप्त करें",
   "pointsMall.availablePoints": "उपलब्ध पॉइंट",
@@ -1074,7 +1083,6 @@
   "pointsMall.loadFailed": "लोड विफल",
   "pointsMall.loading": "लोड हो रहा है...",
   "pointsMall.noProducts": "कोई उत्पाद उपलब्ध नहीं",
-
   "promotions.subtitle": "फ्लैश सेल, अर्ली बर्ड और सीमित समय ऑफर — सब एक जगह",
   "promotions.tabAll": "सभी",
   "promotions.tabFlashSale": "फ्लैश सेल",
@@ -1098,7 +1106,6 @@
   "promotions.daysLeft": "केवल {days} दिन शेष",
   "promotions.bookEarlySave": "जल्दी बुक करें और {saving} बचाएं",
   "promotions.eventDeadline": "इवेंट समाप्ति {date}",
-
   "coupons.subtitle": "विशेष कूपन प्राप्त करें और अधिक बचत करें",
   "coupons.tabAvailable": "उपलब्ध",
   "coupons.tabMine": "मेरे कूपन",
@@ -1119,7 +1126,6 @@
   "coupons.emptyAvailable": "अभी कोई कूपन उपलब्ध नहीं",
   "coupons.emptyMine": "कोई कूपन नहीं",
   "coupons.emptyUsed": "कोई उपयोग किए गए कूपन नहीं",
-
   "checkout.couponInvalid": "अमान्य कूपन",
   "checkout.verifyError": "सत्यापन विफल",
   "checkout.submitError": "सबमिट विफल",
@@ -1137,7 +1143,6 @@
   "checkout.percentDiscount": "{value}% छूट",
   "checkout.fixedDiscount": "¥{value} छूट",
   "checkout.viewAllPromotions": "सभी प्रमोशन देखें",
-
   "coupons.fixedUnit": "छूट",
   "coupons.percentUnit": "% छूट"
 }

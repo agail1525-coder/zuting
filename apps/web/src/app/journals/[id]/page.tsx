@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { fetchJournal, updateJournal, deleteJournal, type JournalDetail, type UpdateJournalData } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 
@@ -83,8 +84,9 @@ export default function JournalDetailPage() {
       const updated = await updateJournal(journal.id, data);
       setJournal(updated);
       setEditing(false);
+      toast.success(t("journal.saveSuccess") || "保存成功");
     } catch (err) {
-      alert(err instanceof Error ? err.message : t("journal.saveFailed"));
+      toast.error(err instanceof Error ? err.message : t("journal.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -95,9 +97,10 @@ export default function JournalDetailPage() {
     setDeleting(true);
     try {
       await deleteJournal(journal.id);
+      toast.success(t("journal.deleteSuccess") || "删除成功");
       router.push("/journals");
     } catch (err) {
-      alert(err instanceof Error ? err.message : t("journal.deleteFailed"));
+      toast.error(err instanceof Error ? err.message : t("journal.deleteFailed"));
       setDeleting(false);
     }
   };

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import { updateProfile } from "@/lib/api";
+import { toast as globalToast } from "@/lib/toast";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 
@@ -45,7 +46,6 @@ export default function ProfilePage() {
 
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
   const [form, setForm] = useState({ nickname: "", avatar: "", phone: "" });
 
   const openEdit = () => {
@@ -56,25 +56,23 @@ export default function ProfilePage() {
       phone: user.phone || "",
     });
     setEditing(true);
-    setToast(null);
   };
 
   const handleSave = async () => {
     if (form.nickname.length < 2 || form.nickname.length > 20) {
-      setToast({ type: "error", msg: t("profile.nicknameInvalid") });
+      globalToast.error(t("profile.nicknameInvalid"));
       return;
     }
     if (form.phone && !/^1[3-9]\d{9}$/.test(form.phone)) {
-      setToast({ type: "error", msg: t("profile.phoneInvalid") });
+      globalToast.error(t("profile.phoneInvalid"));
       return;
     }
     if (form.avatar && form.avatar.length > 500) {
-      setToast({ type: "error", msg: t("profile.avatarTooLong") });
+      globalToast.error(t("profile.avatarTooLong"));
       return;
     }
 
     setSaving(true);
-    setToast(null);
     try {
       const data: Record<string, string> = {};
       if (form.nickname !== (user?.nickname || "")) data.nickname = form.nickname;
@@ -89,11 +87,10 @@ export default function ProfilePage() {
       await updateProfile(data);
       await refreshUser();
       setEditing(false);
-      setToast({ type: "success", msg: t("profile.updateSuccess") });
-      setTimeout(() => setToast(null), 3000);
+      globalToast.success(t("profile.updateSuccess"));
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("profile.updateFailed");
-      setToast({ type: "error", msg: message });
+      globalToast.error(message);
     } finally {
       setSaving(false);
     }
@@ -117,19 +114,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
       <div className="max-w-2xl mx-auto px-4 py-8">
-      {/* Toast */}
-      {toast && (
-        <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-medium shadow-lg transition-all ${
-            toast.type === "success"
-              ? "bg-green-500/90 text-white"
-              : "bg-red-500/90 text-white"
-          }`}
-        >
-          {toast.msg}
-        </div>
-      )}
-
       {/* User Info */}
       <div className="text-center mb-8 relative">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#0066FF]/30 to-[#0066FF]/10 border-2 border-[#0066FF]/20 flex items-center justify-center text-3xl mx-auto mb-4">
@@ -201,7 +185,7 @@ export default function ProfilePage() {
               {saving ? t("profile.saving") : t("common.save")}
             </button>
             <button
-              onClick={() => { setEditing(false); setToast(null); }}
+              onClick={() => { setEditing(false); }}
               className="px-6 py-2.5 bg-gray-50 border border-gray-200 text-gray-600 rounded-full text-sm hover:bg-gray-100 transition-colors"
             >
               {t("common.cancel")}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import { fetchTrips, createJournal } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
@@ -85,6 +86,7 @@ export default function JournalCreatePage() {
       if (tripId) data.tripId = tripId;
 
       const journal = await createJournal(data);
+      toast.success(t("journal.createSuccess") || "日志创建成功");
       router.push(`/journals/${journal.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("journal.createFailed"));

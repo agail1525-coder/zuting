@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import { SealSeries } from '@prisma/client';
 import { CreateSealDto } from './dto/create-seal.dto';
 import { UpdateSealDto } from './dto/update-seal.dto';
 
 @Injectable()
 export class SealService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(SealService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
+  ) {}
 
   async findAll(series?: SealSeries, page = 1, limit = 20) {
+    const cacheKey = `seal:list:${series ?? 'all'}:${page}:${limit}`;
+    const cached = await this.redis.getJSON<{ items: unknown[]; total: number; page: number; limit: number }>(cacheKey);
+    if (cached) return cached;
+
     const where = series ? { series } : undefined;
     const [items, total] = await Promise.all([
       this.prisma.seal.findMany({
@@ -19,15 +29,25 @@ export class SealService {
       }),
       this.prisma.seal.count({ where }),
     ]);
-    return { items, total, page, limit };
+    const result = { items, total, page, limit };
+    await this.redis.setJSON(cacheKey, result, 3600); // 1 hour — static content
+    return result;
   }
 
-  findById(id: number) {
-    return this.prisma.seal.findUnique({ where: { id } });
+  async findById(id: number) {
+    const cacheKey = `seal:id:${id}`;
+    const cached = await this.redis.getJSON(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.prisma.seal.findUnique({ where: { id } });
+    if (result) {
+      await this.redis.setJSON(cacheKey, result, 3600); // 1 hour
+    }
+    return result;
   }
 
-  create(dto: CreateSealDto) {
-    return this.prisma.seal.create({
+  async create(dto: CreateSealDto) {
+    const result = await this.prisma.seal.create({
       data: {
         id: dto.id,
         name: dto.name,
@@ -39,9 +59,11 @@ export class SealService {
         color: dto.color,
       },
     });
+    await this.invalidateCache();
+    return result;
   }
 
-  update(id: number, dto: UpdateSealDto) {
+  async update(id: number, dto: UpdateSealDto) {
     const data: Record<string, unknown> = {};
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.series !== undefined) data.series = dto.series as SealSeries;
@@ -50,10 +72,27 @@ export class SealService {
     if (dto.practice !== undefined) data.practice = dto.practice;
     if (dto.vow !== undefined) data.vow = dto.vow;
     if (dto.color !== undefined) data.color = dto.color;
-    return this.prisma.seal.update({ where: { id }, data });
+    const result = await this.prisma.seal.update({ where: { id }, data });
+    await this.invalidateCache(id);
+    return result;
   }
 
-  delete(id: number) {
-    return this.prisma.seal.delete({ where: { id } });
+  async delete(id: number) {
+    const result = await this.prisma.seal.delete({ where: { id } });
+    await this.invalidateCache(id);
+    return result;
+  }
+
+  private async invalidateCache(id?: number) {
+    try {
+      const client = this.redis.getClient();
+      const listKeys = await client.keys('seal:list:*');
+      if (listKeys.length > 0) await this.redis.del(...listKeys);
+      if (id !== undefined) {
+        await this.redis.del(`seal:id:${id}`);
+      }
+    } catch (err) {
+      this.logger.warn('Failed to invalidate seal cache', err);
+    }
   }
 }

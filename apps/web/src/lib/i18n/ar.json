@@ -380,9 +380,12 @@
   "review.subScores.guideQuality": "جودة الإرشاد",
   "review.subScores.authenticity": "الأصالة التاريخية",
   "review.subDimensions": "التقييمات الفرعية",
+  "socialProof.monthlyVisitors": "{count} حاج زاروا هذا الشهر",
+  "socialProof.viewingNow": "{count} يتصفحون الآن",
   "socialProof.pilgrims": "حاج زاروا هذا الشهر",
   "socialProof.viewing": "يشاهدون الآن",
   "ugcPhotos.title": "صور المجتمع",
+  "ugcPhotos.viewAll": "عرض جميع صور المجتمع",
   "qa.title": "أسئلة وأجوبة المسافرين",
   "qa.askQuestion": "اطرح سؤالاً",
   "qa.noQuestions": "لا توجد أسئلة بعد. كن أول من يسأل!",
@@ -393,6 +396,14 @@
   "encyclopedia.holySitesSubtitle": "استكشف المواقع المقدسة حول العالم",
   "encyclopedia.patriarchsSubtitle": "تعرف على مؤسسي الأديان",
   "encyclopedia.teachingsSubtitle": "استمع إلى حكمة آلاف السنين",
+  "encyclopedia.search": "بحث",
+  "encyclopedia.sort": "ترتيب",
+  "encyclopedia.results": "نتيجة",
+  "encyclopedia.loadMore": "تحميل المزيد",
+  "rankings.title": "التصنيفات",
+  "rankings.subtitle": "أفضل الأماكن المقدسة والمسارات الموصى بها",
+  "rankings.bestSites": "أفضل الأماكن المقدسة",
+  "rankings.bestRoutes": "أفضل المسارات",
   "profile.nicknamePlaceholder": "أدخل الاسم المستعار",
   "profile.pilgrim": "حاج",
   "profile.motto": "امشِ طريق السلام بقلب حاج",
@@ -930,7 +941,6 @@
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
-
   "rankings.loadError": "Failed to load, please refresh",
   "rankings.retry": "Retry",
   "rankings.empty": "No ranking data yet",
@@ -940,17 +950,20 @@
   "chat.feature.sites": "60+ Holy Sites",
   "chat.feature.temples": "27 Ancestral Temples",
   "chat.feature.routes": "Route Planning",
-
+  "priceForecast.title": "اتجاه الأسعار",
+  "priceForecast.goodDeal": "وقت مناسب للحجز",
+  "priceForecast.waitMaybe": "قد ينخفض السعر",
+  "priceForecast.confidence": "درجة الثقة",
+  "priceForecast.lowest": "الأدنى تاريخياً",
+  "priceForecast.average": "المتوسط",
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -959,7 +972,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -988,7 +1000,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1019,7 +1030,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "referral.title": "مركز الإحالة",
   "referral.subtitle": "ادعُ أصدقاءك وشارك المكافآت",
   "referral.myInviteCode": "رمز الدعوة الخاص بي",
@@ -1049,7 +1059,6 @@
   "referral.statusPending": "قيد الانتظار",
   "referral.statusSettled": "تمت التسوية",
   "referral.statusCancelled": "ملغي",
-
   "pointsMall.title": "متجر النقاط",
   "pointsMall.subtitle": "استبدل نقاطك بمزايا وهدايا حصرية",
   "pointsMall.availablePoints": "النقاط المتاحة",
@@ -1074,7 +1083,6 @@
   "pointsMall.loadFailed": "فشل التحميل",
   "pointsMall.loading": "جاري التحميل...",
   "pointsMall.noProducts": "لا توجد منتجات",
-
   "promotions.subtitle": "عروض خاطفة وأسعار مبكرة وخصومات محدودة — كل شيء في مكان واحد",
   "promotions.tabAll": "الكل",
   "promotions.tabFlashSale": "عرض خاطف",
@@ -1098,7 +1106,6 @@
   "promotions.daysLeft": "متبقي {days} يوم",
   "promotions.bookEarlySave": "احجز مبكراً ووفر {saving}",
   "promotions.eventDeadline": "ينتهي الحدث {date}",
-
   "coupons.subtitle": "احصل على كوبونات حصرية ووفر أكثر",
   "coupons.tabAvailable": "متاح",
   "coupons.tabMine": "كوبوناتي",
@@ -1119,7 +1126,6 @@
   "coupons.emptyAvailable": "لا توجد كوبونات متاحة حالياً",
   "coupons.emptyMine": "لا توجد كوبونات لديك",
   "coupons.emptyUsed": "لا توجد كوبونات مستخدمة",
-
   "checkout.couponInvalid": "كوبون غير صالح",
   "checkout.verifyError": "فشل التحقق",
   "checkout.submitError": "فشل الإرسال",
@@ -1137,7 +1143,6 @@
   "checkout.percentDiscount": "خصم {value}%",
   "checkout.fixedDiscount": "وفر ¥{value}",
   "checkout.viewAllPromotions": "عرض جميع العروض",
-
   "coupons.fixedUnit": "خصم",
   "coupons.percentUnit": "% خصم"
 }

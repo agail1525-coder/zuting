@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useTranslation } from '@/lib/i18n';
+import { toast } from '@/lib/toast';
 import SocialLoginButtons from '@/components/SocialLoginButtons';
 import MobileNav from '@/components/MobileNav';
 
@@ -38,6 +39,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(phone.trim(), password);
+      toast.success(t('auth.loginSuccess') || '登录成功');
       router.push('/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('auth.loginFailed'));

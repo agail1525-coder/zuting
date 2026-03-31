@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { createGuide, publishGuide } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
@@ -63,8 +64,10 @@ export default function WriteGuidePage() {
       });
       setSavedId(guide.id);
       setMessage({ type: "success", text: t("community.guide.draftSaved") });
+      toast.success(t("community.guide.draftSaved"));
     } catch {
       setMessage({ type: "error", text: t("community.guide.saveFailed") });
+      toast.error(t("community.guide.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -91,9 +94,11 @@ export default function WriteGuidePage() {
       }
       await publishGuide(id);
       setMessage({ type: "success", text: t("community.guide.publishSuccess") });
+      toast.success(t("community.guide.publishSuccess"));
       setTimeout(() => router.push(`/community/guides/${id}`), 1200);
     } catch {
       setMessage({ type: "error", text: t("community.guide.publishFailed") });
+      toast.error(t("community.guide.publishFailed"));
     } finally {
       setPublishing(false);
     }

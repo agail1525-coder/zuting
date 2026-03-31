@@ -5,6 +5,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import StarRating from "@/components/StarRating";
 import { createReview, type CreateReviewData } from "@/lib/api";
 import { getAccessToken } from "@/lib/auth";
+import { toast } from "@/lib/toast";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -45,7 +46,6 @@ export default function WriteReviewModal({
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [toastVisible, setToastVisible] = useState(false);
 
   const SUB_DIMENSIONS = [
     { key: "spiritual", label: "灵性氛围" },
@@ -101,8 +101,7 @@ export default function WriteReviewModal({
         images: images.length > 0 ? images : undefined,
       };
       await createReview(data);
-      setToastVisible(true);
-      setTimeout(() => setToastVisible(false), 2500);
+      toast.success("评价提交成功！感谢你的分享");
       onSuccess();
       onClose();
     } catch (e) {
@@ -114,13 +113,6 @@ export default function WriteReviewModal({
 
   return (
     <>
-      {/* Toast */}
-      {toastVisible && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-green-600 text-white text-sm px-5 py-3 rounded-xl shadow-lg animate-fade-in">
-          评价提交成功！感谢你的分享
-        </div>
-      )}
-
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"

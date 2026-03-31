@@ -380,9 +380,12 @@
   "review.subScores.guideQuality": "คุณภาพไกด์",
   "review.subScores.authenticity": "ความแท้จริงทางประวัติศาสตร์",
   "review.subDimensions": "คะแนนย่อย",
+  "socialProof.monthlyVisitors": "ผู้แสวงบุญ {count} คนเยี่ยมชมเดือนนี้",
+  "socialProof.viewingNow": "{count} คนกำลังดูอยู่",
   "socialProof.pilgrims": "ผู้แสวงบุญเยี่ยมชมเดือนนี้",
   "socialProof.viewing": "คนกำลังดู",
   "ugcPhotos.title": "ภาพถ่ายชุมชน",
+  "ugcPhotos.viewAll": "ดูรูปภาพชุมชนทั้งหมด",
   "qa.title": "คำถาม-คำตอบนักเดินทาง",
   "qa.askQuestion": "ถามคำถาม",
   "qa.noQuestions": "ยังไม่มีคำถาม เป็นคนแรกที่ถาม!",
@@ -393,6 +396,14 @@
   "encyclopedia.holySitesSubtitle": "สำรวจสถานที่ศักดิ์สิทธิ์ทั่วโลก",
   "encyclopedia.patriarchsSubtitle": "พบปะผู้ก่อตั้งศาสนา",
   "encyclopedia.teachingsSubtitle": "ฟังภูมิปัญญาพันปี",
+  "encyclopedia.search": "ค้นหา",
+  "encyclopedia.sort": "เรียงลำดับ",
+  "encyclopedia.results": "ผลลัพธ์",
+  "encyclopedia.loadMore": "โหลดเพิ่มเติม",
+  "rankings.title": "อันดับ",
+  "rankings.subtitle": "สถานที่ศักดิ์สิทธิ์และเส้นทางที่แนะนำมากที่สุด",
+  "rankings.bestSites": "สถานที่ศักดิ์สิทธิ์ยอดนิยม",
+  "rankings.bestRoutes": "เส้นทางยอดนิยม",
   "profile.nicknamePlaceholder": "กรอกชื่อเล่น",
   "profile.pilgrim": "ผู้แสวงบุญ",
   "profile.motto": "เดินทางสู่สันติภาพด้วยหัวใจผู้แสวงบุญ",
@@ -930,7 +941,6 @@
   "prices.calendar.months.oct": "Oct",
   "prices.calendar.months.nov": "Nov",
   "prices.calendar.months.dec": "Dec",
-
   "rankings.loadError": "Failed to load, please refresh",
   "rankings.retry": "Retry",
   "rankings.empty": "No ranking data yet",
@@ -940,17 +950,20 @@
   "chat.feature.sites": "60+ Holy Sites",
   "chat.feature.temples": "27 Ancestral Temples",
   "chat.feature.routes": "Route Planning",
-
+  "priceForecast.title": "แนวโน้มราคา",
+  "priceForecast.goodDeal": "เวลาที่เหมาะสมในการจอง",
+  "priceForecast.waitMaybe": "ราคาอาจลดลง",
+  "priceForecast.confidence": "ความเชื่อมั่น",
+  "priceForecast.lowest": "ต่ำสุดเท่าที่เคยมี",
+  "priceForecast.average": "เฉลี่ย",
   "save.loginRequired": "Please sign in first",
   "save.saved": "Saved",
   "save.unsaved": "Unsaved",
   "save.error": "Action failed, please try again",
-
   "time.justNow": "Just now",
   "time.minutesAgo": " min ago",
   "time.hoursAgo": " hours ago",
   "time.daysAgo": " days ago",
-
   "notification.loadError": "Failed to load notifications",
   "notification.markReadError": "Failed to mark as read",
   "notification.markAllReadError": "Failed to mark all as read",
@@ -959,7 +972,6 @@
   "notification.empty": "No notifications",
   "notification.viewAll": "View all notifications",
   "notification.unreadCount": " unread",
-
   "notifications.time.justNow": "Just now",
   "notifications.time.minutesAgo": "{n} min ago",
   "notifications.time.hoursAgo": "{n} hours ago",
@@ -988,7 +1000,6 @@
   "notifications.error.markReadFailed": "Failed to mark as read, please try again",
   "notifications.error.markAllReadFailed": "Failed to mark all as read, please try again",
   "notifications.error.deleteFailed": "Failed to delete notification, please try again",
-
   "membership.myLevel": "My Membership Level",
   "membership.availablePoints": "Available Points",
   "membership.hasPoints": "{n} points earned",
@@ -1019,7 +1030,6 @@
   "membership.weekThu": "Thu",
   "membership.weekFri": "Fri",
   "membership.weekSat": "Sat",
-
   "referral.title": "ศูนย์แนะนำ",
   "referral.subtitle": "เชิญเพื่อนร่วมรับรางวัล",
   "referral.myInviteCode": "รหัสเชิญของฉัน",
@@ -1049,7 +1059,6 @@
   "referral.statusPending": "รอชำระ",
   "referral.statusSettled": "ชำระแล้ว",
   "referral.statusCancelled": "ยกเลิก",
-
   "pointsMall.title": "ร้านแต้ม",
   "pointsMall.subtitle": "แลกแต้มรับสิทธิพิเศษและของรางวัล",
   "pointsMall.availablePoints": "แต้มที่ใช้ได้",
@@ -1074,7 +1083,6 @@
   "pointsMall.loadFailed": "โหลดล้มเหลว",
   "pointsMall.loading": "กำลังโหลด...",
   "pointsMall.noProducts": "ไม่มีสินค้า",
-
   "promotions.subtitle": "แฟลชเซล ราคาพิเศษจองล่วงหน้า และส่วนลดจำกัดเวลา รวมไว้ที่เดียว",
   "promotions.tabAll": "ทั้งหมด",
   "promotions.tabFlashSale": "แฟลชเซล",
@@ -1098,7 +1106,6 @@
   "promotions.daysLeft": "เหลือ {days} วัน",
   "promotions.bookEarlySave": "จองล่วงหน้าประหยัด {saving}",
   "promotions.eventDeadline": "กิจกรรมสิ้นสุด {date}",
-
   "coupons.subtitle": "รับคูปองพิเศษและประหยัดมากขึ้น",
   "coupons.tabAvailable": "รับได้",
   "coupons.tabMine": "คูปองของฉัน",
@@ -1119,7 +1126,6 @@
   "coupons.emptyAvailable": "ไม่มีคูปองให้รับในขณะนี้",
   "coupons.emptyMine": "ไม่มีคูปองที่ใช้ได้",
   "coupons.emptyUsed": "ไม่มีคูปองที่ใช้แล้ว",
-
   "checkout.couponInvalid": "คูปองไม่ถูกต้อง",
   "checkout.verifyError": "การตรวจสอบล้มเหลว",
   "checkout.submitError": "การส่งล้มเหลว",
@@ -1137,7 +1143,6 @@
   "checkout.percentDiscount": "ลด {value}%",
   "checkout.fixedDiscount": "ลด ¥{value}",
   "checkout.viewAllPromotions": "ดูโปรโมชั่นทั้งหมด",
-
   "coupons.fixedUnit": "ลด",
   "coupons.percentUnit": "% ลด"
 }

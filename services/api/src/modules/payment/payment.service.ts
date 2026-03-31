@@ -5,7 +5,7 @@ import {
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
-import { OrderStatus, TripStatus } from '@prisma/client';
+import { BookingStatus, OrderStatus, TripStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TripStateMachine } from '../../common/trip-state-machine';
 import { WechatPayGateway } from './gateways/wechat-pay.gateway';
@@ -261,21 +261,29 @@ export class PaymentService {
         },
       });
 
-      // Transition trip to PAID
-      try {
-        await this.stateMachine.transition(
-          transaction.order.tripId,
-          TripStatus.PAID,
-          'payment_success',
-          'system',
-          `Payment via ${gatewayName}, txn: ${result.gatewayTransactionId}`,
-        );
-        this.logger.log(`Trip ${transaction.order.tripId} transitioned to PAID`);
-      } catch (err) {
-        this.logger.error(
-          `Failed to transition trip ${transaction.order.tripId} to PAID: ${err.message}`,
-        );
+      // Transition trip to PAID (only for trip-based orders)
+      if (transaction.order.tripId) {
+        try {
+          await this.stateMachine.transition(
+            transaction.order.tripId,
+            TripStatus.PAID,
+            'payment_success',
+            'system',
+            `Payment via ${gatewayName}, txn: ${result.gatewayTransactionId}`,
+          );
+          this.logger.log(`Trip ${transaction.order.tripId} transitioned to PAID`);
+        } catch (err) {
+          this.logger.error(
+            `Failed to transition trip ${transaction.order.tripId} to PAID: ${err.message}`,
+          );
+        }
       }
+
+      // Update linked route bookings to PAID
+      await this.prisma.routeBooking.updateMany({
+        where: { orderId: transaction.orderId, status: BookingStatus.CONFIRMED },
+        data: { status: BookingStatus.PAID },
+      });
 
       // Notify user of successful payment
       try {
@@ -444,17 +452,19 @@ export class PaymentService {
         data: { status: OrderStatus.REFUNDED },
       });
 
-      // Transition trip to REFUNDED
-      try {
-        await this.stateMachine.transition(
-          order.tripId,
-          TripStatus.REFUNDED,
-          'refund_approved',
-          'system',
-          `Refund processed: ${refundResult.refundId}`,
-        );
-      } catch (err) {
-        this.logger.error(`Failed to transition trip to REFUNDED: ${err.message}`);
+      // Transition trip to REFUNDED (only for trip-based orders)
+      if (order.tripId) {
+        try {
+          await this.stateMachine.transition(
+            order.tripId,
+            TripStatus.REFUNDED,
+            'refund_approved',
+            'system',
+            `Refund processed: ${refundResult.refundId}`,
+          );
+        } catch (err) {
+          this.logger.error(`Failed to transition trip to REFUNDED: ${err.message}`);
+        }
       }
 
       this.auditLog('REFUND_SUCCESS', {

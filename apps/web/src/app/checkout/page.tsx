@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "@/lib/toast";
 import MobileNav from "@/components/MobileNav";
 import {
   fetchTrip,
@@ -208,8 +209,10 @@ export default function CheckoutPage() {
         promotionId: selectedPromotion || undefined,
       });
       await createPayment(order.id, gateway);
+      toast.success(t("checkout.orderCreated") || "订单创建成功");
       router.push(`/checkout/result?orderId=${order.id}`);
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("checkout.submitError"));
       setError(err instanceof Error ? err.message : t("checkout.submitError"));
     } finally {
       setSubmitting(false);
