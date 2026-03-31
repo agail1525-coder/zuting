@@ -142,9 +142,9 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-// --- Sort Button ---
+// --- Filter Tabs (Trip.com style) ---
 
-type SortType = "latest" | "helpful";
+type FilterType = "all" | "latest" | "photo" | "positive" | "negative";
 
 // --- ReviewSection ---
 
@@ -156,16 +156,16 @@ interface ReviewSectionProps {
 export default function ReviewSection({ targetType, targetId }: ReviewSectionProps) {
   const { t } = useTranslation();
   const [stats, setStats] = useState<ReviewStats | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortType>("latest");
+  const [filter, setFilter] = useState<FilterType>("all");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 20;
 
   const loadStats = useCallback(() => {
     if (!targetId) return;
@@ -175,19 +175,19 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
   }, [targetType, targetId]);
 
   const loadReviews = useCallback(
-    (currentPage: number, currentSort: SortType, append = false) => {
+    (currentPage: number, append = false) => {
       if (!targetId) return;
       if (!append) setLoading(true);
       else setLoadingMore(true);
       setError(null);
 
-      fetchReviewsWithSort(targetType, targetId, currentPage, PAGE_SIZE, currentSort)
+      fetchReviewsWithSort(targetType, targetId, currentPage, PAGE_SIZE, "latest")
         .then((res) => {
           setTotal(res.total);
           if (append) {
-            setReviews((prev) => [...prev, ...res.data]);
+            setAllReviews((prev) => [...prev, ...res.data]);
           } else {
-            setReviews(res.data);
+            setAllReviews(res.data);
           }
         })
         .catch((e) => setError(e instanceof Error ? e.message : t("review.loadFailed")))
@@ -201,31 +201,49 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
 
   useEffect(() => {
     loadStats();
-    loadReviews(1, "latest", false);
+    loadReviews(1, false);
     setPage(1);
-    setSort("latest");
+    setFilter("all");
   }, [targetType, targetId, loadStats, loadReviews]);
 
-  const handleSortChange = (newSort: SortType) => {
-    if (newSort === sort) return;
-    setSort(newSort);
-    setPage(1);
-    loadReviews(1, newSort, false);
+  // Client-side filtering
+  const filteredReviews = allReviews.filter((r) => {
+    switch (filter) {
+      case "latest": return true; // already sorted by latest from API
+      case "photo": return r.images && r.images.length > 0;
+      case "positive": return r.rating >= 4;
+      case "negative": return r.rating <= 2;
+      default: return true;
+    }
+  });
+
+  // Filter counts for tab badges
+  const filterCounts = {
+    all: allReviews.length,
+    latest: allReviews.length,
+    photo: allReviews.filter((r) => r.images && r.images.length > 0).length,
+    positive: allReviews.filter((r) => r.rating >= 4).length,
+    negative: allReviews.filter((r) => r.rating <= 2).length,
+  };
+
+  const handleFilterChange = (newFilter: FilterType) => {
+    if (newFilter === filter) return;
+    setFilter(newFilter);
   };
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    loadReviews(nextPage, sort, true);
+    loadReviews(nextPage, true);
   };
 
   const handleReviewSuccess = () => {
     loadStats();
     setPage(1);
-    loadReviews(1, sort, false);
+    loadReviews(1, false);
   };
 
-  const hasMore = reviews.length < total;
+  const hasMore = allReviews.length < total;
 
   if (loading) {
     return (
@@ -251,7 +269,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <span className="text-red-400 text-sm">{t("review.loadFailed")}</span>
           <button
-            onClick={() => loadReviews(1, sort, false)}
+            onClick={() => loadReviews(1, false)}
             className="mt-3 text-xs text-[#0066FF] hover:underline"
           >
             重试
@@ -317,29 +335,46 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
               </div>
             )}
 
-            {/* Sort Toggle */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs text-gray-400">排序：</span>
-              {(["latest", "helpful"] as SortType[]).map((s) => (
+            {/* Filter Tabs (Trip.com style) */}
+            <div className="flex items-center gap-1 mb-5 overflow-x-auto pb-1 -mx-1 px-1">
+              {([
+                { key: "all" as FilterType, label: "全部" },
+                { key: "latest" as FilterType, label: "最新" },
+                { key: "photo" as FilterType, label: "有图" },
+                { key: "positive" as FilterType, label: "好评" },
+                { key: "negative" as FilterType, label: "差评" },
+              ]).map(({ key, label }) => (
                 <button
-                  key={s}
-                  onClick={() => handleSortChange(s)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                    sort === s
-                      ? "bg-[#0066FF] text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  key={key}
+                  onClick={() => handleFilterChange(key)}
+                  className={`flex items-center gap-1 px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    filter === key
+                      ? "bg-[#3264ff] text-white shadow-sm"
+                      : "bg-[#f5f7fa] text-[#455873] hover:bg-[#ebeef2]"
                   }`}
                 >
-                  {s === "latest" ? "最新" : "最有用"}
+                  {label}
+                  {filterCounts[key] > 0 && (
+                    <span className={`text-xs ${filter === key ? "text-white/80" : "text-[#8592a6]"}`}>
+                      ({filterCounts[key]})
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
 
             {/* Reviews List */}
             <div className="space-y-4">
-              {reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
-              ))}
+              {filteredReviews.length > 0 ? (
+                filteredReviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-[#8592a6]">
+                  <span className="text-3xl mb-2">📭</span>
+                  <span className="text-sm">暂无符合条件的评价</span>
+                </div>
+              )}
             </div>
 
             {/* Load More */}
@@ -348,9 +383,9 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
+                  className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-[#455873] hover:bg-[#f5f7fa] hover:border-gray-300 transition-all disabled:opacity-50"
                 >
-                  {loadingMore ? "加载中..." : `加载更多 (${total - reviews.length} 条)`}
+                  {loadingMore ? "加载中..." : `加载更多 (${total - allReviews.length} 条)`}
                 </button>
               </div>
             )}

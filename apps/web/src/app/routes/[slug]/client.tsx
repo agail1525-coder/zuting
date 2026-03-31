@@ -482,68 +482,83 @@ function BookingWidget({ route }: { route: Route }) {
 
 export default function RouteDetailClient({ route }: { route: Route }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <main className="pt-16 pb-24">
-        {/* ========== Hero Section ========== */}
-        <div className="relative">
-          {route.coverImage && (
-            <div className="absolute inset-0 h-[400px]">
-              <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
+        {/* ═══ S1. 面包屑 (白色背景) ═══ */}
+        <div className="max-w-[1120px] mx-auto px-4 pt-4 pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-[#8592a6]">
+              <Link href="/" className="hover:text-[#3264ff]">首页</Link>
+              <span>&gt;</span>
+              <Link href="/routes" className="hover:text-[#3264ff]">路线</Link>
+              <span>&gt;</span>
+              <span className="text-[#0f294d]">{route.title}</span>
             </div>
-          )}
-
-          <div
-            className="relative max-w-6xl mx-auto px-4 py-12 md:py-16 text-white"
-            style={{ minHeight: route.coverImage ? "350px" : undefined }}
-          >
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-white/60 mb-6">
-              <Link href="/routes" className="hover:text-white transition-colors">路线</Link>
-              <span>/</span>
-              <span className="text-white/80">{route.title}</span>
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white border border-white/30 backdrop-blur-sm">
-                    {CATEGORY_LABELS[route.category] ?? route.category}
-                  </span>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium border backdrop-blur-sm ${
-                      route.coverImage
-                        ? "bg-white/20 text-white border-white/30"
-                        : DIFFICULTY_COLORS[route.difficulty] ?? "bg-gray-50 text-gray-600 border-gray-200"
-                    }`}
-                  >
-                    {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
-                  </span>
-                </div>
-                <h1 className="text-3xl md:text-4xl font-bold">{route.title}</h1>
-                <p className="text-lg text-white/80 mt-2">{route.subtitle}</p>
-                <p className="text-sm text-white/60 mt-1">{route.titleEn}</p>
-
-                <div className="flex flex-wrap items-center gap-4 mt-6 text-sm text-white/80">
-                  <span className="flex items-center gap-1.5">📅 {route.duration}天{route.nights}晚</span>
-                  <span className="flex items-center gap-1.5">🌤 {route.season}</span>
-                  <span className="flex items-center gap-1.5">👥 {route.groupSize}</span>
-                  {route.rating && (
-                    <span className="flex items-center gap-1.5">
-                      <span className="text-amber-400">★</span>
-                      {route.rating.toFixed(1)} ({route.reviewCount}评)
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Booking Widget (enhanced) */}
-              <BookingWidget route={route} />
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-[#8592a6] mr-1">分享</span>
+              <ShareButton title={route.title} description={route.subtitle} url={typeof window !== "undefined" ? window.location.href : ""} image={route.coverImage ?? undefined} entityType="ROUTE" entityId={route.slug ?? route.id} className="text-sm" />
             </div>
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4">
+        {/* ═══ S2. 图片画廊 (白色背景，非暗色Hero) ═══ */}
+        <div className="max-w-[1120px] mx-auto px-4 mb-4">
+          {route.images && route.images.length > 0 ? (
+            <PhotoMosaic images={[...(route.coverImage ? [route.coverImage] : []), ...route.images]} alt={route.title} />
+          ) : route.coverImage ? (
+            <div className="rounded-xl overflow-hidden h-[370px] relative">
+              <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover" priority />
+            </div>
+          ) : null}
+        </div>
+
+        {/* ═══ S4. 标题信息区 + 两栏布局 ═══ */}
+        <div className="max-w-[1120px] mx-auto px-4">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* ── 左侧主内容 ── */}
+            <div className="flex-1 min-w-0">
+              {/* 标题区 */}
+              <div className="pb-5 border-b border-gray-200">
+                <div className="flex items-start gap-3">
+                  <h1 className="text-2xl font-bold text-[#0f294d] flex-1">{route.title}</h1>
+                  <SaveButton entityType="ROUTE" entityId={route.slug ?? route.id} size="md" />
+                </div>
+                <p className="text-base text-[#8592a6] mt-1">{route.subtitle}</p>
+                {route.titleEn && <p className="text-sm text-[#8592a6] mt-0.5">{route.titleEn}</p>}
+
+                {/* 评分+标签行 */}
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <span className="px-2.5 py-1 bg-[#f5f7fa] text-[#455873] rounded text-xs">{CATEGORY_LABELS[route.category] ?? route.category}</span>
+                  <span className={`px-2.5 py-1 rounded text-xs border ${DIFFICULTY_COLORS[route.difficulty] ?? "bg-gray-50 text-gray-600 border-gray-200"}`}>
+                    {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
+                  </span>
+                  {route.rating && (
+                    <>
+                      <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-[#3264ff] text-white">{route.rating.toFixed(1)}/5</span>
+                      <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">{route.reviewCount} 条评价 ▶</a>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* S5. 实用信息 (紧凑列表) */}
+              <div className="py-5 border-b border-gray-200 space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="text-base">📅</span>
+                  <span className="font-medium text-[#0f294d]">行程:</span>
+                  <span className="text-[#0f294d]">{route.duration}天{route.nights}晚</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-base">🌤</span>
+                  <span className="font-medium text-[#0f294d]">最佳季节:</span>
+                  <span className="text-[#0f294d]">{route.season}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-base">👥</span>
+                  <span className="font-medium text-[#0f294d]">团队规模:</span>
+                  <span className="text-[#0f294d]">{route.groupSize}</span>
+                </div>
+              </div>
           {/* ========== Trust Badges ========== */}
           <div className="mt-6 bg-white shadow-sm border border-gray-100 rounded-2xl p-4">
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
@@ -780,7 +795,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           </div>
 
           {/* ========== Reviews (UGC) ========== */}
-          <div className="mt-10">
+          <div id="reviews" className="mt-10">
             <ReviewSection targetType="ROUTE" targetId={route.id} />
           </div>
 
@@ -795,21 +810,28 @@ export default function RouteDetailClient({ route }: { route: Route }) {
           {/* ========== Similar Routes ========== */}
           <SimilarRoutes currentRouteId={route.id} category={route.category} />
 
-          {/* ========== Bottom CTA ========== */}
-          <div className="mt-12 text-center">
-            <Link
-              href="/chat"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-2xl transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30"
-            >
-              ✨ 让AI规划师为你定制行程
-            </Link>
-            <p className="text-sm text-gray-400 mt-3">
-              或{" "}
-              <Link href="/routes" className="text-[#0066FF] hover:underline">
-                浏览更多路线
-              </Link>
-            </p>
+            </div>{/* end left column */}
+
+            {/* ── 右侧Sticky BookingWidget (桌面端) ── */}
+            <div className="hidden lg:block w-[340px] flex-shrink-0">
+              <div className="sticky top-20">
+                <BookingWidget route={route} />
+              </div>
+            </div>
+          </div>{/* end flex row */}
+        </div>{/* end max-w container */}
+
+        {/* 移动端粘性底栏 */}
+        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-2.5 flex items-center gap-3" style={{ boxShadow: "0 -2px 10px rgba(0,0,0,0.08)" }}>
+          <div className="flex-1">
+            <p className="text-lg font-bold text-[#0f294d]">¥{(route.priceFrom / 100).toLocaleString()}<span className="text-sm font-normal text-[#8592a6]">/人</span></p>
           </div>
+          <Link
+            href={`/routes/checkout?route=${route.slug}`}
+            className="px-6 py-2.5 bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold rounded-lg text-sm transition-colors"
+          >
+            立即预订
+          </Link>
         </div>
       </main>
       {/* Xiaohong AI Floating Widget */}
