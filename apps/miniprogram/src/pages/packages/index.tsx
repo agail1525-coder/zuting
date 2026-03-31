@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { View, Text, ScrollView, Image } from '@tarojs/components'
+import { useState, useEffect, useMemo } from 'react'
+import { View, Text, ScrollView, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PackageItem, fetchPackages } from '../../lib/api'
 import './index.scss'
@@ -26,11 +26,19 @@ const TYPE_COLORS: Record<string, string> = {
   CUSTOM: '#10B981',
 }
 
+const TRUST_BADGES = [
+  { icon: '🛡️', label: '品质保障' },
+  { icon: '💰', label: '最优价格' },
+  { icon: '🔄', label: '免费退改' },
+  { icon: '📞', label: '24h客服' },
+]
+
 export default function PackagesPage() {
   const [packages, setPackages] = useState<PackageItem[]>([])
   const [total, setTotal] = useState(0)
   const [activeType, setActiveType] = useState('')
   const [loading, setLoading] = useState(true)
+  const [searchText, setSearchText] = useState('')
 
   useEffect(() => { loadData('') }, [])
 
@@ -49,11 +57,94 @@ export default function PackagesPage() {
 
   const handleTypeChange = (type: string) => {
     setActiveType(type)
+    setSearchText('')
     loadData(type)
   }
 
+  // --- G4: Client-side search filtering ---
+  const filteredPackages = useMemo(() => {
+    if (!searchText.trim()) return packages
+    const q = searchText.toLowerCase()
+    return packages.filter(pkg =>
+      pkg.title.toLowerCase().includes(q) ||
+      (pkg.subtitle && pkg.subtitle.toLowerCase().includes(q)) ||
+      (pkg.description && pkg.description.toLowerCase().includes(q))
+    )
+  }, [packages, searchText])
+
+  const isSearching = searchText.trim().length > 0
+
+  // --- G4: Stats row ---
+  const stats = useMemo(() => {
+    if (packages.length === 0) return null
+    const avgPrice = Math.round(packages.reduce((sum, p) => sum + p.priceFrom, 0) / packages.length)
+    const avgDuration = Math.round(packages.reduce((sum, p) => sum + p.duration, 0) / packages.length)
+    // Collect unique religions as popular destinations
+    const destinations = new Set<string>()
+    packages.forEach(p => {
+      if (p.religion?.name) destinations.add(p.religion.name)
+    })
+    return {
+      total,
+      avgPrice,
+      avgDuration,
+      destinationCount: destinations.size,
+    }
+  }, [packages, total])
+
   return (
     <ScrollView className='packages-page' scrollY>
+      {/* G4: Search Input */}
+      <View style={{ padding: '20rpx 24rpx 0' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: '#1E293B', borderRadius: '12rpx', padding: '0 20rpx', height: '72rpx' }}>
+          <Text style={{ fontSize: '28rpx', marginRight: '12rpx' }}>🔍</Text>
+          <Input
+            type='text'
+            placeholder='搜索套餐名称或目的地'
+            placeholderStyle='color: #64748B'
+            value={searchText}
+            onInput={e => setSearchText(e.detail.value)}
+            style={{ flex: 1, fontSize: '26rpx', color: '#F8FAFC', backgroundColor: 'transparent' }}
+          />
+          {searchText && (
+            <Text
+              style={{ fontSize: '24rpx', color: '#94A3B8', padding: '8rpx' }}
+              onClick={() => setSearchText('')}
+            >
+              清除
+            </Text>
+          )}
+        </View>
+      </View>
+
+      {/* G4: Stats Row */}
+      {!loading && stats && (
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '24rpx 20rpx', margin: '16rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx' }}>
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#D4A855' }}>{stats.total}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>套餐总数</Text>
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#F8FAFC' }}>¥{stats.avgPrice.toLocaleString()}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>均价起</Text>
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#F8FAFC' }}>{stats.avgDuration}天</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>平均时长</Text>
+          </View>
+        </View>
+      )}
+
+      {/* G4: Trust Badges */}
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '16rpx 24rpx', margin: '12rpx 24rpx 0', backgroundColor: '#0F172A', borderRadius: '12rpx', border: '1rpx solid #334155' }}>
+        {TRUST_BADGES.map(badge => (
+          <View key={badge.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4rpx' }}>
+            <Text style={{ fontSize: '28rpx' }}>{badge.icon}</Text>
+            <Text style={{ fontSize: '20rpx', color: '#94A3B8' }}>{badge.label}</Text>
+          </View>
+        ))}
+      </View>
+
       {/* Type Filter */}
       <ScrollView className='filter-bar' scrollX>
         {TYPES.map(t => (
@@ -70,7 +161,9 @@ export default function PackagesPage() {
       {/* Count */}
       {!loading && (
         <View className='result-count'>
-          <Text className='result-count__text'>共 {total} 个套餐</Text>
+          <Text className='result-count__text'>
+            {isSearching ? `搜索到 ${filteredPackages.length} 个套餐` : `共 ${total} 个套餐`}
+          </Text>
         </View>
       )}
 
@@ -79,14 +172,22 @@ export default function PackagesPage() {
         <View className='loading'>
           <Text className='loading__text'>加载中...</Text>
         </View>
-      ) : packages.length === 0 ? (
+      ) : filteredPackages.length === 0 ? (
         <View className='empty'>
-          <Text className='empty__icon'>📦</Text>
-          <Text className='empty__text'>暂无相关套餐</Text>
+          <Text className='empty__icon'>{isSearching ? '🔍' : '📦'}</Text>
+          <Text className='empty__text'>{isSearching ? '未找到匹配的套餐' : '暂无相关套餐'}</Text>
+          {isSearching && (
+            <Text
+              style={{ fontSize: '24rpx', color: '#0066FF', marginTop: '12rpx' }}
+              onClick={() => setSearchText('')}
+            >
+              清除搜索条件
+            </Text>
+          )}
         </View>
       ) : (
         <View className='packages-list'>
-          {packages.map(pkg => {
+          {filteredPackages.map(pkg => {
             const typeColor = TYPE_COLORS[pkg.type] || '#0066FF'
             const typeLabel = TYPE_LABELS[pkg.type] || pkg.type
             return (
@@ -124,7 +225,7 @@ export default function PackagesPage() {
                       <Text className='package-card__meta-item'>👥 {pkg.groupSize}</Text>
                     )}
                     {pkg.rating != null && (
-                      <Text className='package-card__meta-item'>⭐ {pkg.rating.toFixed(1)}</Text>
+                      <Text className='package-card__meta-item'>⭐ {(pkg.rating ?? 0).toFixed(1)}</Text>
                     )}
                   </View>
 
@@ -154,6 +255,17 @@ export default function PackagesPage() {
           })}
         </View>
       )}
+
+      {/* G4: Bottom CTA */}
+      {!loading && (
+        <View
+          style={{ margin: '32rpx 24rpx', padding: '24rpx', backgroundColor: '#D4A855', borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
+          onClick={() => Taro.navigateTo({ url: '/pages/routes/index' })}
+        >
+          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🗺️ 查看精品路线</Text>
+        </View>
+      )}
+
       <View style={{ height: '60rpx' }} />
     </ScrollView>
   )

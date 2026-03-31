@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import {
@@ -21,11 +21,27 @@ const LEVEL_COLORS: Record<string, string> = {
   PLATINUM: '#8B5CF6',
 }
 
+const LEVEL_ORDER = ['BRONZE', 'SILVER', 'GOLD', 'PLATINUM']
+
+const LEVEL_THRESHOLDS: Record<string, number> = {
+  BRONZE: 0,
+  SILVER: 1000,
+  GOLD: 5000,
+  PLATINUM: 20000,
+}
+
 const QUICK_ACTIONS = [
   { icon: '🎁', label: '积分商城', url: '/pages/points-mall/index', color: '#EF4444' },
   { icon: '📢', label: '分销推广', url: '/pages/referral/index', color: '#F59E0B' },
   { icon: '📦', label: '我的套餐', url: '/pages/packages/index', color: '#0066FF' },
   { icon: '📅', label: '签到日历', url: '', color: '#10B981' },
+]
+
+const DAILY_TASKS = [
+  { icon: '📅', label: '每日签到', points: 10, key: 'checkin' },
+  { icon: '📤', label: '分享内容', points: 5, key: 'share' },
+  { icon: '⭐', label: '写一条评价', points: 20, key: 'review' },
+  { icon: '📖', label: '阅读攻略', points: 3, key: 'read' },
 ]
 
 function formatDate(iso: string) {
@@ -90,6 +106,34 @@ export default function MembershipPage() {
     }
   }
 
+  // --- G4: Computed stats & level progress ---
+  const todayCheckedIn = useMemo(() => {
+    if (!data?.lastCheckinDate) return false
+    return data.lastCheckinDate.slice(0, 10) === new Date().toISOString().slice(0, 10)
+  }, [data?.lastCheckinDate])
+
+  const levelProgress = useMemo(() => {
+    if (!data) return { current: 0, next: 1000, percent: 0, nextLabel: '银牌会员' }
+    const currentIdx = LEVEL_ORDER.indexOf(data.level)
+    const currentThreshold = LEVEL_THRESHOLDS[data.level] || 0
+    if (currentIdx >= LEVEL_ORDER.length - 1) {
+      return { current: data.points, next: data.points, percent: 100, nextLabel: '最高等级' }
+    }
+    const nextLevel = LEVEL_ORDER[currentIdx + 1]
+    const nextThreshold = LEVEL_THRESHOLDS[nextLevel] || 10000
+    const progress = Math.min(100, Math.round(((data.points - currentThreshold) / (nextThreshold - currentThreshold)) * 100))
+    return { current: data.points, next: nextThreshold, percent: progress, nextLabel: LEVEL_LABELS[nextLevel] || nextLevel }
+  }, [data])
+
+  const statsRow = useMemo(() => {
+    if (!data) return []
+    return [
+      { label: '当前等级', value: LEVEL_LABELS[data.level] || data.level, icon: '🏅' },
+      { label: '积分余额', value: data.points.toLocaleString(), icon: '💰' },
+      { label: '连续签到', value: `${data.checkinStreak}天`, icon: '🔥' },
+    ]
+  }, [data])
+
   if (loading) {
     return (
       <View className='membership-page'>
@@ -113,9 +157,6 @@ export default function MembershipPage() {
 
   const levelColor = LEVEL_COLORS[data.level] || '#0066FF'
   const levelLabel = LEVEL_LABELS[data.level] || data.level
-  const todayCheckedIn = data.lastCheckinDate
-    ? data.lastCheckinDate.slice(0, 10) === new Date().toISOString().slice(0, 10)
-    : false
 
   return (
     <ScrollView className='membership-page' scrollY>
@@ -151,6 +192,33 @@ export default function MembershipPage() {
         </View>
       </View>
 
+      {/* G4: Stats Row */}
+      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '24rpx 20rpx', backgroundColor: '#1E293B', borderRadius: '16rpx', margin: '20rpx 24rpx 0' }}>
+        {statsRow.map(stat => (
+          <View key={stat.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '32rpx' }}>{stat.icon}</Text>
+            <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginTop: '4rpx' }}>{stat.value}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{stat.label}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* G4: Level Progress Bar */}
+      <View style={{ margin: '20rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx', padding: '24rpx' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '12rpx' }}>
+          <Text style={{ fontSize: '24rpx', color: '#CBD5E1' }}>{levelLabel}</Text>
+          <Text style={{ fontSize: '24rpx', color: '#CBD5E1' }}>{levelProgress.nextLabel}</Text>
+        </View>
+        <View style={{ height: '12rpx', backgroundColor: '#334155', borderRadius: '6rpx', overflow: 'hidden' }}>
+          <View style={{ height: '100%', width: `${levelProgress.percent}%`, backgroundColor: levelColor, borderRadius: '6rpx', transition: 'width 0.3s' }} />
+        </View>
+        <Text style={{ fontSize: '22rpx', color: '#64748B', marginTop: '8rpx' }}>
+          {levelProgress.percent < 100
+            ? `还需 ${(levelProgress.next - levelProgress.current).toLocaleString()} 积分升级`
+            : '已达最高等级'}
+        </Text>
+      </View>
+
       {/* Quick Actions Grid */}
       <View className='quick-actions'>
         {QUICK_ACTIONS.map(action => (
@@ -164,6 +232,36 @@ export default function MembershipPage() {
               <Text className='quick-action-item__icon'>{action.icon}</Text>
             </View>
             <Text className='quick-action-item__label'>{action.label}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* G4: Daily Tasks Board */}
+      <View style={{ margin: '20rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx', padding: '24rpx' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16rpx' }}>
+          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC' }}>每日任务</Text>
+          <Text style={{ fontSize: '22rpx', color: '#D4A855' }}>完成任务赚积分</Text>
+        </View>
+        {DAILY_TASKS.map(task => (
+          <View
+            key={task.key}
+            style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '16rpx 0', borderBottom: '1rpx solid #334155' }}
+            onClick={() => {
+              if (task.key === 'checkin') handleCheckin()
+            }}
+          >
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12rpx' }}>
+              <Text style={{ fontSize: '28rpx' }}>{task.icon}</Text>
+              <Text style={{ fontSize: '26rpx', color: '#E2E8F0' }}>{task.label}</Text>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8rpx' }}>
+              <Text style={{ fontSize: '22rpx', color: '#D4A855' }}>+{task.points}</Text>
+              {task.key === 'checkin' && todayCheckedIn ? (
+                <Text style={{ fontSize: '22rpx', color: '#22C55E' }}>已完成</Text>
+              ) : (
+                <Text style={{ fontSize: '22rpx', color: '#64748B' }}>去完成</Text>
+              )}
+            </View>
           </View>
         ))}
       </View>
@@ -182,6 +280,15 @@ export default function MembershipPage() {
             <PointsHistoryRow key={item.id} item={item} />
           ))
         )}
+      </View>
+
+      {/* G4: Bottom CTA */}
+      <View
+        style={{ margin: '32rpx 24rpx', padding: '24rpx', backgroundColor: '#D4A855', borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
+        hoverClass='none'
+        onClick={() => Taro.navigateTo({ url: '/pages/points-mall/index' })}
+      >
+        <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🎁 去积分商城兑好礼</Text>
       </View>
 
       <View style={{ height: '60rpx' }} />

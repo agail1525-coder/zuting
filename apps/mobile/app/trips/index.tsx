@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,6 +40,8 @@ const FILTER_OPTIONS: { key: TripStatus | 'all'; label: string }[] = [
   { key: 'COMPLETED', label: '已完成' },
 ];
 
+const ACTIVE_STATUSES: TripStatus[] = ['PLANNING', 'SUBMITTED', 'CONFIRMED', 'PAID', 'PREPARING', 'IN_PROGRESS'];
+
 export default function TripsScreen() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -46,6 +49,7 @@ export default function TripsScreen() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchTrips = useCallback(async () => {
     if (!user) return;
@@ -76,6 +80,40 @@ export default function TripsScreen() {
     }
   }, [authLoading, user, fetchTrips]);
 
+  // Client-side search filtering
+  const filteredTrips = useMemo(() => {
+    if (!searchQuery.trim()) return trips;
+    const q = searchQuery.toLowerCase().trim();
+    return trips.filter(t =>
+      t.title.toLowerCase().includes(q) ||
+      (t.note && t.note.toLowerCase().includes(q))
+    );
+  }, [trips, searchQuery]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const activeCount = trips.filter(t => ACTIVE_STATUSES.includes(t.status)).length;
+    const completedCount = trips.filter(t => t.status === 'COMPLETED').length;
+    const totalSites = trips.reduce((sum, t) => sum + (t.sites?.length ?? 0), 0);
+    return {
+      total: trips.length,
+      active: activeCount,
+      completed: completedCount,
+      totalSites,
+    };
+  }, [trips]);
+
+  // Tab counts
+  const tabCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: trips.length };
+    trips.forEach(t => {
+      counts[t.status] = (counts[t.status] || 0) + 1;
+    });
+    return counts;
+  }, [trips]);
+
+  const isSearchEmpty = searchQuery.trim().length > 0 && filteredTrips.length === 0;
+
   if (authLoading) {
     return (
       <View style={styles.centerContainer}>
@@ -96,7 +134,52 @@ export default function TripsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Filter chips */}
+      {/* Search bar */}
+      <View style={styles.searchBar}>
+        <Ionicons name="search" size={18} color={colors.textMuted} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="搜索行程名称、备注..."
+          placeholderTextColor={colors.textMuted}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          returnKeyType="search"
+        />
+        {searchQuery.length > 0 && (
+          <Pressable onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+          </Pressable>
+        )}
+      </View>
+
+      {/* Stats row */}
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
+          <Ionicons name="compass" size={16} color={colors.gold} />
+          <Text style={styles.statValue}>{stats.total}</Text>
+          <Text style={styles.statLabel}>总行程</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Ionicons name="walk" size={16} color="#F59E0B" />
+          <Text style={styles.statValue}>{stats.active}</Text>
+          <Text style={styles.statLabel}>进行中</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Ionicons name="trophy" size={16} color="#22C55E" />
+          <Text style={styles.statValue}>{stats.completed}</Text>
+          <Text style={styles.statLabel}>已完成</Text>
+        </View>
+        <View style={styles.statDivider} />
+        <View style={styles.statItem}>
+          <Ionicons name="location" size={16} color="#6366F1" />
+          <Text style={styles.statValue}>{stats.totalSites}</Text>
+          <Text style={styles.statLabel}>圣地</Text>
+        </View>
+      </View>
+
+      {/* Filter chips with counts */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -119,6 +202,7 @@ export default function TripsScreen() {
               ]}
             >
               {option.label}
+              {tabCounts[option.key] !== undefined ? ` (${tabCounts[option.key]})` : ' (0)'}
             </Text>
           </Pressable>
         ))}
@@ -144,12 +228,12 @@ export default function TripsScreen() {
       ) : (
         /* Trip list */
         <FlatList
-          data={trips}
+          data={filteredTrips}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item, index }) => {
             const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG.DRAFT;
-            const sitesCount = item.sites.length;
+            const sitesCount = item.sites?.length ?? 0;
             return (
               <Animated.View entering={FadeInDown.duration(300).delay(index * 100)}>
                 <Pressable
@@ -157,7 +241,7 @@ export default function TripsScreen() {
                     styles.tripCard,
                     pressed && styles.tripCardPressed,
                   ]}
-                  onPress={() => router.push(`/trips/${item.id}`)}
+                  onPress={() => router.push(`/trips/${item.id}` as any)}
                 >
                   <View style={styles.tripHeader}>
                     <View style={styles.tripHeaderText}>
@@ -201,11 +285,49 @@ export default function TripsScreen() {
             );
           }}
           ListEmptyComponent={
-            <View style={styles.centerContainer}>
-              <Text style={styles.emptyEmoji}>🗺️</Text>
-              <Text style={styles.emptyText}>还没有行程</Text>
-              <Text style={styles.emptySubtext}>开始规划你的朝圣之旅</Text>
-            </View>
+            isSearchEmpty ? (
+              <View style={styles.centerContainer}>
+                <Ionicons name="search-outline" size={48} color={colors.textMuted} />
+                <Text style={styles.emptyText}>未找到相关行程</Text>
+                <Text style={styles.emptySubtext}>
+                  没有匹配"{searchQuery}"的行程，请尝试其他关键词
+                </Text>
+                <Pressable style={styles.retryButton} onPress={() => setSearchQuery('')}>
+                  <Ionicons name="close-circle-outline" size={16} color={colors.gold} />
+                  <Text style={styles.retryText}>清除搜索</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <View style={styles.centerContainer}>
+                <Text style={styles.emptyEmoji}>🗺️</Text>
+                <Text style={styles.emptyText}>还没有行程</Text>
+                <Text style={styles.emptySubtext}>开始规划你的朝圣之旅</Text>
+                <Pressable
+                  style={styles.inlineCreateBtn}
+                  onPress={() => router.push('/trips/create' as any)}
+                >
+                  <Ionicons name="add-circle" size={20} color="#FFFFFF" />
+                  <Text style={styles.inlineCreateBtnText}>创建行程</Text>
+                </Pressable>
+              </View>
+            )
+          }
+          ListFooterComponent={
+            !loading && filteredTrips.length > 0 ? (
+              <View style={styles.bottomCta}>
+                <Ionicons name="compass" size={20} color={colors.gold} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.bottomCtaTitle}>发现更多路线</Text>
+                  <Text style={styles.bottomCtaSubtext}>浏览精选朝圣路线，规划下一段旅程</Text>
+                </View>
+                <Pressable
+                  style={styles.bottomCtaBtn}
+                  onPress={() => router.push('/routes' as any)}
+                >
+                  <Text style={styles.bottomCtaBtnText}>浏览路线</Text>
+                </Pressable>
+              </View>
+            ) : null
           }
         />
       )}
@@ -213,7 +335,7 @@ export default function TripsScreen() {
       {/* Floating add button */}
       <Pressable
         style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
-        onPress={() => router.push('/trips/create')}
+        onPress={() => router.push('/trips/create' as any)}
       >
         <Ionicons name="add" size={28} color="#FFFFFF" />
       </Pressable>
@@ -233,10 +355,65 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     paddingHorizontal: spacing.lg,
   },
+  // Search bar
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    borderRadius: borderRadius.full,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: fontSize.md,
+    color: colors.textPrimary,
+    paddingVertical: 0,
+  },
+  // Stats row
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.sm + 2,
+    paddingHorizontal: spacing.md,
+    gap: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  statValue: {
+    fontSize: fontSize.md,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  statLabel: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+  },
+  statDivider: {
+    width: 1,
+    height: 16,
+    backgroundColor: '#E5E7EB',
+  },
   filterBar: {
     maxHeight: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   filterContent: {
     paddingHorizontal: spacing.md,
@@ -349,6 +526,21 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     textAlign: 'center',
   },
+  inlineCreateBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+    backgroundColor: colors.gold,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
+    borderRadius: borderRadius.full,
+  },
+  inlineCreateBtnText: {
+    color: '#FFFFFF',
+    fontSize: fontSize.md,
+    fontWeight: '700',
+  },
   retryButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -364,6 +556,39 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontSize: fontSize.md,
     fontWeight: '600',
+  },
+  // Bottom CTA
+  bottomCta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    marginBottom: spacing.md,
+    gap: spacing.md,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  bottomCtaTitle: {
+    fontSize: fontSize.md,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+  bottomCtaSubtext: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  bottomCtaBtn: {
+    backgroundColor: colors.gold,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.full,
+  },
+  bottomCtaBtnText: {
+    color: '#FFFFFF',
+    fontSize: fontSize.sm,
+    fontWeight: '700',
   },
   fab: {
     position: 'absolute',

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { View, Text, ScrollView } from '@tarojs/components'
+import { useState, useEffect, useMemo } from 'react'
+import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import {
   CouponItem, UserCoupon,
@@ -9,12 +9,6 @@ import './index.scss'
 
 type TabKey = 'available' | 'mine' | 'used'
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'available', label: '可领取' },
-  { key: 'mine', label: '我的券' },
-  { key: 'used', label: '已使用' },
-]
-
 function formatDate(iso: string) {
   return iso.slice(0, 10).replace(/-/g, '/')
 }
@@ -23,10 +17,18 @@ function isExpired(endAt: string) {
   return new Date(endAt) < new Date()
 }
 
+/** Days until expiry, or -1 if already expired */
+function daysUntilExpiry(endAt: string): number {
+  const diff = new Date(endAt).getTime() - Date.now()
+  if (diff <= 0) return -1
+  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+}
+
 function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: string) => void }) {
   const expired = isExpired(coupon.endAt)
   const isPercent = coupon.type === 'PERCENT'
   const stripColor = isPercent ? '#0066FF' : '#EF4444'
+  const remaining = daysUntilExpiry(coupon.endAt)
 
   return (
     <View className='coupon-card'>
@@ -50,6 +52,12 @@ function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: st
           <Text className='coupon-card__date'>
             {expired ? '已过期' : `至 ${formatDate(coupon.endAt)}`}
           </Text>
+          {/* G4: Expiry countdown */}
+          {!expired && remaining <= 3 && remaining >= 0 && (
+            <Text style={{ fontSize: '20rpx', color: '#EF4444', marginTop: '4rpx' }}>
+              {remaining === 0 ? '今日到期' : `${remaining}天后过期`}
+            </Text>
+          )}
         </View>
         {onClaim && (
           <View
@@ -68,11 +76,12 @@ function MyCouponCard({ userCoupon }: { userCoupon: UserCoupon }) {
   const { coupon, status } = userCoupon
   const isPercent = coupon.type === 'PERCENT'
   const isUsed = status === 'USED'
-  const isExpired = status === 'EXPIRED' || new Date(coupon.endAt) < new Date()
-  const stripColor = isUsed || isExpired ? '#9CA3AF' : (isPercent ? '#0066FF' : '#EF4444')
+  const isExp = status === 'EXPIRED' || new Date(coupon.endAt) < new Date()
+  const stripColor = isUsed || isExp ? '#9CA3AF' : (isPercent ? '#0066FF' : '#EF4444')
+  const remaining = daysUntilExpiry(coupon.endAt)
 
   return (
-    <View className={`coupon-card ${isUsed || isExpired ? 'coupon-card--dim' : ''}`}>
+    <View className={`coupon-card ${isUsed || isExp ? 'coupon-card--dim' : ''}`}>
       <View className='coupon-card__strip' style={{ backgroundColor: stripColor }} />
       <View className='coupon-card__body'>
         <View className='coupon-card__left'>
@@ -91,8 +100,14 @@ function MyCouponCard({ userCoupon }: { userCoupon: UserCoupon }) {
           <Text className='coupon-card__name'>{coupon.name}</Text>
           <Text className='coupon-card__code'>码: {coupon.code}</Text>
           <Text className='coupon-card__date'>至 {formatDate(coupon.endAt)}</Text>
+          {/* G4: Expiry countdown for active coupons */}
+          {!isUsed && !isExp && remaining <= 3 && remaining >= 0 && (
+            <Text style={{ fontSize: '20rpx', color: '#EF4444', marginTop: '4rpx' }}>
+              {remaining === 0 ? '今日到期' : `${remaining}天后过期`}
+            </Text>
+          )}
         </View>
-        {(isUsed || isExpired) && (
+        {(isUsed || isExp) && (
           <View className='coupon-card__stamp'>
             <Text className='coupon-card__stamp-text'>{isUsed ? '已用' : '过期'}</Text>
           </View>
@@ -109,6 +124,7 @@ export default function CouponsPage() {
   const [usedCoupons, setUsedCoupons] = useState<UserCoupon[]>([])
   const [loading, setLoading] = useState(true)
   const [claiming, setClaiming] = useState<string | null>(null)
+  const [searchText, setSearchText] = useState('')
 
   useEffect(() => { loadData() }, [])
 
@@ -144,6 +160,44 @@ export default function CouponsPage() {
     }
   }
 
+  // --- G4: Wallet overview stats ---
+  const walletStats = useMemo(() => {
+    const totalActive = myCoupons.length
+    const expiringSoon = myCoupons.filter(uc => {
+      const d = daysUntilExpiry(uc.coupon.endAt)
+      return d >= 0 && d <= 7
+    }).length
+    return { totalActive, expiringSoon, totalUsed: usedCoupons.length }
+  }, [myCoupons, usedCoupons])
+
+  // --- G4: Tab counts ---
+  const tabCounts = useMemo(() => ({
+    available: availableCoupons.length,
+    mine: myCoupons.length,
+    used: usedCoupons.length,
+  }), [availableCoupons, myCoupons, usedCoupons])
+
+  // --- G4: Filtered lists (client-side search) ---
+  const filteredAvailable = useMemo(() => {
+    if (!searchText.trim()) return availableCoupons
+    const q = searchText.toLowerCase()
+    return availableCoupons.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q))
+  }, [availableCoupons, searchText])
+
+  const filteredMine = useMemo(() => {
+    if (!searchText.trim()) return myCoupons
+    const q = searchText.toLowerCase()
+    return myCoupons.filter(uc => uc.coupon.name.toLowerCase().includes(q) || uc.coupon.code.toLowerCase().includes(q))
+  }, [myCoupons, searchText])
+
+  const filteredUsed = useMemo(() => {
+    if (!searchText.trim()) return usedCoupons
+    const q = searchText.toLowerCase()
+    return usedCoupons.filter(uc => uc.coupon.name.toLowerCase().includes(q) || uc.coupon.code.toLowerCase().includes(q))
+  }, [usedCoupons, searchText])
+
+  const isSearching = searchText.trim().length > 0
+
   const renderContent = () => {
     if (loading) {
       return (
@@ -154,26 +208,45 @@ export default function CouponsPage() {
     }
 
     if (activeTab === 'available') {
-      if (availableCoupons.length === 0) {
-        return <View className='empty'><Text className='empty__text'>暂无可领取优惠券</Text></View>
+      if (filteredAvailable.length === 0) {
+        return (
+          <View className='empty'>
+            <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
+            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无可领取优惠券'}</Text>
+            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+          </View>
+        )
       }
-      return availableCoupons.map(c => (
+      return filteredAvailable.map(c => (
         <CouponCard key={c.id} coupon={c} onClaim={handleClaim} />
       ))
     }
 
     if (activeTab === 'mine') {
-      if (myCoupons.length === 0) {
-        return <View className='empty'><Text className='empty__text'>暂无可用优惠券</Text><Text className='empty__sub'>去领取一张吧</Text></View>
+      if (filteredMine.length === 0) {
+        return (
+          <View className='empty'>
+            <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
+            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无可用优惠券'}</Text>
+            {!isSearching && <Text className='empty__sub'>去领取一张吧</Text>}
+            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+          </View>
+        )
       }
-      return myCoupons.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
+      return filteredMine.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
     }
 
     if (activeTab === 'used') {
-      if (usedCoupons.length === 0) {
-        return <View className='empty'><Text className='empty__text'>暂无已使用优惠券</Text></View>
+      if (filteredUsed.length === 0) {
+        return (
+          <View className='empty'>
+            <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
+            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无已使用优惠券'}</Text>
+            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+          </View>
+        )
       }
-      return usedCoupons.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
+      return filteredUsed.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
     }
 
     return null
@@ -181,16 +254,63 @@ export default function CouponsPage() {
 
   return (
     <View className='coupons-page'>
-      {/* Tabs */}
+      {/* G4: Wallet Overview Card */}
+      {!loading && (
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '24rpx', margin: '20rpx 24rpx', backgroundColor: '#1E293B', borderRadius: '16rpx' }}>
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '36rpx', fontWeight: '700', color: '#D4A855' }}>{walletStats.totalActive}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>可用券</Text>
+          </View>
+          <View style={{ width: '1rpx', backgroundColor: '#334155' }} />
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '36rpx', fontWeight: '700', color: walletStats.expiringSoon > 0 ? '#EF4444' : '#F8FAFC' }}>{walletStats.expiringSoon}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>即将过期</Text>
+          </View>
+          <View style={{ width: '1rpx', backgroundColor: '#334155' }} />
+          <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Text style={{ fontSize: '36rpx', fontWeight: '700', color: '#64748B' }}>{walletStats.totalUsed}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>已使用</Text>
+          </View>
+        </View>
+      )}
+
+      {/* G4: Search Input */}
+      <View style={{ padding: '0 24rpx', marginBottom: '16rpx' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: '#1E293B', borderRadius: '12rpx', padding: '0 20rpx', height: '72rpx' }}>
+          <Text style={{ fontSize: '28rpx', marginRight: '12rpx' }}>🔍</Text>
+          <Input
+            type='text'
+            placeholder='搜索优惠券名称或代码'
+            placeholderStyle='color: #64748B'
+            value={searchText}
+            onInput={e => setSearchText(e.detail.value)}
+            style={{ flex: 1, fontSize: '26rpx', color: '#F8FAFC', backgroundColor: 'transparent' }}
+          />
+          {searchText && (
+            <Text
+              style={{ fontSize: '24rpx', color: '#94A3B8', padding: '8rpx' }}
+              onClick={() => setSearchText('')}
+            >
+              清除
+            </Text>
+          )}
+        </View>
+      </View>
+
+      {/* Tabs with G4: counts */}
       <View className='tabs'>
-        {TABS.map(tab => (
+        {([
+          { key: 'available' as TabKey, label: '可领取' },
+          { key: 'mine' as TabKey, label: '我的券' },
+          { key: 'used' as TabKey, label: '已使用' },
+        ]).map(tab => (
           <View
             key={tab.key}
             className={`tabs__item ${activeTab === tab.key ? 'tabs__item--active' : ''}`}
             onClick={() => setActiveTab(tab.key)}
           >
             <Text className={`tabs__text ${activeTab === tab.key ? 'tabs__text--active' : ''}`}>
-              {tab.label}
+              {tab.label} ({tabCounts[tab.key]})
             </Text>
             {activeTab === tab.key && <View className='tabs__indicator' />}
           </View>
@@ -200,6 +320,17 @@ export default function CouponsPage() {
       {/* Content */}
       <ScrollView className='coupons-list' scrollY>
         {renderContent()}
+
+        {/* G4: Bottom CTA */}
+        {!loading && (
+          <View
+            style={{ margin: '32rpx 24rpx', padding: '24rpx', backgroundColor: '#D4A855', borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
+            onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
+          >
+            <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🔥 查看更多促销活动</Text>
+          </View>
+        )}
+
         <View style={{ height: '60rpx' }} />
       </ScrollView>
     </View>
