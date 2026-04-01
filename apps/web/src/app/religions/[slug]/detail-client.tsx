@@ -78,7 +78,7 @@ function SectionNav({ sections }: { sections: { id: string; label: string }[] })
 
 /* ═══ FAQ手风琴 ═══ */
 
-function FAQSection({ religionName }: { religionName: string }) {
+function FAQSection({ religionName, t }: { religionName: string; t: (key: string) => string }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
     { q: `${religionName}的核心信仰是什么？`, a: `${religionName}有着悠久的历史和深厚的文化传承，其核心教义涵盖了对宇宙、生命和修行的独特理解。详细内容可通过平台的祖训和祖师板块深入了解。` },
@@ -88,7 +88,7 @@ function FAQSection({ religionName }: { religionName: string }) {
   ];
   return (
     <div className="mt-10" id="sec-faq">
-      <h2 className="text-xl font-bold text-gray-900 mb-4">常见问题</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">{t("religion.faq")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
         {faqs.map((faq, i) => (
           <div key={i}>
@@ -157,7 +157,7 @@ export default function ReligionDetailClient({
           </p>
 
           {/* Share button */}
-          <div className="flex items-center justify-center mt-4">
+          <div className="flex items-center justify-center gap-3 mt-4">
             <ShareButton
               title={religion.name}
               description={`${religion.nameEn} — ${totalItems}项文化遗产`}
@@ -189,10 +189,10 @@ export default function ReligionDetailClient({
 
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
-        { id: "sec-content", label: "内容浏览" },
-        { id: "sec-media", label: "多媒体" },
-        { id: "sec-reviews", label: "评价" },
-        { id: "sec-faq", label: "常见问题" },
+        { id: "sec-content", label: t("religion.sectionContent") },
+        { id: "sec-media", label: t("religion.sectionMedia") },
+        { id: "sec-reviews", label: t("religion.sectionReviews") },
+        { id: "sec-faq", label: t("religion.sectionFaq") },
       ]} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
@@ -305,7 +305,7 @@ export default function ReligionDetailClient({
         </div>
 
         {/* ========== FAQ ========== */}
-        <FAQSection religionName={religion.name} />
+        <FAQSection religionName={religion.name} t={t} />
 
         {/* ========== Bottom CTAs ========== */}
         <div className="text-center mt-12 space-y-4">
@@ -313,7 +313,7 @@ export default function ReligionDetailClient({
             href={`/chat?q=${encodeURIComponent(`我想了解${religion.name}的朝圣路线`)}`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
           >
-            ✨ 探索{religion.name}朝圣路线
+            ✨ {t("religion.exploreRoutes").replace("{name}", religion.name)}
           </Link>
           <div>
             <Link
