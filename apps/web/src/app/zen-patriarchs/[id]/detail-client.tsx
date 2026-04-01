@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
 import type { Patriarch } from "@/lib/api";
+import InkAvatar from "../InkAvatar";
 
 // ── Section Nav ────────────────────────────────────────────────────────────
 const SECTIONS = [
@@ -115,7 +116,7 @@ export default function ZenPatriarchDetailClient({
               {p.imageUrl ? (
                 <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" />
               ) : (
-                "🧘"
+                <InkAvatar name={p.name} size={128} />
               )}
             </div>
 
@@ -299,7 +300,7 @@ export default function ZenPatriarchDetailClient({
                       href={`/zen-patriarchs/${p.teacher.id}`}
                       className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#F5F0E8] border border-[#D4C5A0]/30 hover:border-[#C4A265]/60 transition-colors w-full max-w-sm"
                     >
-                      <div className="w-10 h-10 rounded-full bg-[#C4A265]/15 flex items-center justify-center text-lg">🧘</div>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center"><InkAvatar name={p.teacher.name} size={40} /></div>
                       <div>
                         <p className="text-xs text-[#8B6914]">{t("zen.detail.teacher")}</p>
                         <p className="font-serif font-bold text-[#2C1810]">{p.teacher.name}</p>
@@ -312,8 +313,8 @@ export default function ZenPatriarchDetailClient({
 
                 {/* Current */}
                 <div className="flex items-center gap-3 px-5 py-4 rounded-xl bg-[#C4A265]/10 border-2 border-[#C4A265]/40 w-full max-w-sm">
-                  <div className="w-12 h-12 rounded-full bg-[#C4A265]/20 flex items-center justify-center text-2xl border-2 border-[#C4A265]/40">
-                    🧘
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-[#C4A265]/40">
+                    <InkAvatar name={p.name} size={48} />
                   </div>
                   <div>
                     <p className="text-xs text-[#8B6914] font-medium">{p.school} · {t("zen.card.generation").replace("{n}", String(p.generation ?? "?"))}</p>
@@ -336,7 +337,7 @@ export default function ZenPatriarchDetailClient({
                           href={`/zen-patriarchs/${d.id}`}
                           className="flex items-center gap-3 px-4 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C5A0]/30 hover:border-[#C4A265]/60 transition-colors"
                         >
-                          <div className="w-8 h-8 rounded-full bg-[#C4A265]/10 flex items-center justify-center text-sm">🧘</div>
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center"><InkAvatar name={d.name} size={32} /></div>
                           <div className="min-w-0">
                             <p className="font-serif font-medium text-[#2C1810] text-sm">{d.name}</p>
                             {d.generation && (

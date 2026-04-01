@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
 import type { Religion, Patriarch } from "@/lib/api";
+import InkAvatar from "./InkAvatar";
 
 // ── Five Zen Schools Data ──────────────────────────────────────────────────
 const ZEN_SCHOOLS = [
@@ -96,7 +97,7 @@ function LineageNode({
               className="w-full h-full rounded-full object-cover"
             />
           ) : (
-            <span className="text-[#8B6914]">🧘</span>
+            <InkAvatar name={p.name} size={48} />
           )}
         </button>
 
@@ -164,7 +165,7 @@ function ZenPatriarchCard({ p, t }: { p: Patriarch; t: (k: string) => string }) 
           {p.imageUrl ? (
             <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" />
           ) : (
-            "🧘"
+            <InkAvatar name={p.name} size={56} />
           )}
         </div>
         <div className="min-w-0">
@@ -221,7 +222,7 @@ function ZenPatriarchCard({ p, t }: { p: Patriarch; t: (k: string) => string }) 
 // ── Main Component ─────────────────────────────────────────────────────────
 export default function ZenPatriarchsClient({
   patriarchs,
-  allBuddhismPatriarchs: _allBuddhism,
+  allBuddhismPatriarchs,
   religions: _religions,
 }: {
   patriarchs: Patriarch[];
@@ -230,32 +231,50 @@ export default function ZenPatriarchsClient({
 }) {
   const { t } = useTranslation();
   const [activeSchool, setActiveSchool] = useState("caodong");
-  const [expanded, setExpanded] = useState<Set<string>>(() => {
-    // Auto-expand first 3 generations
-    const ids = new Set<string>();
-    patriarchs.forEach((p) => {
-      if ((p.generation ?? 99) <= 3) ids.add(p.id);
-    });
-    return ids;
-  });
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<"tree" | "grid">("tree");
   const [search, setSearch] = useState("");
 
+  // Map school keys to Chinese names
+  const schoolNameMap: Record<string, string> = {
+    caodong: "曹洞宗",
+    linji: "临济宗",
+    yunmen: "云门宗",
+    fayan: "法眼宗",
+    guiyang: "沩仰宗",
+  };
+
+  // Active school patriarchs
+  const activePatriarchs = useMemo(() => {
+    if (activeSchool === "caodong") return patriarchs;
+    const schoolName = schoolNameMap[activeSchool];
+    return allBuddhismPatriarchs.filter((p) => p.school === schoolName);
+  }, [activeSchool, patriarchs, allBuddhismPatriarchs]);
+
+  // Auto-expand first 3 generations when school changes
+  useEffect(() => {
+    const ids = new Set<string>();
+    activePatriarchs.forEach((p) => {
+      if ((p.generation ?? 99) <= 3) ids.add(p.id);
+    });
+    setExpanded(ids);
+  }, [activeSchool, activePatriarchs]);
+
   // Build lineage tree
-  const tree = useMemo(() => buildLineageTree(patriarchs), [patriarchs]);
+  const tree = useMemo(() => buildLineageTree(activePatriarchs), [activePatriarchs]);
 
   // Filtered patriarchs for grid view
   const filtered = useMemo(() => {
-    if (!search) return patriarchs;
+    if (!search) return activePatriarchs;
     const q = search.toLowerCase();
-    return patriarchs.filter(
+    return activePatriarchs.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         (p.nameEn ?? "").toLowerCase().includes(q) ||
         (p.title ?? "").toLowerCase().includes(q) ||
         (p.dates ?? "").includes(q)
     );
-  }, [patriarchs, search]);
+  }, [activePatriarchs, search]);
 
   const toggleExpand = (id: string) => {
     setExpanded((prev) => {
@@ -267,7 +286,7 @@ export default function ZenPatriarchsClient({
   };
 
   const expandAll = () => {
-    setExpanded(new Set(patriarchs.map((p) => p.id)));
+    setExpanded(new Set(activePatriarchs.map((p) => p.id)));
   };
 
   const collapseAll = () => {
@@ -356,26 +375,25 @@ export default function ZenPatriarchsClient({
           </div>
 
           {/* School detail */}
-          {activeSchool !== "caodong" ? (
-            <div className="mt-4 p-4 bg-[#F5F0E8] rounded-lg text-center">
-              <p className="text-[#6B5C4D] text-sm">{t("zen.schools.comingSoon")}</p>
-              <p className="text-xs text-[#8B6914] mt-1">
-                {ZEN_SCHOOLS.find((s) => s.key === activeSchool)?.founder} · {ZEN_SCHOOLS.find((s) => s.key === activeSchool)?.temple}
-              </p>
-            </div>
-          ) : (
-            <div className="mt-4 p-4 bg-[#C4A265]/5 rounded-lg border border-[#C4A265]/20">
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-lg">☸</span>
-                <div>
-                  <span className="font-medium text-[#2C1810]">{t("zen.schools.caodong")}</span>
-                  <span className="text-[#6B5C4D] ml-2">
-                    {t("zen.schools.caodongDesc")}
-                  </span>
+          {(() => {
+            const school = ZEN_SCHOOLS.find((s) => s.key === activeSchool);
+            const schoolDescKey = `zen.schools.${activeSchool}Desc` as const;
+            return (
+              <div className="mt-4 p-4 bg-[#C4A265]/5 rounded-lg border border-[#C4A265]/20">
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="text-lg">☸</span>
+                  <div>
+                    <span className="font-medium text-[#2C1810]">{school?.name} ({school?.nameEn})</span>
+                    <span className="text-[#6B5C4D] ml-2">{school?.method}</span>
+                  </div>
                 </div>
+                <p className="text-xs text-[#8B6914] mt-2 ml-8">
+                  {school?.founder} · {school?.temple}
+                  {activePatriarchs.length > 0 && ` · ${activePatriarchs.length}位祖师`}
+                </p>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* ── Toolbar ─────────────────────────────────────────────────── */}
@@ -420,7 +438,7 @@ export default function ZenPatriarchsClient({
         </div>
 
         {/* ── Lineage Tree View ───────────────────────────────────────── */}
-        {viewMode === "tree" && activeSchool === "caodong" && (
+        {viewMode === "tree" && (
           <div className="bg-white rounded-xl border border-[#D4C5A0]/40 p-6 mb-6 shadow-sm">
             <h2 className="text-lg font-serif font-bold text-[#2C1810] mb-1">
               {t("zen.lineage.title")}
