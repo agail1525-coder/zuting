@@ -3018,6 +3018,301 @@ async function main() {
   const pureLandCount = 13;
   console.log(`  ✓ ${pureLandCount} Pure Land patriarchs created`);
 
+  // ── 4e. 律宗祖师 (Vinaya School Patriarchs) ──
+  console.log('Creating Vinaya school patriarchs...');
+
+  // === 律宗第1世: 昙柯迦罗 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '昙柯迦罗',
+      nameEn: 'Dharmakala',
+      religionId: buddhismId,
+      dates: '?-253',
+      title: '中国律宗初祖',
+      school: '律宗',
+      generation: 1,
+      teacherId: null,
+      biography: '昙柯迦罗（又名昙摩迦罗、法时），中天竺人。善学四韦陀论，通晓天文地理。出家后博学三藏，以律学见长。嘉平年间（249-253）至洛阳，时中国虽有沙门，皆未受戒，只剃发披缦衣而已。昙柯迦罗见此深感痛心，遂翻译《僧祇戒心》，并立羯磨法（受戒仪轨），邀请梵僧十人于白马寺设戒坛，为中国僧尼正式授戒之始。中国有律宗，实以此为嚆矢。',
+      coreTeaching: '正法住世，以律为本——在中国首创正式受戒制度（羯磨法），奠定中国僧团戒律传承的根基。',
+      achievements: '中国律宗初祖。在洛阳白马寺创立中国第一个正式受戒仪轨，首翻《僧祇戒心》。自此中国僧人始有正式受戒之法，标志着中国佛教戒律传承的正式开端。',
+      templeNames: [{ name: '洛阳白马寺', nameEn: 'White Horse Temple', role: '首设戒坛', location: '河南洛阳' }],
+      koans: [{ title: '首创羯磨', content: '昙柯迦罗至洛阳，见中国沙门皆未受戒，深感痛心。遂译出戒本，请梵僧十人，于白马寺设戒坛，行羯磨法。中国沙门始有正式受戒之仪。', source: '高僧传' }],
+      classicQuotes: ['正法住世，以律为本', '沙门之为沙门，首在持戒'],
+      works: [{ title: '僧祇戒心', description: '中国最早翻译的律学典籍' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第2世: 慧光律师 ===
+  const huiguangLv = await prisma.patriarch.create({
+    data: {
+      name: '慧光律师',
+      nameEn: 'Huiguang',
+      religionId: buddhismId,
+      dates: '468-537',
+      title: '光统律师',
+      school: '律宗',
+      generation: 2,
+      teacherId: null,
+      biography: '慧光，定州长卢（今河北定州）人。少年出家，十三岁即能讲经，被称为"圣沙弥"。师从佛陀扇多，精研律学与华严。于洛阳弘法，首开《四分律》注疏之先河，著《四分律疏》四卷，确立四分律为中国律学主流。北魏孝明帝时任僧统（国师级），号"光统律师"。门下弟子众多，后分为道云、道晖两大系。',
+      coreTeaching: '四分律学——首次系统注疏《四分律》，确立四分律在中国律学的主导地位。',
+      achievements: '首开四分律注疏之先河。著《四分律疏》确立四分律为中国律学正统。任北魏僧统，统领全国僧尼事务。门下分出道云、道晖两系，奠定后世律宗三家（南山/相部/东塔）之基础。',
+      templeNames: [{ name: '洛阳大觉寺', nameEn: 'Dajue Temple', role: '弘法', location: '河南洛阳' }],
+      koans: [{ title: '圣沙弥', content: '慧光十三岁即升座讲经，辩才无碍，时人称为"圣沙弥"。', source: '续高僧传' }],
+      classicQuotes: ['四分律通大乘', '持律精严，方堪传法'],
+      works: [
+        { title: '四分律疏', description: '四卷，中国第一部四分律系统注疏' },
+        { title: '华严经疏', description: '华严学重要注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第3世: 道云律师 ===
+  const daoyunLv = await prisma.patriarch.create({
+    data: {
+      name: '道云律师',
+      nameEn: 'Daoyun',
+      religionId: buddhismId,
+      dates: '?-?',
+      title: '道云律师',
+      school: '律宗',
+      generation: 3,
+      teacherId: huiguangLv.id,
+      biography: '道云，慧光律师弟子，北朝律学家。深入研究《四分律》，在慧光《四分律疏》基础上扩充为九卷，系统性大幅增强。其著述对后世律学产生深远影响，门下弟子道洪继承其学，再传智首，形成南山律宗的直接法脉源流。',
+      coreTeaching: '深研四分律，扩充注疏——在慧光之学基础上系统化四分律义理。',
+      achievements: '承慧光之学，著《四分律疏》九卷，大幅扩充四分律学体系。其学术传承经道洪、智首、道宣一脉相承，为南山律宗奠定学术根基。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['律学精微，在乎传承'],
+      works: [{ title: '四分律疏', description: '九卷，扩充慧光之学' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第4世: 智首律师 ===
+  const zhishouLv = await prisma.patriarch.create({
+    data: {
+      name: '智首律师',
+      nameEn: 'Zhishou',
+      religionId: buddhismId,
+      dates: '567-635',
+      title: '智首律师',
+      school: '律宗',
+      generation: 4,
+      teacherId: daoyunLv.id,
+      biography: '智首，相州安阳（今河南安阳）人。师从道洪律师（道云弟子），尽得其学。后至长安弘法，综合研究当时流传的五部律学（四分、五分、僧祇、十诵、根本），著《广疏》二十卷，为当时最全面的律学著作。又著《五部区分钞》二十一卷，辨析五部律之异同。长安成为四分律学中心。道宣即其门下高足，后创南山律宗。贞观九年（635）示寂。',
+      coreTeaching: '五部律综合研究——融会贯通四分、五分、僧祇、十诵、根本五部律学，建立完整律学体系。',
+      achievements: '道宣律师之师。著《广疏》二十卷综合五部律学，使长安成为四分律学中心。为南山律宗的创立奠定直接的学术与师承基础。',
+      templeNames: [{ name: '长安弘福寺', nameEn: 'Hongfu Temple', role: '弘法', location: '陕西长安' }],
+      koans: [{ title: '五部融通', content: '智首遍学五部律学，以四分律为本，融通诸部。著《广疏》二十卷，使长安四方学者云集。', source: '续高僧传' }],
+      classicQuotes: ['律通诸部，以四分为宗', '持律为僧之本'],
+      works: [
+        { title: '广疏', description: '二十卷，五部律学综合注疏' },
+        { title: '五部区分钞', description: '二十一卷，辨析五部律异同' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第5世: 道宣律师 (南山律宗开山祖师) ===
+  const daoxuanLv = await prisma.patriarch.create({
+    data: {
+      name: '道宣律师',
+      nameEn: 'Daoxuan',
+      religionId: buddhismId,
+      dates: '596-667',
+      title: '南山律祖',
+      school: '律宗',
+      generation: 5,
+      teacherId: zhishouLv.id,
+      biography: '道宣，京兆（今陕西西安）人，俗姓钱，字法遍。十六岁出家，二十岁从智首律师受具足戒，尽得其律学真传。后于终南山丰德寺一带潜心研律二十余年。以唯识学（大乘）理论诠释四分律（小乘），创造性地提出"四分律通大乘"之说，建立完整的南山律学体系。著有"南山五大部"（以《四分律删繁补阙行事钞》为首），为律宗最根本的经典。乾封二年（667）于终南山净业寺建立戒坛传戒，同年十月示寂，世寿七十二。其后历代律师皆宗其学，"律学南山，几乎天下"。',
+      coreTeaching: '四分律通大乘——以唯识圆教理论诠释四分律，统一大小乘戒律观。戒体论：以心法种子为戒体，持戒即修心。',
+      achievements: '南山律宗开山祖师。著"南山三大部"（行事钞/戒本疏/羯磨疏）及五大部，为律宗根本经典。创立以唯识学释律的独特体系，使四分律成为中国律学正统。于净业寺建戒坛传法，门下弟子遍天下。后世千余年来，中国律学皆宗南山。',
+      templeNames: [
+        { name: '终南山净业寺', nameEn: 'Jingye Temple', role: '创建戒坛', location: '陕西西安长安区' },
+        { name: '丰德寺', nameEn: 'Fengde Temple', role: '潜修研律', location: '陕西终南山' },
+      ],
+      koans: [
+        { title: '南山三大部', content: '道宣以二十年心力，著《行事钞》十二卷、《戒本疏》三卷、《羯磨疏》二卷，合称"南山三大部"，为律宗万世不易之圭臬。', source: '宋高僧传' },
+        { title: '四分通大乘', content: '道宣提出"四分律虽属小乘，然其义理通于大乘"，以唯识学心法种子说解释戒体，统一大小乘戒律观。', source: '四分律删繁补阙行事钞' },
+      ],
+      classicQuotes: ['四分律通大乘', '以心为戒体，持律即修心', '律学南山，几乎天下'],
+      works: [
+        { title: '四分律删繁补阙行事钞', description: '十二卷，南山三大部之首，律宗最重要经典' },
+        { title: '四分律比丘含注戒本疏', description: '三卷，比丘戒本注释' },
+        { title: '四分律删补随机羯磨疏', description: '二卷，受戒羯磨仪轨注释' },
+        { title: '四分律拾毗尼义钞', description: '六卷，律学义理补充' },
+        { title: '四分律比丘尼钞', description: '六卷，比丘尼律学' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第6世: 法砺律师 (相部宗创始人) ===
+  await prisma.patriarch.create({
+    data: {
+      name: '法砺律师',
+      nameEn: 'Fali',
+      religionId: buddhismId,
+      dates: '569-635',
+      title: '相部宗祖',
+      school: '律宗',
+      generation: 6,
+      teacherId: null,
+      biography: '法砺，相州（今河南安阳）人。师从慧光系统学律，深研《四分律》。住相州日光寺弘法，以成实论为理论基础诠释四分律，与道宣的唯识学路线不同。著《四分律疏》及《羯磨疏》，形成独立的律学体系，被称为"相部宗"（因其在相州弘法而得名）。其学说在唐代一度广泛流传，后因南山宗之盛而逐渐式微。五代以后几近失传。',
+      coreTeaching: '以成实论释四分律——以小乘成实论为理论基础诠释四分律，注重律文的原义解读。',
+      achievements: '律宗三家之"相部宗"创始人。以成实论释律，形成与南山宗并立的独立律学体系。唐代一度广泛流传，对中国律学的多元发展有重要贡献。',
+      templeNames: [{ name: '相州日光寺', nameEn: 'Riguang Temple', role: '弘法', location: '河南安阳' }],
+      koans: [],
+      classicQuotes: ['律文本义，不可曲解'],
+      works: [
+        { title: '四分律疏', description: '相部宗核心注疏' },
+        { title: '羯磨疏', description: '受戒仪轨注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第7世: 怀素律师 (东塔宗创始人) ===
+  await prisma.patriarch.create({
+    data: {
+      name: '怀素律师',
+      nameEn: 'Huaisu',
+      religionId: buddhismId,
+      dates: '624-697',
+      title: '东塔宗祖',
+      school: '律宗',
+      generation: 7,
+      teacherId: null,
+      biography: '怀素，京兆（今陕西西安）人。初从道成律师学律，后以当时新译之《大毗婆沙》《俱舍论》为理论基础，重新诠释四分律，与道宣（唯识）和法砺（成实）皆不同路。著《四分律开宗记》二十卷，创立"新疏"学派。因住长安西太原寺东塔院，其学派被称为"东塔宗"。与法砺之"旧疏"争论最为激烈。唐代律宗三家鼎立，后世南山宗独盛，相部与东塔皆衰。万岁通天二年（697）示寂。',
+      coreTeaching: '以俱舍论释四分律——以说一切有部的俱舍论为理论基础，注重律学的知识论分析。',
+      achievements: '律宗三家之"东塔宗"创始人。著《四分律开宗记》二十卷，以俱舍论释律，形成第三种独立的律学诠释路线。其"新疏"与法砺的"旧疏"之争，推动了唐代律学的学术发展。',
+      templeNames: [{ name: '长安西太原寺', nameEn: 'Xi Taiyuan Temple', role: '东塔院住持', location: '陕西长安' }],
+      koans: [{ title: '新旧疏争', content: '怀素以新译论典批评法砺旧疏，法砺弟子亦反驳怀素。新旧疏争辩长达数十年，促进了唐代律学的深入发展。', source: '宋高僧传' }],
+      classicQuotes: ['律义精微，当以论典为准'],
+      works: [{ title: '四分律开宗记', description: '二十卷，东塔宗核心著作' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第8世: 鉴真大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '鉴真大师',
+      nameEn: 'Jianzhen',
+      religionId: buddhismId,
+      dates: '688-763',
+      title: '日本律宗初祖',
+      school: '律宗',
+      generation: 8,
+      teacherId: null,
+      biography: '鉴真，扬州江阳（今江苏扬州）人，俗姓淳于。十四岁出家于扬州大明寺，遍学三藏，尤精律学，为南山律宗正统传人。天宝元年（742）受日本僧荣叡、普照之邀，决意东渡传律。先后六次尝试，历经十二年艰辛——遭官府阻拦、遇台风、船毁、弟子亡、双目失明。天宝十二年（753）第六次终于成功抵达日本。754年于奈良东大寺建戒坛，为天皇、皇后、皇太子及僧尼四百余人授戒。后建唐招提寺为传律道场。天平宝字七年（763）示寂于唐招提寺。其东渡事迹为中日佛教文化交流最伟大的篇章。',
+      coreTeaching: '传戒弘律，不畏艰难——"是为法事也，何惜身命！诸人不去，我即去耳！"以生命诠释弘法利生之大愿。',
+      achievements: '日本律宗初祖。六次东渡（五败一成），双目失明仍不退初心。在日本东大寺建戒坛传律，授戒440余僧、80余尼。创建唐招提寺，传播南山律学。中日佛教文化交流史上最伟大的先驱。其精神被誉为"舍身求法"的典范。',
+      templeNames: [
+        { name: '扬州大明寺', nameEn: 'Daming Temple', role: '出家驻锡', location: '江苏扬州' },
+        { name: '奈良唐招提寺', nameEn: 'Toshodai-ji', role: '创建', location: '日本奈良' },
+        { name: '奈良东大寺', nameEn: 'Todai-ji', role: '建戒坛传律', location: '日本奈良' },
+      ],
+      koans: [
+        { title: '六次东渡', content: '鉴真六次东渡，前五次皆败。或遭官阻，或遇台风，弟子祥彦客死异乡，荣叡病亡途中，鉴真双目失明。有人劝止，鉴真曰："是为法事也，何惜身命！"第六次终于成功。', source: '唐大和上东征传' },
+        { title: '东大寺传戒', content: '天平胜宝六年（754），鉴真于东大寺卢舍那大佛殿前设戒坛，为天皇、皇后等授菩萨戒，为四百余僧授具足戒。日本始有正式受戒之法。', source: '唐大和上东征传' },
+      ],
+      classicQuotes: ['是为法事也，何惜身命！诸人不去，我即去耳', '山川异域，风月同天'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第9世: 允堪律师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '允堪律师',
+      nameEn: 'Yunkan',
+      religionId: buddhismId,
+      dates: '1005-1061',
+      title: '会正宗主',
+      school: '律宗',
+      generation: 9,
+      teacherId: null,
+      biography: '允堪，北宋律学复兴者，住杭州西湖菩提寺。宋仁宗庆历至皇祐年间（1041-1053）弘法。对南山三大部（行事钞/戒本疏/羯磨疏）逐一作注，著"十本记"：《行事钞会正记》《戒本疏发挥记》《羯磨疏正源记》等十部注释。在杭州、苏州、秀州广设戒坛，每年授戒数百人。其注释学派被称为"会正宗"。嘉祐六年（1061）示寂。',
+      coreTeaching: '南山律学注释——对道宣三大部逐一作注，以"会正"为宗旨，融通异说，恢复南山律学正义。',
+      achievements: '北宋律学复兴之首功。著"十本记"注释南山三大部，使数百年来晦涩难解的律典重新可读。于江南广设戒坛传律。其"会正宗"与元照"资持宗"并立，推动宋代律学繁荣。',
+      templeNames: [{ name: '杭州菩提寺', nameEn: 'Puti Temple', role: '弘法', location: '浙江杭州西湖' }],
+      koans: [],
+      classicQuotes: ['会通诸说，以正南山'],
+      works: [
+        { title: '行事钞会正记', description: '南山行事钞注释' },
+        { title: '戒本疏发挥记', description: '南山戒本疏注释' },
+        { title: '羯磨疏正源记', description: '南山羯磨疏注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第10世: 元照律师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '元照律师',
+      nameEn: 'Yuanzhao',
+      religionId: buddhismId,
+      dates: '1048-1116',
+      title: '灵芝律师',
+      school: '律宗',
+      generation: 10,
+      teacherId: null,
+      biography: '元照，余杭（今浙江杭州）人，号灵芝。天资颖悟，精研南山律学。初学允堪之"会正"学说，后发现允堪注释有未尽之处，遂独立著述，对南山三大部重新作注。著"灵芝三记"：《资持记》（注行事钞）、《行宗记》（注戒本疏）、《济缘记》（注羯磨疏）。其注释精审详尽，被誉为"正本清源"之作。"资持宗"因此形成，影响远超会正宗，成为后世学习南山律学的标准教材。政和六年（1116）示寂，世寿六十九。',
+      coreTeaching: '正本清源——重新精审注释南山三大部，厘清道宣原义，去除后人误解，恢复律学正脉。',
+      achievements: '律宗宋代复兴的集大成者。著"灵芝三记"（资持/行宗/济缘），为南山律学最权威注释，至今仍为学律者必读。其"资持宗"成为后世律学正统。正本清源，使南山律学再度兴盛。',
+      templeNames: [{ name: '杭州昭庆寺', nameEn: 'Zhaoqing Temple', role: '弘法', location: '浙江杭州' }],
+      koans: [{ title: '灵芝三记', content: '元照对南山三大部逐字逐句重新注释，发现前人误解甚多。著《资持记》等三部，"正本清源"，使南山律学焕然一新。', source: '佛祖统纪' }],
+      classicQuotes: ['正本清源，不可因循', '律学之要，在乎精审'],
+      works: [
+        { title: '资持记', description: '注释南山《行事钞》，最权威律学注释' },
+        { title: '行宗记', description: '注释南山《戒本疏》' },
+        { title: '济缘记', description: '注释南山《羯磨疏》' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 律宗第11世: 弘一法师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '弘一法师',
+      nameEn: 'Hongyi',
+      religionId: buddhismId,
+      dates: '1880-1942',
+      title: '南山律宗第十一代世祖',
+      school: '律宗',
+      generation: 11,
+      teacherId: null,
+      biography: '弘一，俗名李叔同，天津人。出家前为近代中国艺术先驱——画家、音乐家、戏剧家、书法家、篆刻家、教育家。中国话剧运动创始人之一，主演《茶花女》轰动一时。1918年（三十九岁）于杭州虎跑寺剃度出家，法名演音，号弘一。出家后弃尽繁华，持律精严，专研南山律学。以二十余年心力，校勘注释南山三大部及灵芝三记，著《四分律比丘戒相表记》《南山律在家备览》等，使南山律学在断绝数百年后再度复兴。持戒之严，三千威仪、八万细行一丝不苟，被称为"重兴南山律宗"之第十一代世祖。1942年示寂于泉州温陵养老院，临终绝笔"悲欣交集"四字，为中国佛教史上最感人的遗墨之一。',
+      coreTeaching: '以戒为师，持律精严——"三千威仪，八万细行"一丝不苟。将律学从古籍中复活，以身作则诠释持戒之美。',
+      achievements: '南山律宗第十一代世祖，近代律宗复兴之唯一关键人物。以二十余年专研南山律学，校勘注释，使断绝数百年的律宗学脉得以延续。出家前为近代文化先驱（李叔同），其出家修律的传奇经历感召无数后学。著《戒相表记》为律学入门经典。临终"悲欣交集"四字成为绝响。',
+      templeNames: [
+        { name: '杭州虎跑寺', nameEn: 'Hupao Temple', role: '剃度出家', location: '浙江杭州' },
+        { name: '泉州开元寺', nameEn: 'Kaiyuan Temple', role: '晚年弘律', location: '福建泉州' },
+        { name: '泉州承天寺', nameEn: 'Chengtian Temple', role: '讲律', location: '福建泉州' },
+      ],
+      koans: [
+        { title: '悲欣交集', content: '弘一法师临终前，以颤抖之手写下"悲欣交集"四字。悲者，悲众生之苦；欣者，欣往生之乐。此四字遂成中国佛教史上最感人的遗墨。', source: '弘一大师年谱' },
+        { title: '华枝春满', content: '弘一法师临终偈："君子之交，其淡如水。执象而求，咫尺千里。问余何适，廓尔忘言。华枝春满，天心月圆。"', source: '弘一大师年谱' },
+      ],
+      classicQuotes: ['华枝春满，天心月圆', '悲欣交集', '以戒为师', '不为自己求安乐，但愿众生得离苦'],
+      works: [
+        { title: '四分律比丘戒相表记', description: '律学入门经典，以表格形式系统整理比丘戒律' },
+        { title: '南山律在家备览', description: '为在家居士编写的律学读本' },
+        { title: '南山三大部校勘', description: '对南山三大部及灵芝三记的校勘注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const vinayaCount = 11;
+  console.log(`  ✓ ${vinayaCount} Vinaya school patriarchs created`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
