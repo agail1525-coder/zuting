@@ -4751,6 +4751,664 @@ async function main() {
   const islamCount = 23; // 23 new + 2 updated
   console.log(`  ✓ ${islamCount} new Islamic patriarchs created + 2 updated (5 schools: Rashidun/Madhab/Sufi/Shia/Scholars)`);
 
+  // ── 4m. 基督教先贤 (Christian Patriarchs/Saints) ──
+  console.log('  Creating Christian patriarchs (4m)...');
+
+  const christianityId = religionMap['christianity'];
+
+  // Update existing Jesus with full data + school field
+  const existingJesus = await prisma.patriarch.findFirst({ where: { name: '耶稣基督' } });
+  const jesus = existingJesus
+    ? await prisma.patriarch.update({
+        where: { id: existingJesus.id },
+        data: {
+          nameEn: 'Jesus Christ',
+          dates: '前4-30',
+          title: '救世主·神之子·人子',
+          school: '耶稣与使徒',
+          generation: 1,
+          biography: '耶稣基督（Jesus Christ），基督教创立者，被基督徒尊为神之子、弥赛亚（救世主）。约公元前4年生于伯利恒，在拿撒勒长大。约30岁时受施洗约翰洗礼后开始公开传道，宣讲天国的福音——神的国度已经临近。拣选十二使徒，以比喻和神迹教导民众。核心教导：爱神爱人、宽恕仇敌、怜悯穷人。约公元30年在耶路撒冷被罗马总督彼拉多判处十字架刑，三日后从死里复活，四十日后升天。基督徒相信耶稣的死与复活完成了对人类罪的救赎。其教导记载于《新约》四福音书。全球约24亿基督徒以其为信仰中心。',
+          coreTeaching: '爱神与爱人是一切律法的总纲。"你要尽心、尽性、尽意爱主你的神。其次也相仿，就是要爱人如己。"登山宝训是基督伦理的核心——虚心、哀恸、温柔、慕义、怜恤、清心、使人和睦。十字架的救赎——"神爱世人，甚至将他的独生子赐给他们，叫一切信他的不至灭亡，反得永生。"(约3:16)',
+          achievements: '基督教创立者。其教导改变了人类历史的走向。十字架和复活成为基督教信仰核心。《新约》四福音书记录其言行。全球24亿基督徒的信仰中心。公元纪年以其诞生为分界。深刻影响西方文明的伦理、法律、艺术、哲学。',
+          templeNames: [
+            { name: '圣墓教堂', nameEn: 'Church of the Holy Sepulchre', role: '耶稣受难与复活之地', location: '以色列耶路撒冷' },
+            { name: '主诞堂', nameEn: 'Church of the Nativity', role: '耶稣诞生之地', location: '巴勒斯坦伯利恒' },
+            { name: '橄榄山', nameEn: 'Mount of Olives', role: '升天之地', location: '耶路撒冷' },
+          ],
+          koans: [
+            { title: '登山宝训', description: '耶稣在山上教导门徒：虚心的人有福了，因为天国是他们的。哀恸的人有福了，因为他们必得安慰。温柔的人有福了，因为他们必承受地土。八福是基督伦理的纲领。' },
+            { title: '浪子回头', description: '小儿子要求分家产，远走他乡挥霍一空。饥饿中醒悟回家，父亲远远看见就动了慈心，跑去抱着他亲嘴。这比喻展示神对迷失者无条件的爱与接纳。' },
+            { title: '好撒玛利亚人', description: '一个人被强盗打伤，祭司和利未人从旁经过不理。一个被犹太人歧视的撒玛利亚人却停下来救助他。耶稣问：谁是那人的邻舍？回答爱不分种族和身份。' },
+          ],
+          classicQuotes: ['我就是道路、真理、生命', '你们要彼此相爱', '施比受更为有福', '不要论断人，免得你们被论断', '在世上你们有苦难，但你们可以放心，我已经胜了世界'],
+          works: [],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '耶稣基督', nameEn: 'Jesus Christ', religionId: christianityId,
+          dates: '前4-30', title: '救世主·神之子', school: '耶稣与使徒', generation: 1,
+          biography: '基督教创立者。', coreTeaching: '爱神爱人。',
+          achievements: '基督教创立者。', imageUrl: null,
+        },
+      });
+
+  // Update existing Paul
+  const existingPaul = await prisma.patriarch.findFirst({ where: { name: '使徒保罗' } });
+  existingPaul
+    ? await prisma.patriarch.update({
+        where: { id: existingPaul.id },
+        data: {
+          nameEn: 'Apostle Paul',
+          dates: '5-67',
+          title: '外邦人使徒·基督教神学奠基者',
+          school: '耶稣与使徒',
+          generation: 3,
+          biography: '使徒保罗（Apostle Paul），原名扫罗（Saul），出生于基利家的大数（今土耳其），罗马公民，法利赛人。初为迫害基督徒的急先锋。约公元33年在大马士革路上遇见复活的耶稣，经历戏剧性归信。此后三次宣教旅行，横跨小亚细亚、希腊、罗马帝国，建立大量教会。著书信十三封（或更多），占《新约》近半篇幅，系统阐述因信称义、恩典救赎、基督的身体（教会论）等核心教义。将基督教从犹太教的一个分支发展为面向全人类的普世宗教。约公元67年在罗马殉道。',
+          coreTeaching: '因信称义——人不是靠遵守律法而是靠信耶稣基督而被神称为义人。"如今常存的有信，有望，有爱，这三样，其中最大的是爱。"(林前13:13) 恩典神学——救赎是神白白的恩赐，不是人的功德所能赚取。',
+          achievements: '将基督教从犹太教分支发展为普世宗教。三次宣教旅行横跨罗马帝国。著新约书信十三封，系统阐述基督教核心教义。"因信称义"学说影响整个基督教神学史。被称为"基督教真正的创建者"。',
+          templeNames: [
+            { name: '城外圣保禄大殿', nameEn: 'Basilica of Saint Paul Outside the Walls', role: '保罗殉道埋葬之地', location: '意大利罗马' },
+            { name: '大马士革直街', nameEn: 'Straight Street, Damascus', role: '保罗归信之地', location: '叙利亚大马士革' },
+          ],
+          koans: [
+            { title: '大马士革路上', description: '扫罗正前往大马士革捉拿基督徒。忽然从天上发大光照射，他仆倒在地。听见声音说："扫罗，扫罗，你为什么逼迫我？"他问："主啊，你是谁？"回答："我就是你所逼迫的耶稣。"三天失明后，亚拿尼亚为他祷告，鳞片从眼上脱落——从逼迫者变为最伟大的传道者。' },
+          ],
+          classicQuotes: ['如今常存的有信、有望、有爱，其中最大的是爱', '我活着就是基督，我死了就有益处', '我什么时候软弱，什么时候就刚强了', '忘记背后，努力面前，向着标杆直跑'],
+          works: [
+            { title: '罗马书', description: '因信称义的系统神学论述，基督教神学基石' },
+            { title: '哥林多前后书', description: '教会伦理与爱的颂歌' },
+            { title: '加拉太书', description: '基督徒自由宣言' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // 使徒彼得
+  await prisma.patriarch.create({
+    data: {
+      name: '使徒彼得', nameEn: 'Apostle Peter', religionId: christianityId,
+      dates: '?-64', title: '首任教宗·磐石', school: '耶稣与使徒', generation: 2,
+      teacherId: jesus.id,
+      biography: '使徒彼得（Apostle Peter），原名西门，加利利渔夫。耶稣最早呼召的门徒之一，十二使徒之首。耶稣称他为"矶法"（磐石），说"我要把我的教会建造在这磐石上"(太16:18)。性格冲动热忱——曾在海面上行走，也曾三次否认耶稣。五旬节后成为耶路撒冷教会领袖，一次讲道三千人受洗。后前往罗马传道。约公元64年在尼禄迫害中被倒钉十字架殉道（自认不配与耶稣同样方式受死）。天主教传统视其为首任教宗，梵蒂冈圣彼得大教堂建于其墓地之上。',
+      coreTeaching: '信仰的根基是认耶稣为基督。"你是基督，是永生神的儿子"——彼得的信仰告白成为教会信仰的磐石。即使软弱跌倒，真诚悔改后仍可被恢复使用。',
+      achievements: '十二使徒之首，天主教首任教宗。五旬节讲道三千人受洗。在罗马建立教会。倒钉十字架殉道。梵蒂冈圣彼得大教堂建于其墓地上。',
+      templeNames: [
+        { name: '圣彼得大教堂', nameEn: "St. Peter's Basilica", role: '彼得墓地上建造的大教堂', location: '梵蒂冈' },
+      ],
+      koans: [
+        { title: '三次否认与三次托付', description: '耶稣被捕后，彼得三次否认认识耶稣，鸡叫后痛哭。复活后耶稣三次问他"你爱我吗？"三次托付"你喂养我的羊"——以三次爱的确认修复三次否认的伤痕。' },
+      ],
+      classicQuotes: ['你是基督，是永生神的儿子', '主啊，你有永生之道，我们还归从谁呢'],
+      works: [
+        { title: '彼得前后书', description: '新约书信，论苦难中的盼望' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // 使徒约翰
+  await prisma.patriarch.create({
+    data: {
+      name: '使徒约翰', nameEn: 'Apostle John', religionId: christianityId,
+      dates: '6-100', title: '爱的使徒·启示者', school: '耶稣与使徒', generation: 4,
+      teacherId: jesus.id,
+      biography: '使徒约翰（Apostle John），加利利渔夫，雅各的兄弟，十二使徒之一。被称为"耶稣所爱的那门徒"。在十字架下接受耶稣托付照顾其母亲马利亚。著《约翰福音》以独特的神学视角呈现耶稣——"太初有道，道与神同在，道就是神"(约1:1)。著《约翰一二三书》强调"神就是爱"。晚年被流放到拔摩岛，在那里获得异象著《启示录》。是十二使徒中唯一寿终正寝的（约100岁）。教会传统认为他在以弗所终老。',
+      coreTeaching: '神就是爱。"我们爱，因为神先爱我们。"(约一4:19) 约翰的核心信息是：认识神即是认识爱，不爱人的不认识神。道成肉身——永恒的道（Logos）成为肉身住在人间，充充满满有恩典有真理。',
+      achievements: '著《约翰福音》——最具神学深度的福音书。著《启示录》——基督教末世论经典。"神就是爱"成为基督教信仰核心表述。十二使徒中唯一寿终正寝者。',
+      templeNames: [
+        { name: '圣约翰教堂(以弗所)', nameEn: 'Basilica of St. John', role: '约翰终老之地', location: '土耳其以弗所' },
+        { name: '拔摩岛启示洞', nameEn: 'Cave of the Apocalypse', role: '启示录写作之地', location: '希腊拔摩岛' },
+      ],
+      koans: [
+        { title: '道成肉身', description: '"太初有道，道与神同在，道就是神。"万物是藉着他造的。"道成了肉身，住在我们中间。"(约1:1-14) 约翰以哲学语言"道"(Logos)诠释耶稣的神性与永恒性。' },
+      ],
+      classicQuotes: ['太初有道，道与神同在，道就是神', '神就是爱', '我们爱，因为神先爱我们', '你们必晓得真理，真理必叫你们得以自由'],
+      works: [
+        { title: '约翰福音', description: '最具神学深度的福音书，"道成肉身"神学' },
+        { title: '启示录', description: '基督教末世论经典，拔摩岛异象' },
+        { title: '约翰一二三书', description: '"神就是爱"的核心阐述' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // 抹大拉的马利亚
+  await prisma.patriarch.create({
+    data: {
+      name: '抹大拉的马利亚', nameEn: 'Mary Magdalene', religionId: christianityId,
+      dates: '1世纪', title: '复活首位见证者·使徒的使徒', school: '耶稣与使徒', generation: 5,
+      teacherId: jesus.id,
+      biography: '抹大拉的马利亚（Mary Magdalene），耶稣最忠诚的女性追随者。福音书记载耶稣曾从她身上赶出七个鬼。此后她成为跟随耶稣的女性门徒团体的核心成员。十字架下，当大多数男性门徒逃散时，马利亚忠守至最后。更关键的是——她是耶稣复活后最先看见他的人。复活的耶稣委托她去告诉其他门徒这个消息，因此东正教尊她为"使徒的使徒"（Apostola Apostolorum）。她在基督教历史中代表了忠诚、勇气和女性在信仰中的核心角色。',
+      coreTeaching: '忠诚与勇气超越一切恐惧。当门徒逃散时，马利亚留在十字架下。复活的首位见证——证明信仰中女性与男性拥有同等的属灵地位和使命。',
+      achievements: '耶稣复活的首位见证者。东正教尊为"使徒的使徒"。十字架下最忠诚的追随者。代表女性在基督教信仰中的核心角色。被天主教、东正教、新教共同纪念。',
+      templeNames: [
+        { name: '圣抹大拉教堂', nameEn: 'Church of Saint Mary Magdalene', role: '纪念马利亚', location: '以色列耶路撒冷橄榄山' },
+      ],
+      koans: [
+        { title: '不要拉住我', description: '复活早晨，马利亚在空坟墓前哭泣。转身看见一人，以为是看园的。那人叫她名字："马利亚！"她认出是耶稣，扑上去抱住他。耶稣说："不要拉住我，去告诉弟兄们。"马利亚成为复活的第一位使者。' },
+      ],
+      classicQuotes: ['我已经看见了主！'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // 使徒多马
+  await prisma.patriarch.create({
+    data: {
+      name: '使徒多马', nameEn: 'Apostle Thomas', religionId: christianityId,
+      dates: '?-72', title: '印度基督教开创者·疑惑者', school: '耶稣与使徒', generation: 6,
+      teacherId: jesus.id,
+      biography: '使徒多马（Apostle Thomas），又称"双生子"（Didymus），十二使徒之一。以复活后的怀疑闻名——他要求亲手触摸耶稣的钉痕才肯相信，耶稣满足了他的要求后，多马发出信仰最高的告白："我的主！我的神！"传统记载多马约公元52年到达印度马拉巴尔海岸传教，在印度南部建立七个教会，成为印度基督教的开创者（圣多马基督徒至今有数百万）。约公元72年在印度金奈（马德拉斯）殉道。',
+      coreTeaching: '怀疑可以通向更深的信仰。多马不是盲目否认，而是诚实地表达疑惑——耶稣不是责备他，而是回应他的需要。"那没有看见就信的有福了"——但看见后信的也是信。',
+      achievements: '将基督教传入印度的第一人。约公元52年到达马拉巴尔海岸。在印度南部建立七座教会。印度圣多马基督徒（数百万）视其为始祖。"我的主我的神"为最高信仰告白。',
+      templeNames: [
+        { name: '圣多马大教堂', nameEn: 'San Thome Basilica', role: '多马殉道安葬之地', location: '印度金奈' },
+        { name: '圣多马山', nameEn: 'St. Thomas Mount', role: '多马殉道之地', location: '印度金奈' },
+      ],
+      koans: [
+        { title: '我的主我的神', description: '其他门徒告诉多马耶稣复活了，多马说："我非看见他手上的钉痕，用指头探入那钉痕，又用手探入他的肋旁，我总不信。"八天后耶稣显现，对多马说："伸出你的指头来看看我的手，伸出你的手来探入我的肋旁——不要疑惑，总要信。"多马说："我的主！我的神！"' },
+      ],
+      classicQuotes: ['我的主！我的神！'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // Update existing Augustine
+  const existingAugustine = await prisma.patriarch.findFirst({ where: { name: '奥古斯丁' } });
+  existingAugustine
+    ? await prisma.patriarch.update({
+        where: { id: existingAugustine.id },
+        data: {
+          nameEn: 'Augustine of Hippo',
+          dates: '354-430',
+          title: '恩典博士·西方教会之父',
+          school: '教父与神学家',
+          generation: 1,
+          biography: '奥古斯丁（Augustine of Hippo），基督教最具影响力的神学家之一，西方教会四大博士之一。生于北非塔加斯特（今阿尔及利亚），母亲莫妮加是虔诚基督徒。年轻时放荡不羁，信奉摩尼教，后转向新柏拉图主义。387年在米兰受安布罗修主教影响归信基督教，听见童声"拿起来读"后翻开圣经读到罗马书，豁然醒悟。著《忏悔录》为西方文学第一部自传，以极其坦诚的文字记录灵性转变。著《上帝之城》回应罗马陷落的神学危机——论述人间之城与上帝之城的对立。其恩典神学（原罪、预定、不可抗拒的恩典）深刻塑造了天主教和新教的神学传统。',
+          coreTeaching: '你为自己创造了我们，我们的心不安息，直到安息在你里面。恩典先于一切人的功德——人无法靠自己的力量得救，唯有神的恩典。原罪论——人因亚当的堕落而生来就有罪性。预定论的雏形——得救完全出于神的拣选。',
+          achievements: '西方教会最伟大的神学家之一。著《忏悔录》为西方第一部心灵自传。著《上帝之城》为基督教历史神学奠基。恩典神学深刻影响天主教和新教。原罪论和预定论的系统阐述者。影响马丁·路德和加尔文的宗教改革。',
+          templeNames: [
+            { name: '圣奥古斯丁教堂', nameEn: 'Basilica of San Pietro in Ciel d\'Oro', role: '奥古斯丁遗骸所在', location: '意大利帕维亚' },
+            { name: '希波(安纳巴)', nameEn: 'Hippo Regius', role: '奥古斯丁主教座所在地', location: '阿尔及利亚安纳巴' },
+          ],
+          koans: [
+            { title: '拿起来读', description: '米兰花园中，奥古斯丁听见邻家童声反复说"拿起来读，拿起来读"(Tolle, lege)。他拿起圣经随手翻开，读到罗马书13:13-14"不可荒宴醉酒…总要披戴主耶稣基督"。立刻平安充满心中——"一切疑惑的阴影顿时消散"。' },
+          ],
+          classicQuotes: ['你为自己创造了我们，我们的心不安息，直到安息在你里面', '信仰是相信我们所不见的，而信仰的回报是看见我们所相信的', '拿起来读，拿起来读'],
+          works: [
+            { title: '忏悔录（Confessions）', description: '西方文学第一部心灵自传' },
+            { title: '上帝之城（City of God）', description: '基督教历史神学奠基之作' },
+            { title: '论三位一体', description: '三一论系统神学' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 教父与神学家 (5位 new) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '托马斯·阿奎那', nameEn: 'Thomas Aquinas', religionId: christianityId,
+      dates: '1225-1274', title: '天使博士·经院哲学集大成者', school: '教父与神学家', generation: 2,
+      teacherId: null,
+      biography: '托马斯·阿奎那（Thomas Aquinas），天主教最伟大的神学家和哲学家，多明我会修士。出身意大利贵族，家人曾囚禁他以阻止其出家。在巴黎和科隆师从大阿尔伯特。著《神学大全》（Summa Theologica）系统融合亚里士多德哲学与基督教神学，成为天主教官方神学体系的基石。提出"五路证明"论证上帝存在。区分自然理性与超自然信仰的领域——理性可以认识上帝的存在，但三位一体等教义需要信仰。1274年前往里昂公会议途中去世。1879年教宗利奥十三世宣布其学说为天主教哲学标准。',
+      coreTeaching: '信仰与理性和谐互补。自然理性可以认识上帝的存在（五路证明），但启示真理（三位一体、道成肉身）超越理性而不违反理性。恩典不废除自然，而是完善自然。',
+      achievements: '天主教最伟大的神学家。著《神学大全》为天主教官方神学体系基石。提出上帝存在的"五路证明"。融合亚里士多德哲学与基督教信仰。1879年被定为天主教哲学标准。被封为教会博士。',
+      templeNames: [
+        { name: '雅各宾教堂', nameEn: 'Church of the Jacobins', role: '阿奎那遗骸所在', location: '法国图卢兹' },
+      ],
+      koans: [],
+      classicQuotes: ['恩典不废除自然，而是完善自然', '信仰的最终目的不是知道什么，而是认识谁', '对于相信的人，无需解释；对于不相信的人，无法解释'],
+      works: [
+        { title: '神学大全（Summa Theologica）', description: '天主教神学体系的集大成之作' },
+        { title: '反异教大全（Summa contra Gentiles）', description: '以理性论证基督教真理' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '凯撒利亚的巴西尔', nameEn: 'Basil of Caesarea', religionId: christianityId,
+      dates: '329-379', title: '伟大的巴西尔·东方修道之父', school: '教父与神学家', generation: 3,
+      teacherId: null,
+      biography: '凯撒利亚的巴西尔（Basil the Great），东方教会三大教父之一（与拿先斯的格列高利、尼撒的格列高利并称"卡帕多细亚三杰"）。出身基督教名门（姐姐玛克丽娜、弟弟尼撒的格列高利皆为圣人）。创立东方修道院会规——强调集体修道生活（相对于埃及沙漠隐修），平衡祈祷与劳动，修道院应服务社会。建立"巴西利亚德"——中世纪最早的大型慈善综合体（医院、济贫所、旅店）。在三位一体论争中捍卫尼西亚信条。',
+      coreTeaching: '修道不是逃离世界，而是更好地服务世界。巴西尔创立的修道会规强调：祈祷与劳动并重，修道院应办学校、医院、济贫所。信仰必须通过慈善行动来表达。',
+      achievements: '东方修道制度奠基人。创立集体修道会规（至今东正教修道院沿用）。建立最早的大型慈善综合体。捍卫三位一体正统教义。东方教会三大教父之一。',
+      templeNames: [
+        { name: '凯撒利亚', nameEn: 'Caesarea in Cappadocia', role: '巴西尔主教座', location: '土耳其开塞利' },
+      ],
+      koans: [],
+      classicQuotes: ['多余的面包属于饥饿者，多余的衣服属于赤身者，多余的金钱属于贫穷者'],
+      works: [
+        { title: '长会规/短会规', description: '东方修道院生活准则' },
+        { title: '论圣灵', description: '三位一体教义论述' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '金口约翰', nameEn: 'John Chrysostom', religionId: christianityId,
+      dates: '349-407', title: '金口·布道之王', school: '教父与神学家', generation: 4,
+      teacherId: null,
+      biography: '金口约翰（John Chrysostom），意为"金嘴"，因其无与伦比的雄辩才能而得名。安提阿人，曾为隐修士。后成为君士坦丁堡大主教（398-404）。以直言不讳批评权贵的奢侈腐败著称——甚至批评皇后尤多克西亚。两次被流放，最终在流放途中去世。其讲道词超过700篇存世，对《马太福音》和《保罗书信》的释经被视为教父时代的最高成就。被天主教和东正教共同尊为教会博士。',
+      coreTeaching: '基督徒的生活应当是一篇活的讲道。批评只关注礼仪不关注穷人的伪善。"如果你不能在穷人身上认出基督，你也不能在圣杯中认出他。"',
+      achievements: '基督教历史上最伟大的布道家。700篇讲道存世。释经讲道的典范。以批评权贵的勇气著称。被天主教和东正教共同尊为教会博士。',
+      templeNames: [
+        { name: '圣索菲亚大教堂', nameEn: 'Hagia Sophia', role: '金口约翰主教座', location: '土耳其伊斯坦布尔' },
+      ],
+      koans: [],
+      classicQuotes: ['如果你不能在穷人身上认出基督，你也不能在圣杯中认出他', '地狱的道路是用好的意图铺成的'],
+      works: [
+        { title: '马太福音释义', description: '90篇讲道，释经典范' },
+        { title: '论祭司职', description: '教牧神学经典' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '哲罗姆', nameEn: 'Saint Jerome', religionId: christianityId,
+      dates: '347-420', title: '圣经博士·武加大译者', school: '教父与神学家', generation: 5,
+      teacherId: null,
+      biography: '哲罗姆（Saint Jerome），西方教会四大博士之一。生于达尔马提亚（今克罗地亚）。精通拉丁文、希腊文、希伯来文。受教宗达马苏一世之命，将《圣经》从希伯来文和希腊文翻译为拉丁文，历时15年完成《武加大译本》（Vulgate）——此后一千年间西方教会使用的标准圣经。晚年隐居伯利恒洞窟继续翻译和注释工作。性格尖锐易怒，以笔战闻名，但学术成就无人能及。',
+      coreTeaching: '不认识圣经就是不认识基督。哲罗姆一生致力于让人们以最准确的文字读到圣经原意。圣经翻译不是文字游戏，而是让神的话语活在每个时代。',
+      achievements: '翻译《武加大译本》为西方基督教世界使用千年的标准圣经。精通三种圣经语言（拉丁/希腊/希伯来）。多部圣经注释。西方教会四大博士之一。',
+      templeNames: [
+        { name: '伯利恒主诞堂', nameEn: 'Church of the Nativity', role: '哲罗姆隐居译经之洞窟', location: '巴勒斯坦伯利恒' },
+      ],
+      koans: [],
+      classicQuotes: ['不认识圣经就是不认识基督', '好书是死人最好的遗产'],
+      works: [
+        { title: '武加大译本（Vulgate）', description: '拉丁文圣经标准译本，使用千年' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '希波的西普里安', nameEn: 'Cyprian of Carthage', religionId: christianityId,
+      dates: '210-258', title: '教会合一之父', school: '教父与神学家', generation: 6,
+      teacherId: null,
+      biography: '西普里安（Cyprian），迦太基主教，早期教会最重要的拉丁教父之一。原为异教修辞学教师和富人，中年归信后散尽家财。在德西乌斯迫害（250年）和瓦勒良迫害（258年）期间领导北非教会。提出"教会之外无救恩"的著名论点。著《论教会的合一》强调主教制度是教会合一的保障。258年在迦太基殉道，成为北非教会最受尊敬的殉道者之一。',
+      coreTeaching: '不以教会为母者，不能以上帝为父。教会的合一建立在主教的合一之上。在逼迫面前，基督徒应当坚守信仰，但对软弱跌倒者也应给予悔改复和的机会。',
+      achievements: '早期拉丁教会最重要的教父之一。"教会之外无救恩"论点影响深远。著《论教会的合一》奠定教会论基础。迦太基殉道者。推动教会对叛教者的接纳政策。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['不以教会为母者，不能以上帝为父', '你不能有上帝为你的父，却不以教会为你的母'],
+      works: [
+        { title: '论教会的合一', description: '教会论奠基之作' },
+        { title: '论堕落者', description: '论逼迫中叛教者的复和' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 宗教改革家 (5位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '马丁·路德', nameEn: 'Martin Luther', religionId: christianityId,
+      dates: '1483-1546', title: '宗教改革发起者·因信称义', school: '宗教改革家', generation: 1,
+      teacherId: null,
+      biography: '马丁·路德（Martin Luther），德国奥古斯丁会修士，基督教新教宗教改革的发起者。1517年10月31日在维滕贝格城堡教堂门口张贴《九十五条论纲》，抗议天主教会出售赎罪券。在沃尔姆斯帝国议会上面对皇帝和教宗的压力，宣称"这是我的立场，我别无选择"。被教宗逐出教会后，在瓦尔特堡将《新约》翻译为德语（仅用11周），使圣经走入普通德国人手中。其改革引发了基督教世界最深刻的分裂，同时也是欧洲现代化的重要推动力。',
+      coreTeaching: '唯独信仰（Sola Fide）、唯独恩典（Sola Gratia）、唯独圣经（Sola Scriptura）。人不是靠行为称义，而是靠信心接受神白白的恩典。圣经是信仰唯一的权威，高于教宗和教会传统。',
+      achievements: '基督教新教宗教改革发起者。1517年发表《九十五条论纲》。将圣经翻译为德语（现代德语的奠基之作）。提出"三个唯独"（信仰/恩典/圣经）。改变了欧洲和世界历史进程。今全球约9亿新教徒源于此改革。',
+      templeNames: [
+        { name: '维滕贝格城堡教堂', nameEn: 'All Saints\' Church, Wittenberg', role: '九十五条论纲张贴处', location: '德国维滕贝格' },
+        { name: '瓦尔特堡', nameEn: 'Wartburg Castle', role: '路德翻译新约之地', location: '德国艾森纳赫' },
+      ],
+      koans: [
+        { title: '九十五条论纲', description: '1517年10月31日，路德将《九十五条论纲》钉在维滕贝格教堂门上——挑战教会出售赎罪券的做法。"当硬币投入钱柜叮当响时，灵魂就从炼狱中跳出来"——这样的教导违背圣经。这一行动点燃了宗教改革。' },
+        { title: '沃尔姆斯', description: '1521年帝国议会上，面对神圣罗马帝国皇帝和教廷代表，路德被要求撤回著作。他回答："除非用圣经和理性说服我，否则我不能也不愿撤回。这是我的立场，我别无选择。愿上帝帮助我。"' },
+      ],
+      classicQuotes: ['这是我的立场，我别无选择', '即使明天世界末日，我今天仍要种一棵苹果树', '义人必因信得生'],
+      works: [
+        { title: '九十五条论纲', description: '宗教改革的导火索' },
+        { title: '德语圣经', description: '现代德语的奠基之作' },
+        { title: '基督徒的自由', description: '论基督徒的属灵自由' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '加尔文', nameEn: 'John Calvin', religionId: christianityId,
+      dates: '1509-1564', title: '改革宗创始人·日内瓦导师', school: '宗教改革家', generation: 2,
+      teacherId: null,
+      biography: '约翰·加尔文（John Calvin），法国人，宗教改革第二代领袖，改革宗（归正宗）传统创始人。因信仰被逼离法国后定居日内瓦，将该城建设为"新教的罗马"。著《基督教要义》（Institutes of the Christian Religion），为新教最系统的神学著作。其预定论（双重预定——神预定部分人得救、部分人灭亡）是最具争议也最有影响力的教义。加尔文主义强调神的主权绝对至上、人的全然败坏、不可抗拒的恩典。其思想深刻影响了清教徒运动、美国建国思想和现代资本主义伦理。',
+      coreTeaching: '神的主权绝对至上（TULIP五要点）：全然败坏、无条件拣选、有限救赎、不可抗拒的恩典、圣徒的坚忍。一切荣耀归于神（Soli Deo Gloria）。世俗职业也是神的呼召——勤劳工作荣耀神。',
+      achievements: '改革宗/归正宗传统创始人。著《基督教要义》为新教最系统神学著作。将日内瓦建为"新教的罗马"。深刻影响清教徒/美国建国/资本主义伦理。全球改革宗/长老会教会的思想之父。',
+      templeNames: [
+        { name: '圣彼得大教堂', nameEn: 'St. Pierre Cathedral', role: '加尔文布道之地', location: '瑞士日内瓦' },
+      ],
+      koans: [],
+      classicQuotes: ['人心是制造偶像的工厂', '除非先认识神，否则无人能正确认识自己', '一切荣耀归于神'],
+      works: [
+        { title: '基督教要义（Institutes）', description: '新教最系统的神学著作' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '约翰·卫斯理', nameEn: 'John Wesley', religionId: christianityId,
+      dates: '1703-1791', title: '卫理公会创始人·心灵温暖', school: '宗教改革家', generation: 3,
+      teacherId: null,
+      biography: '约翰·卫斯理（John Wesley），英国圣公会牧师，卫理公会运动创始人。1738年在伦敦阿尔德斯门街的一次聚会中经历著名的"心灵温暖"体验——"我感到心中奇异地温暖，我信靠基督、唯独基督来拯救我。"此后一生巡回布道，行程约25万英里（主要骑马），讲道超过4万次。在矿区、田野、街头向穷人布道。组织信徒成立小组（班会）互相督责。卫理公会后发展为全球性宗派，信众超过8000万。',
+      coreTeaching: '成圣——基督徒不仅要信，还要在恩典中不断长进，追求心灵的完全圣洁。"全世界是我的牧区。"信仰必须与社会关怀结合——卫斯理积极投身废奴运动、济贫、办学。',
+      achievements: '卫理公会运动创始人。一生布道超4万次、行程25万英里。创立小组（班会）牧养模式。推动英国社会改革（废奴/济贫/教育）。全球卫理公会信众超8000万。',
+      templeNames: [
+        { name: '卫斯理教堂', nameEn: 'Wesley\'s Chapel', role: '卫理公会母堂', location: '英国伦敦' },
+      ],
+      koans: [
+        { title: '心灵温暖', description: '1738年5月24日晚，在阿尔德斯门街聚会中，有人读路德的《罗马书注释序言》。卫斯理写道："约八点三刻，当他描述神通过信基督在人心中所做的改变时，我感到心中奇异地温暖。"这一刻改变了他的一生。' },
+      ],
+      classicQuotes: ['尽你所能地赚取，尽你所能地节省，尽你所能地给予', '全世界是我的牧区', '我感到心中奇异地温暖'],
+      works: [
+        { title: '讲道集', description: '151篇标准讲道，卫理宗教义基础' },
+        { title: '日记', description: '55年的信仰日记，18世纪英国社会珍贵记录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '慈运理', nameEn: 'Huldrych Zwingli', religionId: christianityId,
+      dates: '1484-1531', title: '瑞士改革先驱', school: '宗教改革家', generation: 4,
+      teacherId: null,
+      biography: '慈运理（Huldrych Zwingli），瑞士宗教改革先驱。1519年起在苏黎世大教堂担任牧师，推动宗教改革——废除弥撒、移除圣像、以圣经讲道取代传统礼仪。与路德在圣餐理解上产生根本分歧（路德主张基督真实临在，慈运理主张仅为纪念）。1531年在卡佩尔战役中作为随军牧师阵亡。虽英年早逝，但其改革思想通过继承者布林格和加尔文发扬光大。',
+      coreTeaching: '圣经至上——唯有圣经有最终权威。礼拜应简洁朴素，去除一切没有圣经根据的仪式。圣餐是纪念，不是再次献祭。教会改革必须与市政改革同步进行。',
+      achievements: '瑞士宗教改革先驱。在苏黎世推行彻底的宗教改革。与路德并列为新教两大改革先驱。其思想通过加尔文发扬光大，影响改革宗传统。',
+      templeNames: [
+        { name: '苏黎世大教堂', nameEn: 'Grossmünster', role: '慈运理改革布道之地', location: '瑞士苏黎世' },
+      ],
+      koans: [],
+      classicQuotes: ['真理终将得胜'],
+      works: [
+        { title: '六十七条论纲', description: '苏黎世宗教改革的纲领文件' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '约翰·诺克斯', nameEn: 'John Knox', religionId: christianityId,
+      dates: '1514-1572', title: '苏格兰长老会之父', school: '宗教改革家', generation: 5,
+      teacherId: null,
+      biography: '约翰·诺克斯（John Knox），苏格兰宗教改革领袖，长老会的创始人。曾在日内瓦师从加尔文。回到苏格兰后以火一般的布道推动改革——1560年苏格兰议会正式采纳新教。建立长老制教会治理模式（教会由长老集体治理而非主教个人统治）。以"给我苏格兰，否则就让我死"的祷告闻名。其民主化的教会治理思想深刻影响了后来的民主政治理论和美国宪政体制。',
+      coreTeaching: '教会应由长老集体治理（长老制），而非一人独裁。每个信徒都有权利和义务阅读圣经。教育是信仰的基础——诺克斯推动苏格兰建立全民教育体系。',
+      achievements: '苏格兰宗教改革领袖。创立长老制教会治理模式。推动苏格兰全民教育。长老制民主精神影响美国宪政。全球长老会/改革宗教会的精神之父。',
+      templeNames: [
+        { name: '圣吉尔斯大教堂', nameEn: "St Giles' Cathedral", role: '诺克斯主要布道之地', location: '英国爱丁堡' },
+      ],
+      koans: [],
+      classicQuotes: ['给我苏格兰，否则就让我死', '一个人加上上帝就是多数'],
+      works: [
+        { title: '苏格兰宗教改革史', description: '苏格兰改革运动的第一手记录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 神秘主义与灵修传统 (5位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '亚西西的方济各', nameEn: 'Francis of Assisi', religionId: christianityId,
+      dates: '1181-1226', title: '方济各会创始人·贫穷的小兄弟', school: '神秘主义与灵修', generation: 1,
+      teacherId: null,
+      biography: '亚西西的方济各（Francis of Assisi），基督教历史上最受爱戴的圣人之一，方济各会创始人。出身意大利富商家庭。年轻时过着纨绔生活，在一次生病和灵性体验后彻底转变——脱去华服、放弃继承权，选择与穷人为伍。创立"小兄弟会"（方济各会），强调彻底的贫穷、谦卑和喜乐。以对大自然的热爱闻名——传说他向鸟儿布道、驯服恶狼。著《太阳歌》为意大利文学最早的杰作之一。晚年身上出现圣痕（与基督钉痕对应的伤痕），是历史上第一个记录的圣痕者。',
+      coreTeaching: '彻底的贫穷就是彻底的自由。"主啊，使我做你和平的工具。"方济各不是厌恶世界，而是热爱一切受造物——在每一棵树、每一只鸟中看见造物主的荣耀。喜乐是基督徒的标志——即使在贫穷和苦难中。',
+      achievements: '方济各会创始人（至今全球最大修会之一）。基督教历史上最受爱戴的圣人。以彻底贫穷和对自然的爱闻名。《太阳歌》为意大利文学先驱。第一位有记录的圣痕者。教宗方济各以其命名。',
+      templeNames: [
+        { name: '亚西西圣方济各圣殿', nameEn: 'Basilica of San Francesco d\'Assisi', role: '方济各墓地与纪念圣殿', location: '意大利亚西西' },
+        { name: '天使之后圣殿', nameEn: 'Basilica of Santa Maria degli Angeli', role: '方济各会创立之地', location: '意大利亚西西' },
+      ],
+      koans: [
+        { title: '向鸟儿布道', description: '方济各看见路边一群鸟，走过去对它们布道："我的小兄弟姐妹们，你们应当赞美你们的造物主——他给你们羽毛做衣裳，翅膀做飞翔，又供应你们所需要的一切。"鸟儿们安静聆听，直到他祝福它们才飞走。' },
+        { title: '和平祷文', description: '"主啊，使我做你和平的工具：在有仇恨的地方，让我播种爱；在有伤害的地方，让我播种宽恕；在有怀疑的地方，让我播种信心；在有绝望的地方，让我播种希望；在有黑暗的地方，让我播种光明；在有悲伤的地方，让我播种喜乐。"' },
+      ],
+      classicQuotes: ['主啊，使我做你和平的工具', '先去传福音，必要时才用言语', '从拥有很少开始，到最后什么都不需要'],
+      works: [
+        { title: '太阳歌（Canticle of the Sun）', description: '赞美造物的诗歌，意大利文学最早杰作之一' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '阿维拉的德兰', nameEn: 'Teresa of Ávila', religionId: christianityId,
+      dates: '1515-1582', title: '灵修博士·灵魂的城堡', school: '神秘主义与灵修', generation: 2,
+      teacherId: null,
+      biography: '阿维拉的德兰（Teresa of Ávila），西班牙加尔默罗会修女，基督教最伟大的神秘主义者之一。1535年入修道院。经历长期灵性枯干后，约1554年开始获得深刻的神秘体验——灵魂出神、心灵的刺穿（贝尼尼著名雕塑即描绘此景）。推动加尔默罗会改革（赤足加尔默罗会），建立17座革新修院。著《灵魂的城堡》以七重居所比喻灵魂走向与神合一的旅程。1970年被封为教会博士——历史上第一位获此殊荣的女性。',
+      coreTeaching: '灵魂是一座有七重居所的城堡——从外到内，从自我认知走向与神完全合一。祈祷是打开城堡之门的钥匙。即使在最深的神秘体验中也要保持实际的判断力——德兰以幽默感和务实精神著称。',
+      achievements: '基督教最伟大的神秘主义者之一。著《灵魂的城堡》《自传》。推动加尔默罗会改革。建立17座修院。1970年成为第一位女性教会博士。',
+      templeNames: [
+        { name: '道成肉身修院', nameEn: 'Convent of the Incarnation', role: '德兰入修道院之地', location: '西班牙阿维拉' },
+      ],
+      koans: [
+        { title: '上帝在锅碗中', description: '德兰对修女们说："如果你在祈祷中找不到上帝，就去厨房找他——上帝就在锅碗瓢盆之间。"灵修不是脱离日常，而是在日常中与神相遇。' },
+      ],
+      classicQuotes: ['基督没有手，只有你的手；基督没有脚，只有你的脚', '只有上帝就够了', '不要让任何事扰乱你'],
+      works: [
+        { title: '灵魂的城堡', description: '七重居所的灵修经典' },
+        { title: '自传', description: '灵性成长的坦诚记录' },
+        { title: '全德之路', description: '祈祷生活指南' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '十字若望', nameEn: 'John of the Cross', religionId: christianityId,
+      dates: '1542-1591', title: '心灵暗夜·神秘主义诗人', school: '神秘主义与灵修', generation: 3,
+      teacherId: null,
+      biography: '十字若望（John of the Cross），西班牙加尔默罗会修士，基督教神秘主义的巅峰人物。与德兰合作推动加尔默罗会改革，因此被保守派囚禁在托莱多一间狭小牢房中九个月——在黑暗和饥饿中写下了基督教最伟大的神秘主义诗歌《心灵的暗夜》。其核心教导"暗夜"——灵魂必须经历感官和精神的彻底剥夺（黑暗）才能走向与神的光明合一。著《攀登加尔默罗山》系统阐述灵魂净化之路。1926年被封为教会博士。',
+      coreTeaching: '心灵的暗夜——灵魂走向神必须经历双重暗夜：感官的暗夜（放下一切感官依附）和精神的暗夜（放下一切精神执着，甚至对灵性体验的执着）。"在暗夜中，走更安全的路。"虚空是通往圆满的唯一道路。',
+      achievements: '基督教神秘主义巅峰人物。在狱中写下《心灵的暗夜》为基督教灵修诗歌最高杰作。系统阐述灵魂净化理论。与德兰合作改革加尔默罗会。1926年封为教会博士。',
+      templeNames: [],
+      koans: [
+        { title: '暗夜', description: '"在一个暗夜里，怀着焦灼的爱情，我出去了——啊，幸运的命运！无人注意。"灵魂在暗夜中离开一切熟悉的事物，在黑暗中走向爱的合一。越黑暗，越接近光明。' },
+      ],
+      classicQuotes: ['在暗夜中，走更安全的路', '要到达你不知道的地方，你必须走你不知道的路', '在黄昏时分，我们将以爱被审判'],
+      works: [
+        { title: '心灵的暗夜', description: '基督教灵修诗歌最高杰作' },
+        { title: '攀登加尔默罗山', description: '灵魂净化之系统论述' },
+        { title: '灵歌', description: '灵魂与神之间的爱情诗' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '艾克哈特大师', nameEn: 'Meister Eckhart', religionId: christianityId,
+      dates: '1260-1328', title: '莱茵神秘主义·灵魂的火花', school: '神秘主义与灵修', generation: 4,
+      teacherId: null,
+      biography: '艾克哈特大师（Meister Eckhart），德国多明我会修士，莱茵神秘主义的代表人物。曾任多明我会省会长，在巴黎大学两次执教（极罕见殊荣）。以德语向普通信徒布道，用大胆的悖论式语言谈论神与灵魂——"灵魂的火花"（Seelenfünklein）是人心中与神直接相通的最深处。"上帝的根基和灵魂的根基是同一个根基。"其思想被教会当局审查，部分命题于1329年被定为异端。但其影响深远——从路德到海德格尔、从铃木大拙到托马斯·默顿都深受其启发。',
+      coreTeaching: '灵魂的火花（Seelenfünklein）——人心最深处有一点"火花"，与神本体直接相通。彻底的虚己（Gelassenheit/放下）——只有放下一切，甚至放下对上帝的概念，才能在绝对的虚空中遇见真正的上帝。"上帝的最高名字是无。"',
+      achievements: '莱茵神秘主义最伟大的代表。以德语布道开创德语哲学传统。"灵魂的火花"和"放下"概念影响深远。启发路德/海德格尔/铃木大拙/默顿。被认为是东西方灵性对话的先驱。',
+      templeNames: [],
+      koans: [
+        { title: '眼与眼', description: '"我用来看上帝的眼，和上帝用来看我的眼，是同一只眼。"主客二分在最深的灵性层面消融——认识者与被认识者合一。' },
+      ],
+      classicQuotes: ['如果唯一的祷告是"感谢"，那就足够了', '上帝的最高名字是无', '灵魂必须在一切事物中死去，甚至在上帝中死去'],
+      works: [
+        { title: '德语讲道集', description: '以德语向平信徒宣讲的神秘主义讲道' },
+        { title: '神圣安慰之书', description: '论苦难中的神圣安慰' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '托马斯·默顿', nameEn: 'Thomas Merton', religionId: christianityId,
+      dates: '1915-1968', title: '东西灵修桥梁·七重山', school: '神秘主义与灵修', generation: 5,
+      teacherId: null,
+      biography: '托马斯·默顿（Thomas Merton），美国熙笃会修士，20世纪最具影响力的基督教灵修作家。出生于法国，成长于英国和美国。哥伦比亚大学毕业后过着波西米亚式生活。1941年进入肯塔基州客西马尼隐修院。著《七重山》（The Seven Storey Mountain）自传，讲述从世俗到修道的心灵旅程，成为畅销书。后期积极开展东西方灵性对话——深入研究禅宗、道教、苏菲主义，与铃木大拙、一行禅师等交流。1968年在曼谷参加东西方修道对话会议时意外触电去世。',
+      coreTeaching: '独处与沉默是认识自我和认识神的必经之路。基督教灵修传统与东方冥想传统有深刻的共鸣——默观祈祷与禅修指向同一个终极实在。社会正义是灵修生活的自然延伸——默顿积极反战、反核、支持民权运动。',
+      achievements: '20世纪最具影响力的基督教灵修作家。《七重山》为灵修文学畅销经典。东西方灵性对话的先驱——连接基督教与禅宗/道教/苏菲。积极参与反战和民权运动。',
+      templeNames: [
+        { name: '客西马尼修道院', nameEn: 'Abbey of Gethsemani', role: '默顿修道生活之地', location: '美国肯塔基州' },
+      ],
+      koans: [],
+      classicQuotes: ['在静默中，上帝不再是一个概念，而成为一种经验', '如果你想辨识灵性的人，找那个能够独处的人'],
+      works: [
+        { title: '七重山（The Seven Storey Mountain）', description: '从世俗到修道的心灵自传' },
+        { title: '默观的种子', description: '基督教默观祈祷入门' },
+        { title: '禅与灵鸟', description: '基督教与禅宗的对话' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 近现代影响者 (6位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '德蕾莎修女', nameEn: 'Mother Teresa', religionId: christianityId,
+      dates: '1910-1997', title: '加尔各答圣人·穷人中最穷者的仆人', school: '近现代影响者', generation: 1,
+      teacherId: null,
+      biography: '德蕾莎修女（Mother Teresa），原名阿格尼丝·冈贾·博雅丘（Agnes Gonxha Bojaxhiu），阿尔巴尼亚裔。1928年到印度传教。1946年在前往大吉岭的火车上获得"呼召中的呼召"——离开舒适的修道院，去服务"穷人中最穷者"。1950年创立仁爱传教修女会，在加尔各答贫民窟中照顾垂死者、弃婴、麻风病人。其修女会后扩展至全球130多个国家。1979年获诺贝尔和平奖。2016年被封圣。她的私人日记揭示了长达50年的"信仰暗夜"——在灵性枯竭中依然坚持服务。',
+      coreTeaching: '在最卑微的人身上看见基督的面容。"如果你不能养活一百个人，那就养活一个。"爱不是宏大的事业，而是用伟大的爱做微小的事。德蕾莎的"信仰暗夜"展示了——即使感受不到神的同在，信仰仍可以通过行动来表达。',
+      achievements: '创立仁爱传教修女会（全球130+国家）。1979年诺贝尔和平奖。2016年封圣。一生服务加尔各答最贫穷者。成为20世纪慈善和基督徒精神的象征。',
+      templeNames: [
+        { name: '仁爱传教修女会总部', nameEn: 'Missionaries of Charity Motherhouse', role: '德蕾莎修女之家', location: '印度加尔各答' },
+      ],
+      koans: [],
+      classicQuotes: ['不是所有人都能做伟大的事，但我们都能用伟大的爱做微小的事', '如果你评判他人，你就没有时间爱他们', '传播爱到任何你去的地方——不要让任何人离开你时没有变得更快乐'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '迪特里希·朋霍费尔', nameEn: 'Dietrich Bonhoeffer', religionId: christianityId,
+      dates: '1906-1945', title: '殉道神学家·廉价恩典的批判者', school: '近现代影响者', generation: 2,
+      teacherId: null,
+      biography: '迪特里希·朋霍费尔（Dietrich Bonhoeffer），德国路德宗牧师和神学家。在纳粹德国兴起时，成为"认信教会"运动的核心人物，公开反对纳粹对教会的控制和对犹太人的迫害。尽管有机会留在安全的美国，1939年毅然返回德国——"如果我不在这个时刻与我的人民一同受苦，我就没有资格在战后参与重建。"参与刺杀希特勒的密谋，被盖世太保逮捕。1945年4月9日，在希特勒自杀前仅两周，在弗洛森堡集中营被处决。年仅39岁。',
+      coreTeaching: '廉价恩典vs重价恩典——"廉价恩典是教会的致命敌人"。不付代价的信仰是虚假的。基督徒必须在世界中承担责任——"信仰不是逃离世界的避难所，而是行动的起点。"当世界发生不义时，沉默和不作为就是同谋。',
+      achievements: '20世纪最具影响力的殉道神学家。公开反对纳粹。著《追随基督》论重价恩典。参与刺杀希特勒密谋。39岁在集中营殉道。其思想深刻影响战后基督教伦理和政治神学。',
+      templeNames: [
+        { name: '弗洛森堡集中营', nameEn: 'Flossenbürg Concentration Camp', role: '朋霍费尔殉道之地', location: '德国弗洛森堡' },
+      ],
+      koans: [
+        { title: '返回德国', description: '1939年朋霍费尔在美国安全处境中收到回德国的邀请。他在日记中写道："如果我不在这个最黑暗的时刻与我的人民一同受苦，我就没有资格在战后参与他们的重建。"他踏上了回程——也踏上了殉道之路。' },
+      ],
+      classicQuotes: ['廉价恩典是教会的致命敌人', '沉默面前的邪恶本身就是邪恶', '行动不是来自思考，而是来自对责任的准备'],
+      works: [
+        { title: '追随基督（The Cost of Discipleship）', description: '论廉价恩典vs重价恩典' },
+        { title: '团契生活', description: '论基督徒共同体' },
+        { title: '狱中书简', description: '在纳粹监狱中的书信和思考' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: 'C.S.路易斯', nameEn: 'C.S. Lewis', religionId: christianityId,
+      dates: '1898-1963', title: '基督教护教大师·纳尼亚之父', school: '近现代影响者', generation: 3,
+      teacherId: null,
+      biography: 'C.S.路易斯（Clive Staples Lewis），英国学者和作家，牛津大学和剑桥大学教授。青年时期为坚定的无神论者，1931年在与托尔金等朋友的长期对话中归信基督教。此后成为20世纪最有影响力的基督教护教作家。以清晰通俗的文笔向普通读者解释基督教信仰——《返璞归真》为最畅销的基督教护教著作。同时以儿童文学《纳尼亚传奇》七卷本闻名世界，以寓言方式传达基督教核心信息。',
+      coreTeaching: '基督教信仰是合理的——不是因为它让你感觉好，而是因为它是真的。"我信基督教，正如我相信太阳升起了——不仅因为我看见它，而是因为借着它我看见一切其他事物。"痛苦是神的扩音器——在舒适中人忽略神，在痛苦中人不得不面对终极问题。',
+      achievements: '20世纪最有影响力的基督教护教作家。《返璞归真》为最畅销的基督教入门书。《纳尼亚传奇》全球销量超1亿册。以通俗清晰的文笔让基督教信仰成为知识分子可以认真对待的选择。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['我信基督教如同我相信太阳升起——因为借着它我看见一切', '痛苦是神的扩音器，用来唤醒一个聋了的世界', '你从未见过一个普通人——你交往的每一个人都是不朽的灵魂'],
+      works: [
+        { title: '返璞归真（Mere Christianity）', description: '最畅销的基督教护教著作' },
+        { title: '纳尼亚传奇', description: '七卷儿童文学经典，全球销量超1亿' },
+        { title: '痛苦的奥秘', description: '论苦难与信仰' },
+        { title: '魔鬼家书', description: '以魔鬼视角论述人性弱点' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '马丁·路德·金', nameEn: 'Martin Luther King Jr.', religionId: christianityId,
+      dates: '1929-1968', title: '民权牧师·我有一个梦想', school: '近现代影响者', generation: 4,
+      teacherId: null,
+      biography: '马丁·路德·金（Martin Luther King Jr.），美国浸信会牧师，民权运动领袖。受甘地非暴力思想和基督教登山宝训的双重启发，领导美国黑人民权运动。1955年领导蒙哥马利公交车抵制运动。1963年在华盛顿林肯纪念堂前发表"我有一个梦想"演讲，成为20世纪最伟大的演说之一。推动通过1964年《民权法案》和1965年《选举权法案》。1964年获诺贝尔和平奖（当时最年轻获奖者，35岁）。1968年在孟菲斯被暗杀，年仅39岁。',
+      coreTeaching: '非暴力抵抗是基督徒对不义的最有力回应。"黑暗不能驱除黑暗，只有光明能做到；仇恨不能驱除仇恨，只有爱能做到。"正义是不可分割的——"任何地方的不义都是对所有地方正义的威胁。"',
+      achievements: '美国民权运动领袖。"我有一个梦想"为20世纪最伟大演讲。推动《民权法案》《选举权法案》通过。1964年诺贝尔和平奖。以非暴力改变了美国和世界。',
+      templeNames: [
+        { name: '以便以谢浸信会教堂', nameEn: 'Ebenezer Baptist Church', role: '金牧师的教会', location: '美国亚特兰大' },
+        { name: '马丁·路德·金纪念碑', nameEn: 'MLK Memorial', role: '国家纪念碑', location: '美国华盛顿' },
+      ],
+      koans: [
+        { title: '我有一个梦想', description: '1963年8月28日，25万人聚集在华盛顿。金站在林肯纪念堂前说："我有一个梦想——有一天，在佐治亚的红色山丘上，从前奴隶的儿女和从前奴隶主的儿女能够同坐在兄弟的桌旁。"' },
+      ],
+      classicQuotes: ['黑暗不能驱除黑暗，只有光明能做到', '任何地方的不义都是对所有地方正义的威胁', '我有一个梦想', '生命最持久的问题是：你为别人做了什么？'],
+      works: [
+        { title: '伯明翰监狱来信', description: '论非暴力抵抗的神学基础' },
+        { title: '我有一个梦想', description: '20世纪最伟大的公共演讲' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '若望保禄二世', nameEn: 'Pope John Paul II', religionId: christianityId,
+      dates: '1920-2005', title: '旅行教宗·跨越边界', school: '近现代影响者', generation: 5,
+      teacherId: null,
+      biography: '若望保禄二世（Pope John Paul II），原名卡罗尔·沃伊蒂瓦（Karol Wojtyła），波兰人，天主教第264任教宗（1978-2005）。第一位非意大利裔教宗（455年来）。任期内出访129个国家，行程超过110万公里，被称为"旅行教宗"。在冷战结束中扮演关键角色——支持波兰团结工会运动。推动宗教间对话——2000年首次访问清真寺，在犹太哭墙前祷告并放入忏悔信。为教会历史上的过错公开道歉。2014年封圣。',
+      coreTeaching: '不要害怕！打开门户迎接基督！人的尊严是不可侵犯的——任何政治体制都不能剥夺。宗教间对话是世界和平的基础。教宗就职弥撒上的第一句话"不要害怕"成为其教宗生涯的标志。',
+      achievements: '天主教第264任教宗。出访129国被称"旅行教宗"。在冷战结束中发挥关键作用。推动宗教间对话（首访清真寺/哭墙祷告）。为教会历史过错公开道歉。2014年封圣。',
+      templeNames: [
+        { name: '圣彼得大教堂', nameEn: "St. Peter's Basilica", role: '教宗座堂', location: '梵蒂冈' },
+      ],
+      koans: [],
+      classicQuotes: ['不要害怕！打开门户迎接基督', '自由不是做你想做的事，而是有权做你应该做的事'],
+      works: [
+        { title: '跨越希望的门槛', description: '以对话形式论述信仰、教会与世界' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '德斯蒙德·图图', nameEn: 'Desmond Tutu', religionId: christianityId,
+      dates: '1931-2021', title: '和解大主教·彩虹国度', school: '近现代影响者', generation: 6,
+      teacherId: null,
+      biography: '德斯蒙德·图图（Desmond Tutu），南非圣公会开普敦大主教，反种族隔离运动精神领袖。在种族隔离最黑暗的年代，以基督教非暴力原则呼吁和平与正义。1984年获诺贝尔和平奖。种族隔离结束后，主持真相与和解委员会（TRC）——以"恢复性正义"取代报复性正义，让施害者和受害者面对面，以真相和宽恕实现和解。提出"乌班图"（Ubuntu）哲学——"我是，因为我们是"。将南非称为"彩虹国度"。',
+      coreTeaching: '宽恕不是软弱，而是最终极的力量。没有宽恕就没有未来——但也没有没有正义的宽恕。"乌班图"——一个人的人性通过与他人的关系来实现。"我是，因为我们是。"上帝没有基督徒仆人——上帝有的是人类仆人。',
+      achievements: '南非反种族隔离运动精神领袖。1984年诺贝尔和平奖。主持真相与和解委员会开创"恢复性正义"。提出"彩虹国度"和"乌班图"理念。以基督教信仰推动种族和解。',
+      templeNames: [
+        { name: '圣乔治大教堂', nameEn: "St George's Cathedral", role: '图图大主教座堂', location: '南非开普敦' },
+      ],
+      koans: [],
+      classicQuotes: ['没有宽恕就没有未来', '我是，因为我们是', '如果你在不义面前保持中立，你已经选择了压迫者的一边', '做好事不需要理由——因为上帝就是好的'],
+      works: [
+        { title: '没有宽恕就没有未来', description: '论真相与和解的恢复性正义' },
+        { title: '上帝有一个梦想', description: '论人类善良的本性' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const christianCount = 25; // 25 new + 3 updated
+  console.log(`  ✓ ${christianCount} new Christian patriarchs created + 3 updated (5 traditions: Apostles/Fathers/Reformers/Mystics/Modern)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();

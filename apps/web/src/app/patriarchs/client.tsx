@@ -865,6 +865,12 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 ☪ 伊斯兰教先贤传承
               </Link>
               <Link
+                href="/christian-patriarchs"
+                className="px-6 py-3 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ✝ 基督教先贤传承
+              </Link>
+              <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >
