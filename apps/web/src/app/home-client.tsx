@@ -106,15 +106,34 @@ function RouteCard({ route, t }: { route: Route; t: (key: string) => string }) {
               {categoryLabels[route.category] ?? route.category} · {route.duration}{t("home.days")}{route.nights}{t("home.nights")}
             </span>
           </div>
+          {/* Booking.com style: booking count badge */}
+          {route.bookCount > 0 && (
+            <div className="absolute top-3 right-3">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500 text-white">
+                {route.bookCount}+ {t("home.booked")}
+              </span>
+            </div>
+          )}
+          {/* Free cancellation badge (Booking.com) */}
+          <div className="absolute bottom-3 left-3">
+            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-600 text-white">
+              {t("home.freeCancellation")}
+            </span>
+          </div>
         </div>
         <div className="p-4">
           <h3 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">{route.title}</h3>
           <p className="text-sm text-gray-500 mt-1 line-clamp-1">{route.subtitle}</p>
           <div className="flex items-center justify-between mt-3">
             <span className="text-gray-900 font-bold">¥{price}<span className="text-xs text-gray-500 font-normal">{t("home.perPerson")}</span></span>
-            {route.rating && (
-              <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white text-xs font-bold">{route.rating.toFixed(1)}</span>
-            )}
+            <div className="flex items-center gap-1.5">
+              {route.rating && (
+                <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white text-xs font-bold">{route.rating.toFixed(1)}</span>
+              )}
+              {route.reviewCount > 0 && (
+                <span className="text-xs text-gray-400">{route.reviewCount}{t("home.reviews")}</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -711,6 +730,26 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ══════ Trust & Guarantee Badges (Booking.com/AmEx style) ══════ */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { icon: "🛡️", title: t("home.trust.secureBooking"), desc: t("home.trust.secureBookingDesc") },
+              { icon: "💯", title: t("home.trust.bestPrice"), desc: t("home.trust.bestPriceDesc") },
+              { icon: "🔄", title: t("home.trust.freeCancel"), desc: t("home.trust.freeCancelDesc") },
+              { icon: "🎧", title: t("home.trust.support"), desc: t("home.trust.supportDesc") },
+            ].map((item) => (
+              <div key={item.title} className="text-center">
+                <span className="text-3xl block mb-2">{item.icon}</span>
+                <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
+                <p className="text-xs text-gray-500 mt-1">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

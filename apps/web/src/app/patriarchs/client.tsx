@@ -883,6 +883,48 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 儒 儒教先贤传承
               </Link>
               <Link
+                href="/hindu-sages"
+                className="px-6 py-3 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🕉 印度教圣贤
+              </Link>
+              <Link
+                href="/jewish-patriarchs"
+                className="px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ✡ 犹太教先贤
+              </Link>
+              <Link
+                href="/sikh-gurus"
+                className="px-6 py-3 bg-[#EA580C] hover:bg-[#C2410C] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ☬ 锡克教古鲁
+              </Link>
+              <Link
+                href="/shinto-kami"
+                className="px-6 py-3 bg-[#E11D48] hover:bg-[#BE123C] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ⛩ 神道教神灵
+              </Link>
+              <Link
+                href="/tibetan-patriarchs"
+                className="px-6 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ☸ 藏传佛教大师
+              </Link>
+              <Link
+                href="/indigenous-spirits"
+                className="px-6 py-3 bg-[#78716C] hover:bg-[#57534E] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ◉ 原住民灵性
+              </Link>
+              <Link
+                href="/bahai-figures"
+                className="px-6 py-3 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                ✦ 巴哈伊教
+              </Link>
+              <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >
