@@ -2690,6 +2690,334 @@ async function main() {
   const otherSchoolCount = 6;
   console.log(`  ✓ ${otherSchoolCount} other Zen school patriarchs created`);
 
+  // ── 4d. 净土宗十三祖 (Pure Land Patriarchs) ──
+  console.log('Creating Pure Land patriarchs...');
+
+  // === 净土初祖: 慧远大师 ===
+  const huiyuan = await prisma.patriarch.create({
+    data: {
+      name: '慧远大师',
+      nameEn: 'Huiyuan',
+      religionId: buddhismId,
+      dates: '334-416',
+      title: '庐山慧远',
+      school: '净土宗',
+      generation: 1,
+      teacherId: null,
+      biography: '慧远，俗姓贾，雁门楼烦（今山西原平）人。少为书生，博综六经，尤善庄老。二十一岁闻道安法师讲般若经，叹曰"儒道九流皆糠秕耳"，遂投簪出家。太元六年（381）入庐山，建东林寺。元兴元年（402）于东林寺般若台前，与刘遗民、雷次宗等一百二十三人共结白莲社，立誓专修念佛三昧，期生西方极乐世界。此为中国净土信仰之始，后世尊为净土宗初祖。义熙十二年（416）示寂，世寿八十三。',
+      coreTeaching: '念佛三昧——专注忆念阿弥陀佛，定心观想西方净土依正庄严，以此三昧力求往生极乐世界。',
+      achievements: '净土宗初祖。创建庐山东林寺白莲社，一百二十三人共修念佛三昧，开中国净土信仰之先河。著《沙门不敬王者论》，确立中国僧团独立于王权之地位。门下弟子三千余人。',
+      templeNames: [{ name: '庐山东林寺', nameEn: 'Donglin Temple', role: '创建', location: '江西庐山' }],
+      koans: [{ title: '虎溪三笑', content: '慧远送客不过虎溪，一日送陶渊明、陆修静，谈笑间不觉过溪，三人相视大笑。', source: '庐山记' }],
+      classicQuotes: ['儒道九流，皆糠秕耳', '愿与含灵，同生净土'],
+      works: [
+        { title: '沙门不敬王者论', description: '五篇，论证僧团不应礼拜帝王' },
+        { title: '庐山慧远法师文钞', description: '书信、序跋、偈颂集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土二祖: 善导大师 ===
+  const shandao = await prisma.patriarch.create({
+    data: {
+      name: '善导大师',
+      nameEn: 'Shandao',
+      religionId: buddhismId,
+      dates: '613-681',
+      title: '光明和尚',
+      school: '净土宗',
+      generation: 2,
+      teacherId: null,
+      biography: '善导，临淄（今山东淄博）人。少出家，初诵《法华》、《维摩》。贞观十五年（641）往玄中寺参道绰禅师，闻《观无量寿经》，喜曰"此真入佛之津要"。道绰授以净土法门。后往长安，住光明寺，昼夜礼诵。写《弥陀经》十万卷，画净土变相三百壁。长安满城归信念佛，被尊为"光明和尚"。著《观经四帖疏》，确立称名念佛（口念佛号）为净土正行，彻底平民化净土修行。永隆二年（681）示寂。后世日本法然上人读其著作而创立日本净土宗。',
+      coreTeaching: '称名念佛——"一心专念弥陀名号，行住坐卧，不问时节久近，念念不舍者，是名正定之业，顺彼佛愿故。"',
+      achievements: '净土宗二祖，实际教义体系创立者。著《观经四帖疏》确立称名念佛为正行（五正行说）。写《弥陀经》十万卷，画净土变相三百壁。影响日本法然上人创立日本净土宗(Jodo-shu)。',
+      templeNames: [
+        { name: '西安香积寺', nameEn: 'Xiangji Temple', role: '善导塔所在', location: '陕西西安' },
+        { name: '光明寺', nameEn: 'Guangming Temple', role: '驻锡弘法', location: '陕西长安' },
+      ],
+      koans: [
+        { title: '称名正定业', content: '一心专念弥陀名号，行住坐卧，不问时节久近，念念不舍者，是名正定之业，顺彼佛愿故。', source: '观经四帖疏' },
+        { title: '二河白道喻', content: '众生在生死大河中，贪嗔如水火二河。中间有一白道（念佛），虽窄而可通彼岸。', source: '观经四帖疏' },
+      ],
+      classicQuotes: ['一心专念弥陀名号，念念不舍，是名正定之业', '人能念佛佛还念，专心想佛佛知人', '如来出世本怀，唯说念佛往生'],
+      works: [
+        { title: '观经四帖疏', description: '净土宗核心经典注释，确立称名念佛正行' },
+        { title: '观念法门', description: '观想念佛修行指导' },
+        { title: '法事赞', description: '净土礼赞仪轨' },
+        { title: '往生礼赞', description: '六时礼赞仪轨' },
+        { title: '般舟赞', description: '般舟三昧赞偈' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土三祖: 承远大师 ===
+  const chengyuan = await prisma.patriarch.create({
+    data: {
+      name: '承远大师',
+      nameEn: 'Chengyuan',
+      religionId: buddhismId,
+      dates: '712-802',
+      title: '承远和尚',
+      school: '净土宗',
+      generation: 3,
+      teacherId: null,
+      biography: '承远，汉州（今四川广汉）人。初学律宗，后参慧日三藏学净土法门。住衡山（南岳）弥陀寺，结茅苦修，以苦行精修闻名。弟子法照从其学净土，后法照被代宗封为国师。柳宗元为其撰碑铭。贞元十八年（802）示寂，世寿九十一。',
+      coreTeaching: '专修念佛，勤苦精进，不求名利，以身作则感化众生。',
+      achievements: '净土宗三祖。住衡山弥陀寺苦行修念佛，教化法照等弟子。柳宗元撰碑赞其德行。',
+      templeNames: [{ name: '衡山弥陀寺', nameEn: 'Hengshan Amituo Temple', role: '驻锡', location: '湖南衡山' }],
+      koans: [{ title: '苦行念佛', content: '承远于衡山结茅为庵，以蕉叶铺地，苦行念佛不辍。远近闻风归附，弟子以千计。', source: '宋高僧传' }],
+      classicQuotes: ['念佛不在多言，贵在一心不乱'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土四祖: 法照大师 ===
+  const fazhao = await prisma.patriarch.create({
+    data: {
+      name: '法照大师',
+      nameEn: 'Fazhao',
+      religionId: buddhismId,
+      dates: '?-821',
+      title: '五会法师',
+      school: '净土宗',
+      generation: 4,
+      teacherId: chengyuan.id,
+      biography: '法照，身世不详。大历二年（767）于衡山弥陀寺参承远和尚学净土。后入五台山，传于定中见文殊菩萨，菩萨指示念佛法门。遂创"五会念佛"法——以五种声调节奏念阿弥陀佛名号，由缓至急，摄心入定。大历七年（772）唐代宗迎入宫中教授五会念佛，封为"国师"。元和年间（约821年前后）示寂。',
+      coreTeaching: '五会念佛——以五种声调渐次念佛：第一会平声缓念，第二至第四渐急，第五会急念入定。以音声摄心，契入念佛三昧。',
+      achievements: '净土宗四祖，承远大师弟子（唯一直接师徒传承）。创立五会念佛法，以音声摄心。被唐代宗封为"国师"，入宫教授念佛。五会念佛对后世佛教音乐和念佛仪轨影响深远。',
+      templeNames: [{ name: '五台山竹林寺', nameEn: 'Wutaishan Zhulin Temple', role: '驻锡', location: '山西五台山' }],
+      koans: [{ title: '五会念佛', content: '第一会平声缓念，第二会平上声，第三会非缓非急，第四会渐急，第五会转急。五会念毕，寂然入定。', source: '五会法事赞' }],
+      classicQuotes: ['此世界众生，应当念佛。以念佛故，得生极乐'],
+      works: [{ title: '五会法事赞', description: '五会念佛仪轨和赞偈' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土五祖: 少康大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '少康大师',
+      nameEn: 'Shaokang',
+      religionId: buddhismId,
+      dates: '?-805',
+      title: '后善导',
+      school: '净土宗',
+      generation: 5,
+      teacherId: null,
+      biography: '少康，缙云（今浙江丽水）人。十五岁出家，习法华、楞严等经。贞元初至洛阳白马寺，见善导大师《西方化导文》放光，遂专修净土。至新定（今浙江建德）乌龙山弘法，聚人念佛。以钱诱引小儿念佛一声给一钱，渐至满城念佛。当时人称为"后善导"。贞元二十一年（805）示寂。',
+      coreTeaching: '称名念佛，善巧方便，以种种方便接引众生归于净土。',
+      achievements: '净土宗五祖，被誉为"后善导"。以善巧方便在民间大弘念佛，以钱诱小儿念佛的方法新颖独特。使新定一带满城念佛，净土信仰深入民间。',
+      templeNames: [{ name: '乌龙山净土道场', nameEn: 'Wulongshan Pure Land', role: '建立', location: '浙江建德' }],
+      koans: [{ title: '以钱诱念佛', content: '少康至新定，以钱诱引小儿念佛。念佛一声予一钱，久之满城念佛，人称"后善导"。', source: '往生集' }],
+      classicQuotes: ['念佛之人，阿弥陀佛常住其顶，日夜拥护'],
+      works: [{ title: '往生西方净土瑞应删传', description: '净土往生故事集' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土六祖: 延寿大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '延寿大师',
+      nameEn: 'Yongming Yanshou',
+      religionId: buddhismId,
+      dates: '904-975',
+      title: '永明延寿',
+      school: '净土宗',
+      generation: 6,
+      teacherId: null,
+      biography: '延寿，余杭（今浙江）人，字冲元。初为吴越国税务官，挪公款放生被判死刑，临刑面不改色，吴越王感其诚而赦免，许其出家。参天台德韶国师得法，为法眼宗第三代。住杭州永明寺（净慈寺），日课一百零八件佛事，夜往别峰行道念佛。著《宗镜录》百卷，融会禅教律净，主张"万善同归"，为禅净双修的理论奠基者。开宝八年（975）示寂，世寿七十二。',
+      coreTeaching: '禅净双修，万善同归——"有禅有净土，犹如戴角虎；现世为人师，来生作佛祖。"',
+      achievements: '净土宗六祖，兼为法眼宗三代传人。著《宗镜录》百卷，为中国佛教史上最大部头著作之一。首倡禅净双修理论，影响深远。日行一百零八件佛事，被誉为"弥陀化身"。',
+      templeNames: [{ name: '杭州净慈寺', nameEn: 'Jingci Temple', role: '住持', location: '浙江杭州' }],
+      koans: [{ title: '四料简', content: '有禅有净土，犹如戴角虎，现世为人师，来生作佛祖。无禅有净土，万修万人去，若得见弥陀，何愁不开悟。', source: '万善同归集' }],
+      classicQuotes: ['有禅有净土，犹如戴角虎', '无禅有净土，万修万人去', '万善同归，一心念佛'],
+      works: [
+        { title: '宗镜录', description: '百卷，融会禅教律净之巨著' },
+        { title: '万善同归集', description: '三卷，万善同归净土之论证' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土七祖: 省常大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '省常大师',
+      nameEn: 'Shengchang',
+      religionId: buddhismId,
+      dates: '959-1020',
+      title: '净行社主',
+      school: '净土宗',
+      generation: 7,
+      teacherId: null,
+      biography: '省常，钱塘（今浙江杭州）人。七岁出家，十七岁受具足戒。淳化年间于杭州西湖昭庆寺建净行社，效慕庐山白莲社故事，结社念佛。当时宰相王旦为社首，士大夫参加者达一百二十余人，僧俗社众逾千人。刺血书《华严经》净行品以为社规。天禧四年（1020）示寂，世寿六十二。',
+      coreTeaching: '结社念佛，以士大夫居士为核心推动净土信仰。',
+      achievements: '净土宗七祖。建净行社，宰相王旦为社首，推动北宋士大夫阶层念佛运动。刺血书华严经净行品。',
+      templeNames: [{ name: '杭州昭庆寺', nameEn: 'Zhaoqing Temple', role: '建净行社', location: '浙江杭州' }],
+      koans: [],
+      classicQuotes: ['行道念佛，功不唐捐'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土八祖: 莲池大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '莲池大师',
+      nameEn: 'Yunqi Zhuhong',
+      religionId: buddhismId,
+      dates: '1535-1615',
+      title: '云栖袾宏',
+      school: '净土宗',
+      generation: 8,
+      teacherId: null,
+      biography: '袾宏，杭州仁和人，字佛慧，号莲池。十七岁补诸生（秀才），三十二岁出家。遍参知识，至笑岩德宝处参禅有省。后住杭州五云山云栖寺，三十余年。以华严教理融入净土修行，著《弥陀疏钞》十余万言，为净土宗最重要的经典注释之一。又著《竹窗随笔》《戒杀放生文》，倡导戒杀放生。与紫柏真可、憨山德清、蕅益智旭并称"明末四大高僧"。万历四十三年（1615）示寂，世寿八十一。',
+      coreTeaching: '持名念佛，摄心为要——"念佛不贵多，贵在不间断。"以事持理持统摄念佛法门。',
+      achievements: '净土宗八祖，明末四大高僧之一。著《弥陀疏钞》为净土宗最详尽注释。住云栖寺三十年，门下弟子众多。倡戒杀放生，著《竹窗随笔》影响深远。融禅入净，以华严圆教理释净土法门。',
+      templeNames: [{ name: '杭州云栖寺', nameEn: 'Yunqi Temple', role: '住持三十年', location: '浙江杭州五云山' }],
+      koans: [{ title: '事持理持', content: '事持者：信有西方阿弥陀佛，一心称念求生彼国。理持者：了知心即是佛，即心念佛，念念不离自心。', source: '弥陀疏钞' }],
+      classicQuotes: ['念佛不贵多，贵在不间断', '真为生死，发菩提心，以深信愿，持佛名号', '竹窗下，一声佛号足矣'],
+      works: [
+        { title: '弥陀疏钞', description: '十余万言，净土宗最详尽经典注释' },
+        { title: '竹窗随笔', description: '修行随笔三篇，影响深远' },
+        { title: '戒杀放生文', description: '倡导戒杀放生' },
+        { title: '往生集', description: '净土往生传记汇编' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土九祖: 蕅益大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '蕅益大师',
+      nameEn: 'Ouyi Zhixu',
+      religionId: buddhismId,
+      dates: '1599-1655',
+      title: '灵峰蕅益',
+      school: '净土宗',
+      generation: 9,
+      teacherId: null,
+      biography: '智旭，苏州木渎人，字蕅益。少习儒学，誓灭佛老。十七岁读莲池大师《竹窗随笔》、《自知录》，始信佛法。二十岁读《地藏菩萨本愿经》发出世心。二十四岁于径山出家。遍学天台、华严、唯识、律学诸宗。晚年住灵峰寺（今浙江安吉），专弘净土。著《弥陀要解》，被印光大师赞为"自古至今注解弥陀经之第一"。顺治十二年（1655）示寂，世寿五十七。与莲池、紫柏、憨山并称"明末四大高僧"。',
+      coreTeaching: '信愿持名——"得生与否，全由信愿之有无；品位高下，全由持名之深浅。"信、愿、行三资粮缺一不可。',
+      achievements: '净土宗九祖，明末四大高僧之一。著《弥陀要解》被印光大师推为"古今第一注解"。遍学诸宗后归心净土，以天台教理释净土法门。著述等身，晚年专弘净土。',
+      templeNames: [{ name: '灵峰寺', nameEn: 'Lingfeng Temple', role: '晚年驻锡', location: '浙江安吉' }],
+      koans: [{ title: '信愿持名', content: '得生与否，全由信愿之有无；品位高下，全由持名之深浅。', source: '弥陀要解' }],
+      classicQuotes: ['得生与否，全由信愿之有无；品位高下，全由持名之深浅', '诸佛出世，悉为此法；一代时教，皆以净土为指归'],
+      works: [
+        { title: '弥陀要解', description: '阿弥陀经注释，被推为"古今第一"' },
+        { title: '灵峰宗论', description: '十卷本，法语、书信、序跋集' },
+        { title: '阅藏知津', description: '大藏经提要解题目录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土十祖: 截流大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '截流大师',
+      nameEn: 'Jieliu Xingjce',
+      religionId: buddhismId,
+      dates: '1628-1682',
+      title: '截流行策',
+      school: '净土宗',
+      generation: 10,
+      teacherId: null,
+      biography: '行策，宜兴（今江苏）人，字截流。父亲为其取名"策"意在策进修行。出家后参禅有省，后读永明延寿《万善同归集》、莲池大师著述，遂转弘净土。于杭州虎丘建念佛道场，倡行"打念佛七"——以七日为期，日夜精进念佛，克期取证。此法后成为净土宗最重要的共修方式，流传至今。康熙二十一年（1682）示寂。',
+      coreTeaching: '打念佛七——以七日为期，放下万缘，昼夜精进念佛，以期克证一心不乱。',
+      achievements: '净土宗十祖。首倡"打念佛七"制度，以七天为期精进共修念佛，成为净土宗最重要的共修方式，至今各大丛林仍沿用。',
+      templeNames: [],
+      koans: [{ title: '念佛七', content: '以七日为期，放下万缘，一心念佛。晨钟暮鼓，行住坐卧，佛号不断。', source: '起一心精进念佛七期规约' }],
+      classicQuotes: ['念佛七日，一心不乱'],
+      works: [{ title: '起一心精进念佛七期规约', description: '念佛七制度规范' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土十一祖: 省庵大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '省庵大师',
+      nameEn: 'Xingan Shixian',
+      religionId: buddhismId,
+      dates: '1686-1734',
+      title: '省庵实贤',
+      school: '净土宗',
+      generation: 11,
+      teacherId: null,
+      biography: '实贤，常熟（今江苏）人，号省庵。童年出家，精研天台教观，后参灵鹫和尚开悟。悟后回向净土，尽弃诸缘，专修念佛。著《劝发菩提心文》，文中"入道要门，发心为首；修行急务，立愿居先"一语，为净土宗修行纲要。每年正月结七念佛，腊月作往生净土忏。雍正十二年（1734）示寂，世寿四十九。',
+      coreTeaching: '发菩提心念佛——"入道要门，发心为首；修行急务，立愿居先。"先发菩提心，然后念佛，功德圆满。',
+      achievements: '净土宗十一祖。著《劝发菩提心文》为净土宗最重要策励文之一。由禅入净，以天台教理弘扬净土。',
+      templeNames: [{ name: '杭州梵天寺', nameEn: 'Fantian Temple', role: '驻锡', location: '浙江杭州' }],
+      koans: [{ title: '劝发菩提心', content: '入道要门，发心为首；修行急务，立愿居先。愿立则众生可度，心发则佛道堪成。', source: '劝发菩提心文' }],
+      classicQuotes: ['入道要门，发心为首；修行急务，立愿居先', '忘身为法，以道自任'],
+      works: [
+        { title: '劝发菩提心文', description: '净土宗最重要策励文' },
+        { title: '净土诗', description: '净土赞偈诗集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土十二祖: 彻悟大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '彻悟大师',
+      nameEn: 'Chewu Jixing',
+      religionId: buddhismId,
+      dates: '1741-1810',
+      title: '彻悟际醒',
+      school: '净土宗',
+      generation: 12,
+      teacherId: null,
+      biography: '际醒，丰润（今河北唐山）人，号彻悟。二十二岁出家，先参禅宗临济派，得法后任北京觉生寺、广通寺住持。后因病悟世无常，尽弃禅务，专修净土，移住红螺山资福寺。每日领众念佛，精进不辍。著《彻悟禅师语录》，以禅解净，理事双融，被誉为清代净土宗集大成者。嘉庆十五年（1810）示寂，预知时至，安详往生。世寿七十。',
+      coreTeaching: '以禅解净——"一句弥陀，该罗八教；一句弥陀，圆收五宗。"念佛即是参禅，参禅不离念佛。',
+      achievements: '净土宗十二祖。由禅入净的最佳典范。住红螺山资福寺领众念佛，使红螺山成为北方净土重镇。著语录以禅理释净土，理事圆融。预知时至往生。',
+      templeNames: [{ name: '红螺山资福寺', nameEn: 'Hongluoshan Zifu Temple', role: '住持', location: '北京怀柔' }],
+      koans: [{ title: '一句弥陀', content: '一句弥陀，该罗八教，圆收五宗。可惜人多不知，惟以粗心大气念将去，不肯细心体究。', source: '彻悟禅师语录' }],
+      classicQuotes: ['一句弥陀，该罗八教，圆收五宗', '真为生死，发菩提心，以深信愿，持佛名号——此十六字为净土法门之纲宗'],
+      works: [{ title: '彻悟禅师语录', description: '法语、开示集，以禅理释净土' }],
+      imageUrl: null,
+    },
+  });
+
+  // === 净土十三祖: 印光大师 ===
+  await prisma.patriarch.create({
+    data: {
+      name: '印光大师',
+      nameEn: 'Yinguang',
+      religionId: buddhismId,
+      dates: '1861-1940',
+      title: '印光法师',
+      school: '净土宗',
+      generation: 13,
+      teacherId: null,
+      biography: '圣量，陕西郃阳（今合阳）人，俗姓赵，法名圣量，字印光。幼年随兄习儒，受韩愈欧阳修辟佛影响而谤佛。后因病方信因果，二十一岁于终南山南五台莲花洞寺出家。先后驻锡法雨寺、报国寺等名刹。一生不建道场，不收出家弟子，不作住持。专以书信弘法，四众弟子遍及全国。民国十九年（1930）移居苏州灵岩山寺，将其定为专修净土道场。所著书信汇编为《印光法师文钞》，被推为净土宗最后一位大师。民国二十九年（1940）于灵岩山寺安详示寂，大众闻异香。世寿八十。',
+      coreTeaching: '敦伦尽分，闲邪存诚，信愿念佛，求生净土——此十六字为印光大师一生教化之总纲。',
+      achievements: '净土宗十三祖，近代最具影响力的净土宗大师。一生不作住持，以书信弘法，皈依弟子遍天下。《印光法师文钞》为近代最广泛流通的佛教著作。推蕅益大师《弥陀要解》为"古今第一"。民国时期佛教复兴的核心推动者之一。',
+      templeNames: [
+        { name: '苏州灵岩山寺', nameEn: 'Lingyan Mountain Temple', role: '晚年驻锡', location: '江苏苏州' },
+        { name: '普陀山法雨寺', nameEn: 'Putuoshan Fayu Temple', role: '早年驻锡', location: '浙江舟山' },
+      ],
+      koans: [{ title: '十六字纲宗', content: '敦伦尽分，闲邪存诚，信愿念佛，求生净土。', source: '印光法师文钞' }],
+      classicQuotes: ['敦伦尽分，闲邪存诚，信愿念佛，求生净土', '无论在家出家，必须上敬下和', '念佛之人，当存好心，说好话，行好事'],
+      works: [
+        { title: '印光法师文钞', description: '正续三编，书信集大成，近代流通最广佛教著作' },
+        { title: '印光法师嘉言录', description: '精要开示汇编' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const pureLandCount = 13;
+  console.log(`  ✓ ${pureLandCount} Pure Land patriarchs created`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();

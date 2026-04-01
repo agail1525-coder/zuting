@@ -817,6 +817,12 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 ☸ 曹洞宗传承法脉
               </Link>
               <Link
+                href="/pure-land-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🪷 净土宗十三祖
+              </Link>
+              <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >
