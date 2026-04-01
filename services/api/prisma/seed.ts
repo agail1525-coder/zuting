@@ -6771,6 +6771,2453 @@ async function main() {
   const confucianCount = 25; // 25 new + 3 updated
   console.log(`  ✓ ${confucianCount} new Confucian patriarchs created + 3 updated (5 schools: Pre-Qin/Han-Tang/Song-Ming/Yangming/Modern)`);
 
+  // ── 4p. 印度教圣贤 (Hindu Patriarchs/Sages) ──
+  console.log('  Creating Hindu patriarchs (4p)...');
+
+  const hinduismId = religionMap['hinduism'];
+
+  // Update existing 商羯罗 with full data + school field
+  const existingShankara = await prisma.patriarch.findFirst({ where: { name: '商羯罗' } });
+  existingShankara
+    ? await prisma.patriarch.update({
+        where: { id: existingShankara.id },
+        data: {
+          nameEn: 'Adi Shankara',
+          dates: '788-820',
+          title: '阿阇梨·世界导师',
+          school: '吠檀多哲学',
+          generation: 2,
+          biography: '商羯罗（788-820），印度历史上最伟大的哲学家之一，八岁出家，十六岁著《梵经注》。创立不二论（Advaita Vedanta）：梵是唯一真实，个体灵魂与梵本质无二，世界是幻相（Maya）。行遍印度四方辩论，在东南西北建立四大修道院（Matha），三十二岁圆寂，被尊为"世界导师"（Jagadguru）。',
+          coreTeaching: '不二论——梵是唯一终极实在，个体灵魂与宇宙本体本质无二。世界万象是梵通过幻力展现的表象。认识到"我即是梵"便获得解脱。',
+          achievements: '创立不二论，成为印度哲学主流。建立四大修道院。三十二年短暂一生改变印度思想史。',
+          templeNames: [
+            { name: '什林格里修道院', nameEn: 'Sringeri Sharada Peetham', role: '南方修道院·商羯罗创建', location: '卡纳塔克邦' },
+          ],
+          koans: [],
+          classicQuotes: ['梵即实在，世界即幻象，生命体不外乎梵', '你不是身体，不是心灵，你是永恒的意识', '真理是一，智者以不同名称称呼它'],
+          works: [
+            { title: '梵经注', description: '不二论注释，商羯罗最重要的哲学著作' },
+            { title: '自我知识', description: '阐释阿特曼本质的短论' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // Update existing 罗摩努阇 with full data + school field
+  const existingRamanuja = await prisma.patriarch.findFirst({ where: { name: '罗摩努阇' } });
+  existingRamanuja
+    ? await prisma.patriarch.update({
+        where: { id: existingRamanuja.id },
+        data: {
+          nameEn: 'Ramanuja',
+          dates: '1017-1137',
+          title: '阿阇梨',
+          school: '吠檀多哲学',
+          generation: 2,
+          biography: '罗摩努阇（1017-1137），南印度泰米尔婆罗门，创立限定不二论（Vishishtadvaita）：梵是有属性的实在，个体灵魂和物质世界是梵的属性。他将吠檀多哲学与民间虔信运动连接，使高深哲学变得可以实践。长期住持什里兰格姆寺，120岁高寿辞世。',
+          coreTeaching: '限定不二论——梵是有属性的最高实在，灵魂和物质是梵的属性。通过虔信和归依获得神的恩典而得解脱。',
+          templeNames: [
+            { name: '什里兰格姆寺', nameEn: 'Sri Ranganathaswamy Temple', role: '住持圣地·限定不二论中心', location: '泰米尔纳德邦' },
+          ],
+          koans: [],
+          classicQuotes: ['真正的知识是认识到自己是神的仆人', '归依神是最高的修行', '灵魂是梵的部分，如同火花与火焰'],
+          works: [],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 吠檀多哲学 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '跋达罗衍那', nameEn: 'Badarayana', religionId: hinduismId,
+      dates: '前5世纪', title: '梵经作者·吠檀多之祖',
+      school: '吠檀多哲学', generation: 1,
+      biography: '跋达罗衍那（约前5世纪），又称毗耶娑（Vyasa），印度哲学史上最重要的人物之一。他著《梵经》（Brahma Sutra）四章555条经文，系统阐述了奥义书中关于梵（Brahman）的教义，成为吠檀多哲学的根本经典。《梵经》与《奥义书》《薄伽梵歌》并称"三圣典"，是所有吠檀多学派共同的权威文本。后世商羯罗、罗摩努阇、摩陀婆等人的哲学体系，皆以注释《梵经》为出发点。',
+      coreTeaching: '梵是一切存在的终极实在，个体灵魂与宇宙本体的关系是吠檀多哲学的核心问题。通过知识、冥想和虔信认识梵我关系，可获得解脱。',
+      templeNames: [
+        { name: '巴达里纳特神庙', nameEn: 'Badrinath Temple', role: '毗耶娑洞·著述圣地', location: '北阿坎德邦' },
+      ],
+      koans: [],
+      classicQuotes: ['梵是真实，世界是幻相，灵魂即是梵', '从梵生出一切，依梵存在一切，归于梵消融一切'],
+      works: [
+        { title: '梵经', description: '555条格言，吠檀多哲学根本经典，三圣典之一' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '摩陀婆', nameEn: 'Madhva', religionId: hinduismId,
+      dates: '1238-1317', title: '二元论创始人',
+      school: '吠檀多哲学', generation: 3,
+      biography: '摩陀婆（1238-1317），创立二元论（Dvaita）：梵与个体灵魂永远不同，五种永恒差异。在乌杜皮建立八座修道院和克里希纳神庙。',
+      coreTeaching: '二元论——神与灵魂永远不同。世界真实，解脱是灵魂永享神的同在。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['神与灵魂的差异是永恒的', '世界不是幻象，它是神真实的创造'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '瓦拉巴', nameEn: 'Vallabha', religionId: hinduismId,
+      dates: '1479-1531', title: '纯粹不二论创始人',
+      school: '吠檀多哲学', generation: 3,
+      biography: '瓦拉巴（1479-1531），创立纯粹不二论（Shuddhadvaita），世界不是幻相而是梵真实的自我展现。强调"推送之道"——完全依赖神的恩典获得解脱。',
+      coreTeaching: '纯粹不二论——梵是纯粹的实在，世界和灵魂都是梵的真实展现。解脱完全依赖神的恩典。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['一切都是克里希纳', '最高的修行是全然归依神的恩典'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 瑜伽修行 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '帕坦伽利', nameEn: 'Patanjali', religionId: hinduismId,
+      dates: '前2世纪', title: '瑜伽之父',
+      school: '瑜伽修行', generation: 1,
+      biography: '帕坦伽利（约前2世纪），瑜伽哲学的集大成者。著《瑜伽经》四章196条格言，将瑜伽归纳为"八支"。被尊为"瑜伽之父"。',
+      coreTeaching: '瑜伽是心灵波动的止息。通过八支瑜伽逐步超越心灵扰动，证悟纯粹觉知的本来面目。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['瑜伽是心灵波动的止息', '修行与不执著是止息的两种方法', '当见者安住于自性，那就是瑜伽'],
+      works: [
+        { title: '瑜伽经', description: '四章196条格言，瑜伽哲学根本经典' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '乔拉克纳特', nameEn: 'Gorakhnath', religionId: hinduismId,
+      dates: '11世纪', title: '哈他瑜伽创始人·纳特派祖师',
+      school: '瑜伽修行', generation: 2,
+      biography: '乔拉克纳特（约11世纪），哈他瑜伽创始人和纳特派祖师。将瑜伽扩展为包含体位法、呼吸控制和能量修炼的完整体系。',
+      coreTeaching: '哈他瑜伽通过体位、呼吸控制和能量修炼净化身体，唤醒昆达里尼能量，达到解脱。身体是灵性修行的神殿。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['身体是修行的最佳工具', '控制呼吸即控制心灵'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // 罗摩克里希那 must be created before 维韦卡南达 (teacher reference)
+  const ramakrishna = await prisma.patriarch.create({
+    data: {
+      name: '罗摩克里希那', nameEn: 'Ramakrishna', religionId: hinduismId,
+      dates: '1836-1886', title: '大神秘主义者·万教归一实证者',
+      school: '近现代复兴', generation: 1,
+      biography: '罗摩克里希那（1836-1886），达克希涅什瓦尔迦梨女神庙祭司。亲身实修验证印度教、伊斯兰教和基督教灵性道路。近代印度教最伟大的神秘主义者。',
+      coreTeaching: '万教归一——所有宗教都是通向同一终极真理的不同道路。直接灵性体验高于经典知识。',
+      templeNames: [
+        { name: '达克希涅什瓦尔寺', nameEn: 'Dakshineswar Kali Temple', role: '罗摩克里希那修行圣地', location: '加尔各答' },
+      ],
+      koans: [],
+      classicQuotes: ['有多少信仰，就有多少通往神的道路', '上帝在每个人心中，只是大多数人不知道', '只要你有真诚的渴望，神必定显现'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '斯瓦米·维韦卡南达', nameEn: 'Swami Vivekananda', religionId: hinduismId,
+      dates: '1863-1902', title: '实用吠檀多倡导者·世界宗教大会演说家',
+      school: '瑜伽修行', generation: 3, teacherId: ramakrishna.id,
+      biography: '维韦卡南达（1863-1902），罗摩克里希那最杰出弟子。1893年芝加哥世界宗教大会演讲震惊世界。创立罗摩克里希那修道会，提倡"实用吠檀多"。三十九岁英年早逝。',
+      coreTeaching: '实用吠檀多——每个灵魂都是潜在的神圣，通过四种瑜伽综合修行显现内在神圣。服务人类就是服务神。',
+      templeNames: [
+        { name: '贝卢尔修道院', nameEn: 'Belur Math', role: '罗摩克里希那修道会总部', location: '西孟加拉邦' },
+      ],
+      koans: [],
+      classicQuotes: ['起来，觉醒，不达目标不止步', '你是纯粹的意识，你是全能的', '服务人类就是服务神'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '帕拉宏撒·瑜伽南达', nameEn: 'Paramahansa Yogananda', religionId: hinduismId,
+      dates: '1893-1952', title: '克利亚瑜伽传播者·自悟协会创始人',
+      school: '瑜伽修行', generation: 3,
+      biography: '瑜伽南达（1893-1952），1920年移居美国，第一位长期居住西方的印度瑜伽大师。创立自悟协会，教授克利亚瑜伽。自传《一个瑜伽行者的自传》翻译成50多种语言。',
+      coreTeaching: '克利亚瑜伽是高级生命能量控制技术，科学化的灵性修行。上帝是永恒的喜乐。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['环境无法塑造你，除非你允许', '上帝在沉默中低语，在孤独中聆听', '越是平静，你越能成就'],
+      works: [
+        { title: '一个瑜伽行者的自传', description: '灵性文学经典，翻译成50多种语言' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '室利·奥罗宾多', nameEn: 'Sri Aurobindo', religionId: hinduismId,
+      dates: '1872-1950', title: '整合瑜伽创始人·超心智进化论者',
+      school: '瑜伽修行', generation: 3,
+      biography: '奥罗宾多（1872-1950），剑桥毕业，先为独立运动领袖，后转向灵性。在本地治里发展"整合瑜伽"。提出"超心智"进化理论。',
+      coreTeaching: '整合瑜伽——不逃离世界而是在世间实现灵性转化。人类意识正在进化，迈向超心智。',
+      templeNames: [
+        { name: '奥罗宾多修道院', nameEn: 'Sri Aurobindo Ashram', role: '整合瑜伽修行中心', location: '本地治里' },
+      ],
+      koans: [],
+      classicQuotes: ['地球上的生命不是偶然的迷途，而是神圣意志的进化表达', '所有的生命都是瑜伽'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 虔信运动 ──
+
+  // 罗摩难陀 must be created before 迦比尔 and 密拉白 (teacher reference)
+  const ramananda = await prisma.patriarch.create({
+    data: {
+      name: '罗摩难陀', nameEn: 'Ramananda', religionId: hinduismId,
+      dates: '14世纪', title: '北印虔信运动开创者',
+      school: '虔信运动', generation: 1,
+      biography: '罗摩难陀（约14世纪），北印虔信运动开创者。打破种姓限制，弟子包括织工迦比尔、皮匠拉维达斯等。以印地语传教。',
+      coreTeaching: '对罗摩的虔爱是通向解脱的直接道路。种姓和出身不能限制灵魂与神的关系。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['认识神的人无种姓之分', '无论何种出身，虔爱者皆为神之子民'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '迦比尔', nameEn: 'Kabir', religionId: hinduismId,
+      dates: '1440-1518', title: '超越宗教界限的诗人圣者',
+      school: '虔信运动', generation: 2, teacherId: ramananda.id,
+      biography: '迦比尔（1440-1518），瓦拉纳西穆斯林织工家庭出身。既批评印度教偶像崇拜也批评伊斯兰教形式主义。诗歌影响了锡克教圣典。',
+      coreTeaching: '神超越一切名号和形式——不在庙里也不在清真寺里，就在每个人心中。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['我不是印度教徒，也不是穆斯林', '你在哪里寻找我？我就在你身旁', '织这块布的人，比世上任何织工都精细'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '密拉白', nameEn: 'Mirabai', religionId: hinduismId,
+      dates: '1498-1547', title: '奎师那虔信女圣者',
+      school: '虔信运动', generation: 2, teacherId: ramananda.id,
+      biography: '密拉白（1498-1547），拉贾斯坦公主。全身心奉献给奎师那，面对王室迫害不屈。虔信诗歌至今全印度传唱。',
+      coreTeaching: '对奎师那的纯粹虔爱超越世俗束缚。真正的虔信是无条件的爱和完全的臣服。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['我已将此身献给克里希纳，无论毒药还是甘露', '世人说密拉疯了，只有神知道真相'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '柴坦尼亚', nameEn: 'Chaitanya Mahaprabhu', religionId: hinduismId,
+      dates: '1486-1534', title: '唱颂运动发起者·高迪亚外士那瓦创始人',
+      school: '虔信运动', generation: 3,
+      biography: '柴坦尼亚（1486-1534），孟加拉婆罗门。发起大规模唱颂运动。创立高迪亚外士那瓦，影响通过ISKCON传播全世界。',
+      coreTeaching: '唱颂圣名是末法时代最有效的灵性修行。虔爱最高境界是Prema（纯粹灵性之爱）。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['唱颂圣名，唱颂圣名，末法时代别无他途', '一个人应比草更卑微，比树更忍耐'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '图勒西达斯', nameEn: 'Tulsidas', religionId: hinduismId,
+      dates: '1532-1623', title: '罗摩虔信诗圣',
+      school: '虔信运动', generation: 3,
+      biography: '图勒西达斯（1532-1623），北印最伟大诗人圣者。《罗摩功行录》以阿瓦德语重述罗摩衍那，被比作"印度的圣经"。',
+      coreTeaching: '罗摩是至高神化身，对罗摩的虔爱是通向解脱的最美道路。虔爱的力量可以跨越种姓鸿沟。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['恭敬双手合十，我先礼拜胜利的罗摩', '罗摩之名的力量大于罗摩本身'],
+      works: [
+        { title: '罗摩功行录', description: '七章诗歌，以阿瓦德语重述罗摩衍那' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '苏尔达斯', nameEn: 'Surdas', religionId: hinduismId,
+      dates: '1478-1583', title: '盲眼诗圣·克里希纳虔信歌者',
+      school: '虔信运动', generation: 3,
+      biography: '苏尔达斯（1478-1583），自幼失明，诗集《苏尔之海》超十万首诗歌描绘克里希纳童年。"八大诗人"之一。',
+      coreTeaching: '真正的"看见"不靠肉眼而靠虔爱之心。诗歌和音乐是灵性体验最自然的表达。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['我的眼睛虽盲，心却看见了克里希纳', '弗林达文的牧笛声穿透了所有障碍'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 经典六派 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '迦毗罗', nameEn: 'Kapila', religionId: hinduismId,
+      dates: '前7世纪', title: '数论哲学创始人',
+      school: '经典六派', generation: 1,
+      biography: '迦毗罗（约前7世纪），数论哲学创始人。提出"二十五谛"宇宙论。《薄伽梵歌》灵魂不灭思想源于数论。',
+      coreTeaching: '宇宙由原质和神我两种根本实在构成。痛苦根源是混淆二者。解脱就是分辨，使神我恢复纯粹觉知。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['分辨灵魂与物质，即是解脱之路', '一切痛苦源于无知的混淆'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '足目', nameEn: 'Kanada', religionId: hinduismId,
+      dates: '前6世纪', title: '胜论哲学创始人·原子论先驱',
+      school: '经典六派', generation: 1,
+      biography: '足目（约前6世纪），胜论哲学创始人。提出世界上最早的原子论之一。六种范畴涵盖一切存在。',
+      coreTeaching: '一切物质由不可分割的极微（原子）组成。世界可通过理性分析和分类来理解。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['极微是不可分割的最终实在', '正确的知识来自正确的分类'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '乔答摩', nameEn: 'Gautama Aksapada', religionId: hinduismId,
+      dates: '前2世纪', title: '正理哲学创始人·印度逻辑学之父',
+      school: '经典六派', generation: 1,
+      biography: '乔答摩（约前2世纪），正理哲学创始人，著《正理经》。创建印度逻辑学完整体系，四种有效知识来源和五段论推理法。',
+      coreTeaching: '正确的知识是消除痛苦的根本途径。通过五段论推理消除谬误和无知。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['痛苦的根源是错误的知识', '正确的推理是通向真理的阶梯'],
+      works: [
+        { title: '正理经', description: '印度逻辑学与认识论奠基之作' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '耆米尼', nameEn: 'Jaimini', religionId: hinduismId,
+      dates: '前4世纪', title: '弥曼差哲学创始人',
+      school: '经典六派', generation: 2,
+      biography: '耆米尼（约前4世纪），弥曼差哲学创始人。创建严格的经文诠释学方法。吠陀是永恒的、无作者的。',
+      coreTeaching: '吠陀是永恒的最高权威。正确执行祭祀仪式可积累功德。诠释必须遵循严格规则。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['法即是吠陀所命令的行为', '言语与意义的关系是永恒的'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '自在黑', nameEn: 'Ishvarakrishna', religionId: hinduismId,
+      dates: '4世纪', title: '数论颂作者·三德理论系统化者',
+      school: '经典六派', generation: 2,
+      biography: '自在黑（约4世纪），数论哲学系统化集大成者。著《数论颂》七十颂，清晰阐述三德理论和二十五谛演化。',
+      coreTeaching: '原质具三种根本属性（三德）：萨埵/善、罗阇/动、答摩/暗。宇宙一切变化都是三德比例变动的结果。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['三德的平衡即是原质的本来状态', '知识是灵魂最终的解放者'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 近现代复兴 ──
+  // (罗摩克里希那 already created above for teacher reference)
+
+  await prisma.patriarch.create({
+    data: {
+      name: '圣雄甘地', nameEn: 'Mahatma Gandhi', religionId: hinduismId,
+      dates: '1869-1948', title: '圣雄·真理力量实践者·非暴力之父',
+      school: '近现代复兴', generation: 1,
+      biography: '甘地（1869-1948），印度独立运动领袖，"圣雄"。发展"真理力量"和"非暴力"。以《薄伽梵歌》为根基。影响马丁·路德·金、曼德拉等。',
+      coreTeaching: '真理力量——以真理和非暴力对抗不义。行动瑜伽——尽本分行动，不执著成果。简朴生活，高尚思想。',
+      templeNames: [
+        { name: '萨巴尔马蒂修道院', nameEn: 'Sabarmati Ashram', role: '甘地修道院·食盐长征起点', location: '古吉拉特邦' },
+      ],
+      koans: [],
+      classicQuotes: ['以眼还眼只会让全世界变成瞎子', '你必须成为你希望在世界上看到的改变', '在真理面前没有失败'],
+      works: [
+        { title: '我对真理的实验', description: '甘地自传，追求真理和非暴力的灵性旅程' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '泰戈尔', nameEn: 'Rabindranath Tagore', religionId: hinduismId,
+      dates: '1861-1941', title: '诗哲·亚洲首位诺贝尔文学奖得主',
+      school: '近现代复兴', generation: 2,
+      biography: '泰戈尔（1861-1941），1913年亚洲第一位诺贝尔文学奖得主。《吉檀迦利》表达灵魂对无限者的渴望。创办圣蒂尼克坦学校。印度和孟加拉国国歌作词者。',
+      coreTeaching: '人与无限者之间是爱与美的关系。教育培养完整的人。东西方文化精髓可以融合。',
+      templeNames: [
+        { name: '圣蒂尼克坦', nameEn: 'Santiniketan', role: '泰戈尔创办的大学和文化中心', location: '西孟加拉邦' },
+      ],
+      koans: [],
+      classicQuotes: ['世界以痛吻我，我要报之以歌', '信仰是感知的鸟，在黎明还是黑暗时已经歌唱', '让我的爱像阳光一样包围着你，却给你光辉灿烂的自由'],
+      works: [
+        { title: '吉檀迦利', description: '103首散文诗，获诺贝尔文学奖' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '罗摩那·马哈希', nameEn: 'Ramana Maharshi', religionId: hinduismId,
+      dates: '1879-1950', title: '自我参究导师·沉默圣者',
+      school: '近现代复兴', generation: 2,
+      biography: '罗摩那·马哈希（1879-1950），十六岁时自发觉悟真我，前往蒂鲁瓦纳马莱阿鲁那恰拉圣山度过余生。极少主动说法，以沉默传达教导。',
+      coreTeaching: '自我参究——持续追问"我是谁？"当假我消融，纯粹觉知的真我自然显现。真我就是存在-意识-喜乐。',
+      templeNames: [
+        { name: '罗摩那修道院', nameEn: 'Sri Ramanasramam', role: '罗摩那·马哈希修道院', location: '泰米尔纳德邦蒂鲁瓦纳马莱' },
+      ],
+      koans: [],
+      classicQuotes: ['你的本来面目一直在那里，只是被念头遮蔽了', '沉默是永不停止的传法', '找到那个问"我是谁"的人'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: 'A.C.巴克提韦丹塔', nameEn: 'A.C. Bhaktivedanta Swami', religionId: hinduismId,
+      dates: '1896-1977', title: 'ISKCON创始人·全球奎师那知觉传播者',
+      school: '近现代复兴', generation: 3,
+      biography: '巴克提韦丹塔（1896-1977），69岁身无分文搭货船前往美国。创立ISKCON，翻译注释80余卷经典。十二年环游世界十四次，建立108座寺院。',
+      coreTeaching: '奎师那是至尊人格首神。通过唱颂圣名、吃奉献食物、阅读经典和服务奉献者唤醒灵魂本来的奎师那知觉。',
+      templeNames: [
+        { name: 'ISKCON弗林达文', nameEn: 'ISKCON Vrindavan', role: 'ISKCON在克里希纳圣地的主要寺院', location: '北方邦弗林达文' },
+      ],
+      koans: [],
+      classicQuotes: ['唱颂Hare Krishna并快乐起来', '这是一场灵性革命', '我们不是拥有灵魂的身体，而是穿着身体的灵魂'],
+      works: [
+        { title: '博伽梵歌原义', description: '全球发行数亿册' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const hinduCount = 26;
+  console.log(`  ✓ ${hinduCount} new Hindu sages created + 2 updated (5 schools: Vedanta/Yoga/Bhakti/Darshana/Modern)`);
+
+  // ── 4q. 犹太教先贤 (Jewish Patriarchs) ──
+  console.log('  Creating Jewish patriarchs (4q)...');
+
+  const judaismId = religionMap['judaism'];
+
+  // Update existing 亚伯拉罕
+  const existingAbraham = await prisma.patriarch.findFirst({ where: { name: '亚伯拉罕' } });
+  existingAbraham
+    ? await prisma.patriarch.update({
+        where: { id: existingAbraham.id },
+        data: {
+          nameEn: 'Abraham', dates: '前2000年', title: '信心之父·三教共祖',
+          school: '圣经先知', generation: 1,
+          biography: '亚伯拉罕（约前2000年），犹太教、基督教和伊斯兰教三大一神教的共同始祖。上帝呼召他离开吾珥前往迦南应许之地，与他立约：后裔多如天上星、海边沙。在百岁得子以撒后，经受献祭独子的终极考验，以绝对信心回应上帝。希伯伦麦比拉洞是他与撒拉的安息之所，至今为犹太教、伊斯兰教共同圣地。',
+          coreTeaching: '绝对信心——一神信仰的根基。上帝是唯一真神，与信仰者立约。信心不是理解，而是在未知中顺服行走。',
+          achievements: '一神信仰之父，三大宗教共祖。与上帝立约，开创以色列民族。',
+          templeNames: [{ name: '麦比拉洞', nameEn: 'Cave of Machpelah', role: '列祖安息之地', location: '希伯伦' }],
+          koans: [], classicQuotes: ['我虽是尘土炉灰，还敢对主说话', '亚伯拉罕信耶和华，耶和华就以此为他的义'],
+          works: [], imageUrl: null,
+        },
+      })
+    : null;
+
+  // Update existing 摩西
+  const existingMoses = await prisma.patriarch.findFirst({ where: { name: '摩西' } });
+  existingMoses
+    ? await prisma.patriarch.update({
+        where: { id: existingMoses.id },
+        data: {
+          nameEn: 'Moses', dates: '前1400年', title: '最伟大的先知·十诫颁布者',
+          school: '圣经先知', generation: 2,
+          biography: '摩西（约前1400年），犹太民族最伟大的先知和立法者。出生于埃及被法老女儿收养，后蒙上帝召唤于燃烧荆棘旁，率领以色列人出埃及过红海。在西奈山上接受上帝亲授的十诫和妥拉，是犹太律法的奠基者。四十年旷野流浪中塑造了一个民族的信仰和律法体系，却未能亲入应许之地。被尊为"先知中最伟大者"。',
+          coreTeaching: '妥拉——上帝律法是生活的根基。十诫涵盖人与神、人与人的根本关系。律法不是束缚而是通向自由的道路。',
+          achievements: '率领以色列人出埃及，接受十诫，著妥拉五经。犹太律法体系奠基者。',
+          templeNames: [{ name: '西奈山', nameEn: 'Mount Sinai', role: '十诫颁布·神人会面之地', location: '西奈半岛' }],
+          koans: [], classicQuotes: ['我是自有永有的', '以色列啊，你要听！耶和华我们的神是独一的主', '你要尽心、尽性、尽力爱耶和华你的神'],
+          works: [{ title: '妥拉五经', description: '创世记至申命记，犹太教根本经典' }],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 圣经先知 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '大卫王', nameEn: 'King David', religionId: judaismId,
+      dates: '前1040-前970', title: '以色列之王·诗篇作者',
+      school: '圣经先知', generation: 3,
+      biography: '大卫（前1040-前970），以色列第二位国王，牧羊少年以甩石击败巨人歌利亚而闻名。统一以色列十二支派，定都耶路撒冷。他是战士、诗人和音乐家，著诗篇七十三首，表达了人类灵魂最深处的祈祷、忏悔和赞美。上帝与他立约：他的后裔将永远坐在宝座上，弥赛亚将从他的家系而出。',
+      coreTeaching: '与上帝建立亲密的个人关系。即使犯罪跌倒，也以真诚忏悔回转。诗篇教导人在喜乐和苦难中都向上帝敞开心灵。',
+      templeNames: [{ name: '锡安山大卫墓', nameEn: 'Tomb of David, Mount Zion', role: '大卫王传统安息地', location: '耶路撒冷' }],
+      koans: [], classicQuotes: ['耶和华是我的牧者，我必不至缺乏', '求你为我造清洁的心', '我观看你指头所造的天，便说人算什么'],
+      works: [{ title: '诗篇', description: '150篇赞美诗中73篇署名大卫，犹太礼拜根基' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '所罗门王', nameEn: 'King Solomon', religionId: judaismId,
+      dates: '前990-前931', title: '智慧之王·圣殿建造者',
+      school: '圣经先知', generation: 3,
+      biography: '所罗门（前990-前931），大卫之子，以色列最富有和最智慧的国王。向上帝求智慧而非财富，获赐超凡判断力。建造了辉煌的第一圣殿——耶路撒冷圣殿，成为犹太信仰的中心。著箴言、传道书和雅歌三卷圣经。在位期间以色列达到黄金时代，四方来朝。',
+      coreTeaching: '智慧始于敬畏上帝。世间万事皆有定时，日光之下并无新事。虚空的虚空，唯有敬畏神、谨守诫命才是人的本分。',
+      templeNames: [{ name: '耶路撒冷第一圣殿', nameEn: 'First Temple of Jerusalem', role: '所罗门建造·犹太信仰中心', location: '耶路撒冷圣殿山' }],
+      koans: [], classicQuotes: ['敬畏耶和华是智慧的开端', '虚空的虚空，凡事都是虚空', '日光之下并无新事'],
+      works: [{ title: '箴言', description: '智慧格言集' }, { title: '传道书', description: '人生哲理省思' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '以利亚', nameEn: 'Elijah', religionId: judaismId,
+      dates: '前9世纪', title: '烈火先知·弥赛亚先驱',
+      school: '圣经先知', generation: 4,
+      biography: '以利亚（前9世纪），以色列最具传奇色彩的先知。在亚哈王和耶洗别崇拜巴力的黑暗时代，孤身对抗450名巴力先知于迦密山，天降烈火焚烧祭物。后以旋风和火车火马升天，从未经历死亡。犹太传统相信他将在弥赛亚来临前再次出现。每年逾越节晚餐为他留一杯酒、开一扇门。',
+      coreTeaching: '独一真神的绝对忠诚。即使全世界背弃，一人也要坚守真理。上帝不在风暴地震烈火中，而在微小的声音里。',
+      templeNames: [{ name: '迦密山', nameEn: 'Mount Carmel', role: '以利亚与巴力先知对决之地', location: '海法' }],
+      koans: [], classicQuotes: ['你们心持两意要到几时呢？若耶和华是神就当跟从耶和华', '耶和华啊，罢了！求你取我的性命', '耶和华不在风中，不在地震中，不在火中，乃在火后有微小的声音'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 拉比传统 ──
+
+  const hillel = await prisma.patriarch.create({
+    data: {
+      name: '希勒尔', nameEn: 'Hillel the Elder', religionId: judaismId,
+      dates: '前110-10', title: '口传律法大师·金律',
+      school: '拉比传统', generation: 1,
+      biography: '希勒尔（前110-10），巴比伦出生后移居耶路撒冷，成为犹太史上最重要的拉比之一。他和沙迈构成了拉比犹太教的两大学派。希勒尔以温和谦逊著称，他的"金律"——"己所不欲勿施于人，这就是全部妥拉"——成为犹太伦理的核心。发展了七条解经原则，为口传律法奠定方法论基础。',
+      coreTeaching: '金律——己所不欲勿施于人，这就是全部妥拉，其余都是注释。去学习吧！谦逊和耐心是通向智慧的门户。',
+      templeNames: [], koans: [],
+      classicQuotes: ['己所不欲勿施于人——这就是全部妥拉', '若我不为自己，谁为我？若我只为自己，我算什么？若不是现在，更待何时？', '不要与世隔绝，不要自信到老'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const akiva = await prisma.patriarch.create({
+    data: {
+      name: '阿基瓦拉比', nameEn: 'Rabbi Akiva', religionId: judaismId,
+      dates: '50-135', title: '密释纳奠基人·殉教圣贤',
+      school: '拉比传统', generation: 2, teacherId: hillel.id,
+      biography: '阿基瓦（50-135），四十岁之前是目不识丁的牧羊人，在妻子拉结的鼓励下开始学习。成为当世最伟大的拉比，拥有两万四千弟子。系统化口传律法，为密释纳的编纂奠定基础。在巴尔·科赫巴起义中支持反罗马抵抗，被罗马人用铁梳活活刮肉处死。临终以"示玛"祈祷词含笑殉道。',
+      coreTeaching: '妥拉的每一笔一划都蕴含深意。"爱邻如己"是妥拉最伟大的原则。学习永远不嫌晚，四十岁开始也能成为最伟大的学者。',
+      templeNames: [{ name: '阿基瓦墓', nameEn: 'Tomb of Rabbi Akiva', role: '殉教圣贤安息地', location: '提比里亚' }],
+      koans: [], classicQuotes: ['爱邻如己——这是妥拉中最伟大的原则', '一切都是预见的，但自由意志是被赋予的', '水滴石穿——若柔软的水能穿透坚硬的石头，妥拉必能穿透我的心'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '犹大·哈纳西', nameEn: 'Judah ha-Nasi', religionId: judaismId,
+      dates: '135-217', title: '密释纳编纂者·拉比之师',
+      school: '拉比传统', generation: 3,
+      biography: '犹大·哈纳西（135-217），被尊称为"拉比"——拉比中的拉比。在罗马帝国摧毁第二圣殿后的危亡时刻，编纂了《密释纳》六卷六十三篇，将口传律法固定为文字，使犹太法律体系得以永续传承。他与罗马皇帝安敦尼·庇护保持友好关系，为犹太社区赢得宝贵的生存空间。',
+      coreTeaching: '口传律法必须被记录和系统化，才能在流散中保存犹太传统。法律的核心是正义与慈悲的平衡。',
+      templeNames: [{ name: '拜特谢阿里姆墓地', nameEn: 'Bet She\'arim Necropolis', role: '犹大·哈纳西安息地·UNESCO遗产', location: '下加利利' }],
+      koans: [], classicQuotes: ['哪条路是人应选择的？凡自己觉得美好、别人也认为美好的', '不要看容器，要看里面的内容', '计算一条诫命的代价与报酬'],
+      works: [{ title: '密释纳', description: '口传律法编纂，犹太法律根基，六卷六十三篇' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '拉什', nameEn: 'Rashi', religionId: judaismId,
+      dates: '1040-1105', title: '圣经与塔木德注释大师',
+      school: '拉比传统', generation: 4,
+      biography: '拉什（1040-1105），全名拉比什洛莫·伊茨哈基，法国特鲁瓦的葡萄酒商人兼学者。他对希伯来圣经和巴比伦塔木德的逐句注释，以精炼简明著称，一千年来几乎每个犹太学生都从拉什注释开始学习。他的注释被印刷在每一版塔木德和妥拉的页面旁，影响之深远无人能及。',
+      coreTeaching: '经文的字面意义（p\'shat）是理解的根基。注释应当简明扼要，让经文自己说话。学问要服务于日常生活中的律法实践。',
+      templeNames: [], koans: [],
+      classicQuotes: ['我只来教导经文的字面意义', '如果一个字有很多解释，选择最简单的那个'],
+      works: [{ title: '妥拉注释', description: '犹太圣经逐句注释，千年标准' }, { title: '塔木德注释', description: '巴比伦塔木德完整注释' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '迈蒙尼德', nameEn: 'Maimonides', religionId: judaismId,
+      dates: '1138-1204', title: '中世纪最伟大犹太学者',
+      school: '拉比传统', generation: 5,
+      biography: '迈蒙尼德（1138-1204），全名拉比摩西·本·迈蒙，出生于西班牙科尔多瓦，后流亡至开罗任苏丹御医。著《迷途指津》融合亚里士多德哲学与犹太神学，著《密释纳妥拉》系统化全部犹太律法为十四卷巨著。提出犹太教十三条信仰原则，至今是犹太正统信仰的标准表述。被誉为"从摩西到摩西，没有人像摩西"。',
+      coreTeaching: '理性与信仰并行不悖。上帝的存在可以通过理性论证，但上帝的本质超越人类理解。信仰十三条原则是犹太教的根基。',
+      templeNames: [{ name: '迈蒙尼德墓', nameEn: 'Tomb of Maimonides', role: '中世纪最伟大犹太学者安息地', location: '提比里亚' }],
+      koans: [], classicQuotes: ['从摩西到摩西，没有人像摩西', '给予的最高境界是帮助人自立', '人应当接受真理，不论它来自何处'],
+      works: [{ title: '迷途指津', description: '犹太哲学巨著，融合理性与信仰' }, { title: '密释纳妥拉', description: '犹太律法系统化，十四卷' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 卡巴拉神秘主义 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '西蒙·巴尔·约海', nameEn: 'Shimon bar Yochai', religionId: judaismId,
+      dates: '2世纪', title: '光辉之书传承者',
+      school: '卡巴拉神秘主义', generation: 1,
+      biography: '西蒙·巴尔·约海（2世纪），阿基瓦拉比最杰出的弟子。因批评罗马统治被判死刑，与儿子在山洞中隐居十三年，潜心研读妥拉神秘层面。传统认为他是《光辉之书》（佐哈尔）的作者或灵感来源。他的忌日拉格·巴奥梅尔成为犹太节日，每年数十万人涌至梅龙山他的墓前庆祝。',
+      coreTeaching: '妥拉有四层含义：字面、暗示、诠释和奥秘。只读字面是穿着衣服看人。灵魂之光隐藏在经文的每一个字母中。',
+      templeNames: [{ name: '梅龙山墓', nameEn: 'Tomb on Mount Meron', role: '拉格巴奥梅尔朝圣地', location: '上加利利' }],
+      koans: [], classicQuotes: ['妥拉的每个字都有七十层含义', '世界因三十六位义人而存在', '光辉照耀一切，却只有纯净的眼睛能看见'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '摩西·德·莱昂', nameEn: 'Moses de León', religionId: judaismId,
+      dates: '1250-1305', title: '光辉之书整理者',
+      school: '卡巴拉神秘主义', generation: 2,
+      biography: '摩西·德·莱昂（1250-1305），西班牙卡巴拉学者。他在13世纪晚期公开了《光辉之书》（佐哈尔），声称这是西蒙·巴尔·约海的古老著作。无论其作者争议，佐哈尔成为犹太神秘主义最重要的经典，与圣经、塔木德并列为犹太教三大文献。',
+      coreTeaching: '上帝通过十个质点（Sefirot）展现自身。每个灵魂都包含神圣的火花，修行的目的是收集这些火花回归源头。',
+      templeNames: [], koans: [],
+      classicQuotes: ['隐藏的光在创世之初就被保存，给未来的义人', '每个灵魂在降世前都知道全部妥拉'],
+      works: [{ title: '光辉之书（佐哈尔）', description: '犹太神秘主义根本经典，对妥拉的神秘注释' }],
+      imageUrl: null,
+    },
+  });
+
+  const cordovero = await prisma.patriarch.create({
+    data: {
+      name: '摩西·科尔多维罗', nameEn: 'Moses Cordovero', religionId: judaismId,
+      dates: '1522-1570', title: '体系化卡巴拉大师',
+      school: '卡巴拉神秘主义', generation: 3,
+      biography: '摩西·科尔多维罗（1522-1570），采法特卡巴拉学派的领袖。他是第一位将卡巴拉思想系统化和理性化的学者，著《棕榈树之园》梳理了佐哈尔中的矛盾与复杂概念。采法特在他和卢里亚的时代成为世界神秘主义的中心。',
+      coreTeaching: '上帝无所不在，万物都是上帝本质的展现。十个质点是上帝自我显现的管道，理解质点就是理解上帝与世界的关系。',
+      templeNames: [{ name: '采法特老城', nameEn: 'Old City of Safed', role: '16世纪卡巴拉中心', location: '上加利利采法特' }],
+      koans: [], classicQuotes: ['上帝是万物的存在，但万物不是上帝的存在', '万物都在上帝之中，上帝在万物之中'],
+      works: [{ title: '棕榈树之园', description: '卡巴拉体系化巨著' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '以撒·卢里亚', nameEn: 'Isaac Luria', religionId: judaismId,
+      dates: '1534-1572', title: '卢里亚卡巴拉·圣狮',
+      school: '卡巴拉神秘主义', generation: 4, teacherId: cordovero.id,
+      biography: '以撒·卢里亚（1534-1572），被尊为"圣狮"（Ha-Ari）。在采法特仅短短两年便革新了整个卡巴拉体系。提出三大核心概念：齐姆祖姆（上帝收缩自身为创造腾出空间）、器皿破碎（神圣之光溢出导致世界碎裂）和修复世界（Tikkun）。三十八岁英年早逝，未留下任何著作，教导全由弟子海伊姆·维塔尔记录。',
+      coreTeaching: '齐姆祖姆——上帝收缩自身为世界腾出空间。器皿破碎后神圣火花散落世间。每个人的使命是通过善行修复世界（Tikkun Olam）。',
+      templeNames: [{ name: '卢里亚会堂', nameEn: 'Ha-Ari Synagogue', role: '圣狮祈祷与教导之地', location: '采法特' }],
+      koans: [], classicQuotes: ['每个灵魂来到世间都有独特的修复使命', '善行释放被囚禁的神圣火花', '世界的碎片等待我们去修复'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '亚伯拉罕·阿布拉菲亚', nameEn: 'Abraham Abulafia', religionId: judaismId,
+      dates: '1240-1291', title: '预言卡巴拉·字母冥想',
+      school: '卡巴拉神秘主义', generation: 4,
+      biography: '亚伯拉罕·阿布拉菲亚（1240-1291），西班牙裔卡巴拉学者，创立预言卡巴拉（Kabbalah Nevuit）。他发展了一套通过希伯来字母组合、呼吸控制和身体姿势达到神秘体验的冥想技术。曾试图面见教皇尼古拉三世以讨论宗教真理。他的方法在正统犹太教中颇具争议，但深刻影响了后世冥想传统。',
+      coreTeaching: '通过希伯来字母的组合与置换冥想，灵魂可以超越肉体限制，达到预言状态。字母是宇宙的建构材料。',
+      templeNames: [], koans: [],
+      classicQuotes: ['字母是灵魂通往天堂的阶梯', '当心灵完全集中于神圣之名，预言之门自然打开'],
+      works: [{ title: '生命之书', description: '预言卡巴拉冥想方法' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 哈西迪运动 ──
+
+  const baalShemTov = await prisma.patriarch.create({
+    data: {
+      name: '巴尔·谢姆·托夫', nameEn: 'Baal Shem Tov', religionId: judaismId,
+      dates: '1698-1760', title: '哈西迪运动创始人·善名大师',
+      school: '哈西迪运动', generation: 1,
+      biography: '巴尔·谢姆·托夫（1698-1760），原名以色列·本·以利以谢，意为"善名大师"。出生于乌克兰贫穷犹太家庭，年轻时在喀尔巴阡山林中隐修。三十六岁公开传道，创立哈西迪运动：上帝无所不在，喜乐是侍奉上帝最好的方式，每个普通人的真诚祈祷比学者的学问更有价值。这场运动席卷东欧，改变了数百万犹太人的灵性生活。',
+      coreTeaching: '上帝无所不在（Panentheism）。喜乐地侍奉上帝——以歌唱、舞蹈和热情祈祷接近神圣。每个人的灵魂都是神圣的火花。',
+      templeNames: [{ name: '梅兹博日', nameEn: 'Medzhybizh', role: '巴尔谢姆托夫传道中心与墓地', location: '乌克兰' }],
+      koans: [], classicQuotes: ['从每一件事物中，人都可以学到侍奉上帝的方式', '遗忘是流放，记忆是救赎的根基', '让你的祈祷像火焰一样'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const dovBer = await prisma.patriarch.create({
+    data: {
+      name: '多夫·贝尔', nameEn: 'Dov Ber of Mezeritch', religionId: judaismId,
+      dates: '1704-1772', title: '大传道者·哈西迪第二代领袖',
+      school: '哈西迪运动', generation: 2, teacherId: baalShemTov.id,
+      biography: '多夫·贝尔（1704-1772），被称为"梅泽里奇的大传道者"（Maggid）。原为学者因病寻求巴尔·谢姆·托夫的治愈而成为其弟子。师父去世后接掌运动领导权，将哈西迪运动从民间运动转化为有组织的灵性体系。培养了数十位杰出弟子，分派到各地建立王朝，使哈西迪运动在一代人内遍布东欧。',
+      coreTeaching: '虚无（Ayin）是最高的灵性境界——将自我消融在上帝的无限中。祈祷时要达到忘我的"德维库特"（与神合一）状态。',
+      templeNames: [], koans: [],
+      classicQuotes: ['在虚无中包含一切', '思想到达之处，整个人就到达那里', '最伟大的侍奉是在最平凡的行为中'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '雪尼尔·扎尔曼', nameEn: 'Shneur Zalman of Liadi', religionId: judaismId,
+      dates: '1745-1812', title: '哈巴德创始人·塔尼亚作者',
+      school: '哈西迪运动', generation: 3, teacherId: dovBer.id,
+      biography: '雪尼尔·扎尔曼（1745-1812），哈巴德（Chabad）王朝创始人。哈巴德代表智慧（Chochmah）、理解（Binah）、知识（Da\'at）。著《塔尼亚》将卡巴拉和哈西迪思想系统化为可学习的智识体系，被称为"哈西迪运动的圣经"。曾因被控叛国入狱，获释日成为哈巴德节日。',
+      coreTeaching: '每个犹太人都有两个灵魂——神圣灵魂和动物灵魂的持续争战。通过学习和冥想，智慧之光可以转化动物灵魂。',
+      templeNames: [], koans: [],
+      classicQuotes: ['中间人——不是义人也不是恶人，是大多数人的真实状态', '头脑天生统治心灵', '每个犹太人都有两个灵魂'],
+      works: [{ title: '塔尼亚', description: '哈巴德哲学根基，哈西迪运动的圣经' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '纳赫曼', nameEn: 'Nachman of Breslov', religionId: judaismId,
+      dates: '1772-1810', title: '布雷斯洛夫派·故事大师',
+      school: '哈西迪运动', generation: 3, teacherId: dovBer.id,
+      biography: '纳赫曼（1772-1810），巴尔·谢姆·托夫的曾孙，布雷斯洛夫哈西迪王朝创始人。以讲述深奥的童话故事传达神秘教义而闻名。教导"整个世界是一座很窄的桥，关键是不要害怕"。三十八岁死于肺结核，没有指定继承人。追随者至今没有活的拉比领袖，被称为"死去的哈西迪"。',
+      coreTeaching: '信心的核心是在黑暗中仍然相信。与上帝的个人对话（Hitbodedut）——每天独处，用自己的话向上帝倾诉。永远不要绝望。',
+      templeNames: [{ name: '乌曼墓', nameEn: 'Uman Tomb', role: '纳赫曼安息地·新年朝圣', location: '乌克兰乌曼' }],
+      koans: [], classicQuotes: ['整个世界是一座很窄的桥，关键是完全不要害怕', '如果你相信可以破坏，就要相信可以修复', '即使在最黑暗的地方也有光明'],
+      works: [{ title: '纳赫曼故事集', description: '以童话形式传达的深奥卡巴拉教义' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '梅纳赫姆·门德尔·施尼尔森', nameEn: 'Menachem Mendel Schneerson', religionId: judaismId,
+      dates: '1902-1994', title: '第七代卢巴维奇领袖',
+      school: '哈西迪运动', generation: 4,
+      biography: '施尼尔森（1902-1994），哈巴德-卢巴维奇运动第七代领袖，被追随者尊称为"拉比"。在巴黎获工程学位后移居美国，1951年接掌领导权。将哈巴德从纽约布鲁克林小社区转变为全球最大的犹太外展组织，在世界各地设立数千个哈巴德中心。主张"每一个犹太人都重要"，派遣使者到最偏远角落。',
+      coreTeaching: '每个犹太人都是一盏灯——点亮一盏灯就能驱散许多黑暗。外展（Shlichus）——将犹太学习和实践带给每一个犹太人。',
+      templeNames: [{ name: '纽约770', nameEn: '770 Eastern Parkway', role: '卢巴维奇全球总部', location: '纽约布鲁克林' }],
+      koans: [], classicQuotes: ['一点光明就能驱散许多黑暗', '如果你还没有找到你在世界上的使命，说明你还没有开始寻找', '世界不是需要逃避的地方，而是需要修复的地方'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 近现代思想 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '摩西·门德尔松', nameEn: 'Moses Mendelssohn', religionId: judaismId,
+      dates: '1729-1786', title: '犹太启蒙运动之父',
+      school: '近现代思想', generation: 1,
+      biography: '摩西·门德尔松（1729-1786），犹太启蒙运动（Haskalah）之父。出身贫穷，自学成才，成为柏林最受尊敬的哲学家之一。将妥拉翻译成德语，为犹太人融入欧洲社会打开大门。主张犹太教是理性宗教，可与现代文明兼容。他证明了一个人可以同时是虔诚的犹太人和现代知识分子。',
+      coreTeaching: '犹太教是理性宗教，与启蒙理性完全兼容。国家不应干预个人信仰。犹太人可以在保持信仰的同时参与现代文明。',
+      templeNames: [], koans: [],
+      classicQuotes: ['国家没有权力以奖惩手段干预个人信仰', '犹太教不是教条而是实践的宗教'],
+      works: [{ title: '耶路撒冷', description: '犹太教与政治权力分离的哲学论证' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '马丁·布伯', nameEn: 'Martin Buber', religionId: judaismId,
+      dates: '1878-1965', title: '对话哲学家·我与你',
+      school: '近现代思想', generation: 2,
+      biography: '马丁·布伯（1878-1965），奥地利裔以色列哲学家。著《我与你》提出人类存在的两种基本关系：我-你（真实的相遇与对话）和我-它（物化和利用）。与上帝的关系是永恒的"我-你"。收集哈西迪故事，向现代世界介绍了这一灵性传统的智慧。移居巴勒斯坦后倡导犹太-阿拉伯和平共处。',
+      coreTeaching: '我-你关系——真正的生活是相遇。每一次真诚的人际对话都是与上帝相遇的缩影。上帝是永恒的"你"。',
+      templeNames: [], koans: [],
+      classicQuotes: ['一切真实的生活是相遇', '当我面对一个人作为"你"，他就不再是经验中的一个事物', '上帝不是被证明的，而是被称呼的'],
+      works: [{ title: '我与你', description: '对话哲学经典' }, { title: '哈西迪故事集', description: '向现代世界介绍哈西迪智慧' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '亚伯拉罕·约书亚·赫舍尔', nameEn: 'Abraham Joshua Heschel', religionId: judaismId,
+      dates: '1907-1972', title: '深度神学·安息日的先知',
+      school: '近现代思想', generation: 2,
+      biography: '赫舍尔（1907-1972），波兰哈西迪世家出身，逃离纳粹后定居美国。著《安息日》将休息日诠释为"时间中的圣殿"。他的神学强调上帝不是冷漠的造物主，而是关心人类苦难的"神圣的悲情"（Divine Pathos）。与马丁·路德·金并肩参加塞尔玛民权游行，说"我的双腿在祈祷"。',
+      coreTeaching: '上帝不是无动于衷的，祂被人类的苦难所触动。安息日是时间中的圣殿——圣洁不只存在于空间，更存在于时间。敬畏是智慧的开端。',
+      templeNames: [], koans: [],
+      classicQuotes: ['敬畏（radical amazement）是一切真知的开端', '我的双腿在祈祷', '安息日是时间中的圣殿'],
+      works: [{ title: '安息日', description: '将安息日诠释为时间中的圣殿' }, { title: '人不孤独', description: '犹太神学的深度探索' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '约瑟夫·索洛维奇克', nameEn: 'Joseph Soloveitchik', religionId: judaismId,
+      dates: '1903-1993', title: '孤独的信仰之人',
+      school: '近现代思想', generation: 3,
+      biography: '索洛维奇克（1903-1993），被称为"拉夫"（The Rav），现代正统犹太教最具影响力的思想家。出身立陶宛拉比世家，在柏林获哲学博士。在波士顿叶史瓦大学执教近半世纪，培养了几代正统拉比。著《孤独的信仰之人》探讨现代人在信仰与世俗之间的孤独与张力。',
+      coreTeaching: '信仰之人注定孤独——他同时生活在两个世界。哈拉卡（犹太律法）不仅是规则，更是与上帝共同创造的过程。',
+      templeNames: [], koans: [],
+      classicQuotes: ['信仰之人是最孤独的人', '律法不是限制自由，而是赋予生命意义的框架'],
+      works: [{ title: '孤独的信仰之人', description: '现代信仰困境的经典探讨' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '以马内利·列维纳斯', nameEn: 'Emmanuel Levinas', religionId: judaismId,
+      dates: '1906-1995', title: '他者伦理学·面容哲学家',
+      school: '近现代思想', generation: 3,
+      biography: '列维纳斯（1906-1995），立陶宛裔法国哲学家。经历纳粹集中营后，将犹太伦理传统转化为现代哲学：他者的面容向我发出无限的伦理要求。伦理不是存在论的附属，而是"第一哲学"。每周在巴黎进行塔木德讲座四十年，将犹太经典智慧带入当代哲学对话。',
+      coreTeaching: '他者的面容——面对另一个人的脸，就是面对无限的伦理要求。"你不可杀人"是面容的第一句话。伦理先于存在论。',
+      templeNames: [], koans: [],
+      classicQuotes: ['他者的面容说：你不可杀我', '伦理是第一哲学', '我对他者的责任是无限的，先于任何契约'],
+      works: [{ title: '总体与无限', description: '他者伦理学奠基之作' }, { title: '塔木德讲义', description: '四十年塔木德哲学讲座' }],
+      imageUrl: null,
+    },
+  });
+
+  const judaismCount = 23;
+  console.log(`  ✓ ${judaismCount} new Jewish patriarchs created + 2 updated (5 schools: Biblical/Rabbinic/Kabbalah/Hasidism/Modern)`);
+
+  // ── 4r. 锡克教古鲁 (Sikh Gurus) ──
+  console.log('  Creating Sikh patriarchs (4r)...');
+
+  const sikhismId = religionMap['sikhism'];
+
+  // Update existing 古鲁那纳克
+  const existingNanak = await prisma.patriarch.findFirst({ where: { name: '古鲁那纳克' } });
+  const guruNanak = existingNanak
+    ? await prisma.patriarch.update({
+        where: { id: existingNanak.id },
+        data: {
+          nameEn: 'Guru Nanak', dates: '1469-1539', title: '第一代古鲁·锡克教创始人',
+          school: '前五代古鲁', generation: 1,
+          biography: '古鲁那纳克（1469-1539），锡克教创始人和第一代古鲁。出生于旁遮普拉合尔附近的塔尔万迪村。三十岁时在河中沐浴时失踪三天，归来后宣布"没有印度教徒，没有穆斯林——只有上帝的道路"。此后与穆斯林乐师马尔达那一起徒步行遍印度、西藏、阿拉伯和波斯，传播一神信仰和平等理念。晚年建立卡尔塔普尔社区，确立兰格尔（免费共食厨房）传统。',
+          coreTeaching: '一位上帝（Ik Onkar）——上帝唯一，无形无相，超越种姓和宗教分别。通过诵念神名（Nam Japna）、诚实劳动（Kirat Karni）和分享（Vand Chakna）实现灵性生活。',
+          achievements: '创立锡克教，打破种姓和宗教壁垒。建立兰格尔共食传统。五次远行传播真理。',
+          templeNames: [{ name: '楠卡纳·萨希布', nameEn: 'Nankana Sahib', role: '古鲁那纳克诞生地', location: '巴基斯坦旁遮普省' }],
+          koans: [], classicQuotes: ['没有印度教徒，没有穆斯林，只有上帝的道路', '真理是最高的美德，但比真理更高的是真实地生活', '上帝是一，祂的名字是真理'],
+          works: [{ title: '贾普吉·萨希布', description: '晨祷经，锡克教最重要的经文' }],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '古鲁那纳克', nameEn: 'Guru Nanak', religionId: sikhismId,
+          dates: '1469-1539', title: '第一代古鲁·锡克教创始人',
+          school: '前五代古鲁', generation: 1,
+          biography: '古鲁那纳克（1469-1539），锡克教创始人和第一代古鲁。三十岁时宣布"没有印度教徒，没有穆斯林——只有上帝的道路"。徒步行遍印度、西藏、阿拉伯和波斯，传播一神信仰和平等理念。',
+          coreTeaching: '一位上帝（Ik Onkar），通过诵念神名、诚实劳动和分享实现灵性生活。',
+          templeNames: [{ name: '楠卡纳·萨希布', nameEn: 'Nankana Sahib', role: '古鲁那纳克诞生地', location: '巴基斯坦旁遮普省' }],
+          koans: [], classicQuotes: ['没有印度教徒，没有穆斯林，只有上帝的道路'],
+          works: [{ title: '贾普吉·萨希布', description: '晨祷经' }], imageUrl: null,
+        },
+      });
+
+  const guruAngad = await prisma.patriarch.create({
+    data: {
+      name: '古鲁安格德', nameEn: 'Guru Angad', religionId: sikhismId,
+      dates: '1504-1552', title: '第二代古鲁·古木基文字创制者',
+      school: '前五代古鲁', generation: 2, teacherId: guruNanak.id,
+      biography: '古鲁安格德（1504-1552），锡克教第二代古鲁。原名莱赫纳，因对那纳克的绝对奉献被选为继承人并更名"安格德"（你身体的一部分）。他标准化了古木基文字（Gurmukhi），使那纳克的教导得以准确记录和传播。推广体育锻炼，建立学校，发展兰格尔传统。',
+      coreTeaching: '文字是保存真理的容器。古木基文字让每个人都能阅读古鲁的教导，打破婆罗门对梵文经典的垄断。',
+      templeNames: [{ name: '卡德尔·萨希布', nameEn: 'Khadur Sahib', role: '第二代古鲁传道中心', location: '旁遮普邦' }],
+      koans: [], classicQuotes: ['服从是通往灵性的最短道路', '身体是灵魂的田地，播种什么就收获什么'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruAmarDas = await prisma.patriarch.create({
+    data: {
+      name: '古鲁阿马达斯', nameEn: 'Guru Amar Das', religionId: sikhismId,
+      dates: '1479-1574', title: '第三代古鲁·兰格尔共食制度化',
+      school: '前五代古鲁', generation: 3, teacherId: guruAngad.id,
+      biography: '古鲁阿马达斯（1479-1574），七十三岁高龄被任命为第三代古鲁。将兰格尔共食传统制度化为必须——任何人想见古鲁，无论种姓高低，必须先一起坐在地上吃饭。连莫卧儿皇帝阿克巴也遵从此规。他反对寡妇殉葬（萨蒂）和面纱（普尔达），推动妇女平等。九十五岁高寿辞世。',
+      coreTeaching: '平等从共食开始——任何人见古鲁前必须先在兰格尔中平等用餐。上帝面前无种姓之分，男女一律平等。',
+      templeNames: [{ name: '戈因德瓦尔', nameEn: 'Goindval Sahib', role: '第三代古鲁圣地', location: '旁遮普邦' }],
+      koans: [], classicQuotes: ['先坐下一起吃饭，然后才见古鲁', '上帝创造的光在每个人心中，不分种姓'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruRamDas = await prisma.patriarch.create({
+    data: {
+      name: '古鲁拉姆达斯', nameEn: 'Guru Ram Das', religionId: sikhismId,
+      dates: '1534-1581', title: '第四代古鲁·阿姆利则建城者',
+      school: '前五代古鲁', generation: 4, teacherId: guruAmarDas.id,
+      biography: '古鲁拉姆达斯（1534-1581），第四代古鲁，阿马达斯的女婿。他建立了阿姆利则城（"甘露之池"），成为锡克教的圣城。组建了马散德制度（传教使者网络），将锡克教传播到更广泛地区。创作了著名的婚礼赞歌"拉万"，至今用于所有锡克教婚礼。',
+      coreTeaching: '灵魂与上帝的结合如同婚礼——四圈绕行象征灵魂逐步走向与神合一。社区建设是灵性实践的基础。',
+      templeNames: [{ name: '阿姆利则', nameEn: 'Amritsar', role: '古鲁拉姆达斯建立·锡克教圣城', location: '旁遮普邦' }],
+      koans: [], classicQuotes: ['灵魂新娘绕着神圣之光行走四圈', '甘露之池净化所有前来者的灵魂'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // Update existing 古鲁阿尔詹
+  const existingArjan = await prisma.patriarch.findFirst({ where: { name: '古鲁阿尔詹' } });
+  const guruArjan = existingArjan
+    ? await prisma.patriarch.update({
+        where: { id: existingArjan.id },
+        data: {
+          nameEn: 'Guru Arjan', dates: '1563-1606', title: '第五代古鲁·阿迪格兰特编纂者',
+          school: '前五代古鲁', generation: 5, teacherId: guruRamDas.id,
+          biography: '古鲁阿尔詹（1563-1606），第五代古鲁，拉姆达斯之子。编纂《阿迪格兰特》（最初的圣典），收录前四位古鲁及印度教、伊斯兰教圣人的诗篇，体现了锡克教的包容精神。建造了金庙（哈尔曼迪尔·萨希布），四面开门象征向一切人开放。因拒绝删除圣典中被莫卧儿皇帝认为亵渎的内容，被坐在滚烫铁板上五天后殉道，成为锡克教第一位殉道者。',
+          coreTeaching: '真理超越宗教界限——圣典收录印穆圣人诗篇证明上帝的教导不受宗教限制。金庙四面开门象征向所有人敞开。',
+          achievements: '编纂阿迪格兰特·建造金庙·锡克教第一位殉道者',
+          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib (Golden Temple)', role: '锡克教最神圣的殿堂', location: '阿姆利则' }],
+          koans: [], classicQuotes: ['甜蜜是你的意志，主啊，我只祈求你名的恩赐', '当痛苦来临时，不要怨恨——一切都是上帝的旨意'],
+          works: [{ title: '阿迪格兰特', description: '锡克教原始圣典编纂，后扩展为古鲁格兰特·萨希布' }],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '古鲁阿尔詹', nameEn: 'Guru Arjan', religionId: sikhismId,
+          dates: '1563-1606', title: '第五代古鲁·阿迪格兰特编纂者',
+          school: '前五代古鲁', generation: 5, teacherId: guruRamDas.id,
+          biography: '古鲁阿尔詹（1563-1606），编纂阿迪格兰特，建造金庙，锡克教第一位殉道者。',
+          coreTeaching: '真理超越宗教界限。',
+          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib', role: '锡克教最神圣殿堂', location: '阿姆利则' }],
+          koans: [], classicQuotes: ['甜蜜是你的意志'], works: [], imageUrl: null,
+        },
+      });
+
+  // ── 后五代古鲁 ──
+
+  const guruHargobind = await prisma.patriarch.create({
+    data: {
+      name: '古鲁哈戈宾德', nameEn: 'Guru Hargobind', religionId: sikhismId,
+      dates: '1595-1644', title: '第六代古鲁·米里与皮里双剑',
+      school: '后五代古鲁', generation: 6, teacherId: guruArjan.id,
+      biography: '古鲁哈戈宾德（1595-1644），第六代古鲁，阿尔詹殉道时年仅十一岁。他佩戴两把剑——米里（世俗权力）和皮里（灵性权力），标志着锡克教从纯粹灵修转向武装自卫。建立了阿卡尔塔赫特（永恒王座），成为锡克教政治权威的象征。多次与莫卧儿帝国交战，保卫了信仰自由。',
+      coreTeaching: '灵性与世俗不可分离——真正的圣人同时是战士。面对暴政时武装自卫是正义的，保护弱者是宗教义务。',
+      templeNames: [{ name: '阿卡尔塔赫特', nameEn: 'Akal Takht', role: '永恒王座·锡克教最高政治权威', location: '阿姆利则' }],
+      koans: [], classicQuotes: ['一手握玫瑰，一手握剑', '真正的勇士保护弱者'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruHarRai = await prisma.patriarch.create({
+    data: {
+      name: '古鲁哈尔·拉伊', nameEn: 'Guru Har Rai', religionId: sikhismId,
+      dates: '1630-1661', title: '第七代古鲁·草药医者',
+      school: '后五代古鲁', generation: 7, teacherId: guruHargobind.id,
+      biography: '古鲁哈尔·拉伊（1630-1661），第七代古鲁，以温和仁慈著称。建立了草药医疗诊所，为穷人免费治病。维持着一支军队但从未主动发动战争。据传曾治愈莫卧儿王子达拉·舒科的重病。他教导对一切生命的慈悲——即使走过花丛也要小心不折花茎。',
+      coreTeaching: '对一切生命的慈悲——保持军事力量以保护弱者，但不主动伤害任何生命。治愈身体和灵魂同样重要。',
+      templeNames: [{ name: '基拉特普尔', nameEn: 'Kiratpur Sahib', role: '第七代古鲁圣地', location: '旁遮普邦' }],
+      koans: [], classicQuotes: ['即使踏过花丛也不要折断花茎'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruHarKrishan = await prisma.patriarch.create({
+    data: {
+      name: '古鲁哈尔·克里尚', nameEn: 'Guru Har Krishan', religionId: sikhismId,
+      dates: '1656-1664', title: '第八代古鲁·最年幼的圣者',
+      school: '后五代古鲁', generation: 8, teacherId: guruHarRai.id,
+      biography: '古鲁哈尔·克里尚（1656-1664），五岁即位为第八代古鲁，锡克教历史上最年幼的古鲁。虽然年幼，但展现出非凡的灵性智慧和慈悲。在德里天花瘟疫期间不顾自身安危照顾病人，最终自己也感染天花，八岁殉世。临终指示"巴巴·巴卡莱"（继承者在巴卡拉村），引导找到下一任古鲁。',
+      coreTeaching: '真正的伟大不在年龄而在灵性。以身作则服务众生，即使牺牲自己也在所不惜。',
+      templeNames: [{ name: '班格拉·萨希布', nameEn: 'Bangla Sahib', role: '第八代古鲁救济天花患者之地', location: '德里' }],
+      koans: [], classicQuotes: ['巴巴·巴卡莱——继承者在巴卡拉'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruTeghBahadur = await prisma.patriarch.create({
+    data: {
+      name: '古鲁特格·巴哈杜尔', nameEn: 'Guru Tegh Bahadur', religionId: sikhismId,
+      dates: '1621-1675', title: '第九代古鲁·印度之盾',
+      school: '后五代古鲁', generation: 9, teacherId: guruHarKrishan.id,
+      biography: '古鲁特格·巴哈杜尔（1621-1675），第九代古鲁。当莫卧儿皇帝奥朗则布强迫克什米尔婆罗门改信伊斯兰教时，古鲁挺身而出保护他们的信仰自由——虽然他们的信仰与锡克教不同。他被带到德里，在拒绝改信后被公开处决。他的牺牲不是为了自己的信仰，而是为了他人信仰自由的权利，被誉为"印度之盾"（Hind di Chadar）。',
+      coreTeaching: '为他人的信仰自由而牺牲是最崇高的行为。不畏惧也不使人恐惧——这是真正的圣者。',
+      templeNames: [{ name: '锡斯甘杰', nameEn: 'Sis Ganj Sahib', role: '第九代古鲁殉道地', location: '德里' }],
+      koans: [], classicQuotes: ['不畏惧也不使人恐惧——这是智者之道', '他为保护他人的信仰献出了生命'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const guruGobindSingh = await prisma.patriarch.create({
+    data: {
+      name: '古鲁戈宾德·辛格', nameEn: 'Guru Gobind Singh', religionId: sikhismId,
+      dates: '1666-1708', title: '第十代古鲁·卡尔萨创建者',
+      school: '后五代古鲁', generation: 10, teacherId: guruTeghBahadur.id,
+      biography: '古鲁戈宾德·辛格（1666-1708），锡克教第十代也是最后一位人间古鲁。1699年在拜萨基节创建卡尔萨（纯净之军），确立锡克教五K标志：长发（Kesh）、梳子（Kangha）、钢手环（Kara）、短剑（Kirpan）和短裤（Kachera）。他的四个儿子全部为信仰牺牲。临终前宣布不再有人间古鲁，将古鲁地位永久授予《古鲁格兰特·萨希布》——锡克教圣典本身成为永恒的古鲁。',
+      coreTeaching: '卡尔萨——每个锡克教徒都是圣战士，佩戴五K标志。圣典是永恒的古鲁。当一切和平手段用尽时，拔剑而战是正义的。',
+      achievements: '创建卡尔萨·确立五K标志·完成古鲁格兰特·萨希布·将古鲁地位授予圣典',
+      templeNames: [{ name: '阿南德普尔·萨希布', nameEn: 'Anandpur Sahib', role: '卡尔萨创建之地', location: '旁遮普邦' }],
+      koans: [], classicQuotes: ['当一切和平手段用尽时，拔剑而战是正义的', '认识整个人类为一个种族', '我将麻雀变成苍鹰，将豺狼变成雄狮'],
+      works: [{ title: '达萨姆格兰特', description: '戈宾德·辛格的诗歌和著作集' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 殉道英雄 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴巴·迪普·辛格', nameEn: 'Baba Deep Singh', religionId: sikhismId,
+      dates: '1682-1757', title: '殉道战士·头颅持剑者',
+      school: '殉道英雄', generation: 1,
+      biography: '巴巴·迪普·辛格（1682-1757），锡克教最传奇的殉道战士。当阿富汗入侵者亵渎金庙时，他率军反击，发誓收复圣地。战斗中被砍首，传说他一手托起自己的头颅，一手挥剑继续战斗直至抵达金庙前倒下。他的故事成为锡克教不屈精神的永恒象征。',
+      coreTeaching: '保卫信仰圣地是最神圣的义务。身体可以倒下，但信念永远站立。',
+      templeNames: [], koans: [],
+      classicQuotes: ['我发誓——即使头颅落地，也要到达金庙'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '班达·辛格·巴哈杜尔', nameEn: 'Banda Singh Bahadur', religionId: sikhismId,
+      dates: '1670-1716', title: '第一位锡克将领',
+      school: '殉道英雄', generation: 1,
+      biography: '班达·辛格·巴哈杜尔（1670-1716），原为印度教苦行僧，被古鲁戈宾德·辛格感召改信锡克教并委以军事重任。建立了第一个锡克政权，攻克了处决第九代古鲁的城市锡尔欣德。推行土地改革，将土地分给农民。最终被莫卧儿俘获，在拒绝改信后与七百名追随者一起殉道。',
+      coreTeaching: '社会正义是信仰的实践。土地属于耕种它的人。为公义而战斗和牺牲是最高的侍奉。',
+      templeNames: [], koans: [],
+      classicQuotes: ['信仰给我勇气，正义给我方向'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·马尼·辛格', nameEn: 'Bhai Mani Singh', religionId: sikhismId,
+      dates: '1644-1734', title: '经典学者·殉教圣贤',
+      school: '殉道英雄', generation: 2,
+      biography: '巴伊·马尼·辛格（1644-1734），锡克教最重要的经典学者之一。整理和编辑了《古鲁格兰特·萨希布》和《达萨姆格兰特》。担任金庙首席祭司多年。九十岁高龄因拒绝缴纳莫卧儿帝国强加的宗教税而被逮捕，被逐个关节肢解处死，成为锡克教殉道典范。',
+      coreTeaching: '经典的保存和传承是神圣使命。信仰不可被金钱赎买，真理不可被暴力压服。',
+      templeNames: [], koans: [],
+      classicQuotes: ['你可以砍断我的身体，但不能砍断我的信仰'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·塔鲁·辛格', nameEn: 'Bhai Taru Singh', religionId: sikhismId,
+      dates: '1720-1745', title: '头发殉道者',
+      school: '殉道英雄', generation: 2,
+      biography: '巴伊·塔鲁·辛格（1720-1745），年仅二十五岁的锡克教殉道者。因秘密资助锡克教抵抗运动被捕。莫卧儿总督命令他剪掉头发改信伊斯兰教。他宁死不从，头皮连同头发被活活剥离。锡克教信仰中头发是上帝的礼物，他用生命捍卫了这一信念。',
+      coreTeaching: '头发是上帝的礼物和信仰的标志。宁死不辱信仰——身体的痛苦是暂时的，灵魂的尊严是永恒的。',
+      templeNames: [], koans: [],
+      classicQuotes: ['你可以取走我的头皮，但不能取走我的信仰'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 学者圣人 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·古尔达斯', nameEn: 'Bhai Gurdas', religionId: sikhismId,
+      dates: '1551-1636', title: '锡克教第一学者·经文钥匙',
+      school: '学者圣人', generation: 1,
+      biography: '巴伊·古尔达斯（1551-1636），锡克教最重要的学者和诗人。他是古鲁阿尔詹编纂《阿迪格兰特》的首席抄写员。他自己的诗歌被古鲁阿尔詹称为"古鲁格兰特·萨希布的钥匙"——是理解圣典的最佳注释。著有40首瓦尔诗（ballads）和556首卡比特诗。',
+      coreTeaching: '理解经典需要钥匙——虔诚的研读和灵性体验缺一不可。诗歌是传达神圣真理最美的形式。',
+      templeNames: [], koans: [],
+      classicQuotes: ['古鲁的话语如同灯塔照亮黑暗的海洋', '理解来自于虔诚，虔诚来自于实践'],
+      works: [{ title: '古尔达斯瓦尔诗集', description: '40首叙事诗，理解古鲁格兰特的钥匙' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴巴·布达·吉', nameEn: 'Baba Buddha Ji', religionId: sikhismId,
+      dates: '1506-1631', title: '五代古鲁加冕者·125岁圣者',
+      school: '学者圣人', generation: 1,
+      biography: '巴巴·布达·吉（1506-1631），锡克教早期最受尊崇的圣者。从古鲁那纳克到古鲁哈戈宾德，他亲自为五位古鲁主持了继位典礼。因少年时被那纳克称赞"像老人一样智慧"而得名"布达"（老者）。活到125岁，横跨了锡克教前六位古鲁的时代。',
+      coreTeaching: '服务古鲁是最高的灵性修行。长寿是上帝对忠诚仆人的恩赐。见证和传承比个人成就更重要。',
+      templeNames: [], koans: [],
+      classicQuotes: ['我一生只做了一件事——服务古鲁'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·马尔达那', nameEn: 'Bhai Mardana', religionId: sikhismId,
+      dates: '1459-1534', title: '那纳克至友·拉巴布琴师',
+      school: '学者圣人', generation: 2,
+      biography: '巴伊·马尔达那（1459-1534），穆斯林音乐家，古鲁那纳克最亲密的同伴和随行者。当那纳克开始传道之旅时，马尔达那作为拉巴布琴师为他伴奏圣歌，一同跋涉数万里。他们的友谊跨越了宗教和种姓的界限，体现了锡克教"无分别"的核心精神。那纳克的许多赞歌标注"调：马尔达那拉巴布"。',
+      coreTeaching: '音乐是通向神圣的桥梁。真正的友谊超越宗教和种姓。以音乐侍奉上帝是最美的祈祷。',
+      templeNames: [], koans: [],
+      classicQuotes: ['马尔达那，弹奏吧——上帝在聆听', '音乐让灵魂飞翔到上帝脚下'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·南德·拉尔', nameEn: 'Bhai Nand Lal', religionId: sikhismId,
+      dates: '1633-1713', title: '波斯语诗人·宫廷学者',
+      school: '学者圣人', generation: 2,
+      biography: '巴伊·南德·拉尔（1633-1713），锡克教最伟大的波斯语诗人，古鲁戈宾德·辛格宫廷中的杰出学者。曾在莫卧儿宫廷任职，后被戈宾德·辛格的灵性魅力吸引而成为其亲密弟子。他的波斯语和旁遮普语诗歌被视为锡克教重要的补充经典。',
+      coreTeaching: '诗歌是灵性表达的最高形式。古鲁的面容是冥想的最好对象。波斯语的优雅可以承载锡克教的真理。',
+      templeNames: [], koans: [],
+      classicQuotes: ['古鲁的面容是我冥想的对象', '在古鲁的花园中，每朵花都散发真理的芬芳'],
+      works: [{ title: '迪万-依-古鲁·戈宾德·辛格', description: '赞颂第十代古鲁的波斯语诗集' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 近现代领袖 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '马哈拉贾·兰吉特·辛格', nameEn: 'Maharaja Ranjit Singh', religionId: sikhismId,
+      dates: '1780-1839', title: '锡克帝国之狮',
+      school: '近现代领袖', generation: 1,
+      biography: '马哈拉贾·兰吉特·辛格（1780-1839），被称为"旁遮普之狮"。从十二岁的少年首领崛起，统一了各锡克教米斯尔（小王国），建立了从阿富汗边境到西藏的锡克帝国。他以大理石和黄金重建了金庙，使其成为今日的辉煌面貌。他的治理以宗教宽容著称——军队和政府中印度教徒、穆斯林和欧洲人都有重要职位。',
+      coreTeaching: '锡克教的力量在于团结和宗教宽容。治国以正义为本，军事强大不是为了征服而是保护。',
+      templeNames: [], koans: [],
+      classicQuotes: ['上帝希望我以公正对待所有宗教', '旁遮普的荣耀属于它的人民'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴巴·卡拉克·辛格', nameEn: 'Baba Kharak Singh', religionId: sikhismId,
+      dates: '1868-1963', title: '独立运动领袖',
+      school: '近现代领袖', generation: 2,
+      biography: '巴巴·卡拉克·辛格（1868-1963），锡克教独立运动领袖，SGPC（锡克古尔德瓦拉管理委员会）首任主席。领导了古尔德瓦拉改革运动，将锡克教圣地从腐败的祭司阶层手中收回交由社区管理。多次入狱，是甘地之外印度独立运动中最重要的锡克教领袖。',
+      coreTeaching: '圣地应由信仰社区管理，不是任何个人的私产。锡克教的政治参与是信仰实践的一部分。',
+      templeNames: [], koans: [],
+      classicQuotes: ['古鲁的殿堂属于古鲁的子民'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴伊·维尔·辛格', nameEn: 'Bhai Vir Singh', religionId: sikhismId,
+      dates: '1872-1957', title: '旁遮普文学之父',
+      school: '近现代领袖', generation: 2,
+      biography: '巴伊·维尔·辛格（1872-1957），被誉为"旁遮普文学之父"和锡克教文艺复兴的灵魂人物。他的小说、诗歌和学术著作唤醒了锡克教的文化认同。创办了锡克教第一家出版社和报纸。注释古鲁格兰特·萨希布，使普通锡克教徒能够理解圣典的深层含义。',
+      coreTeaching: '文学和教育是信仰复兴的根基。用现代语言重新讲述古鲁的故事，让每一代人都能感受信仰的活力。',
+      templeNames: [], koans: [],
+      classicQuotes: ['笔是最锋利的剑', '让古鲁的话语活在每一代人的语言中'],
+      works: [{ title: '苏丹娜', description: '锡克教第一部旁遮普语小说' }, { title: '古鲁格兰特注释', description: '让普通信徒理解圣典' }],
+      imageUrl: null,
+    },
+  });
+
+  const sikhCount = 20;
+  console.log(`  ✓ ${sikhCount} new Sikh gurus/figures created + 2 updated (5 schools: First5Gurus/Last5Gurus/Martyrs/Scholars/Modern)`);
+
+  // ── 4s. 神道教神灵与思想家 (Shinto Kami & Theologians) ──
+  console.log('  Creating Shinto patriarchs (4s)...');
+
+  const shintoId = religionMap['shinto'];
+
+  // Update existing 天照大神
+  const existingAmaterasu = await prisma.patriarch.findFirst({ where: { name: '天照大神' } });
+  existingAmaterasu
+    ? await prisma.patriarch.update({
+        where: { id: existingAmaterasu.id },
+        data: {
+          nameEn: 'Amaterasu', dates: '神话时代', title: '太阳女神·皇祖神',
+          school: '天津神', generation: 1,
+          biography: '天照大神，日本神话中最崇高的神灵，太阳女神，天皇家族的始祖神。当她因弟弟须佐之男的暴行而隐入天岩户时，世界陷入永夜。众神以舞蹈和欢笑将她引出洞穴，光明重返世间。她授予后裔三种神器——八咫镜、天丛云剑和八尺琼勾玉，命天孙降临统治苇原中国。伊势神宫是供奉她的最高圣地，每二十年式年迁宫一次。',
+          coreTeaching: '光明与和谐是世界的根本。天照的隐与显象征黑暗与光明的永恒轮转。清净（清き明き心）是通向神圣的道路。',
+          achievements: '皇祖神·天岩户神话·三种神器传授·日本文化精神之源',
+          templeNames: [{ name: '伊势神宫', nameEn: 'Ise Grand Shrine', role: '天照大神最高圣地·二十年式年迁宫', location: '三重县伊势市' }],
+          koans: [], classicQuotes: ['此面镜当作吾魂，如拜吾前般崇敬之', '天壤无穷之神勅——日本当与天地共永存'],
+          works: [], imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 天津神 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊邪那岐', nameEn: 'Izanagi', religionId: shintoId,
+      dates: '神话时代', title: '创世父神·国生之神',
+      school: '天津神', generation: 1,
+      biography: '伊邪那岐，日本神话中的创世父神。与妹妹伊邪那美共同站在天浮桥上，以天沼矛搅动混沌之海，滴落的盐水凝结成最初的岛屿。二神结合生出日本列岛和众多神灵。妻子死后追入黄泉国，见其腐烂之身后逃回阳世。在日向橘小户的阿波岐原净身时，从左眼生天照、右眼生月读、鼻中生须佐之男。',
+      coreTeaching: '创造源于阴阳二神的结合。死与生的界限不可逾越。禊祓（净身洗罪）是神道教最根本的仪式——污秽可以被清水洗净。',
+      templeNames: [{ name: '多贺大社', nameEn: 'Taga Taisha', role: '伊邪那岐主祭神社', location: '�的贺县' }, { name: '淡路�的�的宫', nameEn: 'Izanagi Jingu', role: '国生神话发源地', location: '淡路岛' }],
+      koans: [], classicQuotes: ['生与死的境界不可混淆', '以清水洗去一切污秽——禊祓之始'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊邪那美', nameEn: 'Izanami', religionId: shintoId,
+      dates: '神话时代', title: '创世母神·黄泉之主',
+      school: '天津神', generation: 1,
+      biography: '伊邪那美，日本神话中的创世母神，伊邪那岐之妻。与丈夫共同创造了日本列岛和众多神灵。在生产火神迦具土时被灼伤而死，成为黄泉国（死亡世界）之主。丈夫追入黄泉时看到她的腐烂之身，她愤怒追赶丈夫至黄泉比良坂。分别时立誓："你若如此，我每日杀你国人一千"，丈夫回应"我则每日建一千五百产屋"——由此生死循环成立。',
+      coreTeaching: '死亡是自然秩序的一部分，不可逆转。生与死的对话确立了世界人口的增减法则。母性的创造力与毁灭力是同一枚硬币的两面。',
+      templeNames: [{ name: '花�的�的的�的', nameEn: 'Hana no Iwaya', role: '伊邪那美葬地传说', location: '三重县熊野' }],
+      koans: [], classicQuotes: ['你若如此，我每日杀你国人一千', '创造与毁灭是同一力量的不同面向'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '须佐之男', nameEn: 'Susanoo', religionId: shintoId,
+      dates: '神话时代', title: '风暴之神·八岐大蛇退治者',
+      school: '天津神', generation: 2,
+      biography: '须佐之男（素戋呜尊），伊邪那岐鼻中所生的风暴之神。性格粗暴，在高天原大闹导致姐姐天照隐入天岩户。被放逐到出云后性格转变——拯救了即将被八岐大蛇吞噬的奇稻田姬，以智谋和勇武斩杀八头八尾的巨蛇，从其尾中取出天丛云剑。从破坏者转变为英雄和保护者，成为出云的建设者。',
+      coreTeaching: '即使是最粗暴的灵魂也能实现转化。破坏与创造是同一能量的不同表现。勇气配合智慧才能战胜邪恶。',
+      templeNames: [{ name: '八坂神社', nameEn: 'Yasaka Shrine', role: '须佐之男总本社', location: '京都' }, { name: '出云大社', nameEn: 'Izumo Taisha', role: '须佐之男与出云的缘起', location: '岛根县' }],
+      koans: [], classicQuotes: ['八云立つ 出云八重垣 妻籠みに 八重垣つくる その八重垣を——日本最初的和歌'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '月读命', nameEn: 'Tsukuyomi', religionId: shintoId,
+      dates: '神话时代', title: '月神·夜之守护者',
+      school: '天津神', generation: 2,
+      biography: '月读命，伊邪那岐右眼所生的月神，掌管夜之国。在日本神话中相对神秘而沉默，与姐姐天照（太阳）形成昼夜对应。据记纪载，月读因杀死食物女神保食神而被天照厌恶，从此日月不再相见——这解释了太阳和月亮为何永远不在同一天空。月读象征着月光、潮汐和夜间世界的神秘力量。',
+      coreTeaching: '夜与昼、月与日是宇宙秩序的两面。沉默也是一种存在方式。月光照亮黑暗但不刺眼——温和的光明。',
+      templeNames: [{ name: '月读宫', nameEn: 'Tsukiyomi-no-miya', role: '伊势神宫内宫别宮', location: '三重县伊势市' }],
+      koans: [], classicQuotes: ['月光照亮夜行者的道路'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 国津神 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '大国主命', nameEn: 'Okuninushi', religionId: shintoId,
+      dates: '神话时代', title: '大地之主·国让之神',
+      school: '国津神', generation: 1,
+      biography: '大国主命，出云之地的统治者，须佐之男的后裔。经历了八十位兄弟的迫害和两次死亡后，在须佐之男的考验下成长为伟大的神灵。与少彦名神共同建设国土（国造り）。当天照派遣使者要求他让出国土时，大国主以"让国"（国让り）换取了出云大社的建造——日本最古老的神社。他是结缘之神，每年十月（神无月）全日本的神灵聚集到出云商议婚姻大事。',
+      coreTeaching: '真正的伟大在于放下。国让——为了更大的和谐而自愿让出权力。结缘——万物的联系是宇宙的根本法则。',
+      templeNames: [{ name: '出云大社', nameEn: 'Izumo Taisha', role: '大国主命主祭·日本最古神社', location: '岛根县出云市' }],
+      koans: [], classicQuotes: ['我将可见的世界让给天孙，而守护看不见的世界', '缘结万物，万物有缘'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '猿田彦大神', nameEn: 'Sarutahiko', religionId: shintoId,
+      dates: '神话时代', title: '道开之神·天孙降临引路者',
+      school: '国津神', generation: 1,
+      biography: '猿田彦大神，天孙琼琼杵尊降临苇原中国时，在天八达之�的路口迎接并引路的国津神。他鼻长七咫、身高七尺，眼睛如八咫镜般闪耀，照亮天地。他引导天孙安全降临日向的高千穗峰。此后成为道路之神和方位之神，守护旅人和新事业的开始。在伊势有专门的猿田彦神社。',
+      coreTeaching: '在人生的岔路口提供正确的方向。引路者的价值不在于自身的荣耀，而在于帮助他人找到正确的道路。',
+      templeNames: [{ name: '猿田彦神社', nameEn: 'Sarutahiko Shrine', role: '道开之神总本社', location: '三重县伊势市' }],
+      koans: [], classicQuotes: ['我将在一切道路的起点等待，引导迷途者'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '宇迦之御魂神', nameEn: 'Uka no Mitama', religionId: shintoId,
+      dates: '神话时代', title: '稻荷神·五谷丰穰',
+      school: '国津神', generation: 2,
+      biography: '宇迦之御魂神，稻荷神的主祭神，掌管稻米和五谷丰收。"宇迦"即食物之意。伏见稻荷大社是全日本三万余座稻荷神社的总本宫，千本�的居是其标志性景观。狐狸是稻荷神的使者，因狐狸守护稻田免受鼠害。随着时代变迁，稻荷信仰从农业丰收扩展到商业繁荣和诸愿成就，成为日本最广泛的民间信仰。',
+      coreTeaching: '感恩食物——每一粒米都蕴含神圣。丰收来自于与自然的和谐共处。勤劳和感恩是获得繁荣的根本。',
+      templeNames: [{ name: '伏见稻荷大社', nameEn: 'Fushimi Inari Taisha', role: '全日本稻荷神社总本宫·千本鸟居', location: '京都' }],
+      koans: [], classicQuotes: ['一粒米中有七位神灵', '感恩之心召唤丰收'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '建御雷神', nameEn: 'Takemikazuchi', religionId: shintoId,
+      dates: '神话时代', title: '雷神·武道之神',
+      school: '国津神', generation: 2,
+      biography: '建御雷神，从伊邪那岐斩杀火神迦具土的剑血中诞生的雷神。他是天照派遣到出云执行"国让"交涉的最终使者。在出云海岸将剑倒插于浪尖之上端坐，以绝对武力迫使大国主命让出国土。日本武道之祖神，�的岛神宫主祭神。春日大社也供奉他为藤原氏守护神。',
+      coreTeaching: '正义需要力量来守护。武力的最高境界是不战而屈人之兵。雷霆象征神圣的决断力。',
+      templeNames: [{ name: '鹿岛神宫', nameEn: 'Kashima Jingu', role: '建御雷神总本宫·武道之源', location: '茨城县鹿嶋市' }],
+      koans: [], classicQuotes: ['剑插浪尖，不战而胜'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '事代主神', nameEn: 'Kotoshironushi', religionId: shintoId,
+      dates: '神话时代', title: '惠比须·商业之神',
+      school: '国津神', generation: 2,
+      biography: '事代主神，大国主命之子。在国让事件中，他在美保之崎钓鱼时被建御雷神询问是否同意让国，他以青柴垣隐身后答应让出国土。后被视为惠比须（七福神之一），成为渔业和商业的守护神。他微笑抱鲷鱼的形象是日本最广为人知的福神之一。',
+      coreTeaching: '顺应大势而行，不逆天时。渔业和商业的繁荣来自于对自然规律的尊重和乐观的心态。微笑迎接每一天。',
+      templeNames: [{ name: '美保神社', nameEn: 'Miho Shrine', role: '事代主神总本宫', location: '岛根县松江市' }],
+      koans: [], classicQuotes: ['微笑是最好的祈祷', '钓鱼需要耐心，经商需要诚信'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 神社创建者 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '倭姬命', nameEn: 'Yamatohime-no-mikoto', religionId: shintoId,
+      dates: '垂仁朝', title: '初代斎宮·伊势神宫创建者',
+      school: '神社创建者', generation: 1,
+      biography: '倭姬命，垂仁天皇之女，第一代斎宮。受天皇之命为天照大神寻找永久的奉斎之地。她携带八咫镜，从大和出发历经二十余年、巡行近畿到东海的诸多地方。最终在伊势五十铃川畔，天照大神托梦说"此地清净安宁，是吾所愿之地"。于是在此建立了伊势神宫，开创了延续两千年的祭祀传统。',
+      coreTeaching: '寻找神圣之地需要耐心和虔诚。天照的居所由天照自己选定——人不能强制安排神圣。',
+      templeNames: [{ name: '伊势神宫', nameEn: 'Ise Grand Shrine', role: '倭姬命创建·天照奉斎之地', location: '三重县伊势市' }],
+      koans: [], classicQuotes: ['此地清净安宁，是吾所愿之地'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '秦氏族', nameEn: 'Hata Clan', religionId: shintoId,
+      dates: '7世纪', title: '伏见稻荷大社创建者',
+      school: '神社创建者', generation: 2,
+      biography: '秦氏族，日本古代有力的渡来系氏族，据传源自秦朝遗民。奈良时代在山城国深草建立伏见稻荷大社（711年），供奉稻荷神以祈求丰收。秦氏精于养蚕和机织，带来大陆先进技术。他们创建的伏见稻荷大社后来成为全日本三万余座稻荷神社的总本宫，千本鸟居闻名世界。',
+      coreTeaching: '技术与信仰并行。渡来人带来新文化，稻荷信仰将农业生产与神灵感恩结合，形成日本最深入民间的信仰形态。',
+      templeNames: [{ name: '伏见稻荷大社', nameEn: 'Fushimi Inari Taisha', role: '秦氏创建·稲荷総本宮', location: '京都市伏见区' }],
+      koans: [], classicQuotes: ['稻荷山上鸟居千座，通向神圣的道路不止一条'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '藤原不比等', nameEn: 'Fujiwara no Fuhito', religionId: shintoId,
+      dates: '659-720', title: '春日大社创建者·律令国家设计师',
+      school: '神社创建者', generation: 2,
+      biography: '藤原不比等（659-720），藤原�的足之子，日本律令国家的实际设计师。主导编纂了大宝律令和养老律令，确立了日本中央集权体制。为藤原氏族创建了春日大社，将武甕槌命从鹿岛请来作为氏族守护神，白鹿是其神使。春日大社后成为日本最重要的神社之一。',
+      coreTeaching: '国家秩序与神灵秩序相互对应。氏族的繁荣需要祖灵的护佑，而祭祀的虔诚换来神灵的恩惠。',
+      templeNames: [{ name: '春日大社', nameEn: 'Kasuga Taisha', role: '藤原氏創建·奈良世界遺産', location: '奈良市' }],
+      koans: [], classicQuotes: ['律令定秩序，祭祀安天下'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '行基', nameEn: 'Gyōki', religionId: shintoId,
+      dates: '668-749', title: '大僧正·东大寺建立功臣',
+      school: '神社创建者', generation: 3,
+      biography: '行基（668-749），奈良时代日本最受民众爱戴的僧侣。突破寺院围墙走入民间，建造桥梁、道路、灌溉设施和四十九座寺院布教所。起初被朝廷视为扰乱秩序而禁止，后因其巨大的民间声望被任命为日本第一位大僧正。他是圣武天皇建造东大寺大佛的最重要协力者，体现了神佛习合的精神。',
+      coreTeaching: '佛法不在寺院中而在民间。修桥铺路就是修行，利益众生就是佛道。神佛一体，寺社无别。',
+      templeNames: [{ name: '东大寺', nameEn: 'Todai-ji', role: '行基协力建造·奈良大佛', location: '奈良市' }],
+      koans: [], classicQuotes: ['修一座桥等于诵一万卷经'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '空海', nameEn: 'Kūkai', religionId: shintoId,
+      dates: '774-835', title: '弘法大师·神佛习合',
+      school: '神社创建者', generation: 3,
+      biography: '空海（774-835），法号遍照金刚，谥号弘法大师。入唐求法，师从青龙寺惠果阿阇梨，将真言密教完整传入日本。在高野山开创了真言宗总本山。他提出"本地垂迹说"——日本的神灵是佛菩萨的化身——确立了神佛习合的理论基础。创制片假名、发明五十音图、建立综合大学（种智院）。被视为日本文化史上最伟大的天才。',
+      coreTeaching: '即身成佛——此生此身即可证悟。本地垂迹——神与佛本质一体，形式不同。三密加持——身口意与佛合一。',
+      templeNames: [{ name: '高野山', nameEn: 'Koyasan', role: '空海创建·真言宗总本山', location: '和歌山县' }],
+      koans: [], classicQuotes: ['虚空尽，众生尽，涅槃尽，我愿乃尽', '阿字本不生——一切法无始无终'],
+      works: [{ title: '三教指归', description: '比较儒道佛三教的青年著作' }, { title: '十住心论', description: '十个心灵阶段的密教体系' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 神道思想家 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '度会行忠', nameEn: 'Watarai Yukitada', religionId: shintoId,
+      dates: '13世纪', title: '伊势神道·外宫神学创始人',
+      school: '神道思想家', generation: 1,
+      biography: '度会行忠（13世纪），伊势神宫外宫的祠官家族成员。他创立了伊势神道（度会神道），主张外宮祭神丰受大神的地位等于甚至高于内宫的天照大神。这是日本第一次从佛教中独立出来的纯粹神道理论体系。他强调"清净"作为神道的本质，将神道从佛教的附庸地位中解放出来。',
+      coreTeaching: '清净是神道的本质——身体的清净、心灵的清净、行为的清净。神道有自身独立的理论体系，不是佛教的附属。',
+      templeNames: [{ name: '伊势外宫', nameEn: 'Ise Outer Shrine (Geku)', role: '度会氏世代奉仕之地', location: '三重县伊势市' }],
+      koans: [], classicQuotes: ['清净是神道之本', '神之道，清明正直'],
+      works: [{ title: '类聚神祇本源', description: '伊势神道理论根本著作' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '吉田兼倶', nameEn: 'Yoshida Kanetomo', religionId: shintoId,
+      dates: '1435-1511', title: '吉田神道·唯一神道创始人',
+      school: '神道思想家', generation: 2,
+      biography: '吉田兼倶（1435-1511），吉田神社神官，创立了"唯一神道"（吉田神道）。他颠覆了本地垂迹说，主张佛菩萨反而是日本神灵的化身。在应仁之乱后的混乱中获得朝廷支持，使吉田神道成为室町时代最有影响力的神道体系。他建立了神道教的独立教义、仪式和组织体系。',
+      coreTeaching: '唯一神道——万物的根源是神道，佛教和儒教都源于神道。神灵是本源，佛菩萨是末流。日本是神之国。',
+      templeNames: [{ name: '吉田神社', nameEn: 'Yoshida Shrine', role: '吉田神道总本社', location: '京都市左京区' }],
+      koans: [], classicQuotes: ['神道是万道之根源', '神在万物之先，万物在神之中'],
+      works: [{ title: '唯一神道名法要集', description: '吉田神道教义体系' }],
+      imageUrl: null,
+    },
+  });
+
+  const kamoMabuchi = await prisma.patriarch.create({
+    data: {
+      name: '贺茂真渕', nameEn: 'Kamo no Mabuchi', religionId: shintoId,
+      dates: '1697-1769', title: '国学先驱·万叶回归',
+      school: '神道思想家', generation: 3,
+      biography: '贺茂真渕（1697-1769），国学运动先驱。他主张回归万叶集时代日本人的"真心"（まごころ）和"高く直き心"，认为中国思想（儒学和佛教）扭曲了日本的本来精神。通过对万叶集的深入研究，他展示了古代日本人质朴、勇武而纯真的精神世界。他的学说为后来本居宣长的国学大成奠定了基础。',
+      coreTeaching: '回归日本古代的"真心"——万叶集的质朴和直率就是日本精神的本来面目。中国思想是后来添加的外来物。',
+      templeNames: [], koans: [],
+      classicQuotes: ['日本古代的道，高而直——不需要中国的教导', '万叶集中有日本真正的心'],
+      works: [{ title: '万叶考', description: '万叶集研究·国学方法论奠基' }],
+      imageUrl: null,
+    },
+  });
+
+  const motooriNorinaga = await prisma.patriarch.create({
+    data: {
+      name: '本居宣长', nameEn: 'Motoori Norinaga', religionId: shintoId,
+      dates: '1730-1801', title: '国学大成者·物之哀',
+      school: '神道思想家', generation: 4, teacherId: kamoMabuchi.id,
+      biography: '本居宣长（1730-1801），日本国学运动的最高峰。三十四年研究《古事记》，著《古事记传》四十四卷，将这部日本最古老的史书从默默无闻提升到与中国经典并立的地位。提出"物之哀"（もののあわれ）美学理论：对万物变化的深切感动是日本文化的本质。主张排除一切外来思想，回归古神道的纯粹。',
+      coreTeaching: '物之哀——对万物无常的深切感动是人类最纯真的情感反应。古事记是日本的圣经。大和心高于汉意。',
+      templeNames: [{ name: '本居宣长记念馆', nameEn: 'Motoori Norinaga Memorial Museum', role: '国学大成者纪念地', location: '三重县松阪市' }],
+      koans: [], classicQuotes: ['敷岛の大和心を人問はば 朝日ににほふ 山桜花', '知物之哀者，方知人情之深'],
+      works: [{ title: '古事记传', description: '四十四卷·日本最古史书的完整注释' }, { title: '源氏物语玉小�的', description: '物之哀美学理论' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '平田笃胤', nameEn: 'Hirata Atsutane', religionId: shintoId,
+      dates: '1776-1843', title: '复古神道·幽冥界研究者',
+      school: '神道思想家', generation: 5, teacherId: motooriNorinaga.id,
+      biography: '平田笃胤（1776-1843），国学四大人之一，复古神道的集大成者。自称本居宣长的私淑弟子。他将国学研究扩展到死后世界（幽冥界），主张日本人死后灵魂归于大国主命管辖的幽冥之国。他的"复古"主张影响了幕末的尊王攘夷运动，间接推动了明治维新。门下弟子遍布日本。',
+      coreTeaching: '日本人的灵魂死后归于幽冥之国，在大国主命的统治下继续存在。复古神道——恢复日本天皇神权统治的古代理想。',
+      templeNames: [], koans: [],
+      classicQuotes: ['幽冥之国是灵魂的归处', '日本是神国——天皇是天照的子孙'],
+      works: [{ title: '灵能真柱', description: '幽冥界（死后世界）研究' }, { title: '古道大意', description: '复古神道理论总纲' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 教派神道 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '�的住宗忠', nameEn: 'Kurozumi Munetada', religionId: shintoId,
+      dates: '1780-1850', title: '黑住教教祖·天照直受',
+      school: '教派神道', generation: 1,
+      biography: '黑住宗忠（1780-1850），冈山神社神官。在双亲去世后陷入重病濒死，1814年冬至日朝向太阳祈祷时，突然体验到与天照大神合一的神秘体验——"天命直授"。此后痊愈并开始传道，创立黑住教，是日本教派神道十三教之首。他以"日拜"和感恩祈祷为核心修行，强调阳气和积极的生活态度。',
+      coreTeaching: '天照大神的阳气充满天地。每日面向太阳祈祷（日拜），以感恩和喜悦的心接受天照的生命力。阳气治百病。',
+      templeNames: [{ name: '黑住教本部', nameEn: 'Kurozumikyo Headquarters', role: '教祖创教之地', location: '冈山市' }],
+      koans: [], classicQuotes: ['天照大神的心就是我的心', '感恩是通向天照的最短之路'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '中山美伎', nameEn: 'Nakayama Miki', religionId: shintoId,
+      dates: '1798-1887', title: '天理教教祖·阳气暮らし',
+      school: '教派神道', generation: 1,
+      biography: '中山美伎（1798-1887），天理教教祖。1838年在为长子祈病的驱邪仪式中，突然被"天理王命"（月日亲神）附体，宣布"我是宇宙创造之神"。此后散尽家财，过着极端贫穷的生活传播教义。她的核心教导是"阳气暮らし"——以欢喜快乐的心态生活。创作了"御�的"（手舞歌），至今为天理教的核心仪式。活至八十九岁。',
+      coreTeaching: '阳気暮らし——欢喜快乐地生活是神创造人类的目的。身体是神的借贷物，疾病是神提醒人反省的信号。',
+      templeNames: [{ name: '天理教本部', nameEn: 'Tenrikyo Church Headquarters', role: '教祖传道之地·创世圣地', location: '奈良县天理市' }],
+      koans: [], classicQuotes: ['世界是欢喜的，人是欢喜的，一切是欢喜的', '身体是神的借贷物，要好好珍惜'],
+      works: [{ title: '御笔先', description: '天理王命的圣谕记录' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '川手文治郎', nameEn: 'Kawate Bunjiro', religionId: shintoId,
+      dates: '1814-1883', title: '金光教教祖·天地金乃神',
+      school: '教派神道', generation: 2,
+      biography: '川手文治郎（1814-1883），金光教教祖。冈山农民出身，四十二岁时体验到与"天地金乃神"的直接对话。他打破了传统金神信仰中的恐惧和禁忌，将金神从可怕的方位凶神转化为慈悲的宇宙本神。他的传道方式是"取次"——坐在社殿中作为人与神之间的中介，倾听信徒的烦恼并传达神的回应。',
+      coreTeaching: '神与人是相互依存的——"神让人活，人让神灵"。取次（中介）——神与人之间需要真诚的沟通渠道。一切迷信和恐惧皆非真神之意。',
+      templeNames: [{ name: '金光教本部', nameEn: 'Konkokyo Headquarters', role: '教祖取次之地', location: '冈山县浅口市' }],
+      koans: [], classicQuotes: ['神让人活，人让神灵', '不要怕金神——神是慈悲的'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const deguchiNao = await prisma.patriarch.create({
+    data: {
+      name: '出口直', nameEn: 'Deguchi Nao', religionId: shintoId,
+      dates: '1837-1918', title: '大本教开祖·筆先',
+      school: '教派神道', generation: 2,
+      biography: '出口直（1837-1918），大本教开祖。绫部贫穷的寡妇，五十六岁时突然被"�的之大神"附体，开始以平假名写下大量的"筆先"（神谕）。她不识字但能写出数万页神谕，预言世界即将经历"立替え立直し"（破坏与重建）。她的预言和治病能力吸引了大量信众，但也多次被当局逮捕。',
+      coreTeaching: '世界将经历大清洗（立替え立直し）——现有的不义秩序将被推翻，神的理想世界将被建立。回归农耕的纯朴生活。',
+      templeNames: [{ name: '大本教本部', nameEn: 'Oomoto Headquarters', role: '出口直开教之地', location: '京都府綾部市' }],
+      koans: [], classicQuotes: ['三千世界一度に開く梅の花', '立替え立直し——旧世界必须被推翻'],
+      works: [{ title: '筆先', description: '数万页的神谕·大本教根本经典' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '出口王仁三郎', nameEn: 'Deguchi Onisaburo', religionId: shintoId,
+      dates: '1871-1948', title: '大本教圣师·霊界物語',
+      school: '教派神道', generation: 3, teacherId: deguchiNao.id,
+      biography: '出口王仁三郎（1871-1948），大本教圣师，出口直的女婿。他将出口直的素朴信仰发展为宏大的宇宙观和神学体系。口述八十一卷《霊界物語》——日本近代最庞大的宗教文学作品。推动世界宗教统一运动，主张万教归一。两次被日本政府镇压（大本事件），建筑被炸毁。他的弟子创立了世界救世教、生长之家等新兴宗教。',
+      coreTeaching: '万教归一——所有宗教都是同一真理的不同表达。灵界与现界相互影响。艺术（陶艺、书画）是灵性修行的形式。',
+      templeNames: [{ name: '龟冈大本教本部', nameEn: 'Oomoto Kameoka HQ', role: '圣师活动中心', location: '京都府亀岡市' }],
+      koans: [], classicQuotes: ['万教同根——一切宗教都通向同一个源头', '艺术即信仰，信仰即艺术'],
+      works: [{ title: '霊界物語', description: '八十一卷·日本近代最庞大的宗教文学' }],
+      imageUrl: null,
+    },
+  });
+
+  const shintoCount = 24;
+  console.log(`  ✓ ${shintoCount} new Shinto kami/figures created + 1 updated (5 schools: CelestialKami/EarthlyKami/ShrineFounders/Theologians/Sectarian)`);
+
+  // ── 4t. 藏传佛教大师 (Tibetan Buddhist Masters) ──
+  console.log('  Creating Tibetan Buddhist patriarchs (4t)...');
+
+  const tibetanBuddhismId = religionMap['tibetan-buddhism'];
+
+  // Update existing 莲花生大士
+  const existingPadma = await prisma.patriarch.findFirst({ where: { name: '莲花生大士' } });
+  existingPadma
+    ? await prisma.patriarch.update({
+        where: { id: existingPadma.id },
+        data: {
+          nameEn: 'Padmasambhava', dates: '8世纪', title: '咕噜仁波切·藏传佛教开创者',
+          school: '宁玛派', generation: 1,
+          biography: '莲花生大士（8世纪），藏文称"咕噜仁波切"（珍宝上师），藏传佛教的开创者。出生于乌仗那（今巴基斯坦斯瓦特河谷）的莲花中。受藏王赤松德赞迎请入藏，以密法降伏了阻碍佛法传播的本土神灵，建立了西藏第一座佛寺桑耶寺。他将无数教法隐藏为伏藏（terma），由后世伏藏师发掘。藏族人视他为"第二佛陀"，在藏传佛教中的地位仅次于释迦牟尼。',
+          coreTeaching: '大圆满（Dzogchen）——心的本来面目是佛性，本来清净，本自圆满。修行不是获得什么，而是认出本来面目。',
+          achievements: '降伏本土神灵·建立桑耶寺·开创藏传佛教·埋藏无数伏藏',
+          templeNames: [{ name: '桑耶寺', nameEn: 'Samye Monastery', role: '西藏第一座佛寺·莲师建立', location: '西藏山南' }],
+          koans: [], classicQuotes: ['我的心与佛无别，但我未认出它', '当一切念头消融，本来面目自然显现', '我从未离开有信心的人'],
+          works: [], imageUrl: null,
+        },
+      })
+    : null;
+
+  // Update existing 阿底峡尊者
+  const existingAtisha = await prisma.patriarch.findFirst({ where: { name: '阿底峡尊者' } });
+  existingAtisha
+    ? await prisma.patriarch.update({
+        where: { id: existingAtisha.id },
+        data: {
+          nameEn: 'Atisha', dates: '982-1054', title: '吉祥燃灯智·噶当派祖师',
+          school: '格鲁派', generation: 0,
+          biography: '阿底峡（982-1054），全名吉祥燃灯智，孟加拉超戒寺最尊贵的学者。应藏王智光之邀入藏弘法，以生命为代价（智光为筹措邀请费用被噶尔禄人俘虏并殉身）。著《菩提道灯论》确立了从初发心到成佛的完整修行次第，成为后世宗喀巴《菩提道次第广论》的蓝本。创立噶当派，强调戒律清净和次第修行。',
+          coreTeaching: '菩提道次第——从下士道（人天善趣）到中士道（出离心）到上士道（菩提心），循序渐进走向觉悟。',
+          templeNames: [{ name: '聂塘寺', nameEn: 'Nyethang Monastery', role: '阿底峡晚年驻锡·圆寂之地', location: '拉萨附近' }],
+          koans: [], classicQuotes: ['所有功德的根本是善知识', '此身难得如优昙花，莫空过此生', '菩提心是一切佛法的心要'],
+          works: [{ title: '菩提道灯论', description: '修行次第根本论著·宗喀巴道次第的蓝本' }],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // Update existing 宗喀巴大师
+  const existingTsongkhapa = await prisma.patriarch.findFirst({ where: { name: '宗喀巴大师' } });
+  const tsongkhapa = existingTsongkhapa
+    ? await prisma.patriarch.update({
+        where: { id: existingTsongkhapa.id },
+        data: {
+          nameEn: 'Tsongkhapa', dates: '1357-1419', title: '第二佛陀·格鲁派创始人',
+          school: '格鲁派', generation: 1,
+          biography: '宗喀巴（1357-1419），青海宗喀出生，藏传佛教格鲁派（黄教）创始人，被尊为"第二佛陀"。他综合了印度中观和瑜伽行的精华，著《菩提道次第广论》和《密宗道次第广论》，建立了从显教到密教的完整修行体系。1409年创建甘丹寺和大愿法会。他强调戒律清净，要求僧人严持戒律、深研经论，扭转了当时藏区松弛的修行风气。',
+          coreTeaching: '戒定慧三学并重——以戒律为根基，以中观正见为核心，显密圆融，次第修行。缘起性空是佛法的最深真理。',
+          achievements: '创立格鲁派·著菩提道次第广论·建甘丹寺·创大愿法会',
+          templeNames: [{ name: '甘丹寺', nameEn: 'Ganden Monastery', role: '格鲁派第一座寺院·宗喀巴创建', location: '拉萨达孜区' }],
+          koans: [], classicQuotes: ['缘起即性空，性空即缘起', '一切功德依赖于善知识', '戒律是一切功德的根基'],
+          works: [{ title: '菩提道次第广论', description: '显教修行次第完整体系' }, { title: '密宗道次第广论', description: '密教修行次第完整体系' }],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 宁玛派 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '龙钦巴', nameEn: 'Longchenpa', religionId: tibetanBuddhismId,
+      dates: '1308-1364', title: '法界藏智者·七宝藏论',
+      school: '宁玛派', generation: 2,
+      biography: '龙钦巴（1308-1364），全名龙钦饶降巴，宁玛派最伟大的学者和大圆满大师。他综合了宁玛派所有教法，著"七宝藏论"等三百余部著作。长年在冈日托嘎等山洞中苦修。他的著作将大圆满教法从口耳相传提升为完整的哲学体系，被尊为"一切智者之王"。',
+      coreTeaching: '大圆满——心的本性（法界）本来清净、本自圆满。无需造作，只需认出。一切显现都是法身的游戏。',
+      templeNames: [{ name: '冈日托嘎', nameEn: 'Gangri Tokar', role: '龙钦巴苦修洞穴', location: '不丹' }],
+      koans: [], classicQuotes: ['当你不再寻找，你已找到', '心的本性如同虚空——无中心、无边际', '一切法如梦幻泡影'],
+      works: [{ title: '七宝藏论', description: '大圆满教法系统化·宁玛派哲学巅峰' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '吉美林巴', nameEn: 'Jigme Lingpa', religionId: tibetanBuddhismId,
+      dates: '1730-1798', title: '龙钦心髓伏藏师',
+      school: '宁玛派', generation: 3,
+      biography: '吉美林巴（1730-1798），宁玛派最重要的伏藏师之一。在三年闭关中，三次获得龙钦巴的智慧身加持，发掘了"龙钦心髓"（Longchen Nyingthig）——大圆满最核心的修行法门。此法脉成为宁玛派最广泛传修的传承。他的弟子将教法传播到整个藏区和不丹。',
+      coreTeaching: '龙钦心髓——大圆满前行和正行的完整修法。通过彻却（立断）和托噶（顿超）认出心的本来面目，证悟法身。',
+      templeNames: [], koans: [],
+      classicQuotes: ['龙钦巴在虚空中微笑，将智慧注入我心', '心不可得，却无处不在'],
+      works: [{ title: '龙钦心髓', description: '大圆满核心修行法门·宁玛派最广传法脉' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '米旁仁波切', nameEn: 'Mipham Rinpoche', religionId: tibetanBuddhismId,
+      dates: '1846-1912', title: '宁玛复兴·文殊化身',
+      school: '宁玛派', generation: 4,
+      biography: '米旁仁波切（1846-1912），被视为文殊菩萨化身。他是19世纪宁玛派最杰出的学者，著述涵盖哲学、逻辑、诗学、医学、天文和占卜等领域三十余卷。他在中观、因明和密续方面的注释使宁玛派在学术上与格鲁派分庭抗礼。是利美运动的重要推动者。',
+      coreTeaching: '中观他空见——如来藏是真实的、光明的、永恒的智慧本体。空性不是虚无，而是充满佛性光明。',
+      templeNames: [], koans: [],
+      classicQuotes: ['空性不是虚无，它充满了智慧的光明', '一切众生本来是佛，只因妄念而不证'],
+      works: [{ title: '入智者门', description: '佛教哲学综合入门' }, { title: '中观庄严论释', description: '宁玛派中观最重要论著' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '顶果钦哲仁波切', nameEn: 'Dilgo Khyentse Rinpoche', religionId: tibetanBuddhismId,
+      dates: '1910-1991', title: '利美圆满大师',
+      school: '宁玛派', generation: 5,
+      biography: '顶果钦哲仁波切（1910-1991），20世纪最伟大的藏传佛教大师之一。他是蒋扬钦哲旺波的转世之一，持有藏传佛教所有四大教派的完整传承。在山洞中闭关修行超过二十年。流亡后在不丹重建传承，成为不丹王室和第十四世达赖喇嘛的上师。他体现了利美（无偏见）运动的圆满精神。',
+      coreTeaching: '修行的核心是慈悲和智慧的双运。不要执著于教派之分。每一个念头都是修行的机会。安住于心的本然中。',
+      templeNames: [{ name: '雪谦寺', nameEn: 'Shechen Monastery', role: '顶果钦哲驻锡·尼泊尔重建', location: '尼泊尔加德满都' }],
+      koans: [], classicQuotes: ['你不需要到远方去寻找佛，佛就在你心中', '每一个念头生起的刹那，都是觉醒的机会', '慈悲是佛法的本质'],
+      works: [{ title: '你可以更慈悲', description: '入菩萨行论注释·畅销全球' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 噶举派 ──
+
+  const marpa = await prisma.patriarch.create({
+    data: {
+      name: '玛尔巴译师', nameEn: 'Marpa the Translator', religionId: tibetanBuddhismId,
+      dates: '1012-1097', title: '噶举传承之祖·大译师',
+      school: '噶举派', generation: 1,
+      biography: '玛尔巴（1012-1097），噶举派的创始人，三次赴印度求法，师从那洛巴等大成就者。他将那洛六法和大手印教法完整带回西藏。身为在家居士，从事农业和翻译工作，证明了在世俗生活中同样可以获得最高证悟。对弟子密勒日巴的严厉调教成为藏传佛教师徒关系的典范。',
+      coreTeaching: '大手印——直接认出心的本性。世俗生活本身就是修行道场。上师的加持是证悟最快的途径。那洛六法是即身成佛之道。',
+      templeNames: [{ name: '洛扎克', nameEn: 'Lhodrak', role: '玛尔巴故乡与修行地', location: '西藏山南' }],
+      koans: [], classicQuotes: ['我的儿子，你所受的苦不是惩罚，而是净化', '在田地里耕作时，佛法就在脚下'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const milarepa = await prisma.patriarch.create({
+    data: {
+      name: '密勒日巴', nameEn: 'Milarepa', religionId: tibetanBuddhismId,
+      dates: '1052-1135', title: '苦行成就者·十万歌集',
+      school: '噶举派', generation: 2, teacherId: marpa.id,
+      biography: '密勒日巴（1052-1135），藏传佛教最传奇的人物。年轻时为报家仇学习黑咒术杀死三十五人，后因忏悔拜入玛尔巴门下。经历了建塔又拆、九层拆建的极端苦行考验，业障清净后获得口诀。此后在雪山洞穴中独自修行多年，仅以荨麻为食，皮肤变绿。最终证得大手印虹光身。他即兴吟唱的十万首道歌是藏族文学瑰宝。',
+      coreTeaching: '即使造了最重的恶业，也可以在一生中获得完全的觉悟。苦行净化业障。上师的口诀胜过千卷经典。',
+      templeNames: [{ name: '拉其雪山洞', nameEn: 'Lapchi Cave', role: '密勒日巴苦修洞穴', location: '西藏与尼泊尔边境' }],
+      koans: [], classicQuotes: ['我是一个杀了三十五人的罪人，也能成佛——你还有什么借口？', '若不修行，得此人身有何用？', '山洞是我的宫殿，荨麻是我的美食'],
+      works: [{ title: '密勒日巴十万歌集', description: '即兴道歌·藏族文学瑰宝' }],
+      imageUrl: null,
+    },
+  });
+
+  const gampopa = await prisma.patriarch.create({
+    data: {
+      name: '冈波巴', nameEn: 'Gampopa', religionId: tibetanBuddhismId,
+      dates: '1079-1153', title: '达波噶举创始人·解脱庄严论',
+      school: '噶举派', generation: 3, teacherId: milarepa.id,
+      biography: '冈波巴（1079-1153），原为医生和噶当派僧人，因梦中指引找到密勒日巴。他将噶当派的次第修行与密勒日巴的大手印法门融合，著《解脱庄严论》，建立了达波噶举的完整修行体系。四大弟子开创了噶举派四大支流。他的《解脱庄严论》是噶举派最重要的入门经典。',
+      coreTeaching: '将学院派的系统学习与瑜伽士的实修经验融合。解脱不只靠禅定，也需要闻思智慧。菩提心是一切修行的根基。',
+      templeNames: [{ name: '达拉冈波寺', nameEn: 'Daklha Gampo', role: '冈波巴创建·达波噶举根本道场', location: '西藏' }],
+      koans: [], classicQuotes: ['如珍宝人身难得，如死亡无常迅速', '不要在见到上师前就以为自己懂了'],
+      works: [{ title: '解脱庄严论', description: '噶举派入门经典·显密融合修行次第' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '第一世噶玛巴·杜松虔巴', nameEn: 'Düsum Khyenpa', religionId: tibetanBuddhismId,
+      dates: '1110-1193', title: '第一位转世活佛',
+      school: '噶举派', generation: 4, teacherId: gampopa.id,
+      biography: '杜松虔巴（1110-1193），冈波巴最杰出的弟子，噶玛噶举派创始人，也是藏传佛教转世活佛制度的开创者。他在五十岁时证悟大手印，建立了楚布寺作为噶玛巴驻锡地。他预言自己将转世回来继续弘法——第二世噶玛巴噶玛拔希的出现开创了转世制度，后被达赖、班禅等活佛系统效仿。',
+      coreTeaching: '大手印——心的本性超越生死，转世是菩萨利益众生的方便。觉悟不是一次性事件，而是持续的愿力。',
+      templeNames: [{ name: '楚布寺', nameEn: 'Tsurphu Monastery', role: '噶玛巴驻锡地·噶玛噶举根本寺', location: '西藏拉萨' }],
+      koans: [], classicQuotes: ['我将再来', '心无生灭，何来死亡？'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '第八世噶玛巴·米觉多杰', nameEn: 'Mikyö Dorje', religionId: tibetanBuddhismId,
+      dates: '1507-1554', title: '噶举中观大成就者',
+      school: '噶举派', generation: 5,
+      biography: '米觉多杰（1507-1554），第八世噶玛巴，噶举派历史上最博学的噶玛巴。著述一百余卷，涵盖中观、因明、密续和艺术。他在中观哲学上提出了独到见解，与格鲁派进行了深入的学术辩论。他也是杰出的艺术家，创立了噶玛嘎孜画派——藏传佛教艺术的重要流派。',
+      coreTeaching: '他空中观——如来藏是真实的智慧光明体，不是空无。艺术是修行的表达，佛像绘画是对觉悟的视觉冥想。',
+      templeNames: [{ name: '楚布寺', nameEn: 'Tsurphu Monastery', role: '噶玛巴驻锡地', location: '西藏拉萨' }],
+      koans: [], classicQuotes: ['空性不是断灭，而是智慧的光明', '绘制佛像时，画师的心就是佛心'],
+      works: [{ title: '中观论著', description: '噶举派中观哲学独立体系' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 萨迦派 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '昆·贡却杰波', nameEn: 'Khon Konchog Gyalpo', religionId: tibetanBuddhismId,
+      dates: '1034-1102', title: '萨迦派创始人',
+      school: '萨迦派', generation: 1,
+      biography: '昆·贡却杰波（1034-1102），萨迦派创始人。出身昆氏家族，这个家族自莲花生大士时代就是西藏最重要的佛法传承家族之一。1073年在萨迦建立了萨迦寺（灰白色土地之寺），以道果法为核心教法。开创了家族传承与寺院制度结合的独特模式。',
+      coreTeaching: '道果法（Lamdré）——轮回和涅槃不二，因是基位心的本性，道是修行的方便，果是证悟的佛位。',
+      templeNames: [{ name: '萨迦寺', nameEn: 'Sakya Monastery', role: '萨迦派根本道场', location: '西藏日喀则萨迦县' }],
+      koans: [], classicQuotes: ['灰白色的土地上建起法的宫殿'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '萨迦班智达', nameEn: 'Sakya Pandita', religionId: tibetanBuddhismId,
+      dates: '1182-1251', title: '喜马拉雅最伟大学者',
+      school: '萨迦派', generation: 2,
+      biography: '萨迦班智达（1182-1251），全名贡噶坚赞，被誉为"喜马拉雅最伟大的学者"。精通五明（声明、因明、医明、工巧明、内明），在印度与外道辩论获胜。1247年应蒙古阔端王子之邀前往凉州会谈，促成西藏和平归入蒙古帝国，避免了战争屠杀。他以智慧和外交拯救了整个民族。',
+      coreTeaching: '学问是解脱的基础。因明逻辑不与佛法矛盾，而是证悟的辅助。以智慧而非武力解决冲突。',
+      templeNames: [{ name: '萨迦寺', nameEn: 'Sakya Monastery', role: '萨迦派传承中心', location: '西藏日喀则' }],
+      koans: [], classicQuotes: ['智者如水，流向最低处却滋养万物', '无知是一切痛苦的根源'],
+      works: [{ title: '萨迦格言', description: '藏族最著名的格言集·智慧文学经典' }, { title: '量理宝藏', description: '因明逻辑巨著' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '八思巴', nameEn: 'Drogön Chögyal Phagpa', religionId: tibetanBuddhismId,
+      dates: '1235-1280', title: '元朝国师·八思巴文创制者',
+      school: '萨迦派', generation: 3,
+      biography: '八思巴（1235-1280），萨迦班智达的侄子和继承人。十九岁被忽必烈册封为国师，后升为帝师，是元朝最高宗教领袖。创制了八思巴文——一种用于书写蒙古语、汉语、藏语等多种语言的统一文字。他建立了由喇嘛管理西藏政教事务的制度，对藏区政治格局影响深远。',
+      coreTeaching: '佛法可以治理国家——政教合一不是权力垄断，而是以佛法的慈悲和智慧指导政治。文字统一促进文明交流。',
+      templeNames: [{ name: '萨迦寺北寺', nameEn: 'Sakya North Monastery', role: '八思巴扩建', location: '西藏日喀则' }],
+      koans: [], classicQuotes: ['以法治国，以慈悲待民', '文字是文明的载体，统一文字统一天下'],
+      works: [{ title: '八思巴文', description: '元朝统一文字·联合国教科文组织认定' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '果然巴', nameEn: 'Gorampa', religionId: tibetanBuddhismId,
+      dates: '1429-1489', title: '萨迦中观哲学家',
+      school: '萨迦派', generation: 4,
+      biography: '果然巴（1429-1489），萨迦派最重要的中观哲学家。他对宗喀巴的中观诠释提出了系统性的批评，主张真正的中观应该超越一切概念分别——包括"空性"这个概念本身。他的批评促进了格鲁派与萨迦派之间深入的哲学对话，推动了藏传佛教哲学的发展。',
+      coreTeaching: '中观不是任何一种见解——包括"一切皆空"也要超越。真正的空性超越言说和概念。执著于空也是执著。',
+      templeNames: [], koans: [],
+      classicQuotes: ['执空也是执著', '中道不在两边，也不在中间'],
+      works: [{ title: '辨了不了义善说', description: '对宗喀巴中观的系统批评' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '萨迦崔津法王', nameEn: 'Sakya Trizin', religionId: tibetanBuddhismId,
+      dates: '1945-2022', title: '第41任萨迦法王',
+      school: '萨迦派', generation: 4,
+      biography: '萨迦崔津法王（1945-2022），第41任萨迦派最高领袖。七岁即位，在极其艰苦的条件下完成了萨迦派全部传承的学习和修行。1959年流亡印度后在德拉敦重建了萨迦派的教育体系。他以温和、博学和幽默著称，被誉为"当代活着的佛教百科全书"。2017年将法王位传给儿子，开创了轮流执政的新制度。',
+      coreTeaching: '道果法是萨迦派的核心——轮回与涅槃同一根基。传承的延续比个人荣誉更重要。慈悲和智慧缺一不可。',
+      templeNames: [{ name: '德拉敦萨迦中心', nameEn: 'Sakya Centre, Dehradun', role: '流亡后重建的萨迦派总部', location: '印度德拉敦' }],
+      koans: [], classicQuotes: ['修行不是逃避世间，而是转化世间', '最大的奇迹是改变一颗心'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 格鲁派 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '根敦朱巴', nameEn: 'Gendun Drup', religionId: tibetanBuddhismId,
+      dates: '1391-1474', title: '第一世达赖喇嘛', teacherId: tsongkhapa?.id ?? undefined,
+      school: '格鲁派', generation: 2,
+      biography: '根敦朱巴（1391-1474），宗喀巴的亲传弟子，后被追认为第一世达赖喇嘛。他建立了扎什伦布寺，成为后来班禅额尔德尼的驻锡地。他在戒律和因明方面造诣深厚，撰写了重要的因明论著。他被追认为达赖是在第三世索南嘉措获得蒙古阿勒坦汗赠号"达赖"后回溯追封的。',
+      coreTeaching: '戒律是修行的根本。格鲁派的学修体系必须从辩经和持戒开始。建设寺院是弘法的基础。',
+      templeNames: [{ name: '扎什伦布寺', nameEn: 'Tashilhunpo Monastery', role: '根敦朱巴创建·后为班禅驻锡地', location: '西藏日喀则' }],
+      koans: [], classicQuotes: ['戒如大地，一切功德依之而生'],
+      works: [{ title: '量释庄严', description: '因明学重要论著' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '第五世达赖·罗桑嘉措', nameEn: 'Lobsang Gyatso', religionId: tibetanBuddhismId,
+      dates: '1617-1682', title: '伟大的五世·布达拉宫建造者',
+      school: '格鲁派', generation: 3,
+      biography: '罗桑嘉措（1617-1682），第五世达赖喇嘛，被尊为"伟大的五世"。在和硕特蒙古固始汗的支持下统一了全藏，建立了甘丹颇章政权。开始建造布达拉宫，这座矗立在红山之上的宫殿成为西藏的象征。他学识渊博，著述宏富，同时精通宁玛派密法。他的圆寂被摄政桑结嘉措隐瞒了十五年。',
+      coreTeaching: '政教合一以慈悲治藏。佛法不分教派——格鲁派的僧人也应学习宁玛派的密法。权力是服务众生的工具。',
+      templeNames: [{ name: '布达拉宫', nameEn: 'Potala Palace', role: '达赖喇嘛冬宫·西藏象征', location: '拉萨' }],
+      koans: [], classicQuotes: ['布达拉宫不是我的宫殿，而是观音菩萨的道场', '统一不是为了权力，而是为了和平'],
+      works: [{ title: '西藏王臣记', description: '西藏历史权威著作' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '第十四世达赖·丹增嘉措', nameEn: 'Tenzin Gyatso', religionId: tibetanBuddhismId,
+      dates: '1935-', title: '诺贝尔和平奖·慈悲化身',
+      school: '格鲁派', generation: 4,
+      biography: '丹增嘉措（1935-），第十四世达赖喇嘛。两岁被认定为转世灵童，十五岁在动荡中接掌政教大权。1959年流亡印度达兰萨拉，此后致力于藏族文化保存和世界和平。1989年获诺贝尔和平奖。他以"人类的基本善良"和"世俗伦理"为核心讯息，成为当代最具影响力的宗教领袖之一。他主张民主改革，宣布放弃政治权力。',
+      coreTeaching: '慈悲是人类的本性，不需要宗教信仰也可以修习。世俗伦理——基于人类共同的善良和理性。以非暴力方式追求正义。',
+      templeNames: [{ name: '达兰萨拉', nameEn: 'Dharamsala', role: '西藏流亡政府所在地', location: '印度喜马偕尔邦' }],
+      koans: [], classicQuotes: ['我的宗教是慈悲', '如果你认为自己太小而无法做出改变，试试和蚊子一起睡觉', '人类一家——我们的生存相互依存'],
+      works: [{ title: '流亡中的自在', description: '自传·诺贝尔和平奖获得者' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 利美运动 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '蒋扬钦哲旺波', nameEn: 'Jamyang Khyentse Wangpo', religionId: tibetanBuddhismId,
+      dates: '1820-1892', title: '利美运动创始人·七教传承持有者',
+      school: '利美运动', generation: 1,
+      biography: '蒋扬钦哲旺波（1820-1892），利美（Rimé，无偏见）运动的创始人。他持有藏传佛教所有四大教派及苯教的完整传承——这在当时几乎是不可能的。他发掘了大量面临失传的珍贵法教，重新整理和传授。与蒋贡康楚互为师友，共同推动了19世纪藏传佛教的文化复兴。',
+      coreTeaching: '利美——无偏见地尊重和学习所有传承。每个教派都有独特的智慧贡献，偏见是修行最大的障碍。保存濒危传承是当代最紧迫的使命。',
+      templeNames: [{ name: '宗萨寺', nameEn: 'Dzongsar Monastery', role: '蒋扬钦哲驻锡·利美运动中心', location: '西藏德格' }],
+      koans: [], classicQuotes: ['所有教派的法教都是佛陀智慧的不同面向', '偏见是无明最隐蔽的形式'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '蒋贡康楚', nameEn: 'Jamgon Kongtrul', religionId: tibetanBuddhismId,
+      dates: '1813-1899', title: '五宝藏论·利美先驱',
+      school: '利美运动', generation: 1,
+      biography: '蒋贡康楚（1813-1899），利美运动另一位核心人物。他编纂了"五宝藏论"——近百卷涵盖藏传佛教所有教派核心法教的百科全书式巨著。这项工程拯救了数百种面临失传的法教。他本人持有一百多种不同传承的完整灌顶和口传。被誉为"全知者"（Kunkhyen）。',
+      coreTeaching: '知识的保存和传承是文明存续的根本。编纂和系统化不是学术游戏，而是救度众生的菩萨行。',
+      templeNames: [{ name: '八蚌寺', nameEn: 'Palpung Monastery', role: '蒋贡康楚驻锡地', location: '西藏德格' }],
+      koans: [], classicQuotes: ['保存一个教法等于拯救无数未来的修行者', '学海无涯，但每一滴水都珍贵'],
+      works: [{ title: '五宝藏论', description: '近百卷·藏传佛教百科全书·利美运动最伟大成就' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '更敦群培', nameEn: 'Gendün Chöphel', religionId: tibetanBuddhismId,
+      dates: '1903-1951', title: '藏族现代思想先驱',
+      school: '利美运动', generation: 2,
+      biography: '更敦群培（1903-1951），藏族历史上最具争议和创新精神的知识分子。他是出色的格西（佛学博士），但选择还俗游历印度十二年。精通梵文、巴利文和英文，翻译了多部印度经典。他以现代批判方法研究西藏历史，挑战了许多传统叙事。因政治原因入狱三年，出狱后酗酒去世。他被视为藏族现代化思想的先驱。',
+      coreTeaching: '佛法需要与现代知识对话。批判性思维不是对传统的背叛，而是使传统保持活力的方式。真正的学者不怕挑战权威。',
+      templeNames: [], koans: [],
+      classicQuotes: ['不要因为是古人说的就相信，要用自己的理性检验', '西藏需要睁开眼睛看世界'],
+      works: [{ title: '白史', description: '以现代方法重写的西藏历史' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '秋阳创巴仁波切', nameEn: 'Chögyam Trungpa', religionId: tibetanBuddhismId,
+      dates: '1939-1987', title: '疯智慧·西方藏传佛教先驱',
+      school: '利美运动', generation: 2,
+      biography: '秋阳创巴（1939-1987），噶举和宁玛双重传承持有者。1959年流亡，后赴英国牛津大学学习。1970年移居美国，以前所未有的方式将藏传佛教带入西方：脱下袈裟穿西装、用英语教学、创建那洛巴大学和香巴拉训练。他的"疯智慧"教学风格充满争议但极具影响力，是将藏传佛教成功移植到西方的第一人。',
+      coreTeaching: '灵性唯物主义是最大的陷阱——将修行变成自我膨胀的工具。勇士之道——面对恐惧，不逃避，以勇气和温柔生活。',
+      templeNames: [], koans: [],
+      classicQuotes: ['当你真正开始修行时，最先遇到的障碍是你自己', '勇士不是无所畏惧，而是在恐惧中依然前行', '放弃希望和恐惧——安住在当下'],
+      works: [{ title: '突破修道上的唯物', description: '西方最畅销的藏传佛教入门书' }, { title: '香巴拉：勇士之道', description: '世俗灵性修行经典' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '宗萨蒋扬钦哲仁波切', nameEn: 'Dzongsar Khyentse Rinpoche', religionId: tibetanBuddhismId,
+      dates: '1961-', title: '当代利美传承·正见',
+      school: '利美运动', generation: 2,
+      biography: '宗萨蒋扬钦哲仁波切（1961-），蒋扬钦哲旺波的第三世转世。不丹出生，在顶果钦哲仁波切座下接受完整训练。他以现代语言和电影艺术弘法——执导了《旅行者与魔术师》《高山上的世界杯》等电影。著《正见》以四法印阐释佛教核心，畅销全球。他管理着遍布全球的宗萨佛学院网络。',
+      coreTeaching: '四法印——一切和合事物无常，一切情绪皆苦，一切法无我，涅槃超越概念。如果你不理解这四点，就不是佛教徒。',
+      templeNames: [{ name: '宗萨佛学院', nameEn: 'Dzongsar Institute', role: '利美传承佛学教育中心', location: '印度比尔' }],
+      koans: [], classicQuotes: ['佛教不是宗教，而是关于真实的科学', '如果你不理解四法印，挂多少佛珠也没用', '执著于佛法也是执著'],
+      works: [{ title: '正见', description: '四法印·全球畅销的佛教入门书' }, { title: '佛教的见地与修道', description: '系统阐释佛教哲学' }],
+      imageUrl: null,
+    },
+  });
+
+  const tibetanCount = 22;
+  console.log(`  ✓ ${tibetanCount} new Tibetan Buddhist masters created + 3 updated (5 schools: Nyingma/Kagyu/Sakya/Gelug/Rimé)`);
+
+  // ── 4u. 原住民灵性 (Indigenous Spirituality) ──
+  console.log('  Creating Indigenous spirituality figures (4u)...');
+
+  const indigenousId = religionMap['indigenous'];
+
+  // Update existing 梦时代祖灵
+  const existingDreamtime = await prisma.patriarch.findFirst({ where: { name: '梦时代祖灵' } });
+  existingDreamtime
+    ? await prisma.patriarch.update({
+        where: { id: existingDreamtime.id },
+        data: {
+          nameEn: 'Dreamtime Ancestral Spirits', dates: '远古', title: '创世祖灵·万物起源',
+          school: '澳洲原住民', generation: 1,
+          biography: '梦时代（Dreamtime/Tjukurpa）祖灵，澳洲原住民信仰的核心概念。梦时代不是过去的时间，而是永恒的当下——祖灵在梦时代穿越大地，以歌唱和行走创造了山川河流、动物植物和人类。每一条河流、每一座山丘都是祖灵的足迹。原住民通过歌线（Songlines）追循祖灵的道路，以仪式和绘画维系与祖灵的连接。',
+          coreTeaching: '大地是活的经文——每个地标都是祖灵故事的一个篇章。人类的责任是看护大地（Caring for Country）。梦时代不在过去，它现在仍然在发生。',
+          achievements: '创造天地万物·歌线连接整个大陆·世界最古老的持续文化传统',
+          templeNames: [{ name: '乌鲁鲁', nameEn: 'Uluru', role: '梦时代圣地·多个祖灵故事交汇处', location: '澳大利亚北领地' }],
+          koans: [], classicQuotes: ['大地不属于我们，我们属于大地', '祖灵的歌从未停止，只要你倾听', '我们不拥有土地，是土地拥有我们'],
+          works: [], imageUrl: null,
+        },
+      })
+    : null;
+
+  await prisma.patriarch.create({
+    data: {
+      name: '彩虹蛇', nameEn: 'Rainbow Serpent', religionId: indigenousId,
+      dates: '远古', title: '创世大蛇·水与生命之源',
+      school: '澳洲原住民', generation: 1,
+      biography: '彩虹蛇是澳洲原住民最广泛流传的创世神灵，在不同部族有不同名字。它在梦时代从地下苏醒，巨大的蛇身蜿蜒前行，创造了河流、山谷和水潭。它是水和生育的守护者，也是律法的执行者——违反神圣律法者将被彩虹蛇吞噬。在金伯利地区的岩画中，彩虹蛇的形象可追溯到六千年前，是世界上持续崇拜时间最长的神灵之一。',
+      coreTeaching: '水是生命之源，彩虹蛇是水的守护者。尊重自然律法，与大地和水源和谐共处。违反祖灵律法将招致灾难。',
+      templeNames: [{ name: '卡卡杜国家公园', nameEn: 'Kakadu National Park', role: '彩虹蛇岩画圣地', location: '澳大利亚北领地' }],
+      koans: [], classicQuotes: ['水流过的地方就是彩虹蛇走过的地方', '尊重水源就是尊重生命'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '旺吉纳', nameEn: 'Wandjina', religionId: indigenousId,
+      dates: '远古', title: '雨云之灵·金伯利岩画',
+      school: '澳洲原住民', generation: 2,
+      biography: '旺吉纳（Wandjina），澳大利亚西北金伯利地区原住民的最高神灵，是雨、云和生育的精灵。他们的形象独特——巨大的圆眼、无嘴（因为如果有嘴就会带来无尽的雨而淹没世界）、头部周围有光环般的云彩。金伯利的岩画中旺吉纳形象已有至少四千年历史，是原住民最神圣的艺术传统之一。原住民每年重新描绘旺吉纳岩画以确保雨季到来。',
+      coreTeaching: '雨水是生命的恩赐。重新绘制旺吉纳是维系天地秩序的仪式责任。沉默（无嘴）蕴含着比言语更强大的力量。',
+      templeNames: [{ name: '金伯利岩画', nameEn: 'Kimberley Rock Art', role: '旺吉纳圣像·四千年传统', location: '西澳大利亚金伯利' }],
+      koans: [], classicQuotes: ['沉默比言语更有力量', '每年重绘是我们对天地的承诺'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴梅', nameEn: 'Baiame', religionId: indigenousId,
+      dates: '远古', title: '天父·东南部创世主',
+      school: '澳洲原住民', generation: 2,
+      biography: '巴梅（Baiame），澳大利亚东南部多个原住民部族的至高创世神。他从天上降临大地，创造了山川、河流和所有生命。他制定了律法和仪式规则，教导人类如何生活。完成创造后他升回天界，但通过仪式和梦境继续与人类沟通。布雷瓦里纳的石阵是他留下的圣迹。他常以独腿巨人形象出现在岩画中。',
+      coreTeaching: '创造者制定了律法和生活方式。人类的责任是遵守祖灵律法，维护社区和谐。与天界的连接通过仪式和梦境维持。',
+      templeNames: [{ name: '布雷瓦里纳', nameEn: 'Brewarrina Fish Traps', role: '巴梅创造的圣迹·世界最古老人造结构之一', location: '新南威尔士' }],
+      koans: [], classicQuotes: ['律法不是人定的，是巴梅定的', '天父在天上看着，确保律法被遵守'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 北美原住民 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '白牛女', nameEn: 'White Buffalo Calf Woman', religionId: indigenousId,
+      dates: '远古', title: '神圣烟管赐予者·拉科塔',
+      school: '北美原住民', generation: 1,
+      biography: '白牛女（Pte Ska Win），拉科塔族最神圣的精灵。传说她以白牛犊女子的形象出现在两位猎人面前，带来了神圣烟管（Chanunpa）和七种神圣仪式：净身仪式、求愿舞、亲属仪式、灵视追求、太阳舞、球赛和灵魂守护。她教导人类与大地万物的亲属关系——"Mitákuye Oyás\'iŋ"（我们都是亲人）。离去时变为白色牛犊消失在草原上。',
+      coreTeaching: 'Mitákuye Oyás\'iŋ——我们与一切生命都是亲人。神圣烟管连接天与地、人与灵。七种仪式维系人与宇宙的和谐。',
+      templeNames: [{ name: '黑山丘', nameEn: 'Black Hills (He Sapa)', role: '拉科塔神圣之地', location: '南达科他州' }],
+      koans: [], classicQuotes: ['Mitákuye Oyás\'iŋ——我们都是亲人', '神圣烟管的烟升向天空，带着我们的祈祷'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '坐牛', nameEn: 'Sitting Bull', religionId: indigenousId,
+      dates: '1831-1890', title: '拉科塔圣人·小大角之战',
+      school: '北美原住民', generation: 2,
+      biography: '坐牛（Tȟatȟáŋka Íyotake，1831-1890），亨克帕帕拉科塔族酋长和圣人。他是太阳舞的领导者和灵视者——在1876年太阳舞中预见了小大角之战的胜利。联合各部族在小大角战役中击败了卡斯特将军。后被迫流亡加拿大。归来后被关入保留地，因参与幽灵舞运动被印第安警察射杀。他的灵性领导力使他成为北美原住民抵抗运动的永恒象征。',
+      coreTeaching: '真正的领袖以灵视引导人民。太阳舞是与大灵（Wakan Tanka）沟通的最高仪式。土地是神圣的，不可出卖。',
+      templeNames: [{ name: '小大角战场', nameEn: 'Little Bighorn Battlefield', role: '1876年拉科塔胜利之地', location: '蒙大拿州' }],
+      koans: [], classicQuotes: ['让我们把弓放下，握手言和——但永远不要出卖我们的土地', '我是最后一个放下武器的印第安人'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '黑麋鹿', nameEn: 'Black Elk', religionId: indigenousId,
+      dates: '1863-1950', title: '奥格拉拉圣人·黑麋鹿如是说',
+      school: '北美原住民', generation: 2,
+      biography: '黑麋鹿（Heȟáka Sápa，1863-1950），奥格拉拉拉科塔族圣人。九岁时获得了改变一生的大灵视——看到了六位祖父（代表六方）和民族的未来。亲历了小大角之战和伤膝河惨案。晚年口述《黑麋鹿如是说》，成为北美原住民灵性最重要的文献。他将拉科塔族的宇宙观和灵性传统传递给了全世界。',
+      coreTeaching: '宇宙是一个神圣的圆环（Sacred Hoop）。一切方向都是神圣的。灵视（Vision）是与大灵沟通的方式。民族的力量在于神圣圆环的完整。',
+      templeNames: [{ name: '哈尼峰', nameEn: 'Harney Peak (Black Elk Peak)', role: '黑麋鹿灵视之地·已更名为黑麋鹿峰', location: '南达科他州' }],
+      koans: [], classicQuotes: ['万物的力量都以圆的方式运动', '大地上每一步都是祈祷', '在那里我站立，在世界的中心'],
+      works: [{ title: '黑麋鹿如是说', description: '北美原住民灵性最重要的文献' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '西雅图酋长', nameEn: 'Chief Seattle', religionId: indigenousId,
+      dates: '1786-1866', title: '苏夸米什酋长·大地之书',
+      school: '北美原住民', generation: 3,
+      biography: '西雅图酋长（Si\'ahl，1786-1866），苏夸米什和杜瓦米什部落联合酋长。他以1854年对美国政府的著名演讲闻名于世——回应土地购买要求时说出了最深刻的生态灵性宣言。虽然演讲的确切措辞有争议，但其核心精神得到了原住民传统的印证。以他命名的西雅图城是美国太平洋西北部最大城市。',
+      coreTeaching: '大地是我们的母亲，不是可以买卖的商品。人类不是生命之网的编织者，只是其中的一根线。伤害大地就是伤害自己。',
+      templeNames: [], koans: [],
+      classicQuotes: ['大地不属于人类，人类属于大地', '人类不是生命之网的编织者，只是其中一根线', '我们并不继承祖先的大地，我们借用子孙的大地'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '疯马', nameEn: 'Crazy Horse', religionId: indigenousId,
+      dates: '1840-1877', title: '奥格拉拉战士·永不投降',
+      school: '北美原住民', generation: 3,
+      biography: '疯马（Tȟašúŋke Witkó，1840-1877），奥格拉拉拉科塔族最伟大的战士。他一生从未被拍过照片，也从未在条约上签字。在灵视中获得了战斗中不可被伤害的启示。他是小大角之战中击败卡斯特的关键人物。在投降后被美军士兵用刺刀刺杀于内布拉斯加罗宾逊堡。他的精神成为原住民不屈抗争的永恒象征。',
+      coreTeaching: '自由比生命更重要。不留影像、不签条约——真正的力量不在于记录而在于行动。保护人民是战士的最高使命。',
+      templeNames: [{ name: '疯马纪念碑', nameEn: 'Crazy Horse Memorial', role: '世界最大雕塑工程·纪念原住民精神', location: '南达科他州' }],
+      koans: [], classicQuotes: ['今天是死的好日子', '我的土地不是用来出卖的', '一个好的战士先保护妇女儿童'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 中南美传统 ──
+
+  // Update existing 印加太阳神因蒂
+  const existingInti = await prisma.patriarch.findFirst({ where: { name: '印加太阳神因蒂' } });
+  existingInti
+    ? await prisma.patriarch.update({
+        where: { id: existingInti.id },
+        data: {
+          nameEn: 'Inti', dates: '印加时代', title: '太阳神·印加帝国守护者',
+          school: '中南美传统', generation: 1,
+          biography: '因蒂（Inti），印加帝国的至高太阳神，印加皇族自称是因蒂之子（Sapa Inca = 太阳之子）。他每日驾驭太阳马车穿越天空，为大地带来温暖和生命。因蒂节（Inti Raymi）是印加最盛大的节日，在冬至日庆祝太阳的回归。库斯科的科里坎查（太阳神殿）墙面覆以黄金板，反射日光象征因蒂的荣耀。西班牙征服者掠走了所有黄金，但因蒂节至今在库斯科每年举行。',
+          coreTeaching: '太阳是生命之源和秩序之本。印加皇帝作为因蒂之子代行神权。冬至是太阳回归的庆典——最黑暗的时刻之后，光明必将回来。',
+          templeNames: [{ name: '科里坎查', nameEn: 'Coricancha (Temple of the Sun)', role: '印加太阳神殿·黄金满壁', location: '秘鲁库斯科' }],
+          koans: [], classicQuotes: ['太阳之子守护大地上的子民', '因蒂节——即使在最寒冷的日子，太阳也会回来'],
+          works: [], imageUrl: null,
+        },
+      })
+    : null;
+
+  await prisma.patriarch.create({
+    data: {
+      name: '羽蛇神', nameEn: 'Quetzalcoatl', religionId: indigenousId,
+      dates: '远古', title: '文明赐予者·风之主',
+      school: '中南美传统', generation: 1,
+      biography: '羽蛇神（Quetzalcoatl），中美洲最重要的神灵，在阿兹特克、玛雅（库库尔坎）和托尔特克文明中都被崇拜。他是长着绿色羽毛的蛇——结合了天空（鸟）和大地（蛇）的力量。他是文明的赐予者：发明了历法、文字、农业和建筑。传说他离开时乘坐蛇筏向东方海上远去，许诺将来回归。特奥蒂瓦坎的羽蛇神金字塔是他最宏伟的圣殿。',
+      coreTeaching: '知识和文明是神灵给人类最大的礼物。羽蛇结合天地——灵性与物质不可分离。创造者也是教育者。',
+      templeNames: [{ name: '特奥蒂瓦坎', nameEn: 'Teotihuacan', role: '羽蛇神金字塔', location: '墨西哥城附近' }, { name: '奇琴伊察', nameEn: 'Chichen Itza', role: '库库尔坎金字塔', location: '墨西哥尤卡坦' }],
+      koans: [], classicQuotes: ['知识是给人类最大的礼物', '我将从东方回来'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '帕查玛玛', nameEn: 'Pachamama', religionId: indigenousId,
+      dates: '远古', title: '大地母亲·安第斯守护',
+      school: '中南美传统', generation: 2,
+      biography: '帕查玛玛（Pachamama），安第斯地区最崇敬的女神——大地母亲。她不是抽象概念，而是活着的大地本身。每一座山、每一片田地、每一条河流都是她身体的一部分。安第斯人在播种前和收获后都要向帕查玛玛献祭（通常是古柯叶和酒），感谢她的滋养。至今在秘鲁、玻利维亚和厄瓜多尔，帕查玛玛崇拜是最活跃的传统信仰。',
+      coreTeaching: '大地是活着的母亲，不是无生命的资源。人类从大地获取必须回报大地。互惠（Ayni）是安第斯宇宙观的根本——你给予大地，大地给予你。',
+      templeNames: [{ name: '的的喀喀湖', nameEn: 'Lake Titicaca', role: '帕查玛玛与创世神圣地', location: '秘鲁/玻利维亚边境' }],
+      koans: [], classicQuotes: ['帕查玛玛给予一切，也要求回报', '播种前先感谢大地'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '维拉科查', nameEn: 'Viracocha', religionId: indigenousId,
+      dates: '远古', title: '至高创世神·光之主',
+      school: '中南美传统', generation: 2,
+      biography: '维拉科查（Viracocha），安第斯文明的至高创世神。他从的的喀喀湖中升起，创造了太阳、月亮、星辰和人类。他先用石头造人（巨人族），因不满意而以洪水毁灭。第二次创造了现今的人类，教授他们文明技艺。完成创造后他向西走入太平洋消失。蒂亚瓦纳科的太阳门上雕刻着他的形象——手持权杖、眼流泪水（象征雨水）。',
+      coreTeaching: '创造是反复完善的过程。不完美可以被毁灭并重新开始。创造者既是建设者也是毁灭者——这是宇宙的法则。',
+      templeNames: [{ name: '蒂亚瓦纳科', nameEn: 'Tiwanaku', role: '维拉科查太阳门圣地', location: '玻利维亚' }],
+      koans: [], classicQuotes: ['创造不是一次完成的', '光从湖中升起，照亮了整个世界'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 非洲传统 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '奥鲁恩', nameEn: 'Olorun', religionId: indigenousId,
+      dates: '远古', title: '约鲁巴至高神·万有之主',
+      school: '非洲传统', generation: 1,
+      biography: '奥鲁恩（Olorun/Olodumare），约鲁巴宗教的至高神，意为"天之主"。他创造了宇宙和所有奥里沙（神灵），但随后退隐到天界，不直接干预人间事务。人类通过奥里沙（中间神灵）与奥鲁恩沟通。每个人出生时都从奥鲁恩处获得"奥里"（命运/头顶的灵），决定了此生的使命。约鲁巴宗教后来传播到美洲，发展为桑特里亚、坎东布雷等新世界宗教。',
+      coreTeaching: '至高神创造万物但委托奥里沙管理。每个人有独特的命运（奥里）和守护奥里沙。平衡和秩序是宇宙运行的法则。',
+      templeNames: [{ name: '伊费', nameEn: 'Ile-Ife', role: '约鲁巴文明圣城·创世之地', location: '尼日利亚' }],
+      koans: [], classicQuotes: ['奥鲁恩高居天上，通过奥里沙与我们对话', '每个人的头顶都有自己的命运'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '尚戈', nameEn: 'Shango', religionId: indigenousId,
+      dates: '远古', title: '雷神·第三任奥约帝王',
+      school: '非洲传统', generation: 2,
+      biography: '尚戈（Shango/Sango），约鲁巴雷神和正义之神，也是历史上奥约帝国第三任国王。他以勇武和正义著称，能从口中喷火、从天上召唤雷电。作为历史人物他统治奥约帝国，作为奥里沙他掌管雷电、火焰、鼓乐和舞蹈。他的颜色是红白色，圣器是双头斧。在巴西的坎东布雷中，尚戈与天主教圣芭芭拉融合。',
+      coreTeaching: '正义如雷电——迅速而不可阻挡。领袖必须既有力量又有正义。鼓乐和舞蹈是与神灵沟通的语言。',
+      templeNames: [{ name: '奥约', nameEn: 'Oyo', role: '尚戈故都·奥约帝国中心', location: '尼日利亚' }],
+      koans: [], classicQuotes: ['雷电不分贫富——正义面前人人平等', '鼓声是尚戈的语言'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '耶莫贾', nameEn: 'Yemoja', religionId: indigenousId,
+      dates: '远古', title: '海洋母神·生育守护',
+      school: '非洲传统', generation: 2,
+      biography: '耶莫贾（Yemoja/Yemanjá），约鲁巴宗教中的河流和海洋母神。她是所有奥里沙之母，名字意为"鱼之母的孩子"。在非洲她原是尼日尔河的河神，随奴隶贸易传到美洲后成为海洋女神。在巴西，每年12月31日数百万人穿着白衣到海边向耶莫贾献花和礼物。她守护妊妇和儿童，代表母性的无限慈爱。',
+      coreTeaching: '母性是宇宙最强大的力量。水是生命之源——河流和海洋是耶莫贾的身体。女性力量不逊于任何男性力量。',
+      templeNames: [{ name: '拉各斯海岸', nameEn: 'Lagos Coast', role: '耶莫贾崇拜中心', location: '尼日利亚拉各斯' }],
+      koans: [], classicQuotes: ['大海的波浪是耶莫贾的拥抱', '母亲的爱如海洋——无边无际'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '奥贡', nameEn: 'Ogun', religionId: indigenousId,
+      dates: '远古', title: '铁与战争之神·开路者',
+      school: '非洲传统', generation: 2,
+      biography: '奥贡（Ogun），约鲁巴铁、战争和技术之神。他是第一个用铁器开辟道路穿越原始森林的奥里沙，因此被称为"开路者"。他是铁匠、猎人、战士和外科医生的守护神。在现代约鲁巴文化中，他的范围扩展到了所有使用金属的技术——包括汽车、手术刀和计算机。在尼日利亚法庭上，传统信仰者对着铁器向奥贡发誓。',
+      coreTeaching: '技术是神灵给人类的工具——铁既能杀人也能救人。开路者的精神——面对荒野，用自己的力量开辟道路。',
+      templeNames: [{ name: '伊雷·埃基蒂', nameEn: 'Ire-Ekiti', role: '奥贡故乡与圣地', location: '尼日利亚埃基蒂州' }],
+      koans: [], classicQuotes: ['奥贡开路，我们跟随', '铁器在我手中——可以造福也可以毁灭'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 萨满传统 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '腾格里', nameEn: 'Tengri', religionId: indigenousId,
+      dates: '远古', title: '蒙古萨满至高天神',
+      school: '萨满传统', generation: 1,
+      biography: '腾格里（Tengri），蒙古-突厥民族的至高天神。"腾格里"即"天"的意思。他是永恒的蓝天本身——无形无相，无所不在。成吉思汗征服世界时宣称受腾格里之命。腾格里信仰（Tengrism）是中亚草原最古老的信仰体系，强调天地人的和谐。近年来在蒙古、哈萨克斯坦和土耳其等地经历了显著的复兴。',
+      coreTeaching: '永恒的蓝天（Mongke Tengri）是最高的存在。天地人三界相互贯通。萨满是三界之间的中介。尊重大地母亲（Etugen）和天父腾格里的平衡。',
+      templeNames: [{ name: '不儿罕山', nameEn: 'Burkhan Khaldun', role: '成吉思汗圣山·腾格里崇拜中心', location: '蒙古' }],
+      koans: [], classicQuotes: ['永恒的蓝天是万物的见证者', '受永恒天之命——成吉思汗的宣言'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '帕帕图阿努库', nameEn: 'Papatūānuku', religionId: indigenousId,
+      dates: '远古', title: '毛利大地母亲',
+      school: '萨满传统', generation: 1,
+      biography: '帕帕图阿努库（Papatūānuku），毛利族的大地母亲。在创世之初，她与天父朗伊努伊紧紧相拥，他们的孩子们被困在永恒的黑暗中。森林之神塔尼马胡塔用背顶天、脚踏地，将父母分离——天升上去，地沉下来，光明第一次照入世界。帕帕的泪水成为清晨的露珠，她思念天父的叹息化为地热蒸汽。毛利人视大地为母亲，死后归于帕帕的怀抱。',
+      coreTeaching: '大地是母亲——我们出生于她，死后回到她。分离是创造的前提——没有天地分离就没有光明和生命。',
+      templeNames: [], koans: [],
+      classicQuotes: ['我们是大地的孩子，终将回到母亲的怀抱', '清晨的露珠是帕帕思念朗伊的泪水'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '朗伊努伊', nameEn: 'Ranginui', religionId: indigenousId,
+      dates: '远古', title: '毛利天父·与大地分离',
+      school: '萨满传统', generation: 2,
+      biography: '朗伊努伊（Ranginui），毛利族的天父。与大地母亲帕帕图阿努库紧密相拥，其间孕育了众神。被儿子塔尼马胡塔强行分离后，朗伊努伊升到天空，化作苍穹。他的泪水化为雨水，落在帕帕身上。从天空中他凝望着大地，看不到帕帕的面容因为云雾遮挡——这就是为什么天空经常阴云密布。天父的悲伤创造了天气。',
+      coreTeaching: '爱的分离创造了世界。天父的泪是雨水，滋养大地。悲伤也是创造力——失去创造了天气、季节和生命循环。',
+      templeNames: [], koans: [],
+      classicQuotes: ['雨水是天父思念大地母亲的泪', '分离虽然痛苦，却给世界带来了光明'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '因纽特海之女塞德娜', nameEn: 'Sedna', religionId: indigenousId,
+      dates: '远古', title: '因纽特海洋女神',
+      school: '萨满传统', generation: 2,
+      biography: '塞德娜（Sedna），因纽特族的海洋女神和海洋动物之母。她原是一个人类少女，被父亲推入冰冷的海中。她紧抓船舷，手指被父亲一节一节砍断——断指变成了海豹、海象和鲸鱼。她沉入海底成为海洋女神，掌管着所有海洋生物。当人类违反禁忌时，她的头发会打结缠绕，扣留海洋动物。萨满必须潜入海底为她梳理头发，海洋猎物才会回来。',
+      coreTeaching: '海洋的慷慨有条件——人类必须遵守禁忌和尊重自然规律。打猎不是权利而是关系。萨满是人类与自然精灵的中介。',
+      templeNames: [], koans: [],
+      classicQuotes: ['海洋给予生命，但要求尊重', '违反禁忌时，海底女王会扣留猎物'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const indigenousCount = 20;
+  console.log(`  ✓ ${indigenousCount} new Indigenous spirits created + 2 updated (5 traditions: Aboriginal/NativeAmerican/Mesoamerican/African/Shamanic)`);
+
+  // ── 4v. 巴哈伊教人物 (Bahá'í Figures) ──
+  console.log('  Creating Bahá\'í figures (4v)...');
+
+  const bahaiId = religionMap['bahai'];
+
+  // Update existing 巴孛
+  const existingBab = await prisma.patriarch.findFirst({ where: { name: '巴孛' } });
+  existingBab
+    ? await prisma.patriarch.update({
+        where: { id: existingBab.id },
+        data: {
+          nameEn: 'The Báb', dates: '1819-1850', title: '大门·巴比运动创始人',
+          school: '巴比运动先驱', generation: 1,
+          biography: '巴孛（1819-1850），原名赛义德·阿里·穆罕默德，波斯设拉子商人。1844年5月23日宣布自己是"巴孛"（大门），是伊斯兰教期待的马赫迪（引导者），并预言一位更伟大的启示者即将来临。他的教导吸引了数以万计的追随者（巴比教徒），引发了波斯政府和宗教当局的恐惧。被囚禁六年后，于1850年在大不里士被行刑队枪决。第一轮射击后绳索断裂他安然无恙，第二轮方才殉道。',
+          coreTeaching: '旧的天启时代已经结束，新的天启即将来临。"你们所期待的那一位"即将显现。通过巴孛之门，进入新的信仰纪元。',
+          achievements: '创立巴比运动·预言巴哈欧拉·为信仰殉道',
+          templeNames: [{ name: '巴孛陵殿', nameEn: 'Shrine of the Báb', role: '巴孛安息地·巴哈伊圣地', location: '以色列海法' }],
+          koans: [], classicQuotes: ['你们所期待的那一位，祂将超越你们一切的想象', '真理的太阳即将升起'],
+          works: [{ title: '巴扬经', description: '巴孛的核心经典·预言新启示' }],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // Update existing 巴哈欧拉
+  const existingBaha = await prisma.patriarch.findFirst({ where: { name: '巴哈欧拉' } });
+  const bahaullah = existingBaha
+    ? await prisma.patriarch.update({
+        where: { id: existingBaha.id },
+        data: {
+          nameEn: 'Bahá\'u\'lláh', dates: '1817-1892', title: '上帝的荣耀·巴哈伊信仰创始人',
+          school: '圣约中心', generation: 1,
+          biography: '巴哈欧拉（1817-1892），原名米尔扎·侯赛因·阿里，波斯贵族。1853年在德黑兰的"黑坑"地牢中接受启示，确认自己就是巴孛预言的"上帝将要显示的那一位"。此后四十年在流放中度过——从巴格达到君士坦丁堡到阿德里安堡到最终的阿卡监狱城。他著述逾百卷，阐述了世界统一、消除偏见、男女平等、宗教一体等原则。他的教导奠定了巴哈伊信仰的全部基础。',
+          coreTeaching: '人类一体——全人类是一个家庭。宗教渐进启示——所有伟大宗教都来自同一上帝。消除一切形式的偏见。建立世界联邦和持久和平。',
+          achievements: '创立巴哈伊信仰·著述逾百卷·致书世界各国君主·阐述世界和平原则',
+          templeNames: [{ name: '巴吉花园', nameEn: 'Bahji Gardens', role: '巴哈欧拉陵殿·巴哈伊最神圣之地', location: '以色列阿卡' }],
+          koans: [], classicQuotes: ['大地是一个国家，人类是它的公民', '你们都是一棵树上的果实，一个枝条上的叶子', '以和平之眼观万物，以宽恕之心待世人'],
+          works: [{ title: '至圣书', description: '巴哈伊信仰最神圣经典' }, { title: '隐言经', description: '灵性伦理格言集' }],
+          imageUrl: null,
+        },
+      })
+    : null;
+
+  // ── 巴比运动先驱 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '穆拉·侯赛因', nameEn: 'Mullá Husayn', religionId: bahaiId,
+      dates: '1813-1849', title: '信仰第一门徒·活字母之首',
+      school: '巴比运动先驱', generation: 2,
+      biography: '穆拉·侯赛因（1813-1849），巴孛的第一位信徒，被称为"活字母之首"（Bábu\'l-Báb，门之门）。1844年5月22日夜间在设拉子首先认出巴孛。他是一位杰出的学者和勇敢的战士——在奥加拉巴堡战役中英勇殉道。巴哈欧拉曾赞扬他为"信仰之光"。',
+      coreTeaching: '认出真理需要纯净的心灵和学识的准备。第一个信仰者的勇气为后来者开辟了道路。以生命见证信仰的真实。',
+      templeNames: [{ name: '设拉子巴孛故居', nameEn: 'House of the Báb, Shiraz', role: '巴孛宣示之地·穆拉侯赛因首先信仰', location: '伊朗设拉子' }],
+      koans: [], classicQuotes: ['我找到了我所寻找的——祂就是应许者'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '库杜斯', nameEn: 'Quddús', religionId: bahaiId,
+      dates: '1822-1849', title: '活字母之末·巴比运动殉道者',
+      school: '巴比运动先驱', generation: 2,
+      biography: '库杜斯（1822-1849），原名穆罕默德·阿里·巴尔福鲁什，巴孛的十八位"活字母"中的最后一位。巴孛对他的敬重超过其他所有弟子。他在巴比教运动中发挥了关键的领导作用。在巴尔福鲁什被暴民捕获后遭受了残酷的折磨和杀害，年仅二十七岁。',
+      coreTeaching: '年轻不是软弱。信仰的力量超越世俗的权力。殉道是对真理最后也最有力的见证。',
+      templeNames: [], koans: [],
+      classicQuotes: ['即使在刽子手面前，真理也不会低头'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '塔赫蕾', nameEn: 'Táhirih', religionId: bahaiId,
+      dates: '1817-1852', title: '纯洁者·波斯第一位女权先驱',
+      school: '巴比运动先驱', generation: 2,
+      biography: '塔赫蕾（1817-1852），原名法蒂玛·巴拉加尼，被巴孛赐号"塔赫蕾"（纯洁者）。她是波斯最杰出的女学者和诗人，未曾与巴孛见面便通过其著作认出他。1848年在巴达什特会议上，她当众揭下面纱，宣告伊斯兰旧律法的终结——这一举动震惊了在场的男性。她被秘密绞杀并投入枯井，临终前说："你们可以杀死我，但不能阻止妇女的解放。"',
+      coreTeaching: '妇女与男子完全平等。旧律法的时代已经结束。揭下面纱不是反叛而是回应新时代的要求。知识和勇气不分性别。',
+      templeNames: [], koans: [],
+      classicQuotes: ['你们可以杀死我，但不能阻止妇女的解放', '新时代已经来临——旧律法的枷锁必须被打碎'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 圣约中心 ──
+
+  const abdulBaha = await prisma.patriarch.create({
+    data: {
+      name: '阿博都巴哈', nameEn: '\'Abdu\'l-Bahá', religionId: bahaiId,
+      dates: '1844-1921', title: '圣约中心·完美典范', teacherId: bahaullah?.id ?? undefined,
+      school: '圣约中心', generation: 2,
+      biography: '阿博都巴哈（1844-1921），巴哈欧拉长子，被父亲指定为"圣约中心"和教义的唯一权威诠释者。从九岁起与父亲一同流放，在阿卡监狱城度过了大部分人生。1908年获释后周游欧洲和北美，向西方世界介绍巴哈伊信仰。他以无限的慈悲和服务精神著称——在一战期间组织粮食救济挽救了海法地区数千人的生命。',
+      coreTeaching: '服务人类就是服务上帝。巴哈伊信仰的核心是行动而不只是信条。世界和平需要消除种族、性别和经济的偏见。教育是人类进步的基石。',
+      templeNames: [{ name: '阿卡', nameEn: 'Akka (Acre)', role: '阿博都巴哈囚禁与服务之地', location: '以色列阿卡' }],
+      koans: [], classicQuotes: ['我的名字是阿博都巴哈——巴哈的仆人', '你不必为明天的面包忧虑——为他人的面包忧虑', '世界需要的不是更多的理论，而是更多的爱'],
+      works: [{ title: '巴黎谈话', description: '1911年在巴黎的公开演讲集' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '守基·阿芬第', nameEn: 'Shoghi Effendi', religionId: bahaiId,
+      dates: '1897-1957', title: '圣护·行政秩序建筑师', teacherId: abdulBaha.id,
+      school: '圣约中心', generation: 3,
+      biography: '守基·阿芬第（1897-1957），阿博都巴哈的长孙，被指定为巴哈伊信仰的"圣护"（Guardian）。牛津大学毕业后，在三十六年间将巴哈伊信仰从中东宗教转变为全球组织。他设计了巴哈伊行政秩序——地方灵体会、国家灵体会和世界正义院的三级体制。翻译了巴哈欧拉的主要著作为优美的英文。主持建造了海法巴孛陵殿的金色穹顶。',
+      coreTeaching: '世界秩序需要新的行政体制。巴哈伊行政秩序是世界联邦的雏形。团结不是统一——多样性中的统一是人类文明的方向。',
+      templeNames: [{ name: '巴哈伊世界中心', nameEn: 'Bahá\'í World Centre', role: '守基阿芬第建设的全球行政中心', location: '以色列海法' }],
+      koans: [], classicQuotes: ['行政秩序不是目的，而是实现世界和平的工具', '让我们在多样性中找到统一'],
+      works: [{ title: '上帝来了', description: '巴哈伊信仰的历史和教义总览' }],
+      imageUrl: null,
+    },
+  });
+
+  // ── 巴哈伊圣女 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '巴希叶·哈努姆', nameEn: 'Bahíyyih Khánum', religionId: bahaiId,
+      dates: '1846-1932', title: '最伟大的圣叶·巴哈欧拉长女',
+      school: '巴哈伊圣女', generation: 1,
+      biography: '巴希叶·哈努姆（1846-1932），巴哈欧拉的长女，被尊为"最伟大的圣叶"。她从童年起就与家人一同经历流放和囚禁的苦难。在阿博都巴哈旅行期间和守基·阿芬第早期，她多次代理管理巴哈伊事务。她的一生是自我牺牲和无私服务的典范，将所有个人需求置于信仰和家族之后。',
+      coreTeaching: '无私服务是最高的灵性修行。女性在信仰中的角色与男性完全平等。安静的力量比喧嚣的权力更持久。',
+      templeNames: [], koans: [],
+      classicQuotes: ['服务不需要头衔，只需要一颗纯净的心', '在苦难中保持尊严是最大的勇气'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '鲁希叶·哈努姆', nameEn: 'Rúhíyyih Khánum', religionId: bahaiId,
+      dates: '1910-2000', title: '守基·阿芬第之妻·信仰之手',
+      school: '巴哈伊圣女', generation: 2,
+      biography: '鲁希叶·哈努姆（1910-2000），加拿大人，守基·阿芬第之妻，被任命为"信仰之手"。丈夫去世后，她成为巴哈伊社区最受尊敬的领袖之一。她走遍全球一百多个国家，特别关注原住民和边缘社区的发展。她的旅行和演讲为巴哈伊信仰在第三世界的传播做出了巨大贡献。',
+      coreTeaching: '信仰必须走向世界的每个角落——特别是那些被遗忘的角落。文化多样性是人类的财富。服务穷人和原住民是信仰的核心使命。',
+      templeNames: [], koans: [],
+      classicQuotes: ['信仰不能只停留在书本上——它必须走到人民中间'],
+      works: [{ title: '守基·阿芬第传', description: '圣护的权威传记' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '纳瓦卜·哈努姆', nameEn: 'Navváb', religionId: bahaiId,
+      dates: '1820-1886', title: '巴哈欧拉之妻·信仰之母',
+      school: '巴哈伊圣女', generation: 2,
+      biography: '纳瓦卜·哈努姆（1820-1886），巴哈欧拉的第一位妻子和最亲密的伴侣。她出身波斯贵族家庭，婚后经历了丈夫从尊贵到囚徒的巨大转变。她放弃了一切物质享受，追随丈夫经历了从德黑兰到巴格达到阿卡的全部流放之路。她被巴哈欧拉赐号"最崇高的叶子"。在极端困苦中她维系了家庭的团结。',
+      coreTeaching: '对信仰的忠诚胜过一切物质享受。家庭的团结是社区团结的基础。在苦难中保持尊严和信心。',
+      templeNames: [], koans: [],
+      classicQuotes: ['我选择了与真理同行，即使道路通向监狱'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 信仰之手 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '阿里·阿克巴尔·富鲁坦', nameEn: 'Ali-Akbar Furútan', religionId: bahaiId,
+      dates: '1905-2003', title: '信仰之手·教育先驱',
+      school: '信仰之手', generation: 1,
+      biography: '富鲁坦（1905-2003），伊朗出生的巴哈伊"信仰之手"。他是杰出的教育家，在伊朗和全球推动巴哈伊教育体系的发展。1951年被守基·阿芬第任命为信仰之手。他活到九十七岁，是最后一批离世的信仰之手之一。他的教育理念强调品格培养与学术知识并重。',
+      coreTeaching: '教育是改变世界最有力的工具。品格培养比知识传授更重要。教育要同时发展心灵和头脑。',
+      templeNames: [], koans: [],
+      classicQuotes: ['教育一个孩子就是改变一个世界', '品格是教育的灵魂'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '乌戈·贾凯里', nameEn: 'Ugo Giachery', religionId: bahaiId,
+      dates: '1896-1989', title: '信仰之手·圣殿建筑师',
+      school: '信仰之手', generation: 1,
+      biography: '乌戈·贾凯里（1896-1989），意大利裔巴哈伊信仰之手。他是建筑师和工程师，负责监督了海法巴孛陵殿金色穹顶的建造——这是巴哈伊信仰最具标志性的建筑。他还参与了意大利卡利亚里巴哈伊灵曦堂的建设。他以对守基·阿芬第的绝对忠诚和专业精神著称。',
+      coreTeaching: '建筑是信仰的物质表达。美是灵性的语言——圣殿的美应当反映信仰的崇高。专业技能奉献给信仰是最好的服务。',
+      templeNames: [], koans: [],
+      classicQuotes: ['每一块石头都承载着信仰', '美是通向神圣的窗户'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '多萝西·贝克', nameEn: 'Dorothy Baker', religionId: bahaiId,
+      dates: '1898-1954', title: '信仰之手·美洲传教先驱',
+      school: '信仰之手', generation: 1,
+      biography: '多萝西·贝克（1898-1954），美国巴哈伊信仰之手。她是巴哈伊社区最有力的演说家之一，以热情和智慧在美洲大陆传播巴哈伊信仰。1954年在从印度返美途中飞机失事罹难。守基·阿芬第赞她为"巴哈欧拉英勇女儿"。她特别致力于消除种族偏见和促进种族团结。',
+      coreTeaching: '种族偏见是人类最危险的疾病。行动比言辞更有力量。女性在建设新世界秩序中具有独特而不可替代的角色。',
+      templeNames: [], koans: [],
+      classicQuotes: ['种族团结不是选择，而是人类生存的必需', '每个人的心中都有一颗等待被点燃的火种'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  // ── 教务先驱 ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '玛莎·鲁特', nameEn: 'Martha Root', religionId: bahaiId,
+      dates: '1872-1939', title: '伟大的教务旅行者',
+      school: '教务先驱', generation: 1,
+      biography: '玛莎·鲁特（1872-1939），美国记者和巴哈伊传教先驱，被守基·阿芬第赞为"前无古人的巴哈伊传道者"。她四次环游世界，走访了数十个国家，会见了各国元首、学者和平民。她是第一位在中国、日本和南美许多国家传播巴哈伊信仰的人。她在旅途中生活极其简朴，将所有资源用于传教。最终病逝于火奴鲁鲁。',
+      coreTeaching: '一个人的行动可以改变世界。传教不需要富有——只需要热情和坚持。跨越文化界限传播真理是每个信徒的使命。',
+      templeNames: [], koans: [],
+      classicQuotes: ['整个世界是我的家', '一个有决心的灵魂可以照亮整个世界'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '海德·杜恩', nameEn: 'Hyde Dunn', religionId: bahaiId,
+      dates: '1855-1941', title: '澳大利亚巴哈伊教之父',
+      school: '教务先驱', generation: 1,
+      biography: '海德·杜恩（1855-1941），英国出生的旅行推销员，被尊为"澳大利亚巴哈伊教之父"。1920年六十五岁时与妻子克拉拉移居澳大利亚传播巴哈伊信仰。在没有任何当地巴哈伊教徒的情况下，他们用二十余年建立了澳大利亚和新西兰的巴哈伊社区。他的坚持证明了年龄不是服务的障碍。',
+      coreTeaching: '年龄不是服务信仰的障碍——六十五岁开始新的使命。夫妻合作是传教最有效的方式。坚持和耐心终会结出果实。',
+      templeNames: [], koans: [],
+      classicQuotes: ['六十五岁？正是开始新事业的好年纪'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '阿格尼斯·亚历山大', nameEn: 'Agnes Alexander', religionId: bahaiId,
+      dates: '1875-1971', title: '日本巴哈伊教之母',
+      school: '教务先驱', generation: 2,
+      biography: '阿格尼斯·亚历山大（1875-1971），夏威夷出生的巴哈伊传教先驱，被尊为"日本巴哈伊教之母"。1914年首次前往日本，此后大部分人生在日本度过。在两次世界大战和关东大地震等巨大动荡中坚持留在日本。她以温和和坚韧赢得了日本朋友的尊敬，为巴哈伊信仰在东亚的传播奠定了基础。',
+      coreTeaching: '文化差异不是传教的障碍而是学习的机会。尊重当地文化是传播信仰的前提。长期的陪伴比短暂的热情更有力量。',
+      templeNames: [], koans: [],
+      classicQuotes: ['日本教会了我耐心的艺术', '信仰之花在每一片土壤中都能绽放'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '路易斯·格雷戈里', nameEn: 'Louis Gregory', religionId: bahaiId,
+      dates: '1874-1951', title: '种族和谐先驱·信仰之手',
+      school: '教务先驱', generation: 2,
+      biography: '路易斯·格雷戈里（1874-1951），美国非裔律师和巴哈伊信仰之手。他是美国巴哈伊社区中种族团结运动的先驱。阿博都巴哈促成了他与白人巴哈伊路易莎·马修的婚姻——在1912年种族隔离的美国，这段跨种族婚姻本身就是对偏见的挑战。他一生致力于消除种族偏见，组织了大量的种族和谐活动。',
+      coreTeaching: '种族偏见是人类最顽固的疾病，必须以行动而非空谈来治愈。跨种族的友谊和婚姻是打破偏见最有力的见证。',
+      templeNames: [], koans: [],
+      classicQuotes: ['种族团结不是理想——它是人类生存的必需', '爱是超越肤色的唯一力量'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const bahaiCount = 16;
+  console.log(`  ✓ ${bahaiCount} new Bahá'í figures created + 2 updated (5 traditions: Bábí/Central/HolyWomen/Hands/Pioneers)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
