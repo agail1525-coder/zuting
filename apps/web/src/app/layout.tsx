@@ -135,13 +135,22 @@ export default function RootLayout({
         <CookieConsent />
         <script dangerouslySetInnerHTML={{ __html: `
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    window.addEventListener('load', function() {
       navigator.serviceWorker.getRegistrations().then(function(regs) {
         regs.forEach(function(r) { r.update(); });
       });
       navigator.serviceWorker.register('/sw.js').catch(function() {});
     });
   }
+  // Chunk加载失败自动刷新(部署更新后旧chunk不存在)
+  window.addEventListener('error', function(e) {
+    if (e.message && e.message.indexOf('Loading chunk') !== -1) {
+      if (!sessionStorage.getItem('chunk_retry')) {
+        sessionStorage.setItem('chunk_retry', '1');
+        window.location.reload();
+      }
+    }
+  });
 `}} />
       </body>
     </html>
