@@ -14,6 +14,11 @@ const ZEN_SCHOOLS = [
   { key: "yunmen", name: "云门宗", nameEn: "Yunmen", founder: "云门文偃", status: "merged", temple: "云门山大觉禅寺", method: "一字关 · 函盖乾坤" },
   { key: "fayan", name: "法眼宗", nameEn: "Fayan", founder: "法眼文益", status: "merged", temple: "清凉寺(南京)", method: "华严禅 · 六相圆融" },
   { key: "guiyang", name: "沩仰宗", nameEn: "Guiyang", founder: "沩山灵祐 + 仰山慧寂", status: "merged", temple: "沩山密印寺", method: "圆相 · 暗机" },
+  // ── Overseas Schools ──
+  { key: "japaneseZen", name: "日本禅宗", nameEn: "Japanese Zen", founder: "明庵栄西 · 道元禅師", status: "active", temple: "建仁寺 · 永平寺", method: "公案 · 只管打坐" },
+  { key: "koreanSeon", name: "韩国禅宗", nameEn: "Korean Seon", founder: "知訥(普照国師)", status: "active", temple: "松広寺 · 海印寺", method: "定慧双修 · 看话禅" },
+  { key: "vietnameseThien", name: "越南禅宗", nameEn: "Vietnamese Thiền", founder: "毘尼多羅支", status: "active", temple: "法云寺 · 梅村", method: "正念修行 · 竹林禅" },
+  { key: "westernZen", name: "西方禅宗", nameEn: "Western Zen", founder: "鈴木俊隆", status: "active", temple: "旧金山禅中心", method: "初心禅 · 入世修行" },
 ];
 
 // ── Lineage Tree Node ──────────────────────────────────────────────────────
@@ -242,6 +247,10 @@ export default function ZenPatriarchsClient({
     yunmen: "云门宗",
     fayan: "法眼宗",
     guiyang: "沩仰宗",
+    japaneseZen: "日本禅宗",
+    koreanSeon: "韩国禅宗",
+    vietnameseThien: "越南禅宗",
+    westernZen: "西方禅宗",
   };
 
   // Active school patriarchs
@@ -355,8 +364,9 @@ export default function ZenPatriarchsClient({
         {/* ── Five Schools Navigator ──────────────────────────────────── */}
         <div className="bg-white rounded-xl border border-[#D4C5A0]/40 p-4 mb-6 shadow-sm">
           <h2 className="text-sm font-medium text-[#6B5C4D] mb-3">{t("zen.schools.title")}</h2>
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {ZEN_SCHOOLS.map((s) => (
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide items-center">
+            {ZEN_SCHOOLS.map((s, i) => (
+              <>{i === 5 && <div className="w-px h-10 bg-[#D4C5A0]/40 mx-1 flex-shrink-0" />}
               <button
                 key={s.key}
                 onClick={() => setActiveSchool(s.key)}
@@ -371,6 +381,7 @@ export default function ZenPatriarchsClient({
                   {s.status === "active" ? t("zen.schools.active") : t("zen.schools.merged")}
                 </span>
               </button>
+              </>
             ))}
           </div>
 

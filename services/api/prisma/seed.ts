@@ -3762,6 +3762,418 @@ async function main() {
   const sanlunCount = 4;
   console.log(`  ✓ ${sanlunCount} Sanlun school patriarchs created`);
 
+  // ── 4k. 海外禅宗祖师 (Overseas Zen Patriarchs — Japan/Korea/Vietnam/Western) ──
+  console.log('  Creating overseas Zen patriarchs (4k)...');
+
+  // 查询僧璨(三祖)用于越南禅初祖师承
+  const sengcan = await prisma.patriarch.findFirst({ where: { name: '僧璨' } });
+
+  // ── 日本禅宗 (7位) ──
+  const eisai = await prisma.patriarch.create({
+    data: {
+      name: '明庵栄西', nameEn: 'Myōan Eisai', religionId: buddhismId,
+      dates: '1141-1215', title: '千光国師', school: '日本禅宗', generation: 1,
+      teacherId: null,
+      biography: '明庵栄西，日本临济宗初祖。二度入宋求法，绍熙二年（1191）归国传禅。于博多建圣福寺（日本最初禅院），后建京都建仁寺为临济宗大本山。同时将宋茶文化传入日本，著《喫茶养生记》，被尊为"茶祖"。�的禅法融合天台密教，开日本禅宗先河。',
+      coreTeaching: '兴禅护国。主张禅法可以护佑国家、净化人心。将临济宗公案体系与日本本土文化融合，开创日本禅文化。',
+      achievements: '日本临济宗初祖。二度入宋学禅，建京都建仁寺为日本禅宗大本山。传入宋茶文化，著《喫茶养生记》，兼为日本茶道之祖。禅法融合密教，影响深远。',
+      templeNames: ['建仁寺(京都)', '圣福寺(博多)', '寿福寺(�的�的)'],
+      koans: [
+        { title: '喫茶去', description: '以茶入禅，万法归一。栄西将宋茶禅一味传入日本。' },
+        { title: '兴禅护国', description: '禅法非仅个人解脱，亦为国家安宁之根本。' },
+      ],
+      classicQuotes: ['大宋传来喫茶法，养生延年第一功', '参禅之要，在于见性'],
+      works: [
+        { title: '兴禅护国论', description: '倡导禅宗对日本国家与社会的价值' },
+        { title: '喫茶养生记', description: '日本最早的茶书，茶禅一味' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '道元禅師', nameEn: 'Dōgen Zenji', religionId: buddhismId,
+      dates: '1200-1253', title: '承阳大師', school: '日本禅宗', generation: 2,
+      teacherId: rujing.id,
+      biography: '道元禅師，日本曹洞宗开祖。嘉禄三年（1227）入宋，师事天童如净禅師得法。归国后著《正法眼藏》九十五卷，为日本佛教哲学最高峰。于越前（福井）创建永平寺，强调"只管打坐"（只管打坐即悟道本身），确立日本曹洞宗修行体系。一生不求权势，隐于深山专注修行与著述。',
+      coreTeaching: '只管打坐（しかんたざ）。坐禅不是获得悟道的手段，坐禅本身即是悟道。修证一等——修行与证悟不二。身心脱落，当下即是。',
+      achievements: '日本曹洞宗开祖。师承天童如净，将曹洞禅法完整传入日本。著《正法眼藏》九十五卷，为日本佛教最伟大的哲学著作。创建永平寺，至今仍为曹洞宗大本山。提出"只管打坐"理念影响全球禅修。',
+      templeNames: ['永平寺(福井)', '兴圣寺(京都宇治)'],
+      koans: [
+        { title: '身心脱落', description: '天童如净一喝"身心脱落！"道元大悟。非去除身心，而是放下对身心的执着。' },
+        { title: '只管打坐', description: '坐禅即佛行。不为求悟，不为得果，只是端坐——这本身就是觉醒的表现。' },
+        { title: '有时', description: '《正法眼藏·有时》：山是时，海是时。存在即时间，时间即存在。' },
+      ],
+      classicQuotes: ['身心脱落，脱落身心', '修证一等', '春花秋月夏杜鹃，冬雪寒洌亦清然'],
+      works: [
+        { title: '正法眼藏', description: '九十五卷，日本佛教哲学最高峰' },
+        { title: '永平广录', description: '道元法语与上堂开示全集' },
+        { title: '典座教训', description: '以做饭为修行——禅与日常生活' },
+        { title: '普劝坐禅仪', description: '坐禅入门指南，面壁端坐法' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '瑩山紹瑾', nameEn: 'Keizan Jōkin', religionId: buddhismId,
+      dates: '1268-1325', title: '常済大師', school: '日本禅宗', generation: 3,
+      teacherId: null,
+      biography: '瑩山紹瑾，日本曹洞宗太祖（与道元并称"两祖"）。道元三传弟子。创建总持寺（横浜�的仓），使曹洞宗从精英修行走向民间普及。融合密教仪轨和民间信仰，让曹洞禅法深入日本社会各阶层。其努力使曹洞宗成为日本最大的禅宗宗派（约15000寺院）。',
+      coreTeaching: '禅法民间化。将道元严格的只管打坐与民间信仰、密教仪轨融合，让禅法不再局限于精英修行者，而深入农民、武士、商人各阶层。',
+      achievements: '日本曹洞宗太祖。创建总持寺（与永平寺并列两大本山）。将曹洞禅法民间化、大众化，使其从精英修行扩展到全社会。曹洞宗今有约15000座寺院，为日本最大禅宗，瑩山功不可没。',
+      templeNames: ['総持寺(横浜)', '永光寺(石川)'],
+      koans: [],
+      classicQuotes: ['一日不作一日不食', '佛法不离世间觉'],
+      works: [
+        { title: '传光录', description: '记录禅宗五十三代祖师悟道因缘' },
+        { title: '坐禅用心记', description: '坐禅指南，对初学者的修行指导' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '大燈国師', nameEn: 'Daitō Kokushi', religionId: buddhismId,
+      dates: '1282-1337', title: '大燈国師', school: '日本禅宗', generation: 4,
+      teacherId: null,
+      biography: '宗峰妙超，号大燈国師，日本临济宗大德寺派开山祖师。得大应国師传法后，隐于京都五条桥下乞丐群中二十年修行。后奉花园天皇敕命建大德寺。临终坐脱时以病腿强行结跏趺坐，折断病腿以示决意。大德寺后成为日本茶道、书道、花道之中心，影响日本文化至深。',
+      coreTeaching: '禅即日常。隐于乞丐中修行二十年，示禅法不在庙堂高阁而在日常生活。大德寺后发展出茶禅一味、书禅一味的日本禅文化传统。',
+      achievements: '日本临济宗大德寺派开山。隐于乞丐群中二十年磨炼禅境。大德寺成为日本文化重镇——茶道（千利休）、书道、枯山水庭园、能乐皆与大德寺禅法相融。临终折腿坐脱，气概绝伦。',
+      templeNames: ['大德寺(京都)'],
+      koans: [
+        { title: '关山拈火箸', description: '大燈国師传法关山慧玄时递火箸——以日常器物为传法之具。' },
+      ],
+      classicQuotes: ['坐断乾坤，截断众流', '佛法无多子，长年苦行人'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '一休宗純', nameEn: 'Ikkyū Sōjun', religionId: buddhismId,
+      dates: '1394-1481', title: '狂云子', school: '日本禅宗', generation: 5,
+      teacherId: null,
+      biography: '一休宗純，号狂云子，日本临济宗大德寺第四十七代住持。传为后小松天皇落胤。以狂放不羁著称——饮酒食肉、出入风月、蓄发畜妾，然禅境通透、诗文超绝。华叟宗昙印可其悟，一休当众烧毁印可状。晚年奉敕重建应仁之乱后的大德寺。其"狂禅"打破形式主义，直指人心。',
+      coreTeaching: '狂禅——以破戒之行体现最深禅意。形式化的持戒反成束缚，真正的自由来自内心的彻底解脱。一切分别（圣/凡、净/秽、僧/俗）皆是妄想。',
+      achievements: '日本禅宗最传奇人物。以"狂禅"打破僵化禅门形式。重建大德寺。汉诗集《狂云集》为日本禅文学最高峰。弟子珠光创立侘茶，催生日本茶道。后世动画"聪明的一休"即以其为原型。',
+      templeNames: ['大德寺(京都)', '酬恩庵一休寺(京田边)'],
+      koans: [
+        { title: '风月无边', description: '一休出入花街柳巷时说"风月无边，此中有禅"——超越净秽分别。' },
+        { title: '烧毁印可', description: '老师给印可证明开悟，一休当场烧掉——真悟不需文字证明。' },
+      ],
+      classicQuotes: ['诸佛不入涅槃，众生不上菩提', '有漏路从此闭，无漏路从此开', '门松は冥土の旅の一里塚'],
+      works: [
+        { title: '狂云集', description: '汉诗集，日本禅文学巅峰' },
+        { title: '续狂云集', description: '晚年诗作续编' },
+        { title: '自戒集', description: '自省文集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '白隠慧鶴', nameEn: 'Hakuin Ekaku', religionId: buddhismId,
+      dates: '1686-1769', title: '正宗国師', school: '日本禅宗', generation: 6,
+      teacherId: null,
+      biography: '白隠慧鶴，日本临济宗中兴之祖。十五岁出家，遍参诸方。以"只手之声"公案闻名天下。重新体系化临济宗公案修行——创立"白隠系公案体系"，将数百则公案按修行阶段排列，至今日本临济宗仍沿用此体系。一生不离松蔭寺（静冈原），以平民百姓为弘法对象。兼擅禅画与书法，被誉为日本禅画巅峰。',
+      coreTeaching: '只手之声——"两手相拍有声，一只手是什么声？"此公案成为日本禅修入门第一关。强调大疑之下必有大悟，参禅必须生起彻骨大疑。',
+      achievements: '日本临济宗中兴之祖。创立白隠系公案体系（至今日本临济宗标准修行法）。"只手之声"为世界最知名公案之一。禅画书法堪称日本禅艺术巅峰。一切现代日本临济宗禅僧皆为其法嗣。',
+      templeNames: ['松蔭寺(静冈)'],
+      koans: [
+        { title: '只手之声', description: '两手相拍有声。且听一只手的声音——让思维停顿，直入无分别智。' },
+        { title: '本来面目', description: '父母未生之前，你的本来面目是什么？直指心源。' },
+      ],
+      classicQuotes: ['衆生本来佛也', '大疑之下必有大悟', '坐禅和讃：此处即莲华国，此身即佛'],
+      works: [
+        { title: '坐禅和讃', description: '坐禅赞歌，日本禅修最广传颂的偈文' },
+        { title: '毒語心経', description: '以毒舌解读般若心经' },
+        { title: '远罗天釜', description: '以书信形式的禅修指南' },
+        { title: '壁生草', description: '自传体修行记录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '鈴木大拙', nameEn: 'D.T. Suzuki', religionId: buddhismId,
+      dates: '1870-1966', title: '禅学泰斗', school: '日本禅宗', generation: 7,
+      teacherId: null,
+      biography: '鈴木大拙（Daisetsu Teitaro Suzuki），日本佛教学者、禅学家。于镰仓圆觉寺从今北洪川、释宗演参禅得悟。1897年赴美，以英文向西方世界系统介绍禅宗。著作等身，《禅与日本文化》《禅学入门》等以英文写就，影响了海德格尔、荣格、约翰·凯奇等西方思想家。被誉为"将禅传播到西方的第一人"。',
+      coreTeaching: '禅即直接经验。禅不是哲学理论，而是超越逻辑的直接生命体验。以西方哲学语言重新诠释禅宗——开创了"禅的跨文化对话"。',
+      achievements: '将禅宗系统传入西方的第一人。以英文著作《禅与日本文化》《禅学入门》等影响整个20世纪西方思想界。影响海德格尔、荣格、约翰·凯奇、杰克·凯鲁亚克等巨匠。推动了20世纪60年代美国禅宗热潮。',
+      templeNames: ['圆觉寺(镰仓)'],
+      koans: [],
+      classicQuotes: ['Before satori, chopping wood, carrying water. After satori, chopping wood, carrying water.', '禅は知識ではなく体験である'],
+      works: [
+        { title: 'An Introduction to Zen Buddhism', description: '禅学入门，西方禅学经典' },
+        { title: 'Zen and Japanese Culture', description: '禅与日本文化，禅的文化学巨著' },
+        { title: 'Essays in Zen Buddhism', description: '禅佛教论文集三卷' },
+        { title: 'The Training of the Zen Buddhist Monk', description: '禅僧训练实录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 韩国禅宗 (4位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '知訥', nameEn: 'Jinul (Bojo Guksa)', religionId: buddhismId,
+      dates: '1158-1210', title: '普照国師', school: '韩国禅宗', generation: 1,
+      teacherId: null,
+      biography: '知訥，号普照国師，韩国曹溪宗实际创始人。高丽时期最伟大的禅师。提出"定慧双修、顿悟渐修"的修行体系——先顿悟心性本净，再渐修除习气。融合禅宗与华严教理，创立"禅教合一"的韩国禅宗独特传统。于松广寺组建定慧社，推动佛教改革，影响韩国佛教至今。',
+      coreTeaching: '定慧双修、顿悟渐修。悟解与修行不可偏废：先以顿悟认识本心，再以渐修净除习气。禅教合一——禅宗直指与华严教理并非对立，而是互补。',
+      achievements: '韩国曹溪宗实际创始人。提出"定慧双修、顿悟渐修"修行体系。融合禅教，创立韩国佛教独特传统。曹溪宗今为韩国最大佛教宗派（约10000座寺院）。',
+      templeNames: ['松广寺(顺天)'],
+      koans: [
+        { title: '顿悟渐修', description: '一念顿悟如初生婴儿——虽已具足人形，但四肢尚须渐渐长成。' },
+      ],
+      classicQuotes: ['真心本来清净', '顿悟见性后，仍须渐修除习'],
+      works: [
+        { title: '劝修定慧结社文', description: '定慧社成立宣言，韩国佛教改革纲领' },
+        { title: '真心直说', description: '直指心性的修行指南' },
+        { title: '修心诀', description: '修行心要' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '休静', nameEn: 'Hyujeong (Seosan Daesa)', religionId: buddhismId,
+      dates: '1520-1604', title: '西山大師', school: '韩国禅宗', generation: 2,
+      teacherId: null,
+      biography: '休静，号西山大師，朝鲜时代最伟大的禅师。精通儒释道三教，著《三家龟鉴》论三教会通。壬辰倭乱（1592）时年七十三岁，奉宣祖王命率僧兵五千抗倭，收复平壤。战后归山继续弘法。门下四大弟子开创朝鲜佛教四大法脉，影响延续至今。',
+      coreTeaching: '三教会通——儒释道三教同归一理。禅以直指人心为本，兼融教理与念佛。出世修行与入世担当并不矛盾——国难当头，禅僧当奋起报国。',
+      achievements: '朝鲜时代最伟大禅师。壬辰倭乱率五千僧兵抗倭。著《三家龟鉴》论三教会通。门下四大法脉影响韩国佛教至今。被尊为韩国佛教中兴之祖。',
+      templeNames: ['兴国寺', '妙香山普贤寺'],
+      koans: [],
+      classicQuotes: ['儒释道三教，同出一源', '禅是佛心，教是佛语，律是佛行'],
+      works: [
+        { title: '三家龟鉴', description: '儒释道三教会通论' },
+        { title: '禅教释', description: '禅宗与教宗关系论' },
+        { title: '禅家龟鉴', description: '禅修入门指南' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '鏡虛惺牛', nameEn: 'Gyeongheo Seong-u', religionId: buddhismId,
+      dates: '1849-1912', title: '鏡虛禅師', school: '韩国禅宗', generation: 3,
+      teacherId: null,
+      biography: '鏡虛惺牛，韩国近代禅宗复兴之父。日据时期韩国佛教衰微，鏡虛以一己之力重振禅修传统。于梵鱼寺、通度寺等地结禅堂、立清规，恢复中断百余年的禅修实践。门下弟子满韩、汉岩、慧月等人将禅法传承下去。其狂放作风酷似一休——终身不拘形式，以真修实证为本。',
+      coreTeaching: '看话禅复兴。重振"话头"修行——参"什么是无？"等话头，以大疑情打破妄想。强调修行在于实证，不在于学问多少。',
+      achievements: '韩国近代禅宗复兴之父。日据时期重振韩国禅修传统。培养满韩、汉岩等弟子传承法脉。现代韩国曹溪宗禅修传统皆可追溯至鏡虛。',
+      templeNames: ['梵鱼寺(釜山)', '通度寺(梁山)'],
+      koans: [
+        { title: '万法归一', description: '万法归一，一归何处？以此话头打破一切概念执着。' },
+      ],
+      classicQuotes: ['修行不在多闻，在于实证', '大疑必生大悟'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '性徹', nameEn: 'Seongcheol', religionId: buddhismId,
+      dates: '1912-1993', title: '退翁', school: '韩国禅宗', generation: 4,
+      teacherId: null,
+      biography: '性徹大宗師，韩国曹溪宗第七代宗正（最高领袖）。八年闭关长坐不卧（長坐不臥），以极端苦行闻名。提出"顿悟顿修"论挑战知訥的"顿悟渐修"——主张真正的彻悟当下即圆满，无须渐修。1981年就任宗正发表"山即是山、水即是水"法语，震动韩国社会。海印寺退居后仍被尊为韩国佛教精神领袖。',
+      coreTeaching: '顿悟顿修——真正的彻悟当下圆满具足，不需要渐修补缀。"山是山，水是水"——回到最初的直接，超越一切分别与概念。',
+      achievements: '韩国曹溪宗第七代宗正。提出"顿悟顿修"挑战传统。八年长坐不卧闻名。"山是山水是水"法语影响韩国社会。被尊为20世纪韩国最伟大禅师。',
+      templeNames: ['海印寺(陕川)'],
+      koans: [
+        { title: '山是山', description: '初参时山是山；修行中山不是山；彻悟后山还是山——但已完全不同。' },
+      ],
+      classicQuotes: ['山是山，水是水', '真正的开悟是顿悟顿修', '自己就是佛'],
+      works: [
+        { title: '百日法门', description: '百日说法记录，系统阐述禅修要义' },
+        { title: '本地风光', description: '法语集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 越南禅宗 (4位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '毘尼多羅支', nameEn: 'Vinitaruci', religionId: buddhismId,
+      dates: '?-594', title: '越南禅初祖', school: '越南禅宗', generation: 1,
+      teacherId: sengcan?.id || null,
+      biography: '毘尼多羅支（Vinitaruci），南印度人，中国禅宗三祖僧璨弟子。580年到达交州（今越南），于法云寺传禅。创立越南第一个禅宗流派——毘尼多羅支禅派，传承十九代约六百年。将中国禅宗与印度密教元素融合，形成越南禅宗独特风格。是越南佛教史上最重要的开创性人物。',
+      coreTeaching: '禅密融合——将中国禅宗三祖僧璨的禅法与南印度密教修持融合。即心即佛，不立文字，同时包含陀罗尼与密咒修持。',
+      achievements: '越南禅宗初祖。将中国禅宗传入越南，创立毘尼多羅支禅派（传承十九代600年）。禅密融合的独特风格影响越南佛教根本方向。',
+      templeNames: ['法云寺(北宁)'],
+      koans: [],
+      classicQuotes: ['心即是佛，佛即是心'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '無言通', nameEn: 'Vô Ngôn Thông', religionId: buddhismId,
+      dates: '759-826', title: '无言通禅师', school: '越南禅宗', generation: 2,
+      teacherId: null,
+      biography: '無言通（Vô Ngôn Thông），中国广州人，百丈怀海弟子。820年到达交州建初寺传禅。创立越南第二个禅宗流派——無言通禅派，传承十七代约五百年。禅风直截简明，承百丈"一日不作一日不食"之农禅风。其禅派与毘尼多羅支禅派并行，共同构成越南禅宗两大主脉。',
+      coreTeaching: '不立文字，直指心源。承百丈怀海禅风——日常劳作即禅修。以沉默与直接体验为修行核心（无言即通）。',
+      achievements: '越南第二大禅派创始人。将百丈怀海禅法传入越南。無言通禅派传承十七代约五百年。与毘尼多羅支禅派并为越南禅宗两大主脉。',
+      templeNames: ['建初寺(河内)'],
+      koans: [
+        { title: '无言即通', description: '禅师终日无言，弟子问：为何不说法？师曰：我何曾不说？——沉默即最深的开示。' },
+      ],
+      classicQuotes: ['一日不作一日不食', '无言处即有大音声'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '陳仁宗', nameEn: 'Trần Nhân Tông', religionId: buddhismId,
+      dates: '1258-1308', title: '竹林大士', school: '越南禅宗', generation: 3,
+      teacherId: null,
+      biography: '陳仁宗，越南陈朝第三代皇帝（1278-1293在位），两次击退蒙古入侵。退位后出家修行，于安子山创立竹林禅派（Trúc Lâm）——越南本土第一个禅宗流派。融合禅宗、净土与越南本土信仰。主张"居尘乐道"——在世俗生活中修行。是越南历史上唯一出家为僧的皇帝，被尊为越南佛教最伟大的本土祖师。',
+      coreTeaching: '居尘乐道——不必离尘出世，在日常生活中即可修行证悟。竹林禅融合禅净，以越南语弘法（而非文言文），让佛法真正走入民间。',
+      achievements: '越南本土第一个禅宗流派竹林禅派创始人。两退蒙古的英雄皇帝，退位出家。创"居尘乐道"理念。以越南语弘法开先河。被尊为越南佛教最伟大本土祖师。',
+      templeNames: ['安子山(广宁)', '卧云寺', '琼林寺'],
+      koans: [
+        { title: '居尘乐道', description: '弟子问：如何在世间修行？帝师曰：居尘乐道——尘世即道场，何须另觅清净处？' },
+      ],
+      classicQuotes: ['居尘乐道，非去尘求道', '佛在心中莫远求', '身虽居朝堂，心已在山林'],
+      works: [
+        { title: '课虚录', description: '修行语录与开示' },
+        { title: '大越史略', description: '越南史学著作' },
+        { title: '居尘乐道赋', description: '以越南语写就的修行诗赋' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '一行禪師', nameEn: 'Thích Nhất Hạnh', religionId: buddhismId,
+      dates: '1926-2022', title: '正念之父', school: '越南禅宗', generation: 4,
+      teacherId: null,
+      biography: '一行禪師（Thích Nhất Hạnh），越南临济宗第四十二代传人。越战期间投身和平运动，马丁·路德·金提名其诺贝尔和平奖。1966年流亡海外，在法国创建梅村修行社区。以"正念"（Mindfulness）为核心教导——行走坐卧皆修行。著有百余本书，将佛法以最朴素的语言传达给全世界。是继铃木大拙后对西方影响最大的亚洲禅师。2022年在越南归元寺安详示寂。',
+      coreTeaching: '正念修行——每一步行走、每一次呼吸都是修行的机会。活在当下。"相即"（Interbeing）——一切事物互相依存，无独立自性。以和平、慈悲、正念将佛法应用于日常生活。',
+      achievements: '当代全球最具影响力的禅师之一。创建梅村修行社区（全球最大佛教道场之一）。"正念"概念影响全球身心健康领域。百余本著作翻译成四十余语言。马丁·路德·金提名诺贝尔和平奖。',
+      templeNames: ['梅村(法国)', '归元寺(越南顺化)', '鹿苑寺(美国)'],
+      koans: [
+        { title: '洗碗禅', description: '洗碗时只是洗碗——不想过去、不想未来。每一个动作都是完整的修行。' },
+        { title: '步行禅', description: '每一步都踏在净土上。不必到达任何地方——此刻即已到达。' },
+      ],
+      classicQuotes: ['Breathing in, I calm my body. Breathing out, I smile.', '每一步都是到达', '没有泥巴就没有莲花'],
+      works: [
+        { title: 'The Miracle of Mindfulness', description: '正念的奇迹，正念修行入门经典' },
+        { title: 'Being Peace', description: '成为和平，将和平融入日常' },
+        { title: 'The Heart of the Buddha\'s Teaching', description: '佛陀教导的核心' },
+        { title: 'No Mud, No Lotus', description: '没有泥巴就没有莲花——转化痛苦的艺术' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 西方禅宗 (4位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '鈴木俊隆', nameEn: 'Shunryū Suzuki', religionId: buddhismId,
+      dates: '1904-1971', title: '禅心初心', school: '西方禅宗', generation: 1,
+      teacherId: null,
+      biography: '鈴木俊隆（Shunryū Suzuki），日本曹洞宗禅师。1959年赴美，在旧金山创建旧金山禅中心（San Francisco Zen Center）——西方第一座禅宗寺院。后创建塔萨哈拉山中禅修中心（美国第一座禅修道场）。以朴素温和的教导吸引大量美国学生。其弟子整理的《禅者的初心》（Zen Mind, Beginner\'s Mind）成为西方禅修最畅销书籍。1971年因癌症示寂，旧金山禅中心至今传承不断。',
+      coreTeaching: '初心（Beginner\'s Mind）——"初学者的心有无限可能，专家的心则可能性很少。"保持初学者的开放与好奇，不被既有知识和成见束缚。只管打坐——不求特殊体验，只是坐着。',
+      achievements: '西方禅宗开拓者。创建旧金山禅中心（西方第一座禅宗寺院）和塔萨哈拉禅修道场。《禅者的初心》为西方禅修最畅销经典。改变了禅从东方哲学到西方日常修行的定位。',
+      templeNames: ['旧金山禅中心', '塔萨哈拉山禅修中心(加州)'],
+      koans: [
+        { title: '初心', description: '在初学者的心中，充满可能性；在专家的心中，可能性很少。始终保持初心。' },
+      ],
+      classicQuotes: ['In the beginner\'s mind there are many possibilities, but in the expert\'s there are few.', '如果你的心是空的，它就随时准备好接受任何事物'],
+      works: [
+        { title: 'Zen Mind, Beginner\'s Mind', description: '禅者的初心——西方禅修最畅销经典' },
+        { title: 'Not Always So', description: '不总是这样——进阶禅修开示' },
+        { title: 'Branching Streams Flow in the Darkness', description: '对参同契的开示' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '前角博雄', nameEn: 'Taizan Maezumi', religionId: buddhismId,
+      dates: '1931-1995', title: '前角禅師', school: '西方禅宗', generation: 2,
+      teacherId: null,
+      biography: '前角博雄（Taizan Maezumi），日本曹洞宗僧侣。1956年赴美，于洛杉矶创建洛杉矶禅中心（Zen Center of Los Angeles, ZCLA）。独特之处在于同时持有曹洞宗和临济宗两系传法——融合两家长处。培养了数十位西方禅师（Dharma Heirs），包括Bernie Glassman、John Daido Loori、Charlotte Joko Beck等，形成美国最大的禅宗传法网络。被称为"美国禅宗的教父"。',
+      coreTeaching: '曹洞临济融合——将曹洞宗的只管打坐与临济宗的公案修行结合。强调修行的日常性与深入性并重。"欣赏你的生命"（Appreciate your life）——每一刻都值得被完全体验。',
+      achievements: '美国禅宗最重要的传法者之一。融合曹洞临济两系。培养数十位西方禅师形成最大传法网络。创建ZCLA。被称为"美国禅宗的教父"。',
+      templeNames: ['洛杉矶禅中心(ZCLA)'],
+      koans: [],
+      classicQuotes: ['Appreciate your life.', 'The whole universe is your true teacher.'],
+      works: [
+        { title: 'Appreciate Your Life', description: '欣赏你的生命——日常禅修' },
+        { title: 'The Hazy Moon of Enlightenment', description: '朦胧的悟月——禅修与开悟' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '菲利普·卡普洛', nameEn: 'Philip Kapleau', religionId: buddhismId,
+      dates: '1912-2004', title: '卡普洛老师', school: '西方禅宗', generation: 3,
+      teacherId: null,
+      biography: '菲利普·卡普洛（Philip Kapleau），美国禅宗先驱。曾为纽伦堡审判和东京审判记者。1953年赴日在安谷白云老师座下修行十三年，得印可。1966年回美创建罗切斯特禅中心。著《禅门三柱》（The Three Pillars of Zen）——第一本以英文系统记录禅修实践的书籍。主张禅宗必须本土化——用英语举行禅修仪式，对后来西方禅宗发展影响深远。',
+      coreTeaching: '禅门三柱——大信根、大疑情、大奋志。三者具足方能参禅有成。主张禅宗在西方必须本土化：用本地语言、适应本地文化、回应本地问题。',
+      achievements: '西方禅宗先驱。《禅门三柱》为第一本系统记录禅修实践的英文书。创建罗切斯特禅中心。首创以英语举行禅修仪式。推动禅宗西方本土化。',
+      templeNames: ['罗切斯特禅中心(纽约州)'],
+      koans: [
+        { title: '三柱', description: '大信根（相信自性本佛）、大疑情（以话头起疑）、大奋志（坚定不退）——三柱缺一不可。' },
+      ],
+      classicQuotes: ['If you want to attain enlightenment, you must be prepared to die on the cushion.'],
+      works: [
+        { title: 'The Three Pillars of Zen', description: '禅门三柱——西方禅修实践第一书' },
+        { title: 'Zen: Merging of East and West', description: '禅：东西方的交汇' },
+        { title: 'To Cherish All Life', description: '珍惜众生——禅与素食伦理' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '罗伯特·艾特肯', nameEn: 'Robert Aitken', religionId: buddhismId,
+      dates: '1917-2010', title: '艾特肯老师', school: '西方禅宗', generation: 4,
+      teacherId: null,
+      biography: '罗伯特·艾特肯（Robert Aitken），美国禅宗大师与社会活动家。二战期间在日本战俘营中接触禅宗（与R.H. Blyth同为战俘）。战后师从中川宋渊、安谷白云修禅，得前角博雄印可。1959年于夏威夷创建钻石僧团（Diamond Sangha）。将禅修与社会正义运动结合——反战、环保、人权，开创"入世禅"（Engaged Buddhism）在西方的先河。被尊为美国禅宗元老。',
+      coreTeaching: '入世禅（Engaged Buddhism）——禅悟不是逃离世界，而是更深入地参与世界。坐禅与社会正义、和平运动并行不悖。"修行即抵抗"——以正念面对不公。',
+      achievements: '美国禅宗元老之一。创建钻石僧团。开创西方"入世禅"传统——将禅修与社会正义运动结合。反战、环保、人权运动的精神领袖。著有多部公案注释。',
+      templeNames: ['钻石僧团(夏威夷)'],
+      koans: [
+        { title: '无门关注释', description: '艾特肯对无门关四十八则公案的现代西方视角注释，将古代禅法与当代生活连接。' },
+      ],
+      classicQuotes: ['The practice of Zen is the practice of peace.', 'Nothing is hidden.'],
+      works: [
+        { title: 'Taking the Path of Zen', description: '走禅之路——禅修入门' },
+        { title: 'The Mind of Clover', description: '苜蓿心——禅戒伦理' },
+        { title: 'The Gateless Barrier', description: '无门关注释——现代西方视角' },
+        { title: 'Original Dwelling Place', description: '本来住处——禅与日常生活' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const overseasZenCount = 19;
+  console.log(`  ✓ ${overseasZenCount} overseas Zen patriarchs created (Japan 7 + Korea 4 + Vietnam 4 + Western 4)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();

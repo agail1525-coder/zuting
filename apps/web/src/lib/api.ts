@@ -187,7 +187,7 @@ export async function fetchPatriarchs(
   religionId?: string,
   school?: string,
 ): Promise<Patriarch[]> {
-  const params = new URLSearchParams({ limit: "100" });
+  const params = new URLSearchParams({ limit: "200" });
   if (religionId) params.set("religionId", religionId);
   if (school) params.set("school", school);
   const res = await fetchJson<PaginatedResponse<Patriarch> | Patriarch[]>(`/api/patriarchs?${params}`);
