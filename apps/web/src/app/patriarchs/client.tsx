@@ -829,6 +829,36 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 📜 律宗祖师传承
               </Link>
               <Link
+                href="/tiantai-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🏔️ 天台宗祖师传承
+              </Link>
+              <Link
+                href="/huayan-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🌸 华严宗祖师传承
+              </Link>
+              <Link
+                href="/faxiang-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🔮 法相宗祖师传承
+              </Link>
+              <Link
+                href="/esoteric-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                🔱 密宗祖师传承
+              </Link>
+              <Link
+                href="/sanlun-patriarchs"
+                className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                💠 三论宗祖师传承
+              </Link>
+              <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >

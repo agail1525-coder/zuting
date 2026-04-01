@@ -3313,6 +3313,455 @@ async function main() {
   const vinayaCount = 11;
   console.log(`  ✓ ${vinayaCount} Vinaya school patriarchs created`);
 
+  // ── 4f. 天台宗祖师 (Tiantai School Patriarchs) ──
+  console.log('Creating Tiantai school patriarchs...');
+
+  await prisma.patriarch.create({
+    data: {
+      name: '龙树菩萨', nameEn: 'Nagarjuna', religionId: buddhismId,
+      dates: '约150-250', title: '天台初祖', school: '天台宗', generation: 1, teacherId: null,
+      biography: '龙树（梵文Nāgārjuna），南印度人，大乘佛教最重要的论师之一。出身婆罗门种姓，少年博学多闻，后出家修行，得大龙菩萨引入龙宫，于龙宫中读《华严经》等大乘经典，遂弘扬大乘。著《中论》《大智度论》《十二门论》等，建立中观学说（空宗），以"八不中道"破一切执著。其思想为天台宗止观双修的理论源头，智者大师依其《大智度论》建立一心三观之说。被尊为"八宗共祖"——禅宗、天台、华严、三论、净土、密宗、律宗、法相诸宗皆推为祖师。',
+      coreTeaching: '中观——"不生不灭，不常不断，不一不异，不来不去"八不中道，破一切执著，显示诸法实相。',
+      achievements: '大乘佛教最伟大的论师，"八宗共祖"。著《中论》建立中观学说，《大智度论》百卷为大乘佛教百科全书。其中观思想为天台止观、三论中观、禅宗心法的共同理论源泉。',
+      templeNames: [{ name: '龙树菩萨道场', nameEn: 'Nagarjuna Monastery', role: '弘法', location: '南印度' }],
+      koans: [{ title: '八不中道', content: '不生亦不灭，不常亦不断，不一亦不异，不来亦不出。能说是因缘，善灭诸戏论。', source: '中论·观因缘品' }],
+      classicQuotes: ['不生亦不灭，不常亦不断，不一亦不异，不来亦不出', '因缘所生法，我说即是空，亦为是假名，亦是中道义', '众因缘生法，我说即是无，亦为是假名，亦是中道义'],
+      works: [
+        { title: '中论', description: '四卷，中观学派根本论典，以"八不"破一切执著' },
+        { title: '大智度论', description: '百卷，大乘佛教百科全书' },
+        { title: '十二门论', description: '中观入门著作' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '慧文禅师', nameEn: 'Huiwen', religionId: buddhismId,
+      dates: '约550年活跃', title: '天台二祖', school: '天台宗', generation: 2, teacherId: null,
+      biography: '慧文，北齐高僧，生平事迹不详。读龙树《大智度论》中"三智一心中得"之语及《中论》"因缘所生法"偈，豁然大悟，悟得"一心三观"——空、假、中三观于一念心中同时成立。此悟成为天台宗止观法门的核心理论基础。以此观法授慧思，慧思传智顗，遂开天台一宗。',
+      coreTeaching: '一心三观——空观、假观、中观三观于一念心中同时成立，非前后次第。',
+      achievements: '天台宗二祖。读《大智度论》悟"一心三观"，为天台止观法门奠定理论基础。虽生平不详，但其一心三观之悟对中国佛教影响深远。',
+      templeNames: [], koans: [{ title: '一心三观', content: '慧文读《大智度论》"三智一心中得"，又读《中论》"因缘所生法，我说即是空，亦为是假名，亦是中道义"，豁然大悟，悟一心三观。', source: '佛祖统纪' }],
+      classicQuotes: ['三智一心中得'], works: [], imageUrl: null,
+    },
+  });
+
+  const huisiTT = await prisma.patriarch.create({
+    data: {
+      name: '慧思大师', nameEn: 'Huisi', religionId: buddhismId,
+      dates: '515-577', title: '南岳慧思', school: '天台宗', generation: 3, teacherId: null,
+      biography: '慧思，武津（今河南上蔡）人。十五岁出家，苦行修定。后从慧文禅师学一心三观。于光州大苏山定中悟得法华三昧，深达实相之理。后南下至南岳衡山弘法，称"南岳大师"。其弟子智顗承其法门，建立天台宗教观体系。陈太建九年（577）示寂于南岳，世寿六十三。其《大乘止观法门》为天台止观的重要先驱。',
+      coreTeaching: '法华三昧——依《法华经》修止观，悟诸法实相，定慧双修。',
+      achievements: '天台宗三祖。于大苏山悟法华三昧，传授智顗止观法门。著《大乘止观法门》为天台止观先驱。居南岳弘法，门下培养出天台宗实际创始人智者大师。',
+      templeNames: [{ name: '南岳福严寺', nameEn: 'Fuyan Temple', role: '驻锡弘法', location: '湖南衡山' }, { name: '大苏山', nameEn: 'Dasu Mountain', role: '悟道', location: '河南光山' }],
+      koans: [{ title: '法华三昧', content: '慧思于大苏山入定，修法华三昧。经三七日，于定中见灵山一会俨然未散，遂悟法华经旨。', source: '续高僧传' }],
+      classicQuotes: ['诸法实相，非定非慧，定慧一如'],
+      works: [{ title: '大乘止观法门', description: '天台止观先驱著作' }, { title: '法华经安乐行义', description: '法华修行指导' }],
+      imageUrl: null,
+    },
+  });
+
+  const zhiyiTT = await prisma.patriarch.create({
+    data: {
+      name: '智顗大师', nameEn: 'Zhiyi', religionId: buddhismId,
+      dates: '538-597', title: '天台智者', school: '天台宗', generation: 4, teacherId: huisiTT.id,
+      biography: '智顗，字德安，荆州华容（今湖南华容）人，俗姓陈。十八岁出家，师从慧思大师于大苏山学止观。后入天台山，于华顶峰修止观，大悟"一念三千"之理。建国清寺，在此讲经弘法三十余年。创立天台宗完整教观体系：以"五时八教"判释全部佛经，以"一心三观""一念三千"为核心义理，以《摩诃止观》为修行指南。隋炀帝（杨广）受其菩萨戒，赐号"智者大师"。开皇十七年（597）示寂于天台山，世寿六十。其著述被称为"天台三大部"和"天台五小部"，为中国佛教最完整的教观体系。',
+      coreTeaching: '一念三千——一念心中具足三千世界一切法。止观双修，定慧等持。五时八教判释一切佛法。',
+      achievements: '天台宗实际创始人（四祖但为建宗者）。创立中国佛教第一个完整教观体系。著"天台三大部"（法华玄义/法华文句/摩诃止观）。以"五时八教"统摄全部佛经。隋炀帝赐号"智者大师"。中国佛教史上最伟大的思想家之一。',
+      templeNames: [
+        { name: '天台山国清寺', nameEn: 'Guoqing Temple', role: '创建弘法', location: '浙江天台' },
+        { name: '玉泉寺', nameEn: 'Yuquan Temple', role: '讲经', location: '湖北当阳' },
+      ],
+      koans: [
+        { title: '一念三千', content: '一念心起，即具十界、百界、千如、三千世界。心即一切法，一切法即心。非前非后，一时俱足。', source: '摩诃止观' },
+        { title: '止观双修', content: '止即是观，观即是止。非定非慧，即定即慧。如目足相资，不可偏废。', source: '摩诃止观' },
+      ],
+      classicQuotes: ['一念三千，诸法实相', '止观不二，定慧等持', '为菩提道，求正法眼'],
+      works: [
+        { title: '摩诃止观', description: '二十卷，天台止观修行指南，三大部之一' },
+        { title: '法华玄义', description: '二十卷，法华经义理总论，三大部之一' },
+        { title: '法华文句', description: '二十卷，法华经逐句注释，三大部之一' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '灌顶大师', nameEn: 'Guanding', religionId: buddhismId,
+      dates: '561-632', title: '章安灌顶', school: '天台宗', generation: 5, teacherId: zhiyiTT.id,
+      biography: '灌顶，字法云，临海章安（今浙江台州）人。少年出家，师事智者大师二十余年，尽得其法。智顗所说"天台三大部"及诸部著述，皆由灌顶笔录整理而成。智顗圆寂后，灌顶继承法席，住国清寺弘法。著《涅槃玄义》《涅槃经疏》等。贞观六年（632）示寂，世寿七十二。若无灌顶之笔录，天台教典将无法传世。',
+      coreTeaching: '继承师法，笔录整理——智者大师一生口述教法，赖灌顶笔录传世。',
+      achievements: '天台宗五祖。笔录整理智者大师全部口述著作（三大部等），使天台教典得以传世。若无灌顶，天台宗教义体系将无法完整保存。',
+      templeNames: [{ name: '天台山国清寺', nameEn: 'Guoqing Temple', role: '继承法席', location: '浙江天台' }],
+      koans: [], classicQuotes: ['师之所说，不敢有遗'],
+      works: [{ title: '涅槃玄义', description: '涅槃经义理总论' }, { title: '涅槃经疏', description: '涅槃经注释' }, { title: '观心论疏', description: '天台观心法门注释' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '湛然大师', nameEn: 'Zhanran', religionId: buddhismId,
+      dates: '711-782', title: '荆溪湛然', school: '天台宗', generation: 6, teacherId: null,
+      biography: '湛然，常州荆溪（今江苏宜兴）人，俗姓戚。初习儒学，十七岁从天台宗玄朗法师出家，尽得天台教观真传。时值唐代禅宗、华严宗大兴，天台宗势微。湛然以"无情有性"（草木瓦石皆有佛性）之说，发展天台教义，著《止观辅行传弘决》等，中兴天台宗。被誉为天台宗中兴之祖。建中三年（782）示寂，世寿七十二。其学说后传至日本，影响日本天台宗。',
+      coreTeaching: '无情有性——草木瓦石、山河大地皆有佛性，一切法皆具实相。中兴天台教观。',
+      achievements: '天台宗中兴之祖（六祖/九祖说法不一）。提出"无情有性"说，发展天台教义。著述丰富，使天台宗在禅宗、华严宗盛行之唐代得以延续。其学传至日本，影响最澄创立日本天台宗。',
+      templeNames: [{ name: '天台山国清寺', nameEn: 'Guoqing Temple', role: '弘法', location: '浙江天台' }],
+      koans: [{ title: '无情有性', content: '若言无情无佛性，则是将心限于有情，不知一色一香无非中道。瓦石草木皆是法身，何物不具佛性？', source: '金刚錍' }],
+      classicQuotes: ['一色一香，无非中道', '无情有性，万法唯心'],
+      works: [
+        { title: '止观辅行传弘决', description: '摩诃止观注释，天台止观最重要辅助著作' },
+        { title: '法华玄义释签', description: '法华玄义注释' },
+        { title: '金刚錍', description: '论证"无情有性"' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const tiantaiCount = 6;
+  console.log(`  ✓ ${tiantaiCount} Tiantai school patriarchs created`);
+
+  // ── 4g. 华严宗祖师 (Huayan School Patriarchs) ──
+  console.log('Creating Huayan school patriarchs...');
+
+  const dushunHY = await prisma.patriarch.create({
+    data: {
+      name: '杜顺和尚', nameEn: 'Dushun', religionId: buddhismId,
+      dates: '557-640', title: '帝心尊者', school: '华严宗', generation: 1, teacherId: null,
+      biography: '杜顺，雍州万年（今陕西西安）人，俗姓杜。十八岁出家，师从因圣寺僧珍禅师。专修华严法界观，以禅定见长。唐太宗敬其德行，赐号"帝心"。著《华严法界观门》，首创"真空绝相观""理事无碍观""周遍含容观"三重法界观，奠定华严宗法界缘起思想的基础。贞观十四年（640）示寂，世寿八十四。',
+      coreTeaching: '法界三观——真空绝相观（空观）、理事无碍观（事理圆融）、周遍含容观（事事无碍），层层深入，显示华严法界缘起之妙理。',
+      achievements: '华严宗初祖。著《华严法界观门》创立三重法界观。唐太宗赐号"帝心"。为华严宗法界缘起思想奠基。',
+      templeNames: [{ name: '终南山至相寺', nameEn: 'Zhixiang Temple', role: '驻锡', location: '陕西终南山' }],
+      koans: [{ title: '法界三观', content: '一真空绝相观：会色归空，明空即色，空色无碍。二理事无碍观：理遍于事，事遍于理。三周遍含容观：一即一切，一切即一，重重无尽。', source: '华严法界观门' }],
+      classicQuotes: ['一即一切，一切即一', '法界缘起，重重无尽'],
+      works: [{ title: '华严法界观门', description: '华严三重法界观，华严宗根本著作' }, { title: '华严五教止观', description: '五教判教与止观' }],
+      imageUrl: null,
+    },
+  });
+
+  const zhiyanHY = await prisma.patriarch.create({
+    data: {
+      name: '智俨大师', nameEn: 'Zhiyan', religionId: buddhismId,
+      dates: '602-668', title: '至相大师', school: '华严宗', generation: 2, teacherId: dushunHY.id,
+      biography: '智俨，天水（今甘肃天水）人。十二岁从杜顺出家，深研华严。后参学于智正法师处学华严经，于华严经义豁然贯通。著《华严经搜玄记》，提出"十玄门"学说——以十种玄妙法门解释华严法界缘起、事事无碍的道理。居终南山至相寺弘法，号"至相大师"。其弟子法藏继承其学，完成华严宗教理体系。总章元年（668）示寂，世寿六十七。',
+      coreTeaching: '十玄门——以十种玄妙法门揭示华严法界中一切事物相即相入、重重无尽的缘起关系。',
+      achievements: '华严宗二祖。提出"十玄门"学说，为华严宗核心教理。著《搜玄记》系统注疏华严经。培养弟子法藏，使华严宗教理最终完备。',
+      templeNames: [{ name: '终南山至相寺', nameEn: 'Zhixiang Temple', role: '驻锡弘法', location: '陕西终南山' }],
+      koans: [{ title: '十玄门', content: '一同时具足相应门，二因陀罗网境界门，三秘密隐显俱成门……十主伴圆明具德门。十玄互摄，重重无尽。', source: '华严经搜玄记' }],
+      classicQuotes: ['一多相即，主伴圆融'],
+      works: [{ title: '华严经搜玄记', description: '华严经注疏，提出十玄门' }, { title: '华严一乘十玄门', description: '十玄门专论' }],
+      imageUrl: null,
+    },
+  });
+
+  const fazangHY = await prisma.patriarch.create({
+    data: {
+      name: '法藏大师', nameEn: 'Fazang', religionId: buddhismId,
+      dates: '643-712', title: '贤首国师', school: '华严宗', generation: 3, teacherId: zhiyanHY.id,
+      biography: '法藏，康居国（中亚）人后裔，祖籍长安，字贤首。十七岁于太白山求法，后从智俨学华严。智俨圆寂后，法藏完成华严宗完整教理体系。创立"五教十宗"判教体系——小教、始教、终教、顿教、圆教，以华严为圆教之极致。提出"六相圆融"与完善"十玄缘起"学说。武则天令其讲华严经，法藏以金狮子为喻，说一多相即之理，武则天豁然开悟。则天赐号"贤首"，故华严宗又称"贤首宗"。先天元年（712）示寂，世寿七十。',
+      coreTeaching: '法界缘起，六相圆融——一切事物具总相、别相、同相、异相、成相、坏相六相，互不相碍，圆融无碍。五教十宗判释一切佛法。',
+      achievements: '华严宗三祖，实际教理体系完成者。创立"五教十宗"判教体系。完善十玄缘起、六相圆融学说。以"金狮子章"为武则天说法，成为佛教史上著名的教学范例。华严宗因其号"贤首"而又称"贤首宗"。',
+      templeNames: [{ name: '长安荐福寺', nameEn: 'Jianfu Temple', role: '弘法', location: '陕西长安' }, { name: '华严寺', nameEn: 'Huayan Temple', role: '讲经', location: '陕西长安' }],
+      koans: [
+        { title: '金狮子章', content: '以金铸狮子为喻：金无自性，随工匠缘成狮子；金即狮子，狮子即金。以此说明理事无碍、事事无碍之义。武则天闻之豁然。', source: '华严金狮子章' },
+        { title: '六相圆融', content: '一总相、二别相、三同相、四异相、五成相、六坏相。六相互融，举一全收。', source: '华严一乘教义分齐章' },
+      ],
+      classicQuotes: ['理事无碍，事事无碍', '一即一切，一切即一，圆融自在'],
+      works: [
+        { title: '华严金狮子章', description: '以金狮子喻华严法界，佛教经典教学范例' },
+        { title: '华严一乘教义分齐章', description: '华严宗教理体系总纲' },
+        { title: '华严经探玄记', description: '二十卷，华严经注疏' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '澄观大师', nameEn: 'Chengguan', religionId: buddhismId,
+      dates: '738-839', title: '清凉国师', school: '华严宗', generation: 4, teacherId: fazangHY.id,
+      biography: '澄观，越州山阴（今浙江绍兴）人，字大休。十一岁出家，遍学三藏，兼通儒道。以华严为宗，住五台山清凉寺四十年，号"清凉国师"。著《华严经疏》六十卷、《随疏演义钞》九十卷，合称"华严疏钞"，为华严经注释的集大成之作。历唐代宗、德宗、顺宗、宪宗、穆宗、敬宗、文宗七朝，皆为国师。开成四年（839）示寂，世寿一百零二岁（一说九十七），为中国佛教史上最长寿的高僧之一。',
+      coreTeaching: '华严法界——以四法界（事法界/理法界/理事无碍法界/事事无碍法界）统摄华严教理。',
+      achievements: '华严宗四祖。著"华严疏钞"（疏六十卷+钞九十卷）为华严经注释集大成之作。历七朝国师，寿逾百岁。住五台山清凉寺四十年，使五台山成为华严圣地。',
+      templeNames: [{ name: '五台山清凉寺', nameEn: 'Qingliang Temple', role: '驻锡四十年', location: '山西五台山' }],
+      koans: [{ title: '四法界', content: '一事法界：万象差别。二理法界：平等真如。三理事无碍法界：理融于事，事彻于理。四事事无碍法界：一一事物互融互摄，重重无尽。', source: '华严经疏' }],
+      classicQuotes: ['事事无碍，重重无尽', '一真法界，圆融自在'],
+      works: [
+        { title: '华严经疏', description: '六十卷，华严经注疏集大成' },
+        { title: '随疏演义钞', description: '九十卷，华严经疏的进一步注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '宗密大师', nameEn: 'Zongmi', religionId: buddhismId,
+      dates: '780-841', title: '圭峰宗密', school: '华严宗', generation: 5, teacherId: null,
+      biography: '宗密，果州西充（今四川西充）人，俗姓何。初习儒学，后出家。先于荷泽宗参禅得法，后读澄观之《华严经疏》，遂投澄观门下学华严。兼通禅教，主张"禅教一致"——禅宗与教下（天台、华严等）本质相同，只是入门方式不同。著《原人论》融会儒释道三教，著《禅源诸诠集都序》统摄禅教诸宗。住终南山圭峰草堂寺，号"圭峰禅师"。会昌元年（841）示寂，世寿六十二。',
+      coreTeaching: '禅教一致——禅宗与教下（天台/华严等）本无差别，皆归一真法界。三教会通，融合儒释道。',
+      achievements: '华严宗五祖。主张"禅教一致"，融通禅宗与华严教理。著《原人论》会通儒释道三教。著《禅源诸诠集都序》统摄禅宗各派。为中国佛教"禅教融合"的先驱。',
+      templeNames: [{ name: '终南山草堂寺', nameEn: 'Caotang Temple', role: '驻锡弘法', location: '陕西户县' }],
+      koans: [{ title: '禅教一致', content: '禅者，佛之心也；教者，佛之口也。心口不相违，禅教岂有异？达磨以心传心，如来以口说法，同一佛法。', source: '禅源诸诠集都序' }],
+      classicQuotes: ['禅是佛心，教是佛口', '三教本一，归于至善'],
+      works: [
+        { title: '原人论', description: '会通儒释道三教之论' },
+        { title: '禅源诸诠集都序', description: '统摄禅宗各派之总序' },
+        { title: '华严原人论', description: '以华严教理论人性' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const huayanCount = 5;
+  console.log(`  ✓ ${huayanCount} Huayan school patriarchs created`);
+
+  // ── 4h. 法相宗/唯识宗祖师 (Faxiang/Yogacara School Patriarchs) ──
+  console.log('Creating Faxiang school patriarchs...');
+
+  const xuanzangFX = await prisma.patriarch.create({
+    data: {
+      name: '玄奘大师', nameEn: 'Xuanzang', religionId: buddhismId,
+      dates: '602-664', title: '三藏法师', school: '法相宗', generation: 1, teacherId: null,
+      biography: '玄奘，俗姓陈，名祎，洛州缑氏（今河南偃师）人。十三岁出家于洛阳净土寺。因感当时佛经翻译不全且有歧义，于贞观三年（629）独自西行求法。经历西域、中亚，抵达印度那烂陀寺，师从戒贤论师学唯识学、因明学等五年。又遍游印度各地参学。贞观十九年（645）回到长安，携回佛经657部。此后十九年主持译经事业，翻译经论75部1335卷，为中国佛教史上最伟大的译经家。以《成唯识论》为核心创立法相宗（唯识宗），建立"万法唯识"的完整教理体系。其西行求法事迹后被演绎为《西游记》。麟德元年（664）示寂于玉华宫，世寿六十三。',
+      coreTeaching: '万法唯识——一切外境皆是八识（眼耳鼻舌身意末那阿赖耶）之变现，离识无境。转识成智，转八识为四智。',
+      achievements: '法相宗（唯识宗）创始人。西行求法十七年，往返五万里。译经75部1335卷，为中国佛教最伟大译经家。著《成唯识论》建立唯识学体系。创大慈恩寺译经场。其事迹被演绎为《西游记》。',
+      templeNames: [
+        { name: '长安大慈恩寺', nameEn: 'Dacien Temple', role: '译经弘法', location: '陕西西安' },
+        { name: '玉华宫', nameEn: 'Yuhua Palace', role: '晚年译经', location: '陕西铜川' },
+      ],
+      koans: [
+        { title: '万法唯识', content: '三界唯心，万法唯识。一切有为法皆是识之变现，无有实我实法。转染成净，即是成佛。', source: '成唯识论' },
+        { title: '西行求法', content: '玄奘立誓西行，"宁可就西而死，岂能归东而生"。独自穿越八百里莫贺延碛大沙漠，四日五夜滴水未进，终达伊吾。', source: '大慈恩寺三藏法师传' },
+      ],
+      classicQuotes: ['宁可就西而死，岂能归东而生', '三界唯心，万法唯识', '如人饮水，冷暖自知'],
+      works: [
+        { title: '成唯识论', description: '十卷，唯识学集大成著作' },
+        { title: '大唐西域记', description: '十二卷，西行见闻录，重要历史地理文献' },
+        { title: '瑜伽师地论', description: '百卷译本，唯识学根本论典' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const kuijiFX = await prisma.patriarch.create({
+    data: {
+      name: '窥基大师', nameEn: 'Kuiji', religionId: buddhismId,
+      dates: '632-682', title: '慈恩窥基', school: '法相宗', generation: 2, teacherId: xuanzangFX.id,
+      biography: '窥基，京兆长安人，尉迟敬德之侄。十七岁奉敕出家，从玄奘学唯识。玄奘翻译《成唯识论》时，以窥基为主要助手。著《成唯识论述记》六十卷（现存二十卷），为唯识学最重要注疏。又著《法苑义林章》《因明入正理论疏》等。因住大慈恩寺，法相宗又称"慈恩宗"。永淳元年（682）示寂于慈恩翻经院，世寿五十一。',
+      coreTeaching: '唯识学系统化——以《成唯识论述记》系统阐释唯识义理，确立八识、四分、三性等核心概念。',
+      achievements: '法相宗二祖，被称为"百部论师"。著《成唯识论述记》为唯识学最权威注疏。住大慈恩寺故法相宗又称"慈恩宗"。著述等身，涵盖唯识、因明、般若等领域。',
+      templeNames: [{ name: '长安大慈恩寺', nameEn: 'Dacien Temple', role: '弘法著述', location: '陕西西安' }],
+      koans: [{ title: '三车和尚', content: '传说窥基出家时要求带三车随行：一车载经书，一车载酒肉，一车载歌女。后尽弃三车，专心修学。', source: '宋高僧传（传说）' }],
+      classicQuotes: ['万法唯识，识外无境'],
+      works: [
+        { title: '成唯识论述记', description: '二十卷(存)，唯识学最权威注疏' },
+        { title: '法苑义林章', description: '佛教名相辞典式著作' },
+        { title: '因明入正理论疏', description: '因明学（佛教逻辑学）注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '慧沼大师', nameEn: 'Huizhao', religionId: buddhismId,
+      dates: '651-714', title: '淄州慧沼', school: '法相宗', generation: 3, teacherId: kuijiFX.id,
+      biography: '慧沼，淄州（今山东淄博）人。从窥基学唯识，尽得其传。窥基圆寂后继其法席。著《成唯识论了义灯》，与窥基《述记》、智周《演秘》并称唯识学"三大注释"。又著《因明入正理论义纂要》等。开元二年（714）示寂。',
+      coreTeaching: '唯识精义——以《了义灯》阐明唯识深义，辨析诸家异说，维护窥基正统。',
+      achievements: '法相宗三祖。著《成唯识论了义灯》为唯识学三大注释之一。维护并发展窥基唯识学正统。',
+      templeNames: [{ name: '长安大慈恩寺', nameEn: 'Dacien Temple', role: '继承法席', location: '陕西西安' }],
+      koans: [], classicQuotes: ['唯识了义，灯照幽微'],
+      works: [{ title: '成唯识论了义灯', description: '唯识学三大注释之一' }, { title: '因明入正理论义纂要', description: '因明学注释' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '智周法师', nameEn: 'Zhizhou', religionId: buddhismId,
+      dates: '668-723', title: '濮阳智周', school: '法相宗', generation: 4, teacherId: null,
+      biography: '智周，濮阳（今河南濮阳）人。从慧沼学唯识，深研成唯识论。著《成唯识论演秘》，与窥基《述记》、慧沼《了义灯》并称唯识学"三大注释"。其后法相宗在中国渐衰，但经智周弟子传至日本、新罗，在东亚继续发展。开元十一年（723）示寂。',
+      coreTeaching: '唯识演秘——以《演秘》阐发唯识隐微之义，补前人之不足。',
+      achievements: '法相宗四祖。著《成唯识论演秘》为唯识学三大注释之一。其学传至日本、新罗，使唯识学在东亚继续发展。',
+      templeNames: [], koans: [], classicQuotes: ['演唯识秘义，续慈恩法灯'],
+      works: [{ title: '成唯识论演秘', description: '唯识学三大注释之一' }],
+      imageUrl: null,
+    },
+  });
+
+  const faxiangCount = 4;
+  console.log(`  ✓ ${faxiangCount} Faxiang school patriarchs created`);
+
+  // ── 4i. 密宗/真言宗祖师 (Esoteric Buddhism Patriarchs) ──
+  console.log('Creating Esoteric Buddhism patriarchs...');
+
+  const shanwuwei = await prisma.patriarch.create({
+    data: {
+      name: '善无畏', nameEn: 'Subhakarasimha', religionId: buddhismId,
+      dates: '637-735', title: '开元三大士', school: '密宗', generation: 1, teacherId: null,
+      biography: '善无畏（梵名Śubhakarasiṃha），中印度摩揭陀国人，刹帝利种姓，本为乌荼国王子。十三岁继位为王，后让位出家。师从达摩掬多学密法，得密教正统传承。开元四年（716）经中亚至长安，唐玄宗敬礼之，住兴善寺。翻译《大日经》七卷，为密教根本经典。与弟子一行共同阐释《大日经》义理，创立胎藏界密法体系。开元二十三年（735）示寂于洛阳广福寺，世寿九十九。',
+      coreTeaching: '胎藏界——以《大日经》为依据，建立胎藏界曼荼罗修法体系。以大日如来为中心，展现佛的大悲胎藏。',
+      achievements: '唐密开元三大士之一。译《大日经》奠定密教胎藏界理论基础。开唐代密宗之先河。与一行合作阐释密教义理。',
+      templeNames: [{ name: '长安大兴善寺', nameEn: 'Daxingshan Temple', role: '译经弘法', location: '陕西西安' }],
+      koans: [{ title: '大日经', content: '善无畏于大兴善寺译出《大日经》，为密教根本经典。经中说大日如来以大悲胎藏含育一切众生，故名胎藏界。', source: '开元释教录' }],
+      classicQuotes: ['大日遍照，一切即一'],
+      works: [{ title: '大日经', description: '七卷，密教根本经典（翻译）' }, { title: '大日经疏', description: '大日经注释（与一行合著）' }],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '金刚智', nameEn: 'Vajrabodhi', religionId: buddhismId,
+      dates: '671-741', title: '开元三大士', school: '密宗', generation: 2, teacherId: null,
+      biography: '金刚智（梵名Vajrabodhi），南印度摩赖耶国人，婆罗门种姓。十岁出家于那烂陀寺，三十一岁从龙智阿阇梨受金刚顶经密法。开元八年（720）经海路至广州，后至长安，住慈恩寺。翻译《金刚顶经》等密教经典，建立金刚界密法体系。与善无畏分别传授胎藏界和金刚界两部大法，使唐代密宗两部具足。开元二十九年（741）示寂于洛阳广福寺，世寿七十一。',
+      coreTeaching: '金刚界——以《金刚顶经》为依据，建立金刚界曼荼罗修法体系。以金刚智慧破一切无明。',
+      achievements: '唐密开元三大士之一。译《金刚顶经》建立金刚界密法体系。与善无畏互补，使唐密胎藏界、金刚界两部大法完备。弟子不空继其法脉。',
+      templeNames: [{ name: '长安大慈恩寺', nameEn: 'Dacien Temple', role: '译经', location: '陕西西安' }],
+      koans: [], classicQuotes: ['金刚不坏，智慧无碍'],
+      works: [{ title: '金刚顶经', description: '密教金刚界根本经典（翻译）' }, { title: '金刚顶瑜伽中略出念诵经', description: '密教修法仪轨' }],
+      imageUrl: null,
+    },
+  });
+
+  const bukongES = await prisma.patriarch.create({
+    data: {
+      name: '不空金刚', nameEn: 'Amoghavajra', religionId: buddhismId,
+      dates: '705-774', title: '开元三大士', school: '密宗', generation: 3, teacherId: null,
+      biography: '不空（梵名Amoghavajra），师子国（今斯里兰卡）人，一说北印度人。十五岁从金刚智出家学密法。金刚智圆寂后，不空奉遗命往印度、师子国求法五年，广搜密教典籍。回唐后住长安大兴善寺，成为唐代最具影响力的密教大师。翻译密教经典111部143卷，位列中国四大译经家之一。先后为唐玄宗、肃宗、代宗三朝灌顶国师。门下弟子惠果继其法，后传日本空海。大历九年（774）示寂，追赠"司空"，谥"大辩正广智不空三藏"。',
+      coreTeaching: '三密相应——身结印契、口诵真言、意观本尊，三密同时相应，即身成佛。',
+      achievements: '唐密开元三大士之一，唐密集大成者。译经111部143卷，中国四大译经家之一。三朝灌顶国师。门下培养惠果等弟子，通过惠果传空海至日本。唐密因其而达顶峰。',
+      templeNames: [{ name: '长安大兴善寺', nameEn: 'Daxingshan Temple', role: '译经弘法', location: '陕西西安' }],
+      koans: [{ title: '三密加持', content: '手结印契（身密），口诵真言（语密），心观本尊（意密）。三密同时相应，凡夫即同本尊，是名即身成佛。', source: '金刚顶经' }],
+      classicQuotes: ['三密相应，即身成佛', '身口意三密，与本尊无二'],
+      works: [
+        { title: '金刚顶一切如来真实摄大乘现证大教王经', description: '金刚界根本经典翻译' },
+        { title: '仁王护国般若波罗蜜多经', description: '护国经典翻译' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const huiguoES = await prisma.patriarch.create({
+    data: {
+      name: '惠果阿阇梨', nameEn: 'Huiguo', religionId: buddhismId,
+      dates: '746-805', title: '青龙惠果', school: '密宗', generation: 4, teacherId: bukongES.id,
+      biography: '惠果，京兆昭应（今陕西临潼）人。九岁入不空门下学密法。二十岁受灌顶，尽得不空胎藏界、金刚界两部大法。住长安青龙寺，为唐代密宗第一道场。惠果将胎藏界与金刚界两部大法合为一体传授，为"两部一具"传法之始。永贞元年（805）日本僧空海入唐求法，惠果一见即知为法器，以三个月时间将两部大法完整传授空海。同年十二月示寂，世寿六十。空海回日本后创立真言宗，惠果遂为日本真言宗祖师。',
+      coreTeaching: '两部一具——将胎藏界（大悲）与金刚界（智慧）合为一体传授，悲智双运，理智不二。',
+      achievements: '唐密承前启后的关键人物。首创"两部一具"传法。住青龙寺使其成为唐密第一道场。将唐密完整传授日本空海，开日本真言宗之源。',
+      templeNames: [{ name: '长安青龙寺', nameEn: 'Qinglong Temple', role: '住持弘法', location: '陕西西安' }],
+      koans: [{ title: '传法空海', content: '空海入唐，至青龙寺参惠果。惠果一见即曰："我先知汝来，相待久矣！"遂以三月之间，尽传两部大法、诸尊瑜伽。', source: '大日本国弘法大师行状' }],
+      classicQuotes: ['我先知汝来，相待久矣', '两部不二，悲智圆融'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '空海大师', nameEn: 'Kukai', religionId: buddhismId,
+      dates: '774-835', title: '弘法大师', school: '密宗', generation: 5, teacherId: huiguoES.id,
+      biography: '空海，日本赞岐国（今香川县）人，俗姓佐伯，法名空海，谥号"弘法大师"。延历二十三年（804）随遣唐使入唐，至长安青龙寺从惠果阿阇梨受两部大法灌顶。惠果将密教法脉完整传授空海，嘱其"早归东土，以此大法利益有情"。806年回日本，于高野山开创真言宗道场。创立日本真言宗（东密），建高野山金刚峰寺为总本山。又精通书法（日本书圣之一）、土木工程，创制片假名（一说）。承和二年（835）于高野山入定示寂。被尊为日本佛教最伟大的大师之一。',
+      coreTeaching: '即身成佛——众生本具佛性，以三密加持，此身此世即可成佛，无需累劫修行。十住心论判教。',
+      achievements: '日本真言宗（东密）创始人。从惠果受唐密完整传承。创高野山金刚峰寺为真言宗总本山。著《十住心论》《秘密曼荼罗十住心论》建立真言宗判教体系。日本文化史上最具影响力的僧人之一。',
+      templeNames: [
+        { name: '高野山金刚峰寺', nameEn: 'Kongobu-ji', role: '创建', location: '日本和歌山' },
+        { name: '东寺/教王护国寺', nameEn: 'To-ji', role: '赐为真言道场', location: '日本京都' },
+      ],
+      koans: [{ title: '即身成佛', content: '六大无碍常瑜伽，四种曼荼各不离，三密加持速疾显，重重帝网名即身。', source: '即身成佛义' }],
+      classicQuotes: ['六大无碍常瑜伽', '即身成佛，三密加持'],
+      works: [
+        { title: '十住心论', description: '十卷，真言宗判教体系' },
+        { title: '即身成佛义', description: '论证即身成佛之义' },
+        { title: '声字实相义', description: '真言（曼怛罗）与实相关系' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const esotericCount = 5;
+  console.log(`  ✓ ${esotericCount} Esoteric Buddhism patriarchs created`);
+
+  // ── 4j. 三论宗祖师 (Sanlun/Three Treatises School Patriarchs) ──
+  console.log('Creating Sanlun school patriarchs...');
+
+  const kumarajivaSL = await prisma.patriarch.create({
+    data: {
+      name: '鸠摩罗什', nameEn: 'Kumarajiva', religionId: buddhismId,
+      dates: '344-413', title: '三论宗初祖', school: '三论宗', generation: 1, teacherId: null,
+      biography: '鸠摩罗什（梵名Kumārajīva），龟兹国（今新疆库车）人，父天竺人，母龟兹公主。七岁随母出家，遍学小乘、大乘经论。后秦弘始三年（401）姚兴迎至长安，住逍遥园西明阁译经。翻译《中论》《百论》《十二门论》（合称"三论"）、《大智度论》《妙法莲华经》《金刚经》《阿弥陀经》《维摩诘经》等35部294卷。其译文流畅优美，意译为主，影响中国佛教最深。临终焚身，舌不焦烂，以证所译无误。弘始十五年（413）示寂。',
+      coreTeaching: '中观般若——翻译三论（中论/百论/十二门论），以般若空观破一切执著，显示中道实相。',
+      achievements: '三论宗初祖，中国四大译经家之首。译经35部294卷，《法华经》《金刚经》等至今仍为最通行版本。翻译"三论"奠定三论宗经典基础。门下三千弟子，号"关中四杰"（僧肇、道生、僧叡、道融）。临终舌不焦烂，以证所译之正。',
+      templeNames: [{ name: '长安逍遥园', nameEn: 'Xiaoyao Garden', role: '主持译场', location: '陕西长安' }, { name: '草堂寺', nameEn: 'Caotang Temple', role: '译经', location: '陕西户县' }],
+      koans: [{ title: '舌不焦烂', content: '鸠摩罗什临终嘱弟子："若所传无谬，使焚身之后，舌不焦烂。"果然荼毗之后，薪灭形碎，唯舌不灰。', source: '高僧传' }],
+      classicQuotes: ['若所传无谬，使焚身之后，舌不焦烂', '因缘所生法，我说即是空'],
+      works: [
+        { title: '妙法莲华经', description: '七卷翻译，流传最广的法华经版本' },
+        { title: '金刚般若波罗蜜经', description: '一卷翻译，流通最广的般若经' },
+        { title: '中论', description: '四卷翻译，三论宗根本论典' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '僧肇大师', nameEn: 'Sengzhao', religionId: buddhismId,
+      dates: '384-414', title: '解空第一', school: '三论宗', generation: 2, teacherId: kumarajivaSL.id,
+      biography: '僧肇，京兆（今陕西西安）人。少年家贫以抄书为业，遍读经史子集。读《老子》《庄子》觉有所不足，后见旧译《维摩诘经》，欢喜曰"始知所归矣"。遂出家。后至姑臧（今甘肃武威）从鸠摩罗什学般若。参与鸠摩罗什译场，为"关中四杰"之首。著《肇论》四篇（物不迁论/不真空论/般若无知论/涅槃无名论），以魏晋玄学语言阐释般若空义，被誉为中国佛教哲学的开山之作。弘始十六年（414）示寂，年仅三十一。',
+      coreTeaching: '不真空——万物非真非假，非有非无。般若之智无所知而无不知，涅槃之道超言绝相。',
+      achievements: '三论宗二祖。著《肇论》四篇，以中国哲学语言完美阐释般若空观，为中国佛教哲学的开山之作。被鸠摩罗什誉为"解空第一"。虽年仅三十一岁即寂，但其哲学影响深远。',
+      templeNames: [{ name: '长安逍遥园', nameEn: 'Xiaoyao Garden', role: '参与译场', location: '陕西长安' }],
+      koans: [{ title: '物不迁论', content: '旋岚偃岳而常静，江河竟注而不流，野马飘鼓而不动，日月历天而不周。', source: '肇论·物不迁论' }],
+      classicQuotes: ['旋岚偃岳而常静，江河竟注而不流', '般若无知，无所不知', '不真空，即万法实相'],
+      works: [
+        { title: '肇论', description: '四篇（物不迁/不真空/般若无知/涅槃无名），中国佛教哲学开山' },
+        { title: '注维摩诘经', description: '维摩诘经注释' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const falangSL = await prisma.patriarch.create({
+    data: {
+      name: '法朗大师', nameEn: 'Falang', religionId: buddhismId,
+      dates: '507-581', title: '兴皇法朗', school: '三论宗', generation: 3, teacherId: null,
+      biography: '法朗，南朝梁陈时期高僧，住建康（今南京）兴皇寺。师从僧诠学三论。于兴皇寺大弘三论学，门下弟子众多，其中吉藏最为杰出。法朗之弘法使三论学从山林寺院走向都市，影响大增。为吉藏创立三论宗奠定了直接的师承基础。陈太建十三年（581）示寂。',
+      coreTeaching: '中观正义——弘扬三论（中论/百论/十二门论）中观学说，以"破邪显正"为方法。',
+      achievements: '三论宗重要传承人。于建康兴皇寺大弘三论学，使三论思想从山林走向都市。培养弟子吉藏，为三论宗的正式建立创造条件。',
+      templeNames: [{ name: '建康兴皇寺', nameEn: 'Xinghuang Temple', role: '弘法', location: '江苏南京' }],
+      koans: [], classicQuotes: ['破邪即显正，无别显正之法'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '吉藏大师', nameEn: 'Jizang', religionId: buddhismId,
+      dates: '549-623', title: '嘉祥吉藏', school: '三论宗', generation: 4, teacherId: falangSL.id,
+      biography: '吉藏，祖籍安息（伊朗），生于金陵（今南京）。七岁从法朗出家于兴皇寺，深研三论。隋统一后，住会稽嘉祥寺弘法，号"嘉祥大师"。后入长安，住日严寺、实际寺弘法。著《三论玄义》总括三论宗义，著《中观论疏》《百论疏》《十二门论疏》详解三论。又著《大乘玄论》《二谛义》等，建立三论宗完整教理体系。以"破邪显正""四重二谛"为核心方法，以中道实相为究竟。武德六年（623）示寂，世寿七十五。',
+      coreTeaching: '破邪显正，四重二谛——以层层否定（破邪）来显示中道实相（显正）。俗谛与真谛层层递进四重，最终超越一切言说分别。',
+      achievements: '三论宗集大成者（四祖/实际建宗者）。著《三论玄义》建立三论宗完整体系。注释三论（中论疏/百论疏/十二门论疏）。以"破邪显正""四重二谛"为核心方法论。三论宗因其而成为中国佛教独立宗派。',
+      templeNames: [{ name: '会稽嘉祥寺', nameEn: 'Jiaxiang Temple', role: '弘法', location: '浙江绍兴' }, { name: '长安日严寺', nameEn: 'Riyan Temple', role: '弘法', location: '陕西长安' }],
+      koans: [{ title: '四重二谛', content: '第一重：有为俗谛，空为真谛。第二重：有空为俗谛，非有非空为真谛。第三重：有空非有非空为俗谛，非非有非非空为真谛。第四重：前三重皆俗谛，言忘虑绝为真谛。', source: '二谛义' }],
+      classicQuotes: ['破邪即显正，无别显正之法', '言忘虑绝，是第一义谛'],
+      works: [
+        { title: '三论玄义', description: '三论宗教理总纲' },
+        { title: '中观论疏', description: '中论详细注释' },
+        { title: '百论疏', description: '百论详细注释' },
+        { title: '大乘玄论', description: '大乘佛教义理总论' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const sanlunCount = 4;
+  console.log(`  ✓ ${sanlunCount} Sanlun school patriarchs created`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
