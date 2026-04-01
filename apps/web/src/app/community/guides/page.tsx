@@ -87,8 +87,8 @@ export default function GuidesPage() {
 
   const SORT_OPTIONS = [
     { key: "latest", label: t("community.guides.sortLatest") },
-    { key: "hot", label: t("community.guides.sortHot") },
-    { key: "likes", label: t("community.guides.sortLikes") },
+    { key: "popular", label: t("community.guides.sortHot") },
+    { key: "mostLiked", label: t("community.guides.sortLikes") },
   ];
 
   useEffect(() => {

@@ -20,6 +20,12 @@ import OptimizedImage from "@/components/OptimizedImage";
 
 type Tab = "guides" | "questions" | "photos" | "leaderboard";
 type GuideSort = "hot" | "latest" | "most_liked" | "most_viewed";
+const GUIDE_SORT_MAP: Record<GuideSort, string> = {
+  hot: "popular",
+  latest: "latest",
+  most_liked: "mostLiked",
+  most_viewed: "popular",
+};
 
 const TRENDING_TOPIC_KEYS = [
   { key: "zenPilgrimage", color: "#f59e0b" },
@@ -237,7 +243,7 @@ export default function CommunityPage() {
     const load = async () => {
       try {
         if (tab === "guides") {
-          const res = await fetchGuides({ sort: guideSort, limit: 12 });
+          const res = await fetchGuides({ sort: GUIDE_SORT_MAP[guideSort], limit: 12 });
           setGuides(res.items ?? []);
         } else if (tab === "questions") {
           const res = await fetchTrending();
