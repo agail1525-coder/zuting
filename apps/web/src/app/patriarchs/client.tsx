@@ -877,6 +877,12 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
                 ☯ 道教先贤传承
               </Link>
               <Link
+                href="/confucian-patriarchs"
+                className="px-6 py-3 bg-[#DC2626] hover:bg-[#B91C1C] text-white font-semibold rounded-xl transition-colors text-sm"
+              >
+                儒 儒教先贤传承
+              </Link>
+              <Link
                 href="/teachings"
                 className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm"
               >

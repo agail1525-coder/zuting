@@ -6142,6 +6142,635 @@ async function main() {
   const taoistCount = 26; // 26 new + 3 updated
   console.log(`  ✓ ${taoistCount} new Taoist patriarchs created + 3 updated (5 traditions: Philosophy/Zhengyi/Shangqing-Lingbao/Quanzhen/Neidan)`);
 
+  // ── 4o. 儒教先贤 (Confucian Patriarchs/Sages) ──
+  console.log('  Creating Confucian patriarchs (4o)...');
+
+  const confucianismId = religionMap['confucianism'];
+
+  // Update existing 孔子 with full data + school field
+  const existingConfucius = await prisma.patriarch.findFirst({ where: { name: '孔子' } });
+  const confucius = existingConfucius
+    ? await prisma.patriarch.update({
+        where: { id: existingConfucius.id },
+        data: {
+          nameEn: 'Confucius',
+          dates: '前551-前479',
+          title: '至圣先师·万世师表·大成至圣文宣王',
+          school: '先秦儒学',
+          generation: 1,
+          biography: '孔子（前551-前479），名丘，字仲尼，鲁国陬邑（今山东曲阜）人，中国最伟大的思想家、教育家，儒家学派创始人。先世为宋国贵族，后迁鲁。三岁丧父，家贫而好学。曾任鲁国中都宰、司空、大司寇，因政治理想不得施展，率弟子周游列国十四年。晚年返鲁，致力于教育和整理古代典籍——删诗书、定礼乐、序周易、作春秋。创办私学，弟子三千，贤者七十二。其核心思想"仁""礼""中庸"构成了中国文化的基本伦理框架。孔子身后被尊为"至圣先师""万世师表"，历代帝王追封，最高为"大成至圣文宣王"。其教导深刻影响了东亚文明圈两千五百年。',
+          coreTeaching: '仁者爱人——仁是孔子思想的核心，"己所不欲，勿施于人"是实践仁的方法。克己复礼为仁——约束自己，恢复礼制。中庸之道——不偏不倚，过犹不及。有教无类——教育不分贵贱。学而不厌，诲人不倦——终身学习，乐于教导。为政以德——以道德教化治理国家，如北辰居所而众星共之。',
+          achievements: '创立儒家学派，影响东亚文明两千五百年。首开私人讲学之风，弟子三千、贤者七十二。整理六经（诗、书、礼、乐、易、春秋），传承中华文化命脉。"仁""礼""中庸"等概念成为中国文化核心价值。被联合国教科文组织列为"世界十大文化名人"之首。全球孔子学院遍布160多个国家。',
+          templeNames: [
+            { name: '曲阜孔庙', nameEn: 'Temple of Confucius', role: '至圣先师祭祀之地', location: '山东曲阜' },
+            { name: '杏坛', nameEn: 'Xing Tan (Apricot Altar)', role: '孔子讲学之地', location: '山东曲阜孔庙内' },
+            { name: '尼山', nameEn: 'Ni Mountain', role: '孔子诞生之地', location: '山东曲阜' },
+          ],
+          koans: [
+            { title: '韦编三绝', description: '孔子晚年读《周易》，翻阅次数极多，穿竹简的皮绳断了三次。他说："假我数年，五十以学《易》，可以无大过矣。"体现了孔子活到老、学到老的精神。' },
+            { title: '陈蔡之困', description: '孔子周游列国时，在陈国和蔡国之间被围困，断粮七日。弟子们面有饥色，孔子仍弦歌不辍。子路愤然问："君子亦有穷乎？"孔子答："君子固穷，小人穷斯滥矣。"困境中坚守气节。' },
+            { title: '杏坛讲学', description: '孔子在杏坛设教，以"六艺"（礼、乐、射、御、书、数）教导学生。有教无类，不论贫富贵贱皆可入学。首开中国私人讲学之风，改变了"学在官府"的局面。' },
+          ],
+          classicQuotes: ['己所不欲，勿施于人', '学而不思则罔，思而不学则殆', '三人行，必有我师焉', '知之为知之，不知为不知，是知也', '朝闻道，夕死可矣', '德不孤，必有邻'],
+          works: [
+            { title: '论语', description: '孔子及弟子言行录，由弟子及再传弟子编纂。儒家经典之首，中华文化必读之书。' },
+            { title: '春秋', description: '鲁国编年史，孔子据鲁史删修而成。"春秋笔法"寓褒贬于叙事之中。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '孔子', nameEn: 'Confucius', religionId: confucianismId,
+          dates: '前551-前479', title: '至圣先师', school: '先秦儒学', generation: 1,
+          biography: '儒家创始人。', coreTeaching: '己所不欲，勿施于人。',
+          achievements: '儒家创始人。', imageUrl: null,
+        },
+      });
+
+  // Update existing 孟子 with full data + school field
+  const existingMencius = await prisma.patriarch.findFirst({ where: { name: '孟子' } });
+  existingMencius
+    ? await prisma.patriarch.update({
+        where: { id: existingMencius.id },
+        data: {
+          nameEn: 'Mencius',
+          dates: '前372-前289',
+          title: '亚圣·性善论者·仁政倡导者',
+          school: '先秦儒学',
+          generation: 4,
+          biography: '孟子（前372-前289），名轲，字子舆，邹国（今山东邹城）人。战国时期伟大思想家、教育家，儒家学派亚圣。受业于子思门人。继承并发展孔子思想，提出"性善论"——人性本善，恻隐、羞恶、辞让、是非之心人皆有之。主张"仁政"——民为贵，社稷次之，君为轻。多次游说诸侯推行仁政未果。晚年退居讲学，与弟子万章等著《孟子》七篇。"浩然之气""舍生取义""天将降大任于斯人"等名言传颂千古。唐韩愈确立孟子在儒学道统中的地位，宋代以后《孟子》列入"四书"。',
+          coreTeaching: '性善论——人性本善，恻隐之心仁之端也，羞恶之心义之端也，辞让之心礼之端也，是非之心智之端也。仁政——民为贵，社稷次之，君为轻。养浩然之气——至大至刚，配义与道。舍生取义——生，亦我所欲也；义，亦我所欲也。二者不可得兼，舍生而取义者也。',
+          achievements: '性善论奠定了中国人性论的主流。仁政思想成为历代政治理想。"四端说"系统阐述了儒家道德哲学。《孟子》为"四书"之一，科举必读。"亚圣"地位仅次于孔子。民本思想影响深远。',
+          templeNames: [
+            { name: '邹城孟庙', nameEn: 'Temple of Mencius', role: '孟子祭祀之地', location: '山东邹城' },
+            { name: '孟府', nameEn: 'Mencius Mansion', role: '孟子后裔世居', location: '山东邹城' },
+          ],
+          koans: [
+            { title: '孟母三迁', description: '孟子幼年丧父，母亲为给他良好的教育环境，三次搬家——从墓地旁搬到市场旁，再搬到学校旁。孟子终在学习氛围中成长为大儒。"昔孟母，择邻处"成为中国教育典故。' },
+            { title: '齐宣王问政', description: '齐宣王问如何治国。孟子答：以不忍人之心行不忍人之政。王见牛觳觫而不忍杀之，此即仁心。推此心于政事，则民安国泰。仁政始于一念之仁。' },
+          ],
+          classicQuotes: ['天将降大任于斯人也，必先苦其心志，劳其筋骨', '生于忧患，死于安乐', '民为贵，社稷次之，君为轻', '得道多助，失道寡助', '富贵不能淫，贫贱不能移，威武不能屈'],
+          works: [
+            { title: '孟子', description: '七篇十四卷，记录孟子言行及政治主张。"四书"之一，儒学核心经典。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '孟子', nameEn: 'Mencius', religionId: confucianismId,
+          dates: '前372-前289', title: '亚圣', school: '先秦儒学', generation: 4,
+          biography: '儒家亚圣。', coreTeaching: '性善论。',
+          achievements: '儒家亚圣。', imageUrl: null,
+        },
+      });
+
+  // Update existing 朱熹 with full data + school field
+  const existingZhuXi = await prisma.patriarch.findFirst({ where: { name: '朱熹' } });
+  const zhuXi = existingZhuXi
+    ? await prisma.patriarch.update({
+        where: { id: existingZhuXi.id },
+        data: {
+          nameEn: 'Zhu Xi',
+          dates: '1130-1200',
+          title: '紫阳先生·朱子·理学集大成者',
+          school: '宋明理学',
+          generation: 3,
+          biography: '朱熹（1130-1200），字元晦，号晦庵，别号紫阳，徽州婺源（今江西婺源）人，南宋著名理学家、思想家、教育家。少年丧父，受学于父执刘子翚、刘勉之、胡宪。后师事程颐再传弟子李侗，深研二程理学。历仕四朝，但多居乡讲学。集北宋理学之大成，建构了以"理"为核心的庞大哲学体系——理气论、心性论、格物致知论。编纂"四书集注"（大学、中庸、论语、孟子），使四书取代五经成为科举考试的核心教材，影响中国教育七百年。创办白鹿洞书院、岳麓书院等，制定《白鹿洞书院揭示》。与陆九渊"鹅湖之会"辩论理学与心学，为中国学术史名场面。',
+          coreTeaching: '格物致知——通过研究事物的道理来获得知识，积累到一定程度便豁然贯通。理气论——理是万物的本原和规律，气是构成万物的材料。存天理、灭人欲——保存天赋的善性（理），克制过度的欲望。知行常相须——知识和实践相辅相成。问渠那得清如许？为有源头活水来——学问须不断更新。',
+          achievements: '宋明理学集大成者，构建了中国最系统的哲学体系。编纂"四书集注"，影响中国教育科举七百年。创办书院、制定学规，树立了中国书院教育的典范。与陆九渊鹅湖之会，开理学心学之辩。被尊为继孔孟之后最重要的儒学思想家。理学传播至朝鲜、日本、越南，影响东亚文明。',
+          templeNames: [
+            { name: '武夷山朱熹园', nameEn: 'Zhu Xi Memorial Park', role: '朱熹讲学著述之地', location: '福建武夷山' },
+            { name: '白鹿洞书院', nameEn: 'Bailudong Academy', role: '朱熹重建并制定学规', location: '江西庐山' },
+            { name: '岳麓书院', nameEn: 'Yuelu Academy', role: '朱熹讲学处', location: '湖南长沙' },
+          ],
+          koans: [
+            { title: '鹅湖之会', description: '南宋淳熙二年（1175年），朱熹与陆九渊在信州鹅湖寺辩论。朱熹主张"道问学"——格物穷理、循序渐进；陆九渊主张"尊德性"——发明本心、直截了当。辩论三天不决，各执己见。此次辩论成为中国学术史上最著名的理学与心学之辩。' },
+            { title: '源头活水', description: '朱熹游南溪，见清泉奔涌，有感而赋诗："半亩方塘一鉴开，天光云影共徘徊。问渠那得清如许？为有源头活水来。"以池塘之清喻学问之新，必须不断学习才能保持思想的清明。' },
+          ],
+          classicQuotes: ['问渠那得清如许，为有源头活水来', '读书有三到：心到、眼到、口到', '存天理，灭人欲', '少年易老学难成，一寸光阴不可轻', '为学之实，固在践履'],
+          works: [
+            { title: '四书章句集注', description: '对《大学》《中庸》《论语》《孟子》的系统注释。科举必读，影响中国教育七百年。' },
+            { title: '近思录', description: '与吕祖谦合编，选录北宋四子（周敦颐、程颢、程颐、张载）语录，为理学入门经典。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '朱熹', nameEn: 'Zhu Xi', religionId: confucianismId,
+          dates: '1130-1200', title: '紫阳先生', school: '宋明理学', generation: 3,
+          biography: '理学集大成者。', coreTeaching: '格物致知。',
+          achievements: '理学集大成者。', imageUrl: null,
+        },
+      });
+
+  // ── 先秦儒学 — New entries ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '颜回', nameEn: 'Yan Hui', religionId: confucianismId,
+      dates: '前521-前481', title: '复圣·好学第一·箪瓢陋巷',
+      school: '先秦儒学', generation: 2, teacherId: confucius.id,
+      biography: '颜回（前521-前481），字子渊，鲁国人，孔子最钟爱的弟子。"一箪食，一瓢饮，在陋巷，人不堪其忧，回也不改其乐。"孔子赞其"好学"，"不迁怒，不贰过"。颜回深得孔子之道，被视为孔门中最接近仁的弟子。英年早逝，年仅四十一岁，孔子痛哭"天丧予"。后世尊为"复圣"，配享孔庙，列"四配"之首。',
+      coreTeaching: '安贫乐道——箪食瓢饮不改其乐，精神富足胜过物质享受。不迁怒、不贰过——不把怒气转移给别人，同样的错误不犯第二次。克己复礼——最能体现孔子"克己复礼为仁"教导的弟子。',
+      achievements: '孔门弟子中最好学者，被孔子赞为"好学"唯一之人。"复圣"地位，配享孔庙四配之首。安贫乐道成为中国知识分子的精神典范。',
+      templeNames: [{ name: '曲阜颜庙', nameEn: 'Yan Temple', role: '祭祀复圣颜子', location: '山东曲阜' }],
+      koans: [
+        { title: '箪瓢陋巷', description: '颜回居陋巷，一竹筐饭，一瓢水，旁人都受不了这种清苦，颜回却照样快乐。孔子叹曰："贤哉回也！"这成为中国文人安贫乐道的精神原型。' },
+      ],
+      classicQuotes: ['一箪食，一瓢饮，在陋巷，人不堪其忧，回也不改其乐', '不迁怒，不贰过'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  const zengzi = await prisma.patriarch.create({
+    data: {
+      name: '曾子', nameEn: 'Zengzi', religionId: confucianismId,
+      dates: '前505-前435', title: '宗圣·孝道至尊·大学之祖',
+      school: '先秦儒学', generation: 2, teacherId: confucius.id,
+      biography: '曾子（前505-前435），名参，字子舆，鲁国南武城人。以孝著称，"曾子杀猪"教子诚信的故事流传至今。晚年传授孔子之道，据传著《大学》和《孝经》。提出"吾日三省吾身"的修身方法。其学传子思，子思传孟子，形成"思孟学派"，成为儒学正统传承。后世尊为"宗圣"。',
+      coreTeaching: '吾日三省吾身——为人谋而不忠乎？与朋友交而不信乎？传不习乎？孝道为仁之本——孝弟也者，其为仁之本与。慎终追远——慎重对待丧葬，追念远祖。修身为本——自天子以至于庶人，壹是皆以修身为本。',
+      achievements: '宗圣，孔庙四配之一。传承孔子之道，开"思孟学派"先河。据传著《大学》《孝经》，影响中国伦理两千年。"三省吾身"成为修身名言。',
+      templeNames: [{ name: '嘉祥曾庙', nameEn: 'Zeng Temple', role: '祭祀宗圣曾子', location: '山东嘉祥' }],
+      koans: [
+        { title: '曾子杀猪', description: '曾子之妻出门，儿子哭闹要跟。妻哄说回来杀猪给他吃。回家后曾子真的杀猪。妻责怪说只是哄孩子。曾子说：孩子就是跟父母学的，说话不算话就是教他说谎。身教重于言教。' },
+      ],
+      classicQuotes: ['吾日三省吾身', '士不可以不弘毅，任重而道远', '慎终追远，民德归厚矣', '自天子以至于庶人，壹是皆以修身为本'],
+      works: [
+        { title: '大学', description: '"四书"之一，阐述修身齐家治国平天下的次第。八条目：格物致知诚意正心修身齐家治国平天下。' },
+        { title: '孝经', description: '据传为曾子所作，系统阐述孝道理论，对中国伦理影响极大。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const zisi = await prisma.patriarch.create({
+    data: {
+      name: '子思', nameEn: 'Zisi', religionId: confucianismId,
+      dates: '前483-前402', title: '述圣·中庸之祖',
+      school: '先秦儒学', generation: 3, teacherId: zengzi.id,
+      biography: '子思（前483-前402），名伋，孔子之孙。受学于曾子，据传著《中庸》。提出"天命之谓性，率性之谓道，修道之谓教"的命题，将孔子的思想向心性论方向发展。开创"思孟学派"，其弟子传学于孟子。后世尊为"述圣"，列孔庙四配。子思在孔孟之间起到了承上启下的关键作用。',
+      coreTeaching: '天命之谓性——人的本性来自天命。率性之谓道——顺应本性而行就是道。修道之谓教——修明道理就是教化。中庸之道——不偏不倚，喜怒哀乐之未发谓之中，发而皆中节谓之和。诚者，天之道也——真诚是天道的本质。',
+      achievements: '述圣，孔庙四配之一。据传著《中庸》，"四书"之一。开创思孟学派，上承曾子，下启孟子。心性论开端，影响宋明理学。',
+      templeNames: [],
+      koans: [
+        { title: '传道授业', description: '子思为孔子之孙，受学于曾子。在困厄中坚持传道，弟子传学于孟子。从孔子→曾子→子思→孟子的传承，成为儒学正统"道统"。' },
+      ],
+      classicQuotes: ['天命之谓性，率性之谓道，修道之谓教', '中也者，天下之大本也；和也者，天下之达道也', '诚者，天之道也；诚之者，人之道也'],
+      works: [
+        { title: '中庸', description: '"四书"之一，阐述中庸之道与诚的哲学。"致中和，天地位焉，万物育焉。"' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '荀子', nameEn: 'Xunzi', religionId: confucianismId,
+      dates: '前313-前238', title: '后圣·性恶论者·礼义宗师',
+      school: '先秦儒学', generation: 5,
+      biography: '荀子（前313-前238），名况，字卿，赵国人。战国末期伟大思想家，先秦儒学集大成者。三次担任稷下学宫祭酒（学术领袖）。与孟子性善论相对，提出"性恶论"——人之性恶，其善者伪也（"伪"即人为努力）。强调"礼义"的社会功能和教化作用。其弟子韩非、李斯分别成为法家代表和秦朝丞相。荀子综合儒家礼义与法家治术，是先秦思想的集大成者。',
+      coreTeaching: '性恶论——人性本恶，善是后天教化的结果。化性起伪——以礼义教化改变本性。隆礼重法——礼义为根本，法制为辅助。天行有常——天有其自然规律，"制天命而用之"。学不可以已——学习不能停止，青出于蓝而胜于蓝。',
+      achievements: '性恶论开辟了中国人性论的另一条路径。"礼义"理论系统化，为儒家社会学奠基。《荀子》三十二篇，先秦思想集大成。弟子韩非、李斯影响秦帝国。"青出于蓝"名言千古传颂。',
+      templeNames: [{ name: '兰陵荀子墓', nameEn: 'Tomb of Xunzi', role: '荀子葬地', location: '山东兰陵' }],
+      koans: [
+        { title: '三为祭酒', description: '荀子三次担任齐国稷下学宫的祭酒，是当时最高学术权威。稷下学宫集百家之学，荀子能三度被推为领袖，说明其学问之博、声望之高。' },
+      ],
+      classicQuotes: ['青，取之于蓝，而青于蓝', '不积跬步，无以至千里', '锲而舍之，朽木不折；锲而不舍，金石可镂', '天行有常，不为尧存，不为桀亡', '学不可以已'],
+      works: [
+        { title: '荀子', description: '三十二篇，涵盖哲学、政治、教育、逻辑等。《劝学》《天论》《性恶》等篇为名篇。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 汉唐经学 — All new ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '董仲舒', nameEn: 'Dong Zhongshu', religionId: confucianismId,
+      dates: '前179-前104', title: '儒学国教化奠基人·天人感应',
+      school: '汉唐经学', generation: 1,
+      biography: '董仲舒（前179-前104），广川（今河北衡水）人，西汉大儒。少治《春秋》公羊学，三年不窥园。汉武帝时上"天人三策"，提出"罢黜百家，独尊儒术"，被采纳，儒学从此成为中国官方意识形态两千年。建构"天人感应"宇宙论——天与人相互感应，君主失德则天降灾异。提出"三纲五常"伦理体系。虽争议极大，但其将儒学制度化、国教化的功绩不可否认。',
+      coreTeaching: '天人感应——天人之间存在感应关系，君主失德天会降灾警告。三纲五常——君为臣纲、父为子纲、夫为妻纲；仁义礼智信。大一统——政治统一、思想统一。罢黜百家，独尊儒术——以儒学为官方正统思想。',
+      achievements: '提出"罢黜百家，独尊儒术"，使儒学成为官方意识形态两千年。"天人感应"宇宙论影响中国政治文化。"三纲五常"构建了中国传统社会的伦理框架。建立太学制度，开创以儒术取士。',
+      templeNames: [{ name: '衡水董子祠', nameEn: 'Dong Zhongshu Memorial', role: '纪念董仲舒', location: '河北衡水' }],
+      koans: [
+        { title: '三年不窥园', description: '董仲舒少年治学，专心致志，三年不曾往花园里看一眼。后世以"目不窥园"形容人专心学问。' },
+      ],
+      classicQuotes: ['天不变，道亦不变', '罢黜百家，独尊儒术', '屈民而伸君，屈君而伸天'],
+      works: [
+        { title: '春秋繁露', description: '阐述天人感应、阴阳五行与儒学结合的理论体系。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '郑玄', nameEn: 'Zheng Xuan', religionId: confucianismId,
+      dates: '127-200', title: '经神·遍注群经',
+      school: '汉唐经学', generation: 2,
+      biography: '郑玄（127-200），字康成，北海高密（今山东高密）人，东汉末年大儒、经学集大成者。遍注群经，以古文经学为主兼采今文，打破今古文壁垒，被称为"经神"。其注释遍及《周易》《尚书》《毛诗》《周礼》《仪礼》《礼记》《论语》《孝经》等，几乎囊括全部儒家经典。郑玄之学被称为"郑学"，在魏晋南北朝数百年间为经学正统。',
+      coreTeaching: '融合今古文经学——打破门户之见，兼采众长。以礼为本——三礼（周礼、仪礼、礼记）是儒学实践的核心。经学为治国安邦之本。',
+      achievements: '遍注群经，为汉代经学集大成者。融合今古文经学，结束两汉经学之争。"郑学"为数百年间经学正统。被后世尊为"经神"。',
+      templeNames: [{ name: '高密郑公祠', nameEn: 'Zheng Xuan Memorial', role: '郑玄故里', location: '山东高密' }],
+      koans: [],
+      classicQuotes: ['经者，常也，法也，径也'],
+      works: [
+        { title: '毛诗笺', description: '对《诗经》毛传的详细注释，为《诗经》学最重要的古注。' },
+        { title: '三礼注', description: '对《周礼》《仪礼》《礼记》的系统注释。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '孔安国', nameEn: 'Kong Anguo', religionId: confucianismId,
+      dates: '前156-前74', title: '古文尚书传者·孔子十一世孙',
+      school: '汉唐经学', generation: 2,
+      biography: '孔安国（前156-前74），字子国，鲁国曲阜人，孔子十一世孙。西汉经学家，古文经学的重要奠基人。从伏生受今文《尚书》，又得孔子旧宅壁中古文《尚书》，以今文读古文，开创古文《尚书》学。据传为《古文尚书》作传，对《论语》亦有训解。虽其传世之作的真伪历代有争议，但孔安国在古文经学史上的地位不可替代。',
+      coreTeaching: '以古文经为宗——古文经更接近圣人原意。尊重文本——治经当以文字训诂为基础。传承家学——孔氏家学代代相传。',
+      achievements: '古文经学重要奠基人。传《古文尚书》，开创古文《尚书》学。孔子十一世孙，传承家学。训解《论语》。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: [],
+      works: [
+        { title: '古文尚书传', description: '对古文《尚书》的注释，虽真伪有争议，但对经学史影响重大。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '许慎', nameEn: 'Xu Shen', religionId: confucianismId,
+      dates: '约58-约147', title: '字圣·说文解字之父',
+      school: '汉唐经学', generation: 3,
+      biography: '许慎（约58-约147），字叔重，汝南召陵（今河南漯河）人，东汉经学家、文字学家。师从贾逵，博通五经。以古文经学为宗，认为文字是理解经典的基础。历时二十余年著成《说文解字》，收字9353个，首创部首检字法（540部首），系统分析汉字形、音、义。这是世界上最早的字典之一，也是中国文字学的开山之作。被后世尊为"字圣"。',
+      coreTeaching: '文字为经学之本——不明文字则不能通经。六书造字法——象形、指事、会意、形声、转注、假借。部首归类——以部首系统整理文字，为字书编纂开创范式。',
+      achievements: '著《说文解字》，中国第一部系统的字典。首创540部首检字法。"六书"理论系统化。被尊为"字圣"，中国文字学开山祖。',
+      templeNames: [{ name: '许慎文化园', nameEn: 'Xu Shen Cultural Park', role: '许慎故里', location: '河南漯河' }],
+      koans: [],
+      classicQuotes: ['盖文字者，经艺之本，王政之始'],
+      works: [
+        { title: '说文解字', description: '中国第一部系统分析字形、考究字源的字书。收字9353个，540部首。文字学永恒经典。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '韩愈', nameEn: 'Han Yu', religionId: confucianismId,
+      dates: '768-824', title: '文公·文起八代之衰·道统说',
+      school: '汉唐经学', generation: 4,
+      biography: '韩愈（768-824），字退之，河南河阳（今河南孟州）人，唐代文学家、思想家。古文运动领袖，"唐宋八大家"之首。三岁丧父，由兄嫂抚养。科举及第后仕途坎坷，屡遭贬谪。最著名的贬谪为谏迎佛骨被贬潮州——《谏佛骨表》直斥佛教有害国家，被贬八千里。在潮州兴学化民，政绩卓著。韩愈最重要的思想贡献是提出"道统说"——尧舜禹汤文武周公孔孟的传道谱系，确立了儒学正统。苏轼评其"文起八代之衰，而道济天下之溺"。',
+      coreTeaching: '道统说——儒学有从尧舜到孟子的正统传承，中间断裂千年，由韩愈重新接续。原道——仁与义为定名，道与德为虚位。文以载道——文章应当承载道理。师道——古之学者必有师，师者传道授业解惑也。',
+      achievements: '提出"道统说"，确立儒学正统传承观念。古文运动领袖，"唐宋八大家"之首。"文起八代之衰"，重振中国散文传统。《师说》《原道》《谏佛骨表》等千古名篇。谏迎佛骨表现了儒者的气节与担当。',
+      templeNames: [{ name: '韩文公祠', nameEn: 'Han Yu Memorial', role: '韩愈在潮州的纪念祠', location: '广东潮州' }],
+      koans: [
+        { title: '谏迎佛骨', description: '唐宪宗迎佛骨舍利入宫，韩愈上《谏佛骨表》直言："佛本夷狄之人……不足事也。"触怒宪宗，被贬潮州。"一封朝奏九重天，夕贬潮州路八千。"虽九死不悔，体现儒者的道义担当。' },
+      ],
+      classicQuotes: ['师者，所以传道授业解惑也', '业精于勤，荒于嬉；行成于思，毁于随', '文起八代之衰，而道济天下之溺', '世有伯乐，然后有千里马'],
+      works: [
+        { title: '原道', description: '阐述儒家道统，批判佛老，为宋明理学先声。' },
+        { title: '师说', description: '论述从师学习的重要性，千古名篇。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 宋明理学 — New entries (朱熹已update) ──
+
+  const zhouDunyi = await prisma.patriarch.create({
+    data: {
+      name: '周敦颐', nameEn: 'Zhou Dunyi', religionId: confucianismId,
+      dates: '1017-1073', title: '濂溪先生·理学开山祖',
+      school: '宋明理学', generation: 1,
+      biography: '周敦颐（1017-1073），字茂叔，号濂溪，道州营道（今湖南道县）人，北宋理学开山祖。为官清廉，政声卓著。著《太极图说》和《通书》，以"无极而太极"为起点构建了理学的宇宙论和人性论框架。其"太极→阴阳→五行→万物"的生成论为宋明理学提供了哲学基础。二程（程颢、程颐）少年时受学于他。爱莲"出淤泥而不染"的名句传颂千古。被后世尊为理学始祖。',
+      coreTeaching: '无极而太极——宇宙的本原是无极，太极动静生阴阳，阴阳变合生五行，五行生万物。诚者，圣人之本——诚是通达天理的根本。主静立人极——以静为修养的核心。',
+      achievements: '理学开山祖，为宋明理学提供宇宙论框架。《太极图说》和《通书》为理学奠基之作。教出二程，开启理学主流。"爱莲说"千古传诵。',
+      templeNames: [{ name: '道县濂溪故里', nameEn: 'Lianxi Memorial', role: '周敦颐故里', location: '湖南道县' }],
+      koans: [
+        { title: '爱莲说', description: '周敦颐爱莲花，作《爱莲说》："予独爱莲之出淤泥而不染，濯清涟而不妖，中通外直，不蔓不枝，香远益清，亭亭净植，可远观而不可亵玩焉。"以莲花喻君子品格。' },
+      ],
+      classicQuotes: ['出淤泥而不染，濯清涟而不妖', '无极而太极', '诚者，圣人之本', '主静立人极'],
+      works: [
+        { title: '太极图说', description: '249字，阐述宇宙生成论，为理学哲学基础。' },
+        { title: '通书', description: '阐述诚、几、德等概念，为理学伦理学基础。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '张载', nameEn: 'Zhang Zai', religionId: confucianismId,
+      dates: '1020-1077', title: '横渠先生·关学宗师·气学大师',
+      school: '宋明理学', generation: 1,
+      biography: '张载（1020-1077），字子厚，凤翔郿县（今陕西眉县）横渠镇人，北宋理学家、关学创始人。少喜谈兵，范仲淹劝其读《中庸》，遂转向儒学。提出"气本论"——太虚即气，气聚为物，气散为虚。著名的"横渠四句"——"为天地立心，为生民立命，为往圣继绝学，为万世开太平"成为中国知识分子的最高理想。晚年在横渠讲学，创关学。',
+      coreTeaching: '气本论——太虚无形，气之本体；气聚则离明得施而有形，气散则无形而太虚。民胞物与——人民皆我同胞，万物皆我同类。横渠四句——为天地立心，为生民立命，为往圣继绝学，为万世开太平。变化气质——修养的关键在于改变气质之性。',
+      achievements: '提出"横渠四句"，成为中国知识分子精神宣言。气本论开辟理学唯物主义路径。"民胞物与"拓展了儒家仁爱观。创立关学，理学四大学派之一。',
+      templeNames: [{ name: '横渠书院', nameEn: 'Hengqu Academy', role: '张载讲学之地', location: '陕西眉县' }],
+      koans: [],
+      classicQuotes: ['为天地立心，为生民立命，为往圣继绝学，为万世开太平', '民吾同胞，物吾与也', '太虚无形，气之本体'],
+      works: [
+        { title: '正蒙', description: '系统阐述气学哲学，"太和""参两""大心"等篇。' },
+        { title: '西铭', description: '即《正蒙·乾称篇》首段，阐述"民胞物与"思想。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '程颢', nameEn: 'Cheng Hao', religionId: confucianismId,
+      dates: '1032-1085', title: '明道先生·仁者浑然与物同体',
+      school: '宋明理学', generation: 2, teacherId: zhouDunyi.id,
+      biography: '程颢（1032-1085），字伯淳，号明道，河南洛阳人。与弟程颐并称"二程"，北宋理学奠基者。少受学于周敦颐。提出"天理"概念——"天者理也"，为理学奠定了核心范畴。主张"仁者浑然与物同体"——仁的境界是与万物一体。学风亲切平和，主张以"识仁"为修养入手处。弟子谢良佐、杨时等传其学。',
+      coreTeaching: '天理——天者理也，万事万物皆有理。仁者浑然与物同体——仁是与天地万物为一体的境界。识仁——修养的入手处是体认仁。生之谓性——天理即性，性即天理。',
+      achievements: '与弟程颐共同奠定理学基础，"天理"成为理学核心概念。"仁者浑然与物同体"开启了理学的仁学传统。洛学影响深远，为朱熹理学的重要源头。',
+      templeNames: [{ name: '嵩阳书院', nameEn: 'Songyang Academy', role: '二程讲学之地', location: '河南登封' }],
+      koans: [
+        { title: '识仁之方', description: '程颢教导学生：修养的入手处在于"识仁"。医家以不认痛痒谓之不仁，仁者以天地万物为一体，无不是己。能如此识仁，则以诚敬存之便是修行。' },
+      ],
+      classicQuotes: ['天者理也', '仁者浑然与物同体', '万物之生意最可观'],
+      works: [], imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '程颐', nameEn: 'Cheng Yi', religionId: confucianismId,
+      dates: '1033-1107', title: '伊川先生·格物穷理',
+      school: '宋明理学', generation: 2, teacherId: zhouDunyi.id,
+      biography: '程颐（1033-1107），字正叔，号伊川，河南洛阳人。与兄程颢并称"二程"。学风严谨深沉，与兄之亲切平和形成对比。主张"格物穷理"——研究事物以穷尽其理。提出"性即理"——人的本性就是天理。其学经杨时→罗从彦→李侗传至朱熹，朱熹发扬光大成为理学正宗。"程门立雪"典故展示了师道的庄严。',
+      coreTeaching: '性即理——人的本性就是天理，恶来自于气质的遮蔽。格物穷理——通过研究具体事物来认识天理。涵养须用敬——修养需要以敬为持守方法。主敬——心中常存敬畏，不放逸。',
+      achievements: '与兄程颢共同奠定理学基础。"性即理""格物穷理"成为朱熹理学的核心命题。其学脉传至朱熹，成为理学正统。"程门立雪"成为尊师典故。',
+      templeNames: [{ name: '伊川书院', nameEn: 'Yichuan Academy', role: '程颐讲学之地', location: '河南洛阳伊川' }],
+      koans: [
+        { title: '程门立雪', description: '杨时和游酢去拜见程颐，程颐正在打瞌睡，二人不敢惊扰，恭敬地站在门外等候。等程颐醒来开门，门外积雪已有一尺深。后人以"程门立雪"比喻尊师重道。' },
+      ],
+      classicQuotes: ['性即理也', '涵养须用敬，进学则在致知', '饿死事小，失节事大'],
+      works: [
+        { title: '伊川易传', description: '以理学思想解释《周易》，为义理派易学的代表。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '陆九渊', nameEn: 'Lu Jiuyuan', religionId: confucianismId,
+      dates: '1139-1193', title: '象山先生·心学开宗',
+      school: '宋明理学', generation: 3,
+      biography: '陆九渊（1139-1193），字子静，号象山，抚州金溪（今江西金溪）人，南宋哲学家。提出"心即理"——心就是理，不必外求。与朱熹"鹅湖之会"辩论，主张"尊德性"——直接发明本心，不需要格物穷理的繁琐功夫。"宇宙便是吾心，吾心即是宇宙"——心与宇宙合一。其学经明代王阳明发扬光大，形成"陆王心学"。被视为心学的开宗祖师。',
+      coreTeaching: '心即理——宇宙便是吾心，吾心即是宇宙。心之本体自足圆满。尊德性——修养的根本在于发明本心，不在穷理读书。先立乎其大者——先确立心之大体（道德本心），小节自然归正。简易功夫——修行应当简易直截，不必繁琐。',
+      achievements: '心学开宗祖师，提出"心即理"核心命题。与朱熹鹅湖之会，开理学心学千年之辩。"宇宙便是吾心"开拓了中国哲学主体性传统。经王阳明发扬，形成"陆王心学"。',
+      templeNames: [{ name: '象山书院', nameEn: 'Xiangshan Academy', role: '陆九渊讲学之地', location: '江西贵溪' }],
+      koans: [
+        { title: '鹅湖之辩', description: '陆九渊在鹅湖之会上诗曰："易简功夫终久大，支离事业竟浮沉。"批评朱熹格物穷理太过支离。主张直指本心，简易直截。此辩奠定了心学的独立地位。' },
+      ],
+      classicQuotes: ['宇宙便是吾心，吾心即是宇宙', '心即理也', '先立乎其大者，则其小者不能夺也', '学苟知本，六经皆我注脚'],
+      works: [
+        { title: '象山全集', description: '收录书信、语录、诗文等，为心学的基本文献。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 阳明心学 — All new ──
+
+  const wangYangming = await prisma.patriarch.create({
+    data: {
+      name: '王阳明', nameEn: 'Wang Yangming', religionId: confucianismId,
+      dates: '1472-1529', title: '阳明先生·心即理·知行合一·致良知',
+      school: '阳明心学', generation: 1,
+      biography: '王阳明（1472-1529），名守仁，字伯安，号阳明，浙江余姚人。明代伟大哲学家、军事家、教育家，心学集大成者。少年立志做圣人。曾尝试"格竹子"按朱熹格物法穷理，格了七天七夜病倒，因此开始怀疑朱熹学说。正德元年（1506年）因上疏得罪宦官刘瑾，被贬贵州龙场。在龙场极其困苦的环境中"龙场悟道"——心即理也，圣人之道吾性自足。此后提出"知行合一""致良知"两大核心命题。军事上平定宸濠之乱、南赣匪患，文治武功皆卓绝。阳明心学影响深远，传至日本成为明治维新的思想动力。',
+      coreTeaching: '心即理——心外无物，心外无事，心外无理。知行合一——知是行的开始，行是知的完成，知行本是一体。致良知——良知是是非之心，人人具足；致良知就是在事事物物上体认和实现良知。四句教——无善无恶心之体，有善有恶意之动，知善知恶是良知，为善去恶是格物。',
+      achievements: '心学集大成者，与孔孟朱并列的儒学四大家。"知行合一"改变了中国哲学的知行观。"致良知"提供了简易直截的修行方法。军事奇才，平定宸濠之乱。阳明心学传至日本，影响明治维新。被称为"立德立功立言三不朽"的完人。',
+      templeNames: [
+        { name: '阳明洞', nameEn: 'Yangming Cave', role: '龙场悟道之地', location: '贵州修文' },
+        { name: '余姚阳明故居', nameEn: 'Yangming Former Residence', role: '王阳明出生地', location: '浙江余姚' },
+      ],
+      koans: [
+        { title: '龙场悟道', description: '王阳明被贬贵州龙场，万山丛棘中，瘴疠侵身，随从皆病。阳明日夜端坐石棺中静思，忽一夜大悟："圣人之道，吾性自足，向之求理于事物者误也。"此即著名的"龙场悟道"，心学由此诞生。' },
+        { title: '岩中花树', description: '友人指岩中花树问：此花在深山中自开自落，于我心亦何相关？阳明答：你未看此花时，此花与汝心同归于寂。你来看此花时，则此花颜色一时明白起来。便知此花不在你心外。此即"心外无物"的经典论证。' },
+      ],
+      classicQuotes: ['知是行的主意，行是知的功夫', '心外无物，心外无事，心外无理', '无善无恶心之体，有善有恶意之动，知善知恶是良知，为善去恶是格物', '此心光明，亦复何言'],
+      works: [
+        { title: '传习录', description: '王阳明与弟子的问答录，心学核心经典。上卷为亲笔书信，中下卷为弟子记录。' },
+        { title: '大学问', description: '阐述致良知和万物一体之仁，为心学纲领性著作。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '王畿', nameEn: 'Wang Ji', religionId: confucianismId,
+      dates: '1498-1583', title: '龙溪先生·四无说·现成良知',
+      school: '阳明心学', generation: 2, teacherId: wangYangming.id,
+      biography: '王畿（1498-1583），字汝中，号龙溪，浙江绍兴人。王阳明晚年最重要的弟子之一。在"天泉证道"中提出"四无说"——心是无善无恶的心，意是无善无恶的意，知是无善无恶的知，物是无善无恶的物。主张"现成良知"——良知当下即是，无须功夫修为。其学走向超越善恶的形上境界，被称为阳明学左派。',
+      coreTeaching: '四无说——无善无恶是心之体，无善无恶是意之动，无善无恶是知之知，无善无恶是物之格。现成良知——良知本来现成，不假修为。一悟本体，即是功夫。',
+      achievements: '阳明学重要传人，天泉证道的主角之一。"四无说"将心学推向更高的哲学境界。推动阳明学在明末的广泛传播。',
+      templeNames: [],
+      koans: [
+        { title: '天泉证道', description: '阳明晚年在天泉桥上，弟子王畿主张"四无"，钱德洪主张"四有"。阳明调和说：你们两个的见解正好互补，不可偏废。四无是上根人的功夫，四有是中根以下的功夫。' },
+      ],
+      classicQuotes: ['良知本来现成，不假修为', '一悟本体，即是功夫'],
+      works: [
+        { title: '龙溪王先生全集', description: '收录语录、书信、文章等，为阳明左派的核心文献。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const liuZongzhou = await prisma.patriarch.create({
+    data: {
+      name: '刘宗周', nameEn: 'Liu Zongzhou', religionId: confucianismId,
+      dates: '1578-1645', title: '蕺山先生·明末大儒·慎独',
+      school: '阳明心学', generation: 3,
+      biography: '刘宗周（1578-1645），字起东，号念台，世称蕺山先生，浙江绍兴人。明末最重要的儒学家。针对阳明后学流于空疏的弊病，主张以"慎独"为修行核心——在独处时也要谨慎自律。清兵入杭州后，绝食二十三日而死，以身殉国。弟子黄宗羲继承其学。刘宗周被视为明代儒学的最后一位大师，其死标志着一个时代的终结。',
+      coreTeaching: '慎独——修养的核心在于独处时的谨慎自律。意为心之所存——意不是心之所发，而是心之所存（纠正阳明学的偏失）。诚意——《大学》的核心在诚意，诚意就是慎独。',
+      achievements: '明末最重要的儒学家，纠正阳明后学之弊。"慎独"学说影响深远。以身殉国，体现儒者气节。弟子黄宗羲传其学。',
+      templeNames: [{ name: '蕺山书院', nameEn: 'Jishan Academy', role: '刘宗周讲学之地', location: '浙江绍兴' }],
+      koans: [
+        { title: '绝食殉国', description: '1645年清兵占领杭州，刘宗周绝食抗议。弟子劝他保重身体以待时机。刘宗周答："吾固知天下事不可为矣，但此心耿耿不能已也。"绝食二十三日卒。以死明志，尽了儒者的最后之责。' },
+      ],
+      classicQuotes: ['慎独者，慎其独知之地也', '独知即良知'],
+      works: [
+        { title: '人谱', description: '论述修身工夫的次第，以改过为入手。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '黄宗羲', nameEn: 'Huang Zongxi', religionId: confucianismId,
+      dates: '1610-1695', title: '梨洲先生·中国之卢梭',
+      school: '阳明心学', generation: 4, teacherId: liuZongzhou.id,
+      biography: '黄宗羲（1610-1695），字太冲，号梨洲，浙江余姚人。明末清初伟大思想家、史学家。父黄尊素因东林党案被害，宗羲持锥刺杀阉党余孽。师从刘宗周。明亡后拒绝出仕清朝。著《明夷待访录》，系统批判君主专制——"为天下之大害者，君而已矣"，提出限制君权、法治等主张，被称为"中国之卢梭"。著《明儒学案》，为中国第一部学术思想史。',
+      coreTeaching: '天下为公——天下非一人之天下，乃天下人之天下。限制君权——批判"家天下"，主张法治。学校议政——学校不仅是教育场所，更是议政论治之处。',
+      achievements: '著《明夷待访录》，开中国民主思想先河。《明儒学案》为中国第一部学术思想史。与顾炎武、王夫之并称"明末三大家"。抗清志节为后世楷模。',
+      templeNames: [{ name: '余姚黄宗羲墓', nameEn: 'Huang Zongxi Tomb', role: '黄宗羲葬地', location: '浙江余姚' }],
+      koans: [],
+      classicQuotes: ['为天下之大害者，君而已矣', '天下之治乱，不在一姓之兴亡，而在万民之忧乐', '学校所以养士也'],
+      works: [
+        { title: '明夷待访录', description: '系统批判君主专制，提出民主思想。被称为"中国的《社会契约论》"。' },
+        { title: '明儒学案', description: '中国第一部学术思想通史，记录明代各儒学流派。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '王夫之', nameEn: 'Wang Fuzhi', religionId: confucianismId,
+      dates: '1619-1692', title: '船山先生·气学大成',
+      school: '阳明心学', generation: 4,
+      biography: '王夫之（1619-1692），字而农，号姜斋，世称船山先生，湖南衡阳人。明末清初伟大思想家。明亡后参加抗清运动失败，隐居衡阳船山，著书立说四十余年。继承张载气学，发展出系统的唯物主义哲学——"气者理之依也"（理依附于气）。强调"知行相资以为用"——知行相互依赖。著述超过百部，涵盖哲学、经学、史学、文学。身后两百年才被发现，对近代革命思想影响巨大。',
+      coreTeaching: '气者理之依也——理不能离开气而独存，理是气的规律。知行相资以为用——知识和实践相互依赖，互为补充。日新之谓盛德——天地万物日日更新。天下惟器——具体事物是根本。',
+      achievements: '发展了系统的唯物主义哲学。著述超过百部，为中国学术史上最多产的学者之一。与黄宗羲、顾炎武并称"明末三大家"。对近代革命思想（谭嗣同、毛泽东等）影响巨大。',
+      templeNames: [{ name: '船山书院', nameEn: 'Chuanshan Academy', role: '纪念王夫之', location: '湖南衡阳' }],
+      koans: [],
+      classicQuotes: ['气者理之依也', '天下惟器而已矣', '六经责我开生面，七尺从天乞活埋'],
+      works: [
+        { title: '读通鉴论', description: '以史论政，评议历代治乱兴衰。史学哲学名著。' },
+        { title: '张子正蒙注', description: '注释张载《正蒙》，发展气学唯物论。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 近现代新儒学 — All new ──
+
+  const xiongShili = await prisma.patriarch.create({
+    data: {
+      name: '熊十力', nameEn: 'Xiong Shili', religionId: confucianismId,
+      dates: '1885-1968', title: '新唯识论·体用不二·现代新儒学宗师',
+      school: '近现代新儒学', generation: 1,
+      biography: '熊十力（1885-1968），原名继智，号子真，湖北黄冈人。现代新儒学最重要的哲学家。早年参加辛亥革命，后转向学术。在北京大学任教期间，从佛学唯识宗出发，批判改造之，著《新唯识论》，提出"体用不二"——本体与现象不可分离。强调儒学的心性之学是中华文化的根本。其弟子牟宗三、唐君毅、徐复观为现代新儒学第二代核心人物。被视为20世纪最重要的中国哲学家之一。',
+      coreTeaching: '体用不二——本体（体）与现象（用）不是两个东西，是同一实在的两个方面。翕辟成变——万物由翕（收敛、物质化）和辟（开放、精神化）两种力量交互作用而成。心性之学为中国文化根本——返回六经，回归孔孟。',
+      achievements: '著《新唯识论》，为20世纪中国哲学最重要的体系性著作之一。培养了牟宗三、唐君毅、徐复观等新儒学核心人物。开创了现代新儒学的哲学方向。被视为20世纪最重要的中国哲学家之一。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['体用不二', '万物莫不有翕辟', '返本开新'],
+      works: [
+        { title: '新唯识论', description: '从批判佛教唯识学出发，建构新的本体论。现代新儒学的奠基之作。' },
+        { title: '原儒', description: '阐述儒学本义，主张回归孔孟六经。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '梁漱溟', nameEn: 'Liang Shuming', religionId: confucianismId,
+      dates: '1893-1988', title: '最后的大儒·乡村建设运动先驱',
+      school: '近现代新儒学', generation: 1,
+      biography: '梁漱溟（1893-1988），原名焕鼎，字寿铭，广西桂林人。现代新儒学代表人物，被称为"最后的大儒"。1917年以中学学历被蔡元培聘为北京大学哲学讲师。著《东西文化及其哲学》，提出中西印三大文化路向说。1930年代投身乡村建设运动，在山东邹平进行社会实验。一生特立独行，在各种政治压力下坚持独立判断。95岁辞世，临终之言："这个世界会好吗？"',
+      coreTeaching: '三大文化路向——西方文化向前看（征服自然），中国文化调和持中，印度文化向后看（出世）。中国文化以伦理为本——理性早熟，重人伦不重知识。乡村建设——中国的出路在于乡村教育和合作组织。',
+      achievements: '"最后的大儒"，20世纪最具独立人格的中国知识分子。著《东西文化及其哲学》，开创比较文化哲学。乡村建设运动先驱。95年人生坚守儒者本色。',
+      templeNames: [],
+      koans: [
+        { title: '这个世界会好吗', description: '梁漱溟临终前，学生问他有什么话要说。他沉思良久，问道："这个世界会好吗？"学生答："我相信世界会好的。"梁漱溟点点头说："能好就好。"这成为20世纪中国最深沉的哲学追问。' },
+      ],
+      classicQuotes: ['这个世界会好吗？', '吾曹不出如苍生何', '人心向善即是文化的根本方向'],
+      works: [
+        { title: '东西文化及其哲学', description: '比较中西印三大文化的方向和特征。比较文化哲学的开山之作。' },
+        { title: '中国文化要义', description: '阐述中国文化以伦理为本的特征。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '牟宗三', nameEn: 'Mou Zongsan', religionId: confucianismId,
+      dates: '1909-1995', title: '当代新儒学旗手·智的直觉·道德的形上学',
+      school: '近现代新儒学', generation: 2, teacherId: xiongShili.id,
+      biography: '牟宗三（1909-1995），字离中，山东栖霞人。现代新儒学最具哲学深度的思想家。师从熊十力。1949年赴台湾，后转至香港新亚书院、台湾大学任教。贯通中西哲学，以康德哲学为对话对象，提出"智的直觉"——中国哲学承认人可以直接体认本体（不同于康德否认此可能），"良知坎陷"——良知的自我否定以开出知识与政治的客观化。被公认为20世纪中国哲学体系最完整的建构者。',
+      coreTeaching: '智的直觉——人通过道德实践可以直接体认本体，这是中国哲学的独特贡献。良知坎陷——良知通过自我否定（坎陷）开出知识和民主政治的客观领域。三统说——道统（儒学正统）、学统（知识传统）、政统（政治传统）三者并重。',
+      achievements: '20世纪中国哲学体系最完整的建构者。"智的直觉""良知坎陷"为中国哲学的现代化开辟了独特路径。翻译康德三大批判为中文。1958年发起《中国文化与世界宣言》。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['智的直觉是中国哲学的独特贡献', '良知自我坎陷以开出知性'],
+      works: [
+        { title: '心体与性体', description: '三卷本，系统阐述宋明理学，为牟宗三最重要的著作。' },
+        { title: '现象与物自身', description: '以康德哲学为对话对象，阐述中国哲学的本体论。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '唐君毅', nameEn: 'Tang Junyi', religionId: confucianismId,
+      dates: '1909-1978', title: '道德自我·花果飘零·灵根自植',
+      school: '近现代新儒学', generation: 2, teacherId: xiongShili.id,
+      biography: '唐君毅（1909-1978），四川宜宾人。现代新儒学重要代表。师从熊十力。1949年赴香港，与钱穆共创新亚书院（后并入香港中文大学）。哲学以"道德自我"为核心——人的道德主体性是哲学的出发点。1958年与牟宗三、张君劢、徐复观联名发表《为中国文化敬告世界人士宣言》，为新儒学的纲领性文件。晚年以"生命存在与心灵境界"建构了宏大的哲学体系。以"花果飘零，灵根自植"描述海外中国文化的处境。',
+      coreTeaching: '道德自我——人的道德主体性是一切价值的根源。心灵九境——从万物散殊到天德流行，人的精神可以达到九个境界。花果飘零，灵根自植——中国文化在海外虽然飘零，但只要灵根不断，便能重新生长。',
+      achievements: '与牟宗三、张君劢、徐复观联名发表新儒学宣言。与钱穆共创新亚书院。以"道德自我"为核心建构哲学体系。"花果飘零，灵根自植"成为海外华人文化认同的象征。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['花果飘零，灵根自植', '文化意识宇宙中的巨人'],
+      works: [
+        { title: '生命存在与心灵境界', description: '晚年大作，建构心灵九境说的宏大哲学体系。' },
+        { title: '中国文化之精神价值', description: '阐述中国文化的核心精神与现代意义。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '钱穆', nameEn: 'Qian Mu', religionId: confucianismId,
+      dates: '1895-1990', title: '宾四先生·国史大师·新亚精神',
+      school: '近现代新儒学', generation: 1,
+      biography: '钱穆（1895-1990），字宾四，江苏无锡人。20世纪最杰出的中国历史学家，现代新儒学重要代表。自学成才，未上过大学。以《先秦诸子系年》引起学术界注目，被破格聘为北京大学教授。著《国史大纲》，以温情与敬意对待中国历史。1949年赴港，与唐君毅创办新亚书院。1967年迁台北。一生著述八十余部。95岁辞世，为中国学术史上罕见的通才型学者。',
+      coreTeaching: '对本国历史应有温情与敬意——不可虚无主义对待传统。中国文化自有其独特价值——不必以西方标准衡量。学问在于通——通古今之变，通各学科之界。读书贵在会通，不可拘泥一隅。',
+      achievements: '著《国史大纲》，20世纪最重要的中国通史之一。创办新亚书院，在艰难中传承中华文化。著述八十余部，涵盖经史子集。以"温情与敬意"重建国人对本国历史的信心。',
+      templeNames: [{ name: '新亚书院', nameEn: 'New Asia College', role: '钱穆与唐君毅创办', location: '中国香港' }],
+      koans: [
+        { title: '新亚精神', description: '1949年钱穆在香港九龙桂林街租一层楼办学，条件极为简陋。取名"新亚"，寓意在新的亚洲传承中华文化。校歌有词："手空空，无一物，路遥遥，无止境。"在困厄中坚守文化传承。' },
+      ],
+      classicQuotes: ['对本国已往历史须有一种温情与敬意', '读书须先识其大体', '学问在于通'],
+      works: [
+        { title: '国史大纲', description: '一部中国通史，以温情与敬意对待中国历史。20世纪最重要的通史著作之一。' },
+        { title: '先秦诸子系年', description: '考证先秦诸子的生卒年代和学术源流。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '徐复观', nameEn: 'Xu Fuguan', religionId: confucianismId,
+      dates: '1903-1982', title: '中国艺术精神·思想史大师',
+      school: '近现代新儒学', generation: 2, teacherId: xiongShili.id,
+      biography: '徐复观（1903-1982），原名秉常，湖北浠水人。现代新儒学重要代表。早年从政从军，曾任蒋介石侍从室高参。四十岁后弃政从学，拜熊十力为师，转向思想史研究。著《中国艺术精神》，将庄子哲学解释为中国艺术精神的根源。著《中国人性论史》，系统梳理中国人性论的发展。1958年联名发表新儒学宣言。晚年任教于台湾东海大学和香港新亚研究所。',
+      coreTeaching: '中国艺术精神——庄子的"心斋""坐忘"即是艺术精神的最高境界。中国文化以人性论为核心——从孔孟到宋明理学的核心都是人性问题。知识分子的社会责任——学术不能脱离现实关怀。',
+      achievements: '著《中国艺术精神》，开辟中国美学研究新方向。著《中国人性论史》，系统梳理中国人性论发展。1958年新儒学宣言联署人。从政治人物转型为学术大师的典范。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['庄子所呈现的乃是艺术精神的主体', '中国文化的核心是人性论'],
+      works: [
+        { title: '中国艺术精神', description: '以庄子哲学阐释中国艺术精神，为中国美学经典。' },
+        { title: '中国人性论史·先秦篇', description: '系统梳理先秦人性论发展，思想史名著。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const confucianCount = 25; // 25 new + 3 updated
+  console.log(`  ✓ ${confucianCount} new Confucian patriarchs created + 3 updated (5 schools: Pre-Qin/Han-Tang/Song-Ming/Yangming/Modern)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
