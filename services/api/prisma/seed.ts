@@ -4174,6 +4174,583 @@ async function main() {
   const overseasZenCount = 19;
   console.log(`  ✓ ${overseasZenCount} overseas Zen patriarchs created (Japan 7 + Korea 4 + Vietnam 4 + Western 4)`);
 
+  // ── 4l. 伊斯兰教先贤 (Islamic Patriarchs/Scholars) ──
+  console.log('  Creating Islamic patriarchs (4l)...');
+
+  const islamId = religionMap['islam'];
+
+  // Update existing Muhammad with full data + school field
+  const existingMuhammad = await prisma.patriarch.findFirst({ where: { name: '先知穆罕默德' } });
+  const muhammad = existingMuhammad
+    ? await prisma.patriarch.update({
+        where: { id: existingMuhammad.id },
+        data: {
+          nameEn: 'Prophet Muhammad',
+          dates: '570-632',
+          title: '封印先知·安拉的使者',
+          school: '正统哈里发',
+          generation: 1,
+          biography: '穆罕默德（Muhammad），伊斯兰教创立者，被穆斯林尊为"封印先知"（最后的先知）。570年生于麦加古莱什部落。610年在希拉山洞接受天使吉卜利勒（加百列）首次启示，此后23年间陆续接受《古兰经》全部114章启示。622年从麦加迁徙至麦地那（希吉拉），建立第一个穆斯林公社（乌玛），此年定为伊斯兰历元年。630年和平收复麦加，清除克尔白天房中的偶像。632年在麦地那归真。穆罕默德不仅是宗教领袖，也是政治家、军事统帅、立法者，建立了横跨阿拉伯半岛的统一政权。其言行（圣训/哈迪斯）与《古兰经》并列为伊斯兰教法的两大源泉。',
+          coreTeaching: '万物非主，唯有真主，穆罕默德是真主的使者（清真言/舍哈达）。伊斯兰五功：念（清真言）、礼（每日五番拜）、斋（拉马丹月封斋）、课（天课/济贫税）、朝（朝觐麦加）。强调认主独一（陶希德）、善行、公正、慈悯。',
+          achievements: '伊斯兰教创立者。接受并传达《古兰经》114章。建立麦地那穆斯林公社（乌玛），开创政教合一的伊斯兰文明体系。统一阿拉伯半岛。其言行（圣训）成为伊斯兰教法两大源泉之一。影响全球19亿穆斯林至今。被《影响人类历史进程的100位名人》列为第一位。',
+          templeNames: [
+            { name: '麦加禁寺', nameEn: 'Masjid al-Haram', role: '伊斯兰第一圣地', location: '沙特阿拉伯麦加' },
+            { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '先知长眠之地', location: '沙特阿拉伯麦地那' },
+            { name: '希拉山洞', nameEn: 'Cave of Hira', role: '首次启示之地', location: '麦加光明山' },
+          ],
+          koans: [
+            { title: '首次启示', description: '天使吉卜利勒在希拉山洞命穆罕默德"读！"（伊格拉）。穆罕默德答"我不会读"。天使紧拥他三次后，第一段古兰经启示降临——"你应当奉你创造主的名义而宣读"(96:1)。' },
+            { title: '辞朝演说', description: '632年最后一次朝觐，穆罕默德在阿拉法特山对十万穆斯林发表演说："人类皆为亚当子孙，阿拉伯人不优于非阿拉伯人。最尊贵者，是最敬畏真主者。"' },
+          ],
+          classicQuotes: ['求知，从摇篮到坟墓', '你们中最优秀的人，是品德最优美的人', '不慈爱他人者，不会得到真主的慈爱', '学者的墨水比殉道者的血更神圣'],
+          works: [
+            { title: '古兰经', description: '伊斯兰教最高经典，114章6236节，真主通过穆罕默德传达的启示' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '先知穆罕默德', nameEn: 'Prophet Muhammad', religionId: islamId,
+          dates: '570-632', title: '封印先知·安拉的使者', school: '正统哈里发', generation: 1,
+          biography: '伊斯兰教创立者，接受《古兰经》启示。', coreTeaching: '万物非主，唯有真主。',
+          achievements: '伊斯兰教创立者。', imageUrl: null,
+        },
+      });
+
+  // Update existing Abu Bakr
+  const existingAbuBakr = await prisma.patriarch.findFirst({ where: { name: '阿布·伯克尔' } });
+  const abuBakr = existingAbuBakr
+    ? await prisma.patriarch.update({
+        where: { id: existingAbuBakr.id },
+        data: {
+          nameEn: 'Abu Bakr al-Siddiq',
+          dates: '573-634',
+          title: '第一任正统哈里发·诚信者',
+          school: '正统哈里发',
+          generation: 2,
+          teacherId: muhammad.id,
+          biography: '阿布·伯克尔·西迪克（Abu Bakr al-Siddiq），先知穆罕默德最亲密的伙伴（萨哈比），伊斯兰教第一任正统哈里发（632-634在位）。穆罕默德传教初期第一个信仰伊斯兰的成年男性。希吉拉（迁徙）时与穆罕默德一同藏于骚尔山洞，后同赴麦地那。穆罕默德归真后，阿布·伯克尔稳定局势、平定叛乱（里达战争）、开始编纂《古兰经》、发起对波斯和拜占庭的征伐。在位仅两年三个月即归真，但奠定了伊斯兰帝国的基础。以谦逊、慷慨、忠诚著称。',
+          coreTeaching: '善良不会因为谦虚而减少。忠诚与信仰是一切美德的根基。阿布·伯克尔以"诚信者"（西迪克）之号闻名，因他在先知夜行登霄等事件中毫不犹豫地相信穆罕默德。',
+          achievements: '伊斯兰教第一任正统哈里发。穆罕默德归真后稳定伊斯兰国家。平定里达战争（叛教战争）。开始编纂《古兰经》。发起征服波斯和拜占庭帝国的战役。以"诚信者"（al-Siddiq）之号流芳。',
+          templeNames: [
+            { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '安葬于先知旁', location: '沙特阿拉伯麦地那' },
+          ],
+          koans: [
+            { title: '骚尔山洞', description: '逃离麦加时，穆罕默德与阿布·伯克尔藏于骚尔山洞。追兵到洞口，蜘蛛结网、鸽子筑巢遮掩洞口。穆罕默德说："不要忧愁，真主与我们同在。"(9:40)' },
+          ],
+          classicQuotes: ['善良不会因为谦虚而减少', '在这世上做客，轻装前行', '不要对任何人说谎，即使它看起来无害'],
+          works: [],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '阿布·伯克尔', nameEn: 'Abu Bakr al-Siddiq', religionId: islamId,
+          dates: '573-634', title: '第一任正统哈里发', school: '正统哈里发', generation: 2,
+          teacherId: muhammad.id, biography: '首任正统哈里发。', coreTeaching: '善良不会因为谦虚而减少。',
+          achievements: '首任正统哈里发。', imageUrl: null,
+        },
+      });
+
+  // 欧麦尔·本·赫塔卜
+  const umar = await prisma.patriarch.create({
+    data: {
+      name: '欧麦尔·本·赫塔卜', nameEn: 'Umar ibn al-Khattab', religionId: islamId,
+      dates: '584-644', title: '第二任正统哈里发·公正者', school: '正统哈里发', generation: 3,
+      teacherId: muhammad.id,
+      biography: '欧麦尔·本·赫塔卜（Umar ibn al-Khattab），伊斯兰教第二任正统哈里发（634-644在位），号"公正者"（al-Faruq，辨别真伪者）。初为伊斯兰教最凶猛的反对者，后因听闻《古兰经》章节而皈依，极大鼓舞了早期穆斯林。任哈里发十年间，伊斯兰帝国疆域扩张至叙利亚、埃及、伊拉克、波斯。637年亲赴耶路撒冷接受投降，在圣殿山遗址处礼拜（后建圆顶清真寺）。建立迪万（行政体系）、伊斯兰历法、法官制度、军饷制度。以极简朴的生活和铁面公正闻名。644年在清真寺礼拜时被刺杀殉难。',
+      coreTeaching: '公正是统治的基石。即使对敌人也要公正。欧麦尔建立了伊斯兰世界最早的行政体系和法律制度，强调法律面前人人平等——哈里发与百姓同等受法律约束。',
+      achievements: '伊斯兰教第二任正统哈里发，伊斯兰帝国最伟大的扩张者。十年间征服叙利亚、埃及、伊拉克、波斯。建立迪万行政体系、伊斯兰历法、法官制度。亲赴耶路撒冷受降，保护基督教圣地。以公正和简朴著称。',
+      templeNames: [
+        { name: '圆顶清真寺', nameEn: 'Dome of the Rock', role: '欧麦尔在圣殿山礼拜', location: '耶路撒冷' },
+        { name: '欧麦尔清真寺', nameEn: 'Mosque of Umar', role: '纪念欧麦尔受降', location: '耶路撒冷' },
+      ],
+      koans: [
+        { title: '夜巡巴格达', description: '欧麦尔常在夜间微服巡视，亲自查看百姓疾苦。一夜遇到饥饿的妇女和孩子，亲自扛粮食送去。仆人要帮忙，他说："审判日那天，你能替我承担罪责吗？"' },
+      ],
+      classicQuotes: ['在判断他人之前，先审判自己', '最好的领袖是最能为人民服务的人', '真主不因你的外表和财富看你，而因你的心灵和行为'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // 奥斯曼·本·阿凡
+  await prisma.patriarch.create({
+    data: {
+      name: '奥斯曼·本·阿凡', nameEn: 'Uthman ibn Affan', religionId: islamId,
+      dates: '576-656', title: '第三任正统哈里发·两道光的拥有者', school: '正统哈里发', generation: 4,
+      teacherId: muhammad.id,
+      biography: '奥斯曼·本·阿凡（Uthman ibn Affan），伊斯兰教第三任正统哈里发（644-656在位），号"两道光的拥有者"（Dhun-Nurayn），因先后娶了穆罕默德两个女儿。出身富裕的倭马亚家族，以慷慨著称——多次以巨资资助穆斯林事业。最伟大的贡献是主持《古兰经》标准化——组织学者统一古兰经文本，消除各地读法差异，制作标准版（奥斯曼定本）分发各地，确保古兰经的完整性和统一性。在位期间伊斯兰帝国继续扩张至北非和中亚。656年在家中被叛军杀害殉难。',
+      coreTeaching: '古兰经的统一与保存是伊斯兰文明的根基。奥斯曼以行动证明——保护神圣经文的完整性高于一切政治考量。慷慨是信仰的体现。',
+      achievements: '伊斯兰教第三任正统哈里发。主持《古兰经》标准化（奥斯曼定本），统一全球穆斯林经文。帝国扩张至北非和中亚。建立伊斯兰海军。以慷慨资助伊斯兰事业著称。',
+      templeNames: [
+        { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '扩建先知寺', location: '沙特阿拉伯麦地那' },
+      ],
+      koans: [
+        { title: '古兰经定本', description: '各地穆斯林因方言差异在古兰经读法上产生争执。奥斯曼召集学者以古莱什方言为标准统一定本，制作数部抄本分发各省，焚毁所有非标准版本。此举虽有争议，却确保了古兰经千年不变。' },
+      ],
+      classicQuotes: ['真主没有赐给人比知识更好的东西', '如果我们的心灵真正纯洁，我们永远不会对古兰经感到厌倦'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // 阿里·本·阿比·塔利卜
+  const ali = await prisma.patriarch.create({
+    data: {
+      name: '阿里·本·阿比·塔利卜', nameEn: 'Ali ibn Abi Talib', religionId: islamId,
+      dates: '601-661', title: '第四任正统哈里发·信士的长官', school: '正统哈里发', generation: 5,
+      teacherId: muhammad.id,
+      biography: '阿里·本·阿比·塔利卜（Ali ibn Abi Talib），穆罕默德的堂弟和女婿（娶先知之女法蒂玛），伊斯兰教第四任正统哈里发（656-661在位）。第一个信仰伊斯兰的男孩（约10岁皈依）。以勇武、学识和公正著称，被穆罕默德称为"知识之城的门"。在逊尼派被尊为四大正统哈里发之末，在什叶派被尊为第一任伊玛目和穆罕默德的合法继承人。著有《辞章之道》（Nahj al-Balagha），为阿拉伯文学和伊斯兰哲学经典。661年在库法清真寺礼拜时被刺杀殉难，葬于纳杰夫。',
+      coreTeaching: '知识是最好的遗产，教养是最好的品质。阿里以智慧和辩才闻名，其《辞章之道》被誉为仅次于古兰经的阿拉伯语文学巅峰。强调公正、知识与灵性修养的统一。',
+      achievements: '第四任正统哈里发，什叶派第一任伊玛目。穆罕默德最早的追随者之一。著《辞章之道》为阿拉伯文学经典。以智慧、勇武、公正著称。逊尼派和什叶派共同尊崇的核心人物。',
+      templeNames: [
+        { name: '伊玛目阿里清真寺', nameEn: 'Imam Ali Mosque', role: '阿里陵墓所在地', location: '伊拉克纳杰夫' },
+        { name: '库法大清真寺', nameEn: 'Great Mosque of Kufa', role: '阿里遇刺之地', location: '伊拉克库法' },
+      ],
+      koans: [
+        { title: '知识之门', description: '穆罕默德说："我是知识之城，阿里是它的门。"阿里是先知学识和内在教导的首要传承者。' },
+        { title: '战场上的宽恕', description: '战斗中阿里将敌人打倒，敌人朝他脸上吐口水。阿里放下剑转身离开。问其故，答："他吐我时我愤怒了。若此时杀他，是为私愤而非为真主。"' },
+      ],
+      classicQuotes: ['知识是最好的遗产', '人的价值在于他所做的善事', '忍耐是信仰的一半', '不了解自己的人，不可能了解他人'],
+      works: [
+        { title: '辞章之道', description: 'Nahj al-Balagha，阿里的演讲、书信和格言集，阿拉伯文学经典' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 四大教法学派伊玛目 (4位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '阿布·哈尼法', nameEn: 'Abu Hanifa', religionId: islamId,
+      dates: '699-767', title: '大伊玛目·哈乃斐派创始人', school: '四大教法学派', generation: 1,
+      teacherId: null,
+      biography: '阿布·哈尼法·努尔曼（Abu Hanifa al-Nu\'man），伊斯兰教逊尼派四大教法学派之首——哈乃斐派（Hanafi）创始人，被尊为"大伊玛目"（al-Imam al-A\'zam）。生于库法，波斯裔。以类比推理（格亚斯）和理性判断（伊智提哈德）著称，主张在古兰经和圣训无明确规定时，可运用理性推理制定教法。其学派最为开放灵活，后被奥斯曼帝国采为官方教法。今为全球信众最多的教法学派（约占逊尼派35%），主要分布于土耳其、中亚、南亚、中国。',
+      coreTeaching: '理性与启示并行。在教法判断中运用类比推理（格亚斯）和公共利益考量（伊斯提赫桑），使伊斯兰教法能适应不同时代和地域。宗教不应僵化——理性是真主赐予人类的工具。',
+      achievements: '哈乃斐派创始人，伊斯兰教法学奠基者。首创系统化教法推理方法。其学派为全球最大的逊尼派教法学派。被奥斯曼帝国/莫卧儿帝国采为官方教法。影响遍及土耳其、中亚、南亚、中国穆斯林。',
+      templeNames: [
+        { name: '大伊玛目清真寺', nameEn: 'Abu Hanifa Mosque', role: '阿布·哈尼法陵墓', location: '伊拉克巴格达' },
+      ],
+      koans: [],
+      classicQuotes: ['当你不确定时，选择最容易的路——真主不想为你制造困难', '知识如果不付诸实践，就像树木不结果实'],
+      works: [
+        { title: '大学（Al-Fiqh al-Akbar）', description: '伊斯兰教义学基本信条' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '马立克·本·艾奈斯', nameEn: 'Malik ibn Anas', religionId: islamId,
+      dates: '711-795', title: '麦地那伊玛目·马立克派创始人', school: '四大教法学派', generation: 2,
+      teacherId: null,
+      biography: '马立克·本·艾奈斯（Malik ibn Anas），逊尼派四大教法学派之一——马立克派（Maliki）创始人。生于麦地那，终身未离开。被尊为"迁徙之城的伊玛目"。以重视麦地那学者的实践传统（阿玛勒）为特色——认为麦地那人民的习俗即是先知遗教的活传承。著《穆瓦塔》（al-Muwatta），为伊斯兰教最早的教法和圣训汇编之一。其学派主要分布于北非（马格里布）、西非、阿联酋和科威特。',
+      coreTeaching: '麦地那的实践传统（阿玛勒）是教法的重要来源——先知生活过的城市，其居民的集体实践即是活的圣训。注重社会公共利益（马斯拉哈）在教法判断中的权重。',
+      achievements: '马立克派创始人。著《穆瓦塔》为伊斯兰教最早的教法圣训汇编。以麦地那实践传统（阿玛勒）为教法独特来源。其学派主导北非和西非伊斯兰世界。',
+      templeNames: [
+        { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '终身在此教学', location: '沙特阿拉伯麦地那' },
+      ],
+      koans: [],
+      classicQuotes: ['知识不在于记忆多少，而在于真主在你需要时放入你心中的光明', '每个人的话都可以被接受或拒绝，除了安息在这座坟墓中的人（指先知）'],
+      works: [
+        { title: '穆瓦塔（Al-Muwatta）', description: '最早的教法圣训汇编，伊斯兰教法学基石' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '沙斐仪', nameEn: 'Muhammad ibn Idris al-Shafi\'i', religionId: islamId,
+      dates: '767-820', title: '教法学之父·沙斐仪派创始人', school: '四大教法学派', generation: 3,
+      teacherId: null,
+      biography: '穆罕默德·本·伊德里斯·沙斐仪（al-Shafi\'i），逊尼派四大教法学派之一——沙斐仪派（Shafi\'i）创始人，被尊为"教法原理之父"（Usul al-Fiqh）。出身古莱什族，师从马立克·本·艾奈斯。游学于麦加、麦地那、伊拉克、埃及，博采众长。著《论证书》（al-Risala），首次系统化伊斯兰教法推理方法论——确立古兰经、圣训、公议（伊智玛）、类比（格亚斯）四大法源层级。其学派分布于东南亚、东非、埃及南部、也门。',
+      coreTeaching: '教法四大源泉（乌苏勒）：古兰经→圣训→公议→类比。沙斐仪创立了系统化的教法推理方法论，使教法判断有章可循。强调圣训的绝对权威性——有效圣训可以限定古兰经的一般性规定。',
+      achievements: '沙斐仪派创始人。著《论证书》首创伊斯兰教法原理学（Usul al-Fiqh）。确立四大法源层级体系。融合伊拉克理性学派和麦地那传统学派之长。其学派主导东南亚伊斯兰世界（印尼/马来西亚/文莱）。',
+      templeNames: [
+        { name: '伊玛目沙斐仪清真寺', nameEn: 'Imam al-Shafi\'i Mosque', role: '沙斐仪陵墓', location: '埃及开罗' },
+      ],
+      koans: [],
+      classicQuotes: ['知识分两种：宗教知识用于来世，医学知识用于身体', '我每与人辩论，都希望对方是对的', '不要与愚者争辩——旁观者分不清你们谁是傻瓜'],
+      works: [
+        { title: '论证书（Al-Risala）', description: '伊斯兰教法原理学奠基之作' },
+        { title: '大全（Al-Umm）', description: '沙斐仪教法学全集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '艾哈迈德·本·罕百勒', nameEn: 'Ahmad ibn Hanbal', religionId: islamId,
+      dates: '780-855', title: '圣训学集大成者·罕百里派创始人', school: '四大教法学派', generation: 4,
+      teacherId: null,
+      biography: '艾哈迈德·本·罕百勒（Ahmad ibn Hanbal），逊尼派四大教法学派之一——罕百里派（Hanbali）创始人，伊斯兰教最伟大的圣训学家之一。师从沙斐仪等多位学者。编纂《穆斯奈德》（Musnad），收录近三万则圣训。在"古兰经被造说"（米赫纳）事件中宁受酷刑也坚持古兰经为真主之言（非被造物），成为信仰坚定的象征。其学派强调严格回归经训，反对过多的理性推理。今主要分布于沙特阿拉伯和卡塔尔。',
+      coreTeaching: '严格回归古兰经和圣训。反对过多的理性推演和哲学思辨——教法的根基在经训，不在人的推理。宁可接受弱传述链的圣训，也不接受无经训根据的类比推理。',
+      achievements: '罕百里派创始人。编纂《穆斯奈德》收录近三万则圣训。在米赫纳迫害中坚守信仰，宁受酷刑不妥协。被尊为逊尼派信仰捍卫者。其学派影响沙特阿拉伯官方教法。',
+      templeNames: [
+        { name: '艾哈迈德·本·罕百勒清真寺', nameEn: 'Ahmad ibn Hanbal Mosque', role: '纪念罕百勒', location: '伊拉克巴格达' },
+      ],
+      koans: [
+        { title: '米赫纳', description: '阿拔斯王朝哈里发马蒙强制推行"古兰经被造说"，罕百勒坚持古兰经为真主之言。被囚禁鞭打两年不屈。后被释放，声望更隆，成为信仰坚定的象征。' },
+      ],
+      classicQuotes: ['人们最需要的知识，是求知本身', '忍耐是对付灾难的最好武器', '宁可在真理上孤独，也不在虚伪上合群'],
+      works: [
+        { title: '穆斯奈德（Musnad）', description: '近三万则圣训汇编，伊斯兰教最大圣训集之一' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 苏菲派大师 (6位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '哈桑·巴士里', nameEn: 'Hasan al-Basri', religionId: islamId,
+      dates: '642-728', title: '苏菲先驱·巴士拉贤者', school: '苏菲派', generation: 1,
+      teacherId: null,
+      biography: '哈桑·巴士里（Hasan al-Basri），伊斯兰教早期最重要的学者和禁欲主义者，被尊为苏菲主义的先驱。生于麦地那，后迁居巴士拉。以雄辩的布道和对后世的深切关注闻名。其教导强调恐惧真主（塔格瓦）、反省自我、淡泊今世。哈桑·巴士里的弟子中产生了伊斯兰教多个重要学术流派。被认为是连接圣门弟子时代与后来苏菲传统的关键人物。',
+      coreTeaching: '内心的净化重于外在的仪式。对今世的淡泊（祖赫德）是通向真主的道路。每日自省——如果今天的你没有比昨天更好，那你就在退步。',
+      achievements: '苏菲主义先驱，连接圣门弟子时代与苏菲传统的关键人物。伊斯兰教早期最有影响力的布道家。弟子众多，开创多个学术流派。以雄辩和敬虔著称。',
+      templeNames: [
+        { name: '巴士拉大清真寺', nameEn: 'Great Mosque of Basra', role: '长期布道之地', location: '伊拉克巴士拉' },
+      ],
+      koans: [],
+      classicQuotes: ['如果今天的你没有比昨天更好，那你就是在亏损', '今世是来世的农田——在此播种，在彼收获', '智者在夜晚反思自己的白天'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '拉比亚·阿达维亚', nameEn: 'Rabia al-Adawiyya', religionId: islamId,
+      dates: '717-801', title: '爱的苏菲·女性神秘主义先驱', school: '苏菲派', generation: 2,
+      teacherId: null,
+      biography: '拉比亚·阿达维亚（Rabia al-Adawiyya），伊斯兰教苏菲主义最重要的女性圣者，"神圣之爱"（胡布·伊拉希）教义的开创者。生于巴士拉贫困家庭，幼年被卖为奴。获自由后终身未婚，全心奉献于对真主的爱。她将苏菲主义从恐惧和禁欲转向了纯粹的爱——爱真主不是因为害怕火狱或渴望天堂，而是因为真主本身值得被爱。这一转变深刻影响了整个苏菲传统的发展方向。',
+      coreTeaching: '无条件的神圣之爱（胡布·伊拉希）。爱真主不因恐惧火狱，不因渴望天堂——只因真主值得被爱。拉比亚著名的祈祷："主啊，如果我因恐惧火狱而崇拜你，就让我在火狱中燃烧；如果我因渴望天堂而崇拜你，就将我拒之门外。但如果我只因你而崇拜你，就不要对我隐藏你永恒的美。"',
+      achievements: '苏菲主义最重要的女性圣者。开创"神圣之爱"教义，将苏菲主义从恐惧转向爱。其名言和祈祷传颂千年。证明了女性在伊斯兰灵性传统中的崇高地位。',
+      templeNames: [
+        { name: '拉比亚陵墓', nameEn: 'Tomb of Rabia', role: '圣者陵墓', location: '伊拉克巴士拉(一说耶路撒冷)' },
+      ],
+      koans: [
+        { title: '火炬与水桶', description: '拉比亚手持火炬和水桶走在巴士拉街上。人问其故。答："我要用火炬烧掉天堂，用水浇灭火狱——这样人们才会因为爱真主而崇拜他，而非出于恐惧或贪婪。"' },
+      ],
+      classicQuotes: ['主啊，如果我因恐惧火狱而崇拜你，就让我在火狱中燃烧', '我的心除了真主没有空间容纳其他', '爱来自永恒，通向永恒'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '朱奈德·巴格达迪', nameEn: 'Al-Junayd al-Baghdadi', religionId: islamId,
+      dates: '830-910', title: '苏菲宗师之师·清醒苏菲', school: '苏菲派', generation: 3,
+      teacherId: null,
+      biography: '朱奈德·巴格达迪（Al-Junayd），苏菲主义最重要的理论家，被尊为"苏菲宗师之师"（Sayyid al-Ta\'ifa）。几乎所有苏菲道团的传承链（斯尔斯拉）都追溯到朱奈德。他代表"清醒苏菲"（Sahw）——与"陶醉苏菲"相对——主张神秘体验必须与教法规范统一，灵性飞升后必须回归日常责任。提出"法那"（消融于真主）后必须有"巴卡"（在真主中重生），否则不完整。其学说使苏菲主义获得正统教义的认可。',
+      coreTeaching: '清醒的苏菲主义（Sahw）——神秘体验必须与教法统一。"法那"（消融于真主）不是终点，必须经历"巴卡"（在真主中重生）回到世间履行责任。苏菲道路始于教法（沙里亚），经由道路（塔里卡），达到真理（哈基卡）。',
+      achievements: '苏菲主义最重要理论家，"苏菲宗师之师"。几乎所有苏菲道团传承链追溯至朱奈德。创立"清醒苏菲"学说，使苏菲主义获得正统认可。提出法那-巴卡完整框架。',
+      templeNames: [
+        { name: '朱奈德清真寺', nameEn: 'Junayd Mosque', role: '朱奈德陵墓', location: '伊拉克巴格达' },
+      ],
+      koans: [
+        { title: '法那与巴卡', description: '弟子问：苏菲修行的终点是什么？朱奈德答："法那（消融于真主）不是终点。终点是巴卡（在真主中重生）——你消融于真主后，带着真主的品性重返世间。如果只有法那没有巴卡，就像箭射出去不回来。"' },
+      ],
+      classicQuotes: ['苏菲主义不是外在的衣着和修行，而是内在的品质', '你回到最初的起点——但你已经完全不同了', '真正的苏菲是按照古兰经和圣训生活的人'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '安萨里', nameEn: 'Abu Hamid al-Ghazali', religionId: islamId,
+      dates: '1058-1111', title: '伊斯兰复兴者·信仰的明证', school: '苏菲派', generation: 4,
+      teacherId: null,
+      biography: '阿布·哈米德·安萨里（Al-Ghazali），被尊为"信仰的明证"（Hujjat al-Islam），中世纪伊斯兰教最伟大的思想家。生于波斯图斯。年轻时为巴格达尼扎米亚学院首席教授，声望达于顶峰。1095年经历严重的精神危机——对一切学术知识产生怀疑，突然离开巴格达，以苦行者身份游历叙利亚、耶路撒冷、麦加十年。通过苏菲修行重获信仰确信。著《宗教科学的复兴》（Ihya Ulum al-Din），融合教法学、神学和苏菲灵性，被认为"仅次于古兰经"的伊斯兰教最伟大著作。',
+      coreTeaching: '真知来自灵性体验而非理性论证。安萨里从哲学怀疑走向苏菲确信——证明理性有其限度，真正的信仰来自内心的直接体验（卡什夫）。教法（外在规范）和灵性（内在净化）不可分割。',
+      achievements: '伊斯兰教最伟大的思想家之一。著《宗教科学的复兴》融合教法与灵性。终结了伊斯兰世界的纯理性哲学倾向。使苏菲主义融入逊尼派正统。被称为"伊斯兰的复兴者"（Mujaddid）。',
+      templeNames: [
+        { name: '安萨里陵墓', nameEn: 'Tomb of al-Ghazali', role: '安萨里长眠之地', location: '伊朗图斯' },
+        { name: '倭马亚大清真寺', nameEn: 'Umayyad Mosque', role: '安萨里隐居修行之地', location: '叙利亚大马士革' },
+      ],
+      koans: [
+        { title: '离开巴格达', description: '安萨里在学术声望顶峰突然离职。他后来写道："我审视自己的动机——我教书不是为了真主，而是为了名声和地位。我发现自己站在火狱的边缘。"他抛弃一切，开始了十年的苏菲修行之旅。' },
+      ],
+      classicQuotes: ['知识无行动，是疯狂；行动无知识，是徒劳', '半数的不信，来自信仰者给宗教抹的黑', '欲望使智者变愚，忍耐使愚者变智'],
+      works: [
+        { title: '宗教科学的复兴（Ihya Ulum al-Din）', description: '四十卷巨著，融合教法学、神学与苏菲灵性，被誉为仅次于古兰经' },
+        { title: '迷途指津（Al-Munqidh min al-Dalal）', description: '精神自传，记录从怀疑到确信的心路历程' },
+        { title: '哲学家的矛盾（Tahafut al-Falasifa）', description: '批判亚里士多德式哲学的逻辑限度' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊本·阿拉比', nameEn: 'Ibn Arabi', religionId: islamId,
+      dates: '1165-1240', title: '至大导师·苏菲形而上学集大成者', school: '苏菲派', generation: 5,
+      teacherId: null,
+      biography: '穆希丁·伊本·阿拉比（Muhyiddin Ibn Arabi），被尊为"至大导师"（al-Shaykh al-Akbar），伊斯兰教苏菲主义最伟大的形而上学家。生于西班牙穆尔西亚，游历北非、麦加、安纳托利亚、大马士革。提出"存在的统一"（Wahdat al-Wujud）——万物是真主存在的显现（tajalli），一切存在的本质是唯一的真实存在（真主）。著作超过350部，最重要的是《麦加启示》（al-Futuhat al-Makkiyya，37卷）和《智慧的珍珠》（Fusus al-Hikam）。其思想深刻影响了从奥斯曼帝国到莫卧儿帝国的伊斯兰灵性传统。',
+      coreTeaching: '存在的统一（Wahdat al-Wujud）——唯一真正存在的是真主，万物是真主属性的不同显现。"完美之人"（Insan al-Kamil）是真主与世界之间的桥梁——先知是完美之人的典范。想象力（Khayal）是连接灵性世界与物质世界的中介。',
+      achievements: '苏菲主义最伟大的形而上学家，"至大导师"。提出"存在的统一"理论。著作超过350部。《麦加启示》37卷为苏菲百科全书。深刻影响奥斯曼/莫卧儿/波斯伊斯兰灵性传统。',
+      templeNames: [
+        { name: '伊本·阿拉比清真寺', nameEn: 'Ibn Arabi Mosque', role: '陵墓与清真寺', location: '叙利亚大马士革' },
+      ],
+      koans: [
+        { title: '爱的宗教', description: '伊本·阿拉比写道："我的心已能够接纳所有形式——它是羚羊的草地，僧侣的修道院，偶像的神殿，朝觐者的克尔白，摩西的法版，古兰经的书卷。我信仰爱的宗教，无论它的骆驼走向何方，爱就是我的信仰和信条。"' },
+      ],
+      classicQuotes: ['我信仰爱的宗教，无论它走向何方', '万物是真主的镜子——每面镜子反映真主的一个面向', '不了解自己的人，不了解他的主'],
+      works: [
+        { title: '麦加启示（Al-Futuhat al-Makkiyya）', description: '37卷苏菲百科全书，涵盖宇宙论/认识论/灵性实修' },
+        { title: '智慧的珍珠（Fusus al-Hikam）', description: '27章，论27位先知的特有智慧' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '贾拉鲁丁·鲁米', nameEn: 'Jalaluddin Rumi', religionId: islamId,
+      dates: '1207-1273', title: '毛拉维教团创始人·苏菲诗歌巅峰', school: '苏菲派', generation: 6,
+      teacherId: null,
+      biography: '贾拉鲁丁·穆罕默德·鲁米（Rumi），伊斯兰教苏菲主义最伟大的诗人，毛拉维教团（旋转苦行僧）创始人。生于巴尔赫（今阿富汗），因蒙古入侵随家人西迁，最终定居于科尼亚（今土耳其）。1244年遇到游方苦行僧沙姆斯·塔布里兹（Shams-i-Tabrizi），灵性觉醒，从学者转变为狂热的神秘主义诗人。著《玛斯纳维》（Masnavi）六卷约25000对偶诗行，被称为"波斯语的古兰经"。著《沙姆斯诗集》约40000诗行。其弟子创立毛拉维教团，以"旋转舞"（萨玛）闻名。今为全球最受欢迎的诗人之一——在美国诗集销量曾超过所有英语诗人。',
+      coreTeaching: '爱是宇宙的本质力量——万物因爱而运动，因爱而存在。神圣之爱（Ishq）超越宗教、种族、语言的界限。通过音乐、诗歌、旋转舞（萨玛）体验与真主的合一。"你不是一滴水——你是整片海洋包含在一滴水中。"',
+      achievements: '苏菲主义最伟大的诗人。著《玛斯纳维》被称"波斯语的古兰经"。毛拉维教团创始人（旋转苦行僧）。当今全球最受欢迎的诗人之一。其教导跨越宗教文化界限影响全人类。',
+      templeNames: [
+        { name: '鲁米博物馆（绿色陵墓）', nameEn: 'Mevlana Museum', role: '鲁米陵墓，毛拉维教团圣地', location: '土耳其科尼亚' },
+      ],
+      koans: [
+        { title: '芦笛的哀诉', description: '《玛斯纳维》开篇：听那芦笛如何哀诉——自从它被从芦苇丛中割离。人的灵魂如芦笛，因与源头（真主）分离而哀鸣。一切渴望、爱、痛苦，都是灵魂渴望回归源头的表现。' },
+        { title: '来吧', description: '"来吧，无论你是谁——流浪者、崇拜者、离弃承诺者——来吧。即使你已破戒一千次——来吧，再来吧。我们的不是绝望的道场。"' },
+      ],
+      classicQuotes: ['你不是一滴水，你是整片海洋包含在一滴水中', '伤口是光进入你的地方', '来吧，无论你是谁——来吧', '超越善与恶的观念，有一片田野，我将在那里与你相遇', '沉默是真主的语言，其余都是翻译'],
+      works: [
+        { title: '玛斯纳维（Masnavi）', description: '六卷25000对偶诗行，被称为"波斯语的古兰经"' },
+        { title: '沙姆斯诗集（Divan-e Shams）', description: '约40000诗行的抒情诗集，献给灵性导师沙姆斯' },
+        { title: '其中之中（Fihi Ma Fihi）', description: '鲁米的散文开示录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 什叶派伊玛目 (4位) ──
+  const husayn = await prisma.patriarch.create({
+    data: {
+      name: '侯赛因·本·阿里', nameEn: 'Husayn ibn Ali', religionId: islamId,
+      dates: '626-680', title: '殉难之主·卡尔巴拉', school: '什叶派伊玛目', generation: 1,
+      teacherId: ali.id,
+      biography: '侯赛因·本·阿里（Husayn ibn Ali），先知穆罕默德的外孙（阿里与法蒂玛之子），什叶派第三任伊玛目。680年（伊斯兰历61年），侯赛因拒绝向倭马亚王朝哈里发叶齐德效忠，率72名家人和追随者前往库法。在卡尔巴拉被叶齐德的数千大军包围。阿舒拉日（穆哈兰月第十日），侯赛因及其同伴全部壮烈殉难，仅幼子宰因·阿比丁幸存。卡尔巴拉事件成为伊斯兰教最悲壮的历史，是什叶派信仰的核心事件。每年穆哈兰月的阿舒拉纪念活动是全球什叶派最重要的宗教仪式。',
+      coreTeaching: '宁为正义而死，不在不义面前苟活。侯赛因以自己和家人的牺牲证明——面对暴政，沉默即共谋。"我的起义不是为了欢乐、傲慢或腐败，而是为了改革我祖父的乌玛。"卡尔巴拉精神成为一切反抗压迫的象征。',
+      achievements: '什叶派第三任伊玛目。卡尔巴拉殉难事件是伊斯兰教最深刻的历史创伤和精神遗产。每年阿舒拉纪念日影响全球数亿什叶派穆斯林。"侯赛因的精神"成为正义抗暴的永恒象征。甘地曾说："我从侯赛因那里学到了如何在被压迫时取得胜利。"',
+      templeNames: [
+        { name: '侯赛因圣陵', nameEn: 'Imam Husayn Shrine', role: '侯赛因殉难与安葬地', location: '伊拉克卡尔巴拉' },
+        { name: '阿拔斯圣陵', nameEn: 'Al-Abbas Shrine', role: '侯赛因兄弟阿拔斯陵墓', location: '伊拉克卡尔巴拉' },
+      ],
+      koans: [
+        { title: '卡尔巴拉', description: '面对数千大军，72人赴死。侯赛因对敌军说："如果你们没有信仰，至少做一个自由的人。"阿舒拉日战至最后一刻。这不是军事失败——这是以血唤醒沉睡的良知。' },
+      ],
+      classicQuotes: ['宁为正义站着死，不在不义面前跪着活', '如果你们没有信仰，至少做一个自由的人', '我的起义是为了改革我祖父的乌玛'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  const zaynAlAbidin = await prisma.patriarch.create({
+    data: {
+      name: '阿里·宰因·阿比丁', nameEn: 'Ali Zayn al-Abidin', religionId: islamId,
+      dates: '658-713', title: '第四伊玛目·祈祷之主', school: '什叶派伊玛目', generation: 2,
+      teacherId: husayn.id,
+      biography: '阿里·宰因·阿比丁（Ali Zayn al-Abidin），侯赛因之子，什叶派第四任伊玛目，号"祈祷之主"（Sayyid al-Sajjidin）和"礼拜者的饰品"（Zayn al-Abidin）。卡尔巴拉事件中因重病未能参战，为唯一幸存的成年男性后裔。此后一生以祈祷、隐忍和慈善度过。著《祈祷书》（al-Sahifa al-Sajjadiyya），被什叶派尊为"阿里家族的诗篇"，是伊斯兰教最美的祈祷文学。以每日长时间礼拜和大量释放奴隶著称。',
+      coreTeaching: '以祈祷和忍耐回应苦难。宰因·阿比丁不以政治手段而以灵性修行延续先知家族的使命。其《祈祷书》将个人苦难转化为与真主对话的途径——每一次呼吸都是祈祷。',
+      achievements: '什叶派第四任伊玛目。卡尔巴拉唯一幸存成年男性后裔。著《祈祷书》为伊斯兰教最美的祈祷文学。以极度虔诚的礼拜和慷慨释放奴隶著称。',
+      templeNames: [
+        { name: '麦地那巴基公墓', nameEn: "Jannat al-Baqi'", role: '安葬之地', location: '沙特阿拉伯麦地那' },
+      ],
+      koans: [],
+      classicQuotes: ['主啊，让我因你的慈悯而满足，而非因世人的施予', '最完美的人是最能宽恕那些对他不公者'],
+      works: [
+        { title: '祈祷书（Al-Sahifa al-Sajjadiyya）', description: '54篇祈祷文，被称为"阿里家族的诗篇"' },
+        { title: '权利书（Risalat al-Huquq）', description: '论述50项人权义务的书信' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '贾法尔·萨迪克', nameEn: "Ja'far al-Sadiq", religionId: islamId,
+      dates: '702-765', title: '第六伊玛目·教法学家', school: '什叶派伊玛目', generation: 3,
+      teacherId: zaynAlAbidin.id,
+      biography: '贾法尔·萨迪克（Ja\'far al-Sadiq），什叶派第六任伊玛目，也是逊尼派尊敬的大学者。阿布·哈尼法和马立克·本·艾奈斯都曾受教于他。被认为是什叶派贾法里教法学派（Ja\'fari）的创立者。除宗教学问外，还精通化学、医学和天文学——被尊为贾比尔·伊本·哈扬（"化学之父"）的导师。在政治最动荡的倭马亚-阿拔斯交替期，以学术传教而非政治斗争延续伊玛目传统。',
+      coreTeaching: '知识是先知家族最重要的遗产。萨迪克不仅传授宗教知识，还鼓励自然科学研究——认为认识真主的创造也是崇拜的方式。什叶派教法（贾法里法学派）的核心框架由他奠定。',
+      achievements: '什叶派第六任伊玛目，贾法里教法学派创立者。四大逊尼派伊玛目中有二人（阿布·哈尼法、马立克）曾受教于他。精通化学/医学/天文学。培养大量学者，奠定什叶派学术传统。',
+      templeNames: [
+        { name: '麦地那巴基公墓', nameEn: "Jannat al-Baqi'", role: '安葬之地', location: '沙特阿拉伯麦地那' },
+      ],
+      koans: [],
+      classicQuotes: ['与不同意你的人坐在一起——这是最好的学习', '三种人最可悲：有知识而不行动者，有行动而无知识者，无知识也无行动者'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '阿里·里达', nameEn: 'Ali al-Ridha', religionId: islamId,
+      dates: '765-818', title: '第八伊玛目·满意者', school: '什叶派伊玛目', generation: 4,
+      teacherId: null,
+      biography: '阿里·里达（Ali al-Ridha），什叶派第八任伊玛目，号"满意者"（al-Ridha）。阿拔斯王朝哈里发马蒙试图通过册封阿里·里达为继承人来调和逊尼-什叶矛盾。里达被迫接受但预言自己不会继位。818年在前往巴格达途中于图斯（今马什哈德）去世，什叶派认为是被马蒙毒杀。其陵墓（马什哈德伊玛目里达圣陵）是伊朗最神圣的朝圣地，也是全球最大的清真寺建筑群之一，每年接待超过2000万朝圣者。',
+      coreTeaching: '信仰与理性并行。里达以博学和辩论闻名——曾与基督教、犹太教、琐罗亚斯德教学者进行著名的宗教间对话。主张通过理性论证而非强迫来传达信仰。',
+      achievements: '什叶派第八任伊玛目。马什哈德圣陵为全球最大清真寺建筑群之一（年2000万+朝圣者）。以宗教间对话和博学闻名。被阿拔斯哈里发马蒙册封为继承人（唯一一位）。',
+      templeNames: [
+        { name: '伊玛目里达圣陵', nameEn: 'Imam Reza Shrine', role: '全球最大清真寺建筑群之一', location: '伊朗马什哈德' },
+      ],
+      koans: [
+        { title: '宗教间对话', description: '马蒙邀请各宗教学者辩论。里达对犹太教拉比引用《摩西五经》、对基督教主教引用《福音书》、对琐罗亚斯德教祭司引用《阿维斯塔》——以各教自身经典证明伊斯兰教的真理。学者们叹服其博学。' },
+      ],
+      classicQuotes: ['信仰是心灵的承认、口舌的表白、肢体的行动', '最好的人是对他人最有益的人'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 学者与旅行家 (6位) ──
+  await prisma.patriarch.create({
+    data: {
+      name: '布哈里', nameEn: 'Imam al-Bukhari', religionId: islamId,
+      dates: '810-870', title: '圣训学泰斗', school: '学者与旅行家', generation: 1,
+      teacherId: null,
+      biography: '穆罕默德·本·伊斯玛仪·布哈里（Al-Bukhari），伊斯兰教最伟大的圣训学家。生于布哈拉（今乌兹别克斯坦）。自幼记忆力惊人，十岁开始背诵圣训。游历中亚、阿拉伯、埃及、叙利亚十六年，搜集圣训。从约60万则传述中严格筛选出7275则编入《布哈里圣训实录》（Sahih al-Bukhari），被逊尼派穆斯林公认为仅次于古兰经的最权威经典。其筛选标准之严格——每则圣训的传述链中每个人的品德、记忆力、师承关系都必须经过验证。',
+      coreTeaching: '圣训学的严格方法论——传述链（伊斯纳德）中每个传述人都必须是可靠的（正义/精确/无缺陷/无矛盾/无隐疾）。知识的传承必须有完整且可验证的链条。',
+      achievements: '编纂《布哈里圣训实录》为逊尼派最权威的圣训集。从60万则传述中筛选7275则。建立圣训学严格的验证方法论。被尊为伊斯兰学术史上最伟大的圣训学家。',
+      templeNames: [
+        { name: '布哈里陵墓', nameEn: 'Imam al-Bukhari Mausoleum', role: '布哈里长眠之地', location: '乌兹别克斯坦撒马尔罕' },
+      ],
+      koans: [],
+      classicQuotes: ['我从未在背后议论任何人——我恐惧审判日的清算'],
+      works: [
+        { title: '布哈里圣训实录（Sahih al-Bukhari）', description: '7275则圣训，逊尼派最权威圣训集' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊本·西那', nameEn: 'Ibn Sina (Avicenna)', religionId: islamId,
+      dates: '980-1037', title: '医学之父·万学之王', school: '学者与旅行家', generation: 2,
+      teacherId: null,
+      biography: '伊本·西那（Ibn Sina，拉丁名Avicenna），中世纪最伟大的博学家之一。生于布哈拉附近。十岁已精通古兰经，十八岁已掌握当时所有学科。著《医典》（Canon of Medicine）五卷，为中世纪欧亚最权威的医学教科书，在欧洲大学使用至17世纪。著《治愈之书》（Kitab al-Shifa）为百科全书式的哲学巨著，涵盖逻辑学、自然科学、数学、形而上学。提出的"飞人论证"（Flying Man argument）预示了笛卡尔的"我思故我在"。一生颠沛流离，在波斯各宫廷间辗转，但著作不辍。',
+      coreTeaching: '理性与信仰的和谐。伊本·西那融合亚里士多德哲学和伊斯兰神学——证明存在一个"必然存在者"（Wajib al-Wujud/真主）是所有可能存在者的终极原因。医学是最崇高的学问之一——治愈身体是服务真主创造的体现。',
+      achievements: '中世纪最伟大的博学家之一。《医典》为欧亚大陆最权威医学教科书（使用至17世纪）。《治愈之书》为百科全书式哲学巨著。"飞人论证"预示笛卡尔。影响托马斯·阿奎那等西方哲学家。',
+      templeNames: [
+        { name: '伊本·西那陵墓', nameEn: 'Avicenna Mausoleum', role: '陵墓与纪念馆', location: '伊朗哈马丹' },
+      ],
+      koans: [],
+      classicQuotes: ['医学是维护健康和治疗疾病的科学', '灵魂的宽度等同于知识的深度', '我宁愿短暂而丰盛的一生，也不要漫长而空虚的一生'],
+      works: [
+        { title: '医典（Canon of Medicine）', description: '五卷，中世纪最权威的医学教科书' },
+        { title: '治愈之书（Kitab al-Shifa）', description: '百科全书式哲学巨著，涵盖逻辑/自然/数学/形而上学' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊本·鲁世德', nameEn: 'Ibn Rushd (Averroes)', religionId: islamId,
+      dates: '1126-1198', title: '亚里士多德注释家·理性之光', school: '学者与旅行家', generation: 3,
+      teacherId: null,
+      biography: '伊本·鲁世德（Ibn Rushd，拉丁名Averroes），安达卢斯（西班牙穆斯林）最伟大的哲学家，被称为"注释家"（The Commentator），因其对亚里士多德著作的权威注释。生于科尔多瓦。担任法官和宫廷医生。著《矛盾的矛盾》（Tahafut al-Tahafut）反驳安萨里对哲学的批判，捍卫理性思辨在伊斯兰教中的地位。其亚里士多德注释被翻译成拉丁文和希伯来文，对欧洲中世纪经院哲学（特别是托马斯·阿奎那）产生决定性影响，被称为"欧洲启蒙运动的隐秘催化剂"。',
+      coreTeaching: '真理不会自相矛盾——哲学（理性）和宗教（启示）是认识同一真理的两种途径。理性思辨不是信仰的敌人，而是信仰的盟友。伊本·鲁世德主张"双重真理"——哲学和宗教各有各的论述方式，但指向同一真理。',
+      achievements: '安达卢斯最伟大的哲学家。对亚里士多德的权威注释影响整个欧洲中世纪哲学。著《矛盾的矛盾》捍卫理性。直接影响托马斯·阿奎那和欧洲经院哲学。被称为"欧洲启蒙运动的隐秘催化剂"。',
+      templeNames: [
+        { name: '科尔多瓦大清真寺', nameEn: 'Mosque-Cathedral of Córdoba', role: '安达卢斯伊斯兰文明象征', location: '西班牙科尔多瓦' },
+      ],
+      koans: [],
+      classicQuotes: ['无知导致恐惧，恐惧导致仇恨，仇恨导致暴力——这是等式', '如果你想控制人民，让他们无知'],
+      works: [
+        { title: '矛盾的矛盾（Tahafut al-Tahafut）', description: '反驳安萨里，捍卫理性在伊斯兰教中的地位' },
+        { title: '亚里士多德注释全集', description: '对亚里士多德主要著作的三层注释（简/中/详）' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊本·赫勒敦', nameEn: 'Ibn Khaldun', religionId: islamId,
+      dates: '1332-1406', title: '社会学之父·历史哲学奠基人', school: '学者与旅行家', generation: 4,
+      teacherId: null,
+      biography: '伊本·赫勒敦（Ibn Khaldun），被西方学术界公认为"社会学之父"和"历史学之父"。生于突尼斯的安达卢斯裔学者家族。曾在北非和安达卢斯多个宫廷担任政治顾问。著《历史绪论》（Muqaddimah），首次以科学方法分析人类社会——提出"阿萨比亚"（群体凝聚力）理论：游牧民族因艰苦生活而拥有强大凝聚力，征服城市后因奢侈而凝聚力衰退，三四代后被新的游牧力量取代。这一王朝兴衰周期理论被认为远超同时代欧洲任何思想家。',
+      coreTeaching: '历史不是君王故事的堆砌，而是有规律可循的科学。人类社会受经济、地理、气候、文化等因素共同塑造。"阿萨比亚"（群体凝聚力）决定文明的兴衰——权力腐蚀团结，奢侈消磨意志。',
+      achievements: '被公认为社会学和历史学之父。《历史绪论》为人类社会科学奠基之作。"阿萨比亚"理论至今仍被引用。影响马克思、汤因比等西方思想家。远超同时代欧洲任何社会理论家。',
+      templeNames: [
+        { name: '伊本·赫勒敦故居', nameEn: 'Ibn Khaldun House', role: '故居博物馆', location: '突尼斯' },
+      ],
+      koans: [],
+      classicQuotes: ['地理是命运', '人类是社会性动物', '奢侈是文明灭亡的先兆', '被征服者总是模仿征服者'],
+      works: [
+        { title: '历史绪论（Muqaddimah）', description: '人类社会科学奠基之作，社会学/历史学开山巨著' },
+        { title: '鉴戒之书（Kitab al-Ibar）', description: '七卷世界通史' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '伊本·白图泰', nameEn: 'Ibn Battuta', religionId: islamId,
+      dates: '1304-1369', title: '中世纪最伟大旅行家', school: '学者与旅行家', generation: 5,
+      teacherId: null,
+      biography: '伊本·白图泰（Ibn Battuta），中世纪世界最伟大的旅行家。生于摩洛哥丹吉尔。1325年（21岁）出发前往麦加朝圣，此后29年间走遍已知世界——北非、中东、东非、中亚、印度、中国、东南亚、西非、安达卢斯，总行程约12万公里（是马可·波罗的三倍）。到访约40个现代国家。曾在印度担任德里苏丹国法官七年，在马尔代夫担任法官。归国后口述《旅行记》（Rihla），为14世纪伊斯兰世界和亚非各国最珍贵的第一手记录。',
+      coreTeaching: '旅行是最好的学习。伊本·白图泰展示了14世纪伊斯兰文明的广袤——从摩洛哥到中国，穆斯林旅行者可以凭借共同信仰和法律知识在整个伊斯兰世界畅行无阻。"旅行——它会给你一个你无法从别处获得的故事。"',
+      achievements: '中世纪世界最伟大的旅行家。29年行程12万公里，到访约40个现代国家。《旅行记》为14世纪亚非世界最珍贵的第一手记录。比马可·波罗走得更远、记录更详实。被联合国教科文组织列为文化遗产。',
+      templeNames: [
+        { name: '伊本·白图泰纪念馆', nameEn: 'Ibn Battuta Memorial', role: '故乡纪念', location: '摩洛哥丹吉尔' },
+        { name: '伊本·白图泰购物中心', nameEn: 'Ibn Battuta Mall', role: '以其旅行为主题的文化地标', location: '阿联酋迪拜' },
+      ],
+      koans: [
+        { title: '出发', description: '21岁的白图泰离开丹吉尔去麦加朝圣——这一走就是29年。他说："旅行首先让你无言，然后让你变成一个讲故事的人。"' },
+      ],
+      classicQuotes: ['旅行——它让你无言，然后把你变成一个讲故事的人', '他所游历之地既广又远，足以使大地为之骄傲'],
+      works: [
+        { title: '旅行记（Rihla）', description: '全名《奇境奇闻旅行记》，14世纪亚非世界最珍贵的第一手记录' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '穆罕默德·伊克巴勒', nameEn: 'Muhammad Iqbal', religionId: islamId,
+      dates: '1877-1938', title: '东方诗哲·巴基斯坦精神之父', school: '学者与旅行家', generation: 6,
+      teacherId: null,
+      biography: '穆罕默德·伊克巴勒（Muhammad Iqbal），南亚最伟大的穆斯林诗人和哲学家，被尊为"巴基斯坦精神之父"。生于旁遮普锡亚尔科特。留学剑桥和慕尼黑获哲学博士。以乌尔都语和波斯语写就的诗歌融合苏菲灵性和现代哲学——重新诠释鲁米的精神遗产，呼唤穆斯林世界的自我觉醒（Khudi/自我）。1930年在全印穆斯林联盟演讲中首次提出建立独立穆斯林国家的构想，为巴基斯坦建国奠定思想基础。其诗歌和思想至今是巴基斯坦和南亚穆斯林的精神支柱。',
+      coreTeaching: '自我（Khudi）哲学——人的使命是通过不断的努力和奋斗完善自我，最终成为真主在大地上的代理人（哈里发）。拒绝宿命论——伊斯兰教不是被动的顺从，而是积极的创造。重新诠释鲁米——将苏菲的"消融于真主"改为"在真主面前挺立自我"。',
+      achievements: '南亚最伟大的穆斯林诗人和哲学家。"巴基斯坦精神之父"，为巴基斯坦建国奠定思想基础。融合苏菲灵性和现代哲学。以乌尔都语和波斯语诗歌呼唤穆斯林世界觉醒。被巴基斯坦尊为国父级人物。',
+      templeNames: [
+        { name: '伊克巴勒陵墓', nameEn: 'Tomb of Iqbal', role: '伊克巴勒长眠之地', location: '巴基斯坦拉合尔巴德沙希清真寺旁' },
+        { name: '巴德沙希清真寺', nameEn: 'Badshahi Mosque', role: '莫卧儿帝国最大清真寺', location: '巴基斯坦拉合尔' },
+      ],
+      koans: [],
+      classicQuotes: ['站起来！对宇宙展示你的存在', '如果你没有生命的火焰，你所拥有的不过是灰烬', '民族的升降取决于个人自我的觉醒程度'],
+      works: [
+        { title: '自我的秘密（Asrar-i-Khudi）', description: '波斯语长诗，论自我（Khudi）哲学' },
+        { title: '东方讯息（Payam-i-Mashriq）', description: '对歌德《西东诗集》的回应' },
+        { title: '伊斯兰教中宗教思想的重建', description: '英文哲学讲座集，融合伊斯兰与现代哲学' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const islamCount = 23; // 23 new + 2 updated
+  console.log(`  ✓ ${islamCount} new Islamic patriarchs created + 2 updated (5 schools: Rashidun/Madhab/Sufi/Shia/Scholars)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
