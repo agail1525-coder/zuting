@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import MobileNav from "@/components/MobileNav";
 import OptimizedImage from "@/components/OptimizedImage";
 import { useTranslation } from "@/lib/i18n";
-import { fetchHolySites, fetchRoutes, type HolySite, type Route } from "@/lib/api";
+import { fetchHolySites, fetchRoutes, fetchTemples, fetchReligions, type HolySite, type Route, type Temple, type Religion } from "@/lib/api";
 
-type RankType = "sites" | "routes";
+type RankType = "sites" | "routes" | "temples";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -16,18 +16,28 @@ export default function RankingsClient() {
   const [tab, setTab] = useState<RankType>("sites");
   const [sites, setSites] = useState<HolySite[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
+  const [temples, setTemples] = useState<Temple[]>([]);
+  const [religions, setReligions] = useState<Religion[]>([]);
+  const [religionFilter, setReligionFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Load religions for filter
+  useEffect(() => {
+    fetchReligions().then(setReligions).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
     if (tab === "sites") {
       fetchHolySites()
-        .then((data) => {
-          const sorted = [...data].sort((a, b) => (b.name > a.name ? -1 : 1));
-          setSites(sorted.slice(0, 20));
-        })
+        .then((data) => setSites(data))
+        .catch(() => setError(t("rankings.loadError")))
+        .finally(() => setLoading(false));
+    } else if (tab === "temples") {
+      fetchTemples()
+        .then((data) => setTemples(data))
         .catch(() => setError(t("rankings.loadError")))
         .finally(() => setLoading(false));
     } else {
@@ -37,6 +47,17 @@ export default function RankingsClient() {
         .finally(() => setLoading(false));
     }
   }, [tab, t]);
+
+  // Filter + sort by religion
+  const filteredSites = useMemo(() => {
+    const list = religionFilter === "all" ? sites : sites.filter(s => s.religion?.id === religionFilter);
+    return [...list].sort((a, b) => (b.name > a.name ? -1 : 1)).slice(0, 20);
+  }, [sites, religionFilter]);
+
+  const filteredTemples = useMemo(() => {
+    const list = religionFilter === "all" ? temples : temples.filter(t => t.religion?.id === religionFilter);
+    return [...list].slice(0, 20);
+  }, [temples, religionFilter]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -49,28 +70,70 @@ export default function RankingsClient() {
           <p className="text-gray-500 mt-2">
             {t("rankings.subtitle")}
           </p>
+          {/* Stats summary (TripAdvisor style) */}
+          <div className="flex justify-center gap-8 mt-6">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-gray-900">{sites.length + temples.length}+</p>
+              <p className="text-xs text-gray-500">{t("rankings.totalDestinations")}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-gray-900">{routes.length}+</p>
+              <p className="text-xs text-gray-500">{t("rankings.totalRoutes")}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-gray-900">{religions.length}</p>
+              <p className="text-xs text-gray-500">{t("rankings.traditions")}</p>
+            </div>
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto px-4 mt-8">
           {/* Tab Switcher */}
-          <div className="flex items-center gap-2 mb-6 bg-white rounded-xl p-1 border border-gray-200 w-fit mx-auto">
+          <div className="flex items-center gap-2 mb-4 bg-white rounded-xl p-1 border border-gray-200 w-fit mx-auto">
             {([
-              { key: "sites" as RankType, label: t("rankings.bestSites") },
-              { key: "routes" as RankType, label: t("rankings.bestRoutes") },
-            ]).map(({ key, label }) => (
+              { key: "sites" as RankType, label: t("rankings.bestSites"), icon: "🏔️" },
+              { key: "temples" as RankType, label: t("rankings.bestTemples"), icon: "🏛️" },
+              { key: "routes" as RankType, label: t("rankings.bestRoutes"), icon: "🛤️" },
+            ]).map(({ key, label, icon }) => (
               <button
                 key={key}
                 onClick={() => setTab(key)}
-                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                   tab === key
                     ? "bg-[#0066FF] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
+                <span>{icon}</span>
                 {label}
               </button>
             ))}
           </div>
+
+          {/* Religion Filter (TripAdvisor category filter style) */}
+          {(tab === "sites" || tab === "temples") && religions.length > 0 && (
+            <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 justify-center">
+              <button
+                onClick={() => setReligionFilter("all")}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                  religionFilter === "all" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                }`}
+              >
+                {t("rankings.allTraditions")}
+              </button>
+              {religions.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => setReligionFilter(r.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                    religionFilter === r.id ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  }`}
+                >
+                  {r.symbol} {r.name}
+                </button>
+              ))}
+            </div>
+          )}
 
           {loading ? (
             <div className="space-y-3">
@@ -88,14 +151,14 @@ export default function RankingsClient() {
                 {t("rankings.retry")}
               </button>
             </div>
-          ) : (tab === "sites" && sites.length === 0) || (tab === "routes" && routes.length === 0) ? (
+          ) : (tab === "sites" && filteredSites.length === 0) || (tab === "routes" && routes.length === 0) || (tab === "temples" && filteredTemples.length === 0) ? (
             <div className="text-center py-16">
               <p className="text-4xl mb-3">🏛️</p>
               <p className="text-gray-500">{t("rankings.empty")}</p>
             </div>
           ) : tab === "sites" ? (
             <div className="space-y-3">
-              {sites.map((site, i) => (
+              {filteredSites.map((site, i) => (
                 <Link
                   key={site.id}
                   href={`/holy-sites/${site.id}`}
@@ -121,6 +184,40 @@ export default function RankingsClient() {
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">
                       {site.country} · {site.religion?.name}
+                    </p>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ))}
+            </div>
+          ) : tab === "temples" ? (
+            <div className="space-y-3">
+              {filteredTemples.map((temple, i) => (
+                <Link
+                  key={temple.id}
+                  href={`/temples/${temple.id}`}
+                  className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all group"
+                >
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold shrink-0">
+                    {i < 3 ? MEDALS[i] : (
+                      <span className="text-gray-400 text-lg">#{i + 1}</span>
+                    )}
+                  </div>
+                  <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+                    {temple.imageUrl ? (
+                      <OptimizedImage src={temple.imageUrl} alt={temple.name} width={56} height={56} className="object-cover w-full h-full" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl">🏛️</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 group-hover:text-[#0066FF] transition-colors truncate">
+                      {temple.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {temple.country} · {temple.religion?.name}
                     </p>
                   </div>
                   <svg className="w-4 h-4 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
