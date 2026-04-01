@@ -5409,6 +5409,739 @@ async function main() {
   const christianCount = 25; // 25 new + 3 updated
   console.log(`  ✓ ${christianCount} new Christian patriarchs created + 3 updated (5 traditions: Apostles/Fathers/Reformers/Mystics/Modern)`);
 
+  // ── 4n. 道教先贤 (Taoist Patriarchs/Masters) ──
+  console.log('  Creating Taoist patriarchs (4n)...');
+
+  const taoismId = religionMap['taoism'];
+
+  // Update existing 老子 with full data + school field
+  const existingLaozi = await prisma.patriarch.findFirst({ where: { name: '老子' } });
+  const laozi = existingLaozi
+    ? await prisma.patriarch.update({
+        where: { id: existingLaozi.id },
+        data: {
+          nameEn: 'Laozi',
+          dates: '约前571-前471',
+          title: '太上老君·道德天尊·道家创始人',
+          school: '老庄哲学',
+          generation: 1,
+          biography: '老子，姓李名耳，字聃，春秋时期楚国苦县（今河南鹿邑）人，道家哲学创始人。曾任周朝守藏室之史（国家图书馆馆长），博览群书，学识渊博。孔子曾专程问礼于老子，归而叹曰："吾今日见老子，其犹龙邪！"晚年见周朝衰微，骑青牛西出函谷关。关令尹喜请其著书，遂写下《道德经》五千言。此书分道经、德经两篇，以"道"为核心概念，阐述了自然无为、柔弱胜刚强、反者道之动等深刻哲理。对中国哲学、宗教、政治、艺术产生了深远影响。后被道教尊为太上老君、道德天尊，为道教至高神祇之一。',
+          coreTeaching: '道可道，非常道；名可名，非常名。无名天地之始，有名万物之母。上善若水，水善利万物而不争。无为而无不为——顺应自然规律，不妄为、不强求，反而能成就一切。反者道之动，弱者道之用——事物向对立面转化是道的运动规律，柔弱是道的作用方式。',
+          achievements: '著《道德经》五千言，为中国最重要的哲学经典之一。创立道家哲学体系，影响中国文明两千五百余年。被道教尊为教主、太上老君。"无为而治"思想影响了中国数千年的政治哲学。对全球哲学产生深远影响，《道德经》被翻译成70多种语言。',
+          templeNames: [
+            { name: '太清宫', nameEn: 'Taiqing Palace', role: '老子出生地', location: '河南鹿邑' },
+            { name: '楼观台', nameEn: 'Louguan Tai', role: '老子著道德经之地', location: '陕西周至' },
+            { name: '老君山', nameEn: 'Laojun Mountain', role: '老子隐居修道之地', location: '河南洛阳' },
+          ],
+          koans: [
+            { title: '孔子问礼', description: '孔子赴周都洛邑向老子请教礼仪。老子告诫他：良贾深藏若虚，君子盛德容貌若愚。去子之骄气与多欲、态色与淫志。孔子归而对弟子叹曰：鸟，吾知其能飞；鱼，吾知其能游；兽，吾知其能走。至于龙，吾不能知，其乘风云而上天。吾今日见老子，其犹龙邪！' },
+            { title: '紫气东来', description: '老子骑青牛西出函谷关，关令尹喜望见有紫气从东方而来，知有圣人过关。遂恭敬迎接，请老子著书。老子遂留下《道德经》五千言，然后飘然而去，不知所终。紫气东来成为祥瑞吉兆的象征。' },
+            { title: '上善若水', description: '老子以水喻道：水善利万物而不争，处众人之所恶，故几于道。居善地，心善渊，与善仁，言善信，正善治，事善能，动善时。夫唯不争，故无尤。最高的善像水一样，滋润万物而不争功。' },
+          ],
+          classicQuotes: ['道可道，非常道；名可名，非常名', '上善若水，水善利万物而不争', '天下万物生于有，有生于无', '知者不言，言者不知', '千里之行，始于足下', '大音希声，大象无形'],
+          works: [
+            { title: '道德经', description: '又名《老子》，分道经（37章）与德经（44章），共五千余言。中国哲学最重要经典之一，被翻译成70多种语言。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '老子', nameEn: 'Laozi', religionId: taoismId,
+          dates: '约前571-前471', title: '太上老君·道德天尊', school: '老庄哲学', generation: 1,
+          biography: '道家哲学创始人，著《道德经》。', coreTeaching: '道可道，非常道。',
+          achievements: '道家创始人。', imageUrl: null,
+        },
+      });
+
+  // Update existing 张道陵 with full data + school field
+  const existingZhangDaoling = await prisma.patriarch.findFirst({ where: { name: '张道陵' } });
+  const zhangDaoling = existingZhangDaoling
+    ? await prisma.patriarch.update({
+        where: { id: existingZhangDaoling.id },
+        data: {
+          nameEn: 'Zhang Daoling',
+          dates: '34-156',
+          title: '祖天师·正一真人·天师道创始人',
+          school: '天师正一',
+          generation: 1,
+          biography: '张道陵（34-156），字辅汉，沛国丰县（今江苏丰县）人，东汉人，道教创始人。本太学生，博通五经。汉明帝时举贤良方正直言极谏科。后弃官修道，先入北邙山、后入蜀中鹤鸣山。永和六年（141年），据传太上老君授以正一盟威之道、三天正法等经书剑印，命其为天师。张道陵在巴蜀地区创立五斗米道（天师道），以符箓驱鬼治病，发展信众。设二十四治（教区），建立道教最早的教团组织。道教尊为"祖天师""正一真人"。其后裔世袭天师之位，至今已传六十五代，是世界最长的世袭宗教家族。龙虎山至今为正一派祖庭。',
+          coreTeaching: '正一盟威之道——以正统道法驱邪扶正，建立人与天地鬼神的盟约秩序。奉道诫，为人治病：以三官手书（天官赦罪、地官赦罪、水官赦罪）为忏悔法门。清静无为为宗，佐以符箓科仪，建立道教最早的制度化宗教体系。',
+          achievements: '创立天师道（五斗米道），为道教最早的教团组织。设二十四治（教区），建立系统的道教行政管理体系。开创符箓派传统，影响道教发展近两千年。张天师家族世袭六十五代，为世界最长的世袭宗教家族。龙虎山正一派为道教两大派之一。',
+          templeNames: [
+            { name: '龙虎山天师府', nameEn: 'Longhu Mountain Celestial Master Mansion', role: '正一派祖庭', location: '江西鹰潭' },
+            { name: '鹤鸣山', nameEn: 'Heming Mountain', role: '张道陵创教之地', location: '四川大邑' },
+            { name: '青城山', nameEn: 'Qingcheng Mountain', role: '张天师传道处', location: '四川都江堰' },
+          ],
+          koans: [
+            { title: '鹤鸣山创教', description: '张道陵入蜀修道于鹤鸣山，感太上老君降临授道。以三天正法教化百姓，凡入道者纳五斗米，故称"五斗米道"。立二十四治分管信众，建立中国历史上第一个系统的道教组织。' },
+            { title: '降魔伏妖', description: '传说张道陵在蜀中降伏六天魔王，驱逐鬼众。以正一盟威之道制服群邪，使巴蜀百姓免受瘟疫灾害。体现了早期道教以宗教手段解决社会问题的特征。' },
+            { title: '三官手书', description: '张道陵创立三官手书忏悔法：病人书写三通，一置山上呈天官，一埋地下呈地官，一沉水中呈水官。通过忏悔罪过来治疗疾病，是道教最早的忏悔制度。' },
+          ],
+          classicQuotes: ['正一者，真一为宗', '道以虚无为体，以清静为用', '受道之人，初受质朴，后受盟威', '夫道者，虚无之至真也'],
+          works: [
+            { title: '老子想尔注', description: '对《道德经》的注释，将道家哲学改造为道教神学，是道教最早的经典注释。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '张道陵', nameEn: 'Zhang Daoling', religionId: taoismId,
+          dates: '34-156', title: '祖天师·正一真人', school: '天师正一', generation: 1,
+          biography: '天师道创始人。', coreTeaching: '正一盟威之道。',
+          achievements: '道教创始人。', imageUrl: null,
+        },
+      });
+
+  // Update existing 王重阳 with full data + school field
+  const existingWangChongyang = await prisma.patriarch.findFirst({ where: { name: '王重阳' } });
+  const wangChongyang = existingWangChongyang
+    ? await prisma.patriarch.update({
+        where: { id: existingWangChongyang.id },
+        data: {
+          nameEn: 'Wang Chongyang',
+          dates: '1112-1170',
+          title: '重阳真人·全真开宗祖师',
+          school: '全真派',
+          generation: 1,
+          biography: '王重阳（1112-1170），原名中孚，字允卿，后改名嚞，号重阳子。陕西咸阳刘蒋村人，金代道士。出身豪门，文武双全，早年应武举不第。大定年间，据传在甘河镇遇异人授以口诀，又在醴泉得《玉清内景真经》。遂弃家入终南山，穴居活死人墓修道数年。后焚庵东行，至山东宁海收马钰（马丹阳）、谭处端、刘处玄、丘处机、王处一、郝大通、孙不二为徒，号"全真七子"。创立全真道，倡导三教合一（儒释道）、性命双修、苦行修炼。全真道后成为中国道教两大主流之一，与正一派并立。',
+          coreTeaching: '全真者，全其本真也。性命双修——先修性后修命，识心见性为第一要务。三教合一——儒之修身、释之明心、道之养生，三教本为一体。心中端正，无须装饰；行事光明，何惧黑暗。苦行炼心，去欲存真。',
+          achievements: '创立全真道，为道教两大主流之一。倡导三教合一，融合儒释道思想。培育全真七子，各创一派，光大门户。苦行修道之精神感召天下，门徒遍布北方。全真道至今传承不绝，北京白云观为全真祖庭。',
+          templeNames: [
+            { name: '重阳宫', nameEn: 'Chongyang Palace', role: '全真道祖庭', location: '陕西户县' },
+            { name: '活死人墓', nameEn: 'Tomb of the Living Dead', role: '王重阳修道之处', location: '陕西户县终南山' },
+            { name: '白云观', nameEn: 'White Cloud Temple', role: '全真道第一丛林', location: '北京' },
+          ],
+          koans: [
+            { title: '活死人墓', description: '王重阳在终南山挖一大坑，题名"活死人墓"，自埋其中修道三年。以此表示断绝尘世之念，视肉身如死，唯修真性。后世武侠小说因此演绎出种种传说，但其本意是修道者断绝世缘的决心。' },
+            { title: '焚庵东行', description: '修道有成后，王重阳焚毁自己的草庵，决然东行山东传道。途中以疯癫之态示人，实则以此考验求道者的诚心。在宁海遇马钰夫妇，以种种异行感化，终收为首徒。' },
+            { title: '全真七子', description: '王重阳因材施教，七位弟子各有所长：马丹阳善养性，谭处端善悟道，刘处玄善清静，丘处机善苦行，王处一善炼气，郝大通善易理，孙不二善清修。七子各立一派，全真道因此枝繁叶茂。' },
+          ],
+          classicQuotes: ['心中端正，无须装饰；行事光明，何惧黑暗', '修行在日用之间，非离世绝俗也', '全真者，全其本真也', '凡人学道，先须依此十二个字：断酒色财气，攒慈悲忠孝'],
+          works: [
+            { title: '重阳全真集', description: '收录王重阳诗文偈颂，阐述全真道修行理论。' },
+            { title: '重阳立教十五论', description: '全真道基本规章，论述住庵、云游、学书、合药等十五个方面。' },
+          ],
+          imageUrl: null,
+        },
+      })
+    : await prisma.patriarch.create({
+        data: {
+          name: '王重阳', nameEn: 'Wang Chongyang', religionId: taoismId,
+          dates: '1112-1170', title: '重阳真人', school: '全真派', generation: 1,
+          biography: '全真道创始人。', coreTeaching: '全其本真。',
+          achievements: '全真道创始人。', imageUrl: null,
+        },
+      });
+
+  // ── 老庄哲学 (Philosophical Daoism) — New entries ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '庄子', nameEn: 'Zhuangzi', religionId: taoismId,
+      dates: '前369-前286',
+      title: '南华真人·逍遥至人',
+      school: '老庄哲学', generation: 2,
+      biography: '庄子（前369-前286），名周，字子休，宋国蒙人。战国时期伟大哲学家、文学家，道家学派代表人物。曾为漆园吏，后辞官不仕，终身不求功名利禄。楚威王闻其贤，遣使以厚币迎之为相，庄子笑辞曰："千金重利，卿相尊位也。子独不见郊祭之牺牛乎？"宁为泥中自由之龟，不为庙堂之上被供奉的枯骨。其思想继承并发展老子学说，主张齐物论、逍遥游，追求精神的绝对自由。散文汪洋恣肆，想象瑰丽，寓言丰富，对中国文学影响极大。',
+      coreTeaching: '齐物论——天地与我并生，而万物与我为一。是非、善恶、美丑、生死皆为相对，超越分别心即入道。逍遥游——至人无己，神人无功，圣人无名。不受外物牵累，精神自由逍遥。庄周梦蝶——不知周之梦为胡蝶与？胡蝶之梦为周与？物我两忘，道通为一。',
+      achievements: '著《庄子》（又名《南华经》）三十三篇，为中国哲学、文学双峰之一。齐物论开创中国相对主义哲学。逍遥游精神影响中国文人两千年。散文艺术登峰造极，被誉为"文学的哲学，哲学的文学"。',
+      templeNames: [
+        { name: '南华真人祠', nameEn: 'Nanhua Temple', role: '纪念庄子之处', location: '河南商丘' },
+        { name: '濠梁观鱼台', nameEn: 'Haoliang Terrace', role: '庄子与惠子辩鱼之地', location: '安徽凤阳' },
+      ],
+      koans: [
+        { title: '庄周梦蝶', description: '昔者庄周梦为胡蝶，栩栩然胡蝶也，自喻适志与，不知周也。俄然觉，则蘧蘧然周也。不知周之梦为胡蝶与？胡蝶之梦为周与？周与胡蝶则必有分矣。此之谓物化。' },
+        { title: '鼓盆而歌', description: '庄子妻死，惠子前往吊唁，见庄子盘腿坐地敲瓦盆唱歌。惠子责怪其无情。庄子曰：人本来自无形无气，气变而有形，形变而有生，今又变而之死，犹春秋冬夏四时运行。生死乃自然之变化也。' },
+        { title: '濠梁之辩', description: '庄子与惠子游于濠梁之上。庄子曰：儵鱼出游从容，是鱼之乐也。惠子曰：子非鱼，安知鱼之乐？庄子曰：子非我，安知我不知鱼之乐？此辩展示了庄子"物我相通"的认知观。' },
+      ],
+      classicQuotes: ['天地与我并生，而万物与我为一', '至人无己，神人无功，圣人无名', '相濡以沫，不如相忘于江湖', '吾生也有涯，而知也无涯', '大知闲闲，小知间间', '朝菌不知晦朔，蟪蛄不知春秋'],
+      works: [
+        { title: '庄子(南华经)', description: '三十三篇，分内篇七、外篇十五、杂篇十一。内篇为庄子本人所作，思想最精纯。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '列子', nameEn: 'Liezi', religionId: taoismId,
+      dates: '约前450-前375',
+      title: '冲虚真人·御风者',
+      school: '老庄哲学', generation: 2,
+      biography: '列子，名御寇，郑国人，战国早期道家代表人物。据传能御风而行，为道家"至人"典范。其思想上承老子，下启庄子，主张贵虚。《庄子》中多次提及列子。今传《列子》八篇，虽经后人整理增补，但保存了大量先秦道家寓言和思想。以愚公移山、杞人忧天等寓言闻名后世。',
+      coreTeaching: '贵虚——虚者无贵也，虚者不待人而自虚。御风而行——超脱世俗束缚，与自然和谐共处。万物皆出于机、皆入于机——万物的生灭变化自有其规律。',
+      achievements: '道家"贵虚"思想的代表人物。《列子》保存大量先秦寓言，如愚公移山、夸父追日、杞人忧天等。御风而行的传说影响道教飞升成仙思想。',
+      templeNames: [
+        { name: '列子观', nameEn: 'Liezi Temple', role: '纪念列子之处', location: '河南郑州' },
+      ],
+      koans: [
+        { title: '愚公移山', description: '年近九旬的愚公要移走门前两座大山。智叟嘲笑其不自量力。愚公曰：虽我之死，有子存焉；子又生孙，子子孙孙无穷匮也。而山不加增，何苦而不平？天帝感其诚，命夸娥氏二子背走两山。此寓言启示以恒心克万难。' },
+        { title: '杞人忧天', description: '杞国有人忧天地崩坠，身无所寄，废寝食。有人开导说天不过积气，地不过积块，不必忧虑。此寓言表面讽刺无谓之忧，深层却蕴含对宇宙本质的哲学思考。' },
+      ],
+      classicQuotes: ['天地无全功，圣人无全能，万物无全用', '形枉则影曲，形直则影正', '色盛者骄，力盛者奋，未可以语道也'],
+      works: [
+        { title: '列子(冲虚经)', description: '八篇：天瑞、黄帝、周穆王、仲尼、汤问、力命、杨朱、说符。保存大量先秦寓言。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '王弼', nameEn: 'Wang Bi', religionId: taoismId,
+      dates: '226-249',
+      title: '玄学宗师·少年天才',
+      school: '老庄哲学', generation: 3,
+      biography: '王弼（226-249），字辅嗣，山阳高平（今山东金乡）人，三国曹魏经学家、哲学家。少年天才，弱冠之年即以老庄注释名闻天下。提出"以无为本"的哲学体系，将老子的"道"诠释为超越万象的"无"，开创魏晋玄学。以"得意忘言"方法论革新了经典解释传统。年仅二十三岁病逝，但其学说影响了此后数百年的中国哲学走向。',
+      coreTeaching: '以无为本——万有皆以"无"为根本。得意忘言——理解了义理就不必拘泥于文字。崇本息末——推崇根本，止息末节。贵无论奠定了魏晋玄学的思想基础。',
+      achievements: '开创魏晋玄学，"贵无论"影响深远。《老子注》和《周易注》改变了两部经典的解释传统。"得意忘言"方法论影响中国解释学数百年。年仅23岁即完成改变思想史走向的著作。',
+      templeNames: [],
+      koans: [
+        { title: '弱冠论道', description: '王弼少年时即与当时名士辩论，每每以新颖观点折服众人。何晏叹曰："仲尼称后生可畏，若斯人者可与言天人之际矣。"年仅二十余岁便被推为玄学领袖。' },
+      ],
+      classicQuotes: ['以无为本', '得意在忘言，得言在忘象', '崇本息末', '名必有所分，称必有所由'],
+      works: [
+        { title: '老子注', description: '以"贵无"思想重新诠释《道德经》，为老子学的里程碑之作。' },
+        { title: '周易注', description: '以义理派方法解易，取代汉代象数易学，影响后世易学主流。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '郭象', nameEn: 'Guo Xiang', religionId: taoismId,
+      dates: '252-312',
+      title: '庄子注家·独化论宗师',
+      school: '老庄哲学', generation: 4,
+      biography: '郭象（252-312），字子玄，河南（今河南洛阳）人，西晋哲学家、玄学家。以《庄子注》闻名于世。其"独化论"主张万物自生自化，无需外在推动力（无造物主），是中国哲学史上重要的自然主义理论。郭象还提出"性分"说，认为每个事物都有其天赋本性，各安其分便是逍遥，将庄子的超越精神转化为对现实秩序的肯定。',
+      coreTeaching: '独化论——万物自生自化，非有使之然者。物各有性——事物各有天赋本性，逍遥即安于本性。圣人虽在庙堂之上，其心无异于山林之中——内心自由与社会角色并不矛盾。',
+      achievements: '《庄子注》是理解庄子思想最重要的古注之一。独化论开创了中国自然主义哲学传统。将庄子避世思想改造为入世哲学，影响后世士大夫处世观。',
+      templeNames: [],
+      koans: [
+        { title: '安分逍遥', description: '郭象提出：鹏飞万里是其性，蜩与学鸠飞数仞亦是其性。各适其性，各安其分，便都是逍遥。不必羡慕他者，完成自己的天性即是自由。这一诠释使庄子思想从出世转为入世。' },
+      ],
+      classicQuotes: ['物各自造而无所待焉', '圣人虽在庙堂之上，然其心无异于山林之中', '天下莫不相与为彼我，而彼我皆欲自为'],
+      works: [
+        { title: '庄子注', description: '三十三篇全注，融合向秀旧注并大量发挥。独化论、性分说皆出自此书，为庄子学最重要著作之一。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 天师正一 (Celestial Masters/Zhengyi) — New entries ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '张衡', nameEn: 'Zhang Heng (Celestial Master)', religionId: taoismId,
+      dates: '?-179',
+      title: '嗣天师·第二代天师',
+      school: '天师正一', generation: 2,
+      teacherId: zhangDaoling.id,
+      biography: '张衡，张道陵之子，天师道第二代天师。继承父业，在巴蜀地区继续发展天师道组织。完善了二十四治的行政体系，巩固了五斗米道的教团基础。传道于蜀中，扩大了天师道的影响范围。为天师道从创立到壮大的重要过渡人物。',
+      coreTeaching: '继承正一盟威法，完善教团治理。奉道持戒，以道化民。师承父教，光大天师之道。',
+      achievements: '天师道第二代天师，承前启后。完善二十四治教区管理体系。巩固了天师道在巴蜀地区的根基。',
+      templeNames: [
+        { name: '龙虎山天师府', nameEn: 'Longhu Mountain Celestial Master Mansion', role: '天师世居之地', location: '江西鹰潭' },
+      ],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  const zhangLu = await prisma.patriarch.create({
+    data: {
+      name: '张鲁', nameEn: 'Zhang Lu', religionId: taoismId,
+      dates: '?-216',
+      title: '系天师·第三代天师·汉宁太守',
+      school: '天师正一', generation: 3,
+      biography: '张鲁（?-216），字公祺，张衡之子，天师道第三代天师。东汉末年割据汉中近三十年（191-215），建立政教合一的地方政权。实行宽惠政策：设义舍（免费客栈）、义米（免费粮食），不设狱吏，犯法者三赦而后刑。曹操征汉中，张鲁降。曹操封其为镇南将军、阆中侯。天师道因此从巴蜀传播至中原各地，为道教全国性发展奠定基础。',
+      coreTeaching: '以道治国——行宽惠之政，设义舍义米，体现道教济世精神。三赦之法——犯法者教化三次仍不改方罚，体现道教的慈悲观念。从地方割据到全国传播，展现道教的政治智慧。',
+      achievements: '割据汉中三十年，建立政教合一政权。设义舍、义米，实行道教理想社会的实践。降曹后天师道传播至全国，为道教大发展奠定基础。被后世道教尊为"系天师"。',
+      templeNames: [
+        { name: '汉中天师府遗址', nameEn: 'Hanzhong Celestial Master Ruins', role: '张鲁政教合一政权所在地', location: '陕西汉中' },
+      ],
+      koans: [
+        { title: '义舍济民', description: '张鲁在汉中道路上设义舍，置义米义肉。行路之人可免费取用，但不得多取——取多则鬼会让人生病。以宗教约束实现社会济贫，是道教最早的社会福利实践。' },
+      ],
+      classicQuotes: ['以道治民，宽而有制', '犯法者三赦而后刑'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '寇谦之', nameEn: 'Kou Qianzhi', religionId: taoismId,
+      dates: '365-448',
+      title: '北天师道改革者·国师',
+      school: '天师正一', generation: 4,
+      biography: '寇谦之（365-448），字辅真，上谷昌平（今北京昌平）人，北魏道士。自幼好道，入嵩山修炼三十余年。据传太上老君授以《云中音诵新科之戒》，命其"清整道教"。在北魏太武帝支持下进行道教改革：废除天师道中的房中术、取消租米钱税、建立道教科仪制度。使道教从民间宗教提升为官方认可的制度化宗教。太武帝因其影响而灭佛，史称"太武法难"。',
+      coreTeaching: '清整道教——去除道教中的迷信巫术，建立正规科仪制度。以礼度为首，以服食闭炼为本。道教须与儒学礼制结合，方能登堂入室、为国所用。',
+      achievements: '北天师道改革者，使道教制度化、规范化。废除天师道弊端，建立道教科仪体系。使道教成为北魏国教，提升了道教的社会地位。嵩山道教因此兴盛。',
+      templeNames: [
+        { name: '嵩山中岳庙', nameEn: 'Zhongyue Temple', role: '寇谦之修道传法之地', location: '河南登封' },
+      ],
+      koans: [
+        { title: '清整道教', description: '寇谦之入嵩山修道三十年，感太上老君降授新科仪戒律，命其革除天师道旧弊。遂废房中术、除租米税、立科仪、倡礼度。使道教脱胎换骨，从民间信仰走向制度化宗教。' },
+      ],
+      classicQuotes: ['以礼度为首，以服食闭炼为本', '清整道教，除去三张伪法'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '许逊', nameEn: 'Xu Xun', religionId: taoismId,
+      dates: '239-374',
+      title: '许天师·净明忠孝道祖',
+      school: '天师正一', generation: 4,
+      biography: '许逊（239-374），字敬之，南昌人，东晋道士，净明道祖师。少年好道，后举孝廉任旌阳县令，治政清明，深受百姓爱戴，人称"许旌阳"。辞官后回南昌修道，传说斩蛟龙除水患，拯救百姓。晋宁康二年（374年）携全家四十二口拔宅飞升，鸡犬亦随之升天，成语"一人得道，鸡犬升天"即出于此。后世建万寿宫（西山万寿宫）纪念。净明道以"忠孝"为核心，融合儒道，为道教重要流派。',
+      coreTeaching: '净明忠孝——修道以忠孝为本，净明为体。忠孝者，道之实际也。欲修仙道，先修人道。不忠不孝，虽有方术，终不能成。修道即是做一个忠于国家、孝于父母的好人。',
+      achievements: '净明忠孝道创立者，以儒家伦理改造道教修行。斩蛟除害的传说使其成为民间最受崇拜的道教神祇之一。万寿宫遍布全国，为江西人的精神纽带。"一人得道，鸡犬升天"成语的来源。',
+      templeNames: [
+        { name: '西山万寿宫', nameEn: 'Xishan Wanshou Palace', role: '许真君飞升之地·净明道祖庭', location: '江西南昌' },
+      ],
+      koans: [
+        { title: '斩蛟除害', description: '传说鄱阳湖蛟龙为患，水灾频仍。许逊以道法斩杀蛟龙，解除水患，拯救万民。此后百姓感恩戴德，建庙祀之。体现了道教济世利民的精神。' },
+        { title: '拔宅飞升', description: '许逊修道有成，晋宁康二年携全家四十二口及鸡犬一起白日飞升。邻里望见其宅拔地而起，冉冉升天。此为道教"举家飞升"的典型故事。' },
+      ],
+      classicQuotes: ['欲修仙道，先修人道', '忠孝者，道之实际也', '净明者，无幽不烛，纤尘不染'],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  // ── 上清灵宝 (Shangqing & Lingbao) — All new ──
+
+  const weiHuacun = await prisma.patriarch.create({
+    data: {
+      name: '魏华存', nameEn: 'Wei Huacun', religionId: taoismId,
+      dates: '252-334',
+      title: '紫虚元君·上清派开宗祖师',
+      school: '上清灵宝', generation: 1,
+      biography: '魏华存（252-334），字贤安，任城（今山东济宁）人，西晋女道士，上清派开宗祖师。出身官宦之家，自幼好道。嫁南阳刘幼彦为妻，生二子。后修道于衡山，据传感通真人降授《上清大洞真经》等经典。被尊为上清派第一代宗师、"紫虚元君"。魏华存是道教史上最重要的女性宗教家，上清经系因她而诞生，影响道教发展近千年。后世尊为南岳夫人。',
+      coreTeaching: '存思内观——通过冥想观想体内神灵，与天地真神沟通。上清经法以存思为核心修行方法，观想日月星辰在体内运转。心神合一，以道化形——修炼的终极目标是形神俱妙、与道合真。',
+      achievements: '上清派开宗祖师，道教史上最重要的女性宗教家。传授《上清大洞真经》等核心经典。开创存思内观的修行传统。被道教尊为紫虚元君、南岳夫人。',
+      templeNames: [
+        { name: '南岳黄庭观', nameEn: 'Huangting Taoist Temple', role: '魏华存修道之地', location: '湖南衡阳' },
+      ],
+      koans: [
+        { title: '真人降经', description: '魏华存虔诚修道，感动上界真人降临，授以《上清大洞真经》三十一卷及《黄庭经》。这些经典成为上清派的核心法典，也是整个道教内修传统的重要经典。' },
+      ],
+      classicQuotes: ['一心精诚，存神内观', '形神俱妙，与道合真'],
+      works: [
+        { title: '黄庭经(传授)', description: '《黄庭内景经》和《黄庭外景经》，道教内修的核心经典，论述体内神灵和存思修炼方法。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '杨羲', nameEn: 'Yang Xi', religionId: taoismId,
+      dates: '330-386',
+      title: '上清经师·灵媒',
+      school: '上清灵宝', generation: 2,
+      teacherId: weiHuacun.id,
+      biography: '杨羲（330-386），字羲和，吴人（今江苏）。东晋道士，上清派重要传承者。据传能通灵感应，魏华存等真人通过他降授大量上清经典。杨羲将所得天书传授许谧、许翙父子。他所记录的真人降授内容，后经陶弘景整理为《真诰》，是上清派最重要的文献。杨羲被视为连接天上真人与人间修道者的关键人物。',
+      coreTeaching: '通灵感应——以至诚修炼感通天界真人，接受天书降授。上清经法的传承需要特殊的灵性资质和虔诚修炼。',
+      achievements: '上清经典的核心传承者和记录者。通过灵媒降授，传下大量上清派经典。其记录被陶弘景整理为《真诰》。连接上清派从天界到人间的关键人物。',
+      templeNames: [
+        { name: '茅山', nameEn: 'Maoshan', role: '上清派发展重地', location: '江苏句容' },
+      ],
+      koans: [],
+      classicQuotes: [],
+      works: [],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '陆修静', nameEn: 'Lu Xiujing', religionId: taoismId,
+      dates: '406-477',
+      title: '简寂先生·道教科仪大师',
+      school: '上清灵宝', generation: 3,
+      biography: '陆修静（406-477），字元德，吴兴东迁（今浙江湖州）人，南朝宋著名道士。遍历名山，广收道书。宋明帝时入庐山修道，建简寂观。受命编纂道教经典，首创三洞分类法（洞真、洞玄、洞神），奠定道藏编纂体系。系统整理灵宝派科仪，制定斋醮仪式规范，使道教仪式从杂乱走向规范化。被称为"道教科仪的集大成者"。',
+      coreTeaching: '三洞分类——将道教经典分为洞真（上清）、洞玄（灵宝）、洞神（三皇）三大部类，建立道教经典的分类体系。斋醮科仪——制定系统的道教仪式规范，使祭祀、斋醮有章可循。',
+      achievements: '创立道教经典三洞分类法，为道藏编纂奠定基础。系统整理灵宝科仪，使道教仪式规范化。收集整理道教经书一千余卷。被后世尊为灵宝派重要宗师。',
+      templeNames: [
+        { name: '庐山简寂观', nameEn: 'Jianji Monastery', role: '陆修静修道著述之地', location: '江西庐山' },
+      ],
+      koans: [
+        { title: '三洞分类', description: '陆修静广收天下道书千余卷，按内容性质分为三洞：洞真（上清经系）、洞玄（灵宝经系）、洞神（三皇文等）。此分类法后成为道藏编纂的基本框架，影响延续至今。' },
+      ],
+      classicQuotes: ['三洞者，通玄达妙之总名也', '斋者，齐也，齐正身心，不令放逸'],
+      works: [
+        { title: '三洞经书目录', description: '首次系统编纂道教经典目录，为道藏编纂奠定基础。' },
+        { title: '灵宝科仪', description: '系统整理灵宝派斋醮仪式，使道教仪式走向规范。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '陶弘景', nameEn: 'Tao Hongjing', religionId: taoismId,
+      dates: '456-536',
+      title: '山中宰相·华阳隐居',
+      school: '上清灵宝', generation: 4,
+      biography: '陶弘景（456-536），字通明，自号华阳隐居，丹阳秣陵（今南京）人。南朝齐梁时期著名道士、医药学家、文学家。十岁读葛洪《神仙传》而立志修道。历任诸王侍读，后辞官隐居茅山，建华阳馆。梁武帝即位后常以书信问政于他，时人称"山中宰相"。整理杨羲、许谧上清经典，撰《真诰》二十卷。精通天文、历算、医药、本草，编《本草经集注》，为中国药学史的里程碑。茅山宗（上清派茅山支派）因他而大盛。',
+      coreTeaching: '上清存思与外丹炼制并重。修道不离世——虽隐居山林，仍心系天下。学问广博——道教修行不限于宗教，医药、天文、历算皆可入道。',
+      achievements: '整理上清经典，撰《真诰》二十卷，确立茅山宗地位。编《本草经集注》，为中国药学史里程碑。"山中宰相"之名传千古。使茅山成为道教圣地。精通多个学科，为道教文化百科式人物。',
+      templeNames: [
+        { name: '茅山华阳洞', nameEn: 'Maoshan Huayang Cave', role: '陶弘景隐居修道之地', location: '江苏句容茅山' },
+      ],
+      koans: [
+        { title: '山中宰相', description: '陶弘景隐居茅山，梁武帝屡次征召不出。但每有国家大事，武帝必遣使入山咨询。陶弘景虽不出山，实际上参与了许多国政决策。时人称"山中宰相"，体现了道家"处江湖之远则忧其君"的精神。' },
+        { title: '二牛图', description: '梁武帝欲召陶弘景出山为官。陶弘景画二牛图以献：一牛自在水草间，一牛戴金笼头被人牵引。武帝见而笑，不复强召。以画明志，宁为自由之牛，不为富贵之囚。' },
+      ],
+      classicQuotes: ['山中何所有？岭上多白云。只可自怡悦，不堪持赠君', '研精覃思，博采众方'],
+      works: [
+        { title: '真诰', description: '二十卷，整理杨羲所记上清真人降授内容，为上清派最重要的文献。' },
+        { title: '本草经集注', description: '整理增补《神农本草经》，收药物730种，为中国药学史里程碑。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '司马承祯', nameEn: 'Sima Chengzhen', religionId: taoismId,
+      dates: '647-735',
+      title: '白云先生·道隐',
+      school: '上清灵宝', generation: 5,
+      biography: '司马承祯（647-735），字子微，号白云先生，河内温县（今河南温县）人，唐代著名道士。师事上清派第十一代宗师潘师正，为上清派第十二代宗师。隐居天台山玉霄峰，修道四十余年。唐睿宗、玄宗先后召见，李白亦曾拜访。精通书法、篆刻，善于道教理论著述。其《坐忘论》系统阐述道教内修七个阶段，是道教修行理论的经典之作。',
+      coreTeaching: '坐忘七阶——敬信、断缘、收心、简事、真观、泰定、得道，循序渐进的修行次第。主静去欲，形如槁木，心如死灰。由外而内、由粗而细、由动而静，最终形神合道。',
+      achievements: '上清派第十二代宗师。著《坐忘论》，系统化道教修行理论。受三代唐帝礼遇，提升道教社会地位。精通书法篆刻，有"道门王羲之"之称。',
+      templeNames: [
+        { name: '天台山桐柏宫', nameEn: 'Tongbai Palace', role: '司马承祯修道之地', location: '浙江天台' },
+      ],
+      koans: [
+        { title: '帝王三召', description: '唐睿宗、玄宗先后三次召见司马承祯。每次他应召入朝，谈论道法后便辞归山林。玄宗问何以能不恋朝堂？答曰：臣所修者道耳，道在天台山中，不在长安城里。' },
+      ],
+      classicQuotes: ['坐忘者，因存以息存，息存而忘', '心无所著，万境不能动', '道者，神异之物，灵而有性'],
+      works: [
+        { title: '坐忘论', description: '阐述修道七个阶段：敬信、断缘、收心、简事、真观、泰定、得道。道教修行理论经典。' },
+        { title: '天隐子', description: '论述道教修炼方法，包括斋戒、安处、存想、坐忘、神解等。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '杜光庭', nameEn: 'Du Guangting', religionId: taoismId,
+      dates: '850-933',
+      title: '广成先生·道教百科全书',
+      school: '上清灵宝', generation: 6,
+      biography: '杜光庭（850-933），字宾至，处州缙云（今浙江缙云）人，晚唐五代著名道士、学者。少习儒学，后入天台山修道。历仕唐僖宗、前蜀王建、王衍三朝。博学多才，著述等身，涉及道教科仪、教理、传记、文学等各方面，被称为"道教百科全书式人物"。晚年隐居青城山，专事著述。其作品对后世道教发展影响深远。',
+      coreTeaching: '道教义理须与科仪实践并重。博采众长，融汇各派——不拘一宗一派，博采上清、灵宝、正一各派之长。以文弘道——著述是传道的重要方式。',
+      achievements: '著述百余种，为道教史上最多产的学者之一。编纂道教科仪集成，影响后世千年。文学创作亦佳，《虬髯客传》为唐传奇名篇。被称为道教百科全书式人物。',
+      templeNames: [
+        { name: '青城山', nameEn: 'Qingcheng Mountain', role: '杜光庭晚年隐居著述之地', location: '四川都江堰' },
+      ],
+      koans: [],
+      classicQuotes: ['道之为物，居于太虚之先', '圣人之教，以道为宗'],
+      works: [
+        { title: '道德真经广圣义', description: '对《道德经》的系统注释，综合历代注家观点，为道经注释集大成之作。' },
+        { title: '广成集', description: '收录科仪、表章、诗文等，是了解唐代道教的重要文献。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 全真派 (Quanzhen/Complete Perfection) — New entries (disciples) ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '马钰', nameEn: 'Ma Yu (Ma Danyang)', religionId: taoismId,
+      dates: '1123-1183',
+      title: '丹阳真人·全真七子之首·遇仙派祖',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '马钰（1123-1183），字宜甫，号丹阳子，山东宁海（今山东牟平）人。全真七子之首，遇仙派创始人。出身富家，与妻子孙不二皆为王重阳弟子。王重阳入山东后，马钰最先受教，被指定为全真道掌教。修道以清净为主，主张"无为清净"，不尚奇异。其遇仙派传承广泛，对全真道的发展贡献最大。',
+      coreTeaching: '无为清净——修道以清净心为根本，不追求神通奇异。全真修行在日用伦常中，担水劈柴无非妙道。识心见性，明心为上。',
+      achievements: '全真七子之首，全真道第二代掌教。创立遇仙派，为全真道传承最广的支派之一。以身作则推广清净修行。',
+      templeNames: [
+        { name: '烟霞洞', nameEn: 'Yanxia Cave', role: '马钰修道之处', location: '山东昆嵛山' },
+      ],
+      koans: [
+        { title: '弃家求道', description: '马钰家境富裕，王重阳以种种异行考验其道心。马钰终弃万贯家财，与妻子孙不二先后出家修道。夫妻皆成全真大师，在道教史上传为佳话。' },
+      ],
+      classicQuotes: ['修行只在日用间', '心清意静天堂路', '无为清净是真修'],
+      works: [
+        { title: '丹阳真人语录', description: '收录马钰修道言论，为全真道修行指导。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '谭处端', nameEn: 'Tan Chuduan', religionId: taoismId,
+      dates: '1123-1185',
+      title: '长真真人·南无派祖',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '谭处端（1123-1185），字通正，号长真子，山东宁海人。全真七子之一，南无派创始人。原患风痹症半身不遂，闻王重阳之名前去求治，重阳以道法治愈其病。遂拜师修道，精勤不懈。主张以打坐存神为修行核心，创立南无派。',
+      coreTeaching: '存神养气——以打坐冥想为核心修行方法。"南无"即皈依之意，一心皈依大道。修心为上，苦行辅之。',
+      achievements: '全真七子之一，创立南无派。以病入道，体现道教修行的疗愈力量。南无派传承至今。',
+      templeNames: [],
+      koans: [
+        { title: '病中悟道', description: '谭处端身患半身不遂多年，百药无效。闻王重阳来山东传道，抱病前往。重阳不施药饵，以道法点化其心。谭处端豁然开悟，病竟不治而愈。由此知身病不若心病，心通则百病消。' },
+      ],
+      classicQuotes: ['心定则神全，神全则气足'],
+      works: [
+        { title: '水云集', description: '收录诗文修道心得。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const qiuChuji = await prisma.patriarch.create({
+    data: {
+      name: '丘处机', nameEn: 'Qiu Chuji', religionId: taoismId,
+      dates: '1148-1227',
+      title: '长春真人·龙门派祖·一言止杀',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '丘处机（1148-1227），字通密，号长春子，山东栖霞人。全真七子中影响最大者，龙门派创始人。19岁出家修道，在昆嵛山烟霞洞等处苦修多年。1219年，成吉思汗遣使征召，丘处机以73岁高龄率弟子西行三万里至大雪山（今阿富汗）觐见。丘处机劝成吉思汗"敬天爱民""减少杀戮"，成吉思汗深为折服，尊为"神仙"。此次西行被弟子李志常记录为《长春真人西游记》。蒙古赐其掌管天下道教，全真道因此大盛。龙门派后成为全真道最大支派。',
+      coreTeaching: '清心寡欲，苦行修炼。一言止杀——以慈悲之心劝化帝王，减少战争杀戮。修道者当以天下苍生为念，不可独善其身。龙门心法以打坐功夫为根本。',
+      achievements: '全真七子中影响最大者。万里西行劝谏成吉思汗"减少杀戮"，救人无数。创立龙门派，为全真道最大支派。掌管天下道教，全真道因此大盛。《长春真人西游记》为中西交通史重要文献。',
+      templeNames: [
+        { name: '北京白云观', nameEn: 'White Cloud Temple', role: '丘处机主持·龙门派祖庭', location: '北京' },
+        { name: '栖霞太虚宫', nameEn: 'Taixu Palace', role: '丘处机故里道观', location: '山东栖霞' },
+      ],
+      koans: [
+        { title: '万里西行', description: '1219年成吉思汗遣使召丘处机，73岁的他率十八弟子从山东出发，经蒙古大漠、天山、中亚，历时两年行三万里至大雪山。路途艰险，多人病倒，但丘处机矢志不移，只为劝谏大汗止杀。' },
+        { title: '一言止杀', description: '觐见成吉思汗后，丘处机以"敬天爱民"之道劝谏："天道好生，止杀保民为上。"成吉思汗深为感动，下令减少屠城。据估计此举拯救了数十万人的生命。世人因此称"一言止杀"。' },
+      ],
+      classicQuotes: ['天道好生，止杀保民', '修道者当以天下苍生为念', '寡欲则身轻，清心则神爽', '学道之人，须要苦志'],
+      works: [
+        { title: '摄生消息论', description: '论述四季养生方法，为道教养生经典。' },
+        { title: '大丹直指', description: '论述内丹修炼方法。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '王处一', nameEn: 'Wang Chuyi', religionId: taoismId,
+      dates: '1142-1217',
+      title: '玉阳真人·嵛山派祖',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '王处一（1142-1217），号玉阳子，山东宁海人。全真七子之一，嵛山派创始人。自幼好道，闻王重阳来山东传道遂拜师。以铁脚板著称——常年赤脚在山石上修行，脚底坚硬如铁。修行以苦行炼心为主，在铁查山等地苦修多年。金章宗召见，赐号"体玄大师"。',
+      coreTeaching: '苦行炼心——以肉体的磨练来锤炼道心。赤脚修行，不避寒暑，以苦为乐。修道须从难处做起。',
+      achievements: '全真七子之一，创立嵛山派。苦行精神感召信众。受金朝皇帝召见，提升全真道地位。',
+      templeNames: [
+        { name: '圣水岩', nameEn: 'Shengshui Rock', role: '王处一苦修之地', location: '山东文登铁查山' },
+      ],
+      koans: [],
+      classicQuotes: ['苦行方能了道', '铁脚踏破红尘路'],
+      works: [
+        { title: '云光集', description: '收录修道诗文。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '孙不二', nameEn: 'Sun Bu\'er', religionId: taoismId,
+      dates: '1119-1182',
+      title: '清静散人·清静派祖·女丹始祖',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '孙不二（1119-1182），名富春，号不二，山东宁海人，马钰之妻。全真七子中唯一女性，清静派创始人。原为富家主妇，与丈夫马钰一同拜王重阳为师。为表修道决心，自毁容貌（以热油泼面），断绝世俗之念。独自前往洛阳修道六年，终成大道。开创女丹修炼法门，为道教女性修行提供了专门的理论体系。被后世尊为"坤道始祖"。',
+      coreTeaching: '清静修炼——女性修道以清静为本。女丹修炼有别于男子——先炼形质（斩赤龙），后修性功。清静无为，柔弱守雌，正是道之根本。',
+      achievements: '全真七子唯一女性，道教最重要的女性宗师之一。创立清静派，开创女丹修炼法门。自毁容貌求道的决心为后世修道者楷模。为女性在道教中争得重要地位。',
+      templeNames: [
+        { name: '洛阳风仙姑洞', nameEn: 'Feng Xiangu Cave', role: '孙不二修道之处', location: '河南洛阳' },
+      ],
+      koans: [
+        { title: '毁容求道', description: '孙不二容貌美丽，王重阳以此为障碍，暗示她过于注重外表。孙不二遂以热油泼面自毁容貌，表示断绝对色身的执著。此后独自去洛阳苦修六年，终成道果。此举震动道门，成为求道决心的千古典范。' },
+      ],
+      classicQuotes: ['清静者，道之本也', '坤道柔顺，守雌抱一', '断却尘缘方见性'],
+      works: [
+        { title: '孙不二元君法语', description: '论述女丹修炼方法和心得，为道教女丹经典。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '刘处玄', nameEn: 'Liu Chuxuan', religionId: taoismId,
+      dates: '1147-1203',
+      title: '长生真人·随山派祖',
+      school: '全真派', generation: 2,
+      teacherId: wangChongyang.id,
+      biography: '刘处玄（1147-1203），字通妙，号长生子，山东东莱（今山东莱州）人。全真七子之一，随山派创始人。拜王重阳为师后苦修多年，以持戒精严著称。金章宗召见，赐号"长生辅化明德真人"。主张修道须戒律为先，创立随山派。',
+      coreTeaching: '戒律为先——修道以持戒为根本。无戒则无定，无定则无慧。随山而修，随缘而化。',
+      achievements: '全真七子之一，创立随山派。以持戒精严著称。受金朝皇帝赐号。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['持戒为修道之基'],
+      works: [
+        { title: '仙乐集', description: '收录修道诗文。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  // ── 内丹养生 (Inner Alchemy & Cultivation) — All new ──
+
+  await prisma.patriarch.create({
+    data: {
+      name: '葛洪', nameEn: 'Ge Hong', religionId: taoismId,
+      dates: '283-343',
+      title: '抱朴子·丹道先驱',
+      school: '内丹养生', generation: 1,
+      biography: '葛洪（283-343），字稚川，自号抱朴子，丹阳句容（今江苏句容）人，东晋道士、炼丹家、医药学家。出身江南士族，少好道术，从祖父葛玄之弟子郑隐学道。博学多闻，著述宏富。其《抱朴子》内篇论神仙方药、鬼怪变化、养生延年、禳邪却祸，为道教理论的重要著作。精通炼丹术和医学，《肘后备急方》中记载的青蒿治疟疾，启发了屠呦呦发现青蒿素（2015年诺贝尔奖）。晚年入广东罗浮山修道炼丹。',
+      coreTeaching: '仙可学致——神仙不是天生的，凡人通过修炼可以成仙。以金丹大道为修炼核心。修仙须先积善行德，后炼金丹。外丹炼制与内在修行并重。兼修医术，济世利人。',
+      achievements: '著《抱朴子》，为道教理论体系的重要构建者。《肘后备急方》记载青蒿治疟疾，启发2015年诺贝尔奖。系统阐述金丹道理论。为道教"仙可学致"思想的理论代言人。',
+      templeNames: [
+        { name: '罗浮山冲虚古观', nameEn: 'Chongxu Temple', role: '葛洪修道炼丹之地', location: '广东惠州' },
+      ],
+      koans: [
+        { title: '罗浮炼丹', description: '葛洪晚年携家入罗浮山，搭建丹房炼丹修道。山中岁月，一边炼丹求仙，一边著书立说。其弟子黄野人等随侍左右。罗浮山因此成为岭南道教圣地。' },
+      ],
+      classicQuotes: ['仙可学致，不死可得', '我命在我不在天', '志合者，不以山海为远', '人之所以死者，以其有身也'],
+      works: [
+        { title: '抱朴子', description: '内篇二十卷论道教方术，外篇五十卷论社会人事。道教理论重要著作。' },
+        { title: '肘后备急方', description: '实用医方集，其中青蒿治疟记载启发了青蒿素的发现。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '吕洞宾', nameEn: 'Lü Dongbin', religionId: taoismId,
+      dates: '796-?',
+      title: '纯阳真人·八仙之首·剑仙',
+      school: '内丹养生', generation: 2,
+      biography: '吕洞宾，名嵒（或岩），字洞宾，号纯阳子，河中府（今山西永济）人，唐代道士，八仙之一。传说两举进士不第，64岁时在长安酒肆遇钟离权，经"黄粱梦"点化悟道。后从钟离权学道，得金丹大道。传说精通剑术，好行侠仗义，游历天下度化有缘。全真道尊其为"纯阳祖师"，为全真五祖之一。在民间信仰中极为流行，各地纯阳宫遍布。吕洞宾形象融合了道士、剑客、诗人三重身份，是中国文化中最知名的道教人物之一。',
+      coreTeaching: '钟吕金丹道——以内丹修炼为核心，性命双修。先修命功（气），后修性功（神），最终形神俱妙。慈悲度世——修道有成须度化世人。一粒粟中藏世界，半升铛内煮山川。',
+      achievements: '八仙之首，中国最知名的道教人物。钟吕金丹道的传承者和推广者。全真五祖之一。民间吕祖信仰遍布天下，纯阳宫遍及各地。诗文传世，道教文学的代表。',
+      templeNames: [
+        { name: '永乐纯阳宫', nameEn: 'Yongle Chunyang Palace', role: '吕祖传道之地', location: '山西芮城' },
+        { name: '八仙宫', nameEn: 'Eight Immortals Palace', role: '吕洞宾度化之地', location: '陕西西安' },
+      ],
+      koans: [
+        { title: '黄粱一梦', description: '吕洞宾赴京赶考，在长安酒肆遇一道者（钟离权）。吕洞宾枕道者所赐枕头入睡，梦中历尽荣华富贵、升沉起伏数十年人生。醒来时锅中黄粱饭尚未煮熟。一梦而悟人生如幻，遂拜钟离权为师修道。' },
+        { title: '三醉岳阳楼', description: '传说吕洞宾三次醉酒于岳阳楼，每次皆以异行度化有缘之人。或题诗壁上，或点化店主，或飞剑斩妖。"朝游北海暮苍梧，袖里青蛇胆气粗。三醉岳阳人不识，朗吟飞过洞庭湖。"' },
+      ],
+      classicQuotes: ['一粒粟中藏世界，半升铛内煮山川', '朝游北海暮苍梧', '心平气和天地宽', '得道多助，施恩不图报'],
+      works: [
+        { title: '吕祖全书', description: '收录吕洞宾诗文、丹法、度世故事等，为吕祖信仰的核心文献。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '张伯端', nameEn: 'Zhang Boduan', religionId: taoismId,
+      dates: '984-1082',
+      title: '紫阳真人·南宗始祖',
+      school: '内丹养生', generation: 3,
+      biography: '张伯端（984-1082），字平叔，号紫阳，天台（今浙江天台）人，北宋著名道士。一生坎坷，曾为幕僚，因事被谪流岭南。遇异人传授金丹大道，修炼有成。著《悟真篇》，以诗词阐述内丹修炼理论，为南宗丹法的奠基之作。主张先命后性——先修炼精气（命功），再修心性（性功），与全真派先性后命不同。被道教南宗尊为始祖，号"紫阳真人"。',
+      coreTeaching: '先命后性——修炼应先从精气入手（命功），筑基有成后再修心性（性功）。药逢气类方成象，道在希夷合自然。内丹修炼的关键在于识得"真铅真汞"，以意导气，炼精化气、炼气化神、炼神还虚。',
+      achievements: '著《悟真篇》，为内丹学最重要的经典之一。开创道教南宗丹法体系。与北宗（全真道）并立，形成道教内丹南北二宗格局。享年近百岁，身体力行证明丹道养生之效。',
+      templeNames: [
+        { name: '天台紫阳宫', nameEn: 'Ziyang Palace', role: '纪念张伯端', location: '浙江天台' },
+      ],
+      koans: [
+        { title: '岭南悟道', description: '张伯端因事被谪流岭南，颠沛流离中遇异人传授金丹口诀。多年苦修终于悟道，以诗词记录修炼心得，写成《悟真篇》。困境中的觉悟，正印证了"否极泰来"之理。' },
+      ],
+      classicQuotes: ['药逢气类方成象，道在希夷合自然', '要知金液还丹法，须向家园下种栽', '不移一步到西天，端坐诸方在目前'],
+      works: [
+        { title: '悟真篇', description: '以七言绝句、律诗和词的形式阐述内丹修炼，为道教南宗丹经之祖。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '白玉蟾', nameEn: 'Bai Yuchan', religionId: taoismId,
+      dates: '1134-1229',
+      title: '紫清真人·南宗五祖之末·雷法宗师',
+      school: '内丹养生', generation: 4,
+      biography: '白玉蟾（1134-1229），原名葛长庚，字如晦，号海琼子，祖籍福建闽清。南宋著名道士，道教南宗第五代传人（南五祖之末）。少年聪慧，博通经史。后入道修炼，游历天下名山。精通内丹、雷法、符箓、诗文书画，才华横溢。将南宗内丹学与雷法结合，创立了独特的修炼体系。在全国各地设立靖室传道，弟子遍布南方。诗文书画俱佳，为道教文艺的代表人物。',
+      coreTeaching: '内丹与雷法并重——以内丹修炼为本，以雷法济世为用。精气神三宝合一，成就金丹大道。修道须文武兼备——内修丹道以证道果，外行雷法以济世利民。',
+      achievements: '南宗五祖之末，完成了南宗丹法的体系建设。将内丹与雷法结合，创立新的修炼体系。诗文书画俱佳，为道教文艺史的代表人物。在南方广设靖室，推动道教南宗传播。',
+      templeNames: [
+        { name: '武夷山止止庵', nameEn: 'Zhizhi Temple', role: '白玉蟾修道传法之地', location: '福建武夷山' },
+      ],
+      koans: [],
+      classicQuotes: ['静坐焚香万虑空', '白云黄鹤是知音', '一点灵光照大千'],
+      works: [
+        { title: '海琼白真人语录', description: '收录修道语录和丹法心得。' },
+        { title: '海琼玉蟾先生文集', description: '诗文集，展示道教文人的文学才华。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '张三丰', nameEn: 'Zhang Sanfeng', religionId: taoismId,
+      dates: '约1247-?',
+      title: '通微显化真人·太极拳祖师',
+      school: '内丹养生', generation: 5,
+      biography: '张三丰，名通，号三丰，辽东懿州（今辽宁阜新）人，元末明初著名道士。身材高大，龟形鹤背，大耳圆目，须髯如戟。无论寒暑，仅一衲一蓑。传说能日行千里。曾在武当山修道，开创武当内家拳（太极拳的前身）。明朝诸帝屡次遣使寻访不遇。其"以柔克刚"的武学理念和"三丰内丹"的修炼体系影响深远。被明成祖封为"通微显化真人"。张三丰将内丹修炼与武术融合，创立了独特的内家武学体系。',
+      coreTeaching: '以柔克刚——太极拳以柔化刚，四两拨千斤。内丹修炼与武术合一——练拳即炼丹，动中有静，静中有动。阴阳互济，刚柔相推——太极即道，道即太极。',
+      achievements: '武当内家拳（太极拳前身）创始人。将内丹修炼与武术完美结合。明朝诸帝寻访不遇，传奇色彩浓厚。太极拳传播全球，为世界非物质文化遗产。武当山因此成为武术圣地。',
+      templeNames: [
+        { name: '武当山遇真宫', nameEn: 'Yuzhen Palace', role: '张三丰修道之地', location: '湖北十堰' },
+        { name: '武当山紫霄宫', nameEn: 'Zixiao Palace', role: '武当道教核心宫观', location: '湖北十堰' },
+      ],
+      koans: [
+        { title: '观鹊蛇斗', description: '传说张三丰在武当山修道时，偶见喜鹊与蛇相斗。蛇以柔软之身闪避鹊的攻击，以缠绕之法克制鹊的啄击。张三丰由此悟出"以柔克刚"之理，创立了太极拳法。' },
+        { title: '邋遢道人', description: '张三丰不修边幅，衣衫褴褛，人称"张邋遢"。然而其内功深厚，能辟谷数月不食。寒暑不侵，日行千里。外表邋遢不羁，内心清明如镜——真人不露相，露相非真人。' },
+      ],
+      classicQuotes: ['太极者，无极而生，动静之机，阴阳之母也', '以柔克刚，以静制动', '一举动，周身俱要轻灵', '虚灵顶劲，气沉丹田'],
+      works: [
+        { title: '张三丰太极拳论', description: '阐述太极拳理论和技法，为内家拳学的奠基之作。' },
+        { title: '无根树', description: '以词牌形式阐述内丹修炼，通俗易懂，影响广泛。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  await prisma.patriarch.create({
+    data: {
+      name: '陈撄宁', nameEn: 'Chen Yingning', religionId: taoismId,
+      dates: '1880-1969',
+      title: '仙学巨子·当代道教复兴者',
+      school: '内丹养生', generation: 6,
+      biography: '陈撄宁（1880-1969），原名元善，字撄宁，安徽怀宁人。近现代最重要的道教学者和修炼家。幼年体弱多病，遂立志研究仙学以求健康长寿。遍访名山高道，精通内丹、医学、中药。提出"仙学"概念，主张将道教修炼从宗教信仰中剥离出来，以科学方法研究人体潜能。创办《扬善》《仙道月报》等刊物，推广道教养生文化。1957年当选中国道教协会副会长。被誉为"当代太上老君""仙学巨子"。',
+      coreTeaching: '仙学——将道教修炼科学化、系统化研究。不拘宗教形式，直接研究人体长生之道。修炼的核心是性命双修，以科学态度对待传统丹道。养生延年是每个人都可以实践的。',
+      achievements: '提出"仙学"概念，推动道教修炼的现代化研究。创办《扬善》《仙道月报》，推广道教文化。将传统丹道与现代科学思维结合。中国道教协会创始人之一。培养了一批道教研究和修炼人才。',
+      templeNames: [],
+      koans: [],
+      classicQuotes: ['仙学者，以人类长生为研究对象之学术也', '我命在我不在天，还丹成金亿万年'],
+      works: [
+        { title: '灵源大道歌白话注解', description: '以现代白话文注解道教经典，使古代丹经通俗易懂。' },
+        { title: '黄庭经讲义', description: '对道教内修经典《黄庭经》的系统讲解。' },
+      ],
+      imageUrl: null,
+    },
+  });
+
+  const taoistCount = 26; // 26 new + 3 updated
+  console.log(`  ✓ ${taoistCount} new Taoist patriarchs created + 3 updated (5 traditions: Philosophy/Zhengyi/Shangqing-Lingbao/Quanzhen/Neidan)`);
+
   // ── 5. Teachings ──
   console.log('Creating teachings...');
   await prisma.teaching.deleteMany();
