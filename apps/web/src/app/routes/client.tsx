@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect, Fragment } from "react";
+import { useState, useMemo, useCallback, Fragment } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -502,15 +502,6 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
   const [priceInitialized, setPriceInitialized] = useState(false);
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
-  // Hero image cycling
-  const heroImages = useMemo(() => featuredRoutes.filter((r) => r.coverImage).map((r) => r.coverImage!), [featuredRoutes]);
-  const [heroIdx, setHeroIdx] = useState(0);
-  useEffect(() => {
-    if (heroImages.length <= 1) return;
-    const timer = setInterval(() => setHeroIdx((i) => (i + 1) % heroImages.length), 5000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
-
   const priceStats = useMemo(() => {
     if (routes.length === 0) return null;
     const prices = routes.map((r) => r.priceFrom / 100);
@@ -584,78 +575,48 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
 
   return (
     <div className="min-h-screen bg-stone-50">
-      {/* ── Hero: Cinematic ── */}
-      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        {/* Background images with crossfade */}
-        {heroImages.map((src, i) => (
-          <div key={src} className={`absolute inset-0 transition-opacity duration-1000 ${i === heroIdx ? "opacity-100" : "opacity-0"}`}>
-            <OptimizedImage src={src} alt="" fill className="object-cover" priority={i === 0} />
-          </div>
-        ))}
-        {heroImages.length === 0 && <div className="absolute inset-0 bg-gradient-to-br from-amber-950 via-stone-900 to-amber-950" />}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-stone-900" />
-
-        {/* SVG journey path */}
-        <svg className="absolute inset-0 w-full h-full opacity-15 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1400 600">
-          <path d="M-20,400 C200,300 350,450 550,280 S850,400 1050,250 S1300,350 1420,200"
-            stroke="white" strokeWidth="2" strokeDasharray="8 6" fill="none" style={{ animation: "dash 20s linear infinite" }} />
-          <circle cx="200" cy="350" r="5" fill="#F59E0B" opacity="0.8" />
-          <circle cx="550" cy="280" r="5" fill="#F59E0B" opacity="0.8" />
-          <circle cx="850" cy="340" r="5" fill="#F59E0B" opacity="0.8" />
-          <circle cx="1150" cy="260" r="5" fill="#F59E0B" opacity="0.8" />
-        </svg>
-
-        {/* Content overlay */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-          <span className="text-amber-400 text-sm font-medium tracking-[0.3em] uppercase mb-4">
-            {t("routes.hero.eyebrow")}
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold text-white max-w-4xl leading-tight">
-            {t("routes.hero.title")}
-          </h1>
-          <p className="text-lg text-white/70 mt-4 max-w-2xl">
-            {t("routes.hero.subtitle").replace("{total}", String(total))}
-          </p>
-
-          {/* Stats */}
-          <div className="flex items-center gap-6 md:gap-8 mt-8 text-white/90">
-            <div className="text-center">
-              <div className="text-2xl font-bold">{total}+</div>
-              <div className="text-xs text-white/50">{t("routes.hero.statRoutes")}</div>
+      {/* ── Compact Hero — functional, not decorative ── */}
+      <section className="pt-20 bg-gradient-to-b from-amber-900 via-amber-950 to-stone-900">
+        <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            {/* Left: Title + subtitle */}
+            <div>
+              <span className="text-amber-400/80 text-xs font-medium tracking-[0.2em] uppercase">{t("routes.hero.eyebrow")}</span>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mt-2 leading-tight">{t("routes.hero.title")}</h1>
+              <p className="text-sm text-white/50 mt-2 max-w-lg">{t("routes.hero.subtitle").replace("{total}", String(total))}</p>
             </div>
-            <div className="w-px h-8 bg-white/20" />
-            <div className="text-center">
-              <div className="text-2xl font-bold">6</div>
-              <div className="text-xs text-white/50">{t("routes.hero.statTraditions")}</div>
-            </div>
-            <div className="w-px h-8 bg-white/20" />
-            <div className="text-center">
-              <div className="text-2xl font-bold">15+</div>
-              <div className="text-xs text-white/50">{t("routes.hero.statCountries")}</div>
+            {/* Right: Stats row */}
+            <div className="flex items-center gap-5 text-white/80">
+              <div className="text-center">
+                <div className="text-xl font-bold">{total}+</div>
+                <div className="text-[10px] text-white/40">{t("routes.hero.statRoutes")}</div>
+              </div>
+              <div className="w-px h-7 bg-white/15" />
+              <div className="text-center">
+                <div className="text-xl font-bold">6</div>
+                <div className="text-[10px] text-white/40">{t("routes.hero.statTraditions")}</div>
+              </div>
+              <div className="w-px h-7 bg-white/15" />
+              <div className="text-center">
+                <div className="text-xl font-bold">15+</div>
+                <div className="text-[10px] text-white/40">{t("routes.hero.statCountries")}</div>
+              </div>
             </div>
           </div>
-
-          {/* Scroll hint */}
-          <div className="absolute bottom-8 animate-bounce text-white/40">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+          {/* Trust badges inline */}
+          <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 pt-5 border-t border-white/10">
+            {trustBadges.map((b) => (
+              <span key={b.text} className="flex items-center gap-1.5 text-xs text-white/40">
+                <span>{b.icon}</span><span>{b.text}</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── Trust Badges (dark strip) ── */}
-      <div className="bg-stone-900 py-3 border-b border-stone-800">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-4 md:gap-8">
-          {trustBadges.map((b) => (
-            <span key={b.text} className="flex items-center gap-1.5 text-xs text-stone-300">
-              <span>{b.icon}</span><span className="font-medium">{b.text}</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* ── Hot Routes Carousel ── */}
       {featuredRoutes.length > 0 && !hasActiveFilters && (
-        <section className="relative z-20 max-w-7xl mx-auto px-4 py-8">
+        <section className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
               <span className="text-2xl">🔥</span>
@@ -669,7 +630,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
         </section>
       )}
 
-      <main className={featuredRoutes.length > 0 && !hasActiveFilters ? "pb-24" : "pt-4 pb-24"}>
+      <main className="pb-24">
         {/* ── Category Tabs (underline style) ── */}
         <div className="max-w-7xl mx-auto px-4 mt-4 mb-4">
           <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-none border-b border-gray-200">
@@ -849,10 +810,6 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
 
       <MobileNav />
 
-      {/* CSS animation for hero SVG */}
-      <style jsx global>{`
-        @keyframes dash { to { stroke-dashoffset: -100; } }
-      `}</style>
     </div>
   );
 }
