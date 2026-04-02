@@ -10,10 +10,10 @@ import {
 export class RegisterMerchantDto {
   @ApiProperty({
     description: '商家类型',
-    enum: ['TEMPLE', 'GUIDE', 'ACCOMMODATION', 'TRANSPORT'],
-    example: 'TEMPLE',
+    enum: ['RESTAURANT', 'HOTEL', 'GUIDE', 'TRANSPORT', 'TEMPLE_SERVICE', 'SHOPPING', 'PHOTOGRAPHY', 'WELLNESS', 'CULTURAL_EXPERIENCE'],
+    example: 'RESTAURANT',
   })
-  @IsIn(['TEMPLE', 'GUIDE', 'ACCOMMODATION', 'TRANSPORT'])
+  @IsIn(['RESTAURANT', 'HOTEL', 'GUIDE', 'TRANSPORT', 'TEMPLE_SERVICE', 'SHOPPING', 'PHOTOGRAPHY', 'WELLNESS', 'CULTURAL_EXPERIENCE'])
   type: string;
 
   @ApiProperty({ description: '商家名称', example: '少林寺文旅服务中心' })

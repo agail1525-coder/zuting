@@ -10,7 +10,17 @@ import { useAuth } from "@/lib/auth-context";
 import { registerMerchant } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
-const MERCHANT_TYPES = ["TEMPLE", "GUIDE", "ACCOMMODATION", "TRANSPORT"] as const;
+const MERCHANT_TYPES = [
+  { key: "RESTAURANT", icon: "🍜" },
+  { key: "HOTEL", icon: "🏨" },
+  { key: "GUIDE", icon: "🧭" },
+  { key: "TRANSPORT", icon: "🚐" },
+  { key: "TEMPLE_SERVICE", icon: "🛕" },
+  { key: "SHOPPING", icon: "🛍️" },
+  { key: "PHOTOGRAPHY", icon: "📸" },
+  { key: "WELLNESS", icon: "🧘" },
+  { key: "CULTURAL_EXPERIENCE", icon: "🎭" },
+] as const;
 
 export default function MerchantRegisterPage() {
   const { t } = useTranslation();
@@ -18,12 +28,14 @@ export default function MerchantRegisterPage() {
   const router = useRouter();
 
   const [form, setForm] = useState({
-    type: "TEMPLE",
+    type: "RESTAURANT",
     name: "",
     description: "",
     contactPhone: "",
     contactEmail: "",
     address: "",
+    province: "",
+    city: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -49,6 +61,8 @@ export default function MerchantRegisterPage() {
         contactPhone: form.contactPhone.trim() || undefined,
         contactEmail: form.contactEmail.trim() || undefined,
         address: form.address.trim() || undefined,
+        province: form.province.trim() || undefined,
+        city: form.city.trim() || undefined,
       });
       setSuccess(true);
     } catch (err) {
@@ -125,19 +139,21 @@ export default function MerchantRegisterPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t("merchant.typeLabel") || "Business Type"} <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {MERCHANT_TYPES.map((mt) => (
                 <button
-                  key={mt}
+                  key={mt.key}
                   type="button"
-                  onClick={() => handleChange("type", mt)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium border transition-colors ${
-                    form.type === mt
-                      ? "border-[#0066FF] bg-blue-50 text-[#0066FF]"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
+                  onClick={() => handleChange("type", mt.key)}
+                  className={`flex flex-col items-center px-3 py-4 rounded-xl text-sm font-medium border-2 transition-all ${
+                    form.type === mt.key
+                      ? "border-[#0066FF] bg-blue-50 text-[#0066FF] shadow-sm"
+                      : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
                   }`}
                 >
-                  {t(`merchant.type.${mt}`)}
+                  <span className="text-2xl mb-1">{mt.icon}</span>
+                  <span className="font-semibold">{t(`merchant.type.${mt.key}`)}</span>
+                  <span className="text-xs text-gray-400 mt-0.5 line-clamp-1">{t(`merchant.typeDesc.${mt.key}`)}</span>
                 </button>
               ))}
             </div>
@@ -196,6 +212,34 @@ export default function MerchantRegisterPage() {
                 onChange={(e) => handleChange("contactEmail", e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent outline-none transition-shadow"
                 placeholder="contact@example.com"
+              />
+            </div>
+          </div>
+
+          {/* Province / City */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("merchant.province") || "Province / State"}
+              </label>
+              <input
+                type="text"
+                value={form.province}
+                onChange={(e) => handleChange("province", e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent outline-none transition-shadow"
+                placeholder={t("merchant.provincePlaceholder") || "e.g. Henan"}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t("merchant.city") || "City"}
+              </label>
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => handleChange("city", e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent outline-none transition-shadow"
+                placeholder={t("merchant.cityPlaceholder") || "e.g. Luoyang"}
               />
             </div>
           </div>

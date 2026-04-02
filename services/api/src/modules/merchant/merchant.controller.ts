@@ -68,7 +68,7 @@ export class MerchantController {
   @Get()
   @Public()
   @ApiOperation({ summary: '商家列表 / Public merchant list' })
-  @ApiQuery({ name: 'type', required: false, enum: ['TEMPLE', 'GUIDE', 'ACCOMMODATION', 'TRANSPORT'] })
+  @ApiQuery({ name: 'type', required: false, enum: ['RESTAURANT', 'HOTEL', 'GUIDE', 'TRANSPORT', 'TEMPLE_SERVICE', 'SHOPPING', 'PHOTOGRAPHY', 'WELLNESS', 'CULTURAL_EXPERIENCE'] })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   findAll(

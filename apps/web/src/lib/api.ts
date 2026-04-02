@@ -1957,7 +1957,7 @@ export async function fetchMerchantDetail(id: string): Promise<Merchant> {
   return fetchJson<Merchant>(`/api/merchants/${id}`);
 }
 
-export async function registerMerchant(data: { type: string; name: string; description?: string; contactPhone?: string; contactEmail?: string; address?: string }): Promise<Merchant> {
+export async function registerMerchant(data: { type: string; name: string; description?: string; contactPhone?: string; contactEmail?: string; address?: string; province?: string; city?: string }): Promise<Merchant> {
   return fetchAuthed<Merchant>('/api/merchants/register', { method: 'POST', body: JSON.stringify(data) });
 }
 

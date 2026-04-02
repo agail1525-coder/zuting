@@ -9526,6 +9526,152 @@ async function main() {
   console.log(`  Routes: ${routes.length}`);
   console.log(`  AI Configs: ${aiConfigs.length}`);
   console.log(`  Media Content: ${mediaItems.length}`);
+
+  // ── Merchants (旅游配套商家) ──
+  await prisma.merchant.deleteMany();
+  const merchantData = [
+    // RESTAURANT 餐饮
+    { type: 'RESTAURANT', name: '少林素斋馆', description: '嵩山少林寺旁百年素食老店，提供正宗少林素斋、药膳养生餐。食材取自嵩山本地有机农场，传承少林烹饪技艺。环境清幽，可容纳200人同时用餐。', province: '河南省', city: '登封市', address: '嵩山少林寺景区东门200米', contactPhone: '0371-62881234', contactEmail: 'shaolin.veggie@joinus.com', rating: 4.8, totalOrders: 562 },
+    { type: 'RESTAURANT', name: '普陀山海鲜素食楼', description: '普陀山码头旁的特色餐厅，主打新鲜海味素食，融合舟山渔港风味与佛教素食传统。特色菜品：观音豆腐、罗汉斋、素蟹粉。提供朝圣团餐预订。', province: '浙江省', city: '舟山市', address: '普陀山景区南海观音广场旁', contactPhone: '0580-66991234', contactEmail: 'putuo.food@joinus.com', rating: 4.6, totalOrders: 389 },
+    { type: 'RESTAURANT', name: '曲阜儒家宴', description: '曲阜孔庙旁的文化主题餐厅，还原古代儒家宴席礼仪。提供孔府菜、鲁菜经典，每桌配有文化讲解员介绍菜品典故。适合文化研学团队。', province: '山东省', city: '曲阜市', address: '曲阜孔庙南门明故城步行街', contactPhone: '0537-44561234', contactEmail: 'qufu.feast@joinus.com', rating: 4.7, totalOrders: 234 },
+    // HOTEL 酒店民宿
+    { type: 'HOTEL', name: '嵩山禅意山居', description: '位于嵩山脚下的精品禅修民宿，共28间客房，每间均可远眺少室山。提供晨钟暮鼓叫醒服务、禅茶体验、抄经房。距少林寺车程10分钟。', province: '河南省', city: '登封市', address: '嵩山少林大道禅意谷', contactPhone: '0371-62887788', contactEmail: 'songshan.zen@joinus.com', rating: 4.9, totalOrders: 1203 },
+    { type: 'HOTEL', name: '九华山云端酒店', description: '九华山核心景区内的四星级酒店，海拔800米，云雾缭绕。提供108间客房、素食自助早餐、朝圣接驳车服务。可代订地藏王殿祈福。', province: '安徽省', city: '池州市', address: '九华山风景区天台索道旁', contactPhone: '0566-28881234', contactEmail: 'jiuhua.cloud@joinus.com', rating: 4.5, totalOrders: 876 },
+    { type: 'HOTEL', name: '五台山文殊院客栈', description: '五台山台怀镇中心的传统客栈，紧邻显通寺、塔院寺。提供藏式与汉式两种风格客房，含早课体验券。冬季提供暖炕房，是朝台最佳落脚点。', province: '山西省', city: '忻州市', address: '五台山台怀镇显通寺西街', contactPhone: '0350-65431234', contactEmail: 'wutai.inn@joinus.com', rating: 4.4, totalOrders: 654 },
+    // GUIDE 导游
+    { type: 'GUIDE', name: '慧远法师讲解团', description: '专业佛教文化导游团队，成员均持国家导游证及佛学院进修证书。提供少林寺、龙门石窟、白马寺全程深度讲解。可用中英日韩四语服务。', province: '河南省', city: '洛阳市', address: '洛阳市老城区', contactPhone: '13800138001', contactEmail: 'huiyuan.guide@joinus.com', rating: 4.9, totalOrders: 2341 },
+    { type: 'GUIDE', name: '圣地朝圣领队', description: '专注耶路撒冷、伯利恒、拿撒勒三圣地的华人朝圣领队。团队由神学院毕业生组成，提供深度圣经历史讲解、灵修带领。每团限20人。', province: '', city: '', address: 'Jerusalem, Israel', contactPhone: '+972-52-1234567', contactEmail: 'holyland.guide@joinus.com', rating: 4.8, totalOrders: 456 },
+    { type: 'GUIDE', name: '普陀山朝圣向导', description: '舟山本地人组成的普陀山专业导游团队，熟悉每座寺院典故。提供半日游、一日游、两日深度游三种路线，含素斋安排和住宿推荐。', province: '浙江省', city: '舟山市', address: '普陀山码头游客中心', contactPhone: '13900139001', contactEmail: 'putuo.guide@joinus.com', rating: 4.7, totalOrders: 1876 },
+    // TRANSPORT 交通
+    { type: 'TRANSPORT', name: '嵩山朝圣巴士', description: '提供郑州—登封—少林寺往返巴士、嵩山景区内部接驳车。全程GPS追踪，配备讲解音频系统。支持团队包车和个人拼车两种模式。', province: '河南省', city: '登封市', address: '郑州东站旅游集散中心', contactPhone: '0371-62889999', contactEmail: 'songshan.bus@joinus.com', rating: 4.3, totalOrders: 3456 },
+    { type: 'TRANSPORT', name: '九华山云梯接驳', description: '九华山景区官方合作接驳车服务。提供池州高铁站—九华山、景区内各寺院间的电瓶车接驳。老年人和行动不便者可预约无障碍专车。', province: '安徽省', city: '池州市', address: '九华山游客服务中心', contactPhone: '0566-28889999', contactEmail: 'jiuhua.shuttle@joinus.com', rating: 4.2, totalOrders: 5678 },
+    // TEMPLE_SERVICE 寺院服务
+    { type: 'TEMPLE_SERVICE', name: '少林武僧禅修营', description: '少林寺官方合作禅修项目，由武僧亲授少林功夫基础、坐禅冥想。提供3天、7天、21天三种课程。含食宿、僧衣、结业证书。', province: '河南省', city: '登封市', address: '少林寺禅修院', contactPhone: '0371-62886666', contactEmail: 'shaolin.retreat@joinus.com', rating: 5.0, totalOrders: 890 },
+    { type: 'TEMPLE_SERVICE', name: '灵隐寺祈福服务', description: '杭州灵隐寺官方祈福代办，提供供灯、抄经、放生、超度等佛事服务。可远程预约，寺院法师代为回向。附赠祈福证书和开光护身符。', province: '浙江省', city: '杭州市', address: '杭州灵隐寺', contactPhone: '0571-87968665', contactEmail: 'lingyin.prayer@joinus.com', rating: 4.8, totalOrders: 2345 },
+    { type: 'TEMPLE_SERVICE', name: '五台山朝台仪轨', description: '五台山朝台专业仪轨服务，由五台山佛学院法师带领。提供大朝台(五个台顶)全程仪轨指导、诵经、供养。含朝台地图和补给。', province: '山西省', city: '忻州市', address: '五台山黛螺顶', contactPhone: '0350-65438888', contactEmail: 'wutai.ritual@joinus.com', rating: 4.9, totalOrders: 567 },
+    // SHOPPING 购物
+    { type: 'SHOPPING', name: '菩提阁佛教文创', description: '专营佛教文化创意产品的连锁品牌。产品包括：手串念珠、香道用品、佛像摆件、经典书籍、禅意茶器。支持定制刻字和开光服务。', province: '河南省', city: '登封市', address: '少林寺景区商业街A12', contactPhone: '0371-62885555', contactEmail: 'bodhi.shop@joinus.com', rating: 4.5, totalOrders: 4567 },
+    { type: 'SHOPPING', name: '圣城纪念品中心', description: '耶路撒冷老城区的综合纪念品商店，提供十字架、橄榄木雕、死海泥制品、犹太教法器等。所有商品均附原产地证明。支持国际邮寄。', province: '', city: '', address: 'Old City, Jerusalem', contactPhone: '+972-2-6271234', contactEmail: 'jerusalem.gifts@joinus.com', rating: 4.3, totalOrders: 890 },
+    // PHOTOGRAPHY 摄影
+    { type: 'PHOTOGRAPHY', name: '云游摄影工作室', description: '专注宗教文化旅行摄影的专业团队。提供朝圣跟拍、寺院写真、航拍全景、延时摄影。作品多次获国际宗教摄影奖。可出差至全国各大寺院。', province: '浙江省', city: '杭州市', address: '杭州市西湖区灵隐路', contactPhone: '13700137001', contactEmail: 'cloud.photo@joinus.com', rating: 4.9, totalOrders: 345 },
+    { type: 'PHOTOGRAPHY', name: '禅光影像', description: '嵩山地区唯一持证无人机航拍团队。提供少林寺、嵩岳寺塔、嵩山全景航拍。可制作VR全景、延时视频。团队摄影和个人旅拍均可预约。', province: '河南省', city: '登封市', address: '登封市崇高路创意产业园', contactPhone: '13600136001', contactEmail: 'zen.light@joinus.com', rating: 4.6, totalOrders: 234 },
+    // WELLNESS 养生
+    { type: 'WELLNESS', name: '少林养生堂', description: '传承少林养生功法的专业健康中心。提供八段锦教学、少林药浴、艾灸理疗、太极晨练。由少林药局合作中医师坐诊。朝圣后恢复体力首选。', province: '河南省', city: '登封市', address: '嵩山少林大道养生谷', contactPhone: '0371-62883333', contactEmail: 'shaolin.wellness@joinus.com', rating: 4.7, totalOrders: 678 },
+    { type: 'WELLNESS', name: '九华山禅茶养生馆', description: '九华山特色禅茶体验馆，提供禅茶道教学、九华佛茶品鉴、茶山徒步。独家供应九华毛峰、金地藏茶。禅茶一味，静心养神。', province: '安徽省', city: '池州市', address: '九华山柯村茶园', contactPhone: '0566-28887777', contactEmail: 'jiuhua.tea@joinus.com', rating: 4.8, totalOrders: 432 },
+    // CULTURAL_EXPERIENCE 文化体验
+    { type: 'CULTURAL_EXPERIENCE', name: '嵩山书法研习社', description: '在嵩山脚下学习中国传统书法。课程包括：基础笔法、心经抄写、碑帖临摹。提供半日体验和5日深度研习两种课程。作品可裱装带走。', province: '河南省', city: '登封市', address: '嵩山书院文化街', contactPhone: '0371-62884444', contactEmail: 'songshan.calligraphy@joinus.com', rating: 4.8, totalOrders: 345 },
+    { type: 'CULTURAL_EXPERIENCE', name: '曲阜六艺体验馆', description: '曲阜孔庙旁的儒家六艺(礼乐射御书数)沉浸式体验。穿汉服、行古礼、习射艺、抚古琴。适合亲子研学和企业团建。每场限30人。', province: '山东省', city: '曲阜市', address: '曲阜明故城内', contactPhone: '0537-44567890', contactEmail: 'qufu.arts@joinus.com', rating: 4.7, totalOrders: 567 },
+    { type: 'CULTURAL_EXPERIENCE', name: '敦煌壁画临摹坊', description: '在敦煌莫高窟旁体验千年壁画临摹技艺。由敦煌研究院认证讲师指导，使用传统矿物颜料。提供2小时体验课和3天专业课程。', province: '甘肃省', city: '敦煌市', address: '敦煌市鸣沙山路文创园', contactPhone: '0937-88821234', contactEmail: 'dunhuang.art@joinus.com', rating: 4.9, totalOrders: 289 },
+  ];
+
+  // Create seed users for merchants (one per merchant)
+  const merchantUsers = [];
+  for (let i = 0; i < merchantData.length; i++) {
+    const user = await prisma.user.upsert({
+      where: { email: `merchant${i + 1}@joinus.com` },
+      update: {},
+      create: {
+        email: `merchant${i + 1}@joinus.com`,
+        nickname: merchantData[i].name,
+        role: 'PILGRIM',
+        language: 'zh-CN',
+      },
+    });
+    merchantUsers.push(user);
+  }
+
+  // Create merchants
+  const merchants = [];
+  for (let i = 0; i < merchantData.length; i++) {
+    const d = merchantData[i];
+    const m = await prisma.merchant.create({
+      data: {
+        userId: merchantUsers[i].id,
+        type: d.type,
+        name: d.name,
+        description: d.description,
+        province: d.province,
+        city: d.city,
+        address: d.address,
+        contactPhone: d.contactPhone,
+        contactEmail: d.contactEmail,
+        rating: d.rating,
+        totalOrders: d.totalOrders,
+        status: 'ACTIVE',
+        approvedAt: new Date(),
+      },
+    });
+    merchants.push(m);
+  }
+
+  // Services for each merchant
+  const serviceTemplates: Record<string, Array<{ name: string; description: string; price: number; duration: number | null; maxPersons: number | null }>> = {
+    RESTAURANT: [
+      { name: '素斋套餐', description: '精选8道素食料理+汤+甜品', price: 8800, duration: 90, maxPersons: 10 },
+      { name: '朝圣团餐', description: '20人起订，含10菜1汤', price: 5800, duration: 60, maxPersons: 50 },
+      { name: '药膳养生餐', description: '根据时令配制的养生药膳', price: 12800, duration: 120, maxPersons: 8 },
+    ],
+    HOTEL: [
+      { name: '禅意标准间', description: '含双床、禅茶角、素食早餐', price: 38800, duration: null, maxPersons: 2 },
+      { name: '山景大床房', description: '可远眺山景的豪华大床房', price: 58800, duration: null, maxPersons: 2 },
+      { name: '禅修套房', description: '含独立禅修室、茶室、浴缸', price: 88800, duration: null, maxPersons: 4 },
+    ],
+    GUIDE: [
+      { name: '半日深度讲解', description: '核心景点3小时深度导览', price: 29800, duration: 180, maxPersons: 20 },
+      { name: '全日朝圣导览', description: '全天8小时含午餐安排', price: 49800, duration: 480, maxPersons: 15 },
+      { name: 'VIP私人订制', description: '1对1专属导游全程陪同', price: 99800, duration: 480, maxPersons: 4 },
+    ],
+    TRANSPORT: [
+      { name: '单程接驳', description: '高铁站/机场至景区单程', price: 8800, duration: 60, maxPersons: 4 },
+      { name: '全日包车', description: '含司机全天候服务', price: 38800, duration: 600, maxPersons: 7 },
+      { name: '景区电瓶车', description: '景区内各站点自由上下', price: 2000, duration: null, maxPersons: 1 },
+    ],
+    TEMPLE_SERVICE: [
+      { name: '供灯祈福', description: '在大殿供奉莲花灯', price: 9900, duration: 30, maxPersons: null },
+      { name: '抄经体验', description: '提供经文、笔墨、指导', price: 5800, duration: 120, maxPersons: 1 },
+      { name: '禅修课程(3天)', description: '含食宿的短期禅修体验', price: 98800, duration: 4320, maxPersons: 1 },
+    ],
+    SHOPPING: [
+      { name: '开光手串', description: '天然菩提/檀木手串含开光', price: 12800, duration: null, maxPersons: null },
+      { name: '线香礼盒', description: '精选沉香/檀香线香套装', price: 6800, duration: null, maxPersons: null },
+      { name: '佛经典藏套装', description: '精装佛教经典5本套装', price: 16800, duration: null, maxPersons: null },
+    ],
+    PHOTOGRAPHY: [
+      { name: '朝圣跟拍(半天)', description: '专业摄影师全程跟拍3小时', price: 59800, duration: 180, maxPersons: 6 },
+      { name: '航拍全景', description: '无人机航拍+后期制作', price: 39800, duration: 120, maxPersons: null },
+      { name: '个人旅拍写真', description: '含化妆造型+30张精修', price: 79800, duration: 240, maxPersons: 2 },
+    ],
+    WELLNESS: [
+      { name: '八段锦晨练', description: '清晨跟随师傅习练八段锦', price: 5800, duration: 60, maxPersons: 20 },
+      { name: '少林药浴', description: '传统草药泡浴+推拿', price: 28800, duration: 90, maxPersons: 1 },
+      { name: '禅茶品鉴', description: '品鉴5款禅茶+茶道讲解', price: 16800, duration: 120, maxPersons: 8 },
+    ],
+    CULTURAL_EXPERIENCE: [
+      { name: '书法体验(半日)', description: '学习基础笔法+抄写心经', price: 19800, duration: 180, maxPersons: 10 },
+      { name: '古琴入门', description: '学习一首古琴曲', price: 29800, duration: 120, maxPersons: 4 },
+      { name: '汉服体验', description: '含汉服租赁+妆造+摄影', price: 25800, duration: 180, maxPersons: 2 },
+    ],
+  };
+
+  for (const m of merchants) {
+    const templates = serviceTemplates[m.type] || serviceTemplates['GUIDE'];
+    for (const svc of templates) {
+      await prisma.merchantService.create({
+        data: {
+          merchantId: m.id,
+          name: svc.name,
+          description: svc.description,
+          price: svc.price,
+          duration: svc.duration,
+          maxPersons: svc.maxPersons,
+          isActive: true,
+        },
+      });
+    }
+  }
+
+  console.log(`  Merchants: ${merchants.length}`);
+  console.log(`  Merchant Services: ${merchants.length * 3}`);
 }
 
 main()
