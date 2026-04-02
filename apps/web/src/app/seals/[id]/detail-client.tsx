@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
 import ShareButton from "@/components/ShareButton";
+import SocialProof from "@/components/SocialProof";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
+import MediaTour from "@/components/MediaTour";
 import type { Seal } from "@/lib/api";
 
 const seriesDotColors: Record<string, string> = {
@@ -42,16 +44,17 @@ interface Props {
 /* ═══ FAQ手风琴 ═══ */
 
 function FAQSection({ sealName }: { sealName: string }) {
+  const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `如何理解"${sealName}"的深意？`, a: "建议先诵读偈语，再结合精要和修行指南深入理解。可以在静坐冥想中观想此印含义，或向AI请教获取更深入的解读。" },
-    { q: "三十印的修行顺序是什么？", a: "三十印分为五系：初印系、中印系、印果印、成道印、归源印，建议按序修行。每一印都是修行旅程中的一个里程碑。" },
-    { q: "如何在朝圣中结合印的修行？", a: "建议在朝圣途中选择与当前修行的印相关的圣地进行冥想。在朝圣日志中记录修行体验，与社区分享心得。" },
-    { q: "修行此印需要什么准备？", a: "需要一颗虔诚的心和安静的环境。建议先通读全部三十印了解体系，再逐一深入。可以结合每日功课进行修习。" },
+    { q: t("sealDetail.faqMeaning").replace("{name}", sealName), a: t("sealDetail.faqMeaningAnswer") },
+    { q: t("sealDetail.faqOrder"), a: t("sealDetail.faqOrderAnswer") },
+    { q: t("sealDetail.faqPilgrimage"), a: t("sealDetail.faqPilgrimageAnswer") },
+    { q: t("sealDetail.faqPreparation"), a: t("sealDetail.faqPreparationAnswer") },
   ];
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-4">常见问题</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("sealDetail.faq")}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden bg-white">
         {faqs.map((faq, i) => (
           <div key={i}>
@@ -166,23 +169,33 @@ export default function SealDetailClient({ seal, prev, next }: Props) {
           </p>
         </div>
 
+        {/* Social Proof */}
+        <div className="mb-6">
+          <SocialProof entityType="SEAL" entityId={String(seal.id)} variant="banner" />
+        </div>
+
         {/* Practice Tips */}
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200 mb-6">
-          <h2 className="text-lg font-bold text-amber-700 mb-3">💡 修行提示</h2>
+          <h2 className="text-lg font-bold text-amber-700 mb-3">{t("sealDetail.practiceTips")}</h2>
           <div className="space-y-3">
             <div className="flex items-start gap-2 text-sm text-amber-800">
               <span className="mt-0.5 text-amber-500">•</span>
-              <span>每日静坐时诵读此印偈语，观想其深意</span>
+              <span>{t("sealDetail.tip1")}</span>
             </div>
             <div className="flex items-start gap-2 text-sm text-amber-800">
               <span className="mt-0.5 text-amber-500">•</span>
-              <span>在朝圣途中结合实际体验，加深对此印的理解</span>
+              <span>{t("sealDetail.tip2")}</span>
             </div>
             <div className="flex items-start gap-2 text-sm text-amber-800">
               <span className="mt-0.5 text-amber-500">•</span>
-              <span>建议在朝圣日志中记录修行此印的感悟与心得</span>
+              <span>{t("sealDetail.tip3")}</span>
             </div>
           </div>
+        </div>
+
+        {/* Multimedia Tour */}
+        <div className="mb-6">
+          <MediaTour entityType="SEAL" entityId={String(seal.id)} />
         </div>
 
         {/* Reviews */}
@@ -236,19 +249,38 @@ export default function SealDetailClient({ seal, prev, next }: Props) {
           </div>
         </div>
 
+        {/* Journal CTA */}
+        <div className="bg-gradient-to-r from-[#3264ff]/5 to-blue-50 rounded-2xl p-6 border border-[#3264ff]/10 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">📖</span>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">{t("sealDetail.recordInsights")}</h2>
+                <p className="text-sm text-gray-500">{t("sealDetail.recordInsightsDesc")}</p>
+              </div>
+            </div>
+            <Link
+              href="/journals/create"
+              className="px-4 py-2 rounded-xl bg-[#3264ff] text-white text-sm font-medium hover:bg-[#2854e0] transition-colors shadow-sm"
+            >
+              {t("sealDetail.writeJournal")}
+            </Link>
+          </div>
+        </div>
+
         {/* Bottom CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/chat"
-            className="px-6 py-3 bg-[#3264ff] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
           >
-            ✨ 向小鸿AI请教此印
+            {t("sealDetail.askAi")}
           </Link>
           <Link
-            href="/journals/create"
+            href="/seals"
             className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-all border border-gray-200"
           >
-            📖 记录修行感悟
+            ← {t("detail.backToList")}
           </Link>
         </div>
       </div>
