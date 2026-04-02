@@ -100,6 +100,11 @@ export default function ConfucianPatriarchsClient({
           <span className="text-5xl block mb-3">儒</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">{t("confucian.title")}</h1>
           <p className="text-[#FCA5A5] text-sm mb-6">{t("confucian.heroSubtitle")}</p>
+          <Link href="/confucian-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#DC2626] via-[#EF4444] to-[#DC2626] text-white hover:from-[#EF4444] hover:via-[#F87171] hover:to-[#EF4444] shadow-lg shadow-[#DC2626]/20 hover:shadow-[#DC2626]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">儒教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#FCA5A5]">{t("confucian.stats.patriarchs")}</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#FCA5A5]">{t("confucian.stats.schools")}</div></div>

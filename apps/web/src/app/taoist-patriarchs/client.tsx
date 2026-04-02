@@ -141,6 +141,11 @@ export default function TaoistPatriarchsClient({
           <p className="text-[#6EE7B7] text-sm mb-6">
             {t("taoist.heroSubtitle")}
           </p>
+          <Link href="/taoist-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-4 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#10B981] text-white hover:from-[#34D399] hover:via-[#6EE7B7] hover:to-[#34D399] shadow-lg shadow-[#10B981]/20 hover:shadow-[#10B981]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">道教祖师大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻祖师足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
 
           {/* Stats */}
           <div className="flex justify-center gap-8 text-white/90 text-sm">

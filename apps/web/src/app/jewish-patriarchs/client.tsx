@@ -100,6 +100,11 @@ export default function JewishPatriarchsClient({
           <span className="text-5xl block mb-3">✡</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">犹太教先贤传承</h1>
           <p className="text-[#A5B4FC] text-sm mb-6">从摩西律法到拉比智慧、从卡巴拉奥秘到哈西迪喜乐</p>
+          <Link href="/jewish-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#6366F1] text-white hover:from-[#818CF8] hover:via-[#A5B4FC] hover:to-[#818CF8] shadow-lg shadow-[#6366F1]/20 hover:shadow-[#6366F1]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">犹太教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#A5B4FC]">先知先贤</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#A5B4FC]">传承学派</div></div>

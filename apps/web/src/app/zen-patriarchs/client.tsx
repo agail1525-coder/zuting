@@ -335,6 +335,23 @@ export default function ZenPatriarchsClient({
             {t("zen.heroSubtitle")}
           </p>
 
+          {/* Atlas CTA — 灵魂核心模块 */}
+          <Link
+            href="/zen-patriarchs/atlas"
+            className="inline-flex items-center gap-3 px-8 py-4 mb-8 rounded-2xl text-lg font-bold transition-all duration-300 group
+              bg-gradient-to-r from-[#C4A265] via-[#D4B87A] to-[#C4A265] text-[#2C1810]
+              hover:from-[#D4B87A] hover:via-[#E5C98A] hover:to-[#D4B87A]
+              shadow-lg shadow-[#C4A265]/30 hover:shadow-xl hover:shadow-[#C4A265]/40
+              hover:scale-105 active:scale-100"
+          >
+            <span className="text-2xl">🗺</span>
+            <span>
+              <span className="block text-left">禅宗祖师大图谱</span>
+              <span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻祖师足迹</span>
+            </span>
+            <span className="text-xl group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
+
           {/* Stats */}
           <div className="flex items-center justify-center gap-6 sm:gap-10 text-[#D4C5A0]">
             <div className="text-center">
@@ -446,6 +463,12 @@ export default function ZenPatriarchsClient({
               </button>
             </div>
           )}
+          <Link
+            href="/zen-patriarchs/atlas"
+            className="px-4 py-2 text-sm rounded-lg bg-[#0f172a] text-[#C4A265] border border-[#C4A265]/30 hover:bg-[#1e293b] transition-colors flex-shrink-0"
+          >
+            🗺 祖师大图谱
+          </Link>
         </div>
 
         {/* ── Lineage Tree View ───────────────────────────────────────── */}

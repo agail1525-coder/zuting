@@ -100,6 +100,11 @@ export default function IndigenousSpiritsClient({
           <span className="text-5xl block mb-3">◉</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">原住民灵性传承</h1>
           <p className="text-[#D6D3D1] text-sm mb-6">大地母亲的声音，祖先智慧的传承与回归</p>
+          <Link href="/indigenous-spirits/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#78716C] via-[#A8A29E] to-[#78716C] text-[#2C1810] hover:from-[#A8A29E] hover:via-[#D6D3D1] hover:to-[#A8A29E] shadow-lg shadow-[#78716C]/20 hover:shadow-[#78716C]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">原住民灵性大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#D6D3D1]">灵性先知</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#D6D3D1]">传承传统</div></div>

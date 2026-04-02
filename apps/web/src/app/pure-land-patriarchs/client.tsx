@@ -156,6 +156,13 @@ export default function PureLandPatriarchsClient({
             {t("pureLand.heroSubtitle")}
           </p>
 
+          {/* Atlas CTA */}
+          <Link href="/pure-land-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#C4A265] via-[#D4B87A] to-[#C4A265] text-[#2C1810] hover:from-[#D4B87A] hover:via-[#E5C98A] hover:to-[#D4B87A] shadow-lg shadow-[#C4A265]/20 hover:shadow-[#C4A265]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">净土宗祖师大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻祖师足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
+
           {/* Stats */}
           <div className="flex gap-6 mt-6">
             {[

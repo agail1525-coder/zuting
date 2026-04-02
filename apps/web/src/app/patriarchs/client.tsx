@@ -811,6 +811,12 @@ export default function PatriarchsClient({ religions, patriarchs, error }: Props
             </p>
             <div className="flex gap-3 justify-center mt-5 flex-wrap">
               <Link
+                href="/zen-patriarchs/atlas"
+                className="px-8 py-4 bg-gradient-to-r from-[#C4A265] via-[#D4B87A] to-[#C4A265] hover:from-[#D4B87A] hover:via-[#E5C98A] hover:to-[#D4B87A] text-[#2C1810] font-bold rounded-xl transition-all text-base shadow-lg shadow-[#C4A265]/30 hover:shadow-xl hover:scale-105"
+              >
+                🗺 禅宗祖师大图谱 — 全球法脉地图
+              </Link>
+              <Link
                 href="/zen-patriarchs"
                 className="px-6 py-3 bg-[#C4A265] hover:bg-[#B39255] text-white font-semibold rounded-xl transition-colors text-sm"
               >

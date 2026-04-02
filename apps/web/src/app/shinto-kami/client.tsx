@@ -100,6 +100,11 @@ export default function ShintoKamiClient({
           <span className="text-5xl block mb-3">⛩</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">神道教神灵与思想家</h1>
           <p className="text-[#FDA4AF] text-sm mb-6">从天照大神到出云神话，探索日本精神的根源</p>
+          <Link href="/shinto-kami/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#E11D48] via-[#F43F5E] to-[#E11D48] text-white hover:from-[#F43F5E] hover:via-[#FB7185] hover:to-[#F43F5E] shadow-lg shadow-[#E11D48]/20 hover:shadow-[#E11D48]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">神道教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#FDA4AF]">神灵圣贤</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#FDA4AF]">传承类别</div></div>

@@ -100,6 +100,11 @@ export default function SikhGurusClient({
           <span className="text-5xl block mb-3">☬</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">锡克教古鲁传承</h1>
           <p className="text-[#FDBA74] text-sm mb-6">十位古鲁的神圣传承，旁遮普精神的永恒光辉</p>
+          <Link href="/sikh-gurus/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#EA580C] via-[#F97316] to-[#EA580C] text-white hover:from-[#F97316] hover:via-[#FB923C] hover:to-[#F97316] shadow-lg shadow-[#EA580C]/20 hover:shadow-[#EA580C]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">锡克教古鲁大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#FDBA74]">古鲁圣人</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#FDBA74]">传承类别</div></div>

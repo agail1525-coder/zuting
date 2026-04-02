@@ -100,6 +100,11 @@ export default function BahaiFiguresClient({
           <span className="text-5xl block mb-3">✦</span>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">巴哈伊教人物传承</h1>
           <p className="text-[#A5F3FC] text-sm mb-6">从巴孛先声到巴哈欧拉启示，天下一家的世界宗教</p>
+          <Link href="/bahai-figures/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#0891B2] via-[#06B6D4] to-[#0891B2] text-white hover:from-[#06B6D4] hover:via-[#22D3EE] hover:to-[#06B6D4] shadow-lg shadow-[#0891B2]/20 hover:shadow-[#0891B2]/40">
+            <span className="text-xl">🗺</span>
+            <span><span className="block text-left">巴哈伊教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+          </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
             <div className="text-center"><div className="text-2xl font-bold">{totalPatriarchs}</div><div className="text-xs text-[#A5F3FC]">先驱人物</div></div>
             <div className="text-center"><div className="text-2xl font-bold">5</div><div className="text-xs text-[#A5F3FC]">传承类别</div></div>
