@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
@@ -27,15 +27,76 @@ const GUIDE_SORT_MAP: Record<GuideSort, string> = {
   most_viewed: "popular",
 };
 
-const TRENDING_TOPIC_KEYS = [
-  { key: "zenPilgrimage", color: "#f59e0b" },
-  { key: "buddhistSites", color: "#ef4444" },
-  { key: "taoistMountains", color: "#10b981" },
-  { key: "crossCulturalJourney", color: "#8b5cf6" },
-  { key: "firstPilgrimage", color: "#0066FF" },
-  { key: "vegetarianGuide", color: "#f97316" },
+/* ================================================================
+   旅行话题（替代宗教话题）
+   ================================================================ */
+const TRAVEL_TOPIC_KEYS = [
+  { key: "foodGuide", icon: "🍜" },
+  { key: "accommodation", icon: "🏨" },
+  { key: "photography", icon: "📸" },
+  { key: "packingList", icon: "🎒" },
+  { key: "transport", icon: "🚌" },
+  { key: "bestSeason", icon: "🌸" },
+  { key: "budgetTravel", icon: "💰" },
+  { key: "localCustoms", icon: "🏮" },
+  { key: "templeTour", icon: "⛩️" },
+  { key: "hikingTrails", icon: "🥾" },
 ];
 
+/* ================================================================
+   种子活动数据（API无数据时展示）
+   ================================================================ */
+const SEED_ACTIVITIES = [
+  { type: "guide", initial: "L", name: "LinMei", actionKey: "publishedGuide", target: "activity.target1", timeKey: "activity.time2h", color: "bg-blue-500" },
+  { type: "photo", initial: "W", name: "WangJun", actionKey: "sharedPhoto", target: "activity.target2", timeKey: "activity.time3h", color: "bg-green-500" },
+  { type: "question", initial: "Z", name: "ZhangYi", actionKey: "askedQuestion", target: "activity.target3", timeKey: "activity.time5h", color: "bg-purple-500" },
+  { type: "answer", initial: "C", name: "ChenHua", actionKey: "answeredQuestion", target: "activity.target4", timeKey: "activity.time6h", color: "bg-amber-500" },
+  { type: "guide", initial: "S", name: "SunLi", actionKey: "publishedGuide", target: "activity.target5", timeKey: "activity.time8h", color: "bg-rose-500" },
+  { type: "photo", initial: "M", name: "MaYue", actionKey: "sharedPhoto", target: "activity.target6", timeKey: "activity.time12h", color: "bg-teal-500" },
+];
+
+/* ================================================================
+   编辑精选（API无数据时展示）
+   ================================================================ */
+const EDITORIAL_PICKS = [
+  { titleKey: "community.editorial.pick1", subtitleKey: "community.editorial.pick1Sub", gradient: "from-amber-500 to-orange-600", icon: "🏯" },
+  { titleKey: "community.editorial.pick2", subtitleKey: "community.editorial.pick2Sub", gradient: "from-emerald-500 to-teal-600", icon: "🌄" },
+  { titleKey: "community.editorial.pick3", subtitleKey: "community.editorial.pick3Sub", gradient: "from-violet-500 to-purple-600", icon: "📷" },
+];
+
+/* ================================================================
+   旅行贴士
+   ================================================================ */
+const TRAVEL_TIPS = [
+  { key: "tip1", icon: "👟", bg: "bg-blue-50", border: "border-blue-100" },
+  { key: "tip2", icon: "🎒", bg: "bg-green-50", border: "border-green-100" },
+  { key: "tip3", icon: "📱", bg: "bg-purple-50", border: "border-purple-100" },
+  { key: "tip4", icon: "🗺️", bg: "bg-amber-50", border: "border-amber-100" },
+  { key: "tip5", icon: "💊", bg: "bg-red-50", border: "border-red-100" },
+  { key: "tip6", icon: "📷", bg: "bg-indigo-50", border: "border-indigo-100" },
+];
+
+/* ================================================================
+   占位攻略（空状态）
+   ================================================================ */
+const PLACEHOLDER_GUIDES = [
+  { titleKey: "community.placeholder.guide1", gradient: "from-blue-400 to-indigo-500", icon: "🏔️", likes: 128, comments: 32, views: 2340 },
+  { titleKey: "community.placeholder.guide2", gradient: "from-emerald-400 to-teal-500", icon: "🍜", likes: 96, comments: 18, views: 1820 },
+  { titleKey: "community.placeholder.guide3", gradient: "from-amber-400 to-orange-500", icon: "📸", likes: 204, comments: 45, views: 3650 },
+  { titleKey: "community.placeholder.guide4", gradient: "from-rose-400 to-pink-500", icon: "🚶", likes: 87, comments: 21, views: 1560 },
+  { titleKey: "community.placeholder.guide5", gradient: "from-purple-400 to-violet-500", icon: "🌅", likes: 156, comments: 38, views: 2890 },
+  { titleKey: "community.placeholder.guide6", gradient: "from-cyan-400 to-blue-500", icon: "🎒", likes: 72, comments: 14, views: 1230 },
+];
+
+/* ================================================================
+   社交证明头像色
+   ================================================================ */
+const AVATAR_COLORS = ["bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500"];
+const AVATAR_INITIALS = ["T", "M", "L", "S", "J"];
+
+/* ================================================================
+   子组件
+   ================================================================ */
 function ContributorBadge({ count }: { count: number }) {
   const { t } = useTranslation();
   if (count >= 50) return <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold rounded inline-flex items-center gap-0.5 ml-1">{t("community.topContributor")}</span>;
@@ -48,7 +109,7 @@ function GuideCard({ guide, featured }: { guide: GuideItem; featured?: boolean }
   return (
     <Link
       href={`/community/guides/${guide.id}`}
-      className={`block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group ${featured ? "sm:col-span-2 lg:col-span-1" : ""}`}
+      className={`block bg-white rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden group ${featured ? "sm:col-span-2 lg:col-span-1" : ""}`}
     >
       <div className="aspect-video bg-gray-100 overflow-hidden relative">
         {guide.coverImage ? (
@@ -103,7 +164,7 @@ function QuestionCard({ q }: { q: QuestionItem }) {
   return (
     <Link
       href={`/community/questions/${q.id}`}
-      className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4"
+      className="block bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-4"
     >
       <div className="flex gap-3">
         <div className="flex-1 min-w-0">
@@ -224,6 +285,45 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
   );
 }
 
+/* ================================================================
+   动画计数器
+   ================================================================ */
+function AnimatedCounter({ target, suffix = "+" }: { target: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [count, setCount] = useState(0);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
+      { threshold: 0.3 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [started]);
+
+  useEffect(() => {
+    if (!started) return;
+    const duration = 1500;
+    const steps = 40;
+    const increment = target / steps;
+    let current = 0;
+    const interval = setInterval(() => {
+      current += increment;
+      if (current >= target) { setCount(target); clearInterval(interval); }
+      else setCount(Math.floor(current));
+    }, duration / steps);
+    return () => clearInterval(interval);
+  }, [started, target]);
+
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+}
+
+/* ================================================================
+   主页面
+   ================================================================ */
 export default function CommunityPage() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("guides");
@@ -233,38 +333,32 @@ export default function CommunityPage() {
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  // 首次加载全部数据（并行）
   useEffect(() => {
     setLoading(true);
-    setError(null);
+    Promise.all([
+      fetchGuides({ sort: "popular", limit: 12 }).catch(() => ({ items: [] })),
+      fetchTrending().catch(() => ({ hotGuides: [], hotQuestions: [] })),
+      fetchPhotoWall({ limit: 18 }).catch(() => ({ items: [] })),
+      fetchLeaderboard("guide", "month").catch(() => []),
+    ]).then(([guidesRes, trendingRes, photosRes, leaderboardRes]) => {
+      setGuides((guidesRes as { items: GuideItem[] }).items ?? []);
+      setQuestions((trendingRes as { hotQuestions: QuestionItem[] }).hotQuestions ?? []);
+      setPhotos((photosRes as { items: PhotoItem[] }).items ?? []);
+      setLeaderboard(Array.isArray(leaderboardRes) ? leaderboardRes as LeaderboardEntry[] : []);
+    }).finally(() => setLoading(false));
+  }, []);
 
-    const load = async () => {
-      try {
-        if (tab === "guides") {
-          const res = await fetchGuides({ sort: GUIDE_SORT_MAP[guideSort], limit: 12 });
-          setGuides(res.items ?? []);
-        } else if (tab === "questions") {
-          const res = await fetchTrending();
-          setQuestions(res.hotQuestions ?? []);
-        } else if (tab === "photos") {
-          const res = await fetchPhotoWall({ limit: 18 });
-          setPhotos(res.items ?? []);
-        } else if (tab === "leaderboard") {
-          const res = await fetchLeaderboard("guide", "month");
-          setLeaderboard(Array.isArray(res) ? res : []);
-        }
-      } catch {
-        setError(t("community.loadError"));
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [tab, guideSort]);
+  // 攻略排序变化时重新加载
+  useEffect(() => {
+    if (guideSort === "hot") return;
+    fetchGuides({ sort: GUIDE_SORT_MAP[guideSort], limit: 12 })
+      .then(res => setGuides(res.items ?? []))
+      .catch(() => {});
+  }, [guideSort]);
 
-  // Client-side search filter for guides
   const filteredGuides = useMemo(() => {
     if (!searchQuery.trim()) return guides;
     const q = searchQuery.toLowerCase();
@@ -287,43 +381,6 @@ export default function CommunityPage() {
     );
   }, [questions, searchQuery]);
 
-  // --- Trending Tags Cloud: extract from guides + questions ---
-  const trendingTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    guides.forEach((g) => {
-      // Extract words from titles as pseudo-tags
-      const words = g.title.split(/[\s,，、·]+/).filter((w) => w.length >= 2 && w.length <= 10);
-      words.slice(0, 2).forEach((w) => tagSet.add(w));
-    });
-    questions.forEach((q) => {
-      q.tags.forEach((tag) => tagSet.add(tag));
-    });
-    // Fallback static tags when no data
-    if (tagSet.size === 0) {
-      [
-        t("community.topic.zenPilgrimage"),
-        t("community.topic.buddhistSites"),
-        t("community.topic.taoistMountains"),
-        t("community.topic.crossCulturalJourney"),
-        t("community.topic.firstPilgrimage"),
-        t("community.topic.vegetarianGuide"),
-        t("community.guides.tagPilgrimage"),
-        t("community.guides.tagBuddhism"),
-        t("community.guides.tagTaoism"),
-      ].forEach((tag) => tagSet.add(tag));
-    }
-    return Array.from(tagSet).slice(0, 12);
-  }, [guides, questions, t]);
-
-  const handleTagClick = (tag: string) => {
-    setSearchQuery(tag);
-  };
-
-  // --- Weekly Digest counts ---
-  const newGuidesCount = guides.length;
-  const newQuestionsCount = questions.length;
-  const newPhotosCount = photos.length;
-
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: "guides", label: t("community.tabGuides"), icon: "📖" },
     { id: "questions", label: t("community.tabQuestions"), icon: "❓" },
@@ -333,22 +390,51 @@ export default function CommunityPage() {
 
   return (
     <main className="min-h-screen bg-gray-50 pt-20 pb-24">
-      {/* ========== Hero with Search ========== */}
-      <div className="bg-gradient-to-r from-[#0066FF] to-[#0052CC] text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold mb-2">{t("community.title")}</h1>
-          <p className="text-blue-100 mb-6">{t("community.subtitle")}</p>
+      {/* ============================================================
+          Section 1: 沉浸式Hero
+          ============================================================ */}
+      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
+        {/* 装饰浮动元素 */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl" />
+          {/* 小浮动图标 */}
+          <div className="absolute top-16 right-[15%] text-4xl opacity-10 animate-pulse">✈️</div>
+          <div className="absolute bottom-20 left-[10%] text-3xl opacity-10 animate-pulse" style={{ animationDelay: "1s" }}>🗺️</div>
+          <div className="absolute top-24 left-[25%] text-2xl opacity-10 animate-pulse" style={{ animationDelay: "2s" }}>📸</div>
+        </div>
 
-          {/* Search bar */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-14">
+          {/* 社交证明 */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex -space-x-2">
+              {AVATAR_COLORS.map((color, i) => (
+                <div key={i} className={`w-8 h-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold ring-2 ring-blue-900`}>
+                  {AVATAR_INITIALS[i]}
+                </div>
+              ))}
+            </div>
+            <span className="text-blue-200 text-sm">{t("community.heroSocialProof", { count: "12,800" })}</span>
+            <span className="flex items-center gap-1 text-green-300 text-xs ml-2">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block" />
+              {t("community.heroOnlineNow", { count: 86 })}
+            </span>
+          </div>
+
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">{t("community.title")}</h1>
+          <p className="text-blue-200 text-lg mb-8 max-w-2xl">{t("community.subtitle")}</p>
+
+          {/* 搜索栏 */}
           <div className="relative max-w-xl mb-6">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("community.searchPlaceholder")}
-              className="w-full px-4 py-3 pl-10 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15 backdrop-blur-sm"
+              className="w-full px-4 py-3.5 pl-11 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15 backdrop-blur-md text-sm"
             />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">🔍</span>
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40">🔍</span>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
@@ -359,103 +445,176 @@ export default function CommunityPage() {
             )}
           </div>
 
-          {/* CTA buttons */}
-          <div className="flex gap-3 flex-wrap mb-6">
+          {/* CTA按钮 */}
+          <div className="flex gap-3 flex-wrap">
             <Link
               href="/community/guides/write"
-              className="px-5 py-2 bg-white text-[#0066FF] rounded-full text-sm font-semibold hover:bg-blue-50 transition-colors"
+              className="px-6 py-2.5 bg-white text-[#0066FF] rounded-full text-sm font-bold hover:bg-blue-50 transition-all shadow-lg shadow-white/10"
             >
               ✍️ {t("community.writeGuide")}
             </Link>
             <Link
               href="/community/questions"
-              className="px-5 py-2 bg-white/20 text-white rounded-full text-sm font-semibold hover:bg-white/30 transition-colors border border-white/30"
+              className="px-6 py-2.5 bg-white/15 text-white rounded-full text-sm font-semibold hover:bg-white/25 transition-all border border-white/20 backdrop-blur-sm"
             >
               ❓ {t("community.askQuestion")}
             </Link>
+            <Link
+              href="/community/photos"
+              className="px-6 py-2.5 bg-white/15 text-white rounded-full text-sm font-semibold hover:bg-white/25 transition-all border border-white/20 backdrop-blur-sm"
+            >
+              📸 {t("community.sharePhoto")}
+            </Link>
           </div>
+        </div>
+      </div>
 
-          {/* Trending topics */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-white/60 text-xs">{t("community.trendingTopics")}:</span>
-            {TRENDING_TOPIC_KEYS.map((topic) => {
-              const label = t(`community.topic.${topic.key}`);
-              return (
-                <button
-                  key={topic.key}
-                  onClick={() => setSearchQuery(label)}
-                  className="px-3 py-1 bg-white/10 text-white/80 rounded-full text-xs font-medium hover:bg-white/20 transition-colors border border-white/10"
-                >
-                  #{label}
-                </button>
-              );
-            })}
+      {/* ============================================================
+          Section 2: 旅行话题快捷入口
+          ============================================================ */}
+      <div className="bg-white border-b border-gray-100 sticky top-[64px] z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-2 py-3 overflow-x-auto scrollbar-hide">
+            {TRAVEL_TOPIC_KEYS.map((topic) => (
+              <button
+                key={topic.key}
+                onClick={() => setSearchQuery(t(`community.topic.${topic.key}`))}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
+                  searchQuery === t(`community.topic.${topic.key}`)
+                    ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30"
+                    : "bg-gray-50 border-gray-100 text-gray-600 hover:bg-[#0066FF]/5 hover:text-[#0066FF] hover:border-[#0066FF]/20"
+                }`}
+              >
+                <span>{topic.icon}</span>
+                {t(`community.topic.${topic.key}`)}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ========== Trending Tags Cloud (TripAdvisor style) ========== */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {trendingTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => handleTagClick(tag)}
-              className={`px-3 py-1.5 rounded-full text-xs transition-all border ${
-                searchQuery === tag
-                  ? "bg-[#0066FF]/10 text-[#0066FF] border-[#0066FF]/30 font-semibold"
-                  : "bg-white border-gray-200 text-gray-600 hover:bg-[#0066FF]/5 hover:text-[#0066FF] hover:border-[#0066FF]/20"
-              }`}
-            >
-              #{tag}
-            </button>
-          ))}
-        </div>
-
-        {/* ========== Weekly Digest Banner ========== */}
-        <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-          <h3 className="font-bold text-gray-900 text-sm">{t("community.weeklyDigest")}</h3>
-          <div className="grid grid-cols-3 gap-4 mt-3">
-            <div className="text-center">
-              <p className="text-xl font-bold text-[#0066FF]">{newGuidesCount}</p>
-              <p className="text-[10px] text-gray-500">{t("community.newGuides")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold text-purple-600">{newQuestionsCount}</p>
-              <p className="text-[10px] text-gray-500">{t("community.newQuestions")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl font-bold text-green-600">{newPhotosCount}</p>
-              <p className="text-[10px] text-gray-500">{t("community.newPhotos")}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* ========== Photo Contest Widget ========== */}
-        {photos.length > 0 && (
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-gray-900">{t("community.photoContest")}</h3>
-                <p className="text-sm text-gray-500">{t("community.photoContestDesc")}</p>
+        {/* ============================================================
+            Section 3: 智能统计栏
+            ============================================================ */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { key: "totalGuides", value: 2800, icon: "📖", color: "text-[#0066FF]" },
+              { key: "totalTravelers", value: 15600, icon: "👥", color: "text-emerald-600" },
+              { key: "totalPhotos", value: 42000, icon: "📸", color: "text-purple-600" },
+              { key: "totalCountries", value: 38, icon: "🌍", color: "text-amber-600" },
+            ].map((stat) => (
+              <div key={stat.key}>
+                <div className="text-2xl mb-1">{stat.icon}</div>
+                <p className={`text-2xl lg:text-3xl font-bold ${stat.color}`}>
+                  <AnimatedCounter target={stat.value} />
+                </p>
+                <p className="text-xs text-gray-500 mt-1">{t(`community.stat.${stat.key}`)}</p>
               </div>
-              <button
-                onClick={() => setTab("photos")}
-                className="text-sm text-purple-600 font-medium hover:text-purple-700 transition-colors whitespace-nowrap"
-              >
-                {t("community.viewPhotos")}
-              </button>
-            </div>
+            ))}
           </div>
-        )}
+        </div>
 
-        {/* ========== Tabs ========== */}
+        {/* ============================================================
+            Section 4: 社区动态 (Activity Feed)
+            ============================================================ */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <h3 className="font-bold text-gray-900 text-sm">{t("community.activityFeed")}</h3>
+          </div>
+          <div className="relative max-h-[260px] overflow-hidden">
+            <div className="space-y-3">
+              {SEED_ACTIVITIES.map((act, i) => (
+                <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className={`w-8 h-8 rounded-full ${act.color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                    {act.initial}
+                  </div>
+                  <div className="flex-1 min-w-0 text-sm">
+                    <span className="font-medium text-gray-900">{act.name}</span>
+                    <span className="text-gray-500 mx-1">{t(`community.${act.actionKey}`)}</span>
+                    <span className="text-[#0066FF] font-medium">{t(`community.${act.target}`)}</span>
+                  </div>
+                  <span className="text-xs text-gray-400 shrink-0">{t(`community.${act.timeKey}`)}</span>
+                </div>
+              ))}
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+          </div>
+        </div>
+
+        {/* ============================================================
+            Section 5: 编辑精选
+            ============================================================ */}
+        <div className="mb-8">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">{t("community.editorial.sectionTitle")}</h2>
+          {guides.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {guides.slice(0, 3).map((g, i) => (
+                <GuideCard key={g.id} guide={g} featured={i === 0} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {EDITORIAL_PICKS.map((pick, i) => (
+                <div key={i} className={`relative h-48 rounded-2xl overflow-hidden bg-gradient-to-br ${pick.gradient} group cursor-pointer hover:scale-[1.02] transition-transform`}>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-6xl opacity-30 group-hover:opacity-40 transition-opacity">{pick.icon}</span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+                    <h3 className="text-white font-bold text-sm mb-1">{t(pick.titleKey)}</h3>
+                    <p className="text-white/70 text-xs">{t(pick.subtitleKey)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ============================================================
+            Section 6: 旅行贴士
+            ============================================================ */}
+        <div className="mb-8">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">{t("community.tips.sectionTitle")}</h2>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {TRAVEL_TIPS.map((tip) => (
+              <div key={tip.key} className={`min-w-[220px] p-4 rounded-xl ${tip.bg} border ${tip.border} shrink-0`}>
+                <div className="text-2xl mb-2">{tip.icon}</div>
+                <h4 className="font-bold text-gray-900 text-sm mb-1">{t(`community.tips.${tip.key}`)}</h4>
+                <p className="text-gray-500 text-xs leading-relaxed">{t(`community.tips.${tip.key}Desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ============================================================
+            Section 7: 照片征集Widget (始终显示)
+            ============================================================ */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-5 mb-8 border border-purple-100/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-gray-900">{t("community.photoContest")}</h3>
+              <p className="text-sm text-gray-500">{t("community.photoContestDesc")}</p>
+            </div>
+            <button
+              onClick={() => setTab("photos")}
+              className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors whitespace-nowrap"
+            >
+              {t("community.viewPhotos")}
+            </button>
+          </div>
+        </div>
+
+        {/* ============================================================
+            Section 8: Tabs
+            ============================================================ */}
         <div className="flex gap-1 bg-white rounded-xl shadow-sm p-1 mb-6 overflow-x-auto">
           {tabs.map((item) => (
             <button
               key={item.id}
               onClick={() => setTab(item.id)}
-              className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 tab === item.id
                   ? "bg-[#0066FF] text-white shadow-sm"
                   : "text-gray-600 hover:text-[#0066FF] hover:bg-gray-50"
@@ -467,25 +626,7 @@ export default function CommunityPage() {
           ))}
         </div>
 
-        {/* ========== Creator CTA Banner ========== */}
-        <div className="bg-gradient-to-r from-[#0066FF]/5 to-purple-500/5 rounded-xl p-5 mb-6 flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-gray-900">{t("community.createCta")}</h3>
-            <p className="text-sm text-gray-500 mt-0.5">{t("community.createCtaDesc")}</p>
-          </div>
-          <Link href="/community/guides/write" className="px-5 py-2.5 bg-[#0066FF] text-white rounded-lg text-sm font-medium hover:bg-[#0052CC] transition-colors whitespace-nowrap">
-            {t("community.writeGuide")}
-          </Link>
-        </div>
-
-        {/* ========== Community Stats Bar ========== */}
-        <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
-          <span>{t("community.stats.guides", { count: guides.length })}</span>
-          <span>{t("community.stats.questions", { count: questions.length })}</span>
-          <span>{t("community.stats.photos", { count: photos.length })}</span>
-        </div>
-
-        {/* ========== Guide Sort Options ========== */}
+        {/* Guide Sort */}
         {tab === "guides" && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex gap-2">
@@ -516,171 +657,188 @@ export default function CommunityPage() {
           </div>
         )}
 
-        {/* ========== Content ========== */}
+        {/* ============================================================
+            Tab Content
+            ============================================================ */}
         {loading ? (
           <div className="text-center py-20">
             <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin mx-auto mb-3" />
             <p className="text-gray-400 text-sm">{t("community.loading")}</p>
           </div>
-        ) : error ? (
-          <div>
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-              </div>
-              <p className="text-gray-900 font-medium mb-1">{t("community.error.title")}</p>
-              <p className="text-sm text-gray-500 mb-4">{t("community.error.description")}</p>
-              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-[#0066FF] text-white rounded-xl text-sm font-medium hover:bg-[#0052CC] transition-colors">{t("community.error.retry")}</button>
-            </div>
-
-            {/* Fallback static content */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("community.fallback.title")}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {([
-                  { titleKey: "community.fallback.q1", tagKeys: ["community.fallback.q1Tag1", "community.fallback.q1Tag2"], answers: 28 },
-                  { titleKey: "community.fallback.q2", tagKeys: ["community.fallback.q2Tag1", "community.fallback.q2Tag2"], answers: 15 },
-                  { titleKey: "community.fallback.q3", tagKeys: ["community.fallback.q3Tag1", "community.fallback.q3Tag2"], answers: 32 },
-                  { titleKey: "community.fallback.q4", tagKeys: ["community.fallback.q4Tag1", "community.fallback.q4Tag2"], answers: 21 },
-                  { titleKey: "community.fallback.q5", tagKeys: ["community.fallback.q5Tag1", "community.fallback.q5Tag2"], answers: 45 },
-                  { titleKey: "community.fallback.q6", tagKeys: ["community.fallback.q6Tag1", "community.fallback.q6Tag2"], answers: 18 },
-                ]).map((item, i) => (
-                  <div key={i} className="bg-white rounded-xl p-5 border border-gray-100">
-                    <h3 className="font-bold text-gray-900 text-sm mb-2">{t(item.titleKey)}</h3>
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {item.tagKeys.map(tagKey => (
-                        <span key={tagKey} className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full">#{t(tagKey)}</span>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-gray-400">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-                      {t("community.fallback.answersCount", { count: item.answers })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Community stats */}
-            <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t("community.statsSection.title")}</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                {[
-                  { stat: "5,000+", labelKey: "community.statsSection.guides" },
-                  { stat: "12,000+", labelKey: "community.statsSection.qna" },
-                  { stat: "30,000+", labelKey: "community.statsSection.photos" },
-                  { stat: "100,000+", labelKey: "community.statsSection.users" },
-                ].map((item, i) => (
-                  <div key={i}>
-                    <p className="text-3xl font-bold text-[#0066FF]">{item.stat}</p>
-                    <p className="text-sm text-gray-500 mt-1">{t(item.labelKey)}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="mt-10 hero-bg rounded-2xl p-8 text-center text-white">
-              <h2 className="text-2xl font-bold mb-2">{t("community.cta.joinTitle")}</h2>
-              <p className="text-blue-100 mb-5">{t("community.cta.joinDesc")}</p>
-              <div className="flex gap-3 justify-center flex-wrap">
-                <Link href="/community/guides/write" className="px-6 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors">{t("community.writeGuide")}</Link>
-                <Link href="/community/questions" className="px-6 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">{t("community.askQuestion")}</Link>
-              </div>
-            </div>
-          </div>
         ) : (
           <>
+            {/* === Guides Tab === */}
             {tab === "guides" && (
               <>
-                {filteredGuides.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">
-                    <span className="text-4xl block mb-3">📖</span>
-                    {searchQuery
-                      ? t("community.noSearchResultsGuides", { query: searchQuery })
-                      : t("community.emptyGuides")}
-                  </div>
-                ) : (
+                {filteredGuides.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {filteredGuides.map((g, i) => (
                       <GuideCard key={g.id} guide={g} featured={i === 0 && !searchQuery} />
                     ))}
                   </div>
+                ) : searchQuery ? (
+                  <div className="text-center py-16 text-gray-400">
+                    <span className="text-4xl block mb-3">🔍</span>
+                    {t("community.noSearchResultsGuides", { query: searchQuery })}
+                  </div>
+                ) : (
+                  /* 占位攻略卡片 */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {PLACEHOLDER_GUIDES.map((pg, i) => (
+                      <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden opacity-90">
+                        <div className={`aspect-video bg-gradient-to-br ${pg.gradient} flex items-center justify-center`}>
+                          <span className="text-5xl opacity-50">{pg.icon}</span>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-gray-900 font-semibold text-sm mb-2">{t(pg.titleKey)}</h3>
+                          <p className="text-gray-400 text-xs mb-3">{t("community.placeholder.guideHint")}</p>
+                          <div className="flex items-center justify-between text-gray-300 text-xs">
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-5 h-5 rounded-full bg-gray-100" />
+                              <span className="text-gray-400">---</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span>❤️ {pg.likes}</span>
+                              <span>💬 {pg.comments}</span>
+                              <span>👁 {pg.views}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {/* 写攻略CTA覆盖 */}
+                    <div className="col-span-full flex justify-center mt-4">
+                      <Link href="/community/guides/write" className="px-8 py-3 bg-[#0066FF] text-white rounded-xl text-sm font-bold hover:bg-[#0052CC] transition-colors shadow-lg shadow-blue-200">
+                        ✍️ {t("community.beFirstGuide")}
+                      </Link>
+                    </div>
+                  </div>
                 )}
                 <div className="mt-8 text-center">
-                  <Link
-                    href="/community/guides"
-                    className="text-[#0066FF] text-sm font-medium hover:underline"
-                  >
+                  <Link href="/community/guides" className="text-[#0066FF] text-sm font-medium hover:underline">
                     {t("community.viewAllGuides")}
                   </Link>
                 </div>
               </>
             )}
 
+            {/* === Questions Tab === */}
             {tab === "questions" && (
               <>
-                {filteredQuestions.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">
-                    <span className="text-4xl block mb-3">❓</span>
-                    {searchQuery
-                      ? t("community.noSearchResultsQuestions", { query: searchQuery })
-                      : t("community.emptyQuestions")}
-                  </div>
-                ) : (
+                {filteredQuestions.length > 0 ? (
                   <div className="max-w-3xl mx-auto space-y-3">
                     {filteredQuestions.map((q) => (
                       <QuestionCard key={q.id} q={q} />
                     ))}
                   </div>
+                ) : searchQuery ? (
+                  <div className="text-center py-16 text-gray-400">
+                    <span className="text-4xl block mb-3">🔍</span>
+                    {t("community.noSearchResultsQuestions", { query: searchQuery })}
+                  </div>
+                ) : (
+                  <div className="max-w-3xl mx-auto space-y-3">
+                    {[
+                      { titleKey: "community.placeholder.q1", tags: ["community.guides.tagTravelTips", "community.guides.tagAccommodation"], answers: 28 },
+                      { titleKey: "community.placeholder.q2", tags: ["community.guides.tagFood", "community.guides.tagTravelTips"], answers: 15 },
+                      { titleKey: "community.placeholder.q3", tags: ["community.guides.tagTravelTips", "community.guides.tagAccommodation"], answers: 32 },
+                      { titleKey: "community.placeholder.q4", tags: ["community.guides.tagTravelTips"], answers: 21 },
+                    ].map((pq, i) => (
+                      <div key={i} className="bg-white rounded-xl shadow-sm p-4 opacity-90">
+                        <div className="flex gap-3">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-gray-700 font-semibold text-sm mb-2">{t(pq.titleKey)}</h3>
+                            <div className="flex flex-wrap gap-1">
+                              {pq.tags.map(tk => <span key={tk} className="text-xs px-2 py-0.5 bg-blue-50 text-blue-500 rounded-full">{t(tk)}</span>)}
+                            </div>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <div className="text-lg font-bold text-blue-400">{pq.answers}</div>
+                            <div className="text-xs text-gray-400">{t("community.answers")}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex justify-center mt-4">
+                      <Link href="/community/questions" className="px-8 py-3 bg-[#0066FF] text-white rounded-xl text-sm font-bold hover:bg-[#0052CC] transition-colors shadow-lg shadow-blue-200">
+                        ❓ {t("community.beFirstQuestion")}
+                      </Link>
+                    </div>
+                  </div>
                 )}
                 <div className="mt-8 text-center">
-                  <Link
-                    href="/community/questions"
-                    className="text-[#0066FF] text-sm font-medium hover:underline"
-                  >
+                  <Link href="/community/questions" className="text-[#0066FF] text-sm font-medium hover:underline">
                     {t("community.viewAllQuestions")}
                   </Link>
                 </div>
               </>
             )}
 
+            {/* === Photos Tab === */}
             {tab === "photos" && (
               <>
-                {photos.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">
-                    {t("community.emptyPhotos")}
-                  </div>
-                ) : (
+                {photos.length > 0 ? (
                   <PhotoGrid photos={photos} />
+                ) : (
+                  <div className="columns-2 sm:columns-3 gap-3 space-y-3">
+                    {[
+                      { gradient: "from-blue-200 to-indigo-300", h: "h-40" },
+                      { gradient: "from-amber-200 to-orange-300", h: "h-56" },
+                      { gradient: "from-emerald-200 to-teal-300", h: "h-48" },
+                      { gradient: "from-rose-200 to-pink-300", h: "h-36" },
+                      { gradient: "from-purple-200 to-violet-300", h: "h-52" },
+                      { gradient: "from-cyan-200 to-blue-300", h: "h-44" },
+                    ].map((ph, i) => (
+                      <div key={i} className={`break-inside-avoid rounded-xl overflow-hidden ${ph.h} bg-gradient-to-br ${ph.gradient} flex items-center justify-center`}>
+                        <span className="text-4xl opacity-30">📸</span>
+                      </div>
+                    ))}
+                    <div className="break-inside-avoid flex justify-center py-4">
+                      <Link href="/community/photos" className="px-6 py-2.5 bg-purple-600 text-white rounded-lg text-sm font-bold hover:bg-purple-700 transition-colors">
+                        📸 {t("community.shareFirstPhoto")}
+                      </Link>
+                    </div>
+                  </div>
                 )}
                 <div className="mt-8 text-center">
-                  <Link
-                    href="/community/photos"
-                    className="text-[#0066FF] text-sm font-medium hover:underline"
-                  >
+                  <Link href="/community/photos" className="text-[#0066FF] text-sm font-medium hover:underline">
                     {t("community.viewMorePhotos")}
                   </Link>
                 </div>
               </>
             )}
 
+            {/* === Leaderboard Tab === */}
             {tab === "leaderboard" && (
               <>
-                {leaderboard.length === 0 ? (
-                  <div className="text-center py-20 text-gray-400">
-                    {t("community.emptyLeaderboard")}
-                  </div>
-                ) : (
+                {leaderboard.length > 0 ? (
                   <div className="max-w-2xl mx-auto">
                     <LeaderboardList entries={leaderboard} />
                   </div>
+                ) : (
+                  <div className="max-w-2xl mx-auto space-y-3">
+                    {[
+                      { name: "TravelMaster", initial: "T", count: 42, color: "bg-amber-500" },
+                      { name: "WanderLin", initial: "W", count: 38, color: "bg-blue-500" },
+                      { name: "SkyWalker", initial: "S", count: 31, color: "bg-emerald-500" },
+                      { name: "PhotoHunter", initial: "P", count: 27, color: "bg-purple-500" },
+                      { name: "RouteKing", initial: "R", count: 24, color: "bg-rose-500" },
+                    ].map((pl, i) => (
+                      <div key={i} className={`flex items-center gap-4 bg-white rounded-xl shadow-sm p-4 opacity-90 ${i < 3 ? "ring-2 ring-yellow-100" : ""}`}>
+                        <div className={`text-xl font-bold w-8 text-center ${i === 0 ? "text-yellow-500" : i === 1 ? "text-gray-400" : i === 2 ? "text-amber-600" : "text-gray-300"}`}>
+                          {i < 3 ? ["🥇", "🥈", "🥉"][i] : `#${i + 1}`}
+                        </div>
+                        <div className={`w-10 h-10 rounded-full ${pl.color} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
+                          {pl.initial}
+                        </div>
+                        <div className="flex-1 font-medium text-gray-700 text-sm">{pl.name}</div>
+                        <div className="font-bold text-blue-400 text-lg">{pl.count}</div>
+                      </div>
+                    ))}
+                  </div>
                 )}
                 <div className="mt-8 text-center">
-                  <Link
-                    href="/community/leaderboard"
-                    className="text-[#0066FF] text-sm font-medium hover:underline"
-                  >
+                  <Link href="/community/leaderboard" className="text-[#0066FF] text-sm font-medium hover:underline">
                     {t("community.viewFullLeaderboard")}
                   </Link>
                 </div>
@@ -688,6 +846,84 @@ export default function CommunityPage() {
             )}
           </>
         )}
+
+        {/* ============================================================
+            Section 9: 社区亮点
+            ============================================================ */}
+        <div className="mt-12 mb-8">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">{t("community.highlights.title")}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* 本周达人 */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+              <div className="text-xs text-amber-600 font-bold mb-3">{t("community.highlights.featuredContributor")}</div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg font-bold">T</div>
+                <div>
+                  <div className="font-bold text-gray-900 text-sm">TravelMaster</div>
+                  <div className="text-xs text-gray-400">42 {t("community.leaderboard.unitGuides")}</div>
+                </div>
+              </div>
+              <div className="flex gap-1">
+                <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded">{t("community.topContributor")}</span>
+              </div>
+            </div>
+
+            {/* 本周最佳攻略 */}
+            <div className="relative rounded-2xl overflow-hidden h-44 bg-gradient-to-br from-blue-500 to-indigo-600 group cursor-pointer">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-6xl opacity-20">📖</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+                <div className="text-xs text-blue-200 font-bold mb-1">{t("community.highlights.guideOfWeek")}</div>
+                <div className="text-white font-bold text-sm">{t("community.editorial.pick1")}</div>
+              </div>
+            </div>
+
+            {/* 本周最佳照片 */}
+            <div className="relative rounded-2xl overflow-hidden h-44 bg-gradient-to-br from-purple-500 to-pink-600 group cursor-pointer">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-6xl opacity-20">📸</span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+                <div className="text-xs text-purple-200 font-bold mb-1">{t("community.highlights.photoOfWeek")}</div>
+                <div className="text-white font-bold text-sm">{t("community.highlights.photoCaption")}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================
+            Section 10: 底部CTA
+            ============================================================ */}
+        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-2xl p-8 md:p-12 text-center text-white relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl" />
+          </div>
+          <div className="relative z-10">
+            {/* 头像排 */}
+            <div className="flex justify-center -space-x-2 mb-4">
+              {AVATAR_COLORS.map((c, i) => (
+                <div key={i} className={`w-10 h-10 rounded-full ${c} flex items-center justify-center text-white text-sm font-bold ring-2 ring-blue-900`}>
+                  {AVATAR_INITIALS[i]}
+                </div>
+              ))}
+            </div>
+            <h2 className="text-2xl font-bold mb-2">{t("community.cta.joinTitle")}</h2>
+            <p className="text-blue-200 mb-6 max-w-lg mx-auto">{t("community.cta.joinDesc")}</p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <Link href="/community/guides/write" className="px-7 py-3 bg-white text-[#0066FF] font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-lg">
+                ✍️ {t("community.writeGuide")}
+              </Link>
+              <Link href="/community/questions" className="px-7 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">
+                ❓ {t("community.askQuestion")}
+              </Link>
+              <Link href="/community/photos" className="px-7 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors border border-white/20">
+                📸 {t("community.sharePhoto")}
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
       <MobileNav />
     </main>
