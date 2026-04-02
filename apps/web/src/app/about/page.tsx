@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
+import { fetchReligions } from "@/lib/api";
 import AboutClient from "./client";
 
 export const metadata: Metadata = {
@@ -16,6 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
-  return <AboutClient />;
+export default async function AboutPage() {
+  let religions: Awaited<ReturnType<typeof fetchReligions>> = [];
+  try { religions = await fetchReligions(); } catch {}
+  return <AboutClient religions={religions} />;
 }

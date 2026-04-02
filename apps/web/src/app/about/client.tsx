@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
+import type { Religion } from "@/lib/api";
 
 // Curated marketing stats reflecting actual platform content (see seed data in CLAUDE.md)
 const PLATFORM_STATS = [
@@ -21,7 +22,23 @@ const TRUST_BADGE_KEYS = [
   { icon: "💬", key: "about.trust.ai" },
 ];
 
-export default function AboutClient() {
+const MILESTONES = [
+  { year: "2024", icon: "🌱", key: "about.milestone.seed" },
+  { year: "2025", icon: "🏗️", key: "about.milestone.build" },
+  { year: "2025 Q4", icon: "🚀", key: "about.milestone.launch" },
+  { year: "2026", icon: "🌍", key: "about.milestone.global" },
+];
+
+const FEATURES = [
+  { icon: "🗺️", key: "about.feature.map" },
+  { icon: "🤖", key: "about.feature.ai" },
+  { icon: "📖", key: "about.feature.journal" },
+  { icon: "🛤️", key: "about.feature.route" },
+  { icon: "⭐", key: "about.feature.review" },
+  { icon: "🎧", key: "about.feature.media" },
+];
+
+export default function AboutClient({ religions = [] }: { religions?: Religion[] }) {
   const { t } = useTranslation();
 
   const values = [
@@ -125,6 +142,72 @@ export default function AboutClient() {
           <p className="text-gray-600 leading-relaxed">
             {t("about.team.desc")}
           </p>
+        </div>
+
+        {/* 12 Traditions Showcase */}
+        {religions.length > 0 && (
+          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-8">
+            <h2 className="text-2xl font-serif font-bold text-[#0066FF] mb-2">
+              {t("about.traditions.title")}
+            </h2>
+            <p className="text-gray-500 text-sm mb-6">{t("about.traditions.desc")}</p>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+              {religions.map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/religions/${r.slug}`}
+                  className="group flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition-all text-center"
+                >
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"
+                    style={{ backgroundColor: `${r.color || '#0066FF'}15` }}
+                  >
+                    {r.symbol || "🙏"}
+                  </div>
+                  <span className="text-xs text-gray-600 group-hover:text-[#0066FF] transition-colors font-medium">{r.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Platform Features */}
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-8">
+          <h2 className="text-2xl font-serif font-bold text-[#0066FF] mb-6">
+            {t("about.features.title")}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {FEATURES.map((f) => (
+              <div key={f.key} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <span className="text-2xl block mb-2">{f.icon}</span>
+                <p className="text-sm font-medium text-gray-700">{t(`${f.key}.title`)}</p>
+                <p className="text-xs text-gray-500 mt-1">{t(`${f.key}.desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Milestones Timeline */}
+        <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-8">
+          <h2 className="text-2xl font-serif font-bold text-[#0066FF] mb-6">
+            {t("about.milestones.title")}
+          </h2>
+          <div className="relative">
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-[#0066FF]/20" />
+            <div className="space-y-6">
+              {MILESTONES.map((m, i) => (
+                <div key={i} className="flex items-start gap-4 relative">
+                  <div className="w-12 h-12 rounded-full bg-[#0066FF]/10 flex items-center justify-center text-xl shrink-0 relative z-10 border-2 border-white">
+                    {m.icon}
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-sm font-bold text-[#0066FF]">{m.year}</p>
+                    <p className="text-gray-600 text-sm">{t(m.key)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Contact */}
