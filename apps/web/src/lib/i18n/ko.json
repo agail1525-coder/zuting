@@ -1983,5 +1983,15 @@
   "routeDetail.sitesAlong": "경유 성지",
   "routeDetail.pilgrimJournals": "순례자 일지",
   "routeDetail.pilgrimJournalsDesc": "이 루트를 걸었던 순례자들의 기록을 읽어보세요",
-  "routeDetail.viewJournals": "일지 보기"
+  "routeDetail.viewJournals": "일지 보기",
+  "routes.hero.title": "영혼의 순례 여행을 떠나세요",
+  "routes.hero.eyebrow": "문화 여행 루트",
+  "routes.hero.statRoutes": "개 엄선 루트",
+  "routes.hero.statTraditions": "개 문화 전통",
+  "routes.hero.statCountries": "개국",
+  "routes.featured.title": "인기 추천 루트",
+  "routes.featured.subtitle": "이번 주 가장 인기 있는 문화 여행",
+  "routes.card.stops": "{count}곳",
+  "routes.card.departed": "{count}명 출발",
+  "routes.card.dayLabel": "D{day}"
 }

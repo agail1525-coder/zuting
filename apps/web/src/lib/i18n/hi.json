@@ -1983,5 +1983,15 @@
   "routeDetail.sitesAlong": "मार्ग पर पवित्र स्थल",
   "routeDetail.pilgrimJournals": "तीर्थयात्री डायरी",
   "routeDetail.pilgrimJournalsDesc": "इस मार्ग पर चले तीर्थयात्रियों की डायरी पढ़ें",
-  "routeDetail.viewJournals": "डायरी देखें"
+  "routeDetail.viewJournals": "डायरी देखें",
+  "routes.hero.title": "आध्यात्मिक तीर्थयात्रा पर निकलें",
+  "routes.hero.eyebrow": "सांस्कृतिक यात्रा मार्ग",
+  "routes.hero.statRoutes": "चुनिंदा मार्ग",
+  "routes.hero.statTraditions": "सांस्कृतिक परंपराएँ",
+  "routes.hero.statCountries": "देश",
+  "routes.featured.title": "लोकप्रिय मार्ग",
+  "routes.featured.subtitle": "इस सप्ताह की सबसे लोकप्रिय सांस्कृतिक यात्राएँ",
+  "routes.card.stops": "{count} पड़ाव",
+  "routes.card.departed": "{count} यात्री",
+  "routes.card.dayLabel": "D{day}"
 }

@@ -1983,5 +1983,15 @@
   "routeDetail.sitesAlong": "経由する聖地",
   "routeDetail.pilgrimJournals": "巡礼日記",
   "routeDetail.pilgrimJournalsDesc": "このルートを巡った巡礼者の記録を読む",
-  "routeDetail.viewJournals": "日記を見る"
+  "routeDetail.viewJournals": "日記を見る",
+  "routes.hero.title": "心の巡礼の旅に出よう",
+  "routes.hero.eyebrow": "文化の旅ルート",
+  "routes.hero.statRoutes": "本の厳選ルート",
+  "routes.hero.statTraditions": "つの文化伝統",
+  "routes.hero.statCountries": "カ国",
+  "routes.featured.title": "人気おすすめルート",
+  "routes.featured.subtitle": "今週最も人気の文化の旅",
+  "routes.card.stops": "{count}駅",
+  "routes.card.departed": "{count}人参加",
+  "routes.card.dayLabel": "D{day}"
 }

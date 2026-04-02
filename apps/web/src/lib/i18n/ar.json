@@ -1983,5 +1983,15 @@
   "routeDetail.sitesAlong": "المواقع المقدسة على المسار",
   "routeDetail.pilgrimJournals": "يوميات الحجاج",
   "routeDetail.pilgrimJournalsDesc": "اقرأ يوميات الحجاج الذين سلكوا هذا المسار",
-  "routeDetail.viewJournals": "عرض اليوميات"
+  "routeDetail.viewJournals": "عرض اليوميات",
+  "routes.hero.title": "انطلق في رحلة حج روحية",
+  "routes.hero.eyebrow": "مسارات الرحلات الثقافية",
+  "routes.hero.statRoutes": "مسار مختار",
+  "routes.hero.statTraditions": "تقاليد ثقافية",
+  "routes.hero.statCountries": "دولة",
+  "routes.featured.title": "المسارات الرائجة",
+  "routes.featured.subtitle": "أكثر الرحلات الثقافية شعبية هذا الأسبوع",
+  "routes.card.stops": "{count} محطة",
+  "routes.card.departed": "{count} مسافر",
+  "routes.card.dayLabel": "D{day}"
 }

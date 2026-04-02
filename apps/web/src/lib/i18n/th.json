@@ -1983,5 +1983,15 @@
   "routeDetail.sitesAlong": "สถานที่ศักดิ์สิทธิ์บนเส้นทาง",
   "routeDetail.pilgrimJournals": "บันทึกผู้แสวงบุญ",
   "routeDetail.pilgrimJournalsDesc": "อ่านบันทึกจากผู้แสวงบุญที่เดินเส้นทางนี้",
-  "routeDetail.viewJournals": "ดูบันทึก"
+  "routeDetail.viewJournals": "ดูบันทึก",
+  "routes.hero.title": "ออกเดินทางแสวงบุญทางจิตวิญญาณ",
+  "routes.hero.eyebrow": "เส้นทางท่องเที่ยววัฒนธรรม",
+  "routes.hero.statRoutes": "เส้นทางคัดสรร",
+  "routes.hero.statTraditions": "ประเพณีวัฒนธรรม",
+  "routes.hero.statCountries": "ประเทศ",
+  "routes.featured.title": "เส้นทางยอดนิยม",
+  "routes.featured.subtitle": "การเดินทางวัฒนธรรมยอดนิยมประจำสัปดาห์",
+  "routes.card.stops": "{count} จุด",
+  "routes.card.departed": "{count} นักเดินทาง",
+  "routes.card.dayLabel": "D{day}"
 }
