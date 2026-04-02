@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { Patriarch } from "@/lib/api";
-import { PATRIARCH_JOURNEYS } from "./patriarch-journeys";
+import { PATRIARCH_JOURNEYS, SCHOOL_COLORS } from "./journeys";
 import {
   AtlasFilterBar,
   AtlasLegend,
@@ -10,45 +10,47 @@ import {
   createAtlasMapDynamic,
 } from "@/components/atlas";
 import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
-import { SCHOOL_COLORS } from "./patriarch-journeys";
-import { DEFAULT_TYPE_LABELS } from "@/components/atlas";
 
-const ZEN_ATLAS_CONFIG: AtlasConfig = {
-  religionKey: "zen",
-  title: "禅宗祖师大图谱",
-  subtitle: "五家七宗 · 千年法脉",
-  themeColor: "#C4A265",
-  backUrl: "/zen-patriarchs",
-  detailUrlPrefix: "/zen-patriarchs",
-  defaultCenter: [30, 115],
+const TAOIST_TYPE_LABELS = {
+  birth: "降世",
+  ordination: "入道",
+  dharma: "悟道",
+  teaching: "弘道",
+  founding: "开派",
+  pilgrimage: "云游",
+  exile: "隐修",
+  death: "飞升",
+  other: "事件",
+} as const;
+
+const TAOIST_ATLAS_CONFIG: AtlasConfig = {
+  religionKey: "taoist",
+  title: "道教先贤大图谱",
+  subtitle: "仙踪道迹 · 洞天福地",
+  themeColor: "#10B981",
+  backUrl: "/taoist-patriarchs",
+  detailUrlPrefix: "/taoist-patriarchs",
+  defaultCenter: [33, 108],
   defaultZoom: 5,
   filters: [
-    { key: "all", name: "全部", color: "#C4A265" },
-    { key: "曹洞宗", name: "曹洞", color: SCHOOL_COLORS["曹洞宗"] },
-    { key: "临济宗", name: "临济", color: SCHOOL_COLORS["临济宗"] },
-    { key: "云门宗", name: "云门", color: SCHOOL_COLORS["云门宗"] },
-    { key: "法眼宗", name: "法眼", color: SCHOOL_COLORS["法眼宗"] },
-    { key: "沩仰宗", name: "沩仰", color: SCHOOL_COLORS["沩仰宗"] },
-    { key: "overseas", name: "海外", color: "#FF6B8A" },
+    { key: "all", name: "全部", color: "#10B981" },
+    { key: "道家", name: "道家", color: SCHOOL_COLORS["道家"] },
+    { key: "天师道", name: "天师道", color: SCHOOL_COLORS["天师道"] },
+    { key: "全真道", name: "全真道", color: SCHOOL_COLORS["全真道"] },
+    { key: "正一道", name: "正一道", color: SCHOOL_COLORS["正一道"] },
   ],
   legendItems: [
-    { name: "曹洞宗", color: SCHOOL_COLORS["曹洞宗"] },
-    { name: "临济宗", color: SCHOOL_COLORS["临济宗"] },
-    { name: "云门宗", color: SCHOOL_COLORS["云门宗"] },
-    { name: "法眼宗", color: SCHOOL_COLORS["法眼宗"] },
-    { name: "沩仰宗", color: SCHOOL_COLORS["沩仰宗"] },
-    { name: "日本禅", color: "#FF6B8A" },
-    { name: "韩国禅", color: "#4ECDC4" },
-    { name: "越南禅", color: "#FFD93D" },
-    { name: "西方禅", color: "#9B59B6" },
+    { name: "道家", color: SCHOOL_COLORS["道家"] },
+    { name: "天师道", color: SCHOOL_COLORS["天师道"] },
+    { name: "全真道", color: SCHOOL_COLORS["全真道"] },
+    { name: "正一道", color: SCHOOL_COLORS["正一道"] },
   ],
   schoolColors: SCHOOL_COLORS,
-  typeLabels: DEFAULT_TYPE_LABELS,
-  overseasSchools: ["日本曹洞宗", "日本临济宗", "韩国禅宗", "越南禅宗", "西方禅宗"],
-  loadingText: "正在加载祖师大图谱...",
+  typeLabels: TAOIST_TYPE_LABELS,
+  loadingText: "正在加载道教先贤大图谱...",
 };
 
-const AtlasMapDynamic = createAtlasMapDynamic(ZEN_ATLAS_CONFIG);
+const AtlasMapDynamic = createAtlasMapDynamic(TAOIST_ATLAS_CONFIG);
 
 interface Props {
   patriarchs: Patriarch[];
@@ -103,11 +105,11 @@ export default function AtlasClient({ patriarchs }: Props) {
         showLineage={showLineage}
         activeWaypointIndex={activeWaypointIndex}
         onPatriarchClick={handlePatriarchClick}
-        config={ZEN_ATLAS_CONFIG}
+        config={TAOIST_ATLAS_CONFIG}
       />
 
       <AtlasFilterBar
-        config={ZEN_ATLAS_CONFIG}
+        config={TAOIST_ATLAS_CONFIG}
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
         showLineage={showLineage}
@@ -116,9 +118,9 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="禅宗五家七宗"
-          items={ZEN_ATLAS_CONFIG.legendItems}
-          themeColor={ZEN_ATLAS_CONFIG.themeColor}
+          title="道教法脉传承"
+          items={TAOIST_ATLAS_CONFIG.legendItems}
+          themeColor={TAOIST_ATLAS_CONFIG.themeColor}
         />
       )}
 
@@ -129,19 +131,19 @@ export default function AtlasClient({ patriarchs }: Props) {
           activeWaypointIndex={activeWaypointIndex}
           onWaypointClick={handleWaypointClick}
           onClose={handleClose}
-          config={ZEN_ATLAS_CONFIG}
+          config={TAOIST_ATLAS_CONFIG}
         />
       )}
 
       {!selectedId && (
         <div className="absolute bottom-6 right-4 z-[999] text-right pointer-events-none">
-          <h1 className="text-2xl md:text-3xl font-bold text-[#C4A265]/80 tracking-wider"
+          <h1 className="text-2xl md:text-3xl font-bold text-[#10B981]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            禅宗祖师大图谱
+            道教先贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            {patriarchs.length}位祖师 · 五家七宗 · 千年法脉
+            {patriarchs.length}位先贤 · 仙踪道迹 · 洞天福地
           </p>
         </div>
       )}

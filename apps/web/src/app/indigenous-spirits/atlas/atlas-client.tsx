@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { Patriarch } from "@/lib/api";
-import { PATRIARCH_JOURNEYS } from "./patriarch-journeys";
+import { PATRIARCH_JOURNEYS, SCHOOL_COLORS } from "./journeys";
 import {
   AtlasFilterBar,
   AtlasLegend,
@@ -10,45 +10,47 @@ import {
   createAtlasMapDynamic,
 } from "@/components/atlas";
 import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
-import { SCHOOL_COLORS } from "./patriarch-journeys";
-import { DEFAULT_TYPE_LABELS } from "@/components/atlas";
 
-const ZEN_ATLAS_CONFIG: AtlasConfig = {
-  religionKey: "zen",
-  title: "禅宗祖师大图谱",
-  subtitle: "五家七宗 · 千年法脉",
-  themeColor: "#C4A265",
-  backUrl: "/zen-patriarchs",
-  detailUrlPrefix: "/zen-patriarchs",
-  defaultCenter: [30, 115],
-  defaultZoom: 5,
+const INDIGENOUS_ATLAS_CONFIG: AtlasConfig = {
+  religionKey: "indigenous",
+  title: "原住民灵性大图谱",
+  subtitle: "大地之声 · 万族传承",
+  themeColor: "#78716C",
+  backUrl: "/indigenous-spirits",
+  detailUrlPrefix: "/indigenous-spirits",
+  defaultCenter: [10, 20],
+  defaultZoom: 2,
   filters: [
-    { key: "all", name: "全部", color: "#C4A265" },
-    { key: "曹洞宗", name: "曹洞", color: SCHOOL_COLORS["曹洞宗"] },
-    { key: "临济宗", name: "临济", color: SCHOOL_COLORS["临济宗"] },
-    { key: "云门宗", name: "云门", color: SCHOOL_COLORS["云门宗"] },
-    { key: "法眼宗", name: "法眼", color: SCHOOL_COLORS["法眼宗"] },
-    { key: "沩仰宗", name: "沩仰", color: SCHOOL_COLORS["沩仰宗"] },
-    { key: "overseas", name: "海外", color: "#FF6B8A" },
+    { key: "all", name: "全部", color: "#78716C" },
+    { key: "北美原住民", name: "北美", color: SCHOOL_COLORS["北美原住民"] },
+    { key: "中美原住民", name: "中美", color: SCHOOL_COLORS["中美原住民"] },
+    { key: "南美原住民", name: "南美", color: SCHOOL_COLORS["南美原住民"] },
+    { key: "非洲传统", name: "非洲", color: SCHOOL_COLORS["非洲传统"] },
+    { key: "大洋洲原住民", name: "大洋洲", color: SCHOOL_COLORS["大洋洲原住民"] },
   ],
   legendItems: [
-    { name: "曹洞宗", color: SCHOOL_COLORS["曹洞宗"] },
-    { name: "临济宗", color: SCHOOL_COLORS["临济宗"] },
-    { name: "云门宗", color: SCHOOL_COLORS["云门宗"] },
-    { name: "法眼宗", color: SCHOOL_COLORS["法眼宗"] },
-    { name: "沩仰宗", color: SCHOOL_COLORS["沩仰宗"] },
-    { name: "日本禅", color: "#FF6B8A" },
-    { name: "韩国禅", color: "#4ECDC4" },
-    { name: "越南禅", color: "#FFD93D" },
-    { name: "西方禅", color: "#9B59B6" },
+    { name: "北美原住民", color: SCHOOL_COLORS["北美原住民"] },
+    { name: "中美原住民", color: SCHOOL_COLORS["中美原住民"] },
+    { name: "南美原住民", color: SCHOOL_COLORS["南美原住民"] },
+    { name: "非洲传统", color: SCHOOL_COLORS["非洲传统"] },
+    { name: "大洋洲原住民", color: SCHOOL_COLORS["大洋洲原住民"] },
   ],
   schoolColors: SCHOOL_COLORS,
-  typeLabels: DEFAULT_TYPE_LABELS,
-  overseasSchools: ["日本曹洞宗", "日本临济宗", "韩国禅宗", "越南禅宗", "西方禅宗"],
-  loadingText: "正在加载祖师大图谱...",
+  typeLabels: {
+    birth: "诞生",
+    ordination: "受命",
+    dharma: "觉醒",
+    teaching: "传承",
+    founding: "创立",
+    pilgrimage: "迁徙",
+    exile: "抵抗",
+    death: "归灵",
+    other: "事件",
+  },
+  loadingText: "正在加载原住民灵性大图谱...",
 };
 
-const AtlasMapDynamic = createAtlasMapDynamic(ZEN_ATLAS_CONFIG);
+const AtlasMapDynamic = createAtlasMapDynamic(INDIGENOUS_ATLAS_CONFIG);
 
 interface Props {
   patriarchs: Patriarch[];
@@ -103,11 +105,11 @@ export default function AtlasClient({ patriarchs }: Props) {
         showLineage={showLineage}
         activeWaypointIndex={activeWaypointIndex}
         onPatriarchClick={handlePatriarchClick}
-        config={ZEN_ATLAS_CONFIG}
+        config={INDIGENOUS_ATLAS_CONFIG}
       />
 
       <AtlasFilterBar
-        config={ZEN_ATLAS_CONFIG}
+        config={INDIGENOUS_ATLAS_CONFIG}
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
         showLineage={showLineage}
@@ -116,9 +118,9 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="禅宗五家七宗"
-          items={ZEN_ATLAS_CONFIG.legendItems}
-          themeColor={ZEN_ATLAS_CONFIG.themeColor}
+          title="全球原住民传统"
+          items={INDIGENOUS_ATLAS_CONFIG.legendItems}
+          themeColor={INDIGENOUS_ATLAS_CONFIG.themeColor}
         />
       )}
 
@@ -129,19 +131,19 @@ export default function AtlasClient({ patriarchs }: Props) {
           activeWaypointIndex={activeWaypointIndex}
           onWaypointClick={handleWaypointClick}
           onClose={handleClose}
-          config={ZEN_ATLAS_CONFIG}
+          config={INDIGENOUS_ATLAS_CONFIG}
         />
       )}
 
       {!selectedId && (
         <div className="absolute bottom-6 right-4 z-[999] text-right pointer-events-none">
-          <h1 className="text-2xl md:text-3xl font-bold text-[#C4A265]/80 tracking-wider"
+          <h1 className="text-2xl md:text-3xl font-bold text-[#78716C]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            禅宗祖师大图谱
+            原住民灵性大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            {patriarchs.length}位祖师 · 五家七宗 · 千年法脉
+            {patriarchs.length}位先知 · 大地之声 · 万族传承
           </p>
         </div>
       )}
