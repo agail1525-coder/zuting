@@ -75,7 +75,7 @@ function getTrustBadges(t: (key: string) => string) {
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   ZEN:            { bg: "bg-stone-100",   text: "text-stone-700" },
-  BUDDHIST:       { bg: "bg-amber-50",    text: "text-amber-700" },
+  BUDDHIST:       { bg: "bg-blue-50",    text: "text-[#0066FF]" },
   TAOIST:         { bg: "bg-emerald-50",  text: "text-emerald-700" },
   CHRISTIAN:      { bg: "bg-blue-50",     text: "text-blue-700" },
   ISLAMIC:        { bg: "bg-green-50",    text: "text-green-700" },
@@ -124,7 +124,7 @@ function FeaturedRouteCard({ route, t }: { route: Route; t: (key: string) => str
         {route.coverImage ? (
           <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-amber-900 to-stone-800" />
+          <div className="w-full h-full bg-gradient-to-br from-blue-900 to-blue-950" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
 
@@ -134,7 +134,7 @@ function FeaturedRouteCard({ route, t }: { route: Route; t: (key: string) => str
             {sites.slice(0, 4).map((site, i, arr) => (
               <Fragment key={site.id}>
                 <div className="flex flex-col items-center shrink-0">
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white shadow" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#0066FF] border-2 border-white shadow" />
                   <span className="text-[9px] text-white/80 mt-0.5 max-w-[70px] truncate text-center">{site.site.name}</span>
                 </div>
                 {i < arr.length - 1 && <div className="flex-1 min-w-[12px] h-px border-t border-dashed border-white/40 -mt-3" />}
@@ -170,7 +170,7 @@ function FeaturedRouteCard({ route, t }: { route: Route; t: (key: string) => str
             </div>
           )}
           <div className="flex items-center justify-between mt-3">
-            <span className="text-lg font-bold text-amber-400">¥{price}<span className="text-xs text-white/50 font-normal">/人</span></span>
+            <span className="text-lg font-bold text-blue-300">¥{price}<span className="text-xs text-white/50 font-normal">/人</span></span>
             {route.rating && (
               <span className="flex items-center gap-1 text-white text-sm">
                 ★ {route.rating.toFixed(1)}
@@ -213,14 +213,14 @@ function JourneyRouteCard({
   return (
     <div className="group relative">
       <Link href={`/routes/${route.slug}`} className="block">
-        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:border-amber-200/50 transition-all duration-300">
+        <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:border-blue-200/50 transition-all duration-300">
           <div className="flex flex-col md:flex-row">
             {/* Image section */}
             <div className="relative md:w-[280px] h-52 md:h-auto md:min-h-[240px] shrink-0 overflow-hidden">
               {route.coverImage ? (
                 <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-amber-800 to-stone-700 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-blue-800 to-blue-950 flex items-center justify-center">
                   <span className="text-5xl opacity-30">{categories.find((c) => c.value === route.category)?.icon ?? "🌏"}</span>
                 </div>
               )}
@@ -228,7 +228,7 @@ function JourneyRouteCard({
 
               {/* Badges */}
               {isBestSeller && (
-                <span className="absolute top-3 left-3 px-2.5 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-full shadow-lg">
+                <span className="absolute top-3 left-3 px-2.5 py-1 bg-blue-500 text-white text-[10px] font-bold rounded-full shadow-lg">
                   🔥 {t("routes.bestSeller")}
                 </span>
               )}
@@ -258,14 +258,14 @@ function JourneyRouteCard({
                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text}`}>{categoryLabel}</span>
                 <span className="text-xs text-gray-400">{difficultyLabels[route.difficulty] ?? route.difficulty}</span>
                 {route.bookCount > 10 && route.bookCount <= 50 && (
-                  <span className="ml-auto px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded">
+                  <span className="ml-auto px-2 py-0.5 bg-blue-50 text-[#0066FF] text-[10px] font-medium rounded">
                     {t("routes.badge.weeklyBookings").replace("{count}", String(route.bookCount))}
                   </span>
                 )}
               </div>
 
               {/* Title */}
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-amber-800 transition-colors mt-2">{route.title}</h3>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#0066FF] transition-colors mt-2">{route.title}</h3>
               <p className="text-sm text-gray-500 mt-1 line-clamp-1">{route.subtitle}</p>
 
               {/* Journey path visualization */}
@@ -275,13 +275,13 @@ function JourneyRouteCard({
                     <Fragment key={site.id}>
                       <div className="flex flex-col items-center shrink-0">
                         <div className={`w-2.5 h-2.5 rounded-full border-2 ${
-                          i === 0 ? "bg-amber-500 border-amber-500" :
+                          i === 0 ? "bg-blue-500 border-blue-500" :
                           i === arr.length - 1 ? "bg-emerald-500 border-emerald-500" :
-                          "bg-white border-amber-400"
+                          "bg-white border-blue-400"
                         }`} />
                         <span className="text-[9px] text-gray-400 mt-0.5 max-w-[60px] truncate text-center leading-tight">{site.site.name}</span>
                       </div>
-                      {i < arr.length - 1 && <div className="flex-1 min-w-[12px] max-w-[40px] h-px border-t border-dashed border-amber-300 mt-[5px]" />}
+                      {i < arr.length - 1 && <div className="flex-1 min-w-[12px] max-w-[40px] h-px border-t border-dashed border-blue-300 mt-[5px]" />}
                     </Fragment>
                   ))}
                   {sites.length > 5 && <span className="text-[10px] text-gray-400 ml-1 mt-0.5">+{sites.length - 5}</span>}
@@ -293,7 +293,7 @@ function JourneyRouteCard({
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
                   {itinerary.slice(0, 3).map((day) => (
                     <span key={day.day} className="text-xs text-gray-500">
-                      <span className="font-semibold text-amber-700">D{day.day}</span> {day.title}
+                      <span className="font-semibold text-[#0066FF]">D{day.day}</span> {day.title}
                     </span>
                   ))}
                   {itinerary.length > 3 && <span className="text-xs text-gray-400">...</span>}
@@ -303,7 +303,7 @@ function JourneyRouteCard({
               {/* Highlights */}
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {route.highlights.slice(0, 3).map((h) => (
-                  <span key={h} className="px-2 py-0.5 text-xs bg-amber-50 text-amber-700 rounded border border-amber-200/50">{h}</span>
+                  <span key={h} className="px-2 py-0.5 text-xs bg-blue-50 text-[#0066FF] rounded border border-blue-200/50">{h}</span>
                 ))}
                 {route.highlights.length > 3 && <span className="px-2 py-0.5 text-xs bg-gray-100 text-gray-400 rounded">+{route.highlights.length - 3}</span>}
               </div>
@@ -312,12 +312,12 @@ function JourneyRouteCard({
               <div className="mt-auto pt-3 flex items-center justify-between border-t border-gray-100">
                 <div>
                   <span className="text-xs text-gray-400">{t("routes.card.priceFrom")}</span>
-                  <span className="text-xl font-bold text-amber-800 ml-1">¥{price}</span>
+                  <span className="text-xl font-bold text-[#0066FF] ml-1">¥{price}</span>
                   <span className="text-xs text-gray-400">{t("routes.card.perPerson")}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   {route.rating && (
-                    <span className="flex items-center gap-0.5 px-2 py-0.5 bg-amber-50 rounded text-amber-700 font-bold text-xs">
+                    <span className="flex items-center gap-0.5 px-2 py-0.5 bg-blue-50 rounded text-[#0066FF] font-bold text-xs">
                       ★ {route.rating.toFixed(1)}
                     </span>
                   )}
@@ -336,8 +336,8 @@ function JourneyRouteCard({
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleCompare(route.id); }}
         className={`absolute top-3 right-3 md:top-3 md:right-auto md:left-[248px] z-10 px-2.5 py-1 rounded-full text-[10px] font-medium transition-all border ${
           isComparing
-            ? "bg-amber-700 text-white border-amber-700 shadow-md"
-            : "bg-white/90 text-gray-600 border-gray-200 hover:border-amber-500 hover:text-amber-700 opacity-0 group-hover:opacity-100"
+            ? "bg-[#0066FF] text-white border-blue-700 shadow-md"
+            : "bg-white/90 text-gray-600 border-gray-200 hover:border-blue-500 hover:text-[#0066FF] opacity-0 group-hover:opacity-100"
         }`}
       >
         {isComparing ? t("routes.compare.remove") : t("routes.compare.add")}
@@ -379,12 +379,12 @@ function ComparisonBar({
               <div />
               {compareRoutes.map((r) => (
                 <div key={r.id} className="text-center">
-                  <Link href={`/routes/${r.slug}`} className="text-sm font-bold text-gray-900 hover:text-amber-700 line-clamp-2">{r.title}</Link>
+                  <Link href={`/routes/${r.slug}`} className="text-sm font-bold text-gray-900 hover:text-[#0066FF] line-clamp-2">{r.title}</Link>
                   <button onClick={() => onRemove(r.id)} className="block mx-auto mt-1 text-[10px] text-red-500 hover:underline">{t("routes.compare.remove")}</button>
                 </div>
               ))}
               <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.price")}</div>
-              {compareRoutes.map((r) => <div key={r.id} className="text-center text-sm font-bold text-amber-800">¥{(r.priceFrom / 100).toLocaleString()}</div>)}
+              {compareRoutes.map((r) => <div key={r.id} className="text-center text-sm font-bold text-[#0066FF]">¥{(r.priceFrom / 100).toLocaleString()}</div>)}
               <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.duration")}</div>
               {compareRoutes.map((r) => <div key={r.id} className="text-center text-sm text-gray-700">{r.duration}天{r.nights}晚</div>)}
               <div className="text-xs font-medium text-gray-500 flex items-center">{t("routes.compare.difficulty")}</div>
@@ -395,7 +395,7 @@ function ComparisonBar({
               {compareRoutes.map((r) => (
                 <div key={r.id} className="text-center">
                   <div className="flex flex-wrap justify-center gap-1">
-                    {r.highlights.slice(0, 4).map((h) => <span key={h} className="px-1.5 py-0.5 text-[10px] bg-amber-50 text-amber-700 rounded">{h}</span>)}
+                    {r.highlights.slice(0, 4).map((h) => <span key={h} className="px-1.5 py-0.5 text-[10px] bg-blue-50 text-[#0066FF] rounded">{h}</span>)}
                   </div>
                 </div>
               ))}
@@ -421,7 +421,7 @@ function ComparisonBar({
           </div>
           <div className="flex items-center gap-2">
             <button onClick={onClear} className="text-xs text-gray-500 hover:text-gray-700 px-3 py-1.5">{t("routes.compare.clear")}</button>
-            <button onClick={() => setExpanded(!expanded)} className="px-4 py-2 bg-amber-700 text-white text-sm font-medium rounded-lg hover:bg-amber-800 transition-colors">
+            <button onClick={() => setExpanded(!expanded)} className="px-4 py-2 bg-[#0066FF] text-white text-sm font-medium rounded-lg hover:bg-[#0052CC] transition-colors">
               {t("routes.compare.view")}
             </button>
           </div>
@@ -446,23 +446,23 @@ function PriceRangeFilter({
       <div className="flex items-center gap-1.5">
         <input type="number" min={minPrice} max={priceRange[1]} value={priceRange[0]}
           onChange={(e) => onPriceRangeChange([Math.max(minPrice, Number(e.target.value)), priceRange[1]])}
-          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-amber-500/40" />
+          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500/40" />
         <span className="text-gray-300">—</span>
         <input type="number" min={priceRange[0]} max={maxPrice} value={priceRange[1]}
           onChange={(e) => onPriceRangeChange([priceRange[0], Math.min(maxPrice, Number(e.target.value))])}
-          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-amber-500/40" />
+          className="w-20 px-2 py-1.5 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-1 focus:ring-blue-500/40" />
       </div>
       <div className="hidden sm:flex items-center gap-1 flex-1 min-w-[100px] max-w-[200px]">
         <span className="text-[10px] text-gray-400">¥{minPrice.toLocaleString()}</span>
         <div className="flex-1 h-1.5 bg-gray-200 rounded-full relative">
-          <div className="absolute h-full bg-amber-600 rounded-full" style={{
+          <div className="absolute h-full bg-[#0066FF] rounded-full" style={{
             left: `${((priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`,
             right: `${100 - ((priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100}%`,
           }} />
         </div>
         <span className="text-[10px] text-gray-400">¥{maxPrice.toLocaleString()}</span>
       </div>
-      {isActive && <button onClick={onReset} className="text-[10px] text-amber-700 hover:underline">{t("routes.priceRange.reset")}</button>}
+      {isActive && <button onClick={onReset} className="text-[10px] text-[#0066FF] hover:underline">{t("routes.priceRange.reset")}</button>}
     </div>
   );
 }
@@ -574,9 +574,9 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
     (priceStats && (priceRange[0] > priceStats.min || priceRange[1] < priceStats.max)));
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-gray-50">
       {/* ── Hero: tight header + image gallery + smooth fade to content ── */}
-      <section className="pt-20 bg-gradient-to-b from-amber-900 via-amber-950 to-stone-50">
+      <section className="pt-20 bg-gradient-to-b from-[#0B3D91] via-[#1A56B0] to-gray-50">
         {/* Row 1: Title left + Stats right — single compact row */}
         <div className="max-w-7xl mx-auto px-4 pt-6 pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -604,7 +604,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
           <div className="max-w-7xl mx-auto px-4 pb-8">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm">🔥</span>
-              <span className="text-xs font-semibold text-amber-400">{t("routes.featured.title")}</span>
+              <span className="text-xs font-semibold text-blue-300">{t("routes.featured.title")}</span>
               <span className="text-[10px] text-white/25 ml-auto hidden sm:block">{t("routes.featured.subtitle")}</span>
             </div>
             <div className="flex gap-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
@@ -616,7 +616,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
                       {route.coverImage ? (
                         <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-amber-800 to-stone-700" />
+                        <div className="w-full h-full bg-gradient-to-br from-blue-800 to-blue-950" />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
@@ -634,14 +634,14 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
                             {sites.slice(0, 3).map((site, i, arr) => (
                               <Fragment key={site.id}>
                                 <span className="text-[8px] text-white/60 shrink-0 max-w-[55px] truncate">{site.site.name}</span>
-                                {i < arr.length - 1 && <span className="text-[8px] text-amber-400/50 mx-0.5">→</span>}
+                                {i < arr.length - 1 && <span className="text-[8px] text-blue-300/50 mx-0.5">→</span>}
                               </Fragment>
                             ))}
                             {sites.length > 3 && <span className="text-[8px] text-white/30 ml-0.5">+{sites.length - 3}</span>}
                           </div>
                         )}
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-[13px] font-bold text-amber-400">¥{(route.priceFrom / 100).toLocaleString()}<span className="text-[9px] text-white/35 font-normal">/人</span></span>
+                          <span className="text-[13px] font-bold text-blue-300">¥{(route.priceFrom / 100).toLocaleString()}<span className="text-[9px] text-white/35 font-normal">/人</span></span>
                           {route.rating && <span className="text-[9px] text-white/60">★ {route.rating.toFixed(1)}</span>}
                         </div>
                       </div>
@@ -677,7 +677,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
                 onClick={() => handleFilter(c.value, undefined, undefined)}
                 className={`shrink-0 px-4 py-3 text-sm font-medium transition-all flex items-center gap-1.5 border-b-2 whitespace-nowrap ${
                   category === c.value
-                    ? "border-amber-700 text-amber-800"
+                    ? "border-blue-700 text-[#0066FF]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -698,34 +698,34 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
               <input
                 type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder={t("routes.search.placeholder")}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-600"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600"
               />
             </div>
 
             <select value={difficulty} onChange={(e) => handleFilter(undefined, e.target.value, undefined)}
-              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
               {difficulties.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
             </select>
 
             <select value={durationFilter} onChange={(e) => setDurationFilter(e.target.value)}
-              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
               {durationFilters.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
             </select>
 
             <select value={sort} onChange={(e) => handleFilter(undefined, undefined, e.target.value)}
-              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500/30">
+              className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
               {sortOptions.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
             </select>
 
             {/* View toggle */}
             <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5 ml-auto">
               <button onClick={() => setViewMode("grid")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "grid" ? "bg-white text-amber-700 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "grid" ? "bg-white text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                 {t("routes.viewGrid")}
               </button>
               <button onClick={() => setViewMode("map")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "map" ? "bg-white text-amber-700 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${viewMode === "map" ? "bg-white text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
                 {t("routes.viewMap")}
               </button>
@@ -744,7 +744,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
           {hasActiveFilters && (
             <div className="py-2 flex items-center gap-2 text-sm">
               <span className="text-gray-400">{t("routes.filter.found").replace("{count}", String(displayRoutes.length))}</span>
-              <button onClick={clearAllFilters} className="text-amber-700 hover:underline text-xs">{t("routes.filter.clearAll")}</button>
+              <button onClick={clearAllFilters} className="text-[#0066FF] hover:underline text-xs">{t("routes.filter.clearAll")}</button>
             </div>
           )}
         </div>
@@ -769,7 +769,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
               <span className="text-5xl block mb-4">🔍</span>
               <p className="text-lg">{t("routes.empty.title")}</p>
               <p className="text-sm text-gray-400 mt-1">{t("routes.empty.subtitle")}</p>
-              <button onClick={clearAllFilters} className="mt-4 text-amber-700 hover:underline text-sm">{t("routes.empty.clearFilters")}</button>
+              <button onClick={clearAllFilters} className="mt-4 text-[#0066FF] hover:underline text-sm">{t("routes.empty.clearFilters")}</button>
             </div>
           )}
 
@@ -799,7 +799,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
                   <span key={p}>
                     {idx > 0 && arr[idx - 1] !== p - 1 && <span className="text-gray-300 mx-1">...</span>}
                     <button onClick={() => handlePageChange(p)}
-                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${p === page ? "bg-amber-700 text-white shadow-sm" : "text-gray-600 hover:bg-gray-100"}`}>
+                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${p === page ? "bg-[#0066FF] text-white shadow-sm" : "text-gray-600 hover:bg-gray-100"}`}>
                       {p}
                     </button>
                   </span>
@@ -820,7 +820,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
 
         {/* ── Bottom CTA ── */}
         <div className="max-w-7xl mx-auto px-4 mt-12">
-          <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl p-8 border border-amber-200/50">
+          <div className="bg-gradient-to-r from-blue-50 via-sky-50 to-blue-50 rounded-2xl p-8 border border-blue-200/50">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-xl font-bold text-gray-900">{t("routes.cta.title")}</h2>
@@ -828,7 +828,7 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
               </div>
               <div className="flex gap-3">
                 <Link href="/chat"
-                  className="px-6 py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-amber-900/20 text-sm">
+                  className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-500/20 text-sm">
                   {t("routes.cta.aiCustomize")}
                 </Link>
                 <Link href="/packages"
