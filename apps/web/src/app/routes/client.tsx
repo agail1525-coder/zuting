@@ -575,36 +575,26 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
 
   return (
     <div className="min-h-screen bg-stone-50">
-      {/* ── Compact Hero — functional, not decorative ── */}
+      {/* ── Hero: compact header + featured route gallery strip ── */}
       <section className="pt-20 bg-gradient-to-b from-amber-900 via-amber-950 to-stone-900">
-        <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            {/* Left: Title + subtitle */}
+        {/* Top: text + stats */}
+        <div className="max-w-7xl mx-auto px-4 pt-8 pb-6 md:pt-10 md:pb-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
             <div>
               <span className="text-amber-400/80 text-xs font-medium tracking-[0.2em] uppercase">{t("routes.hero.eyebrow")}</span>
               <h1 className="text-3xl md:text-4xl font-bold text-white mt-2 leading-tight">{t("routes.hero.title")}</h1>
               <p className="text-sm text-white/50 mt-2 max-w-lg">{t("routes.hero.subtitle").replace("{total}", String(total))}</p>
             </div>
-            {/* Right: Stats row */}
-            <div className="flex items-center gap-5 text-white/80">
-              <div className="text-center">
-                <div className="text-xl font-bold">{total}+</div>
-                <div className="text-[10px] text-white/40">{t("routes.hero.statRoutes")}</div>
-              </div>
+            <div className="flex items-center gap-5 text-white/80 shrink-0">
+              <div className="text-center"><div className="text-xl font-bold">{total}+</div><div className="text-[10px] text-white/40">{t("routes.hero.statRoutes")}</div></div>
               <div className="w-px h-7 bg-white/15" />
-              <div className="text-center">
-                <div className="text-xl font-bold">6</div>
-                <div className="text-[10px] text-white/40">{t("routes.hero.statTraditions")}</div>
-              </div>
+              <div className="text-center"><div className="text-xl font-bold">6</div><div className="text-[10px] text-white/40">{t("routes.hero.statTraditions")}</div></div>
               <div className="w-px h-7 bg-white/15" />
-              <div className="text-center">
-                <div className="text-xl font-bold">15+</div>
-                <div className="text-[10px] text-white/40">{t("routes.hero.statCountries")}</div>
-              </div>
+              <div className="text-center"><div className="text-xl font-bold">15+</div><div className="text-[10px] text-white/40">{t("routes.hero.statCountries")}</div></div>
             </div>
           </div>
-          {/* Trust badges inline */}
-          <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 pt-5 border-t border-white/10">
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-5 pt-4 border-t border-white/10">
             {trustBadges.map((b) => (
               <span key={b.text} className="flex items-center gap-1.5 text-xs text-white/40">
                 <span>{b.icon}</span><span>{b.text}</span>
@@ -612,19 +602,77 @@ export default function RoutesClient({ initialData, featuredRoutes, error }: Pro
             ))}
           </div>
         </div>
+
+        {/* Bottom: Featured route image gallery strip — functional, clickable */}
+        {featuredRoutes.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 pb-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🔥</span>
+                <h2 className="text-sm font-semibold text-amber-400">{t("routes.featured.title")}</h2>
+              </div>
+              <span className="text-xs text-white/30 hidden sm:block">{t("routes.featured.subtitle")}</span>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory">
+              {featuredRoutes.map((route) => {
+                const sites = route.sites ?? [];
+                return (
+                  <Link key={route.id} href={`/routes/${route.slug}`} className="snap-start shrink-0 w-[260px] md:w-[300px] group">
+                    <div className="relative h-[160px] md:h-[180px] rounded-xl overflow-hidden">
+                      {route.coverImage ? (
+                        <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-amber-800 to-stone-700" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                      {/* Hot badge */}
+                      {route.bookCount > 30 && (
+                        <span className="absolute top-2.5 left-2.5 px-2 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full">🔥 HOT</span>
+                      )}
+
+                      {/* Duration + stops */}
+                      <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-sm text-white text-[10px] font-medium">
+                        {route.duration}天{route.nights}晚{sites.length > 0 ? ` · ${sites.length}站` : ""}
+                      </span>
+
+                      {/* Bottom content */}
+                      <div className="absolute bottom-0 left-0 right-0 p-3">
+                        <h3 className="text-sm font-bold text-white leading-snug line-clamp-1">{route.title}</h3>
+                        {/* Mini route path */}
+                        {sites.length > 0 && (
+                          <div className="flex items-center gap-0 mt-1.5 overflow-hidden">
+                            {sites.slice(0, 3).map((site, i, arr) => (
+                              <Fragment key={site.id}>
+                                <span className="text-[8px] text-white/70 shrink-0 max-w-[60px] truncate">{site.site.name}</span>
+                                {i < arr.length - 1 && <span className="text-[8px] text-amber-400/60 mx-1">→</span>}
+                              </Fragment>
+                            ))}
+                            {sites.length > 3 && <span className="text-[8px] text-white/40 ml-1">+{sites.length - 3}</span>}
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between mt-1.5">
+                          <span className="text-sm font-bold text-amber-400">¥{(route.priceFrom / 100).toLocaleString()}<span className="text-[10px] text-white/40 font-normal">/人</span></span>
+                          {route.rating && <span className="text-[10px] text-white/70">★ {route.rating.toFixed(1)}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* ── Hot Routes Carousel ── */}
-      {featuredRoutes.length > 0 && !hasActiveFilters && (
-        <section className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">🔥</span>
-              <h2 className="text-2xl font-bold text-gray-900">{t("routes.featured.title")}</h2>
-            </div>
-            <span className="text-sm text-gray-400 hidden sm:block">{t("routes.featured.subtitle")}</span>
+      {/* ── Hot Routes section (when filters active, show below as standalone) ── */}
+      {featuredRoutes.length > 0 && hasActiveFilters && (
+        <section className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg">🔥</span>
+            <h2 className="text-lg font-bold text-gray-900">{t("routes.featured.title")}</h2>
           </div>
-          <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory">
+          <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-none snap-x snap-mandatory">
             {featuredRoutes.map((route) => <FeaturedRouteCard key={route.id} route={route} t={t} />)}
           </div>
         </section>
