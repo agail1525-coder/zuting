@@ -14,11 +14,11 @@ const PLATFORM_STATS = [
   { icon: "📍", value: "10+", labelKey: "about.stats.routes" },
 ];
 
-const TRUST_BADGES = [
-  { icon: "🔒", text: "数据加密传输" },
-  { icon: "✅", text: "人工审核保障" },
-  { icon: "🌐", text: "多语言支持" },
-  { icon: "💬", text: "AI智能助手" },
+const TRUST_BADGE_KEYS = [
+  { icon: "🔒", key: "about.trust.encryption" },
+  { icon: "✅", key: "about.trust.review" },
+  { icon: "🌐", key: "about.trust.multilang" },
+  { icon: "💬", key: "about.trust.ai" },
 ];
 
 export default function AboutClient() {
@@ -106,12 +106,12 @@ export default function AboutClient() {
 
         {/* Trust Badges */}
         <div className="rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6">
-          <h3 className="text-lg font-bold text-green-800 mb-4 text-center">平台保障</h3>
+          <h3 className="text-lg font-bold text-green-800 mb-4 text-center">{t("about.trust.title")}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {TRUST_BADGES.map((badge) => (
-              <div key={badge.text} className="flex items-center gap-2 justify-center text-sm text-green-700">
+            {TRUST_BADGE_KEYS.map((badge) => (
+              <div key={badge.key} className="flex items-center gap-2 justify-center text-sm text-green-700">
                 <span className="text-xl">{badge.icon}</span>
-                <span>{badge.text}</span>
+                <span>{t(badge.key)}</span>
               </div>
             ))}
           </div>
@@ -150,20 +150,20 @@ export default function AboutClient() {
 
         {/* Bottom CTA */}
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-center">
-          <h2 className="text-xl font-bold text-white mb-2">开始你的朝圣之旅</h2>
-          <p className="text-gray-400 text-sm mb-6">探索全球60+圣地，规划专属朝圣路线</p>
+          <h2 className="text-xl font-bold text-white mb-2">{t("about.cta.title")}</h2>
+          <p className="text-gray-400 text-sm mb-6">{t("about.cta.desc")}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/holy-sites"
               className="px-6 py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors shadow-lg shadow-blue-500/20"
             >
-              探索圣地 →
+              {t("about.cta.explore")} →
             </Link>
             <Link
               href="/chat"
               className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20"
             >
-              ✨ AI规划路线
+              ✨ {t("about.cta.aiPlan")}
             </Link>
           </div>
         </div>
