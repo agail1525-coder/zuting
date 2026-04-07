@@ -2,20 +2,22 @@ import { useState, useEffect } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Merchant, fetchMerchantDetail } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
-const TYPE_LABELS: Record<string, string> = {
-  TEMPLE: '寺庙',
-  GUIDE: '导游',
-  HOTEL: '住宿',
-  TRANSPORT: '交通',
-}
-
 export default function MerchantDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const id = router.params.id ?? ''
   const [merchant, setMerchant] = useState<Merchant | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const TYPE_LABELS: Record<string, string> = {
+    TEMPLE: t('merchantDetail.typeTemple'),
+    GUIDE: t('merchantDetail.typeGuide'),
+    HOTEL: t('merchantDetail.typeHotel'),
+    TRANSPORT: t('merchantDetail.typeTransport'),
+  }
 
   useEffect(() => {
     if (!id) return
@@ -30,7 +32,7 @@ export default function MerchantDetailPage() {
       Taro.setNavigationBarTitle({ title: data.name })
     } catch (err) {
       console.error('Failed to load merchant:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('merchantDetail.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -40,7 +42,7 @@ export default function MerchantDetailPage() {
     return (
       <View className='merchant-detail'>
         <View className='merchant-detail__loading'>
-          <Text className='merchant-detail__loading-text'>加载中...</Text>
+          <Text className='merchant-detail__loading-text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -50,7 +52,7 @@ export default function MerchantDetailPage() {
     return (
       <View className='merchant-detail'>
         <View className='merchant-detail__loading'>
-          <Text className='merchant-detail__loading-text'>商家不存在</Text>
+          <Text className='merchant-detail__loading-text'>{t('merchantDetail.notFound')}</Text>
         </View>
       </View>
     )
@@ -72,14 +74,14 @@ export default function MerchantDetailPage() {
             <Text className='merchant-detail__rating-star'>★</Text>
             <Text className='merchant-detail__rating-value'>{merchant.rating.toFixed(1)}</Text>
           </View>
-          <Text className='merchant-detail__orders'>{merchant.totalOrders} 单</Text>
+          <Text className='merchant-detail__orders'>{t('merchantDetail.orderCount', { count: merchant.totalOrders })}</Text>
         </View>
       </View>
 
       {/* Description */}
       {merchant.description && (
         <View className='merchant-detail__section'>
-          <Text className='merchant-detail__section-title'>商家简介</Text>
+          <Text className='merchant-detail__section-title'>{t('merchantDetail.description')}</Text>
           <Text className='merchant-detail__desc'>{merchant.description}</Text>
         </View>
       )}
@@ -87,7 +89,7 @@ export default function MerchantDetailPage() {
       {/* Services */}
       {Array.isArray(merchant.services) && merchant.services.length > 0 && (
         <View className='merchant-detail__section'>
-          <Text className='merchant-detail__section-title'>服务项目</Text>
+          <Text className='merchant-detail__section-title'>{t('merchantDetail.services')}</Text>
           {merchant.services.map(svc => (
             <View key={svc.id} className='service-item'>
               <Text className='service-item__name'>{svc.name}</Text>
@@ -100,7 +102,7 @@ export default function MerchantDetailPage() {
       {/* Address */}
       {merchant.address && (
         <View className='merchant-detail__section'>
-          <Text className='merchant-detail__section-title'>地址</Text>
+          <Text className='merchant-detail__section-title'>{t('merchantDetail.address')}</Text>
           <Text className='merchant-detail__desc'>📍 {merchant.address}</Text>
         </View>
       )}

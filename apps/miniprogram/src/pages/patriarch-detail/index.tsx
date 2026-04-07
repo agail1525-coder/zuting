@@ -4,9 +4,11 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { Patriarch, fetchPatriarchById, recordView } from '../../lib/api'
 import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function PatriarchDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.params
   const [patriarch, setPatriarch] = useState<Patriarch | null>(null)
@@ -26,15 +28,15 @@ export default function PatriarchDetailPage() {
       recordView('PATRIARCH', id!)
     } catch (err) {
       console.error('Failed to load patriarch:', err)
-      setError('网络错误，请稍后重试')
+      setError(t('patriarchDetail.networkError'))
     } finally {
       setLoading(false)
     }
   }
 
-  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
-  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadPatriarch}>点击重试</Text></View>
-  if (!patriarch) return <View className='container'><Text className='empty-text'>祖师不存在</Text></View>
+  if (loading) return <View className='container'><Text className='loading-text'>{t('common.loading')}</Text></View>
+  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadPatriarch}>{t('patriarchDetail.tapRetry')}</Text></View>
+  if (!patriarch) return <View className='container'><Text className='empty-text'>{t('patriarchDetail.notFound')}</Text></View>
 
   const hasImage = !!patriarch.imageUrl
   const era = patriarch.dates ?? ''
@@ -78,7 +80,7 @@ export default function PatriarchDetailPage() {
       {/* Core Teaching */}
       {coreTeaching && (
         <View className='section'>
-          <Text className='section__title'>核心教义</Text>
+          <Text className='section__title'>{t('patriarchDetail.coreTeaching')}</Text>
           <View className='teaching-card'>
             <Text className='teaching-card__icon'>📖</Text>
             <Text className='teaching-card__text'>{coreTeaching}</Text>
@@ -89,7 +91,7 @@ export default function PatriarchDetailPage() {
       {/* Biography */}
       {patriarch.biography && (
         <View className='section'>
-          <Text className='section__title'>传记</Text>
+          <Text className='section__title'>{t('patriarchDetail.biography')}</Text>
           <View className='card'>
             <Text className='card__text'>{patriarch.biography}</Text>
           </View>
@@ -98,16 +100,16 @@ export default function PatriarchDetailPage() {
 
       {/* Related Entities */}
       <View className='section'>
-        <RelatedEntities entityType='PATRIARCH' entityId={id!} title='相关祖师' />
+        <RelatedEntities entityType='PATRIARCH' entityId={id!} title={t('patriarchDetail.relatedPatriarchs')} />
       </View>
 
       {/* CTA */}
       <View className='cta-row'>
         <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
-          <Text className='cta-row__btn-text'>规划行程</Text>
+          <Text className='cta-row__btn-text'>{t('patriarchDetail.planTrip')}</Text>
         </View>
         <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
-          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+          <Text className='cta-row__btn-text--outline'>{t('patriarchDetail.aiPlan')}</Text>
         </View>
       </View>
 

@@ -4,9 +4,11 @@ import Taro from '@tarojs/taro'
 import { Religion, HolySite, fetchReligions, fetchHolySites } from '../../lib/api'
 import HolySiteCard from '../../components/HolySiteCard'
 import FilterTags from '../../components/FilterTags'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function HolySitesPage() {
+  const { t } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [sites, setSites] = useState<HolySite[]>([])
   const [activeReligionId, setActiveReligionId] = useState<string | null>(null)
@@ -36,7 +38,7 @@ export default function HolySitesPage() {
       setSites(list)
     } catch (err) {
       console.error('Failed to load sites:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('holySites.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -46,8 +48,8 @@ export default function HolySitesPage() {
     <View className='holy-sites-page'>
       {/* Header */}
       <View className='page-header'>
-        <Text className='page-header__title'>全球圣地</Text>
-        <Text className='page-header__count'>{sites.length} 处圣地</Text>
+        <Text className='page-header__title'>{t('holySites.title')}</Text>
+        <Text className='page-header__count'>{t('holySites.count', { count: sites.length })}</Text>
       </View>
 
       {/* Filter Tags */}
@@ -60,9 +62,9 @@ export default function HolySitesPage() {
       {/* Site List */}
       <ScrollView className='site-list' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : sites.length === 0 ? (
-          <Text className='empty-text'>暂无圣地数据</Text>
+          <Text className='empty-text'>{t('holySites.noData')}</Text>
         ) : (
           sites.map(site => (
             <HolySiteCard key={site.id} site={site} showReligion />

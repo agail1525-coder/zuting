@@ -2,32 +2,34 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Route, PaginatedRoutes, fetchRoutes } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
-const CATEGORIES = [
-  { value: '', label: '全部' },
-  { value: 'ZEN', label: '禅宗' },
-  { value: 'BUDDHIST', label: '佛教' },
-  { value: 'TAOIST', label: '道教' },
-  { value: 'CHRISTIAN', label: '基督' },
-  { value: 'ISLAMIC', label: '伊斯兰' },
-  { value: 'CROSS_CULTURAL', label: '跨文化' },
-  { value: 'HINDU', label: '印度教' },
-]
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: '轻松',
-  MODERATE: '适中',
-  CHALLENGING: '挑战',
-}
-
 export default function RoutesPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const initialCategory = (router.params.category as string) || ''
   const [routes, setRoutes] = useState<Route[]>([])
   const [total, setTotal] = useState(0)
   const [category, setCategory] = useState(initialCategory)
   const [loading, setLoading] = useState(true)
+
+  const CATEGORIES = [
+    { value: '', label: t('routes.filterAll') },
+    { value: 'ZEN', label: t('routes.categoryZen') },
+    { value: 'BUDDHIST', label: t('routes.categoryBuddhist') },
+    { value: 'TAOIST', label: t('routes.categoryTaoist') },
+    { value: 'CHRISTIAN', label: t('routes.categoryChristian') },
+    { value: 'ISLAMIC', label: t('routes.categoryIslamic') },
+    { value: 'CROSS_CULTURAL', label: t('routes.categoryCrossCultural') },
+    { value: 'HINDU', label: t('routes.categoryHindu') },
+  ]
+
+  const DIFFICULTY_LABELS: Record<string, string> = {
+    EASY: t('routes.difficultyEasy'),
+    MODERATE: t('routes.difficultyModerate'),
+    CHALLENGING: t('routes.difficultyChallenging'),
+  }
 
   const loadRoutes = async (cat?: string) => {
     try {
@@ -41,7 +43,7 @@ export default function RoutesPage() {
       setTotal(data.total)
     } catch (err) {
       console.error('Failed to load routes:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('routes.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -74,16 +76,16 @@ export default function RoutesPage() {
       {/* Route List */}
       {loading ? (
         <View className='loading'>
-          <Text className='loading__text'>加载中...</Text>
+          <Text className='loading__text'>{t('common.loading')}</Text>
         </View>
       ) : routes.length === 0 ? (
         <View className='empty'>
-          <Text className='empty__text'>暂无路线</Text>
+          <Text className='empty__text'>{t('routes.noRoutes')}</Text>
           <Text
             className='empty__reset'
             onClick={() => handleCategoryChange('')}
           >
-            清除筛选
+            {t('routes.clearFilter')}
           </Text>
         </View>
       ) : (
@@ -104,13 +106,13 @@ export default function RoutesPage() {
                 </View>
                 <View className='route-item__body'>
                   <View className='route-item__tags'>
-                    <Text className='route-item__tag'>{route.duration}天{route.nights}晚</Text>
+                    <Text className='route-item__tag'>{t('routes.daysNights', { days: route.duration, nights: route.nights })}</Text>
                     <Text className='route-item__tag'>{DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}</Text>
                   </View>
                   <Text className='route-item__title'>{route.title}</Text>
                   <Text className='route-item__subtitle'>{route.subtitle}</Text>
                   <View className='route-item__footer'>
-                    <Text className='route-item__price'>¥{price}<Text className='route-item__price-unit'>/人</Text></Text>
+                    <Text className='route-item__price'>¥{price}<Text className='route-item__price-unit'>{t('routes.perPerson')}</Text></Text>
                     {route.rating && (
                       <Text className='route-item__rating'>★ {route.rating.toFixed(1)}</Text>
                     )}
@@ -119,7 +121,7 @@ export default function RoutesPage() {
               </View>
             )
           })}
-          <Text className='route-total'>共 {total} 条路线</Text>
+          <Text className='route-total'>{t('routes.totalRoutes', { count: total })}</Text>
         </View>
       )}
     </ScrollView>

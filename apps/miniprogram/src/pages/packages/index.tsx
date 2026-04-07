@@ -2,22 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { View, Text, ScrollView, Image, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PackageItem, fetchPackages } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
-
-const TYPES = [
-  { value: '', label: '全部' },
-  { value: 'CLASSIC', label: '经典' },
-  { value: 'PREMIUM', label: '精品' },
-  { value: 'LUXURY', label: '奢华' },
-  { value: 'CUSTOM', label: '定制' },
-]
-
-const TYPE_LABELS: Record<string, string> = {
-  CLASSIC: '经典套餐',
-  PREMIUM: '精品套餐',
-  LUXURY: '奢华套餐',
-  CUSTOM: '定制套餐',
-}
 
 const TYPE_COLORS: Record<string, string> = {
   CLASSIC: '#0066FF',
@@ -26,19 +12,35 @@ const TYPE_COLORS: Record<string, string> = {
   CUSTOM: '#10B981',
 }
 
-const TRUST_BADGES = [
-  { icon: '🛡️', label: '品质保障' },
-  { icon: '💰', label: '最优价格' },
-  { icon: '🔄', label: '免费退改' },
-  { icon: '📞', label: '24h客服' },
-]
-
 export default function PackagesPage() {
+  const { t } = useTranslation()
   const [packages, setPackages] = useState<PackageItem[]>([])
   const [total, setTotal] = useState(0)
   const [activeType, setActiveType] = useState('')
   const [loading, setLoading] = useState(true)
   const [searchText, setSearchText] = useState('')
+
+  const TYPES = [
+    { value: '', label: t('packages.typeAll') },
+    { value: 'CLASSIC', label: t('packages.typeClassic') },
+    { value: 'PREMIUM', label: t('packages.typePremium') },
+    { value: 'LUXURY', label: t('packages.typeLuxury') },
+    { value: 'CUSTOM', label: t('packages.typeCustom') },
+  ]
+
+  const TYPE_LABELS: Record<string, string> = {
+    CLASSIC: t('packages.labelClassic'),
+    PREMIUM: t('packages.labelPremium'),
+    LUXURY: t('packages.labelLuxury'),
+    CUSTOM: t('packages.labelCustom'),
+  }
+
+  const TRUST_BADGES = [
+    { icon: '🛡️', label: t('packages.trustQuality') },
+    { icon: '💰', label: t('packages.trustBestPrice') },
+    { icon: '🔄', label: t('packages.trustFreeCancel') },
+    { icon: '📞', label: t('packages.trust24h') },
+  ]
 
   useEffect(() => { loadData('') }, [])
 
@@ -49,7 +51,7 @@ export default function PackagesPage() {
       setPackages(Array.isArray(res.items) ? res.items : [])
       setTotal(res.total ?? 0)
     } catch {
-      Taro.showToast({ title: '加载失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('packages.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -100,7 +102,7 @@ export default function PackagesPage() {
           <Text style={{ fontSize: '28rpx', marginRight: '12rpx' }}>🔍</Text>
           <Input
             type='text'
-            placeholder='搜索套餐名称或目的地'
+            placeholder={t('packages.searchPlaceholder')}
             placeholderStyle='color: #64748B'
             value={searchText}
             onInput={e => setSearchText(e.detail.value)}
@@ -111,7 +113,7 @@ export default function PackagesPage() {
               style={{ fontSize: '24rpx', color: '#94A3B8', padding: '8rpx' }}
               onClick={() => setSearchText('')}
             >
-              清除
+              {t('packages.clear')}
             </Text>
           )}
         </View>
@@ -122,15 +124,15 @@ export default function PackagesPage() {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '24rpx 20rpx', margin: '16rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx' }}>
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#D4A855' }}>{stats.total}</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>套餐总数</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('packages.statTotal')}</Text>
           </View>
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#F8FAFC' }}>¥{stats.avgPrice.toLocaleString()}</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>均价起</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('packages.statAvgPrice')}</Text>
           </View>
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#F8FAFC' }}>{stats.avgDuration}天</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>平均时长</Text>
+            <Text style={{ fontSize: '32rpx', fontWeight: '700', color: '#F8FAFC' }}>{stats.avgDuration}{t('packages.dayUnit')}</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('packages.statAvgDuration')}</Text>
           </View>
         </View>
       )}
@@ -147,13 +149,13 @@ export default function PackagesPage() {
 
       {/* Type Filter */}
       <ScrollView className='filter-bar' scrollX>
-        {TYPES.map(t => (
+        {TYPES.map(tp => (
           <Text
-            key={t.value}
-            className={`filter-chip ${activeType === t.value ? 'filter-chip--active' : ''}`}
-            onClick={() => handleTypeChange(t.value)}
+            key={tp.value}
+            className={`filter-chip ${activeType === tp.value ? 'filter-chip--active' : ''}`}
+            onClick={() => handleTypeChange(tp.value)}
           >
-            {t.label}
+            {tp.label}
           </Text>
         ))}
       </ScrollView>
@@ -162,7 +164,7 @@ export default function PackagesPage() {
       {!loading && (
         <View className='result-count'>
           <Text className='result-count__text'>
-            {isSearching ? `搜索到 ${filteredPackages.length} 个套餐` : `共 ${total} 个套餐`}
+            {isSearching ? t('packages.searchResultCount', { count: filteredPackages.length }) : t('packages.totalResultCount', { count: total })}
           </Text>
         </View>
       )}
@@ -170,18 +172,18 @@ export default function PackagesPage() {
       {/* Package Cards */}
       {loading ? (
         <View className='loading'>
-          <Text className='loading__text'>加载中...</Text>
+          <Text className='loading__text'>{t('common.loading')}</Text>
         </View>
       ) : filteredPackages.length === 0 ? (
         <View className='empty'>
           <Text className='empty__icon'>{isSearching ? '🔍' : '📦'}</Text>
-          <Text className='empty__text'>{isSearching ? '未找到匹配的套餐' : '暂无相关套餐'}</Text>
+          <Text className='empty__text'>{isSearching ? t('packages.searchNoResult') : t('packages.noPackages')}</Text>
           {isSearching && (
             <Text
               style={{ fontSize: '24rpx', color: '#0066FF', marginTop: '12rpx' }}
               onClick={() => setSearchText('')}
             >
-              清除搜索条件
+              {t('packages.clearSearch')}
             </Text>
           )}
         </View>
@@ -220,7 +222,7 @@ export default function PackagesPage() {
 
                   {/* Meta row */}
                   <View className='package-card__meta'>
-                    <Text className='package-card__meta-item'>⏱ {pkg.duration}天{pkg.nights}晚</Text>
+                    <Text className='package-card__meta-item'>⏱ {t('packages.daysNights', { days: pkg.duration, nights: pkg.nights })}</Text>
                     {pkg.groupSize && (
                       <Text className='package-card__meta-item'>👥 {pkg.groupSize}</Text>
                     )}
@@ -243,10 +245,10 @@ export default function PackagesPage() {
                     <View className='package-card__price'>
                       <Text className='package-card__price-from'>¥</Text>
                       <Text className='package-card__price-num'>{pkg.priceFrom.toLocaleString()}</Text>
-                      <Text className='package-card__price-unit'>起/人</Text>
+                      <Text className='package-card__price-unit'>{t('packages.priceUnit')}</Text>
                     </View>
                     <View className='package-card__cta'>
-                      <Text className='package-card__cta-text'>查看详情</Text>
+                      <Text className='package-card__cta-text'>{t('packages.viewDetail')}</Text>
                     </View>
                   </View>
                 </View>
@@ -262,7 +264,7 @@ export default function PackagesPage() {
           style={{ margin: '32rpx 24rpx', padding: '24rpx', backgroundColor: '#D4A855', borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
           onClick={() => Taro.navigateTo({ url: '/pages/routes/index' })}
         >
-          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🗺️ 查看精品路线</Text>
+          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>{t('packages.viewRoutes')}</Text>
         </View>
       )}
 

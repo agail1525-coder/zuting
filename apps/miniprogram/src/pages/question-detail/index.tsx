@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { useLoad } from '@tarojs/taro'
 import { QuestionItem, AnswerItem, fetchQuestion } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function QuestionDetailPage() {
+  const { t } = useTranslation()
   const [question, setQuestion] = useState<(QuestionItem & { answers: AnswerItem[] }) | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -14,7 +16,7 @@ export default function QuestionDetailPage() {
     if (id) {
       loadQuestion(id)
     } else {
-      setError('缺少问题ID')
+      setError(t('questionDetail.missingId'))
       setLoading(false)
     }
   })
@@ -25,7 +27,7 @@ export default function QuestionDetailPage() {
       const data = await fetchQuestion(id)
       setQuestion(data)
     } catch {
-      setError('加载失败，请重试')
+      setError(t('questionDetail.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -44,7 +46,7 @@ export default function QuestionDetailPage() {
     return (
       <View className='question-detail'>
         <View className='loading'>
-          <Text className='loading__text'>加载中...</Text>
+          <Text className='loading__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -54,7 +56,7 @@ export default function QuestionDetailPage() {
     return (
       <View className='question-detail'>
         <View className='error'>
-          <Text className='error__text'>{error || '问题不存在'}</Text>
+          <Text className='error__text'>{error || t('questionDetail.notFound')}</Text>
         </View>
       </View>
     )
@@ -67,7 +69,7 @@ export default function QuestionDetailPage() {
 
   return (
     <ScrollView className='question-detail' scrollY>
-      {/* ── Question Block ── */}
+      {/* Question Block */}
       <View className='question-block'>
         <Text className='question-block__title'>{question.title}</Text>
         {question.content ? (
@@ -81,24 +83,24 @@ export default function QuestionDetailPage() {
           </View>
         )}
         <View className='question-block__meta'>
-          <Text className='question-block__stat'>👁 {question.viewCount}</Text>
-          <Text className='question-block__stat'>💬 {question.answerCount} 回答</Text>
+          <Text className='question-block__stat'>{'\u{1F441}'} {question.viewCount}</Text>
+          <Text className='question-block__stat'>{'\u{1F4AC}'} {t('questionDetail.answerCount', { count: question.answerCount })}</Text>
           <Text className={`question-block__status ${question.status === 'SOLVED' ? 'question-block__status--solved' : 'question-block__status--open'}`}>
-            {question.status === 'SOLVED' ? '已解决' : '待回答'}
+            {question.status === 'SOLVED' ? t('questionDetail.statusSolved') : t('questionDetail.statusOpen')}
           </Text>
         </View>
       </View>
 
-      {/* ── Answers ── */}
+      {/* Answers */}
       <View className='answers-header'>
-        <Text className='answers-header__title'>全部回答</Text>
+        <Text className='answers-header__title'>{t('questionDetail.allAnswers')}</Text>
         <Text className='answers-header__count'>({answers.length})</Text>
       </View>
 
       {sortedAnswers.length === 0 ? (
         <View className='empty-answers'>
-          <Text className='empty-answers__icon'>💭</Text>
-          <Text className='empty-answers__text'>暂无回答，期待你的解答</Text>
+          <Text className='empty-answers__icon'>{'\u{1F4AD}'}</Text>
+          <Text className='empty-answers__text'>{t('questionDetail.noAnswers')}</Text>
         </View>
       ) : (
         sortedAnswers.map(answer => (
@@ -107,13 +109,13 @@ export default function QuestionDetailPage() {
             className={`answer-card ${answer.isAccepted ? 'answer-card--accepted' : ''}`}
           >
             {answer.isAccepted && (
-              <Text className='answer-card__accepted-badge'>✓ 最佳回答</Text>
+              <Text className='answer-card__accepted-badge'>{t('questionDetail.bestAnswer')}</Text>
             )}
             <Text className='answer-card__content'>{answer.content}</Text>
             <View className='answer-card__footer'>
               <Text className='answer-card__time'>{formatDate(answer.createdAt)}</Text>
               <View className='answer-card__vote'>
-                <Text className='answer-card__vote-icon'>👍</Text>
+                <Text className='answer-card__vote-icon'>{'\u{1F44D}'}</Text>
                 <Text className='answer-card__vote-count'>{answer.voteCount}</Text>
               </View>
             </View>

@@ -47,7 +47,7 @@ function getStoredLocale(): Locale {
 interface I18nContextValue {
   locale: Locale
   setLocale: (locale: Locale) => void
-  t: (key: string) => string
+  t: (key: string, params?: Record<string, string | number>) => string
 }
 
 const I18nContext = createContext<I18nContextValue>({
@@ -71,21 +71,29 @@ export function I18nProvider({ children }: PropsWithChildren) {
   }, [])
 
   const t = useCallback(
-    (key: string): string => {
+    (key: string, params?: Record<string, string | number>): string => {
       // 1. Try current locale
+      let value: string | undefined
       const current = messages[locale]
       if (current && key in current) {
-        return current[key]
+        value = current[key]
       }
       // 2. Fallback to zh-CN
-      if (locale !== DEFAULT_LOCALE) {
+      if (!value && locale !== DEFAULT_LOCALE) {
         const fallback = messages[DEFAULT_LOCALE]
         if (fallback && key in fallback) {
-          return fallback[key]
+          value = fallback[key]
         }
       }
-      // 3. Return key itself
-      return key
+      // 3. Return key itself if not found
+      if (!value) return key
+      // 4. Replace {param} placeholders
+      if (params) {
+        return value.replace(/\{(\w+)\}/g, (_, k) =>
+          k in params ? String(params[k]) : `{${k}}`,
+        )
+      }
+      return value
     },
     [locale],
   )

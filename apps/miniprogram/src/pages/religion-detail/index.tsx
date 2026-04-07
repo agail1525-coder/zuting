@@ -6,9 +6,11 @@ import {
   fetchReligionBySlug, fetchReligionById, fetchHolySites, fetchTemples, fetchPatriarchs, fetchTeachings
 } from '../../lib/api'
 import HolySiteCard from '../../components/HolySiteCard'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function ReligionDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { id, slug } = router.params
   const [religion, setReligion] = useState<Religion | null>(null)
@@ -58,7 +60,7 @@ export default function ReligionDetailPage() {
   if (loading) {
     return (
       <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
+        <Text className='loading-text'>{t('common.loading')}</Text>
       </View>
     )
   }
@@ -66,21 +68,21 @@ export default function ReligionDetailPage() {
   if (error || !religion) {
     return (
       <View className='container' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80rpx 40rpx' }}>
-        <Text style={{ fontSize: '32rpx', color: '#6B7280', marginBottom: '24rpx' }}>{error ? '加载失败，请检查网络后重试' : '内容不存在'}</Text>
+        <Text style={{ fontSize: '32rpx', color: '#6B7280', marginBottom: '24rpx' }}>{error ? t('religionDetail.loadFailed') : t('religionDetail.notFound')}</Text>
         <View style={{ display: 'flex', flexDirection: 'row', gap: '24rpx' }}>
           <View
             hoverClass='card-hover'
             style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
             onClick={loadData}
           >
-            <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重试</Text>
+            <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>{t('common.retry')}</Text>
           </View>
           <View
             hoverClass='card-hover'
             style={{ padding: '16rpx 48rpx', backgroundColor: '#F3F4F6', borderRadius: '12rpx' }}
             onClick={() => Taro.navigateBack()}
           >
-            <Text style={{ fontSize: '28rpx', color: '#374151' }}>返回</Text>
+            <Text style={{ fontSize: '28rpx', color: '#374151' }}>{t('religionDetail.goBack')}</Text>
           </View>
         </View>
       </View>
@@ -99,12 +101,12 @@ export default function ReligionDetailPage() {
           <View className='detail-header__meta'>
             {religion.foundedYear && (
               <View className='detail-header__tag'>
-                <Text className='detail-header__tag-text'>创立: {religion.foundedYear}</Text>
+                <Text className='detail-header__tag-text'>{t('religionDetail.founded')}: {religion.foundedYear}</Text>
               </View>
             )}
             {religion.origin && (
               <View className='detail-header__tag'>
-                <Text className='detail-header__tag-text'>起源: {religion.origin}</Text>
+                <Text className='detail-header__tag-text'>{t('religionDetail.origin')}: {religion.origin}</Text>
               </View>
             )}
           </View>
@@ -114,7 +116,7 @@ export default function ReligionDetailPage() {
       {/* Holy Sites */}
       {holySites.length > 0 && (
         <View className='detail-section'>
-          <Text className='section-title'>圣地 ({holySites.length})</Text>
+          <Text className='section-title'>{t('religionDetail.holySites')} ({holySites.length})</Text>
           {holySites.map(site => (
             <HolySiteCard key={site.id} site={site} />
           ))}
@@ -124,7 +126,7 @@ export default function ReligionDetailPage() {
       {/* Temples */}
       {temples.length > 0 && (
         <View className='detail-section'>
-          <Text className='section-title'>祖庭 ({temples.length})</Text>
+          <Text className='section-title'>{t('religionDetail.temples')} ({temples.length})</Text>
           {temples.map(temple => (
             <View
               key={temple.id}
@@ -150,7 +152,7 @@ export default function ReligionDetailPage() {
       {/* Patriarchs */}
       {patriarchs.length > 0 && (
         <View className='detail-section'>
-          <Text className='section-title'>祖师 ({patriarchs.length})</Text>
+          <Text className='section-title'>{t('religionDetail.patriarchs')} ({patriarchs.length})</Text>
           {patriarchs.map(p => (
             <View
               key={p.id}
@@ -170,12 +172,12 @@ export default function ReligionDetailPage() {
       {/* Teachings */}
       {teachings.length > 0 && (
         <View className='detail-section'>
-          <Text className='section-title'>祖训 ({teachings.length})</Text>
-          {teachings.map(t => (
-            <View key={t.id} className='teaching-card'>
+          <Text className='section-title'>{t('religionDetail.teachings')} ({teachings.length})</Text>
+          {teachings.map(tch => (
+            <View key={tch.id} className='teaching-card'>
               <Text className='teaching-card__quote'>&ldquo;</Text>
-              <Text className='teaching-card__content'>{t.originalText}</Text>
-              <Text className='teaching-card__source'>-- {t.sourceText}</Text>
+              <Text className='teaching-card__content'>{tch.originalText}</Text>
+              <Text className='teaching-card__source'>-- {tch.sourceText}</Text>
             </View>
           ))}
         </View>

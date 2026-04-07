@@ -3,9 +3,11 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { Religion, Temple, fetchReligions, fetchTemples } from '../../lib/api'
 import FilterTags from '../../components/FilterTags'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function TemplesPage() {
+  const { t } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [temples, setTemples] = useState<Temple[]>([])
   const [activeReligionId, setActiveReligionId] = useState<string | null>(null)
@@ -38,7 +40,7 @@ export default function TemplesPage() {
     } catch (err) {
       console.error('Failed to load temples:', err)
       setError(true)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('temples.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -51,8 +53,8 @@ export default function TemplesPage() {
   return (
     <View className='temples-page'>
       <View className='page-header'>
-        <Text className='page-header__title'>全球祖庭</Text>
-        <Text className='page-header__count'>{temples.length} 座祖庭</Text>
+        <Text className='page-header__title'>{t('temples.title')}</Text>
+        <Text className='page-header__count'>{t('temples.count', { count: temples.length })}</Text>
       </View>
 
       <FilterTags
@@ -63,14 +65,14 @@ export default function TemplesPage() {
 
       <ScrollView className='temples-list' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : error ? (
           <View className='empty-text'>
-            <Text>加载失败</Text>
-            <Text className='retry-btn' onClick={loadTemples}>重试</Text>
+            <Text>{t('temples.loadFailed')}</Text>
+            <Text className='retry-btn' onClick={loadTemples}>{t('common.retry')}</Text>
           </View>
         ) : temples.length === 0 ? (
-          <Text className='empty-text'>暂无祖庭数据</Text>
+          <Text className='empty-text'>{t('temples.noData')}</Text>
         ) : (
           temples.map(temple => (
             <View
@@ -94,7 +96,7 @@ export default function TemplesPage() {
               </View>
               {temple.foundingDate && (
                 <View className='temple-card__founded'>
-                  <Text className='temple-card__founded-label'>始建: </Text>
+                  <Text className='temple-card__founded-label'>{t('temples.founded')}: </Text>
                   <Text className='temple-card__founded-value'>{temple.foundingDate}</Text>
                 </View>
               )}

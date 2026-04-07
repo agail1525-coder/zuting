@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PhotoItem, fetchPhotoWall } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const PAGE_SIZE = 18
 
 export default function PhotosPage() {
+  const { t } = useTranslation()
   const [photos, setPhotos] = useState<PhotoItem[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -30,7 +32,7 @@ export default function PhotosPage() {
       setPage(p)
     } catch (err) {
       console.error('Failed to load photos:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('photos.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -50,7 +52,7 @@ export default function PhotosPage() {
   return (
     <View className='photos-page'>
       <View className='page-header'>
-        <Text className='page-header__title'>照片墙</Text>
+        <Text className='page-header__title'>{t('photos.title')}</Text>
       </View>
 
       <ScrollView
@@ -59,9 +61,9 @@ export default function PhotosPage() {
         onScrollToLower={handleLoadMore}
       >
         {loading && photos.length === 0 ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : photos.length === 0 ? (
-          <Text className='empty-text'>暂无照片</Text>
+          <Text className='empty-text'>{t('photos.empty')}</Text>
         ) : (
           <View className='grid'>
             {photos.map(photo => (
@@ -84,7 +86,7 @@ export default function PhotosPage() {
           </View>
         )}
         {hasMore && photos.length > 0 && (
-          <Text className='load-more'>加载更多...</Text>
+          <Text className='load-more'>{t('photos.loadMore')}</Text>
         )}
         <View style={{ height: '120rpx' }} />
       </ScrollView>

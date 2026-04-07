@@ -8,56 +8,56 @@ import {
   fetchPriceAlerts,
   deletePriceAlert,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
-/* ── Tool entry cards ── */
-const TOOLS = [
-  {
-    key: 'calendar',
-    icon: '📅',
-    title: '价格日历',
-    desc: '按月查看每天价格，选出最低价出行日',
-    accent: '#0066FF',
-    bg: '#EFF6FF',
-  },
-  {
-    key: 'compare',
-    icon: '⚖️',
-    title: '路线比价',
-    desc: '多条路线价格横向对比，一目了然',
-    accent: '#10B981',
-    bg: '#ECFDF5',
-  },
-  {
-    key: 'alert',
-    icon: '🔔',
-    title: '价格提醒',
-    desc: '设定目标价，降价立即通知',
-    accent: '#F59E0B',
-    bg: '#FFFBEB',
-  },
-  {
-    key: 'hack',
-    icon: '💡',
-    title: '省钱攻略',
-    desc: '精选省钱技巧 · 错峰出行指南',
-    accent: '#8B5CF6',
-    bg: '#F5F3FF',
-  },
-]
-
-/* ── Static tips ── */
-const TIPS = [
-  { icon: '🗓', title: '错峰出行', desc: '工作日出发比周末便宜 15-30%' },
-  { icon: '⏰', title: '提前预订', desc: '提前 45 天以上可锁定早鸟价' },
-  { icon: '🌱', title: '淡季首选', desc: '宗教圣地淡季体验更纯粹，价更低' },
-  { icon: '📦', title: '选套餐', desc: '套餐组合比单买行程+住宿便宜 20%+' },
-]
-
 export default function PricesPage() {
+  const { t } = useTranslation()
   const [featuredRoutes, setFeaturedRoutes] = useState<Route[]>([])
   const [alerts, setAlerts] = useState<PriceAlertItem[]>([])
   const [loading, setLoading] = useState(true)
+
+  const TOOLS = [
+    {
+      key: 'calendar',
+      icon: '📅',
+      title: t('prices.toolCalendar'),
+      desc: t('prices.toolCalendarDesc'),
+      accent: '#0066FF',
+      bg: '#EFF6FF',
+    },
+    {
+      key: 'compare',
+      icon: '⚖️',
+      title: t('prices.toolCompare'),
+      desc: t('prices.toolCompareDesc'),
+      accent: '#10B981',
+      bg: '#ECFDF5',
+    },
+    {
+      key: 'alert',
+      icon: '🔔',
+      title: t('prices.toolAlert'),
+      desc: t('prices.toolAlertDesc'),
+      accent: '#F59E0B',
+      bg: '#FFFBEB',
+    },
+    {
+      key: 'hack',
+      icon: '💡',
+      title: t('prices.toolHack'),
+      desc: t('prices.toolHackDesc'),
+      accent: '#8B5CF6',
+      bg: '#F5F3FF',
+    },
+  ]
+
+  const TIPS = [
+    { icon: '🗓', title: t('prices.tipOffPeak'), desc: t('prices.tipOffPeakDesc') },
+    { icon: '⏰', title: t('prices.tipEarlyBook'), desc: t('prices.tipEarlyBookDesc') },
+    { icon: '🌱', title: t('prices.tipLowSeason'), desc: t('prices.tipLowSeasonDesc') },
+    { icon: '📦', title: t('prices.tipPackage'), desc: t('prices.tipPackageDesc') },
+  ]
 
   useEffect(() => {
     loadData()
@@ -86,7 +86,7 @@ export default function PricesPage() {
           url: `/pages/price-calendar/index?routeId=${featuredRoutes[0].id}&routeTitle=${encodeURIComponent(featuredRoutes[0].title)}`,
         })
       } else {
-        Taro.showToast({ title: '请先选择路线', icon: 'none' })
+        Taro.showToast({ title: t('prices.selectRouteFirst'), icon: 'none' })
       }
     } else if (key === 'compare') {
       Taro.navigateTo({ url: '/pages/price-compare/index' })
@@ -101,9 +101,9 @@ export default function PricesPage() {
     try {
       await deletePriceAlert(alertId)
       setAlerts(prev => prev.filter(a => a.id !== alertId))
-      Taro.showToast({ title: '已删除', icon: 'success' })
+      Taro.showToast({ title: t('prices.deleted'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '删除失败', icon: 'none' })
+      Taro.showToast({ title: t('prices.deleteFailed'), icon: 'none' })
     }
   }
 
@@ -112,17 +112,17 @@ export default function PricesPage() {
 
       {/* ── Hero Banner ── */}
       <View className='prices-hero'>
-        <Text className='prices-hero__title'>💰 价格工具</Text>
-        <Text className='prices-hero__subtitle'>对标 Skyscanner · Kayak 价格分析能力</Text>
+        <Text className='prices-hero__title'>{t('prices.heroTitle')}</Text>
+        <Text className='prices-hero__subtitle'>{t('prices.heroSubtitle')}</Text>
         <View className='prices-hero__badges'>
           <View className='prices-hero__badge'>
-            <Text className='prices-hero__badge-text'>最低价提醒</Text>
+            <Text className='prices-hero__badge-text'>{t('prices.badgeLowestAlert')}</Text>
           </View>
           <View className='prices-hero__badge'>
-            <Text className='prices-hero__badge-text'>价格日历</Text>
+            <Text className='prices-hero__badge-text'>{t('prices.badgeCalendar')}</Text>
           </View>
           <View className='prices-hero__badge'>
-            <Text className='prices-hero__badge-text'>历史趋势</Text>
+            <Text className='prices-hero__badge-text'>{t('prices.badgeTrend')}</Text>
           </View>
         </View>
       </View>
@@ -152,8 +152,8 @@ export default function PricesPage() {
       {alerts.length > 0 && (
         <>
           <View className='section-header'>
-            <Text className='section-title'>🔔 我的价格提醒</Text>
-            <Text className='section-count'>{alerts.length} 个</Text>
+            <Text className='section-title'>{t('prices.myAlerts')}</Text>
+            <Text className='section-count'>{t('prices.alertCount', { count: alerts.length })}</Text>
           </View>
           <View className='alert-list'>
             {alerts.map(alert => {
@@ -167,23 +167,23 @@ export default function PricesPage() {
                     <Text className='alert-item__route'>{alert.routeTitle}</Text>
                     <View className='alert-item__prices'>
                       <Text className='alert-item__current'>
-                        当前: {alert.currentPrice !== null ? `¥${(alert.currentPrice / 100).toFixed(0)}` : '—'}
+                        {t('prices.currentPrice')}: {alert.currentPrice !== null ? `¥${(alert.currentPrice / 100).toFixed(0)}` : '—'}
                       </Text>
                       <Text className='alert-item__target'>
-                        目标: ¥{(alert.targetPrice / 100).toFixed(0)}
+                        {t('prices.targetPrice')}: ¥{(alert.targetPrice / 100).toFixed(0)}
                       </Text>
                       {diff !== null && diff <= 0 && (
-                        <Text className='alert-item__reached'>已达到!</Text>
+                        <Text className='alert-item__reached'>{t('prices.reached')}</Text>
                       )}
                     </View>
                   </View>
                   <View className='alert-item__right'>
-                    {triggered && <Text className='alert-item__triggered-badge'>已触发</Text>}
+                    {triggered && <Text className='alert-item__triggered-badge'>{t('prices.triggered')}</Text>}
                     <Text
                       className='alert-item__delete'
                       onClick={() => handleDeleteAlert(alert.id)}
                     >
-                      删除
+                      {t('prices.delete')}
                     </Text>
                   </View>
                 </View>
@@ -195,15 +195,15 @@ export default function PricesPage() {
 
       {/* ── Route List to Open Calendar ── */}
       <View className='section-header'>
-        <Text className='section-title'>📅 查看路线价格日历</Text>
+        <Text className='section-title'>{t('prices.viewRouteCalendar')}</Text>
       </View>
       {loading ? (
         <View className='loading-wrap'>
-          <Text className='loading-text'>加载中...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         </View>
       ) : featuredRoutes.length === 0 ? (
         <View className='empty-wrap'>
-          <Text className='empty-text'>暂无路线数据</Text>
+          <Text className='empty-text'>{t('prices.noRouteData')}</Text>
         </View>
       ) : (
         <ScrollView className='route-scroll' scrollX>
@@ -232,15 +232,15 @@ export default function PricesPage() {
                 )}
                 <View className='route-mini-card__price-badge'>
                   <Text className='route-mini-card__price'>
-                    ¥{(route.priceFrom / 100).toFixed(0)}起
+                    ¥{(route.priceFrom / 100).toFixed(0)}{t('prices.priceUp')}
                   </Text>
                 </View>
               </View>
               <View className='route-mini-card__body'>
                 <Text className='route-mini-card__title'>{route.title}</Text>
-                <Text className='route-mini-card__meta'>{route.duration}天{route.nights}晚</Text>
+                <Text className='route-mini-card__meta'>{t('prices.daysNights', { days: route.duration, nights: route.nights })}</Text>
                 <View className='route-mini-card__btn'>
-                  <Text className='route-mini-card__btn-text'>看价格日历</Text>
+                  <Text className='route-mini-card__btn-text'>{t('prices.viewCalendar')}</Text>
                 </View>
               </View>
             </View>
@@ -250,11 +250,11 @@ export default function PricesPage() {
 
       {/* ── Tips Section ── */}
       <View className='section-header'>
-        <Text className='section-title'>💡 省钱攻略</Text>
+        <Text className='section-title'>{t('prices.savingTips')}</Text>
       </View>
       <View className='tips-grid'>
-        {TIPS.map(tip => (
-          <View key={tip.title} className='tip-card'>
+        {TIPS.map((tip, idx) => (
+          <View key={idx} className='tip-card'>
             <Text className='tip-card__icon'>{tip.icon}</Text>
             <View className='tip-card__content'>
               <Text className='tip-card__title'>{tip.title}</Text>

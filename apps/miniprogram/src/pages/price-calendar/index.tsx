@@ -8,17 +8,8 @@ import {
   fetchPriceCalendar,
   createPriceAlert,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
-
-const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
-
-/* ── Colour coding by level ── */
-const LEVEL_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  low: { bg: '#ECFDF5', text: '#10B981', label: '低价' },
-  medium: { bg: '#FFFBEB', text: '#F59E0B', label: '均价' },
-  high: { bg: '#FEF2F2', text: '#EF4444', label: '高价' },
-  unavailable: { bg: '#F3F4F6', text: '#9CA3AF', label: '不可订' },
-}
 
 /* ── Helpers ── */
 function getDaysInMonth(year: number, month: number): number {
@@ -35,9 +26,10 @@ function fmt(price: number): string {
 
 
 export default function PriceCalendarPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const routeId = router.params.routeId || ''
-  const routeTitle = router.params.routeTitle ? decodeURIComponent(router.params.routeTitle) : '路线价格'
+  const routeTitle = router.params.routeTitle ? decodeURIComponent(router.params.routeTitle) : t('priceCalendar.defaultTitle')
   const today = new Date()
   const [year, setYear] = useState(today.getFullYear())
   const [month, setMonth] = useState(today.getMonth() + 1)
@@ -46,6 +38,19 @@ export default function PriceCalendarPage() {
   const [selectedDay, setSelectedDay] = useState<PriceCalendarDay | null>(null)
   const [alertPrice, setAlertPrice] = useState('')
   const [alertLoading, setAlertLoading] = useState(false)
+
+  const WEEK_DAYS = [
+    t('priceCalendar.weekSun'), t('priceCalendar.weekMon'), t('priceCalendar.weekTue'),
+    t('priceCalendar.weekWed'), t('priceCalendar.weekThu'), t('priceCalendar.weekFri'),
+    t('priceCalendar.weekSat'),
+  ]
+
+  const LEVEL_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+    low: { bg: '#ECFDF5', text: '#10B981', label: t('priceCalendar.levelLow') },
+    medium: { bg: '#FFFBEB', text: '#F59E0B', label: t('priceCalendar.levelMedium') },
+    high: { bg: '#FEF2F2', text: '#EF4444', label: t('priceCalendar.levelHigh') },
+    unavailable: { bg: '#F3F4F6', text: '#9CA3AF', label: t('priceCalendar.levelUnavailable') },
+  }
 
   useEffect(() => {
     if (routeId) loadCalendar(year, month)
@@ -59,7 +64,7 @@ export default function PriceCalendarPage() {
       setCalData(data)
     } catch {
       setCalData(null)
-      Taro.showToast({ title: '暂无价格数据', icon: 'none' })
+      Taro.showToast({ title: t('priceCalendar.noPriceData'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -90,7 +95,7 @@ export default function PriceCalendarPage() {
 
   const handleSetAlert = async () => {
     if (!alertPrice || isNaN(Number(alertPrice))) {
-      Taro.showToast({ title: '请输入有效价格', icon: 'none' })
+      Taro.showToast({ title: t('priceCalendar.enterValidPrice'), icon: 'none' })
       return
     }
     if (!routeId) return
@@ -101,10 +106,10 @@ export default function PriceCalendarPage() {
         targetPrice: Math.round(Number(alertPrice) * 100),
       }
       await createPriceAlert(input)
-      Taro.showToast({ title: '价格提醒已设置', icon: 'success' })
+      Taro.showToast({ title: t('priceCalendar.alertSet'), icon: 'success' })
       setAlertPrice('')
     } catch {
-      Taro.showToast({ title: '设置失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('priceCalendar.alertSetFailed'), icon: 'none' })
     } finally {
       setAlertLoading(false)
     }
@@ -192,9 +197,9 @@ export default function PriceCalendarPage() {
         <Text className='cal-header__title'>{routeTitle}</Text>
         {calData && (
           <View className='cal-header__range'>
-            <Text className='cal-header__range-low'>最低 {fmt(calData.minPrice)}</Text>
+            <Text className='cal-header__range-low'>{t('priceCalendar.lowest')} {fmt(calData.minPrice)}</Text>
             <Text className='cal-header__range-sep'> · </Text>
-            <Text className='cal-header__range-high'>最高 {fmt(calData.maxPrice)}</Text>
+            <Text className='cal-header__range-high'>{t('priceCalendar.highest')} {fmt(calData.maxPrice)}</Text>
           </View>
         )}
       </View>
@@ -204,7 +209,7 @@ export default function PriceCalendarPage() {
         <View className='month-picker__btn' onClick={prevMonth}>
           <Text className='month-picker__btn-text'>＜</Text>
         </View>
-        <Text className='month-picker__label'>{year}年{month}月</Text>
+        <Text className='month-picker__label'>{t('priceCalendar.yearMonth', { year, month })}</Text>
         <View className='month-picker__btn' onClick={nextMonth}>
           <Text className='month-picker__btn-text'>＞</Text>
         </View>
@@ -222,15 +227,15 @@ export default function PriceCalendarPage() {
           ))}
         <View className='legend__item'>
           <View className='legend__dot legend__dot--unavail' />
-          <Text className='legend__text legend__text--unavail'>不可订</Text>
+          <Text className='legend__text legend__text--unavail'>{t('priceCalendar.levelUnavailable')}</Text>
         </View>
       </View>
 
       {/* ── Weekday Header ── */}
       <View className='cal-week-header'>
-        {WEEK_DAYS.map(wd => (
-          <View key={wd} className='cal-week-header__cell'>
-            <Text className={`cal-week-header__text ${wd === '日' || wd === '六' ? 'cal-week-header__text--weekend' : ''}`}>
+        {WEEK_DAYS.map((wd, idx) => (
+          <View key={idx} className='cal-week-header__cell'>
+            <Text className={`cal-week-header__text ${idx === 0 || idx === 6 ? 'cal-week-header__text--weekend' : ''}`}>
               {wd}
             </Text>
           </View>
@@ -240,13 +245,13 @@ export default function PriceCalendarPage() {
       {/* ── Calendar Grid ── */}
       {loading ? (
         <View className='cal-loading'>
-          <Text className='cal-loading__text'>加载价格中...</Text>
+          <Text className='cal-loading__text'>{t('priceCalendar.loadingPrices')}</Text>
         </View>
       ) : !calData ? (
         <View className='cal-empty'>
           <Text className='cal-empty__icon'>📅</Text>
-          <Text className='cal-empty__title'>暂无价格数据</Text>
-          <Text className='cal-empty__desc'>该路线本月尚未发布价格</Text>
+          <Text className='cal-empty__title'>{t('priceCalendar.noPriceData')}</Text>
+          <Text className='cal-empty__desc'>{t('priceCalendar.noPriceDataDesc')}</Text>
         </View>
       ) : (
         <View className='cal-grid'>
@@ -267,9 +272,9 @@ export default function PriceCalendarPage() {
             </Text>
           </View>
           <View className='selected-detail__price-row'>
-            <Text className='selected-detail__price-label'>当日价格:</Text>
+            <Text className='selected-detail__price-label'>{t('priceCalendar.dayPrice')}:</Text>
             <Text className='selected-detail__price-value'>
-              {selectedDay.price !== null ? fmt(selectedDay.price) : '不可订'}
+              {selectedDay.price !== null ? fmt(selectedDay.price) : t('priceCalendar.levelUnavailable')}
             </Text>
           </View>
           {selectedDay.available && (
@@ -277,7 +282,7 @@ export default function PriceCalendarPage() {
               className='selected-detail__book-btn'
               onClick={() => Taro.navigateTo({ url: '/pages/routes/index' })}
             >
-              <Text className='selected-detail__book-text'>去预订这一天</Text>
+              <Text className='selected-detail__book-text'>{t('priceCalendar.bookThisDay')}</Text>
             </View>
           )}
         </View>
@@ -285,14 +290,14 @@ export default function PriceCalendarPage() {
 
       {/* ── Price Alert Setup ── */}
       <View className='alert-setup'>
-        <Text className='alert-setup__title'>🔔 设置价格提醒</Text>
-        <Text className='alert-setup__desc'>当价格降至目标价时，系统将发送通知给您</Text>
+        <Text className='alert-setup__title'>{t('priceCalendar.alertTitle')}</Text>
+        <Text className='alert-setup__desc'>{t('priceCalendar.alertDesc')}</Text>
         <View className='alert-setup__row'>
           <View className='alert-setup__input-wrap'>
             <Text className='alert-setup__currency'>¥</Text>
             <Input
               className='alert-setup__input'
-              placeholder='输入目标价格'
+              placeholder={t('priceCalendar.enterTargetPrice')}
               value={alertPrice}
               onInput={(e) => setAlertPrice(e.detail.value)}
               type='number'
@@ -303,7 +308,7 @@ export default function PriceCalendarPage() {
             onClick={handleSetAlert}
           >
             <Text className='alert-setup__btn-text'>
-              {alertLoading ? '设置中...' : '设置提醒'}
+              {alertLoading ? t('priceCalendar.settingAlert') : t('priceCalendar.setAlert')}
             </Text>
           </View>
         </View>
@@ -311,11 +316,11 @@ export default function PriceCalendarPage() {
 
       {/* ── Quick Tips ── */}
       <View className='cal-tips'>
-        <Text className='cal-tips__title'>📊 价格规律说明</Text>
-        <Text className='cal-tips__item'>· 绿色低价日通常为周二、周三出发</Text>
-        <Text className='cal-tips__item'>· 红色高价日集中在周末及节假日</Text>
-        <Text className='cal-tips__item'>· 提前 30 天以上预订可享早鸟价</Text>
-        <Text className='cal-tips__item'>· 价格随名额减少实时上浮</Text>
+        <Text className='cal-tips__title'>{t('priceCalendar.tipsTitle')}</Text>
+        <Text className='cal-tips__item'>{t('priceCalendar.tip1')}</Text>
+        <Text className='cal-tips__item'>{t('priceCalendar.tip2')}</Text>
+        <Text className='cal-tips__item'>{t('priceCalendar.tip3')}</Text>
+        <Text className='cal-tips__item'>{t('priceCalendar.tip4')}</Text>
       </View>
 
       <View style={{ height: '120rpx' }} />

@@ -6,47 +6,54 @@ import {
   fetchReligions, fetchFeaturedRoutes, fetchHolySites, fetchTemples, fetchPatriarchs,
   fetchPopularItems, fetchTrending, fetchPromotions, fetchJournals,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 /* ─── Constants ─── */
 
 const SEARCH_TABS = [
-  { key: 'sites', label: '圣地', icon: '📍' },
-  { key: 'routes', label: '路线', icon: '🗺' },
-  { key: 'ai', label: 'AI', icon: '💬' },
-  { key: 'wiki', label: '百科', icon: '📖' },
+  { key: 'sites', labelKey: 'home.searchTab.sites', icon: '📍' },
+  { key: 'routes', labelKey: 'home.searchTab.routes', icon: '🗺' },
+  { key: 'ai', labelKey: 'home.searchTab.ai', icon: '💬' },
+  { key: 'wiki', labelKey: 'home.searchTab.wiki', icon: '📖' },
 ]
 
 const CATEGORY_ICONS = [
-  { value: 'ZEN', icon: '🍃', label: '禅宗' },
-  { value: 'BUDDHIST', icon: '🪷', label: '佛教' },
-  { value: 'TAOIST', icon: '💧', label: '道教' },
-  { value: 'CHRISTIAN', icon: '🏠', label: '基督' },
-  { value: 'ISLAMIC', icon: '🌙', label: '丝路' },
-  { value: 'CROSS_CULTURAL', icon: '🌍', label: '跨文化' },
-  { value: 'HINDU', icon: '☀️', label: '印度教' },
-  { value: 'CULTURAL_HERITAGE', icon: '📚', label: '遗产' },
+  { value: 'ZEN', icon: '🍃', labelKey: 'home.category.zen' },
+  { value: 'BUDDHIST', icon: '🪷', labelKey: 'home.category.buddhist' },
+  { value: 'TAOIST', icon: '💧', labelKey: 'home.category.taoist' },
+  { value: 'CHRISTIAN', icon: '🏠', labelKey: 'home.category.christian' },
+  { value: 'ISLAMIC', icon: '🌙', labelKey: 'home.category.islamic' },
+  { value: 'CROSS_CULTURAL', icon: '🌍', labelKey: 'home.category.crossCultural' },
+  { value: 'HINDU', icon: '☀️', labelKey: 'home.category.hindu' },
+  { value: 'CULTURAL_HERITAGE', icon: '📚', labelKey: 'home.category.heritage' },
 ]
 
-const HOT_TAGS = ['#禅宗路线', '#耶路撒冷', '#丝绸之路', '#朝圣之旅']
+const HOT_TAG_KEYS = [
+  'home.hotTag.zenRoute',
+  'home.hotTag.jerusalem',
+  'home.hotTag.silkRoad',
+  'home.hotTag.pilgrimage',
+]
 
 const PLATFORM_HIGHLIGHTS = [
-  { icon: '🌏', title: '12大信仰', desc: '全球文化传统' },
-  { icon: '📍', title: '60+圣地', desc: '精选目的地' },
-  { icon: '💬', title: 'AI规划师', desc: '智能路线定制' },
-  { icon: '📝', title: '朝圣日志', desc: '记录旅途故事' },
+  { icon: '🌏', titleKey: 'home.highlight.faiths', descKey: 'home.highlight.faithsDesc' },
+  { icon: '📍', titleKey: 'home.highlight.sites', descKey: 'home.highlight.sitesDesc' },
+  { icon: '💬', titleKey: 'home.highlight.aiPlanner', descKey: 'home.highlight.aiPlannerDesc' },
+  { icon: '📝', titleKey: 'home.highlight.journal', descKey: 'home.highlight.journalDesc' },
 ]
 
 
 const REC_TABS = [
-  { key: 'temples', label: '祖庭' },
-  { key: 'patriarchs', label: '祖师' },
-  { key: 'sites', label: '圣地' },
+  { key: 'temples', labelKey: 'home.recTab.temples' },
+  { key: 'patriarchs', labelKey: 'home.recTab.patriarchs' },
+  { key: 'sites', labelKey: 'home.recTab.sites' },
 ]
 
 /* ─── Page ─── */
 
 export default function IndexPage() {
+  const { t, locale } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [featuredRoutes, setFeaturedRoutes] = useState<Route[]>([])
   const [holySites, setHolySites] = useState<HolySite[]>([])
@@ -61,13 +68,13 @@ export default function IndexPage() {
   const [activeRecTab, setActiveRecTab] = useState('temples')
 
   useShareAppMessage(() => ({
-    title: '帮助100万人走祖庭 — 全球文化旅行平台',
+    title: t('home.shareTitle'),
     path: '/pages/index/index',
     imageUrl: '/assets/share-default.png',
   }))
 
   useShareTimeline(() => ({
-    title: '帮助100万人走祖庭 — 精选深度文化路线',
+    title: t('home.shareTimelineTitle'),
     imageUrl: '/assets/share-default.png',
   }))
 
@@ -98,7 +105,7 @@ export default function IndexPage() {
       setPublicJournals(Array.isArray(journalsData?.items) ? journalsData.items.slice(0, 4) : [])
     } catch (err) {
       console.error('Failed to load data:', err)
-      Taro.showToast({ title: '加载失败，请检查网络', icon: 'none', duration: 3000 })
+      Taro.showToast({ title: t('home.loadFailed'), icon: 'none', duration: 3000 })
     } finally {
       setLoading(false)
     }
@@ -114,7 +121,7 @@ export default function IndexPage() {
   }
 
   const recData = activeRecTab === 'temples'
-    ? temples.slice(0, 6).map(t => ({ id: t.id, name: t.name, sub: t.country, image: t.imageUrl }))
+    ? temples.slice(0, 6).map(tp => ({ id: tp.id, name: tp.name, sub: tp.country, image: tp.imageUrl }))
     : activeRecTab === 'patriarchs'
     ? patriarchs.slice(0, 6).map(p => ({ id: p.id, name: p.name, sub: p.dates, image: p.imageUrl }))
     : holySites.slice(0, 6).map(s => ({ id: s.id, name: s.name, sub: s.country, image: s.imageUrl }))
@@ -123,13 +130,13 @@ export default function IndexPage() {
     return (
       <View className='index-page' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: '80rpx 40rpx' }}>
         <Text style={{ fontSize: '36rpx', marginBottom: '16rpx' }}>😔</Text>
-        <Text style={{ fontSize: '30rpx', color: '#6B7280', marginBottom: '24rpx' }}>暂无数据，请检查网络</Text>
+        <Text style={{ fontSize: '30rpx', color: '#6B7280', marginBottom: '24rpx' }}>{t('home.noDataCheckNetwork')}</Text>
         <View
           hoverClass='card-hover'
           style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
           onClick={loadData}
         >
-          <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>重新加载</Text>
+          <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>{t('home.reload')}</Text>
         </View>
       </View>
     )
@@ -139,8 +146,8 @@ export default function IndexPage() {
     <ScrollView className='index-page' scrollY>
       {/* ── 1. Hero + Tab Search ── */}
       <View className='hero'>
-        <Text className='hero__title'>帮助100万人走祖庭</Text>
-        <Text className='hero__subtitle'>探索全球60+文化圣地 · 深度旅行体验</Text>
+        <Text className='hero__title'>{t('home.heroTitle')}</Text>
+        <Text className='hero__subtitle'>{t('home.heroSubtitle')}</Text>
 
         {/* Tab Search Card */}
         <View className='search-card'>
@@ -153,7 +160,7 @@ export default function IndexPage() {
               >
                 <Text className='search-card__tab-icon'>{tab.icon}</Text>
                 <Text className={`search-card__tab-text ${activeSearchTab === tab.key ? 'search-card__tab-text--active' : ''}`}>
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Text>
               </View>
             ))}
@@ -163,24 +170,24 @@ export default function IndexPage() {
             onClick={() => Taro.navigateTo({ url: '/pages/search/index' })}
           >
             <Text className='search-card__input-icon'>🔍</Text>
-            <Text className='search-card__input-text'>搜路线、查目的地...</Text>
+            <Text className='search-card__input-text'>{t('home.searchPlaceholder')}</Text>
           </View>
         </View>
 
         {/* Hot Tags */}
         <ScrollView className='hero__tags' scrollX>
-          {HOT_TAGS.map(tag => (
+          {HOT_TAG_KEYS.map(tagKey => (
             <Text
-              key={tag}
+              key={tagKey}
               className='hero__tag'
               onClick={() => Taro.navigateTo({ url: '/pages/search/index' })}
             >
-              {tag}
+              {t(tagKey)}
             </Text>
           ))}
         </ScrollView>
 
-        <Text className='hero__trust'>12大文化传统 · 60+圣地 · 专业路线规划 · AI旅行顾问</Text>
+        <Text className='hero__trust'>{t('home.trustLine')}</Text>
       </View>
 
       {/* ── 2. Category Icons ── */}
@@ -195,7 +202,7 @@ export default function IndexPage() {
             <View className='category-card__icon'>
               <Text className='category-card__emoji'>{cat.icon}</Text>
             </View>
-            <Text className='category-card__label'>{cat.label}</Text>
+            <Text className='category-card__label'>{t(cat.labelKey)}</Text>
           </View>
         ))}
       </View>
@@ -209,7 +216,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--red'>
             <Text className='quick-action-item__icon'>🎫</Text>
           </View>
-          <Text className='quick-action-item__label'>优惠券</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.coupons')}</Text>
         </View>
         <View
           className='quick-action-item'
@@ -218,7 +225,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--orange'>
             <Text className='quick-action-item__icon'>⚡</Text>
           </View>
-          <Text className='quick-action-item__label'>限时活动</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.flashSale')}</Text>
         </View>
         <View
           className='quick-action-item'
@@ -227,7 +234,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--purple'>
             <Text className='quick-action-item__icon'>👑</Text>
           </View>
-          <Text className='quick-action-item__label'>会员中心</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.membership')}</Text>
         </View>
         <View
           className='quick-action-item'
@@ -236,7 +243,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
             <Text className='quick-action-item__icon'>📦</Text>
           </View>
-          <Text className='quick-action-item__label'>套餐</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.packages')}</Text>
         </View>
         <View
           className='quick-action-item'
@@ -245,7 +252,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--green'>
             <Text className='quick-action-item__icon'>📊</Text>
           </View>
-          <Text className='quick-action-item__label'>价格工具</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.priceTools')}</Text>
         </View>
         <View
           className='quick-action-item'
@@ -254,7 +261,7 @@ export default function IndexPage() {
           <View className='quick-action-item__icon-wrap quick-action-item__icon-wrap--blue'>
             <Text className='quick-action-item__icon'>🏪</Text>
           </View>
-          <Text className='quick-action-item__label'>合作商家</Text>
+          <Text className='quick-action-item__label'>{t('home.quickAction.merchants')}</Text>
         </View>
       </View>
 
@@ -262,12 +269,12 @@ export default function IndexPage() {
       {activePromotions.length > 0 && (
         <>
           <View className='section-header'>
-            <Text className='section-title'>🔥 限时优惠</Text>
+            <Text className='section-title'>{t('home.flashDeals')}</Text>
             <Text
               className='section-more'
               onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
             >
-              查看全部 &gt;
+              {t('home.viewAll')} &gt;
             </Text>
           </View>
           <ScrollView className='promo-scroll' scrollX>
@@ -279,8 +286,8 @@ export default function IndexPage() {
               }
               const accent = accentColors[promo.type] || '#0066FF'
               const discountLabel = promo.discountType === 'PERCENT'
-                ? `${promo.discountValue}折`
-                : `¥${promo.discountValue}OFF`
+                ? t('home.promo.percentOff', { value: String(promo.discountValue) })
+                : t('home.promo.amountOff', { value: String(promo.discountValue) })
               return (
                 <View
                   key={promo.id}
@@ -289,13 +296,13 @@ export default function IndexPage() {
                 >
                   <View className='promo-mini-card__header' style={{ backgroundColor: accent }}>
                     <Text className='promo-mini-card__discount'>{discountLabel}</Text>
-                    <Text className='promo-mini-card__type'>{promo.type === 'FLASH_SALE' ? '⚡闪购' : promo.type === 'EARLY_BIRD' ? '🐦早鸟' : '⏰限时'}</Text>
+                    <Text className='promo-mini-card__type'>{promo.type === 'FLASH_SALE' ? t('home.promo.flashSale') : promo.type === 'EARLY_BIRD' ? t('home.promo.earlyBird') : t('home.promo.limitedTime')}</Text>
                   </View>
                   <View className='promo-mini-card__body'>
                     <Text className='promo-mini-card__name'>{promo.name}</Text>
                     {promo.totalQuota > 0 && (
                       <Text className='promo-mini-card__quota'>
-                        剩 {promo.totalQuota - promo.usedQuota} 个名额
+                        {t('home.promo.remaining', { count: String(promo.totalQuota - promo.usedQuota) })}
                       </Text>
                     )}
                   </View>
@@ -308,17 +315,17 @@ export default function IndexPage() {
 
       {/* ── 3. Platform Highlights ── */}
       <View className='section-header'>
-        <Text className='section-title'>为什么选择我们</Text>
+        <Text className='section-title'>{t('home.whyChooseUs')}</Text>
       </View>
       <View className='highlight-grid'>
         {PLATFORM_HIGHLIGHTS.map(h => (
-          <View key={h.title} className='highlight-card'>
+          <View key={h.titleKey} className='highlight-card'>
             <View className='highlight-card__icon'>
               <Text className='highlight-card__emoji'>{h.icon}</Text>
             </View>
-            <Text className='highlight-card__title'>{h.title}</Text>
-            <Text className='highlight-card__desc'>{h.desc}</Text>
-            <Text className='highlight-card__cta'>了解更多 &gt;</Text>
+            <Text className='highlight-card__title'>{t(h.titleKey)}</Text>
+            <Text className='highlight-card__desc'>{t(h.descKey)}</Text>
+            <Text className='highlight-card__cta'>{t('home.learnMore')} &gt;</Text>
           </View>
         ))}
       </View>
@@ -327,18 +334,18 @@ export default function IndexPage() {
       {publicJournals.length > 0 && (
         <>
           <View className='section-header'>
-            <Text className='section-title'>朝圣故事</Text>
+            <Text className='section-title'>{t('home.pilgrimStories')}</Text>
             <Text
               className='section-more'
               onClick={() => Taro.navigateTo({ url: '/pages/journals/index' })}
             >
-              查看全部 &gt;
+              {t('home.viewAll')} &gt;
             </Text>
           </View>
           <ScrollView className='story-scroll' scrollX>
             {publicJournals.map(journal => {
               const firstImage = Array.isArray(journal.images) && journal.images.length > 0 ? journal.images[0] : null
-              const authorName = journal.user?.nickname ?? '匿名'
+              const authorName = journal.user?.nickname ?? t('home.anonymous')
               return (
                 <View
                   key={journal.id}
@@ -371,12 +378,12 @@ export default function IndexPage() {
 
       {/* ── 5. Featured Routes ── */}
       <View className='section-header'>
-        <Text className='section-title'>精选路线</Text>
+        <Text className='section-title'>{t('home.featuredRoutes')}</Text>
         <Text
           className='section-more'
           onClick={() => Taro.navigateTo({ url: '/pages/routes/index' })}
         >
-          查看全部 &gt;
+          {t('home.viewAll')} &gt;
         </Text>
       </View>
       <ScrollView className='route-scroll' scrollX>
@@ -395,11 +402,11 @@ export default function IndexPage() {
                 </View>
               )}
               <View className='route-card__badge'>
-                <Text className='route-card__badge-text'>{route.duration}天{route.nights}晚</Text>
+                <Text className='route-card__badge-text'>{t('home.route.daysNights', { days: String(route.duration), nights: String(route.nights) })}</Text>
               </View>
               {route.rating && (
                 <View className='route-card__rating'>
-                  <Text className='route-card__rating-text'>★ {route.rating.toFixed(1)}</Text>
+                  <Text className='route-card__rating-text'>★ {(route.rating ?? 0).toFixed(1)}</Text>
                 </View>
               )}
             </View>
@@ -407,7 +414,7 @@ export default function IndexPage() {
               <Text className='route-card__title'>{route.title}</Text>
               <Text className='route-card__subtitle'>{route.subtitle}</Text>
               <View className='route-card__footer'>
-                <Text className='route-card__price'>¥{(route.priceFrom / 100).toLocaleString()}<Text className='route-card__price-unit'>/人起</Text></Text>
+                <Text className='route-card__price'>¥{((route.priceFrom ?? 0) / 100).toLocaleString(locale)}<Text className='route-card__price-unit'>{t('home.route.perPerson')}</Text></Text>
               </View>
             </View>
           </View>
@@ -420,30 +427,30 @@ export default function IndexPage() {
         onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}
       >
         <View className='ai-banner__content'>
-          <Text className='ai-banner__title'>AI旅行规划师</Text>
-          <Text className='ai-banner__desc'>告诉我你想去哪里，我来帮你规划完美的朝圣路线</Text>
+          <Text className='ai-banner__title'>{t('home.aiPlanner.title')}</Text>
+          <Text className='ai-banner__desc'>{t('home.aiPlanner.desc')}</Text>
           <View className='ai-banner__btn'>
-            <Text className='ai-banner__btn-text'>开始对话 →</Text>
+            <Text className='ai-banner__btn-text'>{t('home.aiPlanner.startChat')}</Text>
           </View>
         </View>
         <View className='ai-banner__chat'>
           <View className='ai-banner__bubble ai-banner__bubble--user'>
-            <Text className='ai-banner__bubble-text'>推荐一条禅宗路线</Text>
+            <Text className='ai-banner__bubble-text'>{t('home.aiPlanner.sampleQuestion')}</Text>
           </View>
           <View className='ai-banner__bubble ai-banner__bubble--reply'>
-            <Text className='ai-banner__bubble-text--reply'>为您推荐「禅宗祖庭巡礼」5天4晚...</Text>
+            <Text className='ai-banner__bubble-text--reply'>{t('home.aiPlanner.sampleReply')}</Text>
           </View>
         </View>
       </View>
 
       {/* ── 7. Popular Destinations ── */}
       <View className='section-header'>
-        <Text className='section-title'>热门目的地</Text>
+        <Text className='section-title'>{t('home.popularDestinations')}</Text>
         <Text
           className='section-more'
           onClick={() => Taro.switchTab({ url: '/pages/holy-sites/index' })}
         >
-          查看全部 &gt;
+          {t('home.viewAll')} &gt;
         </Text>
       </View>
       <View className='dest-grid'>
@@ -470,7 +477,7 @@ export default function IndexPage() {
 
       {/* ── 8. Recommendation Tabs ── */}
       <View className='section-header'>
-        <Text className='section-title'>热门推荐</Text>
+        <Text className='section-title'>{t('home.hotRecommendations')}</Text>
       </View>
       <View className='rec-tabs'>
         {REC_TABS.map(tab => (
@@ -480,7 +487,7 @@ export default function IndexPage() {
             onClick={() => setActiveRecTab(tab.key)}
           >
             <Text className={`rec-tabs__text ${activeRecTab === tab.key ? 'rec-tabs__text--active' : ''}`}>
-              {tab.label}
+              {t(tab.labelKey)}
             </Text>
           </View>
         ))}
@@ -505,12 +512,12 @@ export default function IndexPage() {
       {popularItems.length > 0 && (
         <>
           <View className='section-header'>
-            <Text className='section-title'>全平台热门</Text>
+            <Text className='section-title'>{t('home.platformPopular')}</Text>
             <Text
               className='section-more'
               onClick={() => Taro.navigateTo({ url: '/pages/holy-sites/index' })}
             >
-              查看全部 &gt;
+              {t('home.viewAll')} &gt;
             </Text>
           </View>
           <ScrollView className='popular-scroll' scrollX>
@@ -553,12 +560,12 @@ export default function IndexPage() {
 
       {/* ── 9.5 Community Entry + Trending Guides ── */}
       <View className='section-header'>
-        <Text className='section-title'>攻略社区</Text>
+        <Text className='section-title'>{t('home.community')}</Text>
         <Text
           className='section-more'
           onClick={() => Taro.navigateTo({ url: '/pages/community/index' })}
         >
-          查看全部 &gt;
+          {t('home.viewAll')} &gt;
         </Text>
       </View>
 
@@ -569,17 +576,17 @@ export default function IndexPage() {
       >
         <View className='community-entry__item'>
           <Text className='community-entry__icon'>📖</Text>
-          <Text className='community-entry__label'>游记</Text>
+          <Text className='community-entry__label'>{t('home.community.guides')}</Text>
         </View>
         <View className='community-entry__divider' />
         <View className='community-entry__item'>
           <Text className='community-entry__icon'>❓</Text>
-          <Text className='community-entry__label'>问答</Text>
+          <Text className='community-entry__label'>{t('home.community.qa')}</Text>
         </View>
         <View className='community-entry__divider' />
         <View className='community-entry__item'>
           <Text className='community-entry__icon'>🏆</Text>
-          <Text className='community-entry__label'>排行</Text>
+          <Text className='community-entry__label'>{t('home.community.rankings')}</Text>
         </View>
       </View>
 
@@ -587,12 +594,12 @@ export default function IndexPage() {
       {trendingGuides.length > 0 && (
         <>
           <View className='section-header'>
-            <Text className='section-title'>热门游记</Text>
+            <Text className='section-title'>{t('home.trendingGuides')}</Text>
             <Text
               className='section-more'
               onClick={() => Taro.navigateTo({ url: '/pages/community/index' })}
             >
-              更多 &gt;
+              {t('home.more')} &gt;
             </Text>
           </View>
           <ScrollView className='trending-scroll' scrollX>
@@ -612,7 +619,7 @@ export default function IndexPage() {
                 <View className='trending-card__body'>
                   <Text className='trending-card__title'>{guide.title}</Text>
                   <View className='trending-card__meta'>
-                    <Text className='trending-card__author'>{guide.user.nickname || '旅行者'}</Text>
+                    <Text className='trending-card__author'>{guide.user?.nickname || t('home.traveler')}</Text>
                     <Text className='trending-card__likes'>❤️ {guide.likeCount}</Text>
                   </View>
                 </View>
@@ -627,40 +634,40 @@ export default function IndexPage() {
         <View className='stats-card__grid'>
           <View className='stats-card__item'>
             <Text className='stats-card__value'>12</Text>
-            <Text className='stats-card__label'>文化传统</Text>
+            <Text className='stats-card__label'>{t('home.stats.traditions')}</Text>
           </View>
           <View className='stats-card__item'>
             <Text className='stats-card__value'>60+</Text>
-            <Text className='stats-card__label'>圣地</Text>
+            <Text className='stats-card__label'>{t('home.stats.holySites')}</Text>
           </View>
           <View className='stats-card__item'>
             <Text className='stats-card__value'>27</Text>
-            <Text className='stats-card__label'>祖庭</Text>
+            <Text className='stats-card__label'>{t('home.stats.temples')}</Text>
           </View>
           <View className='stats-card__item'>
             <Text className='stats-card__value'>50000+</Text>
-            <Text className='stats-card__label'>旅行者</Text>
+            <Text className='stats-card__label'>{t('home.stats.travelers')}</Text>
           </View>
         </View>
       </View>
 
       <View className='cta-section'>
-        <Text className='cta-section__title'>开启你的文化之旅</Text>
-        <Text className='cta-section__desc'>精选深度路线，探访全球文化圣地</Text>
+        <Text className='cta-section__title'>{t('home.cta.title')}</Text>
+        <Text className='cta-section__desc'>{t('home.cta.desc')}</Text>
         <View className='cta-section__buttons'>
           <View
             className='cta-section__btn'
             hoverClass='cta-section__btn--hover'
             onClick={() => Taro.navigateTo({ url: '/pages/routes/index' })}
           >
-            <Text className='cta-section__btn-text'>浏览路线</Text>
+            <Text className='cta-section__btn-text'>{t('home.cta.browseRoutes')}</Text>
           </View>
           <View
             className='cta-section__btn cta-section__btn--outline'
             hoverClass='cta-section__btn--hover'
             onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}
           >
-            <Text className='cta-section__btn-text--outline'>AI帮你规划</Text>
+            <Text className='cta-section__btn-text--outline'>{t('home.cta.aiPlan')}</Text>
           </View>
         </View>
       </View>

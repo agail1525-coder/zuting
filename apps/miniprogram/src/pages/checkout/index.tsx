@@ -3,21 +3,23 @@ import { View, Text, ScrollView, Input, Textarea } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Route, fetchRouteBySlug, createTrip, createOrder, payOrder, verifyCoupon } from '../../lib/api'
 import { isLoggedIn } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 type PayMethod = 'WECHAT_PAY' | 'BALANCE' | 'ALIPAY'
 
-const PAY_METHODS: { key: PayMethod; label: string; icon: string }[] = [
-  { key: 'WECHAT_PAY', label: '微信支付', icon: '💚' },
-  { key: 'BALANCE', label: '余额支付', icon: '💰' },
-  { key: 'ALIPAY', label: '支付宝', icon: '💙' },
-]
-
 export default function CheckoutPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const slug = router.params.slug as string
   const tripIdParam = router.params.tripId as string | undefined
   const amountParam = router.params.amount as string | undefined
+
+  const PAY_METHODS: { key: PayMethod; label: string; icon: string }[] = [
+    { key: 'WECHAT_PAY', label: t('checkout.payWechat'), icon: '\u{1F49A}' },
+    { key: 'BALANCE', label: t('checkout.payBalance'), icon: '\u{1F4B0}' },
+    { key: 'ALIPAY', label: t('checkout.payAlipay'), icon: '\u{1F499}' },
+  ]
 
   const [route, setRoute] = useState<Route | null>(null)
   const [loading, setLoading] = useState(true)
@@ -40,7 +42,7 @@ export default function CheckoutPage() {
     fetchRouteBySlug(slug)
       .then(setRoute)
       .catch(() => {
-        Taro.showToast({ title: '加载路线失败', icon: 'none' })
+        Taro.showToast({ title: t('checkout.loadRouteFailed'), icon: 'none' })
       })
       .finally(() => setLoading(false))
   }, [slug])
@@ -49,7 +51,7 @@ export default function CheckoutPage() {
     return (
       <View className='checkout-page'>
         <View className='empty'>
-          <Text className='empty__text'>加载中...</Text>
+          <Text className='empty__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -65,11 +67,11 @@ export default function CheckoutPage() {
   const handleApplyCoupon = async () => {
     const code = couponCode.trim().toUpperCase()
     if (!code) {
-      Taro.showToast({ title: '请输入优惠码', icon: 'none' })
+      Taro.showToast({ title: t('checkout.enterCouponCode'), icon: 'none' })
       return
     }
     try {
-      Taro.showLoading({ title: '验证中...' })
+      Taro.showLoading({ title: t('checkout.verifying') })
       const result = await verifyCoupon(code, Math.round(subtotal * 100))
       Taro.hideLoading()
       if (result.valid) {
@@ -78,17 +80,17 @@ export default function CheckoutPage() {
           : result.discount / 100
         setCouponDiscount(discount)
         setCouponApplied(true)
-        Taro.showToast({ title: `优惠码已应用 -¥${discount}`, icon: 'success' })
+        Taro.showToast({ title: t('checkout.couponApplied', { amount: discount }), icon: 'success' })
       } else {
         setCouponApplied(false)
         setCouponDiscount(0)
-        Taro.showToast({ title: result.message || '无效优惠码', icon: 'none' })
+        Taro.showToast({ title: result.message || t('checkout.invalidCoupon'), icon: 'none' })
       }
     } catch {
       Taro.hideLoading()
       setCouponApplied(false)
       setCouponDiscount(0)
-      Taro.showToast({ title: '优惠码验证失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('checkout.couponVerifyFailed'), icon: 'none' })
     }
   }
 
@@ -100,11 +102,11 @@ export default function CheckoutPage() {
 
   const handleSubmit = async () => {
     if (!isLoggedIn()) {
-      Taro.showToast({ title: '请先登录', icon: 'none' })
+      Taro.showToast({ title: t('checkout.loginFirst'), icon: 'none' })
       return
     }
     if (route && !contactName.trim()) {
-      Taro.showToast({ title: '请填写联系人姓名', icon: 'none' })
+      Taro.showToast({ title: t('checkout.enterContactName'), icon: 'none' })
       return
     }
     setSubmitting(true)
@@ -126,7 +128,7 @@ export default function CheckoutPage() {
       }
 
       if (!targetTripId) {
-        Taro.showToast({ title: '行程信息缺失', icon: 'none' })
+        Taro.showToast({ title: t('checkout.tripInfoMissing'), icon: 'none' })
         return
       }
 
@@ -140,16 +142,16 @@ export default function CheckoutPage() {
       })
 
       // Call payment API
-      Taro.showLoading({ title: '正在处理支付...' })
+      Taro.showLoading({ title: t('checkout.processingPayment') })
       await payOrder(order.id, payMethod)
       Taro.hideLoading()
 
-      Taro.showToast({ title: '支付成功', icon: 'success' })
+      Taro.showToast({ title: t('checkout.paymentSuccess'), icon: 'success' })
       setTimeout(() => {
         Taro.navigateTo({ url: '/pages/trips/index' })
       }, 1500)
     } catch {
-      Taro.showToast({ title: '提交失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('checkout.submitFailed'), icon: 'none' })
     } finally {
       setSubmitting(false)
     }
@@ -163,15 +165,15 @@ export default function CheckoutPage() {
           <Text className='summary-card__title'>{route.title}</Text>
           <Text className='summary-card__subtitle'>{route.subtitle}</Text>
           <View className='summary-card__meta'>
-            <Text className='summary-card__meta-item'>📅 {route.duration}天{route.nights}晚</Text>
-            <Text className='summary-card__meta-item'>🌤 {route.season}</Text>
+            <Text className='summary-card__meta-item'>{'\u{1F4C5}'} {t('checkout.durationNights', { days: route.duration, nights: route.nights })}</Text>
+            <Text className='summary-card__meta-item'>{'\u{1F324}'} {route.season}</Text>
           </View>
         </View>
       ) : (
         <View className='summary-card'>
-          <Text className='summary-card__title'>确认订单</Text>
+          <Text className='summary-card__title'>{t('checkout.confirmOrder')}</Text>
           {tripIdParam && (
-            <Text className='summary-card__subtitle'>行程 ID: {tripIdParam}</Text>
+            <Text className='summary-card__subtitle'>{t('checkout.tripId')}: {tripIdParam}</Text>
           )}
         </View>
       )}
@@ -179,9 +181,9 @@ export default function CheckoutPage() {
       {/* Booking Form (only shown when creating from route) */}
       {route && (
         <View className='form-section'>
-          <Text className='form-section__title'>预订信息</Text>
+          <Text className='form-section__title'>{t('checkout.bookingInfo')}</Text>
 
-          <Text className='form-label'>出行人数</Text>
+          <Text className='form-label'>{t('checkout.personCount')}</Text>
           <Input
             className='form-input'
             type='number'
@@ -190,29 +192,29 @@ export default function CheckoutPage() {
             placeholder='2'
           />
 
-          <Text className='form-label'>联系人 *</Text>
+          <Text className='form-label'>{t('checkout.contactName')} *</Text>
           <Input
             className='form-input'
             value={contactName}
             onInput={e => setContactName(e.detail.value)}
-            placeholder='请输入联系人姓名'
+            placeholder={t('checkout.contactNamePlaceholder')}
           />
 
-          <Text className='form-label'>手机号</Text>
+          <Text className='form-label'>{t('checkout.phone')}</Text>
           <Input
             className='form-input'
             type='number'
             value={contactPhone}
             onInput={e => setContactPhone(e.detail.value)}
-            placeholder='请输入手机号'
+            placeholder={t('checkout.phonePlaceholder')}
           />
 
-          <Text className='form-label'>备注</Text>
+          <Text className='form-label'>{t('checkout.note')}</Text>
           <Textarea
             className='form-textarea'
             value={note}
             onInput={e => setNote(e.detail.value)}
-            placeholder='特殊需求或备注'
+            placeholder={t('checkout.notePlaceholder')}
             maxlength={500}
           />
         </View>
@@ -220,15 +222,15 @@ export default function CheckoutPage() {
 
       {/* Coupon Code */}
       <View className='coupon-section'>
-        <Text className='coupon-section__title'>🎫 优惠码</Text>
+        <Text className='coupon-section__title'>{'\u{1F3AB}'} {t('checkout.couponCode')}</Text>
         {couponApplied ? (
           <View className='coupon-section__applied'>
             <View className='coupon-section__applied-info'>
               <Text className='coupon-section__applied-code'>{couponCode.toUpperCase()}</Text>
-              <Text className='coupon-section__applied-discount'>-¥{couponDiscount}</Text>
+              <Text className='coupon-section__applied-discount'>-\u00a5{couponDiscount}</Text>
             </View>
             <Text className='coupon-section__remove' onClick={handleRemoveCoupon}>
-              移除
+              {t('checkout.removeCoupon')}
             </Text>
           </View>
         ) : (
@@ -237,11 +239,11 @@ export default function CheckoutPage() {
               className='coupon-section__input'
               value={couponCode}
               onInput={e => setCouponCode(e.detail.value)}
-              placeholder='输入优惠码 (如 JOINUS10)'
+              placeholder={t('checkout.couponPlaceholder')}
               maxlength={20}
             />
             <View className='coupon-section__apply-btn' onClick={handleApplyCoupon}>
-              <Text className='coupon-section__apply-text'>使用</Text>
+              <Text className='coupon-section__apply-text'>{t('checkout.applyCoupon')}</Text>
             </View>
           </View>
         )}
@@ -249,13 +251,13 @@ export default function CheckoutPage() {
           className='coupon-section__link'
           onClick={() => Taro.navigateTo({ url: '/pages/coupons/index' })}
         >
-          查看我的优惠券 &gt;
+          {t('checkout.viewMyCoupons')} &gt;
         </Text>
       </View>
 
       {/* Payment Method */}
       <View className='pay-method-section'>
-        <Text className='pay-method-section__title'>支付方式</Text>
+        <Text className='pay-method-section__title'>{t('checkout.paymentMethod')}</Text>
         {PAY_METHODS.map(m => (
           <View
             key={m.key}
@@ -274,28 +276,28 @@ export default function CheckoutPage() {
       {/* Price Summary */}
       <View className='price-card'>
         <View className='price-card__row'>
-          <Text className='price-card__label'>路线价格</Text>
-          <Text className='price-card__value'>¥{unitPrice.toLocaleString()}/人</Text>
+          <Text className='price-card__label'>{t('checkout.routePrice')}</Text>
+          <Text className='price-card__value'>\u00a5{unitPrice.toLocaleString()}/{t('checkout.perPerson')}</Text>
         </View>
         {route && (
           <View className='price-card__row'>
-            <Text className='price-card__label'>人数</Text>
-            <Text className='price-card__value'>× {personCount}</Text>
+            <Text className='price-card__label'>{t('checkout.personCount')}</Text>
+            <Text className='price-card__value'>\u00d7 {personCount}</Text>
           </View>
         )}
         <View className='price-card__row'>
-          <Text className='price-card__label'>小计</Text>
-          <Text className='price-card__value'>¥{subtotal.toLocaleString()}</Text>
+          <Text className='price-card__label'>{t('checkout.subtotal')}</Text>
+          <Text className='price-card__value'>\u00a5{subtotal.toLocaleString()}</Text>
         </View>
         {couponDiscount > 0 && (
           <View className='price-card__row price-card__row--discount'>
-            <Text className='price-card__label price-card__label--discount'>优惠码减免</Text>
-            <Text className='price-card__value price-card__value--discount'>-¥{couponDiscount}</Text>
+            <Text className='price-card__label price-card__label--discount'>{t('checkout.couponDiscount')}</Text>
+            <Text className='price-card__value price-card__value--discount'>-\u00a5{couponDiscount}</Text>
           </View>
         )}
         <View className='price-card__row price-card__row--total'>
-          <Text className='price-card__total-label'>应付合计</Text>
-          <Text className='price-card__total-value'>¥{finalAmount.toLocaleString()}</Text>
+          <Text className='price-card__total-label'>{t('checkout.totalDue')}</Text>
+          <Text className='price-card__total-value'>\u00a5{finalAmount.toLocaleString()}</Text>
         </View>
       </View>
 
@@ -305,7 +307,7 @@ export default function CheckoutPage() {
         onClick={submitting ? undefined : handleSubmit}
       >
         <Text className='submit-btn__text'>
-          {submitting ? '处理中...' : `微信支付 ¥${finalAmount.toLocaleString()}`}
+          {submitting ? t('checkout.processing') : `${t('checkout.payNow')} \u00a5${finalAmount.toLocaleString()}`}
         </Text>
       </View>
 
@@ -313,7 +315,7 @@ export default function CheckoutPage() {
         className='promo-entry'
         onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
       >
-        <Text className='promo-entry__text'>🔥 查看最新优惠活动</Text>
+        <Text className='promo-entry__text'>{'\u{1F525}'} {t('checkout.viewPromotions')}</Text>
         <Text className='promo-entry__arrow'>&gt;</Text>
       </View>
 
@@ -323,5 +325,5 @@ export default function CheckoutPage() {
 }
 
 definePageConfig({
-  navigationBarTitleText: '确认订单',
+  navigationBarTitleText: '\u786E\u8BA4\u8BA2\u5355',
 })

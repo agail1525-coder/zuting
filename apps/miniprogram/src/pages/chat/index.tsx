@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { getAccessToken, isLoggedIn, API_URL } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 interface Message {
@@ -11,27 +12,29 @@ interface Message {
   typing?: boolean
 }
 
-const SUGGESTIONS = [
-  '推荐佛教圣地',
-  '如何规划朝圣行程？',
-  '曹溪三十印是什么？',
-  '介绍道教祖庭',
-  '世界十二大信仰',
-  '修行入门指南',
-]
-
 let msgIdCounter = 0
 function genId() {
   return `msg_${Date.now()}_${++msgIdCounter}`
 }
 
 export default function ChatPage() {
+  const { t } = useTranslation()
+
+  const SUGGESTIONS = [
+    t('chat.suggestBuddhistSites'),
+    t('chat.suggestPlanTrip'),
+    t('chat.suggestThirtySeals'),
+    t('chat.suggestTaoistTemples'),
+    t('chat.suggestTwelveFaiths'),
+    t('chat.suggestPracticeGuide'),
+  ]
+
   const [authed, setAuthed] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: genId(),
       role: 'bot',
-      content: '您好！我是小鸿，您的智慧助手。我可以帮您了解全球圣地、朝圣行程规划、修行指南等。请问有什么可以帮您的？',
+      content: t('chat.welcomeMessage'),
     },
   ])
   const [inputValue, setInputValue] = useState('')
@@ -69,7 +72,7 @@ export default function ChatPage() {
 
   const fetchAIResponse = useCallback(async (text: string): Promise<string> => {
     const token = getAccessToken()
-    if (!token) return '请先登录后使用AI助手功能'
+    if (!token) return t('chat.loginRequired')
     try {
       const res = await Taro.request({
         url: `${API_URL}/xiaohong/chat`,
@@ -86,11 +89,11 @@ export default function ChatPage() {
         }
         const reply = res.data?.content || res.data?.reply || res.data?.message
         if (reply) return reply
-        return '抱歉，小鸿暂时无法回答这个问题，请稍后重试'
+        return t('chat.cannotAnswer')
       }
-      return '服务暂时不可用，请稍后重试'
+      return t('chat.serviceUnavailable')
     } catch {
-      return '网络异常，请稍后重试'
+      return t('chat.networkError')
     }
   }, [])
 
@@ -130,13 +133,13 @@ export default function ChatPage() {
       <View className='chat-page'>
         <View className='auth-gate'>
           <Text className='auth-gate__icon'>{'\u{1F3EF}'}</Text>
-          <Text className='auth-gate__title'>小鸿 AI 助手</Text>
-          <Text className='auth-gate__desc'>请先登录后再与小鸿对话</Text>
+          <Text className='auth-gate__title'>{t('chat.aiAssistantTitle')}</Text>
+          <Text className='auth-gate__desc'>{t('chat.loginFirst')}</Text>
           <View
             className='auth-gate__btn'
             onClick={() => Taro.switchTab({ url: '/pages/profile/index' })}
           >
-            <Text className='auth-gate__btn-text'>去登录</Text>
+            <Text className='auth-gate__btn-text'>{t('chat.goLogin')}</Text>
           </View>
         </View>
       </View>
@@ -185,7 +188,7 @@ export default function ChatPage() {
           <Input
             className='input-bar__input'
             value={inputValue}
-            placeholder='向小鸿提问...'
+            placeholder={t('chat.inputPlaceholder')}
             placeholderClass='input-bar__placeholder'
             onInput={(e) => setInputValue(e.detail.value)}
             onConfirm={handleSend}
@@ -201,5 +204,5 @@ export default function ChatPage() {
 }
 
 definePageConfig({
-  navigationBarTitleText: '小鸿AI助手',
+  navigationBarTitleText: '',
 })

@@ -11,23 +11,25 @@ import {
   wechatLogin,
   type User,
 } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const APP_VERSION = '0.2.0'
 
-const MENU_ITEMS = [
-  { icon: '\u{1F4AC}', label: '消息', desc: '私信 · 商家咨询', action: 'messages', url: '/pages/messages/index' },
-  { icon: '\u{1F9ED}', label: '我的行程', desc: '管理朝圣行程', action: 'trips', url: '/pages/trips/index' },
-  { icon: '\u{1F4D6}', label: '朝圣日记', desc: '记录修行感悟', action: 'journals', url: '/pages/journals/index' },
-  { icon: '\u2665', label: '我的收藏', desc: '收藏的圣地与祖庭', action: 'collections', url: '/pages/collections/index' },
-  { icon: '\u{1F5FA}', label: '圣地地图', desc: '全球圣地分布', action: 'map', url: '/pages/map/index' },
-  { icon: '\u{1F514}', label: '通知设置', desc: '管理推送通知', action: 'notifications' },
-  { icon: '\u{2139}\u{FE0F}', label: '关于我们', desc: '了解祖庭之旅', action: 'about', url: '/pages/about/index' },
-  { icon: '\u{1F4AC}', label: '意见反馈', desc: '帮助我们改进', action: 'feedback' },
-  { icon: '\u{2B50}', label: '给我们评分', desc: '支持我们的工作', action: 'rate' },
+const MENU_KEYS = [
+  { icon: '\u{1F4AC}', labelKey: 'profile.menuMessages', descKey: 'profile.menuMessagesDesc', action: 'messages', url: '/pages/messages/index' },
+  { icon: '\u{1F9ED}', labelKey: 'profile.menuTrips', descKey: 'profile.menuTripsDesc', action: 'trips', url: '/pages/trips/index' },
+  { icon: '\u{1F4D6}', labelKey: 'profile.menuJournals', descKey: 'profile.menuJournalsDesc', action: 'journals', url: '/pages/journals/index' },
+  { icon: '\u2665', labelKey: 'profile.menuCollections', descKey: 'profile.menuCollectionsDesc', action: 'collections', url: '/pages/collections/index' },
+  { icon: '\u{1F5FA}', labelKey: 'profile.menuMap', descKey: 'profile.menuMapDesc', action: 'map', url: '/pages/map/index' },
+  { icon: '\u{1F514}', labelKey: 'profile.menuNotifications', descKey: 'profile.menuNotificationsDesc', action: 'notifications' },
+  { icon: '\u{2139}\u{FE0F}', labelKey: 'profile.menuAbout', descKey: 'profile.menuAboutDesc', action: 'about', url: '/pages/about/index' },
+  { icon: '\u{1F4AC}', labelKey: 'profile.menuFeedback', descKey: 'profile.menuFeedbackDesc', action: 'feedback' },
+  { icon: '\u{2B50}', labelKey: 'profile.menuRate', descKey: 'profile.menuRateDesc', action: 'rate' },
 ]
 
 export default function ProfilePage() {
+  const { t } = useTranslation()
   const [user, setUser] = useState<User | null>(null)
   const [showLoginForm, setShowLoginForm] = useState(false)
   const [showRegisterForm, setShowRegisterForm] = useState(false)
@@ -57,9 +59,9 @@ export default function ProfilePage() {
     try {
       const u = await wechatLogin()
       setUser(u)
-      Taro.showToast({ title: '登录成功', icon: 'success' })
+      Taro.showToast({ title: t('profile.loginSuccess'), icon: 'success' })
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '微信登录失败'
+      const message = err instanceof Error ? err.message : t('profile.wechatLoginFailed')
       Taro.showToast({ title: message, icon: 'none' })
     } finally {
       setLoading(false)
@@ -68,7 +70,7 @@ export default function ProfilePage() {
 
   const handleLogin = async () => {
     if (!phone.trim() || !password.trim()) {
-      Taro.showToast({ title: '请输入手机号和密码', icon: 'none' })
+      Taro.showToast({ title: t('profile.enterPhoneAndPassword'), icon: 'none' })
       return
     }
     setLoading(true)
@@ -78,9 +80,9 @@ export default function ProfilePage() {
       setShowLoginForm(false)
       setPhone('')
       setPassword('')
-      Taro.showToast({ title: '登录成功', icon: 'success' })
+      Taro.showToast({ title: t('profile.loginSuccess'), icon: 'success' })
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '登录失败'
+      const message = err instanceof Error ? err.message : t('profile.loginFailed')
       Taro.showToast({ title: message, icon: 'none' })
     } finally {
       setLoading(false)
@@ -89,15 +91,15 @@ export default function ProfilePage() {
 
   const handleRegister = async () => {
     if (!phone.trim() || !nickname.trim() || !password.trim()) {
-      Taro.showToast({ title: '请填写所有必填项', icon: 'none' })
+      Taro.showToast({ title: t('profile.fillAllRequired'), icon: 'none' })
       return
     }
     if (password !== confirmPassword) {
-      Taro.showToast({ title: '两次密码不一致', icon: 'none' })
+      Taro.showToast({ title: t('profile.passwordMismatch'), icon: 'none' })
       return
     }
     if (password.length < 6) {
-      Taro.showToast({ title: '密码至少6位', icon: 'none' })
+      Taro.showToast({ title: t('profile.passwordMinLength'), icon: 'none' })
       return
     }
     setLoading(true)
@@ -109,9 +111,9 @@ export default function ProfilePage() {
       setPassword('')
       setNickname('')
       setConfirmPassword('')
-      Taro.showToast({ title: '注册成功', icon: 'success' })
+      Taro.showToast({ title: t('profile.registerSuccess'), icon: 'success' })
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '注册失败'
+      const message = err instanceof Error ? err.message : t('profile.registerFailed')
       Taro.showToast({ title: message, icon: 'none' })
     } finally {
       setLoading(false)
@@ -121,10 +123,10 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     await logout()
     setUser(null)
-    Taro.showToast({ title: '已退出登录', icon: 'none' })
+    Taro.showToast({ title: t('profile.loggedOut'), icon: 'none' })
   }
 
-  const handleMenuTap = (item: typeof MENU_ITEMS[0]) => {
+  const handleMenuTap = (item: typeof MENU_KEYS[0]) => {
     if (item.url) {
       Taro.navigateTo({ url: item.url })
       return
@@ -132,10 +134,10 @@ export default function ProfilePage() {
     switch (item.action) {
       case 'feedback':
         Taro.showModal({
-          title: '意见反馈',
-          content: '感谢您的宝贵意见！\n\n请发送反馈至:\nfeedback@zuting.travel\n\n我们会认真阅读每一条反馈。',
+          title: t('profile.feedbackTitle'),
+          content: t('profile.feedbackContent'),
           showCancel: false,
-          confirmText: '好的'
+          confirmText: t('profile.feedbackOk')
         })
         break
       case 'notifications':
@@ -143,10 +145,10 @@ export default function ProfilePage() {
         break
       case 'rate':
         Taro.showModal({
-          title: '感谢支持',
-          content: '您的支持是我们前进的动力！\n\n请在微信「发现 → 小程序」中找到「祖庭之旅」，长按即可进行评分。',
+          title: t('profile.rateTitle'),
+          content: t('profile.rateContent'),
           showCancel: false,
-          confirmText: '知道了'
+          confirmText: t('profile.rateOk')
         })
         break
       default:
@@ -173,7 +175,7 @@ export default function ProfilePage() {
           <View className='auth-form'>
             <Input
               className='auth-form__input'
-              placeholder='手机号'
+              placeholder={t('profile.phonePlaceholder')}
               placeholderClass='auth-form__placeholder'
               type='number'
               maxlength={11}
@@ -182,7 +184,7 @@ export default function ProfilePage() {
             />
             <Input
               className='auth-form__input'
-              placeholder='密码'
+              placeholder={t('profile.passwordPlaceholder')}
               placeholderClass='auth-form__placeholder'
               password
               value={password}
@@ -193,27 +195,27 @@ export default function ProfilePage() {
               onClick={loading ? undefined : handleLogin}
             >
               <Text className='profile-card__login-text'>
-                {loading ? '登录中...' : '登录'}
+                {loading ? t('profile.loggingIn') : t('profile.loginBtn')}
               </Text>
             </View>
             <Text
               className='auth-form__switch'
               onClick={() => { setShowLoginForm(false); setShowRegisterForm(true) }}
             >
-              没有账号？立即注册
+              {t('profile.noAccountRegister')}
             </Text>
             <Text
               className='auth-form__switch'
               onClick={() => setShowLoginForm(false)}
             >
-              取消
+              {t('common.cancel')}
             </Text>
           </View>
         ) : showRegisterForm ? (
           <View className='auth-form'>
             <Input
               className='auth-form__input'
-              placeholder='手机号'
+              placeholder={t('profile.phonePlaceholder')}
               placeholderClass='auth-form__placeholder'
               type='number'
               maxlength={11}
@@ -222,7 +224,7 @@ export default function ProfilePage() {
             />
             <Input
               className='auth-form__input'
-              placeholder='昵称'
+              placeholder={t('profile.nicknamePlaceholder')}
               placeholderClass='auth-form__placeholder'
               maxlength={32}
               value={nickname}
@@ -230,7 +232,7 @@ export default function ProfilePage() {
             />
             <Input
               className='auth-form__input'
-              placeholder='密码 (至少6位)'
+              placeholder={t('profile.passwordMinLengthPlaceholder')}
               placeholderClass='auth-form__placeholder'
               password
               value={password}
@@ -238,7 +240,7 @@ export default function ProfilePage() {
             />
             <Input
               className='auth-form__input'
-              placeholder='确认密码'
+              placeholder={t('profile.confirmPasswordPlaceholder')}
               placeholderClass='auth-form__placeholder'
               password
               value={confirmPassword}
@@ -249,39 +251,39 @@ export default function ProfilePage() {
               onClick={loading ? undefined : handleRegister}
             >
               <Text className='profile-card__login-text'>
-                {loading ? '注册中...' : '注册'}
+                {loading ? t('profile.registering') : t('profile.registerBtn')}
               </Text>
             </View>
             <Text
               className='auth-form__switch'
               onClick={() => { setShowRegisterForm(false); setShowLoginForm(true) }}
             >
-              已有账号？返回登录
+              {t('profile.hasAccountLogin')}
             </Text>
             <Text
               className='auth-form__switch'
               onClick={() => setShowRegisterForm(false)}
             >
-              取消
+              {t('common.cancel')}
             </Text>
           </View>
         ) : (
           <>
-            <Text className='profile-card__name'>祖庭行者</Text>
-            <Text className='profile-card__desc'>开始你的祖庭之旅</Text>
+            <Text className='profile-card__name'>{t('profile.guestName')}</Text>
+            <Text className='profile-card__desc'>{t('profile.guestDesc')}</Text>
             <View
               className='profile-card__login-btn profile-card__login-btn--wechat'
               onClick={loading ? undefined : handleWechatLogin}
             >
               <Text className='profile-card__login-text'>
-                {loading ? '登录中...' : '微信一键登录'}
+                {loading ? t('profile.loggingIn') : t('profile.wechatLogin')}
               </Text>
             </View>
             <View
               className='profile-card__alt-login'
               onClick={() => setShowLoginForm(true)}
             >
-              <Text className='profile-card__alt-login-text'>手机号登录 / 注册</Text>
+              <Text className='profile-card__alt-login-text'>{t('profile.phoneLoginRegister')}</Text>
             </View>
           </>
         )}
@@ -291,23 +293,23 @@ export default function ProfilePage() {
       <View className='journey-stats'>
         <View className='journey-stats__item'>
           <Text className='journey-stats__number'>{user?._count?.journals ?? 0}</Text>
-          <Text className='journey-stats__label'>朝圣日志</Text>
+          <Text className='journey-stats__label'>{t('profile.statJournals')}</Text>
         </View>
         <View className='journey-stats__divider' />
         <View className='journey-stats__item'>
           <Text className='journey-stats__number'>{user?._count?.practices ?? 0}</Text>
-          <Text className='journey-stats__label'>已集印章</Text>
+          <Text className='journey-stats__label'>{t('profile.statSeals')}</Text>
         </View>
         <View className='journey-stats__divider' />
         <View className='journey-stats__item'>
           <Text className='journey-stats__number'>{user?._count?.trips ?? 0}</Text>
-          <Text className='journey-stats__label'>行程数</Text>
+          <Text className='journey-stats__label'>{t('profile.statTrips')}</Text>
         </View>
       </View>
 
       {/* Menu Items */}
       <View className='menu-list'>
-        {MENU_ITEMS.map((item) => (
+        {MENU_KEYS.map((item) => (
           <View
             key={item.action}
             className='menu-item'
@@ -316,8 +318,8 @@ export default function ProfilePage() {
           >
             <Text className='menu-item__icon'>{item.icon}</Text>
             <View className='menu-item__content'>
-              <Text className='menu-item__label'>{item.label}</Text>
-              <Text className='menu-item__desc'>{item.desc}</Text>
+              <Text className='menu-item__label'>{t(item.labelKey)}</Text>
+              <Text className='menu-item__desc'>{t(item.descKey)}</Text>
             </View>
             <Text className='menu-item__arrow'>&gt;</Text>
           </View>
@@ -328,14 +330,14 @@ export default function ProfilePage() {
       {user && (
         <View className='logout-section'>
           <View className='logout-btn' hoverClass='logout-btn--hover' onClick={handleLogout}>
-            <Text className='logout-btn__text'>退出登录</Text>
+            <Text className='logout-btn__text'>{t('profile.logout')}</Text>
           </View>
         </View>
       )}
 
       {/* Version */}
       <View className='version'>
-        <Text className='version__text'>祖庭之旅 v{APP_VERSION}</Text>
+        <Text className='version__text'>{t('profile.appName')} v{APP_VERSION}</Text>
         <Text className='version__copyright'>Global Ancestral Temple Travel Platform</Text>
       </View>
     </View>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { Religion, fetchReligions } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const gradientColors: Record<string, string> = {
@@ -20,6 +21,7 @@ const gradientColors: Record<string, string> = {
 }
 
 export default function ReligionsPage() {
+  const { t } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -33,7 +35,7 @@ export default function ReligionsPage() {
       setReligions(list)
     } catch (err) {
       console.error('Failed to load religions:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('religions.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -46,15 +48,15 @@ export default function ReligionsPage() {
   return (
     <View className='religions-page'>
       <View className='page-header'>
-        <Text className='page-header__title'>十二大信仰</Text>
-        <Text className='page-header__count'>{religions.length} 个信仰</Text>
+        <Text className='page-header__title'>{t('religions.title')}</Text>
+        <Text className='page-header__count'>{t('religions.count', { count: religions.length })}</Text>
       </View>
 
       <ScrollView className='religions-grid' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : religions.length === 0 ? (
-          <Text className='empty-text'>暂无数据</Text>
+          <Text className='empty-text'>{t('common.noData')}</Text>
         ) : (
           <View className='grid'>
             {religions.map(r => {

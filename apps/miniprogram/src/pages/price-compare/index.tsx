@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PriceCompareItem, fetchCheapestRoutes } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function PriceComparePage() {
+  const { t } = useTranslation()
   const [items, setItems] = useState<PriceCompareItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -13,7 +15,7 @@ export default function PriceComparePage() {
       .then(setItems)
       .catch(err => {
         console.error('Failed to load price compare:', err)
-        Taro.showToast({ title: '加载失败', icon: 'none' })
+        Taro.showToast({ title: t('priceCompare.loadFailed'), icon: 'none' })
       })
       .finally(() => setLoading(false))
   }, [])
@@ -25,15 +27,15 @@ export default function PriceComparePage() {
   return (
     <View className='price-compare'>
       <View className='page-header'>
-        <Text className='page-header__title'>价格比价</Text>
-        <Text className='page-header__count'>{items.length} 条路线</Text>
+        <Text className='page-header__title'>{t('priceCompare.title')}</Text>
+        <Text className='page-header__count'>{t('priceCompare.routeCount', { count: items.length })}</Text>
       </View>
 
       <ScrollView className='price-compare__list' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : items.length === 0 ? (
-          <Text className='empty-text'>暂无比价数据</Text>
+          <Text className='empty-text'>{t('priceCompare.noData')}</Text>
         ) : (
           items.map((item, index) => (
             <View
@@ -52,12 +54,12 @@ export default function PriceComparePage() {
                 <View className='price-compare__price-row'>
                   <Text className='price-compare__current'>¥{item.priceFrom}</Text>
                   {item.lowestPrice < item.priceFrom && (
-                    <Text className='price-compare__low'>最低 ¥{item.lowestPrice}</Text>
+                    <Text className='price-compare__low'>{t('priceCompare.lowest')} ¥{item.lowestPrice}</Text>
                   )}
                 </View>
                 <View className='price-compare__meta'>
-                  <Text className='price-compare__duration'>{item.duration}天{item.nights}晚</Text>
-                  <Text className='price-compare__avg'>均价 ¥{Math.round(item.avgPrice)}</Text>
+                  <Text className='price-compare__duration'>{t('priceCompare.daysNights', { days: item.duration, nights: item.nights })}</Text>
+                  <Text className='price-compare__avg'>{t('priceCompare.avgPrice')} ¥{Math.round(item.avgPrice)}</Text>
                 </View>
               </View>
             </View>

@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { GuideItem, fetchGuides } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function GuidesPage() {
+  const { t } = useTranslation()
   const [guides, setGuides] = useState<GuideItem[]>([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -27,7 +29,7 @@ export default function GuidesPage() {
       setPage(p)
     } catch (err) {
       console.error('Failed to load guides:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('guides.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -46,7 +48,7 @@ export default function GuidesPage() {
   return (
     <View className='guides-page'>
       <View className='page-header'>
-        <Text className='page-header__title'>攻略社区</Text>
+        <Text className='page-header__title'>{t('guides.title')}</Text>
       </View>
 
       <ScrollView
@@ -55,11 +57,11 @@ export default function GuidesPage() {
         onScrollToLower={handleLoadMore}
       >
         {loading && guides.length === 0 ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : guides.length === 0 ? (
           <View className='empty-state'>
-            <Text className='empty-state__text'>暂无攻略</Text>
-            <Text className='empty-state__sub'>快来发布第一篇攻略吧</Text>
+            <Text className='empty-state__text'>{t('guides.empty')}</Text>
+            <Text className='empty-state__sub'>{t('guides.emptyHint')}</Text>
           </View>
         ) : (
           guides.map(guide => (
@@ -83,8 +85,8 @@ export default function GuidesPage() {
                     <Text className='guide-card__author'>{guide.user.nickname}</Text>
                   )}
                   <View className='guide-card__stats'>
-                    <Text className='guide-card__stat'>{guide.viewCount} 阅读</Text>
-                    <Text className='guide-card__stat'>{guide.likeCount} 赞</Text>
+                    <Text className='guide-card__stat'>{guide.viewCount} {t('guides.reads')}</Text>
+                    <Text className='guide-card__stat'>{guide.likeCount} {t('guides.likes')}</Text>
                   </View>
                 </View>
               </View>
@@ -92,7 +94,7 @@ export default function GuidesPage() {
           ))
         )}
         {hasMore && guides.length > 0 && (
-          <Text className='load-more'>加载更多...</Text>
+          <Text className='load-more'>{t('guides.loadMore')}</Text>
         )}
         <View style={{ height: '120rpx' }} />
       </ScrollView>

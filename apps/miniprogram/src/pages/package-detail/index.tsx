@@ -2,14 +2,8 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { PackageDetail, fetchPackage, createTrip } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
-
-const TYPE_LABELS: Record<string, string> = {
-  CLASSIC: '经典套餐',
-  PREMIUM: '精品套餐',
-  LUXURY: '奢华套餐',
-  CUSTOM: '定制套餐',
-}
 
 const TYPE_COLORS: Record<string, string> = {
   CLASSIC: '#0066FF',
@@ -19,8 +13,16 @@ const TYPE_COLORS: Record<string, string> = {
 }
 
 export default function PackageDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const id = router.params.id as string
+
+  const TYPE_LABELS: Record<string, string> = {
+    CLASSIC: t('packageDetail.labelClassic'),
+    PREMIUM: t('packageDetail.labelPremium'),
+    LUXURY: t('packageDetail.labelLuxury'),
+    CUSTOM: t('packageDetail.labelCustom'),
+  }
 
   const [pkg, setPkg] = useState<PackageDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -40,7 +42,7 @@ export default function PackageDetailPage() {
       const res = await fetchPackage(id)
       setPkg(res)
     } catch {
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('packageDetail.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -49,28 +51,28 @@ export default function PackageDetailPage() {
   const handleBook = async () => {
     if (!pkg) return
     if (!bookingDate) {
-      Taro.showToast({ title: '请选择出发日期', icon: 'none' })
+      Taro.showToast({ title: t('packageDetail.selectDate'), icon: 'none' })
       return
     }
     if (persons < 1 || persons > 20) {
-      Taro.showToast({ title: '出行人数需在 1-20 之间', icon: 'none' })
+      Taro.showToast({ title: t('packageDetail.personsRange'), icon: 'none' })
       return
     }
     setSubmitting(true)
     try {
       const trip = await createTrip({
-        title: `${pkg.title} × ${persons}人`,
+        title: `${pkg.title} × ${persons}${t('packageDetail.personUnit')}`,
         startDate: bookingDate,
         endDate: bookingDate,
         persons,
-        note: `通过套餐「${pkg.title}」创建`,
+        note: t('packageDetail.createdViaPackage', { name: pkg.title }),
       })
-      Taro.showToast({ title: '预约成功！跳转行程页', icon: 'success' })
+      Taro.showToast({ title: t('packageDetail.bookSuccess'), icon: 'success' })
       setTimeout(() => {
         Taro.navigateTo({ url: `/pages/trip-detail/index?id=${trip.id}` })
       }, 1500)
     } catch {
-      Taro.showToast({ title: '预约失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('packageDetail.bookFailed'), icon: 'none' })
     } finally {
       setSubmitting(false)
     }
@@ -80,7 +82,7 @@ export default function PackageDetailPage() {
     return (
       <View className='package-detail-page'>
         <View className='loading'>
-          <Text className='loading__text'>加载中...</Text>
+          <Text className='loading__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -90,7 +92,7 @@ export default function PackageDetailPage() {
     return (
       <View className='package-detail-page'>
         <View className='empty'>
-          <Text className='empty__text'>套餐不存在</Text>
+          <Text className='empty__text'>{t('packageDetail.notFound')}</Text>
         </View>
       </View>
     )
@@ -131,22 +133,22 @@ export default function PackageDetailPage() {
           <View className='stats-row'>
             <View className='stats-item'>
               <Text className='stats-item__num'>{pkg.duration}</Text>
-              <Text className='stats-item__label'>天数</Text>
+              <Text className='stats-item__label'>{t('packageDetail.statDays')}</Text>
             </View>
             <View className='stats-divider' />
             <View className='stats-item'>
               <Text className='stats-item__num'>{pkg.nights}</Text>
-              <Text className='stats-item__label'>住宿晚</Text>
+              <Text className='stats-item__label'>{t('packageDetail.statNights')}</Text>
             </View>
             <View className='stats-divider' />
             <View className='stats-item'>
               <Text className='stats-item__num'>{pkg.rating != null ? pkg.rating.toFixed(1) : '--'}</Text>
-              <Text className='stats-item__label'>评分</Text>
+              <Text className='stats-item__label'>{t('packageDetail.statRating')}</Text>
             </View>
             <View className='stats-divider' />
             <View className='stats-item'>
               <Text className='stats-item__num'>{pkg.reviewCount}</Text>
-              <Text className='stats-item__label'>评价</Text>
+              <Text className='stats-item__label'>{t('packageDetail.statReviews')}</Text>
             </View>
           </View>
 
@@ -154,7 +156,7 @@ export default function PackageDetailPage() {
           <View className='price-row'>
             <Text className='price-currency'>¥</Text>
             <Text className='price-num'>{pkg.priceFrom.toLocaleString()}</Text>
-            <Text className='price-unit'>起 / 人</Text>
+            <Text className='price-unit'>{t('packageDetail.priceUnit')}</Text>
           </View>
         </View>
 
@@ -167,7 +169,7 @@ export default function PackageDetailPage() {
               onClick={() => setActiveSection(s)}
             >
               <Text className={`section-tab__text ${activeSection === s ? 'section-tab__text--active' : ''}`}>
-                {s === 'overview' ? '概览' : s === 'itinerary' ? '行程' : '须知'}
+                {s === 'overview' ? t('packageDetail.tabOverview') : s === 'itinerary' ? t('packageDetail.tabItinerary') : t('packageDetail.tabInfo')}
               </Text>
               {activeSection === s && <View className='section-tab__indicator' />}
             </View>
@@ -180,7 +182,7 @@ export default function PackageDetailPage() {
             <Text className='section-content__desc'>{pkg.description}</Text>
             {pkg.highlights.length > 0 && (
               <View className='highlight-list'>
-                <Text className='highlight-list__title'>亮点特色</Text>
+                <Text className='highlight-list__title'>{t('packageDetail.highlights')}</Text>
                 {pkg.highlights.map((h, i) => (
                   <View key={i} className='highlight-item'>
                     <Text className='highlight-item__dot' style={{ color: typeColor }}>●</Text>
@@ -222,7 +224,7 @@ export default function PackageDetailPage() {
           <View className='section-content'>
             {pkg.included.length > 0 && (
               <View className='info-block'>
-                <Text className='info-block__title'>✅ 费用包含</Text>
+                <Text className='info-block__title'>{t('packageDetail.included')}</Text>
                 {pkg.included.map((item, i) => (
                   <Text key={i} className='info-block__item'>• {item}</Text>
                 ))}
@@ -230,7 +232,7 @@ export default function PackageDetailPage() {
             )}
             {pkg.excluded.length > 0 && (
               <View className='info-block'>
-                <Text className='info-block__title'>❌ 费用不含</Text>
+                <Text className='info-block__title'>{t('packageDetail.excluded')}</Text>
                 {pkg.excluded.map((item, i) => (
                   <Text key={i} className='info-block__item'>• {item}</Text>
                 ))}
@@ -238,7 +240,7 @@ export default function PackageDetailPage() {
             )}
             {pkg.tips.length > 0 && (
               <View className='info-block'>
-                <Text className='info-block__title'>💡 出行提示</Text>
+                <Text className='info-block__title'>{t('packageDetail.tips')}</Text>
                 {pkg.tips.map((tip, i) => (
                   <Text key={i} className='info-block__item'>• {tip}</Text>
                 ))}
@@ -249,17 +251,17 @@ export default function PackageDetailPage() {
 
         {/* Booking Form */}
         <View className='booking-form'>
-          <Text className='booking-form__title'>立即预约</Text>
+          <Text className='booking-form__title'>{t('packageDetail.bookNow')}</Text>
 
           <View className='booking-form__row'>
-            <Text className='booking-form__label'>出发日期</Text>
+            <Text className='booking-form__label'>{t('packageDetail.departureDate')}</Text>
             <View
               className='booking-form__date-picker'
               onClick={() => {
                 // Use showModal with editable option (cast to any for Taro type compat)
                 ;(Taro.showModal as (opts: Record<string, unknown>) => void)({
-                  title: '选择日期',
-                  content: '请输入出发日期 (格式: YYYY-MM-DD)',
+                  title: t('packageDetail.selectDateTitle'),
+                  content: t('packageDetail.selectDateContent'),
                   editable: true,
                   placeholderText: '2026-04-01',
                   success: (res: { confirm: boolean; content?: string }) => {
@@ -271,13 +273,13 @@ export default function PackageDetailPage() {
               }}
             >
               <Text className='booking-form__date-text'>
-                {bookingDate || '点击选择日期'}
+                {bookingDate || t('packageDetail.clickSelectDate')}
               </Text>
             </View>
           </View>
 
           <View className='booking-form__row'>
-            <Text className='booking-form__label'>出行人数</Text>
+            <Text className='booking-form__label'>{t('packageDetail.travelers')}</Text>
             <View className='booking-form__persons'>
               <View
                 className='persons-btn'
@@ -296,7 +298,7 @@ export default function PackageDetailPage() {
           </View>
 
           <View className='booking-form__total'>
-            <Text className='booking-form__total-label'>预估费用</Text>
+            <Text className='booking-form__total-label'>{t('packageDetail.estimatedCost')}</Text>
             <Text className='booking-form__total-price'>
               ¥{(pkg.priceFrom * persons).toLocaleString()}+
             </Text>
@@ -311,7 +313,7 @@ export default function PackageDetailPage() {
         <View className='submit-bar__price'>
           <Text className='submit-bar__price-label'>¥</Text>
           <Text className='submit-bar__price-num'>{(pkg.priceFrom * persons).toLocaleString()}</Text>
-          <Text className='submit-bar__price-unit'>+起</Text>
+          <Text className='submit-bar__price-unit'>+{t('packageDetail.priceUpUnit')}</Text>
         </View>
         <View
           className={`submit-bar__btn ${submitting ? 'submit-bar__btn--loading' : ''}`}
@@ -319,7 +321,7 @@ export default function PackageDetailPage() {
           onClick={submitting ? undefined : handleBook}
         >
           <Text className='submit-bar__btn-text'>
-            {submitting ? '提交中...' : '立即预约'}
+            {submitting ? t('packageDetail.submitting') : t('packageDetail.bookNow')}
           </Text>
         </View>
       </View>

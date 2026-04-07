@@ -2,22 +2,24 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { fetchPriceTrend, PriceTrendResponse, fetchRoutes, Route } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
-
-const PERIODS = [
-  { days: 7, label: '7天' },
-  { days: 30, label: '30天' },
-  { days: 90, label: '90天' },
-]
 
 const BAR_HEIGHT = 200
 
 export default function PriceTrendPage() {
+  const { t } = useTranslation()
   const [routes, setRoutes] = useState<Route[]>([])
   const [routeId, setRouteId] = useState('')
   const [days, setDays] = useState(30)
   const [data, setData] = useState<PriceTrendResponse | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const PERIODS = [
+    { days: 7, label: t('priceTrend.period7') },
+    { days: 30, label: t('priceTrend.period30') },
+    { days: 90, label: t('priceTrend.period90') },
+  ]
 
   useEffect(() => {
     fetchRoutes()
@@ -36,7 +38,7 @@ export default function PriceTrendPage() {
       .then(setData)
       .catch(err => {
         console.error('Failed to load trend:', err)
-        Taro.showToast({ title: '加载失败', icon: 'none' })
+        Taro.showToast({ title: t('priceTrend.loadFailed'), icon: 'none' })
       })
       .finally(() => setLoading(false))
   }, [routeId, days])
@@ -105,24 +107,24 @@ export default function PriceTrendPage() {
 
       <ScrollView className='content' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : !data ? (
-          <Text className='empty-text'>暂无趋势数据</Text>
+          <Text className='empty-text'>{t('priceTrend.noTrendData')}</Text>
         ) : (
           <View>
             {renderBars()}
 
             <View className='stats-row'>
               <View className='stat-card'>
-                <Text className='stat-card__label'>最低价</Text>
+                <Text className='stat-card__label'>{t('priceTrend.lowestPrice')}</Text>
                 <Text className='stat-card__value stat-card__value--green'>¥{data.minPrice}</Text>
               </View>
               <View className='stat-card'>
-                <Text className='stat-card__label'>平均价</Text>
+                <Text className='stat-card__label'>{t('priceTrend.averagePrice')}</Text>
                 <Text className='stat-card__value'>¥{Math.round(data.avgPrice)}</Text>
               </View>
               <View className='stat-card'>
-                <Text className='stat-card__label'>最高价</Text>
+                <Text className='stat-card__label'>{t('priceTrend.highestPrice')}</Text>
                 <Text className='stat-card__value stat-card__value--red'>¥{data.maxPrice}</Text>
               </View>
             </View>

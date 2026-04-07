@@ -1,34 +1,37 @@
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const APP_VERSION = '0.2.0'
 
-const STATS = [
-  { number: '12', label: '大信仰体系' },
-  { number: '60+', label: '全球圣地' },
-  { number: '27', label: '历史祖庭' },
-  { number: '7', label: '支持语言' },
-]
-
 export default function AboutPage() {
+  const { t } = useTranslation()
+
+  const STATS = [
+    { number: '12', label: t('about.statFaiths') },
+    { number: '60+', label: t('about.statSites') },
+    { number: '27', label: t('about.statTemples') },
+    { number: '7', label: t('about.statLanguages') },
+  ]
+
   return (
     <View className='about-page'>
       {/* Hero */}
       <View className='about-hero'>
         <Text className='about-hero__icon'>{'\u{1F3EF}'}</Text>
         <Text className='about-hero__title'>JOINUS.COM</Text>
-        <Text className='about-hero__subtitle'>全球祖庭之旅 Global Ancestral Temple Travel</Text>
+        <Text className='about-hero__subtitle'>{t('about.subtitle')}</Text>
       </View>
 
       {/* Mission */}
       <View className='about-card'>
-        <Text className='about-card__title'>我们的使命</Text>
+        <Text className='about-card__title'>{t('about.missionTitle')}</Text>
         <Text className='about-card__text'>
-          帮助100万人走祖庭，建立全球宗教文化和平使者网络。
+          {t('about.missionText1')}
         </Text>
         <Text className='about-card__text'>
-          祖庭之旅致力于连接世界各地的宗教文化圣地，让每一位旅行者都能深入了解人类文明的精神源头，在朝圣之路上获得心灵的成长与升华。
+          {t('about.missionText2')}
         </Text>
       </View>
 
@@ -44,18 +47,18 @@ export default function AboutPage() {
 
       {/* Platform Features */}
       <View className='about-card'>
-        <Text className='about-card__title'>平台特色</Text>
+        <Text className='about-card__title'>{t('about.featuresTitle')}</Text>
         <Text className='about-card__text'>
-          {'\u{1F30D}'} 覆盖佛教、道教、基督教、伊斯兰教等12大信仰体系
+          {'\u{1F30D}'} {t('about.feature1')}
         </Text>
         <Text className='about-card__text'>
-          {'\u{1F9ED}'} 智能行程规划，AI助手小鸿为您推荐最佳朝圣路线
+          {'\u{1F9ED}'} {t('about.feature2')}
         </Text>
         <Text className='about-card__text'>
-          {'\u{1F4D6}'} 朝圣日志记录修行感悟，与全球行者分享心得
+          {'\u{1F4D6}'} {t('about.feature3')}
         </Text>
         <Text className='about-card__text'>
-          {'\u{1F3C6}'} 曹溪愿命三十印集印体系，记录修行足迹
+          {'\u{1F3C6}'} {t('about.feature4')}
         </Text>
       </View>
 
@@ -66,7 +69,7 @@ export default function AboutPage() {
           hoverClass='about-link--hover'
           onClick={() => Taro.navigateTo({ url: '/pages/privacy/index' })}
         >
-          <Text className='about-link__text'>隐私政策</Text>
+          <Text className='about-link__text'>{t('about.privacyPolicy')}</Text>
           <Text className='about-link__arrow'>&gt;</Text>
         </View>
         <View
@@ -74,7 +77,7 @@ export default function AboutPage() {
           hoverClass='about-link--hover'
           onClick={() => Taro.navigateTo({ url: '/pages/terms/index' })}
         >
-          <Text className='about-link__text'>服务条款</Text>
+          <Text className='about-link__text'>{t('about.termsOfService')}</Text>
           <Text className='about-link__arrow'>&gt;</Text>
         </View>
       </View>

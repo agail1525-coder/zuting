@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { View, Text, ScrollView, Map } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { Religion, HolySite, fetchReligions, fetchHolySites } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 interface MapMarker {
@@ -31,6 +32,7 @@ interface MapMarker {
 }
 
 export default function MapPage() {
+  const { t } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [sites, setSites] = useState<HolySite[]>([])
   const [filteredSites, setFilteredSites] = useState<HolySite[]>([])
@@ -59,7 +61,7 @@ export default function MapPage() {
       }
     } catch (err) {
       console.error('Failed to load map data:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('map.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -118,7 +120,7 @@ export default function MapPage() {
   if (loading) {
     return (
       <View className='map-page'>
-        <Text className='loading-text'>正在加载地图数据...</Text>
+        <Text className='loading-text'>{t('map.loadingMapData')}</Text>
       </View>
     )
   }
@@ -131,7 +133,7 @@ export default function MapPage() {
           className={`filter-chip ${activeFilter === 'all' ? 'filter-chip--active' : ''}`}
           onClick={() => handleFilter('all')}
         >
-          <Text className='filter-chip__text'>全部</Text>
+          <Text className='filter-chip__text'>{t('map.filterAll')}</Text>
         </View>
         {religions.map(r => (
           <View
@@ -148,8 +150,8 @@ export default function MapPage() {
       <View className='map-container'>
         {mapError && (
           <View className='map-error-fallback'>
-            <Text className='map-error-fallback__title'>地图加载失败</Text>
-            <Text className='map-error-fallback__desc'>以下是圣地列表：</Text>
+            <Text className='map-error-fallback__title'>{t('map.mapLoadFailed')}</Text>
+            <Text className='map-error-fallback__desc'>{t('map.fallbackList')}</Text>
             <ScrollView className='map-error-fallback__list' scrollY>
               {filteredSites.map(site => (
                 <View
@@ -175,7 +177,7 @@ export default function MapPage() {
             console.error('Map error:', e)
             setMapError(true)
             Taro.showToast({
-              title: '地图加载失败，请检查网络',
+              title: t('map.mapLoadFailedCheckNetwork'),
               icon: 'none',
               duration: 3000,
             })
@@ -190,7 +192,7 @@ export default function MapPage() {
       {/* Sites Count */}
       <View className='sites-count'>
         <Text className='sites-count__text'>
-          {'\u{1F4CD}'} 显示 {filteredSites.length} 个圣地
+          {'\u{1F4CD}'} {t('map.showingSites', { count: filteredSites.length })}
         </Text>
       </View>
     </View>
@@ -198,5 +200,5 @@ export default function MapPage() {
 }
 
 definePageConfig({
-  navigationBarTitleText: '圣地地图',
+  navigationBarTitleText: '',
 })

@@ -3,9 +3,11 @@ import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { Collection, fetchCollections, createCollection, deleteCollection } from '../../lib/api'
 import { getAccessToken } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function CollectionsPage() {
+  const { t } = useTranslation()
   const [collections, setCollections] = useState<Collection[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,7 +28,7 @@ export default function CollectionsPage() {
       const data = await fetchCollections()
       setCollections(data)
     } catch {
-      setError('加载失败，请重试')
+      setError(t('collections.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -54,7 +56,7 @@ export default function CollectionsPage() {
 
   const handleCreate = useCallback(async () => {
     if (!newName.trim()) {
-      Taro.showToast({ title: '请输入收藏夹名称', icon: 'none' })
+      Taro.showToast({ title: t('collections.nameRequired'), icon: 'none' })
       return
     }
     setCreating(true)
@@ -67,9 +69,9 @@ export default function CollectionsPage() {
       setShowCreateModal(false)
       setNewName('')
       setNewDesc('')
-      Taro.showToast({ title: '创建成功', icon: 'success' })
+      Taro.showToast({ title: t('collections.createSuccess'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '创建失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('collections.createFailed'), icon: 'none' })
     } finally {
       setCreating(false)
     }
@@ -77,21 +79,21 @@ export default function CollectionsPage() {
 
   const handleDelete = useCallback((id: string, name: string) => {
     Taro.showModal({
-      title: '删除收藏夹',
-      content: `确定删除「${name}」？其中的收藏将全部清除。`,
-      confirmText: '删除',
+      title: t('collections.deleteTitle'),
+      content: t('collections.deleteConfirm', { name }),
+      confirmText: t('collections.delete'),
       confirmColor: '#EF4444',
     }).then(res => {
       if (!res.confirm) return
       deleteCollection(id)
         .then(() => {
           setCollections(prev => prev.filter(c => c.id !== id))
-          Taro.showToast({ title: '已删除', icon: 'success' })
+          Taro.showToast({ title: t('collections.deleted'), icon: 'success' })
         })
         .catch(() => {
-          Taro.showToast({ title: '删除失败', icon: 'none' })
+          Taro.showToast({ title: t('collections.deleteFailed'), icon: 'none' })
         })
-    }).catch(() => { Taro.showToast({ title: '删除失败，请重试', icon: 'none' }) })
+    }).catch(() => { Taro.showToast({ title: t('collections.deleteFailed'), icon: 'none' }) })
   }, [])
 
   if (!getAccessToken()) {
@@ -99,13 +101,13 @@ export default function CollectionsPage() {
       <View className='collections-page'>
         <View className='empty-state'>
           <Text className='empty-state__icon'>&#x1F512;</Text>
-          <Text className='empty-state__title'>请先登录</Text>
-          <Text className='empty-state__desc'>登录后即可查看和管理收藏夹</Text>
+          <Text className='empty-state__title'>{t('collections.loginRequired')}</Text>
+          <Text className='empty-state__desc'>{t('collections.loginDesc')}</Text>
           <View
             className='empty-state__btn'
             onClick={() => Taro.switchTab({ url: '/pages/profile/index' })}
           >
-            <Text className='empty-state__btn-text'>去登录</Text>
+            <Text className='empty-state__btn-text'>{t('collections.goLogin')}</Text>
           </View>
         </View>
       </View>
@@ -116,12 +118,12 @@ export default function CollectionsPage() {
     <View className='collections-page'>
       {/* Header */}
       <View className='page-header'>
-        <Text className='page-header__title'>我的收藏夹</Text>
+        <Text className='page-header__title'>{t('collections.myCollections')}</Text>
         <View
           className='page-header__btn'
           onClick={() => setShowCreateModal(true)}
         >
-          <Text className='page-header__btn-text'>+ 新建</Text>
+          <Text className='page-header__btn-text'>{t('collections.newBtn')}</Text>
         </View>
       </View>
 
@@ -130,12 +132,12 @@ export default function CollectionsPage() {
         <View className='stats-row'>
           <View className='stats-row__item'>
             <Text className='stats-row__value'>{stats.totalCollections}</Text>
-            <Text className='stats-row__label'>收藏夹</Text>
+            <Text className='stats-row__label'>{t('collections.collections')}</Text>
           </View>
           <View className='stats-row__divider' />
           <View className='stats-row__item'>
             <Text className='stats-row__value'>{stats.totalItems}</Text>
-            <Text className='stats-row__label'>总收藏</Text>
+            <Text className='stats-row__label'>{t('collections.totalItems')}</Text>
           </View>
         </View>
       )}
@@ -146,7 +148,7 @@ export default function CollectionsPage() {
           <Text className='search-bar__icon'>&#x1F50D;</Text>
           <Input
             className='search-bar__input'
-            placeholder='搜索收藏夹...'
+            placeholder={t('collections.searchPlaceholder')}
             placeholderClass='search-bar__placeholder'
             value={searchQuery}
             onInput={e => setSearchQuery(e.detail.value)}
@@ -159,14 +161,14 @@ export default function CollectionsPage() {
 
       {loading && (
         <View className='loading-wrap'>
-          <Text className='loading-wrap__text'>加载中...</Text>
+          <Text className='loading-wrap__text'>{t('common.loading')}</Text>
         </View>
       )}
 
       {!loading && error && (
         <View className='loading-wrap'>
           <Text className='loading-wrap__text loading-wrap__text--error'>{error}</Text>
-          <Text className='loading-wrap__retry' onClick={loadCollections}>重试</Text>
+          <Text className='loading-wrap__retry' onClick={loadCollections}>{t('common.retry')}</Text>
         </View>
       )}
 
@@ -176,26 +178,26 @@ export default function CollectionsPage() {
             /* G4: Data-empty state */
             <View className='empty-state'>
               <Text className='empty-state__icon'>&#x2665;</Text>
-              <Text className='empty-state__title'>还没有收藏夹</Text>
-              <Text className='empty-state__desc'>在圣地、祖庭等详情页点击收藏，或新建收藏夹整理</Text>
+              <Text className='empty-state__title'>{t('collections.emptyTitle')}</Text>
+              <Text className='empty-state__desc'>{t('collections.emptyDesc')}</Text>
               <View
                 className='empty-state__btn'
                 onClick={() => setShowCreateModal(true)}
               >
-                <Text className='empty-state__btn-text'>新建收藏夹</Text>
+                <Text className='empty-state__btn-text'>{t('collections.newCollection')}</Text>
               </View>
             </View>
           ) : filteredCollections.length === 0 ? (
             /* G4: Search-empty state */
             <View className='empty-state'>
               <Text className='empty-state__icon'>&#x1F50D;</Text>
-              <Text className='empty-state__title'>未找到匹配的收藏夹</Text>
-              <Text className='empty-state__desc'>试试其他关键词，或清除搜索条件</Text>
+              <Text className='empty-state__title'>{t('collections.noMatch')}</Text>
+              <Text className='empty-state__desc'>{t('collections.noMatchHint')}</Text>
               <View
                 className='empty-state__btn'
                 onClick={() => setSearchQuery('')}
               >
-                <Text className='empty-state__btn-text'>清除搜索</Text>
+                <Text className='empty-state__btn-text'>{t('collections.clearSearch')}</Text>
               </View>
             </View>
           ) : (
@@ -221,7 +223,7 @@ export default function CollectionsPage() {
                     {col.description && (
                       <Text className='collection-card__desc'>{col.description}</Text>
                     )}
-                    <Text className='collection-card__count'>{col.itemCount} 个收藏</Text>
+                    <Text className='collection-card__count'>{t('collections.itemCount', { count: col.itemCount ?? 0 })}</Text>
                   </View>
                   <View
                     className='collection-card__delete'
@@ -237,12 +239,12 @@ export default function CollectionsPage() {
 
               {/* G4: Bottom CTA */}
               <View className='bottom-cta'>
-                <Text className='bottom-cta__text'>发现更多值得收藏的圣地</Text>
+                <Text className='bottom-cta__text'>{t('collections.ctaText')}</Text>
                 <View
                   className='bottom-cta__btn'
                   onClick={() => Taro.switchTab({ url: '/pages/holy-sites/index' })}
                 >
-                  <Text className='bottom-cta__btn-text'>探索圣地</Text>
+                  <Text className='bottom-cta__btn-text'>{t('collections.exploreSites')}</Text>
                 </View>
               </View>
 
@@ -256,10 +258,10 @@ export default function CollectionsPage() {
       {showCreateModal && (
         <View className='modal-overlay' onClick={() => setShowCreateModal(false)}>
           <View className='modal' onClick={e => e.stopPropagation()}>
-            <Text className='modal__title'>新建收藏夹</Text>
+            <Text className='modal__title'>{t('collections.newCollection')}</Text>
             <Input
               className='modal__input'
-              placeholder='收藏夹名称（必填）'
+              placeholder={t('collections.namePlaceholder')}
               placeholderClass='modal__placeholder'
               value={newName}
               onInput={e => setNewName(e.detail.value)}
@@ -267,7 +269,7 @@ export default function CollectionsPage() {
             />
             <Input
               className='modal__input'
-              placeholder='描述（选填）'
+              placeholder={t('collections.descPlaceholder')}
               placeholderClass='modal__placeholder'
               value={newDesc}
               onInput={e => setNewDesc(e.detail.value)}
@@ -278,13 +280,13 @@ export default function CollectionsPage() {
                 className='modal__btn modal__btn--cancel'
                 onClick={() => { setShowCreateModal(false); setNewName(''); setNewDesc('') }}
               >
-                <Text className='modal__btn-text--cancel'>取消</Text>
+                <Text className='modal__btn-text--cancel'>{t('common.cancel')}</Text>
               </View>
               <View
                 className={`modal__btn modal__btn--confirm ${creating ? 'modal__btn--disabled' : ''}`}
                 onClick={creating ? undefined : handleCreate}
               >
-                <Text className='modal__btn-text--confirm'>{creating ? '创建中...' : '创建'}</Text>
+                <Text className='modal__btn-text--confirm'>{creating ? t('collections.creating') : t('collections.create')}</Text>
               </View>
             </View>
           </View>

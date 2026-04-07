@@ -2,24 +2,27 @@ import { useState, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { Merchant, fetchMerchants } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
-const TYPES = [
-  { key: '', label: '全部' },
-  { key: 'TEMPLE', label: '寺庙' },
-  { key: 'GUIDE', label: '导游' },
-  { key: 'HOTEL', label: '住宿' },
-  { key: 'TRANSPORT', label: '交通' },
-]
-
-const TYPE_LABELS: Record<string, string> = {
-  TEMPLE: '寺庙',
-  GUIDE: '导游',
-  HOTEL: '住宿',
-  TRANSPORT: '交通',
-}
-
 export default function MerchantsPage() {
+  const { t } = useTranslation()
+
+  const TYPES = [
+    { key: '', label: t('merchants.filterAll') },
+    { key: 'TEMPLE', label: t('merchants.typeTemple') },
+    { key: 'GUIDE', label: t('merchants.typeGuide') },
+    { key: 'HOTEL', label: t('merchants.typeHotel') },
+    { key: 'TRANSPORT', label: t('merchants.typeTransport') },
+  ]
+
+  const TYPE_LABELS: Record<string, string> = {
+    TEMPLE: t('merchants.typeTemple'),
+    GUIDE: t('merchants.typeGuide'),
+    HOTEL: t('merchants.typeHotel'),
+    TRANSPORT: t('merchants.typeTransport'),
+  }
+
   const [activeType, setActiveType] = useState('')
   const [merchants, setMerchants] = useState<Merchant[]>([])
   const [loading, setLoading] = useState(true)
@@ -35,7 +38,7 @@ export default function MerchantsPage() {
       setMerchants(res.items)
     } catch (err) {
       console.error('Failed to load merchants:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('merchants.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -45,14 +48,14 @@ export default function MerchantsPage() {
     <View className='merchants-page'>
       {/* Type filter tabs */}
       <ScrollView className='type-tabs' scrollX>
-        {TYPES.map(t => (
+        {TYPES.map(tp => (
           <View
-            key={t.key}
-            className={`type-tabs__item ${activeType === t.key ? 'type-tabs__item--active' : ''}`}
-            onClick={() => setActiveType(t.key)}
+            key={tp.key}
+            className={`type-tabs__item ${activeType === tp.key ? 'type-tabs__item--active' : ''}`}
+            onClick={() => setActiveType(tp.key)}
           >
-            <Text className={`type-tabs__text ${activeType === t.key ? 'type-tabs__text--active' : ''}`}>
-              {t.label}
+            <Text className={`type-tabs__text ${activeType === tp.key ? 'type-tabs__text--active' : ''}`}>
+              {tp.label}
             </Text>
           </View>
         ))}
@@ -62,12 +65,12 @@ export default function MerchantsPage() {
       <ScrollView className='merchant-list' scrollY>
         {loading ? (
           <View className='merchant-list__empty'>
-            <Text className='merchant-list__empty-text'>加载中...</Text>
+            <Text className='merchant-list__empty-text'>{t('common.loading')}</Text>
           </View>
         ) : merchants.length === 0 ? (
           <View className='merchant-list__empty'>
             <Text className='merchant-list__empty-icon'>🏪</Text>
-            <Text className='merchant-list__empty-text'>暂无商家</Text>
+            <Text className='merchant-list__empty-text'>{t('merchants.noMerchants')}</Text>
           </View>
         ) : (
           merchants.map(m => (
@@ -90,7 +93,7 @@ export default function MerchantsPage() {
                     <Text className='merchant-card__rating-star'>★</Text>
                     <Text className='merchant-card__rating-text'>{m.rating.toFixed(1)}</Text>
                   </View>
-                  <Text className='merchant-card__orders'>{m.totalOrders}单</Text>
+                  <Text className='merchant-card__orders'>{t('merchants.orderCount', { count: m.totalOrders })}</Text>
                 </View>
                 {m.address && (
                   <Text className='merchant-card__address'>📍 {m.address}</Text>

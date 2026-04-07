@@ -6,6 +6,7 @@ import {
   markNotificationRead, markAllNotificationsRead
 } from '../../lib/api'
 import { isLoggedIn } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const TYPE_ICONS: Record<string, string> = {
@@ -17,6 +18,7 @@ const TYPE_ICONS: Record<string, string> = {
 }
 
 export default function NotificationsPage() {
+  const { t } = useTranslation()
   const [notifications, setNotifications] = useState<AppNotification[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -42,14 +44,14 @@ export default function NotificationsPage() {
     try {
       await markNotificationRead(id)
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-    } catch { Taro.showToast({ title: '操作失败', icon: 'none' }) }
+    } catch { Taro.showToast({ title: t('notifications.actionFailed'), icon: 'none' }) }
   }
 
   const handleMarkAllRead = async () => {
     try {
       await markAllNotificationsRead()
       setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-    } catch { Taro.showToast({ title: '操作失败', icon: 'none' }) }
+    } catch { Taro.showToast({ title: t('notifications.actionFailed'), icon: 'none' }) }
   }
 
   if (!isLoggedIn()) {
@@ -57,7 +59,7 @@ export default function NotificationsPage() {
       <View className='notif-page'>
         <View className='empty-state'>
           <Text className='empty-state__icon'>🔐</Text>
-          <Text className='empty-state__text'>请先登录查看通知</Text>
+          <Text className='empty-state__text'>{t('notifications.loginRequired')}</Text>
         </View>
       </View>
     )
@@ -69,18 +71,18 @@ export default function NotificationsPage() {
     <ScrollView className='notif-page' scrollY>
       {hasUnread && (
         <View className='mark-all' onClick={handleMarkAllRead}>
-          <Text className='mark-all__text'>✓ 全部已读</Text>
+          <Text className='mark-all__text'>✓ {t('notifications.markAllRead')}</Text>
         </View>
       )}
 
       {loading ? (
         <View className='empty-state'>
-          <Text className='empty-state__text'>加载中...</Text>
+          <Text className='empty-state__text'>{t('common.loading')}</Text>
         </View>
       ) : notifications.length === 0 ? (
         <View className='empty-state'>
           <Text className='empty-state__icon'>🔔</Text>
-          <Text className='empty-state__text'>暂无通知</Text>
+          <Text className='empty-state__text'>{t('notifications.noNotifications')}</Text>
         </View>
       ) : (
         <View className='notif-list'>

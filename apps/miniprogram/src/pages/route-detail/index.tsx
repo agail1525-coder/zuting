@@ -2,27 +2,12 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Route, ItineraryDay, fetchRouteBySlug } from '../../lib/api'
+import { useTranslation } from '@/lib/i18n'
 import './index.scss'
-
-const CATEGORY_LABELS: Record<string, string> = {
-  ZEN: '禅宗路线',
-  BUDDHIST: '佛教圣地',
-  TAOIST: '道教寻根',
-  CHRISTIAN: '基督文化',
-  ISLAMIC: '伊斯兰文化',
-  CROSS_CULTURAL: '跨文化融合',
-  HINDU: '印度教',
-  CULTURAL_HERITAGE: '文化遗产',
-}
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: '轻松',
-  MODERATE: '适中',
-  CHALLENGING: '挑战',
-}
 
 export default function RouteDetailPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const slug = router.params.slug as string
   const [route, setRoute] = useState<Route | null>(null)
   const [loading, setLoading] = useState(true)
@@ -42,7 +27,7 @@ export default function RouteDetailPage() {
   if (loading) {
     return (
       <View className='container'>
-        <Text className='loading-text'>加载中...</Text>
+        <Text className='loading-text'>{t("common.loading")}</Text>
       </View>
     )
   }
@@ -50,13 +35,13 @@ export default function RouteDetailPage() {
   if (error || !route) {
     return (
       <View className='container'>
-        <Text className='empty-text'>路线不存在或加载失败</Text>
-        <Text className='retry-btn' onClick={() => Taro.navigateBack()}>返回</Text>
+        <Text className='empty-text'>{t("routeDetail.loadError")}</Text>
+        <Text className='retry-btn' onClick={() => Taro.navigateBack()}>{t("routeDetail.goBack")}</Text>
       </View>
     )
   }
 
-  const price = (route.priceFrom / 100).toLocaleString()
+  const price = ((route.priceFrom ?? 0) / 100).toLocaleString()
 
   return (
     <ScrollView className='detail-page' scrollY>
@@ -71,23 +56,23 @@ export default function RouteDetailPage() {
           <View className='detail-hero__badges'>
             <View className='detail-hero__badge'>
               <Text className='detail-hero__badge-text'>
-                {CATEGORY_LABELS[route.category] ?? route.category}
+                {t(`routeDetail.category.${route.category}`, undefined) ?? route.category}
               </Text>
             </View>
             <View className='detail-hero__badge'>
               <Text className='detail-hero__badge-text'>
-                {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
+                {t(`routeDetail.difficulty.${route.difficulty}`, undefined) ?? route.difficulty}
               </Text>
             </View>
           </View>
           <Text className='detail-hero__title'>{route.title}</Text>
           <Text className='detail-hero__subtitle'>{route.subtitle}</Text>
           <View className='detail-hero__meta'>
-            <Text className='detail-hero__meta-item'>📅 {route.duration}天{route.nights}晚</Text>
+            <Text className='detail-hero__meta-item'>📅 {t("routeDetail.durationNights", { days: route.duration, nights: route.nights })}</Text>
             <Text className='detail-hero__meta-item'>🌤 {route.season}</Text>
             <Text className='detail-hero__meta-item'>👥 {route.groupSize}</Text>
             {route.rating && (
-              <Text className='detail-hero__meta-item'>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
+              <Text className='detail-hero__meta-item'>★ {route.rating.toFixed(1)} ({t("routeDetail.reviewCount", { count: route.reviewCount ?? 0 })})</Text>
             )}
           </View>
         </View>
@@ -95,21 +80,21 @@ export default function RouteDetailPage() {
 
       {/* Price Card */}
       <View className='price-card'>
-        <Text className='price-card__label'>起价</Text>
-        <Text className='price-card__value'>¥{price}<Text className='price-card__unit'>/人</Text></Text>
-        <Text className='price-card__book-count'>已有 {route.bookCount} 人预订</Text>
+        <Text className='price-card__label'>{t("routeDetail.priceFrom")}</Text>
+        <Text className='price-card__value'>¥{price}<Text className='price-card__unit'>/{t("routeDetail.perPerson")}</Text></Text>
+        <Text className='price-card__book-count'>{t("routeDetail.bookCount", { count: route.bookCount ?? 0 })}</Text>
       </View>
 
       {/* Highlights */}
       <View className='highlights'>
-        {route.highlights.map(h => (
+        {(route.highlights ?? []).map(h => (
           <Text key={h} className='highlight-chip'>{h}</Text>
         ))}
       </View>
 
       {/* Description */}
       <View className='section'>
-        <Text className='section__title'>路线介绍</Text>
+        <Text className='section__title'>{t("routeDetail.description")}</Text>
         <View className='card'>
           <Text className='card__text'>{route.description}</Text>
         </View>
@@ -117,8 +102,8 @@ export default function RouteDetailPage() {
 
       {/* Itinerary */}
       <View className='section'>
-        <Text className='section__title'>逐日行程</Text>
-        {(route.itinerary as ItineraryDay[]).map(day => (
+        <Text className='section__title'>{t("routeDetail.itinerary")}</Text>
+        {(Array.isArray(route.itinerary) ? route.itinerary as ItineraryDay[] : []).map(day => (
           <View key={day.day} className='day-card'>
             <View className='day-card__header'>
               <View className='day-card__circle'>
@@ -145,25 +130,25 @@ export default function RouteDetailPage() {
 
       {/* Included / Excluded */}
       <View className='section'>
-        <Text className='section__title'>费用包含</Text>
-        {route.included.map((item, i) => (
+        <Text className='section__title'>{t("routeDetail.included")}</Text>
+        {(route.included ?? []).map((item, i) => (
           <Text key={i} className='list-item list-item--included'>✓ {item}</Text>
         ))}
       </View>
 
       <View className='section'>
-        <Text className='section__title'>费用不含</Text>
-        {route.excluded.map((item, i) => (
+        <Text className='section__title'>{t("routeDetail.excluded")}</Text>
+        {(route.excluded ?? []).map((item, i) => (
           <Text key={i} className='list-item list-item--excluded'>✗ {item}</Text>
         ))}
       </View>
 
       {/* Tips */}
-      {route.tips.length > 0 && (
+      {(route.tips ?? []).length > 0 && (
         <View className='section'>
-          <Text className='section__title'>出行贴士</Text>
+          <Text className='section__title'>{t("routeDetail.tips")}</Text>
           <View className='card'>
-            {route.tips.map((tip, i) => (
+            {(route.tips ?? []).map((tip, i) => (
               <View key={i} className='tip-row'>
                 <Text className='tip-row__icon'>💡</Text>
                 <Text className='tip-row__text'>{tip}</Text>
@@ -176,10 +161,10 @@ export default function RouteDetailPage() {
       {/* CTA */}
       <View className='cta-row'>
         <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
-          <Text className='cta-row__btn-text'>立即预订</Text>
+          <Text className='cta-row__btn-text'>{t("routeDetail.bookNow")}</Text>
         </View>
         <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
-          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+          <Text className='cta-row__btn-text--outline'>{t("routeDetail.aiPlan")}</Text>
         </View>
       </View>
 

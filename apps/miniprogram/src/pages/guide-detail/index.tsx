@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useLoad } from '@tarojs/taro'
 import { GuideItem, fetchGuide, likeGuide, unlikeGuide } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function GuideDetailPage() {
+  const { t } = useTranslation()
   const [guide, setGuide] = useState<GuideItem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -17,7 +19,7 @@ export default function GuideDetailPage() {
     if (id) {
       loadGuide(id)
     } else {
-      setError('缺少游记ID')
+      setError(t('guideDetail.missingId'))
       setLoading(false)
     }
   })
@@ -29,7 +31,7 @@ export default function GuideDetailPage() {
       setGuide(data)
       setLikeCount(data.likeCount)
     } catch {
-      setError('加载失败，请重试')
+      setError(t('guideDetail.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -49,7 +51,7 @@ export default function GuideDetailPage() {
         setLikeCount(c => c + 1)
       }
     } catch {
-      Taro.showToast({ title: '操作失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('guideDetail.actionFailed'), icon: 'none' })
     } finally {
       setLiking(false)
     }
@@ -61,7 +63,7 @@ export default function GuideDetailPage() {
       const d = new Date(dateStr)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     } catch {
-      return dateStr
+      return dateStr ?? ''
     }
   }
 
@@ -69,7 +71,7 @@ export default function GuideDetailPage() {
     return (
       <View className='guide-detail'>
         <View className='loading'>
-          <Text className='loading__text'>加载中...</Text>
+          <Text className='loading__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -79,7 +81,7 @@ export default function GuideDetailPage() {
     return (
       <View className='guide-detail'>
         <View className='error'>
-          <Text className='error__text'>{error || '游记不存在'}</Text>
+          <Text className='error__text'>{error || t('guideDetail.notFound')}</Text>
         </View>
       </View>
     )
@@ -87,38 +89,38 @@ export default function GuideDetailPage() {
 
   return (
     <ScrollView className='guide-detail' scrollY>
-      {/* ── Cover Image ── */}
+      {/* Cover Image */}
       {guide.coverImage ? (
         <Image className='cover' src={guide.coverImage} mode='aspectFill' />
       ) : (
         <View className='cover--placeholder'>
-          <Text className='cover__icon'>🏔</Text>
+          <Text className='cover__icon'>{'\u{1F3D4}'}</Text>
         </View>
       )}
 
-      {/* ── Body ── */}
+      {/* Body */}
       <View className='body'>
         <Text className='body__title'>{guide.title}</Text>
 
         {/* Author Bar */}
         <View className='author-bar'>
-          {guide.user.avatar ? (
+          {guide.user?.avatar ? (
             <Image className='author-bar__avatar-img' src={guide.user.avatar} mode='aspectFill' />
           ) : (
             <View className='author-bar__avatar'>
               <Text className='author-bar__avatar-text'>
-                {guide.user.nickname ? guide.user.nickname[0] : '用'}
+                {guide.user?.nickname ? guide.user.nickname[0] : t('guideDetail.userFallback')}
               </Text>
             </View>
           )}
           <View className='author-bar__info'>
-            <Text className='author-bar__name'>{guide.user.nickname || '旅行者'}</Text>
+            <Text className='author-bar__name'>{guide.user?.nickname || t('guideDetail.traveler')}</Text>
             <Text className='author-bar__date'>{formatDate(guide.publishedAt)}</Text>
           </View>
         </View>
 
         {/* Tags */}
-        {guide.tags.length > 0 && (
+        {(guide.tags?.length ?? 0) > 0 && (
           <View className='tags'>
             {guide.tags.map(tag => (
               <Text key={tag} className='tags__item'>#{tag}</Text>
@@ -132,25 +134,25 @@ export default function GuideDetailPage() {
         </View>
       </View>
 
-      {/* ── Stats Bar ── */}
+      {/* Stats Bar */}
       <View className='stats'>
         <View className='stats__item'>
-          <Text className='stats__icon'>👁</Text>
-          <Text className='stats__value'>{guide.viewCount} 阅读</Text>
+          <Text className='stats__icon'>{'\u{1F441}'}</Text>
+          <Text className='stats__value'>{guide.viewCount} {t('guideDetail.reads')}</Text>
         </View>
         <View className='stats__item'>
-          <Text className='stats__icon'>💬</Text>
-          <Text className='stats__value'>{guide.commentCount} 评论</Text>
+          <Text className='stats__icon'>{'\u{1F4AC}'}</Text>
+          <Text className='stats__value'>{guide.commentCount} {t('guideDetail.comments')}</Text>
         </View>
       </View>
 
-      {/* ── Like Button ── */}
+      {/* Like Button */}
       <View
         className={`like-btn ${liked ? 'like-btn--liked' : ''}`}
         onClick={handleLike}
       >
-        <Text className='like-btn__icon'>{liked ? '❤️' : '🤍'}</Text>
-        <Text className='like-btn__text'>{liked ? '已点赞' : '点赞'} {likeCount > 0 ? `(${likeCount})` : ''}</Text>
+        <Text className='like-btn__icon'>{liked ? '\u2764\uFE0F' : '\u{1F90D}'}</Text>
+        <Text className='like-btn__text'>{liked ? t('guideDetail.liked') : t('guideDetail.like')} {likeCount > 0 ? `(${likeCount})` : ''}</Text>
       </View>
 
       <View style={{ height: '60rpx' }} />

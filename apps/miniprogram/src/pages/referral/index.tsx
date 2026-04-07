@@ -10,23 +10,13 @@ import {
   type TeamMember,
   type ReferralRewardItem,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
-
-function formatDate(str: string) {
-  return new Date(str).toLocaleDateString('zh-CN', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-  })
-}
 
 type TabKey = 'level1' | 'level2' | 'rewards'
 
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: '待结算',
-  SETTLED: '已结算',
-  CANCELLED: '已取消',
-}
-
 export default function ReferralPage() {
+  const { t, locale } = useTranslation()
   const [inviteCode, setInviteCode] = useState('')
   const [stats, setStats] = useState<ReferralStats | null>(null)
   const [level1, setLevel1] = useState<TeamMember[]>([])
@@ -36,6 +26,18 @@ export default function ReferralPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+
+  function formatDate(str: string) {
+    return new Date(str).toLocaleDateString(locale, {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    })
+  }
+
+  const STATUS_LABEL: Record<string, string> = {
+    PENDING: t('referral.statusPending'),
+    SETTLED: t('referral.statusSettled'),
+    CANCELLED: t('referral.statusCancelled'),
+  }
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -53,7 +55,7 @@ export default function ReferralPage() {
       setLevel2(Array.isArray(team.level2) ? team.level2 : [])
       setRewards(Array.isArray(rew.items) ? rew.items : [])
     } catch (e) {
-      setError(e instanceof Error ? e.message : '加载失败')
+      setError(e instanceof Error ? e.message : t('common.loading'))
     } finally {
       setLoading(false)
     }
@@ -95,16 +97,16 @@ export default function ReferralPage() {
     if (!inviteCode) return
     Taro.setClipboardData({
       data: inviteCode,
-      success: () => Taro.showToast({ title: '已复制邀请码', icon: 'success' }),
+      success: () => Taro.showToast({ title: t('referral.codeCopied'), icon: 'success' }),
     })
   }
 
   const handleShare = () => {
     if (!inviteCode) return
-    const text = `我正在使用JOINUS探索世界祖庭圣地，邀请你加入！邀请码：${inviteCode}`
+    const text = t('referral.shareText', { code: inviteCode })
     Taro.setClipboardData({
       data: text,
-      success: () => Taro.showToast({ title: '分享文案已复制', icon: 'success' }),
+      success: () => Taro.showToast({ title: t('referral.shareCopied'), icon: 'success' }),
     })
   }
 
@@ -112,32 +114,32 @@ export default function ReferralPage() {
     return (
       <View className='referral-page'>
         <View className='loading-center'>
-          <Text className='loading-center__text'>加载中...</Text>
+          <Text className='loading-center__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
   }
 
   const tabs: { key: TabKey; label: string; count: number }[] = [
-    { key: 'level1', label: '一级下线', count: level1.length },
-    { key: 'level2', label: '二级下线', count: level2.length },
-    { key: 'rewards', label: '奖励记录', count: rewards.length },
+    { key: 'level1', label: t('referral.tabLevel1'), count: level1.length },
+    { key: 'level2', label: t('referral.tabLevel2'), count: level2.length },
+    { key: 'rewards', label: t('referral.tabRewards'), count: rewards.length },
   ]
 
   return (
     <ScrollView className='referral-page' scrollY>
       {/* Hero: Invite Code */}
       <View className='hero-card'>
-        <Text className='hero-card__subtitle'>我的专属邀请码</Text>
+        <Text className='hero-card__subtitle'>{t('referral.myInviteCode')}</Text>
         <View className='hero-card__code-row'>
           <Text className='hero-card__code'>{inviteCode || '------'}</Text>
         </View>
         <View className='hero-card__actions'>
-          <Text className='hero-card__btn' onClick={handleCopy}>复制</Text>
-          <Text className='hero-card__btn' onClick={handleShare}>分享</Text>
+          <Text className='hero-card__btn' onClick={handleCopy}>{t('referral.copy')}</Text>
+          <Text className='hero-card__btn' onClick={handleShare}>{t('share.button')}</Text>
         </View>
         <View style={{ height: '16rpx' }} />
-        <Text className='hero-card__hint'>分享给好友，好友注册填写邀请码即可建立分销关系</Text>
+        <Text className='hero-card__hint'>{t('referral.shareHint')}</Text>
       </View>
 
       {error && (
@@ -150,17 +152,17 @@ export default function ReferralPage() {
       <View className='enhanced-stats'>
         <View className='enhanced-stats__item'>
           <Text className='enhanced-stats__value enhanced-stats__value--primary'>{enhancedStats.totalInvites}</Text>
-          <Text className='enhanced-stats__label'>总邀请</Text>
+          <Text className='enhanced-stats__label'>{t('referral.totalInvites')}</Text>
         </View>
         <View className='enhanced-stats__divider' />
         <View className='enhanced-stats__item'>
           <Text className='enhanced-stats__value enhanced-stats__value--green'>{enhancedStats.totalEarned}</Text>
-          <Text className='enhanced-stats__label'>累计收益</Text>
+          <Text className='enhanced-stats__label'>{t('referral.totalEarned')}</Text>
         </View>
         <View className='enhanced-stats__divider' />
         <View className='enhanced-stats__item'>
           <Text className='enhanced-stats__value enhanced-stats__value--gold'>{enhancedStats.pendingRewards}</Text>
-          <Text className='enhanced-stats__label'>本月收益</Text>
+          <Text className='enhanced-stats__label'>{t('referral.monthlyEarned')}</Text>
         </View>
       </View>
 
@@ -168,32 +170,32 @@ export default function ReferralPage() {
       <View className='level-breakdown'>
         <View className='level-breakdown__card level-breakdown__card--l1'>
           <Text className='level-breakdown__value'>{enhancedStats.level1Count}</Text>
-          <Text className='level-breakdown__label'>一级好友</Text>
+          <Text className='level-breakdown__label'>{t('referral.level1Friends')}</Text>
         </View>
         <View className='level-breakdown__card level-breakdown__card--l2'>
           <Text className='level-breakdown__value'>{enhancedStats.level2Count}</Text>
-          <Text className='level-breakdown__label'>二级好友</Text>
+          <Text className='level-breakdown__label'>{t('referral.level2Friends')}</Text>
         </View>
       </View>
 
       {/* Distribution Rules */}
       <View className='rules-card'>
-        <Text className='rules-card__title'>分销规则</Text>
+        <Text className='rules-card__title'>{t('referral.rulesTitle')}</Text>
         <View className='rule-item'>
           <Text className='rule-item__icon'>🎁</Text>
-          <Text className='rule-item__text'>好友注册成功，双方各得50积分</Text>
+          <Text className='rule-item__text'>{t('referral.rule1')}</Text>
         </View>
         <View className='rule-item'>
           <Text className='rule-item__icon'>💰</Text>
-          <Text className='rule-item__text'>一级好友下单，返佣订单金额5%（上限500分/单）</Text>
+          <Text className='rule-item__text'>{t('referral.rule2')}</Text>
         </View>
         <View className='rule-item'>
           <Text className='rule-item__icon'>🔗</Text>
-          <Text className='rule-item__text'>二级好友下单，返佣订单金额2%（上限500分/单）</Text>
+          <Text className='rule-item__text'>{t('referral.rule3')}</Text>
         </View>
         <View className='rule-item'>
           <Text className='rule-item__icon'>🏆</Text>
-          <Text className='rule-item__text'>积分可在积分商城兑换优惠券、专属体验等</Text>
+          <Text className='rule-item__text'>{t('referral.rule4')}</Text>
         </View>
       </View>
 
@@ -202,7 +204,7 @@ export default function ReferralPage() {
         <Text className='search-bar__icon'>&#x1F50D;</Text>
         <Input
           className='search-bar__input'
-          placeholder='搜索成员或订单...'
+          placeholder={t('referral.searchPlaceholder')}
           placeholderClass='search-bar__placeholder'
           value={searchQuery}
           onInput={e => setSearchQuery(e.detail.value)}
@@ -233,13 +235,13 @@ export default function ReferralPage() {
             {level1.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>👥</Text>
-                <Text className='empty-state__text'>暂无一级下线，快去邀请好友吧</Text>
+                <Text className='empty-state__text'>{t('referral.emptyLevel1')}</Text>
               </View>
             ) : isSearchActive && filteredLevel1.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>&#x1F50D;</Text>
-                <Text className='empty-state__text'>未找到匹配的成员</Text>
-                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+                <Text className='empty-state__text'>{t('referral.noMatchMember')}</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>{t('referral.clearSearch')}</Text>
               </View>
             ) : (
               (isSearchActive ? filteredLevel1 : level1).map(m => (
@@ -249,11 +251,11 @@ export default function ReferralPage() {
                       <Text>{m.inviteeId.slice(-2).toUpperCase()}</Text>
                     </View>
                     <View>
-                      <Text className='member-row__name'>用户 {m.inviteeId.slice(0, 8)}</Text>
-                      <Text className='member-row__date'>加入于 {formatDate(m.createdAt)}</Text>
+                      <Text className='member-row__name'>{t('referral.userPrefix')} {m.inviteeId.slice(0, 8)}</Text>
+                      <Text className='member-row__date'>{t('referral.joinedAt')} {formatDate(m.createdAt)}</Text>
                     </View>
                   </View>
-                  <Text className='level-badge level-badge--l1'>一级</Text>
+                  <Text className='level-badge level-badge--l1'>{t('referral.level1Badge')}</Text>
                 </View>
               ))
             )}
@@ -266,13 +268,13 @@ export default function ReferralPage() {
             {level2.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>👥</Text>
-                <Text className='empty-state__text'>暂无二级下线</Text>
+                <Text className='empty-state__text'>{t('referral.emptyLevel2')}</Text>
               </View>
             ) : isSearchActive && filteredLevel2.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>&#x1F50D;</Text>
-                <Text className='empty-state__text'>未找到匹配的成员</Text>
-                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+                <Text className='empty-state__text'>{t('referral.noMatchMember')}</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>{t('referral.clearSearch')}</Text>
               </View>
             ) : (
               (isSearchActive ? filteredLevel2 : level2).map(m => (
@@ -282,11 +284,11 @@ export default function ReferralPage() {
                       <Text>{m.inviteeId.slice(-2).toUpperCase()}</Text>
                     </View>
                     <View>
-                      <Text className='member-row__name'>用户 {m.inviteeId.slice(0, 8)}</Text>
-                      <Text className='member-row__date'>加入于 {formatDate(m.createdAt)}</Text>
+                      <Text className='member-row__name'>{t('referral.userPrefix')} {m.inviteeId.slice(0, 8)}</Text>
+                      <Text className='member-row__date'>{t('referral.joinedAt')} {formatDate(m.createdAt)}</Text>
                     </View>
                   </View>
-                  <Text className='level-badge level-badge--l2'>二级</Text>
+                  <Text className='level-badge level-badge--l2'>{t('referral.level2Badge')}</Text>
                 </View>
               ))
             )}
@@ -299,25 +301,25 @@ export default function ReferralPage() {
             {rewards.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>💎</Text>
-                <Text className='empty-state__text'>暂无奖励记录</Text>
+                <Text className='empty-state__text'>{t('referral.emptyRewards')}</Text>
               </View>
             ) : isSearchActive && filteredRewards.length === 0 ? (
               <View className='empty-state'>
                 <Text className='empty-state__icon'>&#x1F50D;</Text>
-                <Text className='empty-state__text'>未找到匹配的记录</Text>
-                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>清除搜索</Text>
+                <Text className='empty-state__text'>{t('referral.noMatchRecord')}</Text>
+                <Text className='empty-state__clear' onClick={() => setSearchQuery('')}>{t('referral.clearSearch')}</Text>
               </View>
             ) : (
               (isSearchActive ? filteredRewards : rewards).map(r => (
                 <View key={r.id} className='reward-row'>
                   <View className='reward-row__left'>
                     <Text className='reward-row__desc'>
-                      {r.level === 1 ? '一级' : '二级'}返佣 · 订单 {r.orderId.slice(0, 8)}
+                      {r.level === 1 ? t('referral.level1Badge') : t('referral.level2Badge')}{t('referral.commission')} · {t('referral.orderPrefix')} {r.orderId.slice(0, 8)}
                     </Text>
                     <Text className='reward-row__date'>{formatDate(r.createdAt)}</Text>
                   </View>
                   <View className='reward-row__right'>
-                    <Text className='reward-row__amount'>+{r.amount}分</Text>
+                    <Text className='reward-row__amount'>+{r.amount}{t('referral.pointsUnit')}</Text>
                     <Text className={`status-badge status-badge--${r.status}`}>
                       {STATUS_LABEL[r.status] ?? r.status}
                     </Text>
@@ -331,9 +333,9 @@ export default function ReferralPage() {
 
       {/* G4: Bottom CTA */}
       <View className='bottom-cta'>
-        <Text className='bottom-cta__text'>邀请更多好友，赚取更多积分</Text>
+        <Text className='bottom-cta__text'>{t('referral.ctaText')}</Text>
         <View className='bottom-cta__btn' onClick={handleShare}>
-          <Text className='bottom-cta__btn-text'>立即邀请好友</Text>
+          <Text className='bottom-cta__btn-text'>{t('referral.inviteNow')}</Text>
         </View>
       </View>
 

@@ -5,6 +5,7 @@ import {
   CouponItem, UserCoupon,
   fetchAvailableCoupons, fetchMyCoupons, claimCoupon,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 type TabKey = 'available' | 'mine' | 'used'
@@ -24,7 +25,7 @@ function daysUntilExpiry(endAt: string): number {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
-function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: string) => void }) {
+function CouponCard({ coupon, onClaim, tr }: { coupon: CouponItem; onClaim?: (id: string) => void; tr: (key: string, params?: Record<string, string | number>) => string }) {
   const expired = isExpired(coupon.endAt)
   const isPercent = coupon.type === 'PERCENT'
   const stripColor = isPercent ? '#0066FF' : '#EF4444'
@@ -38,24 +39,24 @@ function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: st
           <View className='coupon-card__amount-row'>
             {!isPercent && <Text className='coupon-card__currency'>¥</Text>}
             <Text className='coupon-card__amount'>
-              {isPercent ? `${coupon.value}折` : coupon.value}
+              {isPercent ? tr('coupons.percentOff', { value: coupon.value }) : coupon.value}
             </Text>
           </View>
           {coupon.minAmount != null && (
-            <Text className='coupon-card__min'>满¥{coupon.minAmount}可用</Text>
+            <Text className='coupon-card__min'>{tr('coupons.minAmount', { amount: coupon.minAmount })}</Text>
           )}
         </View>
         <View className='coupon-card__divider' />
         <View className='coupon-card__right'>
           <Text className='coupon-card__name'>{coupon.name}</Text>
-          <Text className='coupon-card__code'>码: {coupon.code}</Text>
+          <Text className='coupon-card__code'>{tr('coupons.code')}: {coupon.code}</Text>
           <Text className='coupon-card__date'>
-            {expired ? '已过期' : `至 ${formatDate(coupon.endAt)}`}
+            {expired ? tr('coupons.expired') : tr('coupons.validUntil', { date: formatDate(coupon.endAt) })}
           </Text>
           {/* G4: Expiry countdown */}
           {!expired && remaining <= 3 && remaining >= 0 && (
             <Text style={{ fontSize: '20rpx', color: '#EF4444', marginTop: '4rpx' }}>
-              {remaining === 0 ? '今日到期' : `${remaining}天后过期`}
+              {remaining === 0 ? tr('coupons.expiresToday') : tr('coupons.expiresInDays', { days: remaining })}
             </Text>
           )}
         </View>
@@ -64,7 +65,7 @@ function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: st
             className={`coupon-card__btn ${expired ? 'coupon-card__btn--disabled' : ''}`}
             onClick={() => !expired && onClaim(coupon.id)}
           >
-            <Text className='coupon-card__btn-text'>领取</Text>
+            <Text className='coupon-card__btn-text'>{tr('coupons.claim')}</Text>
           </View>
         )}
       </View>
@@ -72,7 +73,7 @@ function CouponCard({ coupon, onClaim }: { coupon: CouponItem; onClaim?: (id: st
   )
 }
 
-function MyCouponCard({ userCoupon }: { userCoupon: UserCoupon }) {
+function MyCouponCard({ userCoupon, tr }: { userCoupon: UserCoupon; tr: (key: string, params?: Record<string, string | number>) => string }) {
   const { coupon, status } = userCoupon
   const isPercent = coupon.type === 'PERCENT'
   const isUsed = status === 'USED'
@@ -88,28 +89,28 @@ function MyCouponCard({ userCoupon }: { userCoupon: UserCoupon }) {
           <View className='coupon-card__amount-row'>
             {!isPercent && <Text className='coupon-card__currency'>¥</Text>}
             <Text className='coupon-card__amount'>
-              {isPercent ? `${coupon.value}折` : coupon.value}
+              {isPercent ? tr('coupons.percentOff', { value: coupon.value }) : coupon.value}
             </Text>
           </View>
           {coupon.minAmount != null && (
-            <Text className='coupon-card__min'>满¥{coupon.minAmount}可用</Text>
+            <Text className='coupon-card__min'>{tr('coupons.minAmount', { amount: coupon.minAmount })}</Text>
           )}
         </View>
         <View className='coupon-card__divider' />
         <View className='coupon-card__right'>
           <Text className='coupon-card__name'>{coupon.name}</Text>
-          <Text className='coupon-card__code'>码: {coupon.code}</Text>
-          <Text className='coupon-card__date'>至 {formatDate(coupon.endAt)}</Text>
+          <Text className='coupon-card__code'>{tr('coupons.code')}: {coupon.code}</Text>
+          <Text className='coupon-card__date'>{tr('coupons.validUntil', { date: formatDate(coupon.endAt) })}</Text>
           {/* G4: Expiry countdown for active coupons */}
           {!isUsed && !isExp && remaining <= 3 && remaining >= 0 && (
             <Text style={{ fontSize: '20rpx', color: '#EF4444', marginTop: '4rpx' }}>
-              {remaining === 0 ? '今日到期' : `${remaining}天后过期`}
+              {remaining === 0 ? tr('coupons.expiresToday') : tr('coupons.expiresInDays', { days: remaining })}
             </Text>
           )}
         </View>
         {(isUsed || isExp) && (
           <View className='coupon-card__stamp'>
-            <Text className='coupon-card__stamp-text'>{isUsed ? '已用' : '过期'}</Text>
+            <Text className='coupon-card__stamp-text'>{isUsed ? tr('coupons.statusUsed') : tr('coupons.statusExpired')}</Text>
           </View>
         )}
       </View>
@@ -118,6 +119,7 @@ function MyCouponCard({ userCoupon }: { userCoupon: UserCoupon }) {
 }
 
 export default function CouponsPage() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<TabKey>('available')
   const [availableCoupons, setAvailableCoupons] = useState<CouponItem[]>([])
   const [myCoupons, setMyCoupons] = useState<UserCoupon[]>([])
@@ -140,7 +142,7 @@ export default function CouponsPage() {
       setMyCoupons(mineRes.data || [])
       setUsedCoupons(usedRes.data || [])
     } catch {
-      Taro.showToast({ title: '加载失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('coupons.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -151,10 +153,10 @@ export default function CouponsPage() {
     setClaiming(couponId)
     try {
       await claimCoupon(couponId)
-      Taro.showToast({ title: '领取成功！', icon: 'success' })
+      Taro.showToast({ title: t('coupons.claimSuccess'), icon: 'success' })
       await loadData()
     } catch {
-      Taro.showToast({ title: '领取失败，请重试', icon: 'none' })
+      Taro.showToast({ title: t('coupons.claimFailed'), icon: 'none' })
     } finally {
       setClaiming(null)
     }
@@ -202,7 +204,7 @@ export default function CouponsPage() {
     if (loading) {
       return (
         <View className='empty'>
-          <Text className='empty__text'>加载中...</Text>
+          <Text className='empty__text'>{t('common.loading')}</Text>
         </View>
       )
     }
@@ -212,13 +214,13 @@ export default function CouponsPage() {
         return (
           <View className='empty'>
             <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
-            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无可领取优惠券'}</Text>
-            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+            <Text className='empty__text'>{isSearching ? t('coupons.searchNoResult') : t('coupons.noAvailable')}</Text>
+            {isSearching && <Text className='empty__sub'>{t('coupons.tryOtherKeyword')}</Text>}
           </View>
         )
       }
       return filteredAvailable.map(c => (
-        <CouponCard key={c.id} coupon={c} onClaim={handleClaim} />
+        <CouponCard key={c.id} coupon={c} onClaim={handleClaim} tr={t} />
       ))
     }
 
@@ -227,13 +229,13 @@ export default function CouponsPage() {
         return (
           <View className='empty'>
             <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
-            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无可用优惠券'}</Text>
-            {!isSearching && <Text className='empty__sub'>去领取一张吧</Text>}
-            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+            <Text className='empty__text'>{isSearching ? t('coupons.searchNoResult') : t('coupons.noMine')}</Text>
+            {!isSearching && <Text className='empty__sub'>{t('coupons.goClaimOne')}</Text>}
+            {isSearching && <Text className='empty__sub'>{t('coupons.tryOtherKeyword')}</Text>}
           </View>
         )
       }
-      return filteredMine.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
+      return filteredMine.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} tr={t} />)
     }
 
     if (activeTab === 'used') {
@@ -241,12 +243,12 @@ export default function CouponsPage() {
         return (
           <View className='empty'>
             <Text className='empty__icon'>{isSearching ? '🔍' : '🎫'}</Text>
-            <Text className='empty__text'>{isSearching ? '未找到匹配的优惠券' : '暂无已使用优惠券'}</Text>
-            {isSearching && <Text className='empty__sub'>试试其他关键词</Text>}
+            <Text className='empty__text'>{isSearching ? t('coupons.searchNoResult') : t('coupons.noUsed')}</Text>
+            {isSearching && <Text className='empty__sub'>{t('coupons.tryOtherKeyword')}</Text>}
           </View>
         )
       }
-      return filteredUsed.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} />)
+      return filteredUsed.map(uc => <MyCouponCard key={uc.id} userCoupon={uc} tr={t} />)
     }
 
     return null
@@ -259,17 +261,17 @@ export default function CouponsPage() {
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', padding: '24rpx', margin: '20rpx 24rpx', backgroundColor: '#1E293B', borderRadius: '16rpx' }}>
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text style={{ fontSize: '36rpx', fontWeight: '700', color: '#D4A855' }}>{walletStats.totalActive}</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>可用券</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('coupons.walletActive')}</Text>
           </View>
           <View style={{ width: '1rpx', backgroundColor: '#334155' }} />
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text style={{ fontSize: '36rpx', fontWeight: '700', color: walletStats.expiringSoon > 0 ? '#EF4444' : '#F8FAFC' }}>{walletStats.expiringSoon}</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>即将过期</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('coupons.walletExpiring')}</Text>
           </View>
           <View style={{ width: '1rpx', backgroundColor: '#334155' }} />
           <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Text style={{ fontSize: '36rpx', fontWeight: '700', color: '#64748B' }}>{walletStats.totalUsed}</Text>
-            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>已使用</Text>
+            <Text style={{ fontSize: '22rpx', color: '#94A3B8' }}>{t('coupons.walletUsed')}</Text>
           </View>
         </View>
       )}
@@ -280,7 +282,7 @@ export default function CouponsPage() {
           <Text style={{ fontSize: '28rpx', marginRight: '12rpx' }}>🔍</Text>
           <Input
             type='text'
-            placeholder='搜索优惠券名称或代码'
+            placeholder={t('coupons.searchPlaceholder')}
             placeholderStyle='color: #64748B'
             value={searchText}
             onInput={e => setSearchText(e.detail.value)}
@@ -291,7 +293,7 @@ export default function CouponsPage() {
               style={{ fontSize: '24rpx', color: '#94A3B8', padding: '8rpx' }}
               onClick={() => setSearchText('')}
             >
-              清除
+              {t('coupons.clear')}
             </Text>
           )}
         </View>
@@ -300,9 +302,9 @@ export default function CouponsPage() {
       {/* Tabs with G4: counts */}
       <View className='tabs'>
         {([
-          { key: 'available' as TabKey, label: '可领取' },
-          { key: 'mine' as TabKey, label: '我的券' },
-          { key: 'used' as TabKey, label: '已使用' },
+          { key: 'available' as TabKey, label: t('coupons.tabAvailable') },
+          { key: 'mine' as TabKey, label: t('coupons.tabMine') },
+          { key: 'used' as TabKey, label: t('coupons.tabUsed') },
         ]).map(tab => (
           <View
             key={tab.key}
@@ -327,7 +329,7 @@ export default function CouponsPage() {
             style={{ margin: '32rpx 24rpx', padding: '24rpx', backgroundColor: '#D4A855', borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
             onClick={() => Taro.navigateTo({ url: '/pages/promotions/index' })}
           >
-            <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🔥 查看更多促销活动</Text>
+            <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#0F172A' }}>🔥 {t('coupons.viewPromotions')}</Text>
           </View>
         )}
 

@@ -5,9 +5,11 @@ import { Temple, fetchTempleById, recordView } from '../../lib/api'
 import ReviewSection from '../../components/ReviewSection'
 import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function TempleDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.params
   const [temple, setTemple] = useState<Temple | null>(null)
@@ -15,13 +17,13 @@ export default function TempleDetailPage() {
   const [error, setError] = useState<string | null>(null)
 
   useShareAppMessage(() => ({
-    title: temple ? `${temple.name} — 全球祖庭之旅` : '探索祖庭 — 全球祖庭之旅',
+    title: temple ? `${temple.name} — ${t('templeDetail.shareTitle')}` : t('templeDetail.shareDefault'),
     path: `/pages/temple-detail/index?id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
 
   useShareTimeline(() => ({
-    title: temple ? `${temple.name} | ${temple.city}, ${temple.country}` : '探索祖庭',
+    title: temple ? `${temple.name} | ${temple.city}, ${temple.country}` : t('templeDetail.shareDefault'),
     query: `id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
@@ -39,7 +41,7 @@ export default function TempleDetailPage() {
       recordView('TEMPLE', id!)
     } catch (err) {
       console.error('Failed to load temple:', err)
-      setError('网络错误，请稍后重试')
+      setError(t('templeDetail.networkError'))
     } finally {
       setLoading(false)
     }
@@ -55,9 +57,9 @@ export default function TempleDetailPage() {
     })
   }
 
-  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
-  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadTemple}>点击重试</Text></View>
-  if (!temple) return <View className='container'><Text className='empty-text'>祖庭不存在</Text></View>
+  if (loading) return <View className='container'><Text className='loading-text'>{t('common.loading')}</Text></View>
+  if (error) return <View className='container'><Text className='empty-text'>{error}</Text><Text className='retry-btn' onClick={loadTemple}>{t('templeDetail.tapRetry')}</Text></View>
+  if (!temple) return <View className='container'><Text className='empty-text'>{t('templeDetail.notFound')}</Text></View>
 
   const hasImage = !!temple.imageUrl
 
@@ -88,33 +90,33 @@ export default function TempleDetailPage() {
       <View className='info-grid'>
         <View className='info-grid__cell'>
           <Text className='info-grid__icon'>🌍</Text>
-          <Text className='info-grid__label'>国家</Text>
+          <Text className='info-grid__label'>{t('templeDetail.country')}</Text>
           <Text className='info-grid__value'>{temple.country}</Text>
         </View>
         {temple.city && (
           <View className='info-grid__cell'>
             <Text className='info-grid__icon'>🏙</Text>
-            <Text className='info-grid__label'>城市</Text>
+            <Text className='info-grid__label'>{t('templeDetail.city')}</Text>
             <Text className='info-grid__value'>{temple.city}</Text>
           </View>
         )}
         {temple.foundingDate && (
           <View className='info-grid__cell'>
             <Text className='info-grid__icon'>📅</Text>
-            <Text className='info-grid__label'>建立</Text>
+            <Text className='info-grid__label'>{t('templeDetail.founded')}</Text>
             <Text className='info-grid__value'>{temple.foundingDate}</Text>
           </View>
         )}
         <View className='info-grid__cell'>
           <Text className='info-grid__icon'>📍</Text>
-          <Text className='info-grid__label'>坐标</Text>
+          <Text className='info-grid__label'>{t('templeDetail.coordinates')}</Text>
           <Text className='info-grid__value'>{temple.latitude?.toFixed(4)}, {temple.longitude?.toFixed(4)}</Text>
         </View>
       </View>
 
       {/* Description */}
       <View className='section'>
-        <Text className='section__title'>介绍</Text>
+        <Text className='section__title'>{t('templeDetail.description')}</Text>
         <View className='card'>
           <Text className='card__text'>{temple.description}</Text>
         </View>
@@ -127,24 +129,24 @@ export default function TempleDetailPage() {
 
       {/* Related Entities */}
       <View className='section'>
-        <RelatedEntities entityType='TEMPLE' entityId={id!} title='相关祖庭' />
+        <RelatedEntities entityType='TEMPLE' entityId={id!} title={t('templeDetail.relatedTemples')} />
       </View>
 
       {/* Map Action */}
       <View className='section'>
         <View className='map-action' onClick={openLocation}>
           <Text className='map-action__icon'>📍</Text>
-          <Text className='map-action__text'>打开地图导航</Text>
+          <Text className='map-action__text'>{t('templeDetail.openMap')}</Text>
         </View>
       </View>
 
       {/* CTA */}
       <View className='cta-row'>
         <View className='cta-row__btn' onClick={() => Taro.navigateTo({ url: '/pages/trips/index' })}>
-          <Text className='cta-row__btn-text'>加入行程</Text>
+          <Text className='cta-row__btn-text'>{t('templeDetail.addToTrip')}</Text>
         </View>
         <View className='cta-row__btn cta-row__btn--outline' onClick={() => Taro.navigateTo({ url: '/pages/chat/index' })}>
-          <Text className='cta-row__btn-text--outline'>AI规划</Text>
+          <Text className='cta-row__btn-text--outline'>{t('templeDetail.aiPlan')}</Text>
         </View>
       </View>
 

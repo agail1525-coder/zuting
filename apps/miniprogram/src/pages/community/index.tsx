@@ -5,9 +5,11 @@ import {
   GuideItem, QuestionItem, LeaderboardEntry,
   fetchGuides, fetchQuestions, fetchLeaderboard,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function CommunityPage() {
+  const { t, locale } = useTranslation()
   const [activeTab, setActiveTab] = useState('guides')
   const [guides, setGuides] = useState<GuideItem[]>([])
   const [questions, setQuestions] = useState<QuestionItem[]>([])
@@ -71,10 +73,10 @@ export default function CommunityPage() {
 
   // G4: Tab counts
   const TABS = useMemo(() => [
-    { key: 'guides', label: '游记', count: stats.totalGuides },
-    { key: 'questions', label: '问答', count: stats.totalQuestions },
-    { key: 'leaderboard', label: '排行', count: stats.totalLeaderboard },
-  ], [stats])
+    { key: 'guides', label: t('community.tabGuides'), count: stats.totalGuides },
+    { key: 'questions', label: t('community.tabQuestions'), count: stats.totalQuestions },
+    { key: 'leaderboard', label: t('community.tabLeaderboard'), count: stats.totalLeaderboard },
+  ], [stats, t])
 
   // G4: Client-side search filtering
   const filteredGuides = useMemo(() => {
@@ -82,7 +84,7 @@ export default function CommunityPage() {
     const q = searchQuery.trim().toLowerCase()
     return guides.filter(
       g => g.title.toLowerCase().includes(q) ||
-        (g.tags ?? []).some(t => t.toLowerCase().includes(q))
+        (g.tags ?? []).some(tag => tag.toLowerCase().includes(q))
     )
   }, [guides, searchQuery])
 
@@ -91,7 +93,7 @@ export default function CommunityPage() {
     const q = searchQuery.trim().toLowerCase()
     return questions.filter(
       item => item.title.toLowerCase().includes(q) ||
-        (item.tags ?? []).some(t => t.toLowerCase().includes(q))
+        (item.tags ?? []).some(tag => tag.toLowerCase().includes(q))
     )
   }, [questions, searchQuery])
 
@@ -110,7 +112,7 @@ export default function CommunityPage() {
   const formatDate = (dateStr: string) => {
     try {
       const d = new Date(dateStr)
-      return `${d.getMonth() + 1}月${d.getDate()}日`
+      return d.toLocaleDateString(locale === 'zh-CN' ? 'zh-CN' : locale, { month: 'short', day: 'numeric' })
     } catch {
       return ''
     }
@@ -124,17 +126,17 @@ export default function CommunityPage() {
       <View className='stats-row'>
         <View className='stats-row__item'>
           <Text className='stats-row__value'>{stats.totalGuides}</Text>
-          <Text className='stats-row__label'>游记</Text>
+          <Text className='stats-row__label'>{t('community.tabGuides')}</Text>
         </View>
         <View className='stats-row__divider' />
         <View className='stats-row__item'>
           <Text className='stats-row__value'>{stats.totalQuestions}</Text>
-          <Text className='stats-row__label'>问答</Text>
+          <Text className='stats-row__label'>{t('community.tabQuestions')}</Text>
         </View>
         <View className='stats-row__divider' />
         <View className='stats-row__item'>
           <Text className='stats-row__value'>{stats.totalGuides + stats.totalQuestions}</Text>
-          <Text className='stats-row__label'>总内容</Text>
+          <Text className='stats-row__label'>{t('community.totalContent')}</Text>
         </View>
       </View>
 
@@ -143,7 +145,7 @@ export default function CommunityPage() {
         <Text className='search-bar__icon'>&#x1F50D;</Text>
         <Input
           className='search-bar__input'
-          placeholder='搜索游记、问答...'
+          placeholder={t('community.searchPlaceholder')}
           placeholderClass='search-bar__placeholder'
           value={searchQuery}
           onInput={e => setSearchQuery(e.detail.value)}
@@ -176,35 +178,35 @@ export default function CommunityPage() {
       {activeTab === 'guides' && (
         <View>
           <View className='section-header'>
-            <Text className='section-header__title'>热门游记</Text>
+            <Text className='section-header__title'>{t('community.hotGuides')}</Text>
           </View>
 
           {loadingGuides ? (
             <View className='loading'>
-              <Text className='loading__text'>加载中...</Text>
+              <Text className='loading__text'>{t('common.loading')}</Text>
             </View>
           ) : guides.length === 0 ? (
             /* G4: Data-empty state */
             <View className='empty'>
               <Text className='empty__icon'>📖</Text>
-              <Text className='empty__text'>暂无游记，快来分享你的旅行故事</Text>
+              <Text className='empty__text'>{t('community.emptyGuides')}</Text>
               <View
                 className='empty__btn'
                 onClick={() => Taro.navigateTo({ url: '/pages/guide-edit/index' })}
               >
-                <Text className='empty__btn-text'>写游记</Text>
+                <Text className='empty__btn-text'>{t('community.writeGuide')}</Text>
               </View>
             </View>
           ) : isSearchActive && filteredGuides.length === 0 ? (
             /* G4: Search-empty state */
             <View className='empty'>
               <Text className='empty__icon'>&#x1F50D;</Text>
-              <Text className='empty__text'>未找到匹配的游记</Text>
+              <Text className='empty__text'>{t('community.noMatchGuides')}</Text>
               <View
                 className='empty__btn'
                 onClick={() => setSearchQuery('')}
               >
-                <Text className='empty__btn-text'>清除搜索</Text>
+                <Text className='empty__btn-text'>{t('community.clearSearch')}</Text>
               </View>
             </View>
           ) : (
@@ -237,11 +239,11 @@ export default function CommunityPage() {
                       ) : (
                         <View className='guide-card__avatar'>
                           <Text className='guide-card__avatar-text'>
-                            {guide.user.nickname ? guide.user.nickname[0] : '用'}
+                            {guide.user.nickname ? guide.user.nickname[0] : t('community.userFallback')}
                           </Text>
                         </View>
                       )}
-                      <Text className='guide-card__author-name'>{guide.user.nickname || '旅行者'}</Text>
+                      <Text className='guide-card__author-name'>{guide.user.nickname || t('community.traveler')}</Text>
                     </View>
                     <View className='guide-card__stats'>
                       <Text className='guide-card__stat'>👁 {guide.viewCount}</Text>
@@ -260,35 +262,35 @@ export default function CommunityPage() {
       {activeTab === 'questions' && (
         <View>
           <View className='section-header'>
-            <Text className='section-header__title'>旅行问答</Text>
+            <Text className='section-header__title'>{t('community.travelQA')}</Text>
           </View>
 
           {loadingQuestions ? (
             <View className='loading'>
-              <Text className='loading__text'>加载中...</Text>
+              <Text className='loading__text'>{t('common.loading')}</Text>
             </View>
           ) : questions.length === 0 ? (
             /* G4: Data-empty state */
             <View className='empty'>
               <Text className='empty__icon'>❓</Text>
-              <Text className='empty__text'>暂无问题，欢迎提出你的疑惑</Text>
+              <Text className='empty__text'>{t('community.emptyQuestions')}</Text>
               <View
                 className='empty__btn'
                 onClick={() => Taro.navigateTo({ url: '/pages/question-create/index' })}
               >
-                <Text className='empty__btn-text'>提个问题</Text>
+                <Text className='empty__btn-text'>{t('community.askQuestion')}</Text>
               </View>
             </View>
           ) : isSearchActive && filteredQuestions.length === 0 ? (
             /* G4: Search-empty state */
             <View className='empty'>
               <Text className='empty__icon'>&#x1F50D;</Text>
-              <Text className='empty__text'>未找到匹配的问答</Text>
+              <Text className='empty__text'>{t('community.noMatchQuestions')}</Text>
               <View
                 className='empty__btn'
                 onClick={() => setSearchQuery('')}
               >
-                <Text className='empty__btn-text'>清除搜索</Text>
+                <Text className='empty__btn-text'>{t('community.clearSearch')}</Text>
               </View>
             </View>
           ) : (
@@ -307,10 +309,10 @@ export default function CommunityPage() {
                   </View>
                 )}
                 <View className='question-card__footer'>
-                  <Text className='question-card__answers'>{q.answerCount} 个回答</Text>
+                  <Text className='question-card__answers'>{t('community.answerCount', { count: q.answerCount })}</Text>
                   <Text className='question-card__time'>{formatDate(q.createdAt)}</Text>
                   <Text className={`question-card__status ${q.status === 'SOLVED' ? 'question-card__status--solved' : 'question-card__status--open'}`}>
-                    {q.status === 'SOLVED' ? '已解决' : '待回答'}
+                    {q.status === 'SOLVED' ? t('community.statusSolved') : t('community.statusOpen')}
                   </Text>
                 </View>
               </View>
@@ -323,17 +325,17 @@ export default function CommunityPage() {
       {activeTab === 'leaderboard' && (
         <View>
           <View className='section-header'>
-            <Text className='section-header__title'>本月排行榜</Text>
+            <Text className='section-header__title'>{t('community.monthlyRanking')}</Text>
           </View>
 
           {loadingLeaderboard ? (
             <View className='loading'>
-              <Text className='loading__text'>加载中...</Text>
+              <Text className='loading__text'>{t('common.loading')}</Text>
             </View>
           ) : leaderboard.length === 0 ? (
             <View className='empty'>
               <Text className='empty__icon'>🏆</Text>
-              <Text className='empty__text'>排行榜数据暂未生成</Text>
+              <Text className='empty__text'>{t('community.emptyLeaderboard')}</Text>
             </View>
           ) : (
             <View className='leaderboard'>
@@ -347,13 +349,13 @@ export default function CommunityPage() {
                   ) : (
                     <View className='leaderboard__avatar'>
                       <Text className='leaderboard__avatar-text'>
-                        {entry.nickname ? entry.nickname[0] : '用'}
+                        {entry.nickname ? entry.nickname[0] : t('community.userFallback')}
                       </Text>
                     </View>
                   )}
                   <View className='leaderboard__info'>
-                    <Text className='leaderboard__name'>{entry.nickname || '旅行者'}</Text>
-                    <Text className='leaderboard__count'>发布游记 {entry.count} 篇</Text>
+                    <Text className='leaderboard__name'>{entry.nickname || t('community.traveler')}</Text>
+                    <Text className='leaderboard__count'>{t('community.guideCount', { count: entry.count })}</Text>
                   </View>
                   {entry.rank <= 3 && (
                     <Text className='leaderboard__trophy'>
@@ -369,12 +371,12 @@ export default function CommunityPage() {
 
       {/* G4: Bottom CTA */}
       <View className='bottom-cta'>
-        <Text className='bottom-cta__text'>分享你的朝圣故事，与旅行者一起交流</Text>
+        <Text className='bottom-cta__text'>{t('community.ctaText')}</Text>
         <View
           className='bottom-cta__btn'
           onClick={() => Taro.navigateTo({ url: '/pages/guide-edit/index' })}
         >
-          <Text className='bottom-cta__btn-text'>写游记</Text>
+          <Text className='bottom-cta__btn-text'>{t('community.writeGuide')}</Text>
         </View>
       </View>
 

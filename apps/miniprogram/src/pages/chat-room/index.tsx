@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { ChatMessageItem, fetchChatMessages, sendChatMessage, markChatRead } from '../../lib/api'
 import { getAccessToken, getCachedUser } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const POLL_INTERVAL = 5000
@@ -13,6 +14,7 @@ function formatTime(iso: string): string {
 }
 
 export default function ChatRoomPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const roomId = router.params.id ?? ''
   const cachedUser = getCachedUser()
@@ -61,7 +63,7 @@ export default function ChatRoomPage() {
     } catch (err) {
       console.error('Failed to send message:', err)
       setInputText(text)
-      Taro.showToast({ title: '发送失败', icon: 'none' })
+      Taro.showToast({ title: t('chatRoom.sendFailed'), icon: 'none' })
     } finally {
       setSending(false)
     }
@@ -71,7 +73,7 @@ export default function ChatRoomPage() {
     return (
       <View className='chat-page'>
         <View className='empty-state'>
-          <Text className='empty-state__text'>请先登录</Text>
+          <Text className='empty-state__text'>{t('chatRoom.loginRequired')}</Text>
         </View>
       </View>
     )
@@ -87,11 +89,11 @@ export default function ChatRoomPage() {
       >
         {loading ? (
           <View className='empty-state'>
-            <Text className='empty-state__text'>加载中...</Text>
+            <Text className='empty-state__text'>{t('common.loading')}</Text>
           </View>
         ) : messages.length === 0 ? (
           <View className='empty-state'>
-            <Text className='empty-state__text'>暂无消息，发送第一条吧</Text>
+            <Text className='empty-state__text'>{t('chatRoom.noMessages')}</Text>
           </View>
         ) : (
           messages.map(msg => {
@@ -109,7 +111,7 @@ export default function ChatRoomPage() {
                 )}
                 <View className={`msg-bubble ${isOwn ? 'msg-bubble--own' : 'msg-bubble--other'}`}>
                   {msg.isDeleted ? (
-                    <Text className='msg-bubble__deleted'>消息已撤回</Text>
+                    <Text className='msg-bubble__deleted'>{t('chatRoom.messageRecalled')}</Text>
                   ) : (
                     <Text className={`msg-bubble__text ${isOwn ? 'msg-bubble__text--own' : ''}`}>
                       {msg.content}
@@ -129,7 +131,7 @@ export default function ChatRoomPage() {
       <View className='chat-page__input-bar'>
         <Input
           className='chat-page__input'
-          placeholder='输入消息...'
+          placeholder={t('chatRoom.inputPlaceholder')}
           value={inputText}
           onInput={(e) => setInputText(e.detail.value)}
           confirmType='send'
@@ -140,7 +142,7 @@ export default function ChatRoomPage() {
           className={`chat-page__send-btn ${(!inputText.trim() || sending) ? 'chat-page__send-btn--disabled' : ''}`}
           onClick={handleSend}
         >
-          <Text className='chat-page__send-btn-text'>发送</Text>
+          <Text className='chat-page__send-btn-text'>{t('chatRoom.send')}</Text>
         </View>
       </View>
     </View>

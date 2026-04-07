@@ -3,9 +3,11 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { Religion, Patriarch, fetchReligions, fetchPatriarchs } from '../../lib/api'
 import FilterTags from '../../components/FilterTags'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function PatriarchsPage() {
+  const { t } = useTranslation()
   const [religions, setReligions] = useState<Religion[]>([])
   const [patriarchs, setPatriarchs] = useState<Patriarch[]>([])
   const [activeReligionId, setActiveReligionId] = useState<string | null>(null)
@@ -38,7 +40,7 @@ export default function PatriarchsPage() {
     } catch (err) {
       console.error('Failed to load patriarchs:', err)
       setError(true)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('patriarchs.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -51,8 +53,8 @@ export default function PatriarchsPage() {
   return (
     <View className='patriarchs-page'>
       <View className='page-header'>
-        <Text className='page-header__title'>历代祖师</Text>
-        <Text className='page-header__count'>{patriarchs.length} 位祖师</Text>
+        <Text className='page-header__title'>{t('patriarchs.title')}</Text>
+        <Text className='page-header__count'>{t('patriarchs.count', { count: patriarchs.length })}</Text>
       </View>
 
       <FilterTags
@@ -63,14 +65,14 @@ export default function PatriarchsPage() {
 
       <ScrollView className='patriarchs-list' scrollY>
         {loading ? (
-          <Text className='loading-text'>正在加载...</Text>
+          <Text className='loading-text'>{t('common.loading')}</Text>
         ) : error ? (
           <View className='empty-text'>
-            <Text>加载失败</Text>
-            <Text className='retry-btn' onClick={loadPatriarchs}>重试</Text>
+            <Text>{t('patriarchs.loadFailed')}</Text>
+            <Text className='retry-btn' onClick={loadPatriarchs}>{t('common.retry')}</Text>
           </View>
         ) : patriarchs.length === 0 ? (
-          <Text className='empty-text'>暂无祖师数据</Text>
+          <Text className='empty-text'>{t('patriarchs.noData')}</Text>
         ) : (
           patriarchs.map(patriarch => (
             <View
@@ -93,7 +95,7 @@ export default function PatriarchsPage() {
               )}
               {patriarch.dates && (
                 <View className='patriarch-card__era'>
-                  <Text className='patriarch-card__era-label'>年代: </Text>
+                  <Text className='patriarch-card__era-label'>{t('patriarchs.era')}: </Text>
                   <Text className='patriarch-card__era-value'>{patriarch.dates}</Text>
                 </View>
               )}

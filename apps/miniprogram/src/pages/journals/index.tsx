@@ -3,7 +3,17 @@ import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { fetchJournals, Journal } from '../../lib/api'
 import { isLoggedIn, getCachedUser } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
+
+const MOOD_KEYS: Record<string, string> = {
+  '\u611F\u609F': 'journals.moodInsight',
+  '\u559C\u60A6': 'journals.moodJoy',
+  '\u5E73\u9759': 'journals.moodPeace',
+  '\u9707\u64BC': 'journals.moodAwe',
+  '\u611F\u6069': 'journals.moodGratitude',
+  '\u5B81\u9759': 'journals.moodSerenity',
+}
 
 const MOOD_EMOJI: Record<string, string> = {
   '\u611F\u609F': '\u{1F54A}',
@@ -14,11 +24,12 @@ const MOOD_EMOJI: Record<string, string> = {
   '\u5B81\u9759': '\u{1F343}',
 }
 
-const ALL_MOODS = ['感悟', '喜悦', '平静', '震撼', '感恩', '宁静']
+const ALL_MOODS = ['\u611F\u609F', '\u559C\u60A6', '\u5E73\u9759', '\u9707\u64BC', '\u611F\u6069', '\u5B81\u9759']
 
 type TabKey = 'mine' | 'community'
 
 export default function JournalsPage() {
+  const { t } = useTranslation()
   const [authed, setAuthed] = useState(isLoggedIn())
   const [tab, setTab] = useState<TabKey>(isLoggedIn() ? 'mine' : 'community')
   const [journals, setJournals] = useState<Journal[]>([])
@@ -105,18 +116,23 @@ export default function JournalsPage() {
 
   const handleCreateJournal = () => {
     if (!authed) {
-      Taro.showToast({ title: '请先登录', icon: 'none', duration: 2000 })
+      Taro.showToast({ title: t('journals.loginFirst'), icon: 'none', duration: 2000 })
       Taro.switchTab({ url: '/pages/profile/index' })
       return
     }
     Taro.navigateTo({ url: '/pages/journal-create/index' })
   }
 
+  const getMoodLabel = (mood: string) => {
+    const key = MOOD_KEYS[mood]
+    return key ? t(key) : mood
+  }
+
   if (loading) {
     return (
       <View className='journals-page'>
         <View className='empty'>
-          <Text className='empty__text'>加载中...</Text>
+          <Text className='empty__text'>{t('common.loading')}</Text>
         </View>
       </View>
     )
@@ -127,7 +143,7 @@ export default function JournalsPage() {
       <View className='journals-page'>
         <View className='empty'>
           <Text className='empty__icon'>{'\u274C'}</Text>
-          <Text className='empty__text'>加载失败: {error}</Text>
+          <Text className='empty__text'>{t('journals.loadFailed')}: {error}</Text>
         </View>
       </View>
     )
@@ -139,13 +155,13 @@ export default function JournalsPage() {
         className={`journal-tabs__item${tab === 'mine' ? ' journal-tabs__item--active' : ''}`}
         onClick={() => handleTabChange('mine')}
       >
-        <Text className='journal-tabs__text'>我的日记 ({tab === 'mine' ? stats.total : ''})</Text>
+        <Text className='journal-tabs__text'>{t('journals.myJournals')} ({tab === 'mine' ? stats.total : ''})</Text>
       </View>
       <View
         className={`journal-tabs__item${tab === 'community' ? ' journal-tabs__item--active' : ''}`}
         onClick={() => handleTabChange('community')}
       >
-        <Text className='journal-tabs__text'>社区日记 ({tab === 'community' ? stats.total : ''})</Text>
+        <Text className='journal-tabs__text'>{t('journals.communityJournals')} ({tab === 'community' ? stats.total : ''})</Text>
       </View>
     </View>
   ) : null
@@ -158,22 +174,22 @@ export default function JournalsPage() {
       <View style={{ display: 'flex', flexDirection: 'row', gap: '16rpx', padding: '20rpx 32rpx 0' }}>
         <View style={{ flex: 1, background: 'rgba(212,168,85,0.12)', borderRadius: '14rpx', padding: '16rpx', textAlign: 'center' }}>
           <Text style={{ display: 'block', fontSize: '32rpx', fontWeight: 'bold', color: '#D4A855' }}>{stats.total}</Text>
-          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>篇日记</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>{t('journals.statJournals')}</Text>
         </View>
         <View style={{ flex: 1, background: 'rgba(16,185,129,0.12)', borderRadius: '14rpx', padding: '16rpx', textAlign: 'center' }}>
           <Text style={{ display: 'block', fontSize: '32rpx', fontWeight: 'bold', color: '#10b981' }}>{stats.publicCount}</Text>
-          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>公开分享</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>{t('journals.statPublic')}</Text>
         </View>
         <View style={{ flex: 1, background: 'rgba(139,92,246,0.12)', borderRadius: '14rpx', padding: '16rpx', textAlign: 'center' }}>
           <Text style={{ display: 'block', fontSize: '32rpx', fontWeight: 'bold', color: '#8b5cf6' }}>{Object.keys(moodCounts).filter(m => moodCounts[m] > 0).length}</Text>
-          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>种心情</Text>
+          <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>{t('journals.statMoods')}</Text>
         </View>
       </View>
 
       {/* Search Input */}
       <View style={{ padding: '16rpx 32rpx' }}>
         <Input
-          placeholder='搜索日记标题或内容...'
+          placeholder={t('journals.searchPlaceholder')}
           value={search}
           onInput={e => setSearch(e.detail.value)}
           style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12rpx', padding: '16rpx 24rpx', fontSize: '28rpx', color: '#e2e8f0' }}
@@ -192,7 +208,7 @@ export default function JournalsPage() {
             }}
             onClick={() => setSelectedMood('')}
           >
-            <Text>全部 ({journals.length})</Text>
+            <Text>{t('journals.filterAll')} ({journals.length})</Text>
           </View>
           {ALL_MOODS.filter(m => moodCounts[m] > 0).map(mood => (
             <View
@@ -205,7 +221,7 @@ export default function JournalsPage() {
               }}
               onClick={() => setSelectedMood(selectedMood === mood ? '' : mood)}
             >
-              <Text>{MOOD_EMOJI[mood] ?? ''} {mood} ({moodCounts[mood]})</Text>
+              <Text>{MOOD_EMOJI[mood] ?? ''} {getMoodLabel(mood)} ({moodCounts[mood]})</Text>
             </View>
           ))}
         </View>
@@ -215,21 +231,21 @@ export default function JournalsPage() {
         {displayJournals.length === 0 && search.trim() ? (
           <View className='empty'>
             <Text className='empty__icon'>{'\u{1F50D}'}</Text>
-            <Text className='empty__text'>未找到含"{search}"的日记</Text>
+            <Text className='empty__text'>{t('journals.searchNoResult', { keyword: search })}</Text>
             <View
               style={{ marginTop: '24rpx', padding: '16rpx 40rpx', background: 'rgba(212,168,85,0.15)', borderRadius: '40rpx' }}
               onClick={() => setSearch('')}
             >
-              <Text style={{ color: '#D4A855', fontSize: '28rpx' }}>清除搜索</Text>
+              <Text style={{ color: '#D4A855', fontSize: '28rpx' }}>{t('journals.clearSearch')}</Text>
             </View>
           </View>
         ) : displayJournals.length === 0 ? (
           <View className='empty'>
             <Text className='empty__icon'>{'\u{1F4DD}'}</Text>
             <Text className='empty__text'>
-              {tab === 'mine' ? '你还没有写过日记' : '暂无朝圣日记'}
+              {tab === 'mine' ? t('journals.noMyJournals') : t('journals.noCommunityJournals')}
             </Text>
-            <Text className='empty__sub'>记录你的第一次朝圣之旅吧</Text>
+            <Text className='empty__sub'>{t('journals.emptyHint')}</Text>
           </View>
         ) : (
           displayJournals.map(journal => (
@@ -251,7 +267,7 @@ export default function JournalsPage() {
                   {journal.mood && (
                     <View className='journal-card__mood'>
                       <Text className='journal-card__mood-text'>
-                        {MOOD_EMOJI[journal.mood] ?? ''} {journal.mood}
+                        {MOOD_EMOJI[journal.mood] ?? ''} {getMoodLabel(journal.mood)}
                       </Text>
                     </View>
                   )}
@@ -282,8 +298,8 @@ export default function JournalsPage() {
             style={{ margin: '32rpx', padding: '32rpx', background: 'linear-gradient(135deg, rgba(212,168,85,0.15), rgba(139,92,246,0.1))', borderRadius: '20rpx', textAlign: 'center' }}
             onClick={() => Taro.switchTab({ url: '/pages/community/index' })}
           >
-            <Text style={{ display: 'block', fontSize: '30rpx', color: '#D4A855', fontWeight: 'bold' }}>探索社区故事</Text>
-            <Text style={{ display: 'block', fontSize: '24rpx', color: '#94a3b8', marginTop: '8rpx' }}>看看其他朝圣者的旅程见闻 →</Text>
+            <Text style={{ display: 'block', fontSize: '30rpx', color: '#D4A855', fontWeight: 'bold' }}>{t('journals.exploreCommunity')}</Text>
+            <Text style={{ display: 'block', fontSize: '24rpx', color: '#94a3b8', marginTop: '8rpx' }}>{t('journals.exploreCommunityHint')}</Text>
           </View>
         )}
 
@@ -291,12 +307,12 @@ export default function JournalsPage() {
       </ScrollView>
       <View className='fab' onClick={handleCreateJournal}>
         <Text className='fab__icon'>{'\u270F\uFE0F'}</Text>
-        <Text className='fab__text'>写日记</Text>
+        <Text className='fab__text'>{t('journals.writeJournal')}</Text>
       </View>
     </View>
   )
 }
 
 definePageConfig({
-  navigationBarTitleText: '朝圣日记',
+  navigationBarTitleText: '\u671D\u5723\u65E5\u8BB0',
 })

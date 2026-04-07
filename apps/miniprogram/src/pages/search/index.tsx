@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import {
@@ -6,19 +6,20 @@ import {
   fetchSearchSuggestions, fetchHotKeywords,
   SearchSuggestion, HotKeyword,
 } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 type SearchType = 'all' | 'religion' | 'holy-site' | 'temple' | 'patriarch' | 'teaching' | 'seal'
 
-const TABS: { key: SearchType; label: string }[] = [
-  { key: 'all', label: '全部' },
-  { key: 'religion', label: '信仰' },
-  { key: 'holy-site', label: '圣地' },
-  { key: 'temple', label: '祖庭' },
-  { key: 'patriarch', label: '祖师' },
-  { key: 'teaching', label: '祖训' },
-  { key: 'seal', label: '印' },
-]
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  'all': 'search.typeAll',
+  'religion': 'search.typeReligion',
+  'holy-site': 'search.typeHolySite',
+  'temple': 'search.typeTemple',
+  'patriarch': 'search.typePatriarch',
+  'teaching': 'search.typeTeaching',
+  'seal': 'search.typeSeal',
+}
 
 function getDetailUrl(item: SearchResultItem): string {
   switch (item.type) {
@@ -37,19 +38,23 @@ function getDetailUrl(item: SearchResultItem): string {
   }
 }
 
-function getTypeLabel(type: string): string {
-  switch (type) {
-    case 'religion': return '信仰'
-    case 'holy-site': return '圣地'
-    case 'temple': return '祖庭'
-    case 'patriarch': return '祖师'
-    case 'teaching': return '祖训'
-    case 'seal': return '印'
-    default: return type
-  }
-}
-
 export default function SearchPage() {
+  const { t } = useTranslation()
+
+  const getTypeLabel = useCallback((type: string): string => {
+    const key = TYPE_LABEL_KEYS[type]
+    return key ? t(key) : type
+  }, [t])
+
+  const TABS = useMemo(() => [
+    { key: 'all' as SearchType, label: t('search.typeAll') },
+    { key: 'religion' as SearchType, label: t('search.typeReligion') },
+    { key: 'holy-site' as SearchType, label: t('search.typeHolySite') },
+    { key: 'temple' as SearchType, label: t('search.typeTemple') },
+    { key: 'patriarch' as SearchType, label: t('search.typePatriarch') },
+    { key: 'teaching' as SearchType, label: t('search.typeTeaching') },
+    { key: 'seal' as SearchType, label: t('search.typeSeal') },
+  ], [t])
   const [query, setQuery] = useState('')
   const [activeType, setActiveType] = useState<SearchType>('all')
   const [results, setResults] = useState<SearchResultItem[]>([])
@@ -66,7 +71,7 @@ export default function SearchPage() {
   useEffect(() => {
     fetchHotKeywords()
       .then(setHotKeywords)
-      .catch(() => { Taro.showToast({ title: '搜索失败，请重试', icon: 'none' }) })
+      .catch(() => { Taro.showToast({ title: t('search.searchFailed'), icon: 'none' }) })
   }, [])
 
   const doSearch = useCallback(async (q: string, type: SearchType) => {
@@ -85,7 +90,7 @@ export default function SearchPage() {
       setResults(res.results)
       setTotal(res.total)
     } catch {
-      setError('搜索失败，请稍后重试')
+      setError(t('search.searchFailedRetry'))
       setResults([])
       setTotal(0)
     } finally {
@@ -172,7 +177,7 @@ export default function SearchPage() {
           <Text className='search-bar__icon'>&#x1F50D;</Text>
           <Input
             className='search-bar__input'
-            placeholder='搜索圣地、祖庭、祖师...'
+            placeholder={t('search.placeholder')}
             placeholderClass='search-bar__placeholder'
             value={query}
             onInput={handleInput}
@@ -221,7 +226,7 @@ export default function SearchPage() {
         {/* Hot Keywords — shown when input is empty */}
         {showEmpty && hotKeywords.length > 0 && (
           <View className='hot-section'>
-            <Text className='hot-section__title'>&#x1F525; 热门搜索</Text>
+            <Text className='hot-section__title'>{t('search.hotSearch')}</Text>
             <View className='hot-keywords'>
               {hotKeywords.map((kw, i) => (
                 <View
@@ -238,7 +243,7 @@ export default function SearchPage() {
 
         {loading && (
           <View className='search-status'>
-            <Text className='search-status__text'>正在搜索...</Text>
+            <Text className='search-status__text'>{t('search.searching')}</Text>
           </View>
         )}
 
@@ -251,22 +256,22 @@ export default function SearchPage() {
         {!loading && !error && searched && results.length === 0 && (
           <View className='search-status'>
             <Text className='search-status__icon'>&#x1F50E;</Text>
-            <Text className='search-status__text'>未找到相关内容</Text>
-            <Text className='search-status__hint'>试试其他关键词或切换分类</Text>
+            <Text className='search-status__text'>{t('search.noResults')}</Text>
+            <Text className='search-status__hint'>{t('search.noResultsHint')}</Text>
           </View>
         )}
 
         {!loading && !error && !searched && !showEmpty && (
           <View className='search-status'>
             <Text className='search-status__icon'>&#x1F50D;</Text>
-            <Text className='search-status__text'>输入关键词开始搜索</Text>
-            <Text className='search-status__hint'>搜索信仰、圣地、祖庭、祖师、祖训、印</Text>
+            <Text className='search-status__text'>{t('search.startSearch')}</Text>
+            <Text className='search-status__hint'>{t('search.startSearchHint')}</Text>
           </View>
         )}
 
         {!loading && results.length > 0 && (
           <View>
-            <Text className='search-results__count'>共 {total} 条结果</Text>
+            <Text className='search-results__count'>{t('search.resultCount', { count: total })}</Text>
             {results.map(item => (
               <View
                 key={`${item.type}-${item.id}`}

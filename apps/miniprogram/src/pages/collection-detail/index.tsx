@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter, useDidShow, useShareAppMessage } from '@tarojs/taro'
 import { Collection, CollectionItem, fetchCollectionById, removeFromCollection } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 function getDetailUrl(item: CollectionItem): string {
@@ -21,26 +22,27 @@ function getDetailUrl(item: CollectionItem): string {
   }
 }
 
-function getEntityTypeLabel(entityType: string): string {
-  switch (entityType) {
-    case 'HOLY_SITE': return '圣地'
-    case 'TEMPLE': return '祖庭'
-    case 'PATRIARCH': return '祖师'
-    case 'TEACHING': return '祖训'
-    case 'SEAL': return '印'
-    default: return entityType
-  }
-}
-
 export default function CollectionDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.params
   const [collection, setCollection] = useState<Collection | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const getEntityTypeLabel = (entityType: string): string => {
+    switch (entityType) {
+      case 'HOLY_SITE': return t('collectionDetail.typeSite')
+      case 'TEMPLE': return t('collectionDetail.typeTemple')
+      case 'PATRIARCH': return t('collectionDetail.typePatriarch')
+      case 'TEACHING': return t('collectionDetail.typeTeaching')
+      case 'SEAL': return t('collectionDetail.typeSeal')
+      default: return entityType
+    }
+  }
+
   useShareAppMessage(() => ({
-    title: collection ? `${collection.name} — 我的收藏` : '我的收藏',
+    title: collection ? `${collection.name} — ${t('collectionDetail.myCollection')}` : t('collectionDetail.myCollection'),
     path: `/pages/collection-detail/index?id=${id}`,
   }))
 
@@ -52,7 +54,7 @@ export default function CollectionDetailPage() {
       const data = await fetchCollectionById(id)
       setCollection(data)
     } catch {
-      setError('加载失败，请重试')
+      setError(t('collectionDetail.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -65,9 +67,9 @@ export default function CollectionDetailPage() {
   const handleRemoveItem = useCallback((item: CollectionItem) => {
     if (!collection) return
     Taro.showModal({
-      title: '移除收藏',
-      content: `从收藏夹移除「${item.title}」？`,
-      confirmText: '移除',
+      title: t('collectionDetail.removeTitle'),
+      content: t('collectionDetail.removeConfirm', { name: item.title }),
+      confirmText: t('collectionDetail.remove'),
       confirmColor: '#EF4444',
     }).then(res => {
       if (!res.confirm) return
@@ -78,10 +80,10 @@ export default function CollectionDetailPage() {
             items: prev.items.filter(i => i.id !== item.id),
             itemCount: prev.itemCount - 1,
           } : null)
-          Taro.showToast({ title: '已移除', icon: 'success' })
+          Taro.showToast({ title: t('collectionDetail.removed'), icon: 'success' })
         })
         .catch(() => {
-          Taro.showToast({ title: '移除失败', icon: 'none' })
+          Taro.showToast({ title: t('collectionDetail.removeFailed'), icon: 'none' })
         })
     }).catch((err) => { console.error('Remove item confirmation failed:', err) })
   }, [collection])
@@ -93,7 +95,7 @@ export default function CollectionDetailPage() {
   if (loading) {
     return (
       <View className='container'>
-        <Text className='loading-text'>正在加载...</Text>
+        <Text className='loading-text'>{t('common.loading')}</Text>
       </View>
     )
   }
@@ -101,8 +103,8 @@ export default function CollectionDetailPage() {
   if (error || !collection) {
     return (
       <View className='container'>
-        <Text className='empty-text'>{error || '收藏夹不存在'}</Text>
-        <Text className='retry-btn' onClick={loadCollection}>点击重试</Text>
+        <Text className='empty-text'>{error || t('collectionDetail.notFound')}</Text>
+        <Text className='retry-btn' onClick={loadCollection}>{t('collectionDetail.tapRetry')}</Text>
       </View>
     )
   }
@@ -116,24 +118,24 @@ export default function CollectionDetailPage() {
           {collection.description && (
             <Text className='detail-header__desc'>{collection.description}</Text>
           )}
-          <Text className='detail-header__count'>{collection.itemCount} 个收藏</Text>
+          <Text className='detail-header__count'>{t('collectionDetail.itemCount', { count: collection.itemCount })}</Text>
         </View>
         <View className='detail-header__share' onClick={handleShare}>
           <Text className='detail-header__share-icon'>&#x1F517;</Text>
-          <Text className='detail-header__share-text'>分享</Text>
+          <Text className='detail-header__share-text'>{t('share.button')}</Text>
         </View>
       </View>
 
       {collection.items.length === 0 ? (
         <View className='empty-state'>
           <Text className='empty-state__icon'>&#x1F4E6;</Text>
-          <Text className='empty-state__title'>收藏夹是空的</Text>
-          <Text className='empty-state__desc'>在圣地、祖庭等详情页点击收藏即可加入</Text>
+          <Text className='empty-state__title'>{t('collectionDetail.emptyTitle')}</Text>
+          <Text className='empty-state__desc'>{t('collectionDetail.emptyDesc')}</Text>
           <View
             className='empty-state__btn'
             onClick={() => Taro.switchTab({ url: '/pages/holy-sites/index' })}
           >
-            <Text className='empty-state__btn-text'>去探索</Text>
+            <Text className='empty-state__btn-text'>{t('collectionDetail.goExplore')}</Text>
           </View>
         </View>
       ) : (
@@ -164,7 +166,7 @@ export default function CollectionDetailPage() {
                 {item.subtitle && (
                   <Text className='item-card__subtitle'>{item.subtitle}</Text>
                 )}
-                <Text className='item-card__date'>收藏于 {item.createdAt.slice(0, 10)}</Text>
+                <Text className='item-card__date'>{t('collectionDetail.savedAt')} {item.createdAt.slice(0, 10)}</Text>
               </View>
               <View
                 className='item-card__remove'

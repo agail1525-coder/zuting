@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useRouter, useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { Seal, fetchSealById, fetchSeals } from '../../lib/api'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const SERIES_COLORS: Record<string, string> = {
@@ -14,32 +15,30 @@ const SERIES_COLORS: Record<string, string> = {
 
 const SERIES_ORDER = ['初印系', '中印系', '印果印', '成道印', '归源印']
 
-// Curated editorial content: general practice guidance applicable to all seals.
-// The Seal model has a `practice` field with seal-specific practice text;
-// these tips complement it with universal daily practice suggestions.
-// TODO: Consider moving to a CMS or API endpoint when editorial content management is available.
-const PRACTICE_TIPS = [
-  { icon: '🧘', title: '静坐观照', desc: '每日清晨静坐15分钟，观照此印要义' },
-  { icon: '📖', title: '持诵偈颂', desc: '将偈颂熟记于心，行住坐卧中默诵' },
-  { icon: '📝', title: '日记反思', desc: '每日记录修行心得，对照印义自省' },
-  { icon: '🤝', title: '同行分享', desc: '与同修分享体悟，互相印证增进' },
-]
-
 export default function SealDetailPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const { id } = router.params
   const [seal, setSeal] = useState<Seal | null>(null)
   const [allSeals, setAllSeals] = useState<Seal[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Curated editorial content: general practice guidance applicable to all seals.
+  const PRACTICE_TIPS = [
+    { icon: '🧘', title: t('sealDetail.tipMeditation'), desc: t('sealDetail.tipMeditationDesc') },
+    { icon: '📖', title: t('sealDetail.tipRecitation'), desc: t('sealDetail.tipRecitationDesc') },
+    { icon: '📝', title: t('sealDetail.tipJournal'), desc: t('sealDetail.tipJournalDesc') },
+    { icon: '🤝', title: t('sealDetail.tipSharing'), desc: t('sealDetail.tipSharingDesc') },
+  ]
+
   useShareAppMessage(() => ({
-    title: seal ? `${seal.name} (${seal.series}) — 全球祖庭之旅` : '修行印 — 全球祖庭之旅',
+    title: seal ? `${seal.name} (${seal.series}) — ${t('sealDetail.shareTitle')}` : t('sealDetail.shareDefault'),
     path: `/pages/seal-detail/index?id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
 
   useShareTimeline(() => ({
-    title: seal ? `第${seal.id}印 ${seal.name} | ${seal.series}` : '修行印 — 全球祖庭之旅',
+    title: seal ? `${t('sealDetail.sealNumber')}${seal.id} ${seal.name} | ${seal.series}` : t('sealDetail.shareDefault'),
     query: `id=${id}`,
     imageUrl: '/assets/share-default.png',
   }))
@@ -58,7 +57,7 @@ export default function SealDetailPage() {
       setSeal(data)
     } catch (err) {
       console.error('Failed to load seal:', err)
-      Taro.showToast({ title: '加载失败', icon: 'none' })
+      Taro.showToast({ title: t('sealDetail.loadFailed'), icon: 'none' })
     } finally {
       setLoading(false)
     }
@@ -94,8 +93,8 @@ export default function SealDetailPage() {
       .slice(0, 4)
   }, [seal, allSeals])
 
-  if (loading) return <View className='container'><Text className='loading-text'>正在加载...</Text></View>
-  if (!seal) return <View className='container'><Text className='empty-text'>印不存在</Text></View>
+  if (loading) return <View className='container'><Text className='loading-text'>{t('common.loading')}</Text></View>
+  if (!seal) return <View className='container'><Text className='empty-text'>{t('sealDetail.notFound')}</Text></View>
 
   const seriesColor = SERIES_COLORS[seal.series] || '#0066FF'
 
@@ -119,12 +118,12 @@ export default function SealDetailPage() {
       {/* G4: Series Progress Section */}
       {seriesProgress && (
         <View style={{ margin: '20rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx', padding: '24rpx' }}>
-          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>修行进度</Text>
+          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>{t('sealDetail.practiceProgress')}</Text>
 
           {/* Overall position */}
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '12rpx' }}>
-            <Text style={{ fontSize: '24rpx', color: '#94A3B8' }}>三十印总进度</Text>
-            <Text style={{ fontSize: '24rpx', color: '#D4A855' }}>第 {seriesProgress.overallPosition} / {seriesProgress.totalSeals} 印</Text>
+            <Text style={{ fontSize: '24rpx', color: '#94A3B8' }}>{t('sealDetail.overallProgress')}</Text>
+            <Text style={{ fontSize: '24rpx', color: '#D4A855' }}>{t('sealDetail.sealPosition', { position: seriesProgress.overallPosition, total: seriesProgress.totalSeals })}</Text>
           </View>
           <View style={{ height: '10rpx', backgroundColor: '#334155', borderRadius: '5rpx', overflow: 'hidden', marginBottom: '20rpx' }}>
             <View style={{ height: '100%', width: `${(seriesProgress.overallPosition / seriesProgress.totalSeals) * 100}%`, backgroundColor: '#D4A855', borderRadius: '5rpx' }} />
@@ -132,8 +131,8 @@ export default function SealDetailPage() {
 
           {/* Series position */}
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: '12rpx' }}>
-            <Text style={{ fontSize: '24rpx', color: '#94A3B8' }}>{seal.series}进度</Text>
-            <Text style={{ fontSize: '24rpx', color: seriesColor }}>第 {seriesProgress.positionInSeries} / {seriesProgress.totalInSeries} 印</Text>
+            <Text style={{ fontSize: '24rpx', color: '#94A3B8' }}>{t('sealDetail.seriesProgress', { series: seal.series })}</Text>
+            <Text style={{ fontSize: '24rpx', color: seriesColor }}>{t('sealDetail.sealPosition', { position: seriesProgress.positionInSeries, total: seriesProgress.totalInSeries })}</Text>
           </View>
           <View style={{ height: '10rpx', backgroundColor: '#334155', borderRadius: '5rpx', overflow: 'hidden', marginBottom: '16rpx' }}>
             <View style={{ height: '100%', width: `${(seriesProgress.positionInSeries / seriesProgress.totalInSeries) * 100}%`, backgroundColor: seriesColor, borderRadius: '5rpx' }} />
@@ -158,7 +157,7 @@ export default function SealDetailPage() {
       {/* Poem/Verse */}
       {seal.poem && (
         <View className='section'>
-          <Text className='section__title'>偈颂</Text>
+          <Text className='section__title'>{t('sealDetail.poem')}</Text>
           <View className='poem-card'>
             <Text className='poem-card__text'>{seal.poem}</Text>
           </View>
@@ -168,7 +167,7 @@ export default function SealDetailPage() {
       {/* Essence/Meaning */}
       {seal.essence && (
         <View className='section'>
-          <Text className='section__title'>要义</Text>
+          <Text className='section__title'>{t('sealDetail.essence')}</Text>
           <View className='card'>
             <Text className='card__text'>{seal.essence}</Text>
           </View>
@@ -178,7 +177,7 @@ export default function SealDetailPage() {
       {/* Practice */}
       {seal.practice && (
         <View className='section'>
-          <Text className='section__title'>修行方法</Text>
+          <Text className='section__title'>{t('sealDetail.practiceMethod')}</Text>
           <View className='card'>
             <Text className='card__text'>{seal.practice}</Text>
           </View>
@@ -188,7 +187,7 @@ export default function SealDetailPage() {
       {/* Vow */}
       {seal.vow && (
         <View className='section'>
-          <Text className='section__title'>愿文</Text>
+          <Text className='section__title'>{t('sealDetail.vow')}</Text>
           <View className='vow-card' style={{ borderLeftColor: seriesColor }}>
             <Text className='vow-card__text'>{seal.vow}</Text>
           </View>
@@ -197,7 +196,7 @@ export default function SealDetailPage() {
 
       {/* G4: Practice/Contemplation Tips */}
       <View style={{ margin: '20rpx 24rpx 0', backgroundColor: '#1E293B', borderRadius: '16rpx', padding: '24rpx' }}>
-        <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>修行提示</Text>
+        <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>{t('sealDetail.practiceTips')}</Text>
         {PRACTICE_TIPS.map(tip => (
           <View key={tip.title} style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: '16rpx', marginBottom: '20rpx' }}>
             <View style={{ width: '56rpx', height: '56rpx', borderRadius: '12rpx', backgroundColor: `${seriesColor}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -214,7 +213,7 @@ export default function SealDetailPage() {
       {/* G4: Related Seals */}
       {relatedSeals.length > 0 && (
         <View style={{ margin: '20rpx 24rpx 0' }}>
-          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>同系其他印</Text>
+          <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#F8FAFC', marginBottom: '16rpx' }}>{t('sealDetail.relatedSeals')}</Text>
           <ScrollView scrollX style={{ whiteSpace: 'nowrap' }}>
             <View style={{ display: 'inline-flex', flexDirection: 'row', gap: '16rpx' }}>
               {relatedSeals.map(rs => (
@@ -242,7 +241,7 @@ export default function SealDetailPage() {
             Taro.showShareMenu({ showShareItems: ['shareAppMessage', 'shareTimeline'] })
           }}
         >
-          <Text style={{ fontSize: '26rpx', color: '#94A3B8' }}>📤 分享此印</Text>
+          <Text style={{ fontSize: '26rpx', color: '#94A3B8' }}>📤 {t('sealDetail.shareSeal')}</Text>
         </View>
       </View>
 
@@ -251,7 +250,7 @@ export default function SealDetailPage() {
         style={{ margin: '24rpx 24rpx 0', padding: '24rpx', backgroundColor: seriesColor, borderRadius: '16rpx', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '12rpx' }}
         onClick={() => Taro.navigateTo({ url: '/pages/seals/index' })}
       >
-        <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#FFFFFF' }}>探索三十印全集</Text>
+        <Text style={{ fontSize: '28rpx', fontWeight: '700', color: '#FFFFFF' }}>{t('sealDetail.exploreAllSeals')}</Text>
       </View>
 
       <View style={{ height: '80rpx' }} />

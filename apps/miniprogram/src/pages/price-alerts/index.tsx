@@ -3,9 +3,11 @@ import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { PriceAlertItem, fetchPriceAlerts, deletePriceAlert } from '../../lib/api'
 import { isLoggedIn } from '../../lib/auth'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function PriceAlertsPage() {
+  const { t } = useTranslation()
   const [alerts, setAlerts] = useState<PriceAlertItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -38,9 +40,9 @@ export default function PriceAlertsPage() {
 
   const handleDelete = (alertId: string, routeTitle: string) => {
     Taro.showModal({
-      title: '删除提醒',
-      content: `确定删除「${routeTitle}」的价格提醒吗？`,
-      confirmText: '删除',
+      title: t('priceAlerts.deleteTitle'),
+      content: t('priceAlerts.deleteConfirm', { name: routeTitle }),
+      confirmText: t('priceAlerts.delete'),
       confirmColor: '#EF4444',
     }).then(res => {
       if (res.confirm) {
@@ -53,9 +55,9 @@ export default function PriceAlertsPage() {
     try {
       await deletePriceAlert(alertId)
       setAlerts(prev => prev.filter(a => a.id !== alertId))
-      Taro.showToast({ title: '已删除', icon: 'success' })
+      Taro.showToast({ title: t('priceAlerts.deleted'), icon: 'success' })
     } catch {
-      Taro.showToast({ title: '删除失败', icon: 'none' })
+      Taro.showToast({ title: t('priceAlerts.deleteFailed'), icon: 'none' })
     }
   }
 
@@ -77,8 +79,8 @@ export default function PriceAlertsPage() {
       <View className='price-alerts-page'>
         <View className='pa-empty'>
           <Text className='pa-empty__icon'>🔐</Text>
-          <Text className='pa-empty__title'>请先登录</Text>
-          <Text className='pa-empty__desc'>登录后可管理您的价格提醒</Text>
+          <Text className='pa-empty__title'>{t('priceAlerts.loginRequired')}</Text>
+          <Text className='pa-empty__desc'>{t('priceAlerts.loginDesc')}</Text>
         </View>
       </View>
     )
@@ -90,25 +92,25 @@ export default function PriceAlertsPage() {
     <ScrollView className='price-alerts-page' scrollY>
       {/* Header */}
       <View className='pa-header'>
-        <Text className='pa-header__title'>🔔 价格提醒</Text>
-        <Text className='pa-header__subtitle'>设定目标价，降价立即通知</Text>
+        <Text className='pa-header__title'>{t('priceAlerts.title')}</Text>
+        <Text className='pa-header__subtitle'>{t('priceAlerts.subtitle')}</Text>
       </View>
 
       {/* Loading */}
       {loading ? (
         <View className='pa-loading'>
-          <Text className='pa-loading__text'>加载中...</Text>
+          <Text className='pa-loading__text'>{t('common.loading')}</Text>
         </View>
       ) : alerts.length === 0 ? (
         /* Empty State */
         <View className='pa-empty'>
           <Text className='pa-empty__icon'>🔔</Text>
-          <Text className='pa-empty__title'>暂无价格提醒</Text>
+          <Text className='pa-empty__title'>{t('priceAlerts.emptyTitle')}</Text>
           <Text className='pa-empty__desc'>
-            前往路线详情页，为心仪路线设定目标价格，降价时第一时间通知您
+            {t('priceAlerts.emptyDesc')}
           </Text>
           <View className='pa-empty__btn' onClick={goToRoutes}>
-            <Text className='pa-empty__btn-text'>浏览路线</Text>
+            <Text className='pa-empty__btn-text'>{t('priceAlerts.browseRoutes')}</Text>
           </View>
         </View>
       ) : (
@@ -116,11 +118,11 @@ export default function PriceAlertsPage() {
           {/* Summary */}
           <View className='pa-summary'>
             <Text className='pa-summary__text'>
-              共 <Text className='pa-summary__count'>{alerts.length}</Text> 个提醒
-              {triggeredCount > 0 && `，${triggeredCount} 个已触发`}
+              {t('priceAlerts.totalCount', { count: alerts.length })}
+              {triggeredCount > 0 && t('priceAlerts.triggeredCount', { count: triggeredCount })}
             </Text>
             <View className='pa-summary__btn' onClick={goToRoutes}>
-              <Text className='pa-summary__btn-text'>+ 新增</Text>
+              <Text className='pa-summary__btn-text'>{t('priceAlerts.addNew')}</Text>
             </View>
           </View>
 
@@ -146,21 +148,21 @@ export default function PriceAlertsPage() {
                           : 'pa-card__status-badge--watching'
                       }`}
                     >
-                      {triggered ? '已触发' : '监控中'}
+                      {triggered ? t('priceAlerts.statusTriggered') : t('priceAlerts.statusWatching')}
                     </Text>
                   </View>
 
                   {/* Prices */}
                   <View className='pa-card__prices'>
                     <View className='pa-card__price-col'>
-                      <Text className='pa-card__price-label'>目标价</Text>
+                      <Text className='pa-card__price-label'>{t('priceAlerts.targetPrice')}</Text>
                       <Text className='pa-card__price-value pa-card__price-value--target'>
                         {formatPrice(alert.targetPrice)}
                       </Text>
                     </View>
 
                     <View className='pa-card__price-col'>
-                      <Text className='pa-card__price-label'>当前价</Text>
+                      <Text className='pa-card__price-label'>{t('priceAlerts.currentPrice')}</Text>
                       <Text
                         className={`pa-card__price-value ${
                           triggered
@@ -190,20 +192,20 @@ export default function PriceAlertsPage() {
                   {/* Footer: date + actions */}
                   <View className='pa-card__footer'>
                     <Text className='pa-card__date'>
-                      创建于 {alert.createdAt.slice(0, 10)}
+                      {t('priceAlerts.createdAt')} {alert.createdAt.slice(0, 10)}
                     </Text>
                     <View className='pa-card__actions'>
                       <Text
                         className='pa-card__view-btn'
                         onClick={() => goToRouteDetail(alert.routeId)}
                       >
-                        查看路线
+                        {t('priceAlerts.viewRoute')}
                       </Text>
                       <Text
                         className='pa-card__delete-btn'
                         onClick={() => handleDelete(alert.id, alert.routeTitle)}
                       >
-                        删除
+                        {t('priceAlerts.delete')}
                       </Text>
                     </View>
                   </View>
