@@ -4,6 +4,7 @@ import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { api, HolySite, Route } from '../../src/lib/api';
+import { useTranslation } from '../../src/lib/i18n';
 import { LoadingView } from '../../src/components/LoadingView';
 import ReviewSection from '../../src/components/ReviewSection';
 import RelatedEntities from '../../src/components/RelatedEntities';
@@ -14,6 +15,7 @@ export default function HolySiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [site, setSite] = useState<HolySite | null>(null);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ export default function HolySiteDetailScreen() {
         api.recordView('HOLY_SITE', id);
       } catch (err) {
         console.error('Failed to fetch holy site:', err);
-        setError('加载圣地详情失败');
+        setError(t('holySiteDetail.loadError'));
       } finally {
         setLoading(false);
       }
@@ -47,9 +49,9 @@ export default function HolySiteDetailScreen() {
     return (
       <View style={s.errorContainer}>
         <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
-        <Text style={s.errorText}>{error ?? '圣地不存在'}</Text>
+        <Text style={s.errorText}>{error ?? t('holySiteDetail.notFound')}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
@@ -85,29 +87,29 @@ export default function HolySiteDetailScreen() {
 
       {/* Info Grid */}
       <View style={s.infoGrid}>
-        <InfoCell icon="globe-outline" label="国家" value={site.country} />
-        {site.city && <InfoCell icon="business-outline" label="城市" value={site.city} />}
-        <InfoCell icon="navigate-outline" label="坐标" value={`${site.latitude.toFixed(4)}, ${site.longitude.toFixed(4)}`} />
-        <InfoCell icon="time-outline" label="时区" value={`UTC${site.utcOffset >= 0 ? '+' : ''}${site.utcOffset}`} />
+        <InfoCell icon="globe-outline" label={t('holySiteDetail.country')} value={site.country ?? ''} />
+        {site.city && <InfoCell icon="business-outline" label={t('holySiteDetail.city')} value={site.city} />}
+        <InfoCell icon="navigate-outline" label={t('holySiteDetail.coordinates')} value={`${(site.latitude ?? 0).toFixed(4)}, ${(site.longitude ?? 0).toFixed(4)}`} />
+        <InfoCell icon="time-outline" label={t('holySiteDetail.timezone')} value={`UTC${(site.utcOffset ?? 0) >= 0 ? '+' : ''}${site.utcOffset ?? 0}`} />
       </View>
 
       {/* Practical Info (conditional) */}
       {(site.openingHours || site.ticketPrice || site.bestSeason || site.visitDuration || site.transport) && (
         <View style={s.section}>
-          <Text style={s.sectionTitle}>实用信息</Text>
+          <Text style={s.sectionTitle}>{t('holySiteDetail.practicalInfo')}</Text>
           <View style={s.card}>
-            {site.openingHours && <InfoRow icon="time" label="开放时间" value={site.openingHours} />}
-            {site.ticketPrice && <InfoRow icon="pricetag" label="门票" value={site.ticketPrice} />}
-            {site.bestSeason && <InfoRow icon="sunny" label="最佳季节" value={site.bestSeason} />}
-            {site.visitDuration && <InfoRow icon="hourglass" label="建议游览" value={site.visitDuration} />}
-            {site.transport && <InfoRow icon="bus" label="交通" value={site.transport} />}
+            {site.openingHours && <InfoRow icon="time" label={t('holySiteDetail.openingHours')} value={site.openingHours} />}
+            {site.ticketPrice && <InfoRow icon="pricetag" label={t('holySiteDetail.ticket')} value={site.ticketPrice} />}
+            {site.bestSeason && <InfoRow icon="sunny" label={t('holySiteDetail.bestSeason')} value={site.bestSeason} />}
+            {site.visitDuration && <InfoRow icon="hourglass" label={t('holySiteDetail.suggestedVisit')} value={site.visitDuration} />}
+            {site.transport && <InfoRow icon="bus" label={t('holySiteDetail.transport')} value={site.transport} />}
           </View>
         </View>
       )}
 
       {/* Description */}
       <View style={s.section}>
-        <Text style={s.sectionTitle}>介绍</Text>
+        <Text style={s.sectionTitle}>{t('holySiteDetail.description')}</Text>
         <View style={s.card}>
           <Text style={s.descText}>{site.description}</Text>
         </View>
@@ -116,7 +118,7 @@ export default function HolySiteDetailScreen() {
       {/* Tips */}
       {Array.isArray(site.tips) && site.tips.length > 0 && (
         <View style={s.section}>
-          <Text style={s.sectionTitle}>旅行贴士</Text>
+          <Text style={s.sectionTitle}>{t('holySiteDetail.tips')}</Text>
           <View style={s.card}>
             {site.tips.map((tip: string, i: number) => (
               <View key={i} style={s.tipRow}>
@@ -131,12 +133,12 @@ export default function HolySiteDetailScreen() {
       {/* Nearby */}
       {(site.nearbyFood || site.nearbyStay || site.nearbyExperience || site.nearbySights) && (
         <View style={s.section}>
-          <Text style={s.sectionTitle}>周边推荐</Text>
+          <Text style={s.sectionTitle}>{t('holySiteDetail.nearby')}</Text>
           <View style={s.card}>
-            {site.nearbyFood && <InfoRow icon="restaurant" label="美食" value={site.nearbyFood} />}
-            {site.nearbyStay && <InfoRow icon="bed" label="住宿" value={site.nearbyStay} />}
-            {site.nearbyExperience && <InfoRow icon="sparkles" label="体验" value={site.nearbyExperience} />}
-            {site.nearbySights && <InfoRow icon="eye" label="景点" value={site.nearbySights} />}
+            {site.nearbyFood && <InfoRow icon="restaurant" label={t('holySiteDetail.nearbyFood')} value={site.nearbyFood} />}
+            {site.nearbyStay && <InfoRow icon="bed" label={t('holySiteDetail.nearbyStay')} value={site.nearbyStay} />}
+            {site.nearbyExperience && <InfoRow icon="sparkles" label={t('holySiteDetail.nearbyExperience')} value={site.nearbyExperience} />}
+            {site.nearbySights && <InfoRow icon="eye" label={t('holySiteDetail.nearbySights')} value={site.nearbySights} />}
           </View>
         </View>
       )}
@@ -144,7 +146,7 @@ export default function HolySiteDetailScreen() {
       {/* Related Routes */}
       {routes.length > 0 && (
         <View style={s.section}>
-          <Text style={s.sectionTitle}>经过此圣地的路线</Text>
+          <Text style={s.sectionTitle}>{t('holySiteDetail.relatedRoutes')}</Text>
           {routes.map(route => (
             <Pressable
               key={route.id}
@@ -160,8 +162,8 @@ export default function HolySiteDetailScreen() {
               )}
               <View style={s.routeInfo}>
                 <Text style={s.routeName} numberOfLines={1}>{route.title}</Text>
-                <Text style={s.routeSub} numberOfLines={1}>{route.duration}天{route.nights}晚 · {route.subtitle}</Text>
-                <Text style={s.routePrice}>¥{(route.priceFrom / 100).toLocaleString()}/人起</Text>
+                <Text style={s.routeSub} numberOfLines={1}>{t('holySiteDetail.routeDuration').replace('{days}', String(route.duration ?? 0)).replace('{nights}', String(route.nights ?? 0))} · {route.subtitle ?? ''}</Text>
+                <Text style={s.routePrice}>{t('holySiteDetail.priceFrom').replace('{price}', ((route.priceFrom ?? 0) / 100).toLocaleString(locale))}</Text>
               </View>
             </Pressable>
           ))}
@@ -177,17 +179,17 @@ export default function HolySiteDetailScreen() {
       </View>
 
       {/* Related Entities */}
-      <RelatedEntities entityType="HOLY_SITE" entityId={id!} title="你可能也喜欢" />
+      <RelatedEntities entityType="HOLY_SITE" entityId={id!} title={t('holySiteDetail.youMayLike')} />
 
       {/* Bottom CTA */}
       <View style={s.ctaRow}>
         <Pressable style={s.ctaBtn} onPress={() => router.push('/trips/create' as never)}>
           <Ionicons name="add-circle" size={18} color="#FFFFFF" />
-          <Text style={s.ctaBtnText}>加入行程</Text>
+          <Text style={s.ctaBtnText}>{t('holySiteDetail.addToTrip')}</Text>
         </Pressable>
         <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
           <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
-          <Text style={s.ctaBtnOutlineText}>AI规划</Text>
+          <Text style={s.ctaBtnOutlineText}>{t('holySiteDetail.aiPlan')}</Text>
         </Pressable>
       </View>
     </ScrollView>

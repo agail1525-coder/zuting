@@ -28,7 +28,7 @@ type Messages = Record<string, string>;
 interface I18nContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
   isRTL: boolean;
 }
 
@@ -78,7 +78,7 @@ export const ALL_LOCALES: Locale[] = [
 const I18nContext = createContext<I18nContextValue>({
   locale: DEFAULT_LOCALE,
   setLocale: () => {},
-  t: (key: string) => key,
+  t: (key: string, _params?: Record<string, string | number>) => key,
   isRTL: false,
 });
 
@@ -110,16 +110,22 @@ export function I18nProvider({ children }: I18nProviderProps) {
 
   // Translation function — falls back to zh-CN, then to raw key
   const t = useCallback(
-    (key: string): string => {
-      const msg = MESSAGES[locale]?.[key];
-      if (msg !== undefined) return msg;
-
-      // Fallback to zh-CN
-      const fallback = MESSAGES[DEFAULT_LOCALE]?.[key];
-      if (fallback !== undefined) return fallback;
-
-      // Return the key itself as last resort
-      return key;
+    (key: string, params?: Record<string, string | number>): string => {
+      let msg = MESSAGES[locale]?.[key];
+      if (msg === undefined) {
+        // Fallback to zh-CN
+        msg = MESSAGES[DEFAULT_LOCALE]?.[key];
+      }
+      if (msg === undefined) {
+        // Return the key itself as last resort
+        return key;
+      }
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          msg = msg.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+        }
+      }
+      return msg;
     },
     [locale],
   );

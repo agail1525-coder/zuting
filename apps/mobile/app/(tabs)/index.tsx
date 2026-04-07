@@ -15,54 +15,56 @@ import { useRouter } from 'expo-router';
 import { api, Religion, Route, HolySite, Temple, Patriarch, RecommendationItem, fetchTrending, fetchGuides, GuideItem, Journal } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
+import { useTranslation } from '../../src/lib/i18n';
 
 /* ─── Constants ─── */
 
 const SEARCH_TABS = [
-  { key: 'sites', label: '圣地', icon: 'location' as const },
-  { key: 'routes', label: '路线', icon: 'map' as const },
-  { key: 'ai', label: 'AI', icon: 'chatbubble-ellipses' as const },
-  { key: 'wiki', label: '百科', icon: 'book' as const },
+  { key: 'sites', labelKey: 'home.searchTab.sites', icon: 'location' as const },
+  { key: 'routes', labelKey: 'home.searchTab.routes', icon: 'map' as const },
+  { key: 'ai', labelKey: 'home.searchTab.ai', icon: 'chatbubble-ellipses' as const },
+  { key: 'wiki', labelKey: 'home.searchTab.wiki', icon: 'book' as const },
 ];
 
-const CATEGORY_ICONS: { value: string; icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
-  { value: 'ZEN', icon: 'leaf', label: '禅宗' },
-  { value: 'BUDDHIST', icon: 'flower', label: '佛教' },
-  { value: 'TAOIST', icon: 'water', label: '道教' },
-  { value: 'CHRISTIAN', icon: 'home', label: '基督' },
-  { value: 'ISLAMIC', icon: 'moon', label: '丝路' },
-  { value: 'CROSS_CULTURAL', icon: 'globe', label: '跨文化' },
-  { value: 'HINDU', icon: 'sunny', label: '印度教' },
-  { value: 'CULTURAL_HERITAGE', icon: 'library', label: '遗产' },
+const CATEGORY_ICONS: { value: string; icon: keyof typeof Ionicons.glyphMap; labelKey: string }[] = [
+  { value: 'ZEN', icon: 'leaf', labelKey: 'home.category.zen' },
+  { value: 'BUDDHIST', icon: 'flower', labelKey: 'home.category.buddhist' },
+  { value: 'TAOIST', icon: 'water', labelKey: 'home.category.taoist' },
+  { value: 'CHRISTIAN', icon: 'home', labelKey: 'home.category.christian' },
+  { value: 'ISLAMIC', icon: 'moon', labelKey: 'home.category.silkRoad' },
+  { value: 'CROSS_CULTURAL', icon: 'globe', labelKey: 'home.category.crossCultural' },
+  { value: 'HINDU', icon: 'sunny', labelKey: 'home.category.hindu' },
+  { value: 'CULTURAL_HERITAGE', icon: 'library', labelKey: 'home.category.heritage' },
 ];
 
-const HOT_TAGS = ['禅宗路线', '耶路撒冷', '丝绸之路', '朝圣之旅', '文化体验'];
+const HOT_TAG_KEYS = ['home.hotTag.zenRoute', 'home.hotTag.jerusalem', 'home.hotTag.silkRoad', 'home.hotTag.pilgrimage', 'home.hotTag.culture'];
 
 const PLATFORM_HIGHLIGHTS = [
-  { icon: 'earth' as const, title: '12大信仰', desc: '全球文化传统', route: '/religions/buddhism' },
-  { icon: 'location' as const, title: '60+圣地', desc: '精选目的地', route: '/(tabs)/holy-sites' },
-  { icon: 'chatbubble-ellipses' as const, title: 'AI规划师', desc: '智能路线定制', route: '/(tabs)/chat' },
-  { icon: 'journal' as const, title: '朝圣日志', desc: '记录旅途故事', route: '/journals' },
+  { icon: 'earth' as const, titleKey: 'home.highlight.religions', descKey: 'home.highlight.religionsDesc', route: '/religions/buddhism' },
+  { icon: 'location' as const, titleKey: 'home.highlight.sites', descKey: 'home.highlight.sitesDesc', route: '/(tabs)/holy-sites' },
+  { icon: 'chatbubble-ellipses' as const, titleKey: 'home.highlight.aiPlanner', descKey: 'home.highlight.aiPlannerDesc', route: '/(tabs)/chat' },
+  { icon: 'journal' as const, titleKey: 'home.highlight.journal', descKey: 'home.highlight.journalDesc', route: '/journals' },
 ];
 
 
-const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; label: string; route: string }[] = [
-  { key: 'journals', icon: 'journal', label: '朝圣日志', route: '/journals' },
-  { key: 'questions', icon: 'help-circle', label: '问答广场', route: '/community/questions' },
-  { key: 'leaderboard', icon: 'trophy', label: '排行榜', route: '/community/leaderboard' },
+const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; labelKey: string; route: string }[] = [
+  { key: 'journals', icon: 'journal', labelKey: 'home.community.journals', route: '/journals' },
+  { key: 'questions', icon: 'help-circle', labelKey: 'home.community.questions', route: '/community/questions' },
+  { key: 'leaderboard', icon: 'trophy', labelKey: 'home.community.leaderboard', route: '/community/leaderboard' },
 ];
 
 
 const REC_TABS = [
-  { key: 'temples', label: '祖庭' },
-  { key: 'patriarchs', label: '祖师' },
-  { key: 'sites', label: '圣地' },
+  { key: 'temples', labelKey: 'home.recTab.temples' },
+  { key: 'patriarchs', labelKey: 'home.recTab.patriarchs' },
+  { key: 'sites', labelKey: 'home.recTab.sites' },
 ];
 
 /* ─── Main Screen ─── */
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [featuredRoutes, setFeaturedRoutes] = useState<Route[]>([]);
   const [religions, setReligions] = useState<Religion[]>([]);
   const [holySites, setHolySites] = useState<HolySite[]>([]);
@@ -140,8 +142,8 @@ export default function HomeScreen() {
     >
       {/* ── 1. Hero + Tab Search ── */}
       <LinearGradient colors={['#0066FF', '#003D99']} style={styles.hero}>
-        <Text style={styles.heroTitle}>帮助100万人走祖庭</Text>
-        <Text style={styles.heroSubtitle}>探索全球60+文化圣地 · 深度旅行体验</Text>
+        <Text style={styles.heroTitle}>{t('home.heroTitle')}</Text>
+        <Text style={styles.heroSubtitle}>{t('home.heroSubtitle')}</Text>
 
         {/* Tab Search Card */}
         <View style={styles.searchCard}>
@@ -158,28 +160,28 @@ export default function HomeScreen() {
                   color={activeSearchTab === tab.key ? '#0066FF' : '#9CA3AF'}
                 />
                 <Text style={[styles.searchTabText, activeSearchTab === tab.key && styles.searchTabTextActive]}>
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Text>
               </Pressable>
             ))}
           </View>
           <Pressable style={styles.searchBar} onPress={() => router.push('/search')}>
             <Ionicons name="search" size={16} color="#9CA3AF" />
-            <Text style={styles.searchPlaceholder}>搜路线、查目的地...</Text>
+            <Text style={styles.searchPlaceholder}>{t('home.searchPlaceholder')}</Text>
           </Pressable>
         </View>
 
         {/* Hot Tags */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.heroTags}>
-          {HOT_TAGS.map(tag => (
-            <Pressable key={tag} style={styles.heroTag} onPress={() => router.push('/search')}>
-              <Text style={styles.heroTagText}>#{tag}</Text>
+          {HOT_TAG_KEYS.map(tagKey => (
+            <Pressable key={tagKey} style={styles.heroTag} onPress={() => router.push('/search')}>
+              <Text style={styles.heroTagText}>#{t(tagKey)}</Text>
             </Pressable>
           ))}
         </ScrollView>
 
         {/* Trust badge */}
-        <Text style={styles.trustText}>12大文化传统 · 60+圣地 · 专业路线规划 · AI旅行顾问</Text>
+        <Text style={styles.trustText}>{t('home.trustBadge')}</Text>
       </LinearGradient>
 
       {/* ── 2. Category Icons ── */}
@@ -193,28 +195,28 @@ export default function HomeScreen() {
             <View style={styles.categoryIcon}>
               <Ionicons name={cat.icon} size={22} color="#0066FF" />
             </View>
-            <Text style={styles.categoryLabel}>{cat.label}</Text>
+            <Text style={styles.categoryLabel}>{t(cat.labelKey)}</Text>
           </Pressable>
         ))}
       </View>
 
       {/* ── 3. Platform Highlights ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>为什么选择我们</Text>
+        <Text style={styles.sectionTitle}>{t('home.whyChooseUs')}</Text>
       </View>
       <View style={styles.highlightGrid}>
         {PLATFORM_HIGHLIGHTS.map(h => (
           <Pressable
-            key={h.title}
+            key={h.titleKey}
             style={styles.highlightCard}
             onPress={() => router.push(h.route as never)}
           >
             <View style={styles.highlightIconBox}>
               <Ionicons name={h.icon} size={20} color="#0066FF" />
             </View>
-            <Text style={styles.highlightTitle}>{h.title}</Text>
-            <Text style={styles.highlightDesc}>{h.desc}</Text>
-            <Text style={styles.highlightCta}>了解更多 &gt;</Text>
+            <Text style={styles.highlightTitle}>{t(h.titleKey)}</Text>
+            <Text style={styles.highlightDesc}>{t(h.descKey)}</Text>
+            <Text style={styles.highlightCta}>{t('home.learnMore')} &gt;</Text>
           </Pressable>
         ))}
       </View>
@@ -223,9 +225,9 @@ export default function HomeScreen() {
       {publicJournals.length > 0 && (
         <>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>朝圣故事</Text>
+            <Text style={styles.sectionTitle}>{t('home.pilgrimStories')}</Text>
             <Pressable onPress={() => router.push('/journals' as never)}>
-              <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+              <Text style={styles.sectionMore}>{t('home.viewAll')} &gt;</Text>
             </Pressable>
           </View>
           <FlatList
@@ -236,7 +238,7 @@ export default function HomeScreen() {
             keyExtractor={item => item.id}
             renderItem={({ item }) => {
               const firstImage = Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null;
-              const authorName = item.user?.nickname ?? '匿名';
+              const authorName = item.user?.nickname ?? t('home.anonymous');
               return (
                 <Pressable style={styles.storyCard} onPress={() => router.push(`/journal/${item.id}` as never)}>
                   {firstImage ? (
@@ -265,9 +267,9 @@ export default function HomeScreen() {
 
       {/* ── 5. Featured Routes ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>精选路线</Text>
+        <Text style={styles.sectionTitle}>{t('home.featuredRoutes')}</Text>
         <Pressable onPress={() => router.push('/routes' as never)}>
-          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+          <Text style={styles.sectionMore}>{t('home.viewAll')} &gt;</Text>
         </Pressable>
       </View>
       <FlatList
@@ -283,9 +285,9 @@ export default function HomeScreen() {
 
       {/* ── 5.5 Community Hub Entry ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>社区入口</Text>
+        <Text style={styles.sectionTitle}>{t('home.communityHub')}</Text>
         <Pressable onPress={() => router.push('/community' as never)}>
-          <Text style={styles.sectionMore}>进入社区 &gt;</Text>
+          <Text style={styles.sectionMore}>{t('home.enterCommunity')} &gt;</Text>
         </Pressable>
       </View>
       <View style={styles.communityHub}>
@@ -298,16 +300,16 @@ export default function HomeScreen() {
             <View style={styles.communityHubIcon}>
               <Ionicons name={action.icon} size={22} color="#0066FF" />
             </View>
-            <Text style={styles.communityHubLabel}>{action.label}</Text>
+            <Text style={styles.communityHubLabel}>{t(action.labelKey)}</Text>
           </Pressable>
         ))}
       </View>
 
       {/* ── 5.6 Trending Guides ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>热门攻略</Text>
+        <Text style={styles.sectionTitle}>{t('home.popularGuides')}</Text>
         <Pressable onPress={() => router.push('/community' as never)}>
-          <Text style={styles.sectionMore}>查看更多 &gt;</Text>
+          <Text style={styles.sectionMore}>{t('home.viewMore')} &gt;</Text>
         </Pressable>
       </View>
       <FlatList
@@ -316,7 +318,7 @@ export default function HomeScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.guideList}
         keyExtractor={item => item.id}
-        ListEmptyComponent={<Text style={{ color: '#9CA3AF', padding: spacing.md }}>暂无攻略</Text>}
+        ListEmptyComponent={<Text style={{ color: '#9CA3AF', padding: spacing.md }}>{t('home.noGuides')}</Text>}
         renderItem={({ item }) => (
           <Pressable
             style={styles.guideCard}
@@ -334,7 +336,7 @@ export default function HomeScreen() {
             <View style={styles.guideCardBody}>
               <Text style={styles.guideCardTitle} numberOfLines={2}>{item.title}</Text>
               <View style={styles.guideCardMeta}>
-                <Text style={styles.guideCardAuthor}>{item.user?.nickname ?? '匿名'}</Text>
+                <Text style={styles.guideCardAuthor}>{item.user?.nickname ?? t('home.anonymous')}</Text>
                 <View style={styles.guideCardViews}>
                   <Ionicons name="eye-outline" size={11} color="#9CA3AF" />
                   <Text style={styles.guideCardViewsText}>{item.viewCount ?? 0}</Text>
@@ -349,19 +351,19 @@ export default function HomeScreen() {
       <Pressable onPress={() => router.push('/(tabs)/chat')} style={styles.aiBannerWrap}>
         <LinearGradient colors={['#0066FF', '#0052CC']} style={styles.aiBanner}>
           <View style={styles.aiBannerContent}>
-            <Text style={styles.aiBannerTitle}>AI旅行规划师</Text>
-            <Text style={styles.aiBannerDesc}>告诉我你想去哪里，我来帮你规划完美的朝圣路线</Text>
+            <Text style={styles.aiBannerTitle}>{t('home.aiPlannerTitle')}</Text>
+            <Text style={styles.aiBannerDesc}>{t('home.aiPlannerDesc')}</Text>
             <View style={styles.aiBannerBtn}>
-              <Text style={styles.aiBannerBtnText}>开始对话</Text>
+              <Text style={styles.aiBannerBtnText}>{t('home.startChat')}</Text>
               <Ionicons name="arrow-forward" size={14} color="#0066FF" />
             </View>
           </View>
           <View style={styles.aiBannerChat}>
             <View style={styles.chatBubble}>
-              <Text style={styles.chatBubbleText}>推荐一条禅宗路线</Text>
+              <Text style={styles.chatBubbleText}>{t('home.chatBubbleUser')}</Text>
             </View>
             <View style={[styles.chatBubble, styles.chatBubbleReply]}>
-              <Text style={styles.chatBubbleReplyText}>为您推荐「禅宗祖庭巡礼」5天4晚...</Text>
+              <Text style={styles.chatBubbleReplyText}>{t('home.chatBubbleReply')}</Text>
             </View>
           </View>
         </LinearGradient>
@@ -369,9 +371,9 @@ export default function HomeScreen() {
 
       {/* ── 7. Popular Destinations ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>热门目的地</Text>
+        <Text style={styles.sectionTitle}>{t('home.popularDestinations')}</Text>
         <Pressable onPress={() => router.push('/(tabs)/holy-sites' as never)}>
-          <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+          <Text style={styles.sectionMore}>{t('home.viewAll')} &gt;</Text>
         </Pressable>
       </View>
       <View style={styles.destGrid}>
@@ -398,7 +400,7 @@ export default function HomeScreen() {
 
       {/* ── 8. Recommendation Tabs ── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>热门推荐</Text>
+        <Text style={styles.sectionTitle}>{t('home.hotRecommendations')}</Text>
       </View>
       <View style={styles.recTabs}>
         {REC_TABS.map(tab => (
@@ -408,7 +410,7 @@ export default function HomeScreen() {
             onPress={() => setActiveRecTab(tab.key)}
           >
             <Text style={[styles.recTabText, activeRecTab === tab.key && styles.recTabTextActive]}>
-              {tab.label}
+              {t(tab.labelKey)}
             </Text>
           </Pressable>
         ))}
@@ -433,7 +435,7 @@ export default function HomeScreen() {
       {popularItems.length > 0 && (
         <>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>为你推荐</Text>
+            <Text style={styles.sectionTitle}>{t('home.forYou')}</Text>
           </View>
           <FlatList
             data={popularItems}
@@ -461,9 +463,9 @@ export default function HomeScreen() {
       {trendingGuides.length > 0 && (
         <>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>热门游记</Text>
+            <Text style={styles.sectionTitle}>{t('home.hotGuides')}</Text>
             <Pressable onPress={() => router.push('/community' as never)}>
-              <Text style={styles.sectionMore}>查看全部 &gt;</Text>
+              <Text style={styles.sectionMore}>{t('home.viewAll')} &gt;</Text>
             </Pressable>
           </View>
           <FlatList
@@ -504,46 +506,46 @@ export default function HomeScreen() {
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>12</Text>
-            <Text style={styles.statLabel}>文化传统</Text>
+            <Text style={styles.statLabel}>{t('home.stat.traditions')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>60+</Text>
-            <Text style={styles.statLabel}>圣地</Text>
+            <Text style={styles.statLabel}>{t('home.stat.holySites')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>27</Text>
-            <Text style={styles.statLabel}>祖庭</Text>
+            <Text style={styles.statLabel}>{t('home.stat.temples')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>7</Text>
-            <Text style={styles.statLabel}>语言</Text>
+            <Text style={styles.statLabel}>{t('home.stat.languages')}</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.ctaSection}>
-        <Text style={styles.ctaTitle}>开始你的朝圣之旅</Text>
-        <Text style={styles.ctaSubtitle}>精选深度路线，探访全球文化圣地</Text>
+        <Text style={styles.ctaTitle}>{t('home.ctaTitle')}</Text>
+        <Text style={styles.ctaSubtitle}>{t('home.ctaSubtitle')}</Text>
         <View style={styles.ctaButtons}>
           <Pressable
             style={styles.ctaButton}
             onPress={() => router.push('/routes' as never)}
           >
             <Ionicons name="compass" size={16} color="#FFFFFF" />
-            <Text style={styles.ctaButtonText}>浏览路线</Text>
+            <Text style={styles.ctaButtonText}>{t('home.browseRoutes')}</Text>
           </Pressable>
           <Pressable
             style={styles.ctaButtonOutline}
             onPress={() => router.push('/(tabs)/chat')}
           >
             <Ionicons name="chatbubble-ellipses" size={16} color="#0066FF" />
-            <Text style={styles.ctaButtonOutlineText}>AI帮你规划</Text>
+            <Text style={styles.ctaButtonOutlineText}>{t('home.aiPlanForYou')}</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>帮助100万人走祖庭</Text>
+        <Text style={styles.footerText}>{t('home.heroTitle')}</Text>
       </View>
     </ScrollView>
   );
@@ -552,7 +554,8 @@ export default function HomeScreen() {
 /* ─── Sub-components ─── */
 
 function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
-  const price = (route.priceFrom / 100).toLocaleString();
+  const { t } = useTranslation();
+  const price = ((route.priceFrom ?? 0) / 100).toLocaleString();
   return (
     <Pressable style={styles.routeCard} onPress={onPress}>
       <View style={styles.routeCardImage}>
@@ -564,12 +567,12 @@ function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
           </View>
         )}
         <View style={styles.routeBadge}>
-          <Text style={styles.routeBadgeText}>{route.duration}天{route.nights}晚</Text>
+          <Text style={styles.routeBadgeText}>{route.duration ?? 0}{t('home.route.days')}{route.nights ?? 0}{t('home.route.nights')}</Text>
         </View>
-        {route.rating && (
+        {route.rating != null && (
           <View style={styles.routeRatingBadge}>
             <Ionicons name="star" size={10} color="#FFFFFF" />
-            <Text style={styles.routeRatingText}>{route.rating.toFixed(1)}</Text>
+            <Text style={styles.routeRatingText}>{(route.rating ?? 0).toFixed(1)}</Text>
           </View>
         )}
       </View>
@@ -577,7 +580,7 @@ function RouteCard({ route, onPress }: { route: Route; onPress: () => void }) {
         <Text style={styles.routeCardTitle} numberOfLines={1}>{route.title}</Text>
         <Text style={styles.routeCardSubtitle} numberOfLines={1}>{route.subtitle}</Text>
         <View style={styles.routeCardFooter}>
-          <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>/人起</Text></Text>
+          <Text style={styles.routeCardPrice}>¥{price}<Text style={styles.routeCardPriceUnit}>{t('home.route.perPerson')}</Text></Text>
         </View>
       </View>
     </Pressable>

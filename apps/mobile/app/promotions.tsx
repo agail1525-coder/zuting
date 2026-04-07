@@ -11,31 +11,27 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from '../src/lib/i18n';
 import { PromotionItem, fetchPromotions } from '../src/lib/api';
 
 const formatPrice = (amount: number) => (amount / 100).toFixed(2);
 
-function getTimeLeft(endAt: string): string {
+function getTimeLeft(endAt: string, t: (key: string, params?: Record<string, string | number>) => string): string {
   const diff = new Date(endAt).getTime() - Date.now();
-  if (diff <= 0) return '已结束';
+  if (diff <= 0) return t('promotions.ended');
   const hours = Math.floor(diff / 3600000);
   const minutes = Math.floor((diff % 3600000) / 60000);
   const seconds = Math.floor((diff % 60000) / 1000);
   if (hours > 24) {
     const days = Math.floor(hours / 24);
-    return `${days}天后结束`;
+    return t('promotions.endsInDays', { days });
   }
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-const PROMO_TYPES = [
-  { key: '', label: '全部' },
-  { key: 'FLASH_SALE', label: '闪购' },
-  { key: 'EARLY_BIRD', label: '早鸟价' },
-  { key: 'LIMITED_TIME', label: '限时折扣' },
-] as const;
+const PROMO_TYPE_KEYS = ['', 'FLASH_SALE', 'EARLY_BIRD', 'LIMITED_TIME'] as const;
 
-type PromoTypeKey = typeof PROMO_TYPES[number]['key'];
+type PromoTypeKey = typeof PROMO_TYPE_KEYS[number];
 
 const TYPE_BADGE_COLORS: Record<string, string> = {
   FLASH_SALE: '#EF4444',
@@ -44,14 +40,27 @@ const TYPE_BADGE_COLORS: Record<string, string> = {
   DEFAULT: '#0066FF',
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  FLASH_SALE: '闪购',
-  EARLY_BIRD: '早鸟',
-  LIMITED_TIME: '限时',
+const TYPE_BADGE_KEYS: Record<string, string> = {
+  FLASH_SALE: 'promotions.badgeFlashSale',
+  EARLY_BIRD: 'promotions.badgeEarlyBird',
+  LIMITED_TIME: 'promotions.badgeLimitedTime',
+};
+
+const TYPE_TAB_KEYS: Record<string, string> = {
+  FLASH_SALE: 'promotions.typeFlashSale',
+  EARLY_BIRD: 'promotions.typeEarlyBird',
+  LIMITED_TIME: 'promotions.typeLimitedTime',
 };
 
 export default function PromotionsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const PROMO_TYPES = PROMO_TYPE_KEYS.map(key => ({
+    key: key as PromoTypeKey,
+    label: key === '' ? t('promotions.filterAll') : t(TYPE_TAB_KEYS[key] as any),
+  }));
+
   const [activeType, setActiveType] = useState<PromoTypeKey>('');
   const [items, setItems] = useState<PromotionItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -97,17 +106,17 @@ export default function PromotionsScreen() {
   // Tab counts
   const tabCounts = useMemo(() => {
     const counts: Record<string, number> = { '': items.length };
-    for (const t of PROMO_TYPES.slice(1)) {
-      counts[t.key] = items.filter(i => i.type === t.key).length;
+    for (const key of PROMO_TYPE_KEYS.slice(1)) {
+      counts[key] = items.filter(i => i.type === key).length;
     }
     return counts;
   }, [items]);
 
   // Has active flash sales
   const hasFlashSales = useMemo(
-    () => items.some(i => i.type === 'FLASH_SALE' && getTimeLeft(i.endAt) !== '已结束'),
+    () => items.some(i => i.type === 'FLASH_SALE' && getTimeLeft(i.endAt, t) !== t('promotions.ended')),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [items, tick]
+    [items, tick, t]
   );
 
   // Filtered list
@@ -126,15 +135,15 @@ export default function PromotionsScreen() {
     const badgeColor = TYPE_BADGE_COLORS[item.type] ?? TYPE_BADGE_COLORS.DEFAULT;
     const remaining = item.totalQuota - item.usedQuota;
     const percentUsed = item.totalQuota > 0 ? item.usedQuota / item.totalQuota : 0;
-    const timeLeft = getTimeLeft(item.endAt);
-    const isEnded = timeLeft === '已结束';
+    const timeLeft = getTimeLeft(item.endAt, t);
+    const isEnded = timeLeft === t('promotions.ended');
 
     return (
       <View style={[s.card, isEnded && s.cardEnded]}>
         {/* Header */}
         <View style={s.cardHeader}>
           <View style={[s.typeBadge, { backgroundColor: badgeColor }]}>
-            <Text style={s.typeBadgeText}>{TYPE_LABELS[item.type] ?? item.type}</Text>
+            <Text style={s.typeBadgeText}>{t(TYPE_BADGE_KEYS[item.type] as any) ?? item.type}</Text>
           </View>
           <Text style={s.cardName}>{item.name}</Text>
         </View>
@@ -148,13 +157,13 @@ export default function PromotionsScreen() {
           <View style={s.discountBadge}>
             <Text style={s.discountText}>
               {item.discountType === 'PERCENTAGE'
-                ? `${Math.round((1 - item.discountValue) * 10)}折优惠`
-                : `立减 ¥${formatPrice(item.discountValue)}`
+                ? t('promotions.discountOff', { value: Math.round((1 - item.discountValue) * 10) })
+                : t('promotions.saveMoney', { amount: formatPrice(item.discountValue) })
               }
             </Text>
           </View>
           {item.minAmount != null && (
-            <Text style={s.minAmountText}>满¥{formatPrice(item.minAmount)}可用</Text>
+            <Text style={s.minAmountText}>{t('promotions.minAmount', { amount: formatPrice(item.minAmount) })}</Text>
           )}
         </View>
 
@@ -164,7 +173,7 @@ export default function PromotionsScreen() {
             <View style={s.quotaBar}>
               <View style={[s.quotaFill, { width: `${Math.min(percentUsed * 100, 100)}%` as `${number}%`, backgroundColor: badgeColor }]} />
             </View>
-            <Text style={s.quotaText}>剩余 {remaining} 份</Text>
+            <Text style={s.quotaText}>{t('promotions.remaining', { count: remaining })}</Text>
           </View>
         )}
 
@@ -172,7 +181,7 @@ export default function PromotionsScreen() {
         <View style={s.cardFooter}>
           <Ionicons name="time-outline" size={14} color={isFlashSale(item) && !isEnded ? '#EF4444' : '#9CA3AF'} />
           <Text style={[s.timeLeft, isFlashSale(item) && !isEnded && s.timeLeftFlash]}>
-            {isEnded ? '活动已结束' : `剩余时间: ${timeLeft}`}
+            {isEnded ? t('promotions.eventEnded') : `${t('promotions.timeRemaining')}: ${timeLeft}`}
           </Text>
         </View>
       </View>
@@ -185,7 +194,7 @@ export default function PromotionsScreen() {
       {hasFlashSales && (
         <View style={s.flashBanner}>
           <Ionicons name="flash" size={16} color="#FFFFFF" />
-          <Text style={s.flashBannerText}>限时闪购进行中！抢先享受超值折扣</Text>
+          <Text style={s.flashBannerText}>{t('promotions.flashBannerText')}</Text>
           <Ionicons name="chevron-forward" size={14} color="#FFFFFF" />
         </View>
       )}
@@ -197,19 +206,19 @@ export default function PromotionsScreen() {
         style={s.tabBarScroll}
         contentContainerStyle={s.tabBar}
       >
-        {PROMO_TYPES.map(t => (
+        {PROMO_TYPES.map(pt => (
           <Pressable
-            key={t.key}
-            style={[s.tabItem, activeType === t.key && s.tabItemActive]}
-            onPress={() => setActiveType(t.key)}
+            key={pt.key}
+            style={[s.tabItem, activeType === pt.key && s.tabItemActive]}
+            onPress={() => setActiveType(pt.key)}
           >
-            <Text style={[s.tabText, activeType === t.key && s.tabTextActive]}>
-              {t.label}
+            <Text style={[s.tabText, activeType === pt.key && s.tabTextActive]}>
+              {pt.label}
             </Text>
-            {tabCounts[t.key] > 0 && (
-              <View style={[s.tabBadge, activeType === t.key && s.tabBadgeActive]}>
-                <Text style={[s.tabBadgeText, activeType === t.key && s.tabBadgeTextActive]}>
-                  {tabCounts[t.key]}
+            {tabCounts[pt.key] > 0 && (
+              <View style={[s.tabBadge, activeType === pt.key && s.tabBadgeActive]}>
+                <Text style={[s.tabBadgeText, activeType === pt.key && s.tabBadgeTextActive]}>
+                  {tabCounts[pt.key]}
                 </Text>
               </View>
             )}
@@ -222,7 +231,7 @@ export default function PromotionsScreen() {
         <Ionicons name="search-outline" size={16} color="#9CA3AF" style={s.searchIcon} />
         <TextInput
           style={s.searchInput}
-          placeholder="搜索促销活动..."
+          placeholder={t('promotions.searchPlaceholder')}
           placeholderTextColor="#9CA3AF"
           value={search}
           onChangeText={setSearch}
@@ -235,17 +244,17 @@ export default function PromotionsScreen() {
         <View style={s.statsRow}>
           <View style={s.statItem}>
             <Text style={s.statNumber}>{stats.total}</Text>
-            <Text style={s.statLabel}>全部活动</Text>
+            <Text style={s.statLabel}>{t('promotions.statAll')}</Text>
           </View>
           <View style={s.statDivider} />
           <View style={s.statItem}>
             <Text style={[s.statNumber, { color: '#EF4444' }]}>{stats.flashCount}</Text>
-            <Text style={s.statLabel}>闪购进行</Text>
+            <Text style={s.statLabel}>{t('promotions.statFlash')}</Text>
           </View>
           <View style={s.statDivider} />
           <View style={s.statItem}>
             <Text style={[s.statNumber, { color: '#F59E0B' }]}>{stats.expiringCount}</Text>
-            <Text style={s.statLabel}>即将结束</Text>
+            <Text style={s.statLabel}>{t('promotions.statExpiring')}</Text>
           </View>
         </View>
       )}
@@ -259,13 +268,13 @@ export default function PromotionsScreen() {
           <Ionicons name="gift-outline" size={48} color="#D1D5DB" />
           {search.trim() ? (
             <>
-              <Text style={s.emptyText}>未找到"{search}"相关活动</Text>
-              <Text style={s.emptySubText}>换个关键词试试</Text>
+              <Text style={s.emptyText}>{t('promotions.searchNotFound', { keyword: search })}</Text>
+              <Text style={s.emptySubText}>{t('promotions.tryOtherKeyword')}</Text>
             </>
           ) : (
             <>
-              <Text style={s.emptyText}>暂无促销活动</Text>
-              <Text style={s.emptySubText}>请稍后再来查看</Text>
+              <Text style={s.emptyText}>{t('promotions.noPromotions')}</Text>
+              <Text style={s.emptySubText}>{t('promotions.checkBackLater')}</Text>
             </>
           )}
         </View>
@@ -279,16 +288,16 @@ export default function PromotionsScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           ListFooterComponent={
             <View style={s.bottomCTA}>
-              <Text style={s.ctaTitle}>更多优惠等你发现</Text>
-              <Text style={s.ctaSubtitle}>领券出行，省更多</Text>
+              <Text style={s.ctaTitle}>{t('promotions.discoverMore')}</Text>
+              <Text style={s.ctaSubtitle}>{t('promotions.discoverMoreSubtitle')}</Text>
               <View style={s.ctaButtons}>
                 <Pressable style={s.ctaBtn} onPress={() => router.push('/coupons' as any)}>
                   <Ionicons name="pricetag-outline" size={16} color="#FFFFFF" />
-                  <Text style={s.ctaBtnText}>查看优惠券</Text>
+                  <Text style={s.ctaBtnText}>{t('promotions.viewCoupons')}</Text>
                 </Pressable>
                 <Pressable style={[s.ctaBtn, s.ctaBtnOutline]} onPress={() => router.push('/routes')}>
                   <Ionicons name="map-outline" size={16} color="#D4A855" />
-                  <Text style={[s.ctaBtnText, { color: '#D4A855' }]}>浏览路线</Text>
+                  <Text style={[s.ctaBtnText, { color: '#D4A855' }]}>{t('promotions.browseRoutes')}</Text>
                 </Pressable>
               </View>
             </View>

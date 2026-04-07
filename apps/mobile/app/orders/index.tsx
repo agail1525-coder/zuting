@@ -3,13 +3,14 @@ import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native
 import { Ionicons } from '@expo/vector-icons';
 import { api, OrderDetail } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
+import { useTranslation } from '../../src/lib/i18n';
 
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: '待付款',
-  PAID: '已付款',
-  CANCELLED: '已取消',
-  REFUNDING: '退款中',
-  REFUNDED: '已退款',
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  PENDING: 'orders.status.pending',
+  PAID: 'orders.status.paid',
+  CANCELLED: 'orders.status.cancelled',
+  REFUNDING: 'orders.status.refunding',
+  REFUNDED: 'orders.status.refunded',
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -20,24 +21,18 @@ const STATUS_COLORS: Record<string, string> = {
   REFUNDED: '#6B7280',
 };
 
-const FILTERS = ['全部', 'PENDING', 'PAID', 'CANCELLED', 'REFUNDED'];
-const FILTER_LABELS: Record<string, string> = {
-  '全部': '全部',
-  PENDING: '待付款',
-  PAID: '已付款',
-  CANCELLED: '已取消',
-  REFUNDED: '已退款',
-};
+const FILTER_KEYS = ['all', 'PENDING', 'PAID', 'CANCELLED', 'REFUNDED'];
 
 export default function OrdersScreen() {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState<OrderDetail[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('全部');
+  const [filter, setFilter] = useState('all');
 
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const params = filter === '全部' ? {} : { status: filter };
+      const params = filter === 'all' ? {} : { status: filter };
       const res = await api.getOrders(params as Record<string, string>);
       setOrders(res.data);
     } catch (err) {
@@ -54,15 +49,15 @@ export default function OrdersScreen() {
     return (
       <View style={s.orderCard}>
         <View style={s.orderHeader}>
-          <Text style={s.orderNo}>订单号: {item.orderNo}</Text>
+          <Text style={s.orderNo}>{t('orders.orderNo')}: {item.orderNo}</Text>
           <Text style={[s.statusBadge, { color: statusColor, borderColor: statusColor }]}>
-            {STATUS_LABELS[item.status] ?? item.status}
+            {t(STATUS_LABEL_KEYS[item.status] ?? 'orders.status.pending')}
           </Text>
         </View>
         {item.trip && <Text style={s.tripTitle}>{item.trip.title}</Text>}
         <View style={s.orderMeta}>
-          <Text style={s.amount}>¥{(item.totalAmount / 100).toFixed(2)}</Text>
-          <Text style={s.date}>{item.createdAt.slice(0, 10)}</Text>
+          <Text style={s.amount}>¥{((item.totalAmount ?? 0) / 100).toFixed(2)}</Text>
+          <Text style={s.date}>{item.createdAt?.slice(0, 10) ?? ''}</Text>
         </View>
         {item.status === 'PENDING' && (
           <Pressable
@@ -71,10 +66,10 @@ export default function OrdersScreen() {
               try {
                 await api.cancelOrder(item.id);
                 loadOrders();
-              } catch { Alert.alert('提示', '取消订单失败，请重试'); }
+              } catch { Alert.alert(t('orders.notice'), t('orders.cancelFailed')); }
             }}
           >
-            <Text style={s.cancelBtnText}>取消订单</Text>
+            <Text style={s.cancelBtnText}>{t('orders.cancelOrder')}</Text>
           </Pressable>
         )}
       </View>
@@ -85,14 +80,14 @@ export default function OrdersScreen() {
     <View style={s.container}>
       {/* Filters */}
       <View style={s.filterRow}>
-        {FILTERS.map(f => (
+        {FILTER_KEYS.map(f => (
           <Pressable
             key={f}
             style={[s.filterChip, filter === f && s.filterChipActive]}
             onPress={() => setFilter(f)}
           >
             <Text style={[s.filterText, filter === f && s.filterTextActive]}>
-              {FILTER_LABELS[f]}
+              {f === 'all' ? t('orders.filter.all') : t(STATUS_LABEL_KEYS[f] ?? '')}
             </Text>
           </Pressable>
         ))}
@@ -103,7 +98,7 @@ export default function OrdersScreen() {
       ) : orders.length === 0 ? (
         <View style={s.empty}>
           <Ionicons name="receipt-outline" size={48} color="#D1D5DB" />
-          <Text style={s.emptyText}>暂无订单</Text>
+          <Text style={s.emptyText}>{t('orders.noOrders')}</Text>
         </View>
       ) : (
         <FlatList

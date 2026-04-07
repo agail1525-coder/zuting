@@ -8,11 +8,13 @@ import { LoadingView } from '../../src/components/LoadingView';
 import ReviewSection from '../../src/components/ReviewSection';
 import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
+import { useTranslation } from '../../src/lib/i18n';
 
 export default function TempleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [temple, setTemple] = useState<Temple | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export default function TempleDetailScreen() {
         api.recordView('TEMPLE', id);
       } catch (err) {
         console.error('Failed to fetch temple:', err);
-        setError('加载祖庭详情失败');
+        setError(t('templeDetail.loadError'));
       } finally {
         setLoading(false);
       }
@@ -41,16 +43,16 @@ export default function TempleDetailScreen() {
     return (
       <View style={s.errorContainer}>
         <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
-        <Text style={s.errorText}>{error ?? '祖庭不存在'}</Text>
+        <Text style={s.errorText}>{error ?? t('templeDetail.notFound')}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
   }
 
-  const name = temple.name ?? '';
-  const nameEn = temple.nameEn ?? '';
+  const name = locale === 'zh-CN' ? (temple.name ?? '') : (temple.nameEn || temple.name || '');
+  const nameEn = locale === 'zh-CN' ? (temple.nameEn ?? '') : (temple.name ?? '');
   const religion = temple.religion;
   const founded = temple.foundingDate ?? '';
   const hasImage = !!temple.imageUrl;
@@ -80,15 +82,15 @@ export default function TempleDetailScreen() {
 
       {/* Info Grid */}
       <View style={s.infoGrid}>
-        <InfoCell icon="globe-outline" label="国家" value={temple.country} />
-        {temple.city && <InfoCell icon="business-outline" label="城市" value={temple.city} />}
-        {founded && <InfoCell icon="calendar-outline" label="建立" value={founded} />}
-        <InfoCell icon="navigate-outline" label="坐标" value={`${temple.latitude?.toFixed(4) ?? '—'}, ${temple.longitude?.toFixed(4) ?? '—'}`} />
+        <InfoCell icon="globe-outline" label={t('templeDetail.country')} value={temple.country ?? '—'} />
+        {temple.city && <InfoCell icon="business-outline" label={t('templeDetail.city')} value={temple.city} />}
+        {founded && <InfoCell icon="calendar-outline" label={t('templeDetail.founded')} value={founded} />}
+        <InfoCell icon="navigate-outline" label={t('templeDetail.coordinates')} value={`${temple.latitude?.toFixed(4) ?? '—'}, ${temple.longitude?.toFixed(4) ?? '—'}`} />
       </View>
 
       {/* Description */}
       <View style={s.section}>
-        <Text style={s.sectionTitle}>介绍</Text>
+        <Text style={s.sectionTitle}>{t('templeDetail.description')}</Text>
         <View style={s.card}>
           <Text style={s.descText}>{temple.description}</Text>
         </View>
@@ -100,17 +102,17 @@ export default function TempleDetailScreen() {
       </View>
 
       {/* Related Entities */}
-      <RelatedEntities entityType="TEMPLE" entityId={id!} title="你可能也喜欢" />
+      <RelatedEntities entityType="TEMPLE" entityId={id!} title={t('templeDetail.youMayLike')} />
 
       {/* Bottom CTA */}
       <View style={s.ctaRow}>
         <Pressable style={s.ctaBtn} onPress={() => router.push('/trips/create' as never)}>
           <Ionicons name="add-circle" size={18} color="#FFFFFF" />
-          <Text style={s.ctaBtnText}>加入行程</Text>
+          <Text style={s.ctaBtnText}>{t('templeDetail.addToTrip')}</Text>
         </Pressable>
         <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
           <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
-          <Text style={s.ctaBtnOutlineText}>AI规划</Text>
+          <Text style={s.ctaBtnOutlineText}>{t('templeDetail.aiPlan')}</Text>
         </Pressable>
       </View>
     </ScrollView>

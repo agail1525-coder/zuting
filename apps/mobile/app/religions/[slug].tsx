@@ -26,11 +26,13 @@ import {
   religionEmojis,
   religionGradients,
 } from '../../src/lib/theme';
+import { useTranslation } from '../../src/lib/i18n';
 
 export default function ReligionDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const navigation = useNavigation();
   const router = useRouter();
+  const { t, locale } = useTranslation();
 
   const [religion, setReligion] = useState<Religion | null>(null);
   const [holySites, setHolySites] = useState<HolySite[]>([]);
@@ -64,7 +66,7 @@ export default function ReligionDetailScreen() {
         setTeachings(teachingsData);
       } catch (err: unknown) {
         console.error('Failed to fetch religion detail:', err);
-        setError('加载失败，请稍后重试');
+        setError(t('religionDetail.loadError'));
       } finally {
         setLoading(false);
       }
@@ -85,15 +87,15 @@ export default function ReligionDetailScreen() {
       {/* Hero */}
       <View style={[styles.hero, { backgroundColor: gradient[0] }]}>
         <Text style={styles.heroEmoji}>{emoji}</Text>
-        <Text style={styles.heroNameZh}>{religion.name}</Text>
-        <Text style={styles.heroNameEn}>{religion.nameEn}</Text>
+        <Text style={styles.heroNameZh}>{locale === 'zh-CN' ? religion.name : (religion.nameEn || religion.name)}</Text>
+        <Text style={styles.heroNameEn}>{locale === 'zh-CN' ? religion.nameEn : religion.name}</Text>
       </View>
 
       {/* Religion type has no description field */}
 
       {/* Holy Sites */}
       {holySites.length > 0 && (
-        <SectionBlock title="圣地" subtitle={`${holySites.length} 处`}>
+        <SectionBlock title={t('religionDetail.holySites')} subtitle={`${holySites.length} ${t('religionDetail.holySitesUnit')}`}>
           {holySites.map((site) => (
             <Pressable
               key={site.id}
@@ -120,7 +122,7 @@ export default function ReligionDetailScreen() {
 
       {/* Temples */}
       {temples.length > 0 && (
-        <SectionBlock title="祖庭" subtitle={`${temples.length} 座`}>
+        <SectionBlock title={t('religionDetail.temples')} subtitle={`${temples.length} ${t('religionDetail.templesUnit')}`}>
           {temples.map((temple) => (
             <Pressable
               key={temple.id}
@@ -147,7 +149,7 @@ export default function ReligionDetailScreen() {
 
       {/* Patriarchs */}
       {patriarchs.length > 0 && (
-        <SectionBlock title="祖师" subtitle={`${patriarchs.length} 位`}>
+        <SectionBlock title={t('religionDetail.patriarchs')} subtitle={`${patriarchs.length} ${t('religionDetail.patriarchsUnit')}`}>
           {patriarchs.map((patriarch) => (
             <Pressable
               key={patriarch.id}
@@ -175,7 +177,7 @@ export default function ReligionDetailScreen() {
 
       {/* Teachings */}
       {teachings.length > 0 && (
-        <SectionBlock title="祖训" subtitle={`${teachings.length} 条`}>
+        <SectionBlock title={t('religionDetail.teachings')} subtitle={`${teachings.length} ${t('religionDetail.teachingsUnit')}`}>
           {teachings.map((teaching) => (
             <View key={teaching.id} style={styles.teachingItem}>
               <Text style={styles.teachingText} numberOfLines={3}>

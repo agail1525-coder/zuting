@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   Pressable,
@@ -13,31 +13,87 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { api, Route, ItineraryDay } from '../../src/lib/api';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
+import { useTranslation } from '../../src/lib/i18n';
+import { useEffect } from 'react';
 
-const CATEGORY_LABELS: Record<string, string> = {
-  ZEN: '禅宗路线',
-  BUDDHIST: '佛教圣地',
-  TAOIST: '道教寻根',
-  CHRISTIAN: '基督文化',
-  ISLAMIC: '伊斯兰文化',
-  CROSS_CULTURAL: '跨文化融合',
-  HINDU: '印度教',
-  JEWISH: '犹太教',
-  CULTURAL_HERITAGE: '文化遗产',
+// ---------------------------------------------------------------------------
+// Category / Difficulty i18n key maps
+// ---------------------------------------------------------------------------
+
+const CATEGORY_KEYS: Record<string, string> = {
+  ZEN: 'route.category.zen',
+  BUDDHIST: 'route.category.buddhist',
+  TAOIST: 'route.category.taoist',
+  CHRISTIAN: 'route.category.christian',
+  ISLAMIC: 'route.category.islamic',
+  CROSS_CULTURAL: 'route.category.crossCultural',
+  HINDU: 'route.category.hindu',
+  JEWISH: 'route.category.jewish',
+  CULTURAL_HERITAGE: 'route.category.culturalHeritage',
 };
 
-const DIFFICULTY_LABELS: Record<string, string> = {
-  EASY: '轻松',
-  MODERATE: '适中',
-  CHALLENGING: '挑战',
+const DIFFICULTY_KEYS: Record<string, string> = {
+  EASY: 'route.difficulty.easy',
+  MODERATE: 'route.difficulty.moderate',
+  CHALLENGING: 'route.difficulty.challenging',
 };
+
+// ---------------------------------------------------------------------------
+// Cancellation policy color config
+// ---------------------------------------------------------------------------
+
+const CANCELLATION_ITEMS = [
+  { key: 'route.cancellationFullRefund14', color: '#16A34A', bg: '#F0FDF4' },
+  { key: 'route.cancellationRefund80', color: '#D97706', bg: '#FFFBEB' },
+  { key: 'route.cancellationRefund50', color: '#D97706', bg: '#FFFBEB' },
+  { key: 'route.cancellationNoRefund3', color: '#DC2626', bg: '#FEF2F2' },
+];
+
+// ---------------------------------------------------------------------------
+// "Know Before You Go" helpers
+// ---------------------------------------------------------------------------
+
+function getEtiquetteKey(category: string): string {
+  const map: Record<string, string> = {
+    ZEN: 'route.kbygEtiquetteZen',
+    BUDDHIST: 'route.kbygEtiquetteBuddhist',
+    TAOIST: 'route.kbygEtiquetteTaoist',
+    CHRISTIAN: 'route.kbygEtiquetteChristian',
+    ISLAMIC: 'route.kbygEtiquetteIslamic',
+  };
+  return map[category] ?? 'route.kbygEtiquetteDefault';
+}
+
+function getFitnessKey(difficulty: string): string {
+  const map: Record<string, string> = {
+    EASY: 'route.kbygFitnessEasy',
+    MODERATE: 'route.kbygFitnessModerate',
+    CHALLENGING: 'route.kbygFitnessChallenging',
+  };
+  return map[difficulty] ?? 'route.kbygFitnessEasy';
+}
+
+// ---------------------------------------------------------------------------
+// "Who Is This Route For" config
+// ---------------------------------------------------------------------------
+
+const WHO_FOR_ITEMS = [
+  { icon: '🙏', key: 'route.forBeginners', descKey: 'route.forBeginnersDesc' },
+  { icon: '🕯️', key: 'route.forDevotees', descKey: 'route.forDevoteesDesc' },
+  { icon: '🏛️', key: 'route.forCulture', descKey: 'route.forCultureDesc' },
+  { icon: '📸', key: 'route.forPhotography', descKey: 'route.forPhotographyDesc' },
+  { icon: '👨‍👩‍👧', key: 'route.forFamily', descKey: 'route.forFamilyDesc' },
+  { icon: '🧘', key: 'route.forSolo', descKey: 'route.forSoloDesc' },
+];
 
 export default function RouteDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [route, setRoute] = useState<Route | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [expandedDays, setExpandedDays] = useState<Set<number>>(new Set([1]));
 
   useEffect(() => {
     if (!slug) return;
@@ -47,20 +103,29 @@ export default function RouteDetailScreen() {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  const toggleDay = (day: number) => {
+    setExpandedDays((prev) => {
+      const next = new Set(prev);
+      if (next.has(day)) next.delete(day);
+      else next.add(day);
+      return next;
+    });
+  };
+
   if (loading) return <LoadingView />;
   if (error || !route) {
     return (
       <View style={styles.errorContainer}>
-        <Stack.Screen options={{ title: '路线详情' }} />
-        <Text style={styles.errorText}>路线不存在或加载失败</Text>
+        <Stack.Screen options={{ title: t('route.detail') }} />
+        <Text style={styles.errorText}>{t('route.loadError')}</Text>
         <Pressable style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>返回</Text>
+          <Text style={styles.backButtonText}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
   }
 
-  const price = (route.priceFrom / 100).toLocaleString();
+  const price = ((route.priceFrom ?? 0) / 100).toLocaleString(locale);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -76,10 +141,10 @@ export default function RouteDetailScreen() {
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={styles.heroOverlay}>
           <View style={styles.badges}>
             <Text style={styles.categoryBadge}>
-              {CATEGORY_LABELS[route.category] ?? route.category}
+              {t(CATEGORY_KEYS[route.category] ?? 'route.category.default')}
             </Text>
             <Text style={styles.difficultyBadge}>
-              {DIFFICULTY_LABELS[route.difficulty] ?? route.difficulty}
+              {t(DIFFICULTY_KEYS[route.difficulty] ?? 'route.difficulty.default')}
             </Text>
           </View>
           <Text style={styles.title}>{route.title}</Text>
@@ -87,11 +152,11 @@ export default function RouteDetailScreen() {
           <Text style={styles.titleEn}>{route.titleEn}</Text>
 
           <View style={styles.metaRow}>
-            <Text style={styles.metaItem}>📅 {route.duration}天{route.nights}晚</Text>
+            <Text style={styles.metaItem}>📅 {route.duration}{t('route.days')}{route.nights}{t('route.nights')}</Text>
             <Text style={styles.metaItem}>🌤 {route.season}</Text>
             <Text style={styles.metaItem}>👥 {route.groupSize}</Text>
-            {route.rating && (
-              <Text style={styles.metaItem}>★ {route.rating.toFixed(1)} ({route.reviewCount}评)</Text>
+            {(route.rating ?? 0) > 0 && (
+              <Text style={styles.metaItem}>★ {(route.rating ?? 0).toFixed(1)} ({route.reviewCount ?? 0}{t('route.reviews')})</Text>
             )}
           </View>
         </LinearGradient>
@@ -99,21 +164,21 @@ export default function RouteDetailScreen() {
 
       {/* Price Card */}
       <View style={styles.priceCard}>
-        <Text style={styles.priceLabel}>起价</Text>
-        <Text style={styles.priceValue}>¥{price}<Text style={styles.priceUnit}>/人</Text></Text>
+        <Text style={styles.priceLabel}>{t('route.startingPrice')}</Text>
+        <Text style={styles.priceValue}>¥{price}<Text style={styles.priceUnit}>{t('route.perPerson')}</Text></Text>
         <Pressable
           style={({ pressed }) => [styles.consultButton, pressed && { opacity: 0.8 }]}
           onPress={() => router.push('/(tabs)/chat')}
         >
           <Ionicons name="chatbubble-ellipses" size={18} color={colors.backgroundDark} />
-          <Text style={styles.consultButtonText}>AI规划师咨询</Text>
+          <Text style={styles.consultButtonText}>{t('route.aiPlannerConsult')}</Text>
         </Pressable>
-        <Text style={styles.bookCount}>已有 {route.bookCount} 人预订</Text>
+        <Text style={styles.bookCount}>{t('route.bookedCount').replace('{{count}}', String(route.bookCount ?? 0))}</Text>
       </View>
 
       {/* Highlights */}
       <View style={styles.highlightsRow}>
-        {route.highlights.map((h) => (
+        {(Array.isArray(route.highlights) ? route.highlights : []).map((h) => (
           <View key={h} style={styles.highlightChip}>
             <Text style={styles.highlightText}>{h}</Text>
           </View>
@@ -122,58 +187,127 @@ export default function RouteDetailScreen() {
 
       {/* Description */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>路线介绍</Text>
+        <Text style={styles.sectionTitle}>{t('route.description')}</Text>
         <Text style={styles.descriptionText}>{route.description}</Text>
       </View>
 
-      {/* Itinerary */}
+      {/* Who Is This Route For */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>逐日行程</Text>
-        {(route.itinerary as ItineraryDay[]).map((day) => (
-          <View key={day.day} style={styles.dayCard}>
-            <View style={styles.dayHeader}>
-              <View style={styles.dayCircle}>
-                <Text style={styles.dayNumber}>{day.day}</Text>
-              </View>
-              <Text style={styles.dayTitle}>Day {day.day}: {day.title}</Text>
+        <Text style={styles.sectionTitle}>{t('route.whoIsThisFor')}</Text>
+        <View style={styles.whoForGrid}>
+          {WHO_FOR_ITEMS.map((item) => (
+            <View key={item.key} style={styles.whoForCard}>
+              <Text style={styles.whoForIcon}>{item.icon}</Text>
+              <Text style={styles.whoForLabel}>{t(item.key)}</Text>
+              <Text style={styles.whoForDesc}>{t(item.descKey)}</Text>
             </View>
-            {day.activities && day.activities.length > 0 && (
-              <View style={styles.activitiesRow}>
-                {day.activities.map((act, i) => (
-                  <Text key={i} style={styles.activityTag}>{act}</Text>
-                ))}
+          ))}
+        </View>
+      </View>
+
+      {/* Know Before You Go */}
+      <View style={styles.kbygSection}>
+        <Text style={styles.sectionTitle}>{t('route.knowBeforeYouGo')}</Text>
+
+        {/* Etiquette */}
+        <View style={styles.kbygCard}>
+          <Text style={styles.kbygCardTitle}>🙏 {t('route.kbygEtiquette')}</Text>
+          <Text style={styles.kbygCardText}>{t(getEtiquetteKey(route.category))}</Text>
+        </View>
+
+        {/* Fitness */}
+        <View style={styles.kbygCard}>
+          <Text style={styles.kbygCardTitle}>🏃 {t('route.kbygFitness')}</Text>
+          <Text style={styles.kbygCardText}>{t(getFitnessKey(route.difficulty))}</Text>
+        </View>
+
+        {/* Packing */}
+        <View style={styles.kbygCard}>
+          <Text style={styles.kbygCardTitle}>🎒 {t('route.kbygPacking')}</Text>
+          <Text style={styles.kbygCardText}>{t('route.kbygPackingItems')}</Text>
+        </View>
+
+        {/* Temple stay */}
+        <View style={styles.kbygCard}>
+          <Text style={styles.kbygCardTitle}>🏯 {t('route.kbygTemple')}</Text>
+          <Text style={styles.kbygCardText}>{t('route.kbygTempleDesc')}</Text>
+        </View>
+      </View>
+
+      {/* Itinerary (collapsible) */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('route.dailyItinerary')}</Text>
+        {(Array.isArray(route.itinerary) ? (route.itinerary as ItineraryDay[]) : []).map((day) => {
+          const isOpen = expandedDays.has(day.day);
+          return (
+            <Pressable key={day.day} onPress={() => toggleDay(day.day)}>
+              <View style={styles.dayCard}>
+                <View style={styles.dayHeader}>
+                  <View style={styles.dayCircle}>
+                    <Text style={styles.dayNumber}>{day.day}</Text>
+                  </View>
+                  <Text style={styles.dayTitle}>Day {day.day}: {day.title}</Text>
+                  <Ionicons
+                    name={isOpen ? 'chevron-up' : 'chevron-down'}
+                    size={18}
+                    color={colors.textMuted}
+                  />
+                </View>
+                {isOpen && (
+                  <View style={styles.dayContent}>
+                    {Array.isArray(day.activities) && day.activities.length > 0 && (
+                      <View style={styles.activitiesRow}>
+                        {day.activities.map((act, i) => (
+                          <Text key={i} style={styles.activityTag}>{act}</Text>
+                        ))}
+                      </View>
+                    )}
+                    {Array.isArray(day.meals) && day.meals.length > 0 && (
+                      <Text style={styles.dayMeta}>🍽 {day.meals.join(' | ')}</Text>
+                    )}
+                    {day.accommodation && (
+                      <Text style={styles.dayMeta}>🏨 {day.accommodation}</Text>
+                    )}
+                  </View>
+                )}
               </View>
-            )}
-            {day.meals && day.meals.length > 0 && (
-              <Text style={styles.dayMeta}>🍽 {day.meals.join(' | ')}</Text>
-            )}
-            {day.accommodation && (
-              <Text style={styles.dayMeta}>🏨 {day.accommodation}</Text>
-            )}
-          </View>
-        ))}
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Included / Excluded */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>费用包含</Text>
-        {route.included.map((item, i) => (
+        <Text style={styles.sectionTitle}>{t('route.included')}</Text>
+        {(Array.isArray(route.included) ? route.included : []).map((item, i) => (
           <Text key={i} style={styles.listItem}>✓ {item}</Text>
         ))}
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>费用不含</Text>
-        {route.excluded.map((item, i) => (
+        <Text style={styles.sectionTitle}>{t('route.excluded')}</Text>
+        {(Array.isArray(route.excluded) ? route.excluded : []).map((item, i) => (
           <Text key={i} style={styles.listItemExcluded}>✗ {item}</Text>
         ))}
       </View>
 
+      {/* Cancellation Policy */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('route.cancellationPolicy')}</Text>
+        {CANCELLATION_ITEMS.map((ci) => (
+          <View key={ci.key} style={[styles.cancellationRow, { backgroundColor: ci.bg }]}>
+            <View style={[styles.cancellationDot, { backgroundColor: ci.color }]} />
+            <Text style={[styles.cancellationText, { color: ci.color }]}>{t(ci.key)}</Text>
+          </View>
+        ))}
+        <Text style={styles.cancellationNote}>{t('route.cancellationForceNote')}</Text>
+      </View>
+
       {/* Tips */}
-      {route.tips.length > 0 && (
+      {(Array.isArray(route.tips) ? route.tips : []).length > 0 && (
         <View style={styles.tipsSection}>
-          <Text style={styles.sectionTitle}>出行贴士</Text>
-          {route.tips.map((tip, i) => (
+          <Text style={styles.sectionTitle}>{t('route.travelTips')}</Text>
+          {(route.tips ?? []).map((tip, i) => (
             <Text key={i} style={styles.tipItem}>💡 {tip}</Text>
           ))}
         </View>
@@ -186,14 +320,14 @@ export default function RouteDetailScreen() {
           onPress={() => router.push('/trips/create' as never)}
         >
           <Ionicons name="calendar" size={18} color="#FFFFFF" />
-          <Text style={styles.ctaBtnText}>立即预订</Text>
+          <Text style={styles.ctaBtnText}>{t('route.bookNow')}</Text>
         </Pressable>
         <Pressable
           style={({ pressed }) => [styles.ctaBtnOutline, pressed && { opacity: 0.8 }]}
           onPress={() => router.push('/(tabs)/chat')}
         >
           <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
-          <Text style={styles.ctaBtnOutlineText}>AI规划</Text>
+          <Text style={styles.ctaBtnOutlineText}>{t('route.aiPlanner')}</Text>
         </Pressable>
       </View>
 
@@ -371,6 +505,60 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 22,
   },
+  // --- Who Is This Route For ---
+  whoForGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  whoForCard: {
+    width: '48%' as unknown as number,
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+  },
+  whoForIcon: {
+    fontSize: 22,
+    marginBottom: spacing.xs,
+  },
+  whoForLabel: {
+    fontSize: fontSize.sm,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: 2,
+  },
+  whoForDesc: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    lineHeight: 16,
+  },
+  // --- Know Before You Go ---
+  kbygSection: {
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.lg,
+  },
+  kbygCard: {
+    backgroundColor: colors.backgroundCardSolid,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  kbygCardTitle: {
+    fontSize: fontSize.md,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  kbygCardText: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  // --- Collapsible itinerary ---
   dayCard: {
     backgroundColor: colors.backgroundCardSolid,
     borderRadius: borderRadius.md,
@@ -403,11 +591,14 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     flex: 1,
   },
+  dayContent: {
+    marginTop: spacing.sm,
+    paddingLeft: 36,
+  },
   activitiesRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.xs,
-    marginTop: spacing.sm,
   },
   activityTag: {
     fontSize: fontSize.xs,
@@ -432,6 +623,32 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     color: '#F87171',
     marginBottom: spacing.xs,
+  },
+  // --- Cancellation Policy ---
+  cancellationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: borderRadius.sm,
+    marginBottom: spacing.xs,
+    gap: spacing.sm,
+  },
+  cancellationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  cancellationText: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+    flex: 1,
+  },
+  cancellationNote: {
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    marginTop: spacing.sm,
+    lineHeight: 18,
   },
   tipsSection: {
     paddingHorizontal: spacing.md,

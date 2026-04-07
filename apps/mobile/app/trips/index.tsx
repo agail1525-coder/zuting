@@ -15,36 +15,46 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api, type Trip, type TripStatus } from '../../src/lib/api';
 import { useAuth } from '../../src/lib/auth-context';
+import { useTranslation } from '../../src/lib/i18n';
 
-const STATUS_CONFIG: Record<TripStatus, { label: string; color: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  DRAFT: { label: '草稿', color: '#6B7280', icon: 'document-text' },
-  PLANNING: { label: '计划中', color: '#6366F1', icon: 'create' },
-  SUBMITTED: { label: '已提交', color: '#8B5CF6', icon: 'send' },
-  CONFIRMED: { label: '已确认', color: '#22C55E', icon: 'checkmark-circle' },
-  PAID: { label: '已付款', color: '#10B981', icon: 'card' },
-  PREPARING: { label: '准备中', color: '#F97316', icon: 'construct' },
-  IN_PROGRESS: { label: '进行中', color: '#F59E0B', icon: 'walk' },
-  COMPLETED: { label: '已完成', color: '#0066FF', icon: 'trophy' },
-  REVIEWING: { label: '评价中', color: '#EC4899', icon: 'star' },
-  CANCELLED: { label: '已取消', color: '#9CA3AF', icon: 'close-circle' },
-  REFUNDING: { label: '退款中', color: '#EF4444', icon: 'time' },
-  REFUNDED: { label: '已退款', color: '#9CA3AF', icon: 'return-down-back' },
+const STATUS_ICON_COLOR: Record<TripStatus, { color: string; icon: keyof typeof Ionicons.glyphMap }> = {
+  DRAFT: { color: '#6B7280', icon: 'document-text' },
+  PLANNING: { color: '#6366F1', icon: 'create' },
+  SUBMITTED: { color: '#8B5CF6', icon: 'send' },
+  CONFIRMED: { color: '#22C55E', icon: 'checkmark-circle' },
+  PAID: { color: '#10B981', icon: 'card' },
+  PREPARING: { color: '#F97316', icon: 'construct' },
+  IN_PROGRESS: { color: '#F59E0B', icon: 'walk' },
+  COMPLETED: { color: '#0066FF', icon: 'trophy' },
+  REVIEWING: { color: '#EC4899', icon: 'star' },
+  CANCELLED: { color: '#9CA3AF', icon: 'close-circle' },
+  REFUNDING: { color: '#EF4444', icon: 'time' },
+  REFUNDED: { color: '#9CA3AF', icon: 'return-down-back' },
 };
 
-const FILTER_OPTIONS: { key: TripStatus | 'all'; label: string }[] = [
-  { key: 'all', label: '全部' },
-  { key: 'DRAFT', label: '草稿' },
-  { key: 'PLANNING', label: '计划中' },
-  { key: 'CONFIRMED', label: '已确认' },
-  { key: 'IN_PROGRESS', label: '进行中' },
-  { key: 'COMPLETED', label: '已完成' },
-];
+const STATUS_LABEL_KEYS: Record<TripStatus, string> = {
+  DRAFT: 'trips.status.draft',
+  PLANNING: 'trips.status.planning',
+  SUBMITTED: 'trips.status.submitted',
+  CONFIRMED: 'trips.status.confirmed',
+  PAID: 'trips.status.paid',
+  PREPARING: 'trips.status.preparing',
+  IN_PROGRESS: 'trips.status.inProgress',
+  COMPLETED: 'trips.status.completed',
+  REVIEWING: 'trips.status.reviewing',
+  CANCELLED: 'trips.status.cancelled',
+  REFUNDING: 'trips.status.refunding',
+  REFUNDED: 'trips.status.refunded',
+};
+
+const FILTER_KEYS: (TripStatus | 'all')[] = ['all', 'DRAFT', 'PLANNING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED'];
 
 const ACTIVE_STATUSES: TripStatus[] = ['PLANNING', 'SUBMITTED', 'CONFIRMED', 'PAID', 'PREPARING', 'IN_PROGRESS'];
 
 export default function TripsScreen() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const { t, locale } = useTranslation();
   const [filter, setFilter] = useState<TripStatus | 'all'>('all');
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +76,7 @@ export default function TripsScreen() {
       const result = await api.getTrips(params);
       setTrips(result.data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '加载行程失败');
+      setError(err instanceof Error ? err.message : t('trips.loadError'));
     } finally {
       setLoading(false);
     }
@@ -126,8 +136,8 @@ export default function TripsScreen() {
     return (
       <View style={styles.centerContainer}>
         <Ionicons name="lock-closed-outline" size={48} color={colors.textMuted} />
-        <Text style={styles.emptyText}>请先登录</Text>
-        <Text style={styles.emptySubtext}>登录后即可查看和管理您的朝圣行程</Text>
+        <Text style={styles.emptyText}>{t('trips.loginRequired')}</Text>
+        <Text style={styles.emptySubtext}>{t('trips.loginHint')}</Text>
       </View>
     );
   }
@@ -139,7 +149,7 @@ export default function TripsScreen() {
         <Ionicons name="search" size={18} color={colors.textMuted} />
         <TextInput
           style={styles.searchInput}
-          placeholder="搜索行程名称、备注..."
+          placeholder={t('trips.searchPlaceholder')}
           placeholderTextColor={colors.textMuted}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -157,25 +167,25 @@ export default function TripsScreen() {
         <View style={styles.statItem}>
           <Ionicons name="compass" size={16} color={colors.gold} />
           <Text style={styles.statValue}>{stats.total}</Text>
-          <Text style={styles.statLabel}>总行程</Text>
+          <Text style={styles.statLabel}>{t('trips.stat.total')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Ionicons name="walk" size={16} color="#F59E0B" />
           <Text style={styles.statValue}>{stats.active}</Text>
-          <Text style={styles.statLabel}>进行中</Text>
+          <Text style={styles.statLabel}>{t('trips.stat.active')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Ionicons name="trophy" size={16} color="#22C55E" />
           <Text style={styles.statValue}>{stats.completed}</Text>
-          <Text style={styles.statLabel}>已完成</Text>
+          <Text style={styles.statLabel}>{t('trips.stat.completed')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Ionicons name="location" size={16} color="#6366F1" />
           <Text style={styles.statValue}>{stats.totalSites}</Text>
-          <Text style={styles.statLabel}>圣地</Text>
+          <Text style={styles.statLabel}>{t('trips.stat.sites')}</Text>
         </View>
       </View>
 
@@ -186,23 +196,23 @@ export default function TripsScreen() {
         style={styles.filterBar}
         contentContainerStyle={styles.filterContent}
       >
-        {FILTER_OPTIONS.map((option) => (
+        {FILTER_KEYS.map((key) => (
           <Pressable
-            key={option.key}
+            key={key}
             style={[
               styles.filterChip,
-              filter === option.key && styles.filterChipActive,
+              filter === key && styles.filterChipActive,
             ]}
-            onPress={() => setFilter(option.key)}
+            onPress={() => setFilter(key)}
           >
             <Text
               style={[
                 styles.filterText,
-                filter === option.key && styles.filterTextActive,
+                filter === key && styles.filterTextActive,
               ]}
             >
-              {option.label}
-              {tabCounts[option.key] !== undefined ? ` (${tabCounts[option.key]})` : ' (0)'}
+              {key === 'all' ? t('trips.filter.all') : t(STATUS_LABEL_KEYS[key])}
+              {tabCounts[key] !== undefined ? ` (${tabCounts[key]})` : ' (0)'}
             </Text>
           </Pressable>
         ))}
@@ -212,17 +222,17 @@ export default function TripsScreen() {
       {loading ? (
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={colors.gold} />
-          <Text style={[styles.emptySubtext, { marginTop: spacing.md }]}>加载行程中...</Text>
+          <Text style={[styles.emptySubtext, { marginTop: spacing.md }]}>{t('trips.loading')}</Text>
         </View>
       ) : error ? (
         /* Error state */
         <View style={styles.centerContainer}>
           <Ionicons name="cloud-offline-outline" size={48} color={colors.textMuted} />
-          <Text style={styles.emptyText}>加载失败</Text>
+          <Text style={styles.emptyText}>{t('trips.loadFailed')}</Text>
           <Text style={styles.emptySubtext}>{error}</Text>
           <Pressable style={styles.retryButton} onPress={fetchTrips}>
             <Ionicons name="refresh" size={16} color={colors.gold} />
-            <Text style={styles.retryText}>重试</Text>
+            <Text style={styles.retryText}>{t('common.retry')}</Text>
           </Pressable>
         </View>
       ) : (
@@ -232,7 +242,7 @@ export default function TripsScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item, index }) => {
-            const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG.DRAFT;
+            const statusCfg = STATUS_ICON_COLOR[item.status] ?? STATUS_ICON_COLOR.DRAFT;
             const sitesCount = item.sites?.length ?? 0;
             return (
               <Animated.View entering={FadeInDown.duration(300).delay(index * 100)}>
@@ -249,7 +259,7 @@ export default function TripsScreen() {
                       <View style={[styles.statusBadge, { backgroundColor: `${statusCfg.color}15` }]}>
                         <Ionicons name={statusCfg.icon} size={12} color={statusCfg.color} />
                         <Text style={[styles.statusText, { color: statusCfg.color }]}>
-                          {statusCfg.label}
+                          {t(STATUS_LABEL_KEYS[item.status] ?? 'trips.status.draft')}
                         </Text>
                       </View>
                     </View>
@@ -273,11 +283,11 @@ export default function TripsScreen() {
                     ) : null}
                     <View style={styles.tripMeta}>
                       <Ionicons name="location-outline" size={14} color={colors.textMuted} />
-                      <Text style={styles.tripMetaText}>{sitesCount} 个圣地</Text>
+                      <Text style={styles.tripMetaText}>{sitesCount} {t('trips.sites')}</Text>
                     </View>
                     <View style={styles.tripMeta}>
                       <Ionicons name="people-outline" size={14} color={colors.textMuted} />
-                      <Text style={styles.tripMetaText}>{item.persons} 人</Text>
+                      <Text style={styles.tripMetaText}>{item.persons ?? 0} {t('trips.persons')}</Text>
                     </View>
                   </View>
                 </Pressable>
@@ -288,26 +298,26 @@ export default function TripsScreen() {
             isSearchEmpty ? (
               <View style={styles.centerContainer}>
                 <Ionicons name="search-outline" size={48} color={colors.textMuted} />
-                <Text style={styles.emptyText}>未找到相关行程</Text>
+                <Text style={styles.emptyText}>{t('trips.searchEmpty')}</Text>
                 <Text style={styles.emptySubtext}>
-                  没有匹配"{searchQuery}"的行程，请尝试其他关键词
+                  {t('trips.searchEmptyHint')}
                 </Text>
                 <Pressable style={styles.retryButton} onPress={() => setSearchQuery('')}>
                   <Ionicons name="close-circle-outline" size={16} color={colors.gold} />
-                  <Text style={styles.retryText}>清除搜索</Text>
+                  <Text style={styles.retryText}>{t('trips.clearSearch')}</Text>
                 </Pressable>
               </View>
             ) : (
               <View style={styles.centerContainer}>
                 <Text style={styles.emptyEmoji}>🗺️</Text>
-                <Text style={styles.emptyText}>还没有行程</Text>
-                <Text style={styles.emptySubtext}>开始规划你的朝圣之旅</Text>
+                <Text style={styles.emptyText}>{t('trips.noTrips')}</Text>
+                <Text style={styles.emptySubtext}>{t('trips.noTripsHint')}</Text>
                 <Pressable
                   style={styles.inlineCreateBtn}
                   onPress={() => router.push('/trips/create' as any)}
                 >
                   <Ionicons name="add-circle" size={20} color="#FFFFFF" />
-                  <Text style={styles.inlineCreateBtnText}>创建行程</Text>
+                  <Text style={styles.inlineCreateBtnText}>{t('trips.createTrip')}</Text>
                 </Pressable>
               </View>
             )
@@ -317,14 +327,14 @@ export default function TripsScreen() {
               <View style={styles.bottomCta}>
                 <Ionicons name="compass" size={20} color={colors.gold} />
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.bottomCtaTitle}>发现更多路线</Text>
-                  <Text style={styles.bottomCtaSubtext}>浏览精选朝圣路线，规划下一段旅程</Text>
+                  <Text style={styles.bottomCtaTitle}>{t('trips.discoverRoutes')}</Text>
+                  <Text style={styles.bottomCtaSubtext}>{t('trips.discoverRoutesHint')}</Text>
                 </View>
                 <Pressable
                   style={styles.bottomCtaBtn}
                   onPress={() => router.push('/routes' as any)}
                 >
-                  <Text style={styles.bottomCtaBtnText}>浏览路线</Text>
+                  <Text style={styles.bottomCtaBtnText}>{t('trips.browseRoutes')}</Text>
                 </Pressable>
               </View>
             ) : null

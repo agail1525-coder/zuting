@@ -5,6 +5,7 @@ import { HolySiteCard } from '../../src/components/HolySiteCard';
 import { FilterChips } from '../../src/components/FilterChips';
 import { LoadingView } from '../../src/components/LoadingView';
 import { colors, fontSize, spacing } from '../../src/lib/theme';
+import { useTranslation } from '../../src/lib/i18n';
 
 export default function HolySitesScreen() {
   const [sites, setSites] = useState<HolySite[]>([]);
@@ -13,6 +14,7 @@ export default function HolySitesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const fetchData = useCallback(async () => {
     try {
@@ -24,7 +26,7 @@ export default function HolySitesScreen() {
       setSites(sitesData);
       setReligions(religionsData);
     } catch (err) {
-      const message = err instanceof Error ? err.message : '加载失败';
+      const message = err instanceof Error ? err.message : t('holySites.loadError');
       setError(message);
       console.error('Failed to fetch holy sites:', err);
     } finally {
@@ -52,7 +54,7 @@ export default function HolySitesScreen() {
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{error}</Text>
         <Pressable style={styles.retryButton} onPress={fetchData}>
-          <Text style={styles.retryButtonText}>重试</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </Pressable>
       </View>
     );
@@ -81,11 +83,11 @@ export default function HolySitesScreen() {
         contentContainerStyle={styles.list}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>暂无圣地数据</Text>
+            <Text style={styles.emptyText}>{t('holySites.empty')}</Text>
           </View>
         }
         ListHeaderComponent={
-          <Text style={styles.count}>{sites.length} 个圣地</Text>
+          <Text style={styles.count}>{sites.length} {t('holySites.countUnit')}</Text>
         }
       />
     </View>

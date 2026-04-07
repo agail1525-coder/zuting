@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
+import { useTranslation } from '../src/lib/i18n';
 import {
   fetchMyMembership,
   fetchPointsHistory,
@@ -43,17 +44,18 @@ function levelIcon(level: string): keyof typeof Ionicons.glyphMap {
   }
 }
 
-function levelLabel(level: string): string {
+function levelLabelKey(level: string): string {
   switch (level) {
-    case 'PLATINUM': return '铂金会员';
-    case 'GOLD': return '黄金会员';
-    case 'SILVER': return '白银会员';
-    default: return '青铜会员';
+    case 'PLATINUM': return 'membership.level.platinum';
+    case 'GOLD': return 'membership.level.gold';
+    case 'SILVER': return 'membership.level.silver';
+    default: return 'membership.level.bronze';
   }
 }
 
 export default function MembershipScreen() {
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [membership, setMembership] = useState<MembershipData | null>(null);
   const [points, setPoints] = useState<PointsTransactionItem[]>([]);
   const [checkedDates, setCheckedDates] = useState<string[]>([]);
@@ -97,11 +99,11 @@ export default function MembershipScreen() {
     setCheckingIn(true);
     try {
       const res = await checkin();
-      Alert.alert('签到成功', `获得 ${res.points} 积分，连续签到 ${res.streak} 天！`);
+      Alert.alert(t('membership.checkinSuccess'), t('membership.checkinSuccessMsg', { points: res.points, streak: res.streak }));
       void load();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : '签到失败，请稍后重试';
-      Alert.alert('签到失败', msg);
+      const msg = e instanceof Error ? e.message : t('membership.checkinFailMsg');
+      Alert.alert(t('membership.checkinFail'), msg);
     } finally {
       setCheckingIn(false);
     }
@@ -119,7 +121,7 @@ export default function MembershipScreen() {
 
   // Stats computed from membership data
   const statsData = useMemo(() => ({
-    level: mem?.levelName ?? '普通会员',
+    level: mem?.levelName ?? t('membership.level.default'),
     points: mem?.points ?? 0,
     streak: mem?.checkinStreak ?? 0,
     totalCheckins: mem?.totalCheckins ?? 0,
@@ -168,12 +170,12 @@ export default function MembershipScreen() {
         <View style={styles.heroRow}>
           <Ionicons name={mem ? levelIcon(mem.level) : 'ribbon'} size={40} color="#FFFFFF" />
           <View style={styles.heroInfo}>
-            <Text style={styles.heroLevel}>{mem?.levelName ?? '普通会员'}</Text>
-            <Text style={styles.heroPoints}>{(mem?.points ?? 0).toLocaleString()} 积分</Text>
+            <Text style={styles.heroLevel}>{mem?.levelName ?? t('membership.level.default')}</Text>
+            <Text style={styles.heroPoints}>{(mem?.points ?? 0).toLocaleString()} {t('membership.points')}</Text>
           </View>
           <View style={styles.heroStreakBadge}>
             <Text style={styles.heroStreakNum}>{mem?.checkinStreak ?? 0}</Text>
-            <Text style={styles.heroStreakLabel}>连签</Text>
+            <Text style={styles.heroStreakLabel}>{t('membership.streak')}</Text>
           </View>
         </View>
 
@@ -181,7 +183,7 @@ export default function MembershipScreen() {
         {mem?.nextLevel && (
           <View style={styles.progressSection}>
             <View style={styles.progressLabelRow}>
-              <Text style={styles.progressLabel}>距 {mem.nextLevel} 还差 {((mem.nextLevelPoints ?? 0) - mem.points).toLocaleString()} 积分</Text>
+              <Text style={styles.progressLabel}>{t('membership.pointsToNextLevel', { level: mem.nextLevel, points: ((mem.nextLevelPoints ?? 0) - mem.points).toLocaleString() })}</Text>
               <Text style={styles.progressPct}>{progressPct}%</Text>
             </View>
             <View style={styles.progressTrack}>
@@ -198,36 +200,36 @@ export default function MembershipScreen() {
             <View style={[styles.statsIconWrap, { backgroundColor: 'rgba(99,102,241,0.1)' }]}>
               <Ionicons name="trophy" size={18} color="#6366F1" />
             </View>
-            <Text style={styles.statsGridValue}>{levelLabel(mem?.level ?? 'BRONZE')}</Text>
-            <Text style={styles.statsGridLabel}>当前等级</Text>
+            <Text style={styles.statsGridValue}>{t(levelLabelKey(mem?.level ?? 'BRONZE'))}</Text>
+            <Text style={styles.statsGridLabel}>{t('membership.currentLevel')}</Text>
           </View>
           <View style={styles.statsGridItem}>
             <View style={[styles.statsIconWrap, { backgroundColor: 'rgba(212,168,85,0.1)' }]}>
               <Ionicons name="diamond" size={18} color={GOLD} />
             </View>
             <Text style={styles.statsGridValue}>{statsData.points.toLocaleString()}</Text>
-            <Text style={styles.statsGridLabel}>可用积分</Text>
+            <Text style={styles.statsGridLabel}>{t('membership.availablePoints')}</Text>
           </View>
           <View style={styles.statsGridItem}>
             <View style={[styles.statsIconWrap, { backgroundColor: 'rgba(34,197,94,0.1)' }]}>
               <Ionicons name="flame" size={18} color="#22C55E" />
             </View>
-            <Text style={styles.statsGridValue}>{statsData.streak}天</Text>
-            <Text style={styles.statsGridLabel}>连续签到</Text>
+            <Text style={styles.statsGridValue}>{statsData.streak}{t('membership.days')}</Text>
+            <Text style={styles.statsGridLabel}>{t('membership.consecutiveCheckin')}</Text>
           </View>
           <View style={styles.statsGridItem}>
             <View style={[styles.statsIconWrap, { backgroundColor: 'rgba(245,158,11,0.1)' }]}>
               <Ionicons name="sunny" size={18} color="#F59E0B" />
             </View>
             <Text style={styles.statsGridValue}>+{todayEarned}</Text>
-            <Text style={styles.statsGridLabel}>今日积分</Text>
+            <Text style={styles.statsGridLabel}>{t('membership.todayPoints')}</Text>
           </View>
         </View>
         {statsData.nextLevel && (
           <View style={styles.statsProgressRow}>
             <Ionicons name="arrow-up-circle" size={16} color={accent} />
             <Text style={styles.statsProgressText}>
-              再攒 {statsData.pointsToNext.toLocaleString()} 积分升级 {statsData.nextLevel}
+              {t('membership.earnMoreToUpgrade', { points: statsData.pointsToNext.toLocaleString(), level: statsData.nextLevel })}
             </Text>
             <View style={styles.miniProgressTrack}>
               <View style={[styles.miniProgressFill, { width: `${progressPct}%` as `${number}%`, backgroundColor: accent }]} />
@@ -241,8 +243,8 @@ export default function MembershipScreen() {
       <View style={styles.taskCard}>
         <View style={styles.cardHeader}>
           <Ionicons name="flash" size={20} color="#F59E0B" />
-          <Text style={styles.cardTitle}>快速任务</Text>
-          <Text style={styles.cardSubtitle}>完成任务赚积分</Text>
+          <Text style={styles.cardTitle}>{t('membership.quickTasks')}</Text>
+          <Text style={styles.cardSubtitle}>{t('membership.earnPointsByTasks')}</Text>
         </View>
         <View style={styles.taskGrid}>
           <Pressable
@@ -260,7 +262,7 @@ export default function MembershipScreen() {
                   color={alreadyCheckedIn ? '#22C55E' : accent}
                 />
                 <Text style={[styles.taskBtnLabel, alreadyCheckedIn && styles.taskBtnLabelDone]}>
-                  {alreadyCheckedIn ? '已签到' : '签到 +10'}
+                  {alreadyCheckedIn ? t('membership.checkedIn') : t('membership.checkin') + ' +10'}
                 </Text>
               </>
             )}
@@ -270,44 +272,44 @@ export default function MembershipScreen() {
             onPress={() => router.push('/community' as any)}
           >
             <Ionicons name="share-social" size={24} color="#6366F1" />
-            <Text style={styles.taskBtnLabel}>分享 +5</Text>
+            <Text style={styles.taskBtnLabel}>{t('membership.taskShare')} +5</Text>
           </Pressable>
           <Pressable
             style={styles.taskBtn}
             onPress={() => router.push('/write-review' as any)}
           >
             <Ionicons name="star" size={24} color="#EC4899" />
-            <Text style={styles.taskBtnLabel}>评价 +20</Text>
+            <Text style={styles.taskBtnLabel}>{t('membership.taskReview')} +20</Text>
           </Pressable>
           <Pressable
             style={styles.taskBtn}
             onPress={() => router.push('/journals/create' as any)}
           >
             <Ionicons name="create" size={24} color="#22C55E" />
-            <Text style={styles.taskBtnLabel}>日志 +15</Text>
+            <Text style={styles.taskBtnLabel}>{t('membership.taskJournal')} +15</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Quick Links */}
       <View style={styles.quickLinks}>
-        <QuickLink icon="gift" label="积分商城" color="#F59E0B" onPress={() => router.push('/points-mall' as any)} />
-        <QuickLink icon="people" label="分销中心" color="#22C55E" onPress={() => router.push('/referral' as any)} />
-        <QuickLink icon="cube" label="我的套餐" color={PRIMARY} onPress={() => router.push('/packages' as any)} />
-        <QuickLink icon="ticket" label="我的优惠券" color="#EC4899" onPress={() => router.push('/coupons' as any)} />
+        <QuickLink icon="gift" label={t('membership.pointsMall')} color="#F59E0B" onPress={() => router.push('/points-mall' as any)} />
+        <QuickLink icon="people" label={t('membership.referralCenter')} color="#22C55E" onPress={() => router.push('/referral' as any)} />
+        <QuickLink icon="cube" label={t('membership.myPackages')} color={PRIMARY} onPress={() => router.push('/packages' as any)} />
+        <QuickLink icon="ticket" label={t('membership.myCoupons')} color="#EC4899" onPress={() => router.push('/coupons' as any)} />
       </View>
 
       {/* Checkin Card with Calendar */}
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Ionicons name="calendar" size={20} color={accent} />
-          <Text style={styles.cardTitle}>签到日历</Text>
-          <Text style={styles.cardSubtitle}>累计 {statsData.totalCheckins} 天</Text>
+          <Text style={styles.cardTitle}>{t('membership.checkinCalendar')}</Text>
+          <Text style={styles.cardSubtitle}>{t('membership.totalCheckins', { count: statsData.totalCheckins })}</Text>
         </View>
 
         {/* Calendar grid */}
         <View style={styles.calGrid}>
-          {['日', '一', '二', '三', '四', '五', '六'].map((d) => (
+          {[t('membership.weekSun'), t('membership.weekMon'), t('membership.weekTue'), t('membership.weekWed'), t('membership.weekThu'), t('membership.weekFri'), t('membership.weekSat')].map((d) => (
             <Text key={d} style={styles.calDow}>{d}</Text>
           ))}
           {calendarData.map((day, idx) => {
@@ -337,10 +339,10 @@ export default function MembershipScreen() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Ionicons name="time" size={20} color={accent} />
-          <Text style={styles.cardTitle}>积分记录</Text>
+          <Text style={styles.cardTitle}>{t('membership.pointsHistory')}</Text>
         </View>
         {points.length === 0 ? (
-          <Text style={styles.emptyText}>暂无积分记录</Text>
+          <Text style={styles.emptyText}>{t('membership.noPointsHistory')}</Text>
         ) : (
           <FlatList
             data={points}
@@ -350,7 +352,7 @@ export default function MembershipScreen() {
               <View style={styles.pointsRow}>
                 <View style={styles.pointsLeft}>
                   <Text style={styles.pointsDesc}>{item.description}</Text>
-                  <Text style={styles.pointsDate}>{new Date(item.createdAt).toLocaleDateString('zh-CN')}</Text>
+                  <Text style={styles.pointsDate}>{new Date(item.createdAt).toLocaleDateString(locale)}</Text>
                 </View>
                 <Text style={[styles.pointsAmount, item.amount >= 0 ? styles.pointsPos : styles.pointsNeg]}>
                   {item.amount >= 0 ? '+' : ''}{item.amount}
@@ -367,9 +369,9 @@ export default function MembershipScreen() {
         <View style={styles.bottomCtaTextWrap}>
           <Ionicons name="gift" size={24} color="#F59E0B" />
           <View style={{ flex: 1 }}>
-            <Text style={styles.bottomCtaTitle}>积分商城</Text>
+            <Text style={styles.bottomCtaTitle}>{t('membership.pointsMall')}</Text>
             <Text style={styles.bottomCtaSubtitle}>
-              用 {statsData.points.toLocaleString()} 积分兑换精美礼品
+              {t('membership.redeemGifts', { points: statsData.points.toLocaleString() })}
             </Text>
           </View>
         </View>
@@ -377,7 +379,7 @@ export default function MembershipScreen() {
           style={[styles.bottomCtaBtn, { backgroundColor: accent }]}
           onPress={() => router.push('/points-mall' as any)}
         >
-          <Text style={styles.bottomCtaBtnText}>去兑换</Text>
+          <Text style={styles.bottomCtaBtnText}>{t('membership.goRedeem')}</Text>
           <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
         </Pressable>
       </View>

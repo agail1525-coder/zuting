@@ -13,13 +13,9 @@ import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { api, type Trip, type TripStatus } from '../../src/lib/api';
 import ReviewSection from '../../src/components/ReviewSection';
+import { useTranslation } from '../../src/lib/i18n';
 
-const STATUS_STEPS: { key: TripStatus; label: string }[] = [
-  { key: 'PLANNING', label: '计划中' },
-  { key: 'CONFIRMED', label: '已确认' },
-  { key: 'IN_PROGRESS', label: '进行中' },
-  { key: 'COMPLETED', label: '已完成' },
-];
+const STATUS_STEP_KEYS: TripStatus[] = ['PLANNING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED'];
 
 const STATUS_COLORS: Record<string, string> = {
   DRAFT: '#94A3B8',
@@ -36,43 +32,44 @@ const STATUS_COLORS: Record<string, string> = {
   REFUNDED: '#9CA3AF',
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: '草稿',
-  PLANNING: '计划中',
-  SUBMITTED: '已提交',
-  CONFIRMED: '已确认',
-  PAID: '已支付',
-  PREPARING: '准备中',
-  IN_PROGRESS: '进行中',
-  COMPLETED: '已完成',
-  REVIEWING: '审核中',
-  CANCELLED: '已取消',
-  REFUNDING: '退款中',
-  REFUNDED: '已退款',
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  DRAFT: 'trips.status.draft',
+  PLANNING: 'trips.status.planning',
+  SUBMITTED: 'trips.status.submitted',
+  CONFIRMED: 'trips.status.confirmed',
+  PAID: 'trips.status.paid',
+  PREPARING: 'trips.status.preparing',
+  IN_PROGRESS: 'trips.status.inProgress',
+  COMPLETED: 'trips.status.completed',
+  REVIEWING: 'trips.status.reviewing',
+  CANCELLED: 'trips.status.cancelled',
+  REFUNDING: 'trips.status.refunding',
+  REFUNDED: 'trips.status.refunded',
 };
 
-const TRANSITION_ACTIONS: Partial<Record<TripStatus, { action: string; label: string; icon: 'arrow-forward' | 'send' | 'close-circle' | 'checkmark-done' }[]>> = {
+const TRANSITION_ACTIONS: Partial<Record<TripStatus, { action: string; labelKey: string; icon: 'arrow-forward' | 'send' | 'close-circle' | 'checkmark-done' }[]>> = {
   DRAFT: [
-    { action: 'start_planning', label: '开始规划', icon: 'arrow-forward' },
+    { action: 'start_planning', labelKey: 'trips.action.startPlanning', icon: 'arrow-forward' },
   ],
   PLANNING: [
-    { action: 'submit', label: '提交行程', icon: 'send' },
-    { action: 'save_draft', label: '存为草稿', icon: 'arrow-forward' },
+    { action: 'submit', labelKey: 'trips.action.submit', icon: 'send' },
+    { action: 'save_draft', labelKey: 'trips.action.saveDraft', icon: 'arrow-forward' },
   ],
   SUBMITTED: [
-    { action: 'user_cancel', label: '取消行程', icon: 'close-circle' },
+    { action: 'user_cancel', labelKey: 'trips.action.cancel', icon: 'close-circle' },
   ],
   CONFIRMED: [
-    { action: 'user_cancel', label: '取消行程', icon: 'close-circle' },
+    { action: 'user_cancel', labelKey: 'trips.action.cancel', icon: 'close-circle' },
   ],
   IN_PROGRESS: [
-    { action: 'complete_trip', label: '完成旅程', icon: 'checkmark-done' },
+    { action: 'complete_trip', labelKey: 'trips.action.complete', icon: 'checkmark-done' },
   ],
 };
 
 export default function TripDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +83,7 @@ export default function TripDetailScreen() {
       const data = await api.getTripById(id);
       setTrip(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '加载失败');
+      setError(err instanceof Error ? err.message : t('trips.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -99,7 +96,7 @@ export default function TripDetailScreen() {
       const updated = await api.transitionTrip(id, action);
       setTrip(updated);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '操作失败');
+      setError(err instanceof Error ? err.message : t('trips.actionFailed'));
     } finally {
       setTransitioning(false);
     }
@@ -113,7 +110,7 @@ export default function TripDetailScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color={colors.gold} />
-        <Text style={[styles.emptyText, { marginTop: spacing.md }]}>加载行程中...</Text>
+        <Text style={[styles.emptyText, { marginTop: spacing.md }]}>{t('trips.loading')}</Text>
       </View>
     );
   }
@@ -125,7 +122,7 @@ export default function TripDetailScreen() {
         <Text style={[styles.emptyText, { marginTop: spacing.md }]}>{error}</Text>
         <Pressable style={styles.retryButton} onPress={fetchTrip}>
           <Ionicons name="refresh" size={18} color={colors.gold} />
-          <Text style={styles.retryButtonText}>重试</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </Pressable>
       </View>
     );
@@ -135,17 +132,17 @@ export default function TripDetailScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <Ionicons name="map-outline" size={48} color={colors.textMuted} />
-        <Text style={[styles.emptyText, { marginTop: spacing.md }]}>行程不存在</Text>
+        <Text style={[styles.emptyText, { marginTop: spacing.md }]}>{t('trips.notFound')}</Text>
         <Pressable style={styles.retryButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={18} color={colors.gold} />
-          <Text style={styles.retryButtonText}>返回</Text>
+          <Text style={styles.retryButtonText}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
   }
 
   const sites = Array.isArray(trip.sites) ? trip.sites : [];
-  const currentStepIndex = STATUS_STEPS.findIndex((s) => s.key === trip.status);
+  const currentStepIndex = STATUS_STEP_KEYS.findIndex((s) => s === trip.status);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -155,30 +152,30 @@ export default function TripDetailScreen() {
         <Text style={styles.headerTitle}>{trip.title}</Text>
         {(trip.startDate || trip.endDate) && (
           <Text style={styles.headerDate}>
-            {trip.startDate ?? '待定'} ~ {trip.endDate ?? '待定'}
+            {trip.startDate ?? t('trips.tbd')} ~ {trip.endDate ?? t('trips.tbd')}
           </Text>
         )}
         {trip.note ? (
           <Text style={styles.headerDescription}>{trip.note}</Text>
         ) : null}
         <View style={styles.metaRow}>
-          <Text style={styles.metaText}>{trip.persons}人出行</Text>
+          <Text style={styles.metaText}>{trip.persons ?? 0} {t('trips.travelers')}</Text>
           {trip.totalBudget != null && (
-            <Text style={styles.metaText}>预算 ¥{trip.totalBudget}</Text>
+            <Text style={styles.metaText}>{t('trips.budget')} ¥{trip.totalBudget}</Text>
           )}
         </View>
       </Animated.View>
 
       {/* Status step indicator */}
       <Animated.View entering={FadeInDown.duration(300).delay(100)} style={styles.stepsContainer}>
-        <Text style={styles.sectionTitle}>行程状态</Text>
+        <Text style={styles.sectionTitle}>{t('trips.tripStatus')}</Text>
         <View style={styles.steps}>
-          {STATUS_STEPS.map((step, index) => {
+          {STATUS_STEP_KEYS.map((stepKey, index) => {
             const isActive = index <= currentStepIndex;
             const isCurrent = index === currentStepIndex;
-            const stepColor = isActive ? (STATUS_COLORS[step.key] ?? colors.textMuted) : colors.textMuted;
+            const stepColor = isActive ? (STATUS_COLORS[stepKey] ?? colors.textMuted) : colors.textMuted;
             return (
-              <View key={step.key} style={styles.stepRow}>
+              <View key={stepKey} style={styles.stepRow}>
                 <View style={styles.stepIndicator}>
                   <View
                     style={[
@@ -194,13 +191,13 @@ export default function TripDetailScreen() {
                       <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                     )}
                   </View>
-                  {index < STATUS_STEPS.length - 1 && (
+                  {index < STATUS_STEP_KEYS.length - 1 && (
                     <View
                       style={[
                         styles.stepLine,
                         {
                           backgroundColor: index < currentStepIndex
-                            ? STATUS_COLORS[STATUS_STEPS[index + 1].key]
+                            ? STATUS_COLORS[STATUS_STEP_KEYS[index + 1]]
                             : '#E5E7EB',
                         },
                       ]}
@@ -214,7 +211,7 @@ export default function TripDetailScreen() {
                     isCurrent && { fontWeight: '700' },
                   ]}
                 >
-                  {step.label}
+                  {t(STATUS_LABEL_KEYS[stepKey] ?? 'trips.status.draft')}
                 </Text>
               </View>
             );
@@ -224,9 +221,9 @@ export default function TripDetailScreen() {
 
       {/* Sites list */}
       <Animated.View entering={FadeInDown.duration(300).delay(200)} style={styles.sitesSection}>
-        <Text style={styles.sectionTitle}>朝圣路线 ({sites.length} 站)</Text>
+        <Text style={styles.sectionTitle}>{t('trips.pilgrimageRoute')} ({sites.length} {t('trips.stops')})</Text>
         {sites.length === 0 ? (
-          <Text style={styles.emptyText}>暂无站点</Text>
+          <Text style={styles.emptyText}>{t('trips.noStops')}</Text>
         ) : (
           sites.map((tripSite, index) => (
             <Animated.View
@@ -248,7 +245,7 @@ export default function TripDetailScreen() {
                     {tripSite.visitDate && (
                       <View style={styles.visitedBadge}>
                         <Ionicons name="checkmark-circle" size={16} color={colors.success} />
-                        <Text style={styles.visitedText}>已到访</Text>
+                        <Text style={styles.visitedText}>{t('trips.visited')}</Text>
                       </View>
                     )}
                   </View>
@@ -263,22 +260,22 @@ export default function TripDetailScreen() {
       {/* Action buttons */}
       {(TRANSITION_ACTIONS[trip.status]?.length ?? 0) > 0 && (
         <Animated.View entering={FadeInDown.duration(300).delay(400)} style={styles.actions}>
-          {TRANSITION_ACTIONS[trip.status]?.map((t, idx) => {
+          {TRANSITION_ACTIONS[trip.status]?.map((ta, idx) => {
             const isPrimary = idx === 0;
             return (
               <Pressable
-                key={t.action}
+                key={ta.action}
                 style={isPrimary ? styles.primaryButton : styles.secondaryButton}
-                onPress={() => handleTransition(t.action)}
+                onPress={() => handleTransition(ta.action)}
                 disabled={transitioning}
               >
                 {transitioning ? (
                   <ActivityIndicator size="small" color={isPrimary ? '#FFFFFF' : colors.gold} />
                 ) : (
-                  <Ionicons name={t.icon} size={20} color={isPrimary ? '#FFFFFF' : colors.gold} />
+                  <Ionicons name={ta.icon} size={20} color={isPrimary ? '#FFFFFF' : colors.gold} />
                 )}
                 <Text style={isPrimary ? styles.primaryButtonText : styles.secondaryButtonText}>
-                  {t.label}
+                  {t(ta.labelKey)}
                 </Text>
               </Pressable>
             );
@@ -293,15 +290,15 @@ export default function TripDetailScreen() {
 
       {/* Trip info */}
       <Animated.View entering={FadeInDown.duration(300).delay(500)} style={styles.timelineSection}>
-        <Text style={styles.sectionTitle}>行程信息</Text>
+        <Text style={styles.sectionTitle}>{t('trips.tripInfo')}</Text>
         <View style={styles.timelineItem}>
           <View style={styles.timelineDot}>
             <View style={styles.timelineDotInner} />
             <View style={styles.timelineLine} />
           </View>
           <View style={styles.timelineContent}>
-            <Text style={styles.timelineStatus}>创建时间</Text>
-            <Text style={styles.timelineDate}>{new Date(trip.createdAt).toLocaleDateString('zh-CN')}</Text>
+            <Text style={styles.timelineStatus}>{t('trips.createdAt')}</Text>
+            <Text style={styles.timelineDate}>{new Date(trip.createdAt).toLocaleDateString(locale)}</Text>
           </View>
         </View>
         <View style={styles.timelineItem}>
@@ -309,16 +306,16 @@ export default function TripDetailScreen() {
             <View style={[styles.timelineDotInner, styles.timelineDotActive]} />
           </View>
           <View style={styles.timelineContent}>
-            <Text style={styles.timelineStatus}>当前状态</Text>
-            <Text style={styles.timelineNote}>{STATUS_LABELS[trip.status] ?? trip.status}</Text>
-            <Text style={styles.timelineDate}>{new Date(trip.updatedAt).toLocaleDateString('zh-CN')}</Text>
+            <Text style={styles.timelineStatus}>{t('trips.currentStatus')}</Text>
+            <Text style={styles.timelineNote}>{t(STATUS_LABEL_KEYS[trip.status] ?? 'trips.status.draft')}</Text>
+            <Text style={styles.timelineDate}>{new Date(trip.updatedAt).toLocaleDateString(locale)}</Text>
           </View>
         </View>
         {trip.contactName && (
           <View style={styles.contactInfo}>
-            <Text style={styles.contactLabel}>联系人: {trip.contactName}</Text>
+            <Text style={styles.contactLabel}>{t('trips.contactName')}: {trip.contactName}</Text>
             {trip.contactPhone && (
-              <Text style={styles.contactLabel}>电话: {trip.contactPhone}</Text>
+              <Text style={styles.contactLabel}>{t('trips.contactPhone')}: {trip.contactPhone}</Text>
             )}
           </View>
         )}

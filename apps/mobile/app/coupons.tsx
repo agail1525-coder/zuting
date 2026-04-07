@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from '../src/lib/i18n';
 import {
   CouponItem,
   UserCouponItem,
@@ -21,13 +22,9 @@ import {
 
 const formatPrice = (amount: number) => (amount / 100).toFixed(2);
 
-const TABS = [
-  { key: 'available', label: '可领取' },
-  { key: 'mine', label: '我的券' },
-  { key: 'used', label: '已使用' },
-] as const;
+const TAB_KEYS = ['available', 'mine', 'used'] as const;
 
-type TabKey = typeof TABS[number]['key'];
+type TabKey = typeof TAB_KEYS[number];
 
 const TYPE_COLORS: Record<string, string> = {
   FIXED: '#0066FF',
@@ -35,14 +32,20 @@ const TYPE_COLORS: Record<string, string> = {
   CASHBACK: '#F59E0B',
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  FIXED: '满减',
-  PERCENTAGE: '折扣',
-  CASHBACK: '返现',
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  FIXED: 'coupons.typeFixed',
+  PERCENTAGE: 'coupons.typePercentage',
+  CASHBACK: 'coupons.typeCashback',
 };
 
 export default function CouponsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const TABS = TAB_KEYS.map(key => ({
+    key: key as TabKey,
+    label: t(`coupons.tab.${key}` as any),
+  }));
   const [activeTab, setActiveTab] = useState<TabKey>('available');
   const [available, setAvailable] = useState<CouponItem[]>([]);
   const [myCoupons, setMyCoupons] = useState<UserCouponItem[]>([]);
@@ -64,7 +67,7 @@ export default function CouponsScreen() {
         const res = await fetchMyCoupons('USED');
         setUsedCoupons(res.items ?? []);
       }
-    } catch { Alert.alert('提示', '加载优惠券失败'); } finally {
+    } catch { Alert.alert(t('coupons.notice'), t('coupons.loadFailed')); } finally {
       setLoading(false);
     }
   }, []);
@@ -79,7 +82,7 @@ export default function CouponsScreen() {
       await claimCoupon(couponId);
       load('available');
       load('mine');
-    } catch { Alert.alert('提示', '领取失败，请重试'); } finally {
+    } catch { Alert.alert(t('coupons.notice'), t('coupons.claimFailed')); } finally {
       setClaimingId(null);
     }
   };
@@ -136,22 +139,22 @@ export default function CouponsScreen() {
         <View style={s.couponLeft}>
           <Text style={s.couponAmount}>
             {item.type === 'PERCENTAGE'
-              ? `${Math.round((1 - item.value) * 10)}折`
+              ? t('coupons.discountValue', { value: Math.round((1 - item.value) * 10) })
               : `¥${formatPrice(item.value)}`
             }
           </Text>
           <Text style={s.couponMin}>
-            {item.minAmount ? `满¥${formatPrice(item.minAmount)}可用` : '无门槛'}
+            {item.minAmount ? t('coupons.minAmount', { amount: formatPrice(item.minAmount) }) : t('coupons.noThreshold')}
           </Text>
         </View>
         <View style={s.couponMiddle}>
           <Text style={s.couponName}>{item.name}</Text>
           <View style={[s.typeBadge, { backgroundColor: accentColor + '18' }]}>
             <Text style={[s.typeBadgeText, { color: accentColor }]}>
-              {TYPE_LABELS[item.type] ?? item.type}
+              {t(TYPE_LABEL_KEYS[item.type] as any) ?? item.type}
             </Text>
           </View>
-          <Text style={s.couponExpiry}>有效至 {item.endAt.slice(0, 10)}</Text>
+          <Text style={s.couponExpiry}>{t('coupons.validUntil')} {item.endAt.slice(0, 10)}</Text>
         </View>
         <Pressable
           style={[s.claimBtn, claimingId === item.id && { opacity: 0.6 }]}
@@ -160,7 +163,7 @@ export default function CouponsScreen() {
         >
           {claimingId === item.id
             ? <ActivityIndicator size="small" color="#FFFFFF" />
-            : <Text style={s.claimBtnText}>领取</Text>
+            : <Text style={s.claimBtnText}>{t('coupons.claim')}</Text>
           }
         </Pressable>
       </View>
@@ -177,21 +180,21 @@ export default function CouponsScreen() {
         <View style={s.couponLeft}>
           <Text style={[s.couponAmount, isUsed && s.couponAmountUsed]}>
             {c.type === 'PERCENTAGE'
-              ? `${Math.round((1 - c.value) * 10)}折`
+              ? t('coupons.discountValue', { value: Math.round((1 - c.value) * 10) })
               : `¥${formatPrice(c.value)}`
             }
           </Text>
           <Text style={s.couponMin}>
-            {c.minAmount ? `满¥${formatPrice(c.minAmount)}可用` : '无门槛'}
+            {c.minAmount ? t('coupons.minAmount', { amount: formatPrice(c.minAmount) }) : t('coupons.noThreshold')}
           </Text>
         </View>
         <View style={s.couponMiddle}>
           <Text style={[s.couponName, isUsed && { color: '#9CA3AF' }]}>{c.name}</Text>
-          <Text style={s.couponExpiry}>有效至 {c.endAt.slice(0, 10)}</Text>
+          <Text style={s.couponExpiry}>{t('coupons.validUntil')} {c.endAt.slice(0, 10)}</Text>
         </View>
         <View style={s.statusBadgeContainer}>
           <Text style={[s.statusBadgeText, isUsed && s.statusBadgeUsed]}>
-            {item.status === 'USED' ? '已使用' : item.status === 'EXPIRED' ? '已过期' : '可使用'}
+            {item.status === 'USED' ? t('coupons.statusUsed') : item.status === 'EXPIRED' ? t('coupons.statusExpired') : t('coupons.statusActive')}
           </Text>
         </View>
       </View>
@@ -204,19 +207,19 @@ export default function CouponsScreen() {
       <View style={s.walletCard}>
         <View style={s.walletItem}>
           <Text style={s.walletNumber}>{walletStats.myCount}</Text>
-          <Text style={s.walletLabel}>可用券</Text>
+          <Text style={s.walletLabel}>{t('coupons.walletAvailable')}</Text>
         </View>
         <View style={s.walletDivider} />
         <View style={s.walletItem}>
           <Text style={s.walletNumber}>¥{formatPrice(walletStats.totalFaceValue)}</Text>
-          <Text style={s.walletLabel}>券面总值</Text>
+          <Text style={s.walletLabel}>{t('coupons.walletTotalValue')}</Text>
         </View>
         <View style={s.walletDivider} />
         <View style={s.walletItem}>
           <Text style={[s.walletNumber, walletStats.expiringSoon > 0 && { color: '#F59E0B' }]}>
             {walletStats.expiringSoon}
           </Text>
-          <Text style={s.walletLabel}>即将过期</Text>
+          <Text style={s.walletLabel}>{t('coupons.walletExpiring')}</Text>
         </View>
       </View>
 
@@ -247,7 +250,7 @@ export default function CouponsScreen() {
         <Ionicons name="search-outline" size={16} color="#9CA3AF" style={s.searchIcon} />
         <TextInput
           style={s.searchInput}
-          placeholder="搜索优惠券..."
+          placeholder={t('coupons.searchPlaceholder')}
           placeholderTextColor="#9CA3AF"
           value={search}
           onChangeText={setSearch}
@@ -264,13 +267,13 @@ export default function CouponsScreen() {
           <Ionicons name="pricetag-outline" size={48} color="#D1D5DB" />
           {search.trim() ? (
             <>
-              <Text style={s.emptyText}>未找到"{search}"相关优惠券</Text>
-              <Text style={s.emptySubText}>换个关键词试试</Text>
+              <Text style={s.emptyText}>{t('coupons.searchNotFound', { keyword: search })}</Text>
+              <Text style={s.emptySubText}>{t('coupons.tryOtherKeyword')}</Text>
             </>
           ) : (
             <>
-              <Text style={s.emptyText}>暂无优惠券</Text>
-              <Text style={s.emptySubText}>去领取优惠券吧</Text>
+              <Text style={s.emptyText}>{t('coupons.noCoupons')}</Text>
+              <Text style={s.emptySubText}>{t('coupons.goClaimCoupons')}</Text>
             </>
           )}
         </View>
@@ -287,16 +290,16 @@ export default function CouponsScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           ListFooterComponent={
             <View style={s.bottomCTA}>
-              <Text style={s.ctaTitle}>发现更多优惠</Text>
-              <Text style={s.ctaSubtitle}>促销活动 · 限时折扣 · 专属特惠</Text>
+              <Text style={s.ctaTitle}>{t('coupons.discoverMore')}</Text>
+              <Text style={s.ctaSubtitle}>{t('coupons.discoverMoreSubtitle')}</Text>
               <View style={s.ctaButtons}>
                 <Pressable style={s.ctaBtn} onPress={() => router.push('/promotions' as any)}>
                   <Ionicons name="flash-outline" size={16} color="#FFFFFF" />
-                  <Text style={s.ctaBtnText}>查看促销</Text>
+                  <Text style={s.ctaBtnText}>{t('coupons.viewPromotions')}</Text>
                 </Pressable>
                 <Pressable style={[s.ctaBtn, s.ctaBtnOutline]} onPress={() => router.push('/routes')}>
                   <Ionicons name="map-outline" size={16} color="#D4A855" />
-                  <Text style={[s.ctaBtnText, { color: '#D4A855' }]}>浏览路线</Text>
+                  <Text style={[s.ctaBtnText, { color: '#D4A855' }]}>{t('coupons.browseRoutes')}</Text>
                 </Pressable>
               </View>
             </View>
