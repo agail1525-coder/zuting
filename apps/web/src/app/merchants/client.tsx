@@ -45,11 +45,13 @@ function StarRating({ rating }: { rating: number }) {
 
 function MerchantCard({ merchant, t }: { merchant: Merchant; t: (k: string, v?: Record<string, string | number>) => string }) {
   const cfg = getTypeConfig(merchant.type);
-  const serviceCount = merchant.services?.length || 0;
-  const minPrice = merchant.services && merchant.services.length > 0
-    ? Math.min(...merchant.services.map((s: { price: number }) => s.price))
-    : 0;
+  const services = (merchant.services || []) as Array<{ id: string; name?: string; price: number; coverImage?: string | null }>;
+  const serviceCount = services.length;
+  const minPrice = serviceCount > 0 ? Math.min(...services.map((s) => s.price)) : 0;
+  const signatureService = services[0];
   const location = [merchant.province, merchant.city].filter(Boolean).join(" ");
+  const isHot = merchant.totalOrders >= 1000;
+  const isTopRated = merchant.rating >= 4.8;
 
   return (
     <Link href={`/merchants/${merchant.id}`} className="group block">
@@ -63,21 +65,34 @@ function MerchantCard({ merchant, t }: { merchant: Merchant; t: (k: string, v?: 
               <span className="text-5xl opacity-80">{cfg.icon}</span>
             </div>
           )}
+          {/* Gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           {/* Type badge */}
           <div className="absolute top-3 left-3">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${cfg.bg} ${cfg.text} backdrop-blur-sm`}>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ${cfg.bg} ${cfg.text} backdrop-blur-sm shadow-sm`}>
               {cfg.icon} {t(`merchant.type.${merchant.type}`)}
             </span>
           </div>
-          {/* Trust badges */}
-          {merchant.rating >= 4.5 && (
-            <div className="absolute top-3 right-3">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white">{t("merchant.badge.topRated")}</span>
+          {/* Top-right badges stack */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1 items-end">
+            {isTopRated && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">★ {t("merchant.badge.topRated")}</span>
+            )}
+            {isHot && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-sm">🔥 {t("merchant.badge.hot")}</span>
+            )}
+          </div>
+          {/* Price tag */}
+          {minPrice > 0 && (
+            <div className="absolute bottom-3 right-3">
+              <span className="px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-[#0066FF] text-sm font-bold shadow-md">
+                {t("merchant.priceFrom", { price: Math.round(minPrice / 100) })}
+              </span>
             </div>
           )}
           {merchant.status === "ACTIVE" && (
             <div className="absolute bottom-3 left-3">
-              <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-600 text-white flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-600/95 text-white flex items-center gap-1 backdrop-blur-sm">
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                 {t("merchant.badge.verified")}
               </span>
@@ -87,25 +102,26 @@ function MerchantCard({ merchant, t }: { merchant: Merchant; t: (k: string, v?: 
         {/* Content */}
         <div className="p-4">
           <h3 className="text-base font-semibold text-gray-900 group-hover:text-[#0066FF] transition-colors line-clamp-1">{merchant.name}</h3>
-          <div className="mt-1.5">
+          <div className="mt-1.5 flex items-center justify-between">
             <StarRating rating={merchant.rating} />
+            <span className="text-[11px] text-gray-400">{merchant.totalOrders}+ {t("merchant.totalOrders")}</span>
           </div>
           <p className="text-sm text-gray-500 mt-2 line-clamp-2">{merchant.description}</p>
+          {/* Signature service line */}
+          {signatureService?.name && (
+            <div className="mt-2.5 flex items-center gap-1.5 text-xs">
+              <span className={`inline-block w-1 h-1 rounded-full ${cfg.text.replace("text-", "bg-")}`} />
+              <span className="text-gray-400">{t("merchant.signatureService")}:</span>
+              <span className="text-gray-700 font-medium line-clamp-1">{signatureService.name}</span>
+            </div>
+          )}
           {location && (
             <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               <span className="line-clamp-1">{location}</span>
+              {serviceCount > 0 && <span className="ml-auto text-gray-500">{t("merchant.servicesCount", { count: serviceCount })}</span>}
             </div>
           )}
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-            <div className="flex items-center gap-3 text-xs text-gray-500">
-              {serviceCount > 0 && <span>{t("merchant.servicesCount", { count: serviceCount })}</span>}
-              <span>{merchant.totalOrders}+ {t("merchant.totalOrders")}</span>
-            </div>
-            {minPrice > 0 && (
-              <span className="text-sm font-bold text-[#0066FF]">¥{Math.round(minPrice / 100)}<span className="text-xs font-normal text-gray-400">{t("home.perPerson")}</span></span>
-            )}
-          </div>
         </div>
       </div>
     </Link>
@@ -160,6 +176,10 @@ export default function MerchantsClient({ initialMerchants, initialTotal }: Prop
       : 0;
     return { total: initialTotal, types: types.size, avgRating: avg };
   }, [initialMerchants, initialTotal]);
+  const totalOrdersAcrossAll = useMemo(
+    () => initialMerchants.reduce((sum, m) => sum + (m.totalOrders || 0), 0),
+    [initialMerchants],
+  );
 
   // Type counts
   const typeCounts = useMemo(() => {
@@ -211,12 +231,45 @@ export default function MerchantsClient({ initialMerchants, initialTotal }: Prop
   const showNetflix = !activeType && !search.trim();
   const visible = filtered.slice(0, visibleCount);
 
+  // 吃喝玩乐 quick entry groups
+  const quickGroups: Array<{ key: string; icon: string; label: string; desc: string; types: MerchantType[]; gradient: string }> = [
+    { key: "eat",    icon: "🍜", label: t("merchant.quickEntry.eat"),    desc: t("merchant.quickEntry.eatDesc"),    types: ["RESTAURANT"], gradient: "from-orange-400 to-red-500" },
+    { key: "stay",   icon: "🏯", label: t("merchant.quickEntry.stay"),   desc: t("merchant.quickEntry.stayDesc"),   types: ["HOTEL"], gradient: "from-purple-400 to-pink-500" },
+    { key: "play",   icon: "🎋", label: t("merchant.quickEntry.play"),   desc: t("merchant.quickEntry.playDesc"),   types: ["CULTURAL_EXPERIENCE", "WELLNESS", "PHOTOGRAPHY"], gradient: "from-emerald-400 to-teal-500" },
+    { key: "travel", icon: "🚗", label: t("merchant.quickEntry.travel"), desc: t("merchant.quickEntry.travelDesc"), types: ["GUIDE", "TRANSPORT", "TEMPLE_SERVICE", "SHOPPING"], gradient: "from-sky-400 to-blue-500" },
+  ];
+  const quickGroupCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const g of quickGroups) {
+      counts[g.key] = initialMerchants.filter((m) => g.types.includes(m.type as MerchantType)).length;
+    }
+    return counts;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMerchants]);
+  const handleQuickGroup = (types: MerchantType[]) => {
+    // If single type, directly filter; else pick first available
+    const first = types.find((tp) => (typeCounts[tp] || 0) > 0) || types[0];
+    setActiveType(first);
+    setVisibleCount(24);
+    if (typeof window !== "undefined") window.scrollTo({ top: 400, behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ══════ Hero ══════ */}
-      <section className="hero-bg pt-28 pb-20 md:pt-36 md:pb-24">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{t("merchant.title")}</h1>
+      <section className="hero-bg pt-28 pb-20 md:pt-36 md:pb-24 relative overflow-hidden">
+        {/* Decorative image mosaic */}
+        <div aria-hidden className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-gradient-to-br from-orange-400 to-red-500 blur-3xl" />
+          <div className="absolute top-20 right-20 w-48 h-48 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 blur-3xl" />
+          <div className="absolute bottom-10 left-1/3 w-56 h-56 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 blur-3xl" />
+        </div>
+        <div className="max-w-6xl mx-auto px-4 text-center relative">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-white/90 text-xs mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            {t("merchant.hero.liveBadge")}
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">{t("merchant.hero.eatDrinkPlay")}</h1>
           <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-8">{t("merchant.subtitle")}</p>
 
           {/* Search */}
@@ -251,8 +304,29 @@ export default function MerchantsClient({ initialMerchants, initialTotal }: Prop
         </div>
       </section>
 
+      {/* ══════ 吃喝玩乐 Quick Entry ══════ */}
+      <section className="max-w-6xl mx-auto px-4 -mt-10 relative z-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+          {quickGroups.map((g) => (
+            <button
+              key={g.key}
+              onClick={() => handleQuickGroup(g.types)}
+              className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${g.gradient} p-4 md:p-5 text-left text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+            >
+              <div className="absolute -right-4 -bottom-4 text-6xl opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all">{g.icon}</div>
+              <div className="relative">
+                <div className="text-3xl md:text-4xl mb-1">{g.icon}</div>
+                <div className="text-lg md:text-xl font-bold">{g.label}</div>
+                <div className="text-xs text-white/80 mt-0.5">{g.desc}</div>
+                <div className="text-[11px] text-white/70 mt-2">{quickGroupCounts[g.key] || 0} {t("merchant.stats.partners")} →</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* ══════ Category Navigation Bar ══════ */}
-      <div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm">
+      <div className="sticky top-16 z-30 bg-white border-b border-gray-100 shadow-sm mt-8">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-3">
             <button
@@ -292,51 +366,60 @@ export default function MerchantsClient({ initialMerchants, initialTotal }: Prop
         {/* Featured Partners (only when no filter) */}
         {featured.length > 0 && (
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
-              <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-              {t("merchant.featured")}
-            </h2>
+            <div className="flex items-end justify-between mb-5">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                  {t("merchant.featured")}
+                </h2>
+                <p className="text-xs text-gray-400 mt-1">{t("merchant.featuredDesc")}</p>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {featured.map((m) => (
-                <Link key={m.id} href={`/merchants/${m.id}`} className="group">
-                  <div className="flex bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-all">
-                    <div className="relative w-40 md:w-52 flex-shrink-0">
+              {featured.map((m) => {
+                const fCfg = getTypeConfig(m.type);
+                const fMinPrice = m.services && m.services.length > 0 ? Math.min(...m.services.map((s: { price: number }) => s.price)) : 0;
+                return (
+                  <Link key={m.id} href={`/merchants/${m.id}`} className="group relative block rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500">
+                    <div className="relative aspect-[16/10]">
                       {m.logo ? (
-                        <OptimizedImage src={m.logo} alt={m.name} fill className="object-cover" />
+                        <OptimizedImage src={m.logo} alt={m.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
                       ) : (
-                        <div className={`w-full h-full bg-gradient-to-br ${getTypeConfig(m.type).gradient} flex items-center justify-center`}>
-                          <span className="text-4xl">{getTypeConfig(m.type).icon}</span>
+                        <div className={`w-full h-full bg-gradient-to-br ${fCfg.gradient} flex items-center justify-center`}>
+                          <span className="text-7xl opacity-80">{fCfg.icon}</span>
                         </div>
                       )}
-                      {m.rating >= 4.8 && (
-                        <div className="absolute top-2 left-2">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-white">{t("merchant.badge.topRated")}</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 p-4 md:p-5">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-semibold text-gray-900 group-hover:text-[#0066FF] transition-colors">{m.name}</h3>
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium mt-1 ${getTypeConfig(m.type).bg} ${getTypeConfig(m.type).text}`}>
-                            {getTypeConfig(m.type).icon} {t(`merchant.type.${m.type}`)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="px-2 py-0.5 rounded bg-[#0066FF] text-white text-xs font-bold">{m.rating.toFixed(1)}</span>
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                      {/* Top badges */}
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium ${fCfg.bg} ${fCfg.text} shadow-sm`}>
+                          {fCfg.icon} {t(`merchant.type.${m.type}`)}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm">★ {t("merchant.badge.topRated")}</span>
+                      </div>
+                      <div className="absolute top-4 right-4">
+                        <span className="px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-sm text-gray-900 text-xs font-bold shadow-sm">
+                          {m.rating.toFixed(1)} ★
+                        </span>
+                      </div>
+                      {/* Bottom content */}
+                      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                        <h3 className="text-xl md:text-2xl font-bold mb-1 drop-shadow-md">{m.name}</h3>
+                        <p className="text-sm text-white/90 line-clamp-2 mb-3 drop-shadow">{m.description}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-white/80">{m.totalOrders}+ {t("merchant.totalOrders")}</span>
+                          {fMinPrice > 0 && (
+                            <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-[#0066FF] text-sm font-bold group-hover:bg-[#0066FF] group-hover:text-white transition-colors">
+                              {t("merchant.priceFrom", { price: Math.round(fMinPrice / 100) })} →
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500 mt-2 line-clamp-2">{m.description}</p>
-                      <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
-                        <span>{m.totalOrders}+ {t("merchant.totalOrders")}</span>
-                        {m.services && m.services.length > 0 && (
-                          <span>{t("merchant.servicesCount", { count: m.services.length })}</span>
-                        )}
-                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}
@@ -391,35 +474,39 @@ export default function MerchantsClient({ initialMerchants, initialTotal }: Prop
         )}
 
         {/* ══════ Trust Banner ══════ */}
-        <section className="mt-16 mb-12 bg-white rounded-2xl border border-gray-100 p-8 md:p-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <section className="mt-16 mb-12 bg-gradient-to-br from-white to-blue-50/40 rounded-2xl border border-gray-100 p-8 md:p-12">
+          <div className="text-center mb-8">
+            <h3 className="text-lg md:text-xl font-bold text-gray-900">{t("merchant.trust.title")}</h3>
+            <p className="text-xs text-gray-500 mt-1">{t("merchant.trust.subtitle")}</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total}+</div>
-              <div className="text-xs text-gray-500 mt-1">{t("merchant.badge.verified")} {t("merchant.stats.partners")}</div>
+              <div className="text-2xl md:text-3xl font-bold text-gray-900">{totalOrdersAcrossAll.toLocaleString()}+</div>
+              <div className="text-xs text-gray-500 mt-1">{t("merchant.trust.bookings")}</div>
             </div>
             <div>
-              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
               </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.types}</div>
-              <div className="text-xs text-gray-500 mt-1">{t("merchant.stats.types")}</div>
+              <div className="text-2xl md:text-3xl font-bold text-gray-900">{stats.avgRating.toFixed(1)}</div>
+              <div className="text-xs text-gray-500 mt-1">{t("merchant.trust.avgRating")}</div>
             </div>
             <div>
-              <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
-              <div className="text-2xl font-bold text-gray-900">{stats.avgRating.toFixed(1)}</div>
-              <div className="text-xs text-gray-500 mt-1">{t("merchant.stats.avgRating")}</div>
+              <div className="text-2xl md:text-3xl font-bold text-gray-900">7×24</div>
+              <div className="text-xs text-gray-500 mt-1">{t("merchant.trust.support")}</div>
             </div>
             <div>
-              <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
               </div>
-              <div className="text-2xl font-bold text-gray-900">98%</div>
-              <div className="text-xs text-gray-500 mt-1">{t("merchant.responseRate")}</div>
+              <div className="text-2xl md:text-3xl font-bold text-gray-900">100%</div>
+              <div className="text-xs text-gray-500 mt-1">{t("merchant.trust.refund")}</div>
             </div>
           </div>
         </section>

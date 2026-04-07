@@ -102,7 +102,7 @@ export class MerchantService {
           totalOrders: true,
           status: true,
           createdAt: true,
-          services: { where: { isActive: true }, select: { id: true, price: true }, take: 20 },
+          services: { where: { isActive: true }, select: { id: true, name: true, price: true, coverImage: true }, take: 20, orderBy: { createdAt: 'asc' } },
         },
       }),
       this.prisma.merchant.count({ where }),

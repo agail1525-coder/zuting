@@ -1289,7 +1289,7 @@ const seals: SealData[] = [
   },
 ];
 
-// ── Route data (10条示范路线) ──────────────────────────
+// ── Route data (21条路线: 13禅宗+2佛教+1道教+1基督教+1伊斯兰+1印度教+2跨文化) ──
 
 interface RouteData {
   slug: string;
@@ -1617,6 +1617,306 @@ const routes: RouteData[] = [
       { siteName: '曲阜孔庙', day: 4, order: 1, duration: '半天', note: '儒教圣地' },
     ],
   },
+  // ═══ 11. 禅宗：虚云大师路线 ═══
+  {
+    slug: 'xuyun-master-route',
+    title: '虚云大师朝圣路线',
+    titleEn: 'Master Xuyun Pilgrimage Route',
+    subtitle: '追随一代禅门泰斗，走访五大重建祖庭',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.CHALLENGING,
+    duration: 8, nights: 7,
+    highlights: ['虚云重建五寺', '云居山禅修', '鸡足山朝圣', '鼓山涌泉寺', '南华寺六祖真身'],
+    description: '虚云老和尚(1840-1959)是近代禅宗最伟大的高僧，一生重建六大祖庭。本路线从福州鼓山涌泉寺出发，经韶关南华寺、乳源云门寺、江西云居山真如禅寺，最终抵达云南鸡足山祝圣寺，完整追寻虚云大师一生弘法足迹。每站深度体验禅修、素斋、早晚课，感受百年禅风。',
+    itinerary: [
+      { day: 1, title: '福州·鼓山涌泉寺', activities: ['涌泉寺朝拜(虚云早年驻锡处)', '鼓山摩崖石刻', '喝水岩品茶', '涌泉寺晚课'], meals: ['午餐：涌泉寺素斋', '晚餐：福州鱼丸'], accommodation: '福州市区酒店' },
+      { day: 2, title: '福州→韶关', activities: ['高铁前往韶关', '抵达后游览韶关风采楼', '入住南华寺附近'], meals: ['午餐：高铁简餐', '晚餐：韶关菜'], accommodation: '韶关曹溪温泉酒店' },
+      { day: 3, title: '韶关·南华寺全日', activities: ['凌晨早课体验', '六祖真身瞻仰', '虚云纪念堂', '抄经体验', '曹溪佛学院参观'], meals: ['午餐：南华寺百年素斋', '晚餐：韶关菜'], accommodation: '韶关曹溪温泉酒店' },
+      { day: 4, title: '韶关→乳源·云门寺', activities: ['驱车前往乳源(1.5h)', '云门山大觉禅寺朝拜', '虚云重建云门记展览', '云门饼品尝', '禅堂坐香体验'], meals: ['午餐：云门寺素斋', '晚餐：乳源瑶族菜'], accommodation: '乳源县城酒店' },
+      { day: 5, title: '乳源→江西永修·云居山', activities: ['驱车至韶关机场飞南昌', '转车前往永修云居山', '真如禅寺朝拜', '虚云舍利塔'], meals: ['午餐：途中简餐', '晚餐：真如禅寺素斋'], accommodation: '云居山山上客房' },
+      { day: 6, title: '云居山全日禅修', activities: ['凌晨4:00随僧早课', '出坡劳作体验(农禅并重)', '禅堂坐香', '虚云老和尚纪念馆', '夜间行香'], meals: ['三餐均为禅寺过堂'], accommodation: '云居山山上客房' },
+      { day: 7, title: '云居山→昆明→大理·鸡足山', activities: ['下山至南昌飞昆明', '转车前往大理宾川', '鸡足山脚住宿'], meals: ['午餐：云南过桥米线', '晚餐：白族菜'], accommodation: '鸡足山脚酒店' },
+      { day: 8, title: '鸡足山·祝圣寺·返程', activities: ['登鸡足山金顶观日出', '祝圣寺朝拜(虚云重建)', '迦叶殿瞻仰', '下山返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 568000, // ¥5,680
+    included: ['全程交通(含2段飞机)', '7晚住宿(含1晚禅寺客房)', '景点门票', '专业佛教文化导游', '素斋体验5次', '禅修指导'],
+    excluded: ['往返出发地大交通', '个人消费', '旅行保险', '鸡足山索道(可选)'],
+    tips: ['云居山禅修需遵守寺规：凌晨4点起床', '全程以素食为主，可自备零食', '山区昼夜温差大，备好保暖衣物', '鸡足山海拔3248m，注意高反'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '4-12人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 12. 禅宗：马祖道一路线 ═══
+  {
+    slug: 'mazu-daoyi-route',
+    title: '马祖道一禅法路线',
+    titleEn: 'Mazu Daoyi Zen Route',
+    subtitle: '"平常心是道"——追随洪州宗祖师足迹',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['洪州宗祖庭', '马祖道场', '百丈清规发源地', '江西禅宗文化'],
+    description: '马祖道一(709-788)是中国禅宗史上最重要的祖师之一，开创洪州宗，提出"平常心是道"，弟子遍天下(139人得法)。本路线从马祖出生地四川什邡出发，经江西靖安宝峰寺(马祖道场)，至奉新百丈山(百丈怀海清规发源地)，追寻洪州禅法的源流。',
+    itinerary: [
+      { day: 1, title: '成都→什邡·马祖故里', activities: ['驱车前往什邡(1.5h)', '马祖故里纪念馆', '罗汉寺(马祖出家处)', '什邡古镇漫步'], meals: ['午餐：什邡豆腐宴', '晚餐：川菜'], accommodation: '什邡市区酒店' },
+      { day: 2, title: '什邡→南昌', activities: ['飞往南昌', '滕王阁参观', '佑民寺(马祖曾驻锡)', '南昌老街漫步'], meals: ['午餐：南昌拌粉', '晚餐：赣菜'], accommodation: '南昌市区酒店' },
+      { day: 3, title: '南昌→靖安·宝峰寺', activities: ['驱车前往靖安(2h)', '宝峰寺朝拜(马祖道场)', '马祖塔院瞻仰', '靖安三爪仑风景区'], meals: ['午餐：宝峰寺素斋', '晚餐：靖安农家菜'], accommodation: '靖安县城酒店' },
+      { day: 4, title: '靖安→奉新·百丈山', activities: ['驱车前往奉新(1.5h)', '百丈寺朝拜', '百丈怀海"清规"发源地', '天下清规碑', '"一日不作一日不食"体验'], meals: ['午餐：百丈寺素斋', '晚餐：奉新菜'], accommodation: '奉新县城酒店' },
+      { day: 5, title: '奉新→南昌·返程', activities: ['驱车返回南昌(1.5h)', '绳金塔', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 298000, // ¥2,980
+    included: ['内段机票1程', '全程地面交通', '4晚住宿', '景点门票', '导游', '素斋体验2次'],
+    excluded: ['往返出发地大交通', '个人消费', '旅行保险'],
+    tips: ['宝峰寺环境幽静适合打坐冥想', '百丈山路较陡建议穿登山鞋', '江西春秋气候宜人'],
+    season: '四季皆宜，春秋最佳',
+    groupSize: '2-8人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 13. 禅宗：百丈怀海路线 ═══
+  {
+    slug: 'baizhang-huaihai-route',
+    title: '百丈怀海·禅门清规路线',
+    titleEn: 'Baizhang Huaihai Chan Rules Route',
+    subtitle: '"一日不作，一日不食"——农禅并重的开创者',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 4, nights: 3,
+    highlights: ['百丈清规发源地', '农禅并重体验', '江西禅宗祖庭群', '禅茶文化'],
+    description: '百丈怀海(720-814)是马祖道一的大弟子，制定《百丈清规》，开创"农禅并重"的丛林制度，奠定了中国禅宗寺院管理的基本模式。本路线深度探访百丈山及周边禅宗祖庭，亲身体验农禅生活。',
+    itinerary: [
+      { day: 1, title: '南昌→奉新·百丈山', activities: ['驱车前往奉新百丈山(2h)', '百丈寺朝拜', '百丈怀海祖师塔', '"天下清规"碑亭', '禅茶品鉴'], meals: ['午餐：百丈寺素斋', '晚餐：山居晚餐'], accommodation: '百丈山禅修客房' },
+      { day: 2, title: '百丈山农禅体验', activities: ['凌晨随僧早课', '出坡体验(种菜/砍柴)', '禅堂坐香', '百丈山徒步', '抄写《百丈清规》'], meals: ['三餐过堂体验'], accommodation: '百丈山禅修客房' },
+      { day: 3, title: '百丈山→靖安·宝峰寺', activities: ['驱车前往靖安宝峰寺(1.5h)', '宝峰寺朝拜(马祖道场)', '马祖塔院', '靖安古城漫步'], meals: ['午餐：宝峰寺素斋', '晚餐：靖安菜'], accommodation: '靖安县城酒店' },
+      { day: 4, title: '靖安→南昌·返程', activities: ['三爪仑森林公园晨走', '驱车返回南昌', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 198000, // ¥1,980
+    included: ['全程交通', '3晚住宿(含1晚禅修客房)', '景点门票', '导游', '农禅体验', '素斋'],
+    excluded: ['往返南昌大交通', '个人消费'],
+    tips: ['农禅体验需凌晨4点起床，请做好心理准备', '山上手机信号较弱', '建议穿耐脏衣物参加出坡劳作'],
+    season: '春秋两季(4-5月/9-10月)',
+    groupSize: '4-12人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 14. 禅宗：临济义玄路线 ═══
+  {
+    slug: 'linji-yixuan-route',
+    title: '临济义玄·棒喝禅风路线',
+    titleEn: 'Linji Yixuan Chan Route',
+    subtitle: '"临济喝，德山棒"——体验最刚猛的禅法',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['临济祖庭', '赵州柏林禅寺', '正定古城', '河北禅宗文化'],
+    description: '临济义玄(?-866)创立临济宗——中国禅宗五家中影响最大、传承最广的宗派。其"棒喝"教法震古烁今，"临济四喝""四料拣"至今是禅宗经典。本路线从正定临济寺出发，经赵州柏林禅寺，至黄檗山(黄檗希运道场)，追寻临济禅法的源流。',
+    itinerary: [
+      { day: 1, title: '石家庄→正定·临济寺', activities: ['驱车前往正定(40min)', '临济寺朝拜(临济宗祖庭)', '义玄祖师塔瞻仰', '正定古城墙漫步', '隆兴寺参观'], meals: ['午餐：正定八大碗', '晚餐：河北菜'], accommodation: '正定古城客栈' },
+      { day: 2, title: '正定→赵县·柏林禅寺', activities: ['驱车前往赵县(1h)', '柏林禅寺朝拜(赵州从谂道场)', '赵州桥参观', '生活禅体验', '柏林禅寺茶禅'], meals: ['午餐：柏林禅寺素斋', '晚餐：赵县菜'], accommodation: '柏林禅寺居士楼' },
+      { day: 3, title: '赵县·生活禅全日', activities: ['柏林禅寺早课', '净慧长老纪念馆', '禅堂坐香', '经行体验', '赵州"吃茶去"公案研习'], meals: ['三餐过堂'], accommodation: '柏林禅寺居士楼' },
+      { day: 4, title: '赵县→宜丰·黄檗山', activities: ['飞往南昌转宜丰(3h)', '黄檗山黄檗寺朝拜', '黄檗希运祖师塔', '黄檗断际禅法研习'], meals: ['午餐：途中简餐', '晚餐：宜丰菜'], accommodation: '宜丰县城酒店' },
+      { day: 5, title: '宜丰→南昌·返程', activities: ['黄檗山晨走', '驱车返回南昌(2.5h)', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 328000, // ¥3,280
+    included: ['内段机票1程', '全程地面交通', '4晚住宿(含1晚寺院)', '景点门票', '导游', '禅修指导', '素斋'],
+    excluded: ['往返出发地大交通', '个人消费', '旅行保险'],
+    tips: ['柏林禅寺每年7月举办"生活禅夏令营"可提前报名', '正定古城值得多留时间', '黄檗山偏僻但风景极美'],
+    season: '春秋两季(4-5月/9-11月)',
+    groupSize: '2-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 15. 禅宗：洞山良价·曹洞宗路线 ═══
+  {
+    slug: 'dongshan-caodong-route',
+    title: '洞山良价·曹洞宗祖庭路线',
+    titleEn: 'Dongshan Liangjie Caodong Route',
+    subtitle: '"洞山五位"——默照禅法的源头',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['曹洞宗两大祖庭', '洞山五位君臣', '默照禅法', '江西禅宗圣地'],
+    description: '洞山良价(807-869)与弟子曹山本寂共创曹洞宗，其"五位君臣"法门精密圆融，默照禅法影响深远，后由道元禅师传至日本成为最大宗派。本路线走访洞山普利禅寺、曹山宝积寺等曹洞宗核心祖庭，深度体验默照禅风。',
+    itinerary: [
+      { day: 1, title: '南昌→宜丰·洞山', activities: ['驱车前往宜丰洞山(2.5h)', '洞山普利禅寺朝拜(曹洞宗祖庭)', '良价祖师塔', '洞山夜话水涧观月', '品洞山禅茶'], meals: ['午餐：途中简餐', '晚餐：洞山素斋'], accommodation: '洞山禅修客房' },
+      { day: 2, title: '洞山全日禅修', activities: ['早课+坐香', '"五位君臣"公案研习', '洞山溪谷徒步', '过午不食体验', '晚间禅堂行香'], meals: ['早餐', '午斋'], accommodation: '洞山禅修客房' },
+      { day: 3, title: '洞山→抚州·曹山', activities: ['驱车前往抚州宜黄曹山(3h)', '曹山宝积寺朝拜(曹洞宗祖庭)', '本寂祖师塔', '曹山禅茶园'], meals: ['午餐：途中简餐', '晚餐：抚州菜'], accommodation: '宜黄县城酒店' },
+      { day: 4, title: '曹山→云居山', activities: ['驱车前往永修云居山(3h)', '真如禅寺朝拜', '虚云纪念馆', '云居山农禅体验'], meals: ['午餐：途中简餐', '晚餐：真如禅寺过堂'], accommodation: '云居山客房' },
+      { day: 5, title: '云居山→南昌·返程', activities: ['云居山日出', '下山返回南昌(2h)', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 268000, // ¥2,680
+    included: ['全程交通', '4晚住宿(含2晚禅修客房)', '景点门票', '导游', '禅修指导', '素斋体验'],
+    excluded: ['往返南昌大交通', '个人消费', '旅行保险'],
+    tips: ['洞山禅修客房条件简朴，建议自备洗漱用品', '曹山到云居山山路较多注意晕车', '默照禅讲究"只管打坐"，初学者可提前了解'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '4-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 16. 禅宗：赵州从谂路线 ═══
+  {
+    slug: 'zhaozhou-congshen-route',
+    title: '赵州从谂·"吃茶去"路线',
+    titleEn: 'Zhaozhou Congshen Tea Chan Route',
+    subtitle: '"吃茶去"——禅茶一味的千年传承',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.EASY,
+    duration: 4, nights: 3,
+    highlights: ['赵州禅茶一味', '柏林禅寺', '赵州桥', '生活禅体验'],
+    description: '赵州从谂(778-897)是禅宗史上最具智慧的禅师之一，"赵州茶""狗子佛性""庭前柏树子"等公案家喻户晓。他120岁高龄示寂，一生以"平实"著称。本路线以赵州柏林禅寺为核心，深度体验"禅茶一味"的生活禅文化。',
+    itinerary: [
+      { day: 1, title: '石家庄→赵县·柏林禅寺', activities: ['驱车前往赵县(1h)', '柏林禅寺朝拜', '赵州从谂祖师塔', '赵州桥参观', '禅茶一味体验'], meals: ['午餐：柏林禅寺素斋', '晚餐：赵县菜'], accommodation: '柏林禅寺居士楼' },
+      { day: 2, title: '柏林禅寺·生活禅全日', activities: ['凌晨早课', '坐香+行香', '净慧长老"生活禅"理念研习', '禅茶品鉴(学泡赵州茶)', '经行赵州桥'], meals: ['三餐过堂'], accommodation: '柏林禅寺居士楼' },
+      { day: 3, title: '赵县→正定古城', activities: ['驱车前往正定(1h)', '临济寺参观', '隆兴寺(宋代铜佛)', '正定古城漫步', '天宁寺凌霄塔'], meals: ['午餐：正定素斋', '晚餐：正定八大碗'], accommodation: '正定古城客栈' },
+      { day: 4, title: '正定→石家庄·返程', activities: ['正定古城晨走', '广惠寺华塔', '返回石家庄送站'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 168000, // ¥1,680
+    included: ['全程交通', '3晚住宿(含2晚寺院)', '景点门票', '导游', '禅茶体验', '素斋'],
+    excluded: ['往返石家庄大交通', '个人消费'],
+    tips: ['柏林禅寺夏令营每年7月举办，名额有限需提前申请', '寺院住宿条件简朴但整洁', '"吃茶去"是赵州最著名公案，建议提前了解'],
+    season: '四季皆宜，春秋最佳',
+    groupSize: '2-12人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 17. 禅宗：云门文偃路线 ═══
+  {
+    slug: 'yunmen-wenyan-route',
+    title: '云门文偃·云门宗路线',
+    titleEn: 'Yunmen Wenyan Route',
+    subtitle: '"云门一字关"——最简洁犀利的禅法',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.EASY,
+    duration: 4, nights: 3,
+    highlights: ['云门宗祖庭', '南华寺', '丹霞山', '粤北禅宗文化'],
+    description: '云门文偃(864-949)创立云门宗，以"一字关"闻名——弟子问法，常以一字作答，截断葛藤。其"云门三句"(涵盖乾坤、截断众流、随波逐浪)为禅宗经典。本路线以粤北为核心，走访云门寺、南华寺及丹霞山，体验云门禅风。',
+    itinerary: [
+      { day: 1, title: '广州→韶关·南华寺', activities: ['高铁前往韶关(1.5h)', '南华寺朝拜', '六祖真身瞻仰', '虚云纪念堂'], meals: ['午餐：南华寺素斋', '晚餐：韶关菜'], accommodation: '韶关市区酒店' },
+      { day: 2, title: '韶关→乳源·云门寺', activities: ['驱车前往乳源(1.5h)', '云门山大觉禅寺朝拜(云门宗祖庭)', '文偃祖师塔', '云门饼品尝', '禅堂坐香'], meals: ['午餐：云门寺素斋', '晚餐：乳源瑶族菜'], accommodation: '乳源温泉酒店' },
+      { day: 3, title: '乳源→丹霞山', activities: ['驱车前往丹霞山(1h)', '丹霞山徒步(长老峰)', '锦石岩寺(悬崖古寺)', '丹霞日落'], meals: ['午餐：丹霞山农家菜', '晚餐：韶关菜'], accommodation: '丹霞山景区酒店' },
+      { day: 4, title: '丹霞山→广州·返程', activities: ['丹霞日出', '驱车返回韶关', '高铁返广州'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 228000, // ¥2,280
+    included: ['高铁票', '全程地面交通', '3晚住宿', '景点门票', '导游', '素斋体验2次'],
+    excluded: ['往返广州大交通', '个人消费', '丹霞山索道(可选)'],
+    tips: ['云门寺佛源老和尚道风严谨，参访请遵守寺规', '丹霞山徒步约3小时，备好水和零食', '乳源瑶族风情独特值得体验'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '2-8人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 18. 禅宗：禅宗五家祖庭大巡礼 ═══
+  {
+    slug: 'zen-five-houses-grand-tour',
+    title: '禅宗五家祖庭大巡礼',
+    titleEn: 'Five Houses of Zen Grand Pilgrimage',
+    subtitle: '临济·曹洞·云门·法眼·沩仰——一次走遍五家祖庭',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.CHALLENGING,
+    duration: 10, nights: 9,
+    highlights: ['禅宗五家七宗', '十大祖庭巡礼', '深度禅修体验', '江西福建广东三省'],
+    description: '中国禅宗在唐末五代形成五大流派(临济、曹洞、云门、法眼、沩仰)，史称"一花开五叶"。本路线是最完整的禅宗文化朝圣之旅，10天走遍五家核心祖庭。从河北临济寺出发，经江西洞山、曹山、仰山，至广东云门寺、福建地藏院(法眼道场)，最终在南华寺圆满。适合深度禅宗爱好者。',
+    itinerary: [
+      { day: 1, title: '石家庄·正定·临济寺(临济宗)', activities: ['临济寺朝拜', '义玄祖师塔', '正定古城', '隆兴寺'], meals: ['午餐：正定素斋', '晚餐：河北菜'], accommodation: '正定古城客栈' },
+      { day: 2, title: '正定→赵县→南昌', activities: ['柏林禅寺参访(赵州禅)', '赵州桥', '飞往南昌'], meals: ['午餐：柏林禅寺素斋'], accommodation: '南昌市区酒店' },
+      { day: 3, title: '南昌→宜丰·洞山(曹洞宗)', activities: ['驱车前往洞山(2.5h)', '洞山普利禅寺朝拜', '良价祖师塔', '洞山溪谷'], meals: ['午餐：途中简餐', '晚餐：洞山素斋'], accommodation: '洞山禅修客房' },
+      { day: 4, title: '洞山→宜黄·曹山(曹洞宗)', activities: ['驱车前往曹山(3h)', '曹山宝积寺朝拜', '本寂祖师塔', '曹山禅茶'], meals: ['午餐：途中简餐', '晚餐：抚州菜'], accommodation: '宜黄县城酒店' },
+      { day: 5, title: '曹山→宜春·仰山(沩仰宗)', activities: ['驱车前往宜春仰山(2.5h)', '栖隐寺朝拜(仰山慧寂道场)', '仰山文塔', '仰山风景区'], meals: ['午餐：途中简餐', '晚餐：宜春菜'], accommodation: '宜春市区酒店' },
+      { day: 6, title: '宜春→长沙·沩山(沩仰宗)', activities: ['驱车前往宁乡沩山(3h)', '密印寺朝拜(沩山灵祐道场)', '沩山风景区', '千年银杏'], meals: ['午餐：密印寺素斋', '晚餐：湘菜'], accommodation: '长沙市区酒店' },
+      { day: 7, title: '长沙→韶关→乳源·云门寺(云门宗)', activities: ['高铁前往韶关(3h)', '转车前往乳源', '云门山大觉禅寺朝拜', '文偃祖师塔'], meals: ['午餐：高铁简餐', '晚餐：云门寺素斋'], accommodation: '乳源酒店' },
+      { day: 8, title: '乳源→韶关·南华寺', activities: ['南华寺朝拜', '六祖真身', '曹溪佛学院', '禅堂坐香'], meals: ['午餐：南华寺素斋', '晚餐：韶关菜'], accommodation: '韶关酒店' },
+      { day: 9, title: '韶关→南京·法眼宗', activities: ['飞往南京', '清凉寺参访(法眼文益道场)', '栖霞寺', '鸡鸣寺'], meals: ['午餐：南京素菜', '晚餐：金陵菜'], accommodation: '南京市区酒店' },
+      { day: 10, title: '南京·返程', activities: ['灵谷寺', '中山陵', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 898000, // ¥8,980
+    included: ['全程交通(含3段飞机/高铁)', '9晚住宿(含1晚禅修客房)', '景点门票', '专业禅宗文化导游', '素斋体验6次', '禅修指导'],
+    excluded: ['往返出发地大交通', '个人消费', '旅行保险'],
+    tips: ['行程较长建议体力充沛者参加', '每站祖庭都有独特禅风可提前研读相关公案', '建议携带《五灯会元》或相关禅宗读物', '部分路段为山路注意晕车'],
+    season: '春秋两季(4-5月/9-10月)',
+    groupSize: '4-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 19. 禅宗：沩山灵祐·沩仰宗路线 ═══
+  {
+    slug: 'weishan-lingyou-route',
+    title: '沩山灵祐·沩仰宗路线',
+    titleEn: 'Weishan Lingyou Weiyangzong Route',
+    subtitle: '禅宗五家中最早创立的宗派',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 4, nights: 3,
+    highlights: ['沩仰宗两大祖庭', '密印寺千年古刹', '仰山风景', '湖南江西禅文化'],
+    description: '沩仰宗是禅宗五家中最早创立的宗派，由沩山灵祐(771-853)和弟子仰山慧寂共同开创。以"圆相"(画圈)接引学人著称，师徒默契被誉为"父子投机"。本路线走访沩山密印寺和仰山栖隐寺两大祖庭。',
+    itinerary: [
+      { day: 1, title: '长沙→宁乡·沩山密印寺', activities: ['驱车前往宁乡沩山(2h)', '密印寺朝拜(沩仰宗祖庭)', '灵祐祖师塔', '万佛殿(12988尊金佛)', '沩山毛尖茶品鉴'], meals: ['午餐：密印寺素斋', '晚餐：沩山农家菜'], accommodation: '沩山山居民宿' },
+      { day: 2, title: '沩山·禅修与徒步', activities: ['密印寺早课', '沩山徒步(千年银杏群)', '参禅体验', '沩山禅茶文化'], meals: ['午餐：山居素食', '晚餐：农家菜'], accommodation: '沩山山居民宿' },
+      { day: 3, title: '沩山→宜春·仰山栖隐寺', activities: ['驱车前往宜春仰山(4h)', '栖隐寺朝拜(仰山慧寂道场)', '仰山文塔', '仰山梯田风光'], meals: ['午餐：途中简餐', '晚餐：宜春菜'], accommodation: '宜春温汤温泉酒店' },
+      { day: 4, title: '宜春→长沙/南昌·返程', activities: ['温汤温泉晨浴', '驱车返回长沙或南昌', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 218000, // ¥2,180
+    included: ['全程交通', '3晚住宿', '景点门票', '导游', '禅修体验', '素斋2次'],
+    excluded: ['往返长沙大交通', '个人消费', '温泉门票(可选)'],
+    tips: ['沩山海拔较高，夏天也需备薄外套', '密印寺万佛殿非常壮观不可错过', '仰山到宜春的山路弯多注意晕车'],
+    season: '春夏秋三季(4-10月)',
+    groupSize: '2-8人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 20. 禅宗：法眼文益·法眼宗路线 ═══
+  {
+    slug: 'fayan-wenyi-route',
+    title: '法眼文益·法眼宗路线',
+    titleEn: 'Fayan Wenyi Route',
+    subtitle: '"一切现成"——禅宗五家最后创立的宗派',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.EASY,
+    duration: 4, nights: 3,
+    highlights: ['法眼宗祖庭', '金陵佛教文化', '永明延寿', '江南禅韵'],
+    description: '法眼文益(885-958)创立法眼宗，以"一切现成"为宗旨，融合华严与禅法。其弟子永明延寿编撰《宗镜录》100卷，为禅宗最重要的百科全书。本路线以南京、杭州为核心，走访法眼宗祖庭及永明延寿道场。',
+    itinerary: [
+      { day: 1, title: '南京·清凉寺+栖霞寺', activities: ['清凉寺参访(法眼文益道场)', '扫叶楼', '栖霞寺朝拜(三论宗祖庭)', '千佛岩石刻'], meals: ['午餐：南京素菜', '晚餐：金陵菜'], accommodation: '南京市区酒店' },
+      { day: 2, title: '南京→杭州', activities: ['高铁前往杭州(1.5h)', '灵隐寺朝拜', '飞来峰造像', '永福禅寺品茶'], meals: ['午餐：灵隐寺素面', '晚餐：杭帮菜'], accommodation: '杭州西湖附近酒店' },
+      { day: 3, title: '杭州·净慈寺+径山寺', activities: ['净慈寺朝拜(永明延寿住持处)', '南屏晚钟', '径山寺参访(径山茶宴)', '径山抹茶体验'], meals: ['午餐：径山寺素斋', '晚餐：杭州菜'], accommodation: '杭州市区酒店' },
+      { day: 4, title: '杭州·返程', activities: ['西湖晨走', '雷峰塔', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 258000, // ¥2,580
+    included: ['高铁票', '全程交通', '3晚住宿', '景点门票', '导游', '素斋体验', '径山茶宴'],
+    excluded: ['往返出发地大交通', '个人消费'],
+    tips: ['灵隐寺节假日人多建议早去', '径山寺需提前预约茶宴体验', '杭州春季最美(3-4月)'],
+    season: '春秋两季(3-4月/9-11月)',
+    groupSize: '2-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
+  // ═══ 21. 禅宗：大慧宗杲·看话禅路线 ═══
+  {
+    slug: 'dahui-zonggao-route',
+    title: '大慧宗杲·看话禅路线',
+    titleEn: 'Dahui Zonggao Kanhua Chan Route',
+    subtitle: '"参话头"——宋代禅宗复兴的旗手',
+    category: RouteCategory.ZEN,
+    difficulty: RouteDifficulty.MODERATE,
+    duration: 5, nights: 4,
+    highlights: ['看话禅发源地', '径山祖庭', '宋代禅宗文化', '浙江安徽禅地'],
+    description: '大慧宗杲(1089-1163)是宋代临济宗杨岐派的复兴者，创立"看话禅"(参话头)修行法门，与默照禅并列为禅宗两大实修体系。他曾因反对秦桧被流放，仍坚持弘法。本路线走访其主要弘法道场。',
+    itinerary: [
+      { day: 1, title: '杭州→余杭·径山寺', activities: ['驱车前往径山(1h)', '径山万寿禅寺朝拜(大慧宗杲住持处)', '径山茶宴体验', '参话头实修指导'], meals: ['午餐：径山素斋', '晚餐：杭州菜'], accommodation: '杭州市区酒店' },
+      { day: 2, title: '杭州→宁国·妙觉寺', activities: ['驱车前往安徽宁国(3h)', '妙觉寺遗址参访', '宁国竹海徒步', '皖南山水'], meals: ['午餐：皖南农家菜', '晚餐：宣城菜'], accommodation: '宁国市区酒店' },
+      { day: 3, title: '宁国→泾县·宝胜寺', activities: ['驱车前往泾县(1.5h)', '宝胜寺遗址', '桃花潭', '查济古村'], meals: ['午餐：泾县菜', '晚餐：农家菜'], accommodation: '泾县民宿' },
+      { day: 4, title: '泾县→宣城→南京', activities: ['驱车返回南京(3h)', '鸡鸣寺', '玄武湖', '明城墙'], meals: ['午餐：途中简餐', '晚餐：金陵菜'], accommodation: '南京市区酒店' },
+      { day: 5, title: '南京·返程', activities: ['栖霞寺晨课', '中山陵', '送站返程'], meals: ['早餐'], accommodation: '' },
+    ],
+    priceFrom: 298000, // ¥2,980
+    included: ['全程交通', '4晚住宿', '景点门票', '导游', '径山茶宴', '参话头禅修指导'],
+    excluded: ['往返出发地大交通', '个人消费', '旅行保险'],
+    tips: ['"看话禅"核心是参"念佛是谁"或"狗子佛性"等话头', '径山茶宴是日本茶道的源头', '皖南秋景极美推荐11月'],
+    season: '春秋两季(3-5月/9-11月)',
+    groupSize: '4-10人',
+    religionSlug: 'buddhism',
+    siteLinks: [],
+  },
 ];
 
 // ══════════════════════════════════════════════════════
@@ -1625,6 +1925,24 @@ const routes: RouteData[] = [
 
 async function main() {
   console.log('Seeding database...');
+
+  // ── 0. Create demo admin user ──
+  console.log('Creating demo admin user...');
+  await prisma.user.upsert({
+    where: { phone: '13700137000' },
+    update: { passwordHash: '$2b$10$9GHUGResoWIYf0PRzOL9A.g.UXnRGMY2fApK0mkdpGrpbOX.8jZZy' },
+    create: {
+      phone: '13700137000',
+      email: 'admin@joinus.com',
+      nickname: '管理员',
+      passwordHash: '$2b$10$9GHUGResoWIYf0PRzOL9A.g.UXnRGMY2fApK0mkdpGrpbOX.8jZZy',
+      role: 'ADMIN',
+      isActive: true,
+      phoneVerified: true,
+      language: 'zh-CN',
+    },
+  });
+  console.log('  ✓ Demo admin: 13700137000 / 123456');
 
   // ── 1. Upsert Religions ──
   console.log('Creating 12 religions...');
@@ -9528,40 +9846,41 @@ async function main() {
   console.log(`  Media Content: ${mediaItems.length}`);
 
   // ── Merchants (旅游配套商家) ──
+  await prisma.merchantService.deleteMany();
   await prisma.merchant.deleteMany();
   const merchantData = [
     // RESTAURANT 餐饮
-    { type: 'RESTAURANT', name: '少林素斋馆', description: '嵩山少林寺旁百年素食老店，提供正宗少林素斋、药膳养生餐。食材取自嵩山本地有机农场，传承少林烹饪技艺。环境清幽，可容纳200人同时用餐。', province: '河南省', city: '登封市', address: '嵩山少林寺景区东门200米', contactPhone: '0371-62881234', contactEmail: 'shaolin.veggie@joinus.com', rating: 4.8, totalOrders: 562 },
-    { type: 'RESTAURANT', name: '普陀山海鲜素食楼', description: '普陀山码头旁的特色餐厅，主打新鲜海味素食，融合舟山渔港风味与佛教素食传统。特色菜品：观音豆腐、罗汉斋、素蟹粉。提供朝圣团餐预订。', province: '浙江省', city: '舟山市', address: '普陀山景区南海观音广场旁', contactPhone: '0580-66991234', contactEmail: 'putuo.food@joinus.com', rating: 4.6, totalOrders: 389 },
-    { type: 'RESTAURANT', name: '曲阜儒家宴', description: '曲阜孔庙旁的文化主题餐厅，还原古代儒家宴席礼仪。提供孔府菜、鲁菜经典，每桌配有文化讲解员介绍菜品典故。适合文化研学团队。', province: '山东省', city: '曲阜市', address: '曲阜孔庙南门明故城步行街', contactPhone: '0537-44561234', contactEmail: 'qufu.feast@joinus.com', rating: 4.7, totalOrders: 234 },
+    { type: 'RESTAURANT', name: '少林素斋馆', description: '嵩山少林寺旁百年素食老店，提供正宗少林素斋、药膳养生餐。食材取自嵩山本地有机农场，传承少林烹饪技艺。环境清幽，可容纳200人同时用餐。', province: '河南省', city: '登封市', address: '嵩山少林寺景区东门200米', contactPhone: '0371-62881234', contactEmail: 'shaolin.veggie@joinus.com', rating: 4.8, totalOrders: 562, logo: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80' },
+    { type: 'RESTAURANT', name: '普陀山海鲜素食楼', description: '普陀山码头旁的特色餐厅，主打新鲜海味素食，融合舟山渔港风味与佛教素食传统。特色菜品：观音豆腐、罗汉斋、素蟹粉。提供朝圣团餐预订。', province: '浙江省', city: '舟山市', address: '普陀山景区南海观音广场旁', contactPhone: '0580-66991234', contactEmail: 'putuo.food@joinus.com', rating: 4.6, totalOrders: 389, logo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80' },
+    { type: 'RESTAURANT', name: '曲阜儒家宴', description: '曲阜孔庙旁的文化主题餐厅，还原古代儒家宴席礼仪。提供孔府菜、鲁菜经典，每桌配有文化讲解员介绍菜品典故。适合文化研学团队。', province: '山东省', city: '曲阜市', address: '曲阜孔庙南门明故城步行街', contactPhone: '0537-44561234', contactEmail: 'qufu.feast@joinus.com', rating: 4.7, totalOrders: 234, logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80' },
     // HOTEL 酒店民宿
-    { type: 'HOTEL', name: '嵩山禅意山居', description: '位于嵩山脚下的精品禅修民宿，共28间客房，每间均可远眺少室山。提供晨钟暮鼓叫醒服务、禅茶体验、抄经房。距少林寺车程10分钟。', province: '河南省', city: '登封市', address: '嵩山少林大道禅意谷', contactPhone: '0371-62887788', contactEmail: 'songshan.zen@joinus.com', rating: 4.9, totalOrders: 1203 },
-    { type: 'HOTEL', name: '九华山云端酒店', description: '九华山核心景区内的四星级酒店，海拔800米，云雾缭绕。提供108间客房、素食自助早餐、朝圣接驳车服务。可代订地藏王殿祈福。', province: '安徽省', city: '池州市', address: '九华山风景区天台索道旁', contactPhone: '0566-28881234', contactEmail: 'jiuhua.cloud@joinus.com', rating: 4.5, totalOrders: 876 },
-    { type: 'HOTEL', name: '五台山文殊院客栈', description: '五台山台怀镇中心的传统客栈，紧邻显通寺、塔院寺。提供藏式与汉式两种风格客房，含早课体验券。冬季提供暖炕房，是朝台最佳落脚点。', province: '山西省', city: '忻州市', address: '五台山台怀镇显通寺西街', contactPhone: '0350-65431234', contactEmail: 'wutai.inn@joinus.com', rating: 4.4, totalOrders: 654 },
+    { type: 'HOTEL', name: '嵩山禅意山居', description: '位于嵩山脚下的精品禅修民宿，共28间客房，每间均可远眺少室山。提供晨钟暮鼓叫醒服务、禅茶体验、抄经房。距少林寺车程10分钟。', province: '河南省', city: '登封市', address: '嵩山少林大道禅意谷', contactPhone: '0371-62887788', contactEmail: 'songshan.zen@joinus.com', rating: 4.9, totalOrders: 1203, logo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80' },
+    { type: 'HOTEL', name: '九华山云端酒店', description: '九华山核心景区内的四星级酒店，海拔800米，云雾缭绕。提供108间客房、素食自助早餐、朝圣接驳车服务。可代订地藏王殿祈福。', province: '安徽省', city: '池州市', address: '九华山风景区天台索道旁', contactPhone: '0566-28881234', contactEmail: 'jiuhua.cloud@joinus.com', rating: 4.5, totalOrders: 876, logo: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80' },
+    { type: 'HOTEL', name: '五台山文殊院客栈', description: '五台山台怀镇中心的传统客栈，紧邻显通寺、塔院寺。提供藏式与汉式两种风格客房，含早课体验券。冬季提供暖炕房，是朝台最佳落脚点。', province: '山西省', city: '忻州市', address: '五台山台怀镇显通寺西街', contactPhone: '0350-65431234', contactEmail: 'wutai.inn@joinus.com', rating: 4.4, totalOrders: 654, logo: 'https://images.unsplash.com/photo-1587874522487-fbc83856c6f6?w=800&q=80' },
     // GUIDE 导游
-    { type: 'GUIDE', name: '慧远法师讲解团', description: '专业佛教文化导游团队，成员均持国家导游证及佛学院进修证书。提供少林寺、龙门石窟、白马寺全程深度讲解。可用中英日韩四语服务。', province: '河南省', city: '洛阳市', address: '洛阳市老城区', contactPhone: '13800138001', contactEmail: 'huiyuan.guide@joinus.com', rating: 4.9, totalOrders: 2341 },
-    { type: 'GUIDE', name: '圣地朝圣领队', description: '专注耶路撒冷、伯利恒、拿撒勒三圣地的华人朝圣领队。团队由神学院毕业生组成，提供深度圣经历史讲解、灵修带领。每团限20人。', province: '', city: '', address: 'Jerusalem, Israel', contactPhone: '+972-52-1234567', contactEmail: 'holyland.guide@joinus.com', rating: 4.8, totalOrders: 456 },
-    { type: 'GUIDE', name: '普陀山朝圣向导', description: '舟山本地人组成的普陀山专业导游团队，熟悉每座寺院典故。提供半日游、一日游、两日深度游三种路线，含素斋安排和住宿推荐。', province: '浙江省', city: '舟山市', address: '普陀山码头游客中心', contactPhone: '13900139001', contactEmail: 'putuo.guide@joinus.com', rating: 4.7, totalOrders: 1876 },
+    { type: 'GUIDE', name: '慧远法师讲解团', description: '专业佛教文化导游团队，成员均持国家导游证及佛学院进修证书。提供少林寺、龙门石窟、白马寺全程深度讲解。可用中英日韩四语服务。', province: '河南省', city: '洛阳市', address: '洛阳市老城区', contactPhone: '13800138001', contactEmail: 'huiyuan.guide@joinus.com', rating: 4.9, totalOrders: 2341, logo: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80' },
+    { type: 'GUIDE', name: '圣地朝圣领队', description: '专注耶路撒冷、伯利恒、拿撒勒三圣地的华人朝圣领队。团队由神学院毕业生组成，提供深度圣经历史讲解、灵修带领。每团限20人。', province: '', city: '', address: 'Jerusalem, Israel', contactPhone: '+972-52-1234567', contactEmail: 'holyland.guide@joinus.com', rating: 4.8, totalOrders: 456, logo: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=800&q=80' },
+    { type: 'GUIDE', name: '普陀山朝圣向导', description: '舟山本地人组成的普陀山专业导游团队，熟悉每座寺院典故。提供半日游、一日游、两日深度游三种路线，含素斋安排和住宿推荐。', province: '浙江省', city: '舟山市', address: '普陀山码头游客中心', contactPhone: '13900139001', contactEmail: 'putuo.guide@joinus.com', rating: 4.7, totalOrders: 1876, logo: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=800&q=80' },
     // TRANSPORT 交通
-    { type: 'TRANSPORT', name: '嵩山朝圣巴士', description: '提供郑州—登封—少林寺往返巴士、嵩山景区内部接驳车。全程GPS追踪，配备讲解音频系统。支持团队包车和个人拼车两种模式。', province: '河南省', city: '登封市', address: '郑州东站旅游集散中心', contactPhone: '0371-62889999', contactEmail: 'songshan.bus@joinus.com', rating: 4.3, totalOrders: 3456 },
-    { type: 'TRANSPORT', name: '九华山云梯接驳', description: '九华山景区官方合作接驳车服务。提供池州高铁站—九华山、景区内各寺院间的电瓶车接驳。老年人和行动不便者可预约无障碍专车。', province: '安徽省', city: '池州市', address: '九华山游客服务中心', contactPhone: '0566-28889999', contactEmail: 'jiuhua.shuttle@joinus.com', rating: 4.2, totalOrders: 5678 },
+    { type: 'TRANSPORT', name: '嵩山朝圣巴士', description: '提供郑州—登封—少林寺往返巴士、嵩山景区内部接驳车。全程GPS追踪，配备讲解音频系统。支持团队包车和个人拼车两种模式。', province: '河南省', city: '登封市', address: '郑州东站旅游集散中心', contactPhone: '0371-62889999', contactEmail: 'songshan.bus@joinus.com', rating: 4.3, totalOrders: 3456, logo: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&q=80' },
+    { type: 'TRANSPORT', name: '九华山云梯接驳', description: '九华山景区官方合作接驳车服务。提供池州高铁站—九华山、景区内各寺院间的电瓶车接驳。老年人和行动不便者可预约无障碍专车。', province: '安徽省', city: '池州市', address: '九华山游客服务中心', contactPhone: '0566-28889999', contactEmail: 'jiuhua.shuttle@joinus.com', rating: 4.2, totalOrders: 5678, logo: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80' },
     // TEMPLE_SERVICE 寺院服务
-    { type: 'TEMPLE_SERVICE', name: '少林武僧禅修营', description: '少林寺官方合作禅修项目，由武僧亲授少林功夫基础、坐禅冥想。提供3天、7天、21天三种课程。含食宿、僧衣、结业证书。', province: '河南省', city: '登封市', address: '少林寺禅修院', contactPhone: '0371-62886666', contactEmail: 'shaolin.retreat@joinus.com', rating: 5.0, totalOrders: 890 },
-    { type: 'TEMPLE_SERVICE', name: '灵隐寺祈福服务', description: '杭州灵隐寺官方祈福代办，提供供灯、抄经、放生、超度等佛事服务。可远程预约，寺院法师代为回向。附赠祈福证书和开光护身符。', province: '浙江省', city: '杭州市', address: '杭州灵隐寺', contactPhone: '0571-87968665', contactEmail: 'lingyin.prayer@joinus.com', rating: 4.8, totalOrders: 2345 },
-    { type: 'TEMPLE_SERVICE', name: '五台山朝台仪轨', description: '五台山朝台专业仪轨服务，由五台山佛学院法师带领。提供大朝台(五个台顶)全程仪轨指导、诵经、供养。含朝台地图和补给。', province: '山西省', city: '忻州市', address: '五台山黛螺顶', contactPhone: '0350-65438888', contactEmail: 'wutai.ritual@joinus.com', rating: 4.9, totalOrders: 567 },
+    { type: 'TEMPLE_SERVICE', name: '少林武僧禅修营', description: '少林寺官方合作禅修项目，由武僧亲授少林功夫基础、坐禅冥想。提供3天、7天、21天三种课程。含食宿、僧衣、结业证书。', province: '河南省', city: '登封市', address: '少林寺禅修院', contactPhone: '0371-62886666', contactEmail: 'shaolin.retreat@joinus.com', rating: 5.0, totalOrders: 890, logo: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=800&q=80' },
+    { type: 'TEMPLE_SERVICE', name: '灵隐寺祈福服务', description: '杭州灵隐寺官方祈福代办，提供供灯、抄经、放生、超度等佛事服务。可远程预约，寺院法师代为回向。附赠祈福证书和开光护身符。', province: '浙江省', city: '杭州市', address: '杭州灵隐寺', contactPhone: '0571-87968665', contactEmail: 'lingyin.prayer@joinus.com', rating: 4.8, totalOrders: 2345, logo: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=800&q=80' },
+    { type: 'TEMPLE_SERVICE', name: '五台山朝台仪轨', description: '五台山朝台专业仪轨服务，由五台山佛学院法师带领。提供大朝台(五个台顶)全程仪轨指导、诵经、供养。含朝台地图和补给。', province: '山西省', city: '忻州市', address: '五台山黛螺顶', contactPhone: '0350-65438888', contactEmail: 'wutai.ritual@joinus.com', rating: 4.9, totalOrders: 567, logo: 'https://images.unsplash.com/photo-1609100716148-f99e0ebb6a4b?w=800&q=80' },
     // SHOPPING 购物
-    { type: 'SHOPPING', name: '菩提阁佛教文创', description: '专营佛教文化创意产品的连锁品牌。产品包括：手串念珠、香道用品、佛像摆件、经典书籍、禅意茶器。支持定制刻字和开光服务。', province: '河南省', city: '登封市', address: '少林寺景区商业街A12', contactPhone: '0371-62885555', contactEmail: 'bodhi.shop@joinus.com', rating: 4.5, totalOrders: 4567 },
-    { type: 'SHOPPING', name: '圣城纪念品中心', description: '耶路撒冷老城区的综合纪念品商店，提供十字架、橄榄木雕、死海泥制品、犹太教法器等。所有商品均附原产地证明。支持国际邮寄。', province: '', city: '', address: 'Old City, Jerusalem', contactPhone: '+972-2-6271234', contactEmail: 'jerusalem.gifts@joinus.com', rating: 4.3, totalOrders: 890 },
+    { type: 'SHOPPING', name: '菩提阁佛教文创', description: '专营佛教文化创意产品的连锁品牌。产品包括：手串念珠、香道用品、佛像摆件、经典书籍、禅意茶器。支持定制刻字和开光服务。', province: '河南省', city: '登封市', address: '少林寺景区商业街A12', contactPhone: '0371-62885555', contactEmail: 'bodhi.shop@joinus.com', rating: 4.5, totalOrders: 4567, logo: 'https://images.unsplash.com/photo-1599404980919-23bb32e1abc0?w=800&q=80' },
+    { type: 'SHOPPING', name: '圣城纪念品中心', description: '耶路撒冷老城区的综合纪念品商店，提供十字架、橄榄木雕、死海泥制品、犹太教法器等。所有商品均附原产地证明。支持国际邮寄。', province: '', city: '', address: 'Old City, Jerusalem', contactPhone: '+972-2-6271234', contactEmail: 'jerusalem.gifts@joinus.com', rating: 4.3, totalOrders: 890, logo: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=800&q=80' },
     // PHOTOGRAPHY 摄影
-    { type: 'PHOTOGRAPHY', name: '云游摄影工作室', description: '专注宗教文化旅行摄影的专业团队。提供朝圣跟拍、寺院写真、航拍全景、延时摄影。作品多次获国际宗教摄影奖。可出差至全国各大寺院。', province: '浙江省', city: '杭州市', address: '杭州市西湖区灵隐路', contactPhone: '13700137001', contactEmail: 'cloud.photo@joinus.com', rating: 4.9, totalOrders: 345 },
-    { type: 'PHOTOGRAPHY', name: '禅光影像', description: '嵩山地区唯一持证无人机航拍团队。提供少林寺、嵩岳寺塔、嵩山全景航拍。可制作VR全景、延时视频。团队摄影和个人旅拍均可预约。', province: '河南省', city: '登封市', address: '登封市崇高路创意产业园', contactPhone: '13600136001', contactEmail: 'zen.light@joinus.com', rating: 4.6, totalOrders: 234 },
+    { type: 'PHOTOGRAPHY', name: '云游摄影工作室', description: '专注宗教文化旅行摄影的专业团队。提供朝圣跟拍、寺院写真、航拍全景、延时摄影。作品多次获国际宗教摄影奖。可出差至全国各大寺院。', province: '浙江省', city: '杭州市', address: '杭州市西湖区灵隐路', contactPhone: '13700137001', contactEmail: 'cloud.photo@joinus.com', rating: 4.9, totalOrders: 345, logo: 'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=800&q=80' },
+    { type: 'PHOTOGRAPHY', name: '禅光影像', description: '嵩山地区唯一持证无人机航拍团队。提供少林寺、嵩岳寺塔、嵩山全景航拍。可制作VR全景、延时视频。团队摄影和个人旅拍均可预约。', province: '河南省', city: '登封市', address: '登封市崇高路创意产业园', contactPhone: '13600136001', contactEmail: 'zen.light@joinus.com', rating: 4.6, totalOrders: 234, logo: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80' },
     // WELLNESS 养生
-    { type: 'WELLNESS', name: '少林养生堂', description: '传承少林养生功法的专业健康中心。提供八段锦教学、少林药浴、艾灸理疗、太极晨练。由少林药局合作中医师坐诊。朝圣后恢复体力首选。', province: '河南省', city: '登封市', address: '嵩山少林大道养生谷', contactPhone: '0371-62883333', contactEmail: 'shaolin.wellness@joinus.com', rating: 4.7, totalOrders: 678 },
-    { type: 'WELLNESS', name: '九华山禅茶养生馆', description: '九华山特色禅茶体验馆，提供禅茶道教学、九华佛茶品鉴、茶山徒步。独家供应九华毛峰、金地藏茶。禅茶一味，静心养神。', province: '安徽省', city: '池州市', address: '九华山柯村茶园', contactPhone: '0566-28887777', contactEmail: 'jiuhua.tea@joinus.com', rating: 4.8, totalOrders: 432 },
+    { type: 'WELLNESS', name: '少林养生堂', description: '传承少林养生功法的专业健康中心。提供八段锦教学、少林药浴、艾灸理疗、太极晨练。由少林药局合作中医师坐诊。朝圣后恢复体力首选。', province: '河南省', city: '登封市', address: '嵩山少林大道养生谷', contactPhone: '0371-62883333', contactEmail: 'shaolin.wellness@joinus.com', rating: 4.7, totalOrders: 678, logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80' },
+    { type: 'WELLNESS', name: '九华山禅茶养生馆', description: '九华山特色禅茶体验馆，提供禅茶道教学、九华佛茶品鉴、茶山徒步。独家供应九华毛峰、金地藏茶。禅茶一味，静心养神。', province: '安徽省', city: '池州市', address: '九华山柯村茶园', contactPhone: '0566-28887777', contactEmail: 'jiuhua.tea@joinus.com', rating: 4.8, totalOrders: 432, logo: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&q=80' },
     // CULTURAL_EXPERIENCE 文化体验
-    { type: 'CULTURAL_EXPERIENCE', name: '嵩山书法研习社', description: '在嵩山脚下学习中国传统书法。课程包括：基础笔法、心经抄写、碑帖临摹。提供半日体验和5日深度研习两种课程。作品可裱装带走。', province: '河南省', city: '登封市', address: '嵩山书院文化街', contactPhone: '0371-62884444', contactEmail: 'songshan.calligraphy@joinus.com', rating: 4.8, totalOrders: 345 },
-    { type: 'CULTURAL_EXPERIENCE', name: '曲阜六艺体验馆', description: '曲阜孔庙旁的儒家六艺(礼乐射御书数)沉浸式体验。穿汉服、行古礼、习射艺、抚古琴。适合亲子研学和企业团建。每场限30人。', province: '山东省', city: '曲阜市', address: '曲阜明故城内', contactPhone: '0537-44567890', contactEmail: 'qufu.arts@joinus.com', rating: 4.7, totalOrders: 567 },
-    { type: 'CULTURAL_EXPERIENCE', name: '敦煌壁画临摹坊', description: '在敦煌莫高窟旁体验千年壁画临摹技艺。由敦煌研究院认证讲师指导，使用传统矿物颜料。提供2小时体验课和3天专业课程。', province: '甘肃省', city: '敦煌市', address: '敦煌市鸣沙山路文创园', contactPhone: '0937-88821234', contactEmail: 'dunhuang.art@joinus.com', rating: 4.9, totalOrders: 289 },
+    { type: 'CULTURAL_EXPERIENCE', name: '嵩山书法研习社', description: '在嵩山脚下学习中国传统书法。课程包括：基础笔法、心经抄写、碑帖临摹。提供半日体验和5日深度研习两种课程。作品可裱装带走。', province: '河南省', city: '登封市', address: '嵩山书院文化街', contactPhone: '0371-62884444', contactEmail: 'songshan.calligraphy@joinus.com', rating: 4.8, totalOrders: 345, logo: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800&q=80' },
+    { type: 'CULTURAL_EXPERIENCE', name: '曲阜六艺体验馆', description: '曲阜孔庙旁的儒家六艺(礼乐射御书数)沉浸式体验。穿汉服、行古礼、习射艺、抚古琴。适合亲子研学和企业团建。每场限30人。', province: '山东省', city: '曲阜市', address: '曲阜明故城内', contactPhone: '0537-44567890', contactEmail: 'qufu.arts@joinus.com', rating: 4.7, totalOrders: 567, logo: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=800&q=80' },
+    { type: 'CULTURAL_EXPERIENCE', name: '敦煌壁画临摹坊', description: '在敦煌莫高窟旁体验千年壁画临摹技艺。由敦煌研究院认证讲师指导，使用传统矿物颜料。提供2小时体验课和3天专业课程。', province: '甘肃省', city: '敦煌市', address: '敦煌市鸣沙山路文创园', contactPhone: '0937-88821234', contactEmail: 'dunhuang.art@joinus.com', rating: 4.9, totalOrders: 289, logo: 'https://images.unsplash.com/photo-1606293459339-aa5d34a7b0e1?w=800&q=80' },
   ];
 
   // Create seed users for merchants (one per merchant)
@@ -9590,6 +9909,7 @@ async function main() {
         type: d.type,
         name: d.name,
         description: d.description,
+        logo: d.logo,
         province: d.province,
         city: d.city,
         address: d.address,
@@ -9605,51 +9925,51 @@ async function main() {
   }
 
   // Services for each merchant
-  const serviceTemplates: Record<string, Array<{ name: string; description: string; price: number; duration: number | null; maxPersons: number | null }>> = {
+  const serviceTemplates: Record<string, Array<{ name: string; description: string; price: number; duration: number | null; maxPersons: number | null; coverImage: string }>> = {
     RESTAURANT: [
-      { name: '素斋套餐', description: '精选8道素食料理+汤+甜品', price: 8800, duration: 90, maxPersons: 10 },
-      { name: '朝圣团餐', description: '20人起订，含10菜1汤', price: 5800, duration: 60, maxPersons: 50 },
-      { name: '药膳养生餐', description: '根据时令配制的养生药膳', price: 12800, duration: 120, maxPersons: 8 },
+      { name: '素斋套餐', description: '精选8道素食料理+汤+甜品', price: 8800, duration: 90, maxPersons: 10, coverImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80' },
+      { name: '朝圣团餐', description: '20人起订，含10菜1汤', price: 5800, duration: 60, maxPersons: 50, coverImage: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80' },
+      { name: '药膳养生餐', description: '根据时令配制的养生药膳', price: 12800, duration: 120, maxPersons: 8, coverImage: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80' },
     ],
     HOTEL: [
-      { name: '禅意标准间', description: '含双床、禅茶角、素食早餐', price: 38800, duration: null, maxPersons: 2 },
-      { name: '山景大床房', description: '可远眺山景的豪华大床房', price: 58800, duration: null, maxPersons: 2 },
-      { name: '禅修套房', description: '含独立禅修室、茶室、浴缸', price: 88800, duration: null, maxPersons: 4 },
+      { name: '禅意标准间', description: '含双床、禅茶角、素食早餐', price: 38800, duration: null, maxPersons: 2, coverImage: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80' },
+      { name: '山景大床房', description: '可远眺山景的豪华大床房', price: 58800, duration: null, maxPersons: 2, coverImage: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80' },
+      { name: '禅修套房', description: '含独立禅修室、茶室、浴缸', price: 88800, duration: null, maxPersons: 4, coverImage: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80' },
     ],
     GUIDE: [
-      { name: '半日深度讲解', description: '核心景点3小时深度导览', price: 29800, duration: 180, maxPersons: 20 },
-      { name: '全日朝圣导览', description: '全天8小时含午餐安排', price: 49800, duration: 480, maxPersons: 15 },
-      { name: 'VIP私人订制', description: '1对1专属导游全程陪同', price: 99800, duration: 480, maxPersons: 4 },
+      { name: '半日深度讲解', description: '核心景点3小时深度导览', price: 29800, duration: 180, maxPersons: 20, coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80' },
+      { name: '全日朝圣导览', description: '全天8小时含午餐安排', price: 49800, duration: 480, maxPersons: 15, coverImage: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80' },
+      { name: 'VIP私人订制', description: '1对1专属导游全程陪同', price: 99800, duration: 480, maxPersons: 4, coverImage: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&q=80' },
     ],
     TRANSPORT: [
-      { name: '单程接驳', description: '高铁站/机场至景区单程', price: 8800, duration: 60, maxPersons: 4 },
-      { name: '全日包车', description: '含司机全天候服务', price: 38800, duration: 600, maxPersons: 7 },
-      { name: '景区电瓶车', description: '景区内各站点自由上下', price: 2000, duration: null, maxPersons: 1 },
+      { name: '单程接驳', description: '高铁站/机场至景区单程', price: 8800, duration: 60, maxPersons: 4, coverImage: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80' },
+      { name: '全日包车', description: '含司机全天候服务', price: 38800, duration: 600, maxPersons: 7, coverImage: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800&q=80' },
+      { name: '景区电瓶车', description: '景区内各站点自由上下', price: 2000, duration: null, maxPersons: 1, coverImage: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?w=800&q=80' },
     ],
     TEMPLE_SERVICE: [
-      { name: '供灯祈福', description: '在大殿供奉莲花灯', price: 9900, duration: 30, maxPersons: null },
-      { name: '抄经体验', description: '提供经文、笔墨、指导', price: 5800, duration: 120, maxPersons: 1 },
-      { name: '禅修课程(3天)', description: '含食宿的短期禅修体验', price: 98800, duration: 4320, maxPersons: 1 },
+      { name: '供灯祈福', description: '在大殿供奉莲花灯', price: 9900, duration: 30, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1541542684-4a9c1c1a72a7?w=800&q=80' },
+      { name: '抄经体验', description: '提供经文、笔墨、指导', price: 5800, duration: 120, maxPersons: 1, coverImage: 'https://images.unsplash.com/photo-1583425423320-1aa6c5a76a6b?w=800&q=80' },
+      { name: '禅修课程(3天)', description: '含食宿的短期禅修体验', price: 98800, duration: 4320, maxPersons: 1, coverImage: 'https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=800&q=80' },
     ],
     SHOPPING: [
-      { name: '开光手串', description: '天然菩提/檀木手串含开光', price: 12800, duration: null, maxPersons: null },
-      { name: '线香礼盒', description: '精选沉香/檀香线香套装', price: 6800, duration: null, maxPersons: null },
-      { name: '佛经典藏套装', description: '精装佛教经典5本套装', price: 16800, duration: null, maxPersons: null },
+      { name: '开光手串', description: '天然菩提/檀木手串含开光', price: 12800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1611107683227-e9060eccd846?w=800&q=80' },
+      { name: '线香礼盒', description: '精选沉香/檀香线香套装', price: 6800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1602928321679-560bb453f190?w=800&q=80' },
+      { name: '佛经典藏套装', description: '精装佛教经典5本套装', price: 16800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&q=80' },
     ],
     PHOTOGRAPHY: [
-      { name: '朝圣跟拍(半天)', description: '专业摄影师全程跟拍3小时', price: 59800, duration: 180, maxPersons: 6 },
-      { name: '航拍全景', description: '无人机航拍+后期制作', price: 39800, duration: 120, maxPersons: null },
-      { name: '个人旅拍写真', description: '含化妆造型+30张精修', price: 79800, duration: 240, maxPersons: 2 },
+      { name: '朝圣跟拍(半天)', description: '专业摄影师全程跟拍3小时', price: 59800, duration: 180, maxPersons: 6, coverImage: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&q=80' },
+      { name: '航拍全景', description: '无人机航拍+后期制作', price: 39800, duration: 120, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=800&q=80' },
+      { name: '个人旅拍写真', description: '含化妆造型+30张精修', price: 79800, duration: 240, maxPersons: 2, coverImage: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80' },
     ],
     WELLNESS: [
-      { name: '八段锦晨练', description: '清晨跟随师傅习练八段锦', price: 5800, duration: 60, maxPersons: 20 },
-      { name: '少林药浴', description: '传统草药泡浴+推拿', price: 28800, duration: 90, maxPersons: 1 },
-      { name: '禅茶品鉴', description: '品鉴5款禅茶+茶道讲解', price: 16800, duration: 120, maxPersons: 8 },
+      { name: '八段锦晨练', description: '清晨跟随师傅习练八段锦', price: 5800, duration: 60, maxPersons: 20, coverImage: 'https://images.unsplash.com/photo-1552693673-1bf958298935?w=800&q=80' },
+      { name: '少林药浴', description: '传统草药泡浴+推拿', price: 28800, duration: 90, maxPersons: 1, coverImage: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=800&q=80' },
+      { name: '禅茶品鉴', description: '品鉴5款禅茶+茶道讲解', price: 16800, duration: 120, maxPersons: 8, coverImage: 'https://images.unsplash.com/photo-1563822249366-3efb23b8e0c9?w=800&q=80' },
     ],
     CULTURAL_EXPERIENCE: [
-      { name: '书法体验(半日)', description: '学习基础笔法+抄写心经', price: 19800, duration: 180, maxPersons: 10 },
-      { name: '古琴入门', description: '学习一首古琴曲', price: 29800, duration: 120, maxPersons: 4 },
-      { name: '汉服体验', description: '含汉服租赁+妆造+摄影', price: 25800, duration: 180, maxPersons: 2 },
+      { name: '书法体验(半日)', description: '学习基础笔法+抄写心经', price: 19800, duration: 180, maxPersons: 10, coverImage: 'https://images.unsplash.com/photo-1605035015406-b7b50bd04351?w=800&q=80' },
+      { name: '古琴入门', description: '学习一首古琴曲', price: 29800, duration: 120, maxPersons: 4, coverImage: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80' },
+      { name: '汉服体验', description: '含汉服租赁+妆造+摄影', price: 25800, duration: 180, maxPersons: 2, coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80' },
     ],
   };
 
@@ -9661,6 +9981,7 @@ async function main() {
           merchantId: m.id,
           name: svc.name,
           description: svc.description,
+          coverImage: svc.coverImage,
           price: svc.price,
           duration: svc.duration,
           maxPersons: svc.maxPersons,
@@ -9672,6 +9993,84 @@ async function main() {
 
   console.log(`  Merchants: ${merchants.length}`);
   console.log(`  Merchant Services: ${merchants.length * 3}`);
+
+  // ── Travel Packages ──
+  console.log('Creating travel packages...');
+  await prisma.packageBooking.deleteMany();
+  await prisma.travelPackage.deleteMany();
+  const packageData = [
+    {
+      name: '禅宗经典朝圣5日游',
+      description: '追随六祖慧能足迹，遍访禅宗祖庭，深度体验禅修文化',
+      coverImage: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600',
+      packageType: 'CLASSIC',
+      basePrice: 328000,
+      memberPrice: 298000,
+      includes: { transport: true, hotel: true, meal: true, guide: true, insurance: true, ticket: true },
+      duration: 5,
+      maxPersons: 20,
+    },
+    {
+      name: '佛教四大名山深度体验8日',
+      description: '五台山、峨眉山、普陀山、九华山一次走遍，深度禅修+素斋体验',
+      coverImage: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=600',
+      packageType: 'DEEP',
+      basePrice: 598000,
+      memberPrice: 538000,
+      includes: { transport: true, hotel: true, meal: true, guide: true, insurance: true, ticket: true },
+      duration: 8,
+      maxPersons: 15,
+    },
+    {
+      name: '丝路文明尊享VIP10日',
+      description: '私人导游、五星酒店、专属车队，沿丝绸之路探访清真寺与佛窟',
+      coverImage: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600',
+      packageType: 'VIP',
+      basePrice: 1280000,
+      memberPrice: 1180000,
+      includes: { transport: true, hotel: true, meal: true, guide: true, insurance: true, ticket: true },
+      duration: 10,
+      maxPersons: 8,
+    },
+    {
+      name: '道教名山自由行3日',
+      description: '武当山/龙虎山任选，含住宿+门票，行程自由安排',
+      coverImage: 'https://images.unsplash.com/photo-1537531383496-f4749be1d49a?w=600',
+      packageType: 'FREE',
+      basePrice: 158000,
+      memberPrice: 138000,
+      includes: { transport: false, hotel: true, meal: false, guide: false, insurance: true, ticket: true },
+      duration: 3,
+      maxPersons: 30,
+    },
+    {
+      name: '基督教圣地巡礼团7日',
+      description: '耶路撒冷+伯利恒+拿撒勒，专业宗教学者随团讲解',
+      coverImage: 'https://images.unsplash.com/photo-1547483238-2cbf881a559f?w=600',
+      packageType: 'GROUP',
+      basePrice: 880000,
+      memberPrice: 798000,
+      includes: { transport: true, hotel: true, meal: true, guide: true, insurance: true, ticket: true },
+      duration: 7,
+      maxPersons: 25,
+    },
+    {
+      name: '恒河圣城经典朝圣6日',
+      description: '瓦拉纳西+菩提伽耶+鹿野苑，感受印度教与佛教的千年交融',
+      coverImage: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600',
+      packageType: 'CLASSIC',
+      basePrice: 458000,
+      memberPrice: 418000,
+      includes: { transport: true, hotel: true, meal: true, guide: true, insurance: true, ticket: false },
+      duration: 6,
+      maxPersons: 20,
+    },
+  ];
+
+  for (const pkg of packageData) {
+    await prisma.travelPackage.create({ data: pkg });
+  }
+  console.log(`  ✓ ${packageData.length} travel packages created`);
 }
 
 main()
