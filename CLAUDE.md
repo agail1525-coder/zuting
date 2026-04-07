@@ -452,13 +452,74 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 
 ---
 
-## 审查体系
+## 审查体系 — 项目++系统 (移植自作业郎18++体系)
+
+> **完整定义**: docs/protocols/11-项目++系统总索引.md
+> **技能文件**: docs/protocols/skills/ (10个++技能)
+> **统一骨架**: §0元数据 → §1角色 → §2作用域 → §3规则 → §4流程 → §5评分 → §6工具 → §7生命周期 → §8铁律 → §9联动
+
+### 10个++技能清单
+```
+#1  全审++ (FA) v2.0 — 顶层编排器，V1-V5+D6-D11共11维，并行Agent+级联审查 → hohoho/Y+/X+触发
+#2  项目++ (PJ)  — 标准文档生成器，PRD→DOC-XX+施工图+验收清单
+#3  业务++ (BLG) — 业务逻辑守卫，五问测试(Q1-Q5)+业务边界+竞品对标
+#4  页面++ (PQM) — PRD驱动页面重构，对标10大旅行竞品循环升级
+#5  盲区++ (BS)  — 隐性缺陷猎手，8维度(死按钮/伪空态/链路/参数/死锁/状态机/导航/反馈)
+#6  地狱++ (HELL)— 深层安全审计，8维度(IDOR/Guard/DTO/状态机/事务/韧性/XSS/泄露)
+#7  体验++ (UX)  — UX审计，8维度(三态/响应式/i18n/反馈/A11y/导航/感知/性能)
+#8  飞轮++ (FW)  — 闭环验证，6维度(CRUD/状态机/交易/UGC/事件链/数据一致)
+#9  五全++ (FF)  — 五端一致性，5维度(API契约/类型共享/数据/功能/配置)
+#10 RRR         — 3分钟快速自检，8点速查(tsc/空壳/API/种子/Guard/空态/i18n/import)
+```
+
+### 全审执行流 (hohoho)
+```
+Step 0: 读CLAUDE.md+PRD → Step 1: RRR预检
+Step 2: 业务++ → Step 3: 盲区++ → Step 4: 地狱++
+Step 5: 体验++ → Step 6: 飞轮++ → Step 7: 五全++
+Step 8: 汇总+修复P0/P1 → Step 9: 验证+报告
+```
+
+### V1-V5核心维度 + D6-D11扩展维度 (v2.0)
+```
+核心5维:
+  V1-代码质量: tsc零错/禁any/命名规范/死代码/统一导入 (开发必过)
+  V2-功能完整: API连通/CRUD完整/状态机/DTO验证/垂直切片/种子数据 (Commit必过)
+  V3-用户体验: 三态/响应式/i18n 7语言/交互反馈/无障碍/暗色一致 (PR必过)
+  V4-安全:     Guard/IDOR/输入校验/分页限制/XSS/@Roles+@UseGuards (发版必过)
+  V5-性能:     bundle/lazy load/图片优化/缓存/索引/staleTime分级 (大版本必过)
+
+扩展6维 (大版本必过):
+  D6-IDOR渗透:  userId归属/商家隔离/Admin权限/shareToken验证
+  D7-契约漂移:  前后端路径匹配/字段对齐/枚举一致/分页格式/价格单位
+  D8-韧性:      无界查询防护/超时包装/TOCTOU竞态/allSettled韧性
+  D9-安全深度:  XSS sanitize/错误泄露/SQL注入/DTO @MaxLength
+  D10-状态机:   AllowedTransitions/终态保护/审计日志/领域事件
+  D11-数据完整: $transaction/FK约束/幂等操作/@@unique/级联删除
+```
+
+### 评分体系
+```
+≥4.0 = ✅ PASS | 3.0-3.9 = ⚠️ PARTIAL | <3.0 = ❌ FAIL
+每个++独立前缀: FA/PJ/BLG/PQM/BS/HELL/UX/FW/FF/RRR
+每个++有Inspector(发现)/Executor(修复)/Verifier(验证)三角
+```
+
+### 系统铁律 (PP-01~PP-10)
+```
+[PP-01] 新建++必须遵循§0-§9统一骨架
+[PP-02] 每个++必须有N维×5⭐评分体系
+[PP-03] 评分前缀全局唯一
+[PP-04] ++只能升级不能降级
+[PP-05] 事故复盘必须产出≥1条新规则写入对应++
+```
 
 ### 页面++ (PRD驱动深度重构)
 ```
 铁律: 先读PRD → 扫描现状 → 写/更新重构PRD → 计划 → 执行 → 验证
 PRD路径: docs/prd/
 双向分析: 代码可能比PRD更好，不盲目删已有好代码
+竞品对标: 10大旅行网站 (Booking/Trip.com/Airbnb/Agoda/TripAdvisor/AmEx/Expedia/Skyscanner/Kayak/Priceline)
 ```
 
 ### 全审++ (hohoho)
