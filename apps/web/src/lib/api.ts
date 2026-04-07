@@ -56,9 +56,13 @@ export interface HolySite {
     averageRating: number;
     reviewCount: number;
   };
-  ticketPrice?: number | null;
+  ticketPrice?: string | null;
   visitDuration?: string | null;
   bestSeason?: string | null;
+  openingHours?: string | null;
+  transport?: string | null;
+  tips?: string[];
+  collectionCount?: number;
 }
 
 export interface Temple {
@@ -671,11 +675,12 @@ export async function transitionTrip(
 
 export async function addSiteToTrip(
   tripId: string,
-  siteId: string
+  siteId: string,
+  order = 0
 ): Promise<TripSite> {
   return fetchAuthed<TripSite>(`/api/trips/${tripId}/sites`, {
     method: "POST",
-    body: JSON.stringify({ siteId }),
+    body: JSON.stringify({ siteId, order }),
   });
 }
 
