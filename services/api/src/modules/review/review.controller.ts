@@ -121,6 +121,7 @@ export class ReviewController {
       targetId: query.targetId ?? '',
       page: query.page,
       limit: query.limit,
+      sort: query.sort,
     });
   }
 

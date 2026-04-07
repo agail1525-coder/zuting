@@ -63,12 +63,18 @@ export class ReviewService {
     targetId: string;
     page?: number;
     limit?: number;
+    sort?: 'latest' | 'helpful';
   }) {
-    const { targetType, targetId, page = 1, limit = 20 } = params;
+    const { targetType, targetId, page = 1, limit = 20, sort = 'latest' } = params;
     const take = Math.min(limit, 100);
     const where: Prisma.ReviewWhereInput = {};
     if (targetType) where.targetType = targetType;
     if (targetId) where.targetId = targetId;
+
+    const orderBy: Prisma.ReviewOrderByWithRelationInput =
+      sort === 'helpful'
+        ? { helpfulCount: 'desc' }
+        : { createdAt: 'desc' };
 
     const [data, total] = await Promise.all([
       this.prisma.review.findMany({
@@ -81,7 +87,7 @@ export class ReviewService {
           },
           _count: { select: { votes: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         skip: (page - 1) * take,
         take,
       }),

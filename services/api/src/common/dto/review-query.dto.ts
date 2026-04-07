@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 import { PaginationQueryDto } from './pagination.dto';
 
 export class ReviewAdminQueryDto extends PaginationQueryDto {
@@ -24,4 +24,9 @@ export class ReviewQueryDto extends PaginationQueryDto {
   @IsOptional()
   @IsString()
   targetId?: string;
+
+  @ApiPropertyOptional({ description: 'Sort order / 排序方式', enum: ['latest', 'helpful'] })
+  @IsOptional()
+  @IsIn(['latest', 'helpful'])
+  sort?: 'latest' | 'helpful';
 }
