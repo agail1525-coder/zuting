@@ -10,7 +10,7 @@ import { UpdateSealDto } from './dto/update-seal.dto';
 import type { SealSeries } from '@prisma/client';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { SealFilterQueryDto } from '../../common/dto/seal-filter-query.dto';
 
 const SEAL_SERIES_VALUES = ['CHUYIN', 'ZHONGYIN', 'YINGUOYIN', 'CHENGDAOYIN', 'GUIYUANYIN'];
 
@@ -24,10 +24,9 @@ export class SealController {
   @ApiOperation({ summary: '获取所有三十印 / Get all 30 seals' })
   @ApiQuery({ name: 'series', required: false, enum: SEAL_SERIES_VALUES })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('series') series?: string,
+    @Query() query: SealFilterQueryDto,
   ) {
-    return this.sealService.findAll(series as SealSeries, pagination.page, pagination.limit);
+    return this.sealService.findAll(query.series as SealSeries, query.page, query.limit);
   }
 
   @Get(':id')

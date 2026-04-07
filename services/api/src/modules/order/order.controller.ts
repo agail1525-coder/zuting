@@ -21,7 +21,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { OrderService } from './order.service';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { OrderQueryDto, OrderAdminQueryDto } from '../../common/dto/order-query.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PayOrderDto } from './dto/pay-order.dto';
 import { RefundOrderDto } from './dto/refund-order.dto';
@@ -110,17 +110,15 @@ export class OrderController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   findAll(
-    @Query() pagination: PaginationQueryDto,
+    @Query() query: OrderQueryDto,
     @CurrentUser('id') currentUserId: string,
-    @Query('tripId') tripId?: string,
-    @Query('status') status?: string,
   ) {
     return this.orderService.findAll({
       userId: currentUserId,
-      tripId,
-      status: status as OrderStatus,
-      page: pagination.page,
-      limit: pagination.limit,
+      tripId: query.tripId,
+      status: query.status as OrderStatus,
+      page: query.page,
+      limit: query.limit,
     });
   }
 
@@ -152,15 +150,13 @@ export class OrderController {
   @ApiResponse({ status: 401, description: 'Unauthorized. / 未授权。' })
   @ApiResponse({ status: 403, description: 'Forbidden — admin only. / 仅限管理员。' })
   findAllAdmin(
-    @Query() pagination: PaginationQueryDto,
-    @Query('status') status?: string,
-    @Query('search') search?: string,
+    @Query() query: OrderAdminQueryDto,
   ) {
     return this.orderService.findAllAdmin({
-      status: status as OrderStatus,
-      search,
-      page: pagination.page,
-      limit: pagination.limit,
+      status: query.status as OrderStatus,
+      search: query.search,
+      page: query.page,
+      limit: query.limit,
     });
   }
 

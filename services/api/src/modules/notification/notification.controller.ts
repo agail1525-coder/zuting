@@ -20,7 +20,7 @@ import { NotificationService } from './notification.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { NotificationQueryDto } from '../../common/dto/notification-query.dto';
 
 @ApiTags('notifications')
 @ApiBearerAuth()
@@ -40,14 +40,13 @@ export class NotificationController {
   @ApiResponse({ status: 401, description: 'Unauthorized — valid JWT required / 未授权' })
   findAll(
     @CurrentUser('id') userId: string,
-    @Query() pagination: PaginationQueryDto,
-    @Query('unreadOnly') unreadOnly?: string,
+    @Query() query: NotificationQueryDto,
   ) {
     return this.notificationService.findAll(
       userId,
-      pagination.page,
-      pagination.limit,
-      unreadOnly === 'true',
+      query.page,
+      query.limit,
+      query.unreadOnly === 'true',
     );
   }
 

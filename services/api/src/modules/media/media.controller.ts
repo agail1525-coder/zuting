@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { Public } from '../auth/decorators/public.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { MediaQueryDto } from '../../common/dto/media-query.dto';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 
@@ -87,17 +87,14 @@ export class MediaController {
     },
   })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('entityType') entityType?: string,
-    @Query('entityId') entityId?: string,
-    @Query('mediaType') mediaType?: string,
+    @Query() query: MediaQueryDto,
   ) {
     return this.mediaService.findAll({
-      entityType,
-      entityId,
-      mediaType,
-      page: pagination.page,
-      limit: pagination.limit,
+      entityType: query.entityType,
+      entityId: query.entityId,
+      mediaType: query.mediaType,
+      page: query.page,
+      limit: query.limit,
     });
   }
 

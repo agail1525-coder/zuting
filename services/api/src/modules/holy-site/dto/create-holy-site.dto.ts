@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsNotEmpty, IsUrl, MaxLength, Min, Max } from 'class-validator';
 
 export class CreateHolySiteDto {
   @ApiProperty({
@@ -7,6 +7,8 @@ export class CreateHolySiteDto {
     example: '菩提伽耶',
   })
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
   name: string;
 
   @ApiProperty({
@@ -14,6 +16,8 @@ export class CreateHolySiteDto {
     example: 'Bodh Gaya',
   })
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
   nameEn: string;
 
   @ApiProperty({
@@ -21,6 +25,8 @@ export class CreateHolySiteDto {
     example: 'India',
   })
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   country: string;
 
   @ApiProperty({
@@ -59,6 +65,8 @@ export class CreateHolySiteDto {
     example: 'The place where Siddhartha Gautama attained enlightenment under the Bodhi tree, becoming the Buddha.',
   })
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(10000)
   description: string;
 
   @ApiPropertyOptional({
@@ -67,6 +75,8 @@ export class CreateHolySiteDto {
   })
   @IsOptional()
   @IsString()
+  @IsUrl()
+  @MaxLength(2048)
   imageUrl?: string;
 
   @ApiPropertyOptional({
@@ -75,6 +85,7 @@ export class CreateHolySiteDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(2048)
   soundEffect?: string;
 
   @ApiProperty({
@@ -82,5 +93,6 @@ export class CreateHolySiteDto {
     example: 'clx1abc2d0000ab12cd34ef56',
   })
   @IsString()
+  @IsNotEmpty()
   religionId: string;
 }

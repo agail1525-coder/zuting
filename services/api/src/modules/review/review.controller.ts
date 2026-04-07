@@ -23,6 +23,7 @@ import { ReviewService } from './review.service';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { ReviewAdminQueryDto, ReviewQueryDto } from '../../common/dto/review-query.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -69,15 +70,13 @@ export class ReviewController {
   @ApiResponse({ status: 401, description: 'Unauthorized / 未授权' })
   @ApiResponse({ status: 403, description: 'Forbidden — admin only / 仅限管理员' })
   findAllAdmin(
-    @Query('targetType') targetType: string,
-    @Query('status') status: string,
-    @Query() pagination: PaginationQueryDto,
+    @Query() query: ReviewAdminQueryDto,
   ) {
     return this.reviewService.findAllAdmin({
-      targetType,
-      status,
-      page: pagination.page,
-      limit: pagination.limit,
+      targetType: query.targetType,
+      status: query.status,
+      page: query.page,
+      limit: query.limit,
     });
   }
 
@@ -115,15 +114,13 @@ export class ReviewController {
   @ApiQuery({ name: 'targetId', required: true })
   @ApiResponse({ status: 200, description: 'Paginated list of reviews / 评价列表（分页）' })
   findAll(
-    @Query('targetType') targetType: string,
-    @Query('targetId') targetId: string,
-    @Query() pagination: PaginationQueryDto,
+    @Query() query: ReviewQueryDto,
   ) {
     return this.reviewService.findAll({
-      targetType,
-      targetId,
-      page: pagination.page,
-      limit: pagination.limit,
+      targetType: query.targetType ?? '',
+      targetId: query.targetId ?? '',
+      page: query.page,
+      limit: query.limit,
     });
   }
 
@@ -141,11 +138,7 @@ export class ReviewController {
     @CurrentUser('id') userId: string,
     @Query() pagination: PaginationQueryDto,
   ) {
-    return this.reviewService.findMyReviews(
-      userId,
-      pagination.page,
-      pagination.limit,
-    );
+    return this.reviewService.findMyReviews(userId, pagination.page, pagination.limit);
   }
 
   @Public()

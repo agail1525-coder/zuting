@@ -21,7 +21,7 @@ import type { TripStatus } from '@prisma/client';
 import { TripService } from './trip.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { TripQueryDto } from '../../common/dto/trip-query.dto';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TransitionTripDto } from './dto/transition-trip.dto';
@@ -115,17 +115,15 @@ export class TripController {
     },
   })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('userId') userId?: string,
-    @Query('status') status?: string,
+    @Query() query: TripQueryDto,
     @CurrentUser('id') currentUserId?: string,
   ) {
     return this.tripService.findAll({
       currentUserId,
-      userId,
-      status: status as TripStatus,
-      page: pagination.page,
-      limit: pagination.limit,
+      userId: query.userId,
+      status: query.status as TripStatus,
+      page: query.page,
+      limit: query.limit,
     });
   }
 

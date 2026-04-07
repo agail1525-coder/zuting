@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { JournalService } from './journal.service';
 import { Public } from '../auth/decorators/public.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { JournalQueryDto } from '../../common/dto/journal-query.dto';
 import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateJournalDto } from './dto/update-journal.dto';
 
@@ -117,18 +117,15 @@ export class JournalController {
     },
   })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('userId') userId?: string,
-    @Query('tripId') tripId?: string,
-    @Query('isPublic') isPublic?: string,
+    @Query() query: JournalQueryDto,
     @CurrentUser('id') currentUserId?: string,
   ) {
     return this.journalService.findAll({
-      userId,
-      tripId,
-      isPublic: isPublic !== undefined ? isPublic === 'true' : undefined,
-      page: pagination.page,
-      limit: pagination.limit,
+      userId: query.userId,
+      tripId: query.tripId,
+      isPublic: query.isPublic !== undefined ? query.isPublic === 'true' : undefined,
+      page: query.page,
+      limit: query.limit,
       currentUserId,
     });
   }

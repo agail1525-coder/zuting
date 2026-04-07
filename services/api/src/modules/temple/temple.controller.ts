@@ -5,7 +5,7 @@ import { CreateTempleDto } from './dto/create-temple.dto';
 import { UpdateTempleDto } from './dto/update-temple.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { ReligionFilterQueryDto } from '../../common/dto/religion-filter-query.dto';
 
 @ApiTags('temples')
 @Controller('temples')
@@ -17,10 +17,9 @@ export class TempleController {
   @ApiOperation({ summary: '获取所有祖庭 / Get all ancestral temples' })
   @ApiQuery({ name: 'religionId', required: false })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('religionId') religionId?: string,
+    @Query() query: ReligionFilterQueryDto,
   ) {
-    return this.templeService.findAll(religionId, pagination.page, pagination.limit);
+    return this.templeService.findAll(query.religionId, query.page, query.limit);
   }
 
   @Get(':id')

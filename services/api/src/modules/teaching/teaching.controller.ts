@@ -5,7 +5,7 @@ import { CreateTeachingDto } from './dto/create-teaching.dto';
 import { UpdateTeachingDto } from './dto/update-teaching.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { ReligionFilterQueryDto } from '../../common/dto/religion-filter-query.dto';
 
 @ApiTags('teachings')
 @Controller('teachings')
@@ -17,10 +17,9 @@ export class TeachingController {
   @ApiOperation({ summary: '获取所有祖训 / Get all teachings' })
   @ApiQuery({ name: 'religionId', required: false })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('religionId') religionId?: string,
+    @Query() query: ReligionFilterQueryDto,
   ) {
-    return this.teachingService.findAll(religionId, pagination.page, pagination.limit);
+    return this.teachingService.findAll(query.religionId, query.page, query.limit);
   }
 
   @Get(':id')

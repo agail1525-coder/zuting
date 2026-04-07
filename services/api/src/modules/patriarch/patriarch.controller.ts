@@ -5,7 +5,7 @@ import { CreatePatriarchDto } from './dto/create-patriarch.dto';
 import { UpdatePatriarchDto } from './dto/update-patriarch.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { PaginationQueryDto } from '../../common/dto/pagination.dto';
+import { PatriarchFilterQueryDto } from '../../common/dto/patriarch-filter-query.dto';
 
 @ApiTags('patriarchs')
 @Controller('patriarchs')
@@ -18,11 +18,9 @@ export class PatriarchController {
   @ApiQuery({ name: 'religionId', required: false })
   @ApiQuery({ name: 'school', required: false, description: '禅宗流派 e.g. 曹洞宗' })
   findAll(
-    @Query() pagination: PaginationQueryDto,
-    @Query('religionId') religionId?: string,
-    @Query('school') school?: string,
+    @Query() query: PatriarchFilterQueryDto,
   ) {
-    return this.patriarchService.findAll(religionId, pagination.page, pagination.limit, school);
+    return this.patriarchService.findAll(query.religionId, query.page, query.limit, query.school);
   }
 
   @Get(':id')

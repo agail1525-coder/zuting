@@ -22,6 +22,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { UserService } from './user.service';
+import { UserQueryDto } from '../../common/dto/user-query.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -42,17 +43,14 @@ export class UserController {
   @ApiQuery({ name: 'isActive', required: false, description: 'Filter by active status' })
   @ApiResponse({ status: 200, description: 'Paginated user list' })
   listUsers(
-    @Query() pagination: PaginationQueryDto,
-    @Query('search') search?: string,
-    @Query('role') role?: string,
-    @Query('isActive') isActive?: string,
+    @Query() query: UserQueryDto,
   ) {
     return this.userService.listUsers({
-      page: pagination.page ?? 1,
-      limit: pagination.limit ?? 20,
-      search,
-      role,
-      isActive: isActive === undefined ? undefined : isActive === 'true',
+      page: query.page ?? 1,
+      limit: query.limit ?? 20,
+      search: query.search,
+      role: query.role,
+      isActive: query.isActive === undefined ? undefined : query.isActive === 'true',
     });
   }
 

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateHolySiteDto } from './dto/create-holy-site.dto';
@@ -77,13 +77,32 @@ export class HolySiteService {
     const cached = await this.redis.getJSON(cacheKey);
     if (cached) return cached;
 
-    const result = await this.prisma.holySite.findUnique({
+    const site = await this.prisma.holySite.findUnique({
       where: { id },
       include: { religion: true },
     });
-    if (result) {
-      await this.redis.setJSON(cacheKey, result, 900); // 15 min
-    }
+    if (!site) return null;
+
+    const [collectionCount, reviewAgg] = await Promise.all([
+      this.prisma.collectionItem.count({
+        where: { entityType: 'HOLY_SITE', entityId: id },
+      }),
+      this.prisma.review.aggregate({
+        where: { targetType: 'SITE', targetId: id, status: 'APPROVED' },
+        _avg: { rating: true },
+        _count: { _all: true },
+      }),
+    ]);
+
+    const result = {
+      ...site,
+      collectionCount,
+      reviewStats: {
+        averageRating: Math.round((reviewAgg._avg.rating ?? 0) * 10) / 10,
+        reviewCount: reviewAgg._count._all,
+      },
+    };
+    await this.redis.setJSON(cacheKey, result, 900); // 15 min
     return result;
   }
 
@@ -100,6 +119,13 @@ export class HolySiteService {
   }
 
   async remove(id: string) {
+    const [tripSiteCount, routeSiteCount] = await Promise.all([
+      this.prisma.tripSite.count({ where: { siteId: id } }),
+      this.prisma.routeSite.count({ where: { siteId: id } }),
+    ]);
+    if (tripSiteCount > 0 || routeSiteCount > 0) {
+      throw new ConflictException('Cannot delete holy site with associated trips or routes');
+    }
     const result = await this.prisma.holySite.delete({ where: { id } });
     await this.invalidateCache(id);
     return result;
@@ -108,8 +134,23 @@ export class HolySiteService {
   private async invalidateCache(id?: string) {
     try {
       const client = this.redis.getClient();
-      const listKeys = await client.keys('holy-site:list:*');
-      if (listKeys.length > 0) await this.redis.del(...listKeys);
+      // Use SCAN instead of KEYS to avoid O(N) blocking in production
+      const stream = client.scanStream({ match: 'holy-site:list:*', count: 100 });
+      await new Promise<void>((resolve, reject) => {
+        stream.on('data', (keys: string[]) => {
+          if (keys.length > 0) {
+            const pipeline = client.pipeline();
+            for (const key of keys) {
+              pipeline.del(key);
+            }
+            pipeline.exec().catch((err) =>
+              this.logger.warn('Pipeline exec failed during cache invalidation', err),
+            );
+          }
+        });
+        stream.on('end', () => resolve());
+        stream.on('error', (err) => reject(err));
+      });
       if (id) {
         await this.redis.del(`holy-site:id:${id}`);
       }
