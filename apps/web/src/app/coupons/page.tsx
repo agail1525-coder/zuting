@@ -18,8 +18,8 @@ import {
 
 type TabKey = "available" | "mine" | "used";
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("zh-CN", {
+function formatDate(dateStr: string, locale = "zh-CN"): string {
+  return new Date(dateStr).toLocaleDateString(locale, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -43,7 +43,7 @@ interface AvailableCouponCardProps {
 }
 
 function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCouponCardProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const isFixed = coupon.type === "FIXED" || coupon.type === "fixed";
   const accentColor = isFixed ? "#EF4444" : "#3B82F6";
   const bgLight = isFixed ? "bg-red-50" : "bg-blue-50";
@@ -89,11 +89,11 @@ function AvailableCouponCard({ coupon, onClaim, claiming, claimed }: AvailableCo
             )}
             <div className="flex items-center gap-2 mt-1">
               <p className={`text-xs ${expiring ? "text-orange-500 font-medium" : "text-gray-400"}`}>
-                {expiring ? t("coupons.expiringSoon") : ""}{t("coupons.validUntil", { date: formatDate(coupon.endAt) })}
+                {expiring ? t("coupons.expiringSoon") : ""}{t("coupons.validUntil", { date: formatDate(coupon.endAt, locale) })}
               </p>
               {days <= 3 && days > 0 && (
                 <span className="text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded font-medium">
-                  {days}天后过期
+                  {t("coupons.expiresInDays", { days })}
                 </span>
               )}
             </div>
@@ -140,7 +140,7 @@ interface MyCouponCardProps {
 }
 
 function MyCouponCard({ userCoupon, used }: MyCouponCardProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { coupon } = userCoupon;
   const isFixed = coupon.type === "FIXED" || coupon.type === "fixed";
   const accentColor = used ? "#9CA3AF" : isFixed ? "#EF4444" : "#3B82F6";
@@ -183,12 +183,12 @@ function MyCouponCard({ userCoupon, used }: MyCouponCardProps) {
             )}
             <div className="flex items-center gap-2 mt-1">
               <p className={`text-xs ${expiring ? "text-orange-500 font-medium" : "text-gray-400"}`}>
-                {expiring ? "⚠️ " : ""}{t("coupons.validUntil", { date: formatDate(coupon.endAt) })}
+                {expiring ? t("coupons.expiringSoon") : ""}{t("coupons.validUntil", { date: formatDate(coupon.endAt, locale) })}
               </p>
             </div>
             {used && userCoupon.usedAt && (
               <p className="text-xs text-gray-400 mt-0.5">
-                {t("coupons.usedAt", { date: formatDate(userCoupon.usedAt) })}
+                {t("coupons.usedAt", { date: formatDate(userCoupon.usedAt, locale) })}
               </p>
             )}
           </div>
@@ -258,7 +258,7 @@ export default function CouponsPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!user) return;
@@ -288,7 +288,7 @@ export default function CouponsPage() {
         });
       }
     },
-    []
+    [t]
   );
 
   // Wallet stats
@@ -350,21 +350,21 @@ export default function CouponsPage() {
           <div className="mb-6 bg-gradient-to-r from-[#0066FF] to-blue-600 rounded-2xl p-5 text-white relative overflow-hidden">
             <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
             <div className="relative">
-              <p className="text-white/70 text-sm mb-1">我的优惠券钱包</p>
+              <p className="text-white/70 text-sm mb-1">{t("coupons.walletTitle")}</p>
               <div className="flex items-end gap-6">
                 <div>
                   <span className="text-3xl font-bold">{walletStats.count}</span>
-                  <span className="text-white/70 text-sm ml-1">张可用</span>
+                  <span className="text-white/70 text-sm ml-1">{t("coupons.walletAvailable")}</span>
                 </div>
                 {walletStats.totalSavings > 0 && (
                   <div>
                     <span className="text-lg font-semibold">¥{(walletStats.totalSavings / 100).toFixed(0)}</span>
-                    <span className="text-white/70 text-xs ml-1">面值总额</span>
+                    <span className="text-white/70 text-xs ml-1">{t("coupons.walletTotalValue")}</span>
                   </div>
                 )}
                 {walletStats.expiringSoon > 0 && (
                   <div className="bg-white/20 px-2.5 py-1 rounded-full text-xs font-medium">
-                    ⚠️ {walletStats.expiringSoon} 张即将过期
+                    {t("coupons.walletExpiringSoon", { count: walletStats.expiringSoon })}
                   </div>
                 )}
               </div>
@@ -382,7 +382,7 @@ export default function CouponsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="搜索优惠券名称..."
+              placeholder={t("coupons.searchPlaceholder")}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
             />
           </div>
@@ -431,7 +431,7 @@ export default function CouponsPage() {
             <div className="text-5xl mb-4">{searchQuery ? "🔍" : "🎫"}</div>
             <p className="text-gray-500 text-sm">
               {searchQuery
-                ? "没有找到匹配的优惠券"
+                ? t("coupons.searchNoResult")
                 : activeTab === "available"
                 ? t("coupons.emptyAvailable")
                 : activeTab === "mine"
@@ -443,14 +443,14 @@ export default function CouponsPage() {
                 onClick={() => setSearchQuery("")}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                清除搜索
+                {t("coupons.clearSearch")}
               </button>
             ) : activeTab !== "available" ? (
               <button
                 onClick={() => setActiveTab("available")}
                 className="mt-3 text-sm text-[#0066FF] hover:underline"
               >
-                去领取优惠券 →
+                {t("coupons.goClaimCoupons")}
               </button>
             ) : null}
           </div>
@@ -481,17 +481,17 @@ export default function CouponsPage() {
         {!loading && activeTab === "mine" && myCoupons.length > 0 && (
           <div className="mt-8 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-6 border border-orange-200/50 text-center">
             <span className="text-2xl block mb-2">🛒</span>
-            <h3 className="text-base font-semibold text-gray-900">别让优惠券过期浪费</h3>
+            <h3 className="text-base font-semibold text-gray-900">{t("coupons.ctaTitle")}</h3>
             <p className="text-gray-500 text-xs mt-1">
               {walletStats.expiringSoon > 0
-                ? `${walletStats.expiringSoon} 张即将过期，赶紧用起来！`
-                : "浏览精品路线，使用优惠券享超值优惠"}
+                ? t("coupons.ctaExpiring", { count: walletStats.expiringSoon })
+                : t("coupons.ctaDefault")}
             </p>
             <Link
-              href="/routes"
+              href="/holy-sites#routes"
               className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"
             >
-              浏览路线立即使用 →
+              {t("coupons.ctaBrowseRoutes")}
             </Link>
           </div>
         )}
@@ -499,7 +499,7 @@ export default function CouponsPage() {
         {!loading && activeTab === "available" && availableCoupons.length > 0 && (
           <div className="mt-8 text-center">
             <Link href="/promotions" className="text-sm text-[#0066FF] hover:underline">
-              查看更多促销活动 →
+              {t("coupons.viewMorePromotions")}
             </Link>
           </div>
         )}

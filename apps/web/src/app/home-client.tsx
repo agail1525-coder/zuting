@@ -44,12 +44,12 @@ const CategorySvg = {
 
 function getCategoryIcons(t: (key: string) => string) {
   return [
-    { label: t("home.category.zen"), svg: CategorySvg.zen, href: "/routes?category=ZEN" },
-    { label: t("home.category.buddhist"), svg: CategorySvg.buddhist, href: "/routes?category=BUDDHIST" },
-    { label: t("home.category.taoist"), svg: CategorySvg.taoist, href: "/routes?category=TAOIST" },
-    { label: t("home.category.christian"), svg: CategorySvg.christian, href: "/routes?category=CHRISTIAN" },
-    { label: t("home.category.islamic"), svg: CategorySvg.islamic, href: "/routes?category=ISLAMIC" },
-    { label: t("home.category.crossCultural"), svg: CategorySvg.cross, href: "/routes?category=CROSS_CULTURAL" },
+    { label: t("home.category.zen"), svg: CategorySvg.zen, href: "/holy-sites?category=ZEN" },
+    { label: t("home.category.buddhist"), svg: CategorySvg.buddhist, href: "/holy-sites?category=BUDDHIST" },
+    { label: t("home.category.taoist"), svg: CategorySvg.taoist, href: "/holy-sites?category=TAOIST" },
+    { label: t("home.category.christian"), svg: CategorySvg.christian, href: "/holy-sites?category=CHRISTIAN" },
+    { label: t("home.category.islamic"), svg: CategorySvg.islamic, href: "/holy-sites?category=ISLAMIC" },
+    { label: t("home.category.crossCultural"), svg: CategorySvg.cross, href: "/holy-sites?category=CROSS_CULTURAL" },
     { label: t("home.category.aiPlanning"), svg: CategorySvg.ai, href: "/chat" },
     { label: t("home.category.wiki"), svg: CategorySvg.book, href: "/religions" },
   ];
@@ -86,10 +86,10 @@ const RELIGION_KEYWORD_MAP: Record<string, string[]> = {
 /* ─── Sub Components ─── */
 
 function RouteCard({ route, t }: { route: Route; t: (key: string) => string }) {
-  const price = (route.priceFrom / 100).toLocaleString();
+  const price = ((route.priceFrom ?? 0) / 100).toLocaleString();
   const categoryLabels = getCategoryLabels(t);
   return (
-    <Link href={`/routes/${route.slug}`} className="group">
+    <Link href={`/holy-sites/routes/${route.slug}`} className="group">
       <div className="bg-white rounded-xl overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
         <div className="relative h-52 overflow-hidden">
           {route.coverImage ? (
@@ -103,11 +103,11 @@ function RouteCard({ route, t }: { route: Route; t: (key: string) => string }) {
           )}
           <div className="absolute top-3 left-3">
             <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm text-gray-600">
-              {categoryLabels[route.category] ?? route.category} · {route.duration}{t("home.days")}{route.nights}{t("home.nights")}
+              {categoryLabels[route.category] ?? route.category} · {route.duration ?? 0}{t("home.days")}{route.nights ?? 0}{t("home.nights")}
             </span>
           </div>
           {/* Booking.com style: booking count badge */}
-          {route.bookCount > 0 && (
+          {(route.bookCount ?? 0) > 0 && (
             <div className="absolute top-3 right-3">
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500 text-white">
                 {route.bookCount}+ {t("home.booked")}
@@ -127,10 +127,10 @@ function RouteCard({ route, t }: { route: Route; t: (key: string) => string }) {
           <div className="flex items-center justify-between mt-3">
             <span className="text-gray-900 font-bold">¥{price}<span className="text-xs text-gray-500 font-normal">{t("home.perPerson")}</span></span>
             <div className="flex items-center gap-1.5">
-              {route.rating && (
+              {typeof route.rating === "number" && route.rating > 0 && (
                 <span className="px-1.5 py-0.5 rounded bg-blue-600 text-white text-xs font-bold">{route.rating.toFixed(1)}</span>
               )}
-              {route.reviewCount > 0 && (
+              {(route.reviewCount ?? 0) > 0 && (
                 <span className="text-xs text-gray-400">{route.reviewCount}{t("home.reviews")}</span>
               )}
             </div>
@@ -182,9 +182,9 @@ function FlashDealBanner({ routes, t }: { routes: Route[]; t: (key: string) => s
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
           {dealRoutes.map((route) => {
-            const price = Math.round(route.priceFrom / 100);
+            const price = Math.round((route.priceFrom ?? 0) / 100);
             return (
-              <Link key={route.id} href={`/routes/${route.slug}`} className="group p-4 hover:bg-gray-50 transition-colors">
+              <Link key={route.id} href={`/holy-sites/routes/${route.slug}`} className="group p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start gap-3">
                   <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50">
                     {route.coverImage ? (
@@ -197,7 +197,7 @@ function FlashDealBanner({ routes, t }: { routes: Route[]; t: (key: string) => s
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm text-gray-900 line-clamp-1 group-hover:text-blue-600">{route.title}</h3>
-                    <p className="text-gray-500 text-xs mt-0.5">{route.duration}{t("home.days")}{route.nights}{t("home.nights")}</p>
+                    <p className="text-gray-500 text-xs mt-0.5">{route.duration ?? 0}{t("home.days")}{route.nights ?? 0}{t("home.nights")}</p>
                     <div className="flex items-baseline gap-2 mt-1.5">
                       <span className="font-bold text-gray-900">¥{price.toLocaleString()}{t("home.perPerson")}</span>
                     </div>
@@ -277,7 +277,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
     if (activeSearchTab === "ai") {
       window.location.href = `/chat`;
     } else if (activeSearchTab === "routes") {
-      window.location.href = `/routes?q=${encodeURIComponent(q)}`;
+      window.location.href = `/holy-sites?q=${encodeURIComponent(q)}`;
     } else if (activeSearchTab === "wiki") {
       window.location.href = `/search?q=${encodeURIComponent(q)}&type=all`;
     } else {
@@ -316,6 +316,16 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/* ══════ Error Banner ══════ */}
+      {error && (
+        <div className="bg-red-50 border-b border-red-200">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2 text-sm text-red-700">
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span>{t("home.loadError")}</span>
+          </div>
+        </div>
+      )}
 
       {/* ══════ Section 1: Hero + Search + Category Nav ══════ */}
       <section className="relative hero-bg pt-28 pb-20 md:pt-36 md:pb-28">
@@ -409,7 +419,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <p className="text-xs text-gray-500">{t("home.seasonalDesc")}</p>
             </div>
           </div>
-          <Link href="/routes" className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors shrink-0">
+          <Link href="/holy-sites#routes" className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors shrink-0">
             {t("home.seasonalCta")}
           </Link>
         </div>
@@ -423,7 +433,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <h2 className="text-3xl font-bold tracking-tight text-gray-900">{t("home.featuredRoutes")}</h2>
               <p className="text-base text-gray-500 mt-2">{t("home.featuredRoutesDesc")}</p>
             </div>
-            <Link href="/routes" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
+            <Link href="/holy-sites#routes" className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
               {t("home.viewAll")} →
             </Link>
           </div>
@@ -663,11 +673,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                             <span>{guide.user?.nickname || t("home.traveler")}</span>
                             <span className="flex items-center gap-0.5">
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                              {guide.viewCount.toLocaleString()}
+                              {(guide.viewCount ?? 0).toLocaleString()}
                             </span>
                             <span className="flex items-center gap-0.5">
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                              {guide.likeCount}
+                              {guide.likeCount ?? 0}
                             </span>
                           </div>
                         </div>
@@ -687,13 +697,13 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                         <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                           <span className="flex items-center gap-1">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-                            {q.answerCount} {t("home.answers")}
+                            {q.answerCount ?? 0} {t("home.answers")}
                           </span>
                           <span className="flex items-center gap-1">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                            {q.viewCount.toLocaleString()} {t("home.views")}
+                            {(q.viewCount ?? 0).toLocaleString()} {t("home.views")}
                           </span>
-                          {q.tags.length > 0 && (
+                          {Array.isArray(q.tags) && q.tags.length > 0 && (
                             <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-500">{q.tags[0]}</span>
                           )}
                         </div>
@@ -721,7 +731,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <p className="text-gray-600 text-sm italic leading-relaxed">&ldquo;{t(`home.testimonial${i}.text`)}&rdquo;</p>
               <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
-                  {t(`home.testimonial${i}.name`)[0]}
+                  {(t(`home.testimonial${i}.name`) || "?")[0]}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{t(`home.testimonial${i}.name`)}</p>
@@ -792,11 +802,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                       <span className="flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                        {guide.viewCount.toLocaleString()}
+                        {(guide.viewCount ?? 0).toLocaleString()}
                       </span>
                       <span className="flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                        {guide.likeCount}
+                        {guide.likeCount ?? 0}
                       </span>
                     </div>
                   </div>
@@ -946,7 +956,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
             {t("home.ctaDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-            <Link href="/routes" className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors text-sm">
+            <Link href="/holy-sites#routes" className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors text-sm">
               {t("home.browseRoutes")}
             </Link>
             <Link href="/chat" className="px-8 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-lg transition-colors text-sm shadow-sm">

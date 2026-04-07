@@ -17,16 +17,20 @@ import {
 
 // --- Review Card ---
 
-const SUB_SCORE_LABELS: Record<string, string> = {
-  spiritual: "灵性氛围",
-  cultural: "文化深度",
-  accessibility: "可达性",
-  guideQuality: "导览质量",
-  authenticity: "历史真实性",
-};
+function useSubScoreLabels(): Record<string, string> {
+  const { t } = useTranslation();
+  return {
+    spiritual: t("review.subScores.spiritual") || "灵性氛围",
+    cultural: t("review.subScores.cultural") || "文化深度",
+    accessibility: t("review.subScores.accessibility") || "可达性",
+    guideQuality: t("review.subScores.guideQuality") || "导览质量",
+    authenticity: t("review.subScores.authenticity") || "历史真实性",
+  };
+}
 
 function ReviewCard({ review }: { review: Review }) {
   const { t } = useTranslation();
+  const subScoreLabels = useSubScoreLabels();
   const [voted, setVoted] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
   const [voteLoading, setVoteLoading] = useState(false);
@@ -60,7 +64,7 @@ function ReviewCard({ review }: { review: Review }) {
           {review.user.avatar ? (
             <OptimizedImage
               src={review.user.avatar}
-              alt={review.user.nickname ?? "用户"}
+              alt={review.user.nickname ?? t("review.user")}
               width={36}
               height={36}
               className="w-9 h-9 rounded-full object-cover border border-gray-200"
@@ -87,12 +91,12 @@ function ReviewCard({ review }: { review: Review }) {
               ? "bg-[#0066FF]/10 border-[#0066FF]/30 text-[#0066FF]"
               : "bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700"
           } disabled:opacity-50`}
-          title={voted ? "取消有用" : "标记为有用"}
+          title={voted ? t("review.cancelHelpful") : t("review.markHelpful")}
         >
           <svg className="w-3.5 h-3.5" fill={voted ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
           </svg>
-          有用{voteCount > 0 && ` · ${voteCount}`}
+          {t("review.helpful")}{voteCount > 0 && ` · ${voteCount}`}
         </button>
       </div>
 
@@ -101,7 +105,7 @@ function ReviewCard({ review }: { review: Review }) {
         <StarRating value={review.rating} size="sm" readonly />
         {review.subScores && Object.entries(review.subScores).map(([key, val]) => (
           <span key={key} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-xs text-gray-500">
-            {SUB_SCORE_LABELS[key] ?? key} <span className="font-medium text-gray-700">{val}</span>
+            {subScoreLabels[key] ?? key} <span className="font-medium text-gray-700">{val}</span>
           </span>
         ))}
       </div>
@@ -120,7 +124,7 @@ function ReviewCard({ review }: { review: Review }) {
               onClick={() => setLightboxImg(img)}
               className="relative w-28 h-28 rounded-lg overflow-hidden border border-gray-200 hover:border-[#0066FF]/40 transition-colors"
             >
-              <OptimizedImage src={img} alt={`评价图片 ${idx + 1}`} width={112} height={112} className="w-full h-full object-cover" />
+              <OptimizedImage src={img} alt={`${t("review.reviewImage")} ${idx + 1}`} width={112} height={112} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
@@ -132,7 +136,7 @@ function ReviewCard({ review }: { review: Review }) {
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
           onClick={() => setLightboxImg(null)}
         >
-          <button aria-label="关闭图片" className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
+          <button aria-label={t("review.closeLightbox")} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl z-10" onClick={() => setLightboxImg(null)}>✕</button>
           <div className="relative max-w-4xl max-h-[85vh] m-4" onClick={(e) => e.stopPropagation()}>
             <OptimizedImage src={lightboxImg} alt="Review photo" width={800} height={600} className="max-w-full max-h-[85vh] object-contain rounded-lg" />
           </div>
@@ -272,7 +276,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
             onClick={() => loadReviews(1, false)}
             className="mt-3 text-xs text-[#0066FF] hover:underline"
           >
-            重试
+            {t("review.retry")}
           </button>
         </div>
       </div>
@@ -306,7 +310,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
             onClick={() => setModalOpen(true)}
             className="px-4 py-2 text-sm font-medium bg-[#0066FF] hover:bg-[#0052CC] text-white rounded-xl transition-colors shadow-sm"
           >
-            写评价
+            {t("review.writeReview")}
           </button>
         </div>
 
@@ -318,7 +322,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
               onClick={() => setModalOpen(true)}
               className="mt-1 px-5 py-2 text-sm font-medium bg-[#0066FF] hover:bg-[#0052CC] text-white rounded-xl transition-colors"
             >
-              成为第一个评价的人
+              {t("review.beFirst")}
             </button>
           </div>
         ) : (
@@ -338,11 +342,11 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
             {/* Filter Tabs (Trip.com style) */}
             <div className="flex items-center gap-1 mb-5 overflow-x-auto pb-1 -mx-1 px-1">
               {([
-                { key: "all" as FilterType, label: "全部" },
-                { key: "latest" as FilterType, label: "最新" },
-                { key: "photo" as FilterType, label: "有图" },
-                { key: "positive" as FilterType, label: "好评" },
-                { key: "negative" as FilterType, label: "差评" },
+                { key: "all" as FilterType, label: t("review.filter.all") },
+                { key: "latest" as FilterType, label: t("review.filter.latest") },
+                { key: "photo" as FilterType, label: t("review.filter.photo") },
+                { key: "positive" as FilterType, label: t("review.filter.positive") },
+                { key: "negative" as FilterType, label: t("review.filter.negative") },
               ]).map(({ key, label }) => (
                 <button
                   key={key}
@@ -372,7 +376,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
               ) : (
                 <div className="flex flex-col items-center justify-center py-8 text-[#8592a6]">
                   <span className="text-3xl mb-2">📭</span>
-                  <span className="text-sm">暂无符合条件的评价</span>
+                  <span className="text-sm">{t("review.noMatchingReviews")}</span>
                 </div>
               )}
             </div>
@@ -385,7 +389,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
                   disabled={loadingMore}
                   className="px-6 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-[#455873] hover:bg-[#f5f7fa] hover:border-gray-300 transition-all disabled:opacity-50"
                 >
-                  {loadingMore ? "加载中..." : `加载更多 (${total - allReviews.length} 条)`}
+                  {loadingMore ? t("review.loading") : t("review.loadMoreCount", { count: total - allReviews.length })}
                 </button>
               </div>
             )}

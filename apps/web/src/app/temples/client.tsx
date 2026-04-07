@@ -186,7 +186,7 @@ function TempleCardEnhanced({
             href={`/temples/${temple.id}`}
             className="flex-1 text-center text-xs font-medium text-[#0066FF] hover:text-[#0052CC] py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
           >
-            {t("common.viewDetail") || "查看详情"}
+            {t("common.viewDetails")}
           </Link>
           <Link
             href={`/chat?q=${encodeURIComponent(t("temples.planVisitPrompt").replace("{name}", temple.name))}`}
@@ -267,7 +267,7 @@ function TimelineCard({ temple, religionMap, index, t }: TimelineCardProps) {
           🏛
         </div>
         <div className="text-[10px] text-gray-400 mt-1 text-center whitespace-nowrap">
-          {isNaN(year) ? t("temples.timeline.unknownDate") : `${Math.abs(year)} ${year < 0 ? "BCE" : "CE"}`}
+          {isNaN(year) ? t("temples.timeline.unknownDate") : `${Math.abs(year)} ${year < 0 ? t("temples.timeline.bce") : t("temples.timeline.ce")}`}
         </div>
       </div>
 
@@ -467,7 +467,7 @@ interface Props {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function TemplesClient({ religions, temples, error }: Props) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const SORT_OPTIONS = useSortOptions(t);
 
   // Filter & search state
@@ -495,8 +495,8 @@ export default function TemplesClient({ religions, temples, error }: Props) {
   // Unique countries
   const countries = useMemo(() => {
     const set = new Set(temples.map((t) => t.country));
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "zh"));
-  }, [temples]);
+    return Array.from(set).sort((a, b) => a.localeCompare(b, locale));
+  }, [temples, locale]);
 
   // Stats
   const stats = useMemo(() => ({
@@ -522,9 +522,9 @@ export default function TemplesClient({ religions, temples, error }: Props) {
       );
     }
     result = [...result].sort((a, b) => {
-      if (sort === "name-asc") return a.name.localeCompare(b.name, "zh");
-      if (sort === "name-desc") return b.name.localeCompare(a.name, "zh");
-      if (sort === "country") return a.country.localeCompare(b.country);
+      if (sort === "name-asc") return a.name.localeCompare(b.name, locale);
+      if (sort === "name-desc") return b.name.localeCompare(a.name, locale);
+      if (sort === "country") return a.country.localeCompare(b.country, locale);
       if (sort === "founded" || sort === "era-old") {
         const ya = extractYear(a.foundingDate);
         const yb = extractYear(b.foundingDate);
@@ -544,7 +544,7 @@ export default function TemplesClient({ religions, temples, error }: Props) {
       return 0;
     });
     return result;
-  }, [temples, filter, countryFilter, eraFilter, search, sort]);
+  }, [temples, filter, countryFilter, eraFilter, search, sort, locale]);
 
   const hasActiveFilters = !!(filter || countryFilter || search || eraFilter);
 
@@ -577,8 +577,8 @@ export default function TemplesClient({ religions, temples, error }: Props) {
       if (!map[temple.country]) map[temple.country] = [];
       map[temple.country].push(temple);
     }
-    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
-  }, [filtered]);
+    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b, locale));
+  }, [filtered, locale]);
 
   // ── Error state ──
   if (error) {
@@ -858,28 +858,28 @@ export default function TemplesClient({ religions, temples, error }: Props) {
 
             {/* Quick links */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h3 className="font-bold text-gray-900 text-sm mb-3">🔗 快速导航</h3>
+              <h3 className="font-bold text-gray-900 text-sm mb-3">🔗 {t("temples.quickNav.title")}</h3>
               <div className="space-y-2">
-                <Link href="/routes" className="flex items-center justify-between text-xs text-gray-600 hover:text-[#0066FF] py-1 border-b border-gray-50 last:border-0">
-                  <span>朝圣路线</span>
+                <Link href="/holy-sites#routes" className="flex items-center justify-between text-xs text-gray-600 hover:text-[#0066FF] py-1 border-b border-gray-50 last:border-0">
+                  <span>{t("temples.quickNav.routes")}</span>
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
                 <Link href="/patriarchs" className="flex items-center justify-between text-xs text-gray-600 hover:text-[#0066FF] py-1 border-b border-gray-50 last:border-0">
-                  <span>祖师先贤</span>
+                  <span>{t("temples.quickNav.patriarchs")}</span>
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
                 <Link href="/chat" className="flex items-center justify-between text-xs text-gray-600 hover:text-[#0066FF] py-1 border-b border-gray-50 last:border-0">
-                  <span>AI规划师</span>
+                  <span>{t("temples.quickNav.aiPlanner")}</span>
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
                 <Link href="/map" className="flex items-center justify-between text-xs text-gray-600 hover:text-[#0066FF] py-1">
-                  <span>全球地图</span>
+                  <span>{t("temples.quickNav.globalMap")}</span>
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>

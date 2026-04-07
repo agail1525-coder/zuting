@@ -213,7 +213,7 @@ function LearningPath({ patriarchName, religionName }: { patriarchName: string; 
   const steps = [
     { step: "01", title: t("patriarchDetail.learnBio"), desc: t("patriarchDetail.learnBioDesc", { name: patriarchName }), href: "#sec-bio" },
     { step: "02", title: t("patriarchDetail.learnTeaching"), desc: t("patriarchDetail.learnTeachingDesc"), href: "#sec-teaching" },
-    { step: "03", title: t("patriarchDetail.learnPilgrimage"), desc: t("patriarchDetail.learnPilgrimageDesc"), href: "/routes" },
+    { step: "03", title: t("patriarchDetail.learnPilgrimage"), desc: t("patriarchDetail.learnPilgrimageDesc"), href: "/holy-sites#routes" },
   ];
   return (
     <div className="mt-6 p-5 bg-[#f5f7fa] rounded-xl border border-gray-100">
@@ -294,7 +294,7 @@ function StickySidebar({ patriarch }: { patriarch: Patriarch }) {
         >
           {t("patriarchDetail.aiDeepAnalysis")}
         </Link>
-        <Link href="/routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
+        <Link href="/holy-sites#routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
           {t("patriarchDetail.viewPilgrimageRoutes")}
         </Link>
 

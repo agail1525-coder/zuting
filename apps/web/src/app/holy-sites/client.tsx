@@ -7,8 +7,9 @@ import EncyclopediaToolbar from "@/components/EncyclopediaToolbar";
 import HolySiteCard from "@/components/HolySiteCard";
 import WorldMapDynamic from "@/components/WorldMapDynamic";
 import MobileNav from "@/components/MobileNav";
-import type { Religion, HolySite } from "@/lib/api";
+import type { Religion, HolySite, Route } from "@/lib/api";
 import DataLoadError from "@/components/DataLoadError";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const PAGE_SIZE = 12;
 
@@ -31,6 +32,7 @@ const CONTINENT_KEYS: ContinentKey[] = ["asia", "europe", "middleEast", "africa"
 interface Props {
   religions: Religion[];
   holySites: HolySite[];
+  featuredRoutes?: Route[];
   error?: boolean;
 }
 
@@ -49,7 +51,7 @@ function CardSkeleton() {
   );
 }
 
-export default function HolySitesClient({ religions, holySites, error }: Props) {
+export default function HolySitesClient({ religions, holySites, featuredRoutes = [], error }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string | null>(null);
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
@@ -213,6 +215,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             </svg>
             <input
               type="text"
+              aria-label="Search holy sites"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setVisibleCount(PAGE_SIZE); }}
               placeholder={t("holySites.searchPlaceholder")}
@@ -221,12 +224,88 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
           </div>
         </div>
 
+        {/* ══════ Featured Routes — Top Prominence ══════ */}
+        {featuredRoutes.length > 0 && (
+          <div id="routes" className="mb-10 bg-gradient-to-b from-[#0066FF]/5 to-transparent rounded-2xl p-6 md:p-8 border border-[#0066FF]/10">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">HOT</span>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t("holySites.routes.title")}</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">{t("holySites.routes.subtitle")}</p>
+                </div>
+              </div>
+              <Link
+                href="/holy-sites#routes"
+                className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium transition-colors whitespace-nowrap"
+              >
+                {t("holySites.routes.viewAll")} →
+              </Link>
+            </div>
+            <div className="flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {featuredRoutes.map((route) => {
+                const price = route.priceFrom ? (route.priceFrom / 100).toLocaleString() : null;
+                const siteNames = (route.sites || []).slice(0, 4).map((s: { site?: { name?: string }; siteName?: string }) => s.site?.name || s.siteName || "");
+                return (
+                  <Link
+                    key={route.id}
+                    href={`/holy-sites/routes/${route.slug}`}
+                    className="group flex-none w-[300px] md:w-[340px] snap-start"
+                  >
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-[#0066FF]/30 transition-all duration-300">
+                      <div className="relative h-44 overflow-hidden">
+                        {route.coverImage ? (
+                          <OptimizedImage src={route.coverImage} alt={route.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center text-4xl">🗺️</div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                        <div className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-medium text-gray-700">
+                          {route.duration}{t("holySites.routes.days")} · {(route.sites || []).length}{t("holySites.routes.stops")}
+                        </div>
+                        <div className="absolute bottom-3 left-3 right-3">
+                          <h3 className="text-white font-bold text-base line-clamp-1">{route.title}</h3>
+                          {route.subtitle && <p className="text-white/80 text-xs mt-0.5 line-clamp-1">{route.subtitle}</p>}
+                        </div>
+                      </div>
+                      {siteNames.length > 0 && (
+                        <div className="px-4 pt-3 flex items-center gap-1 overflow-hidden">
+                          {siteNames.map((name: string, i: number) => (
+                            <div key={i} className="flex items-center gap-1 shrink-0">
+                              <div className={`w-2 h-2 rounded-full ${i === 0 ? "bg-[#0066FF]" : i === siteNames.length - 1 ? "bg-emerald-500" : "bg-gray-300"}`} />
+                              <span className="text-xs text-gray-500 whitespace-nowrap">{name}</span>
+                              {i < siteNames.length - 1 && <span className="text-gray-300 text-xs">—</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="px-4 py-3 flex items-center justify-between">
+                        <div>
+                          {price && <span className="text-[#0066FF] font-bold text-lg">¥{price}<span className="text-xs text-gray-400 font-normal">/人</span></span>}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          {route.rating && (
+                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-blue-50 text-[#0066FF] rounded font-medium">
+                              ★ {Number(route.rating).toFixed(1)}
+                            </span>
+                          )}
+                          {route.bookCount ? <span>{route.bookCount}人出发</span> : null}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* ══════ Photo Mosaic Header (Airbnb-style) ══════ */}
         {!hasActiveFilters && holySites.length >= 5 && (
           <div className="grid grid-cols-4 grid-rows-2 gap-1 h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
             <div className="col-span-2 row-span-2 relative">
               {holySites[0].imageUrl ? (
-                <img src={holySites[0].imageUrl} alt={holySites[0].name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                <OptimizedImage src={holySites[0].imageUrl} alt={holySites[0].name} fill className="object-cover hover:scale-105 transition-transform duration-500" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
                   <span className="text-6xl opacity-30">{holySites[0].religion?.symbol || "🏛"}</span>
@@ -241,7 +320,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             {holySites.slice(1, 5).map((site) => (
               <div key={site.id} className="relative overflow-hidden">
                 {site.imageUrl ? (
-                  <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+                  <OptimizedImage src={site.imageUrl} alt={site.name} fill className="object-cover hover:scale-110 transition-transform duration-500" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                     <span className="text-3xl opacity-30">{site.religion?.symbol || "🏛"}</span>
@@ -324,6 +403,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200">
                 <button
+                  aria-label="Grid view"
                   onClick={() => setViewMode("grid")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
                     viewMode === "grid" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
@@ -335,6 +415,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
                   {t("holySites.gridView")}
                 </button>
                 <button
+                  aria-label="Map view"
                   onClick={() => setViewMode("map")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all ${
                     viewMode === "map" ? "bg-[#0066FF]/10 text-[#0066FF] shadow-sm" : "text-gray-500 hover:text-gray-700"
@@ -348,6 +429,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
               </div>
               {/* Compare toggle (Kayak-style) */}
               <button
+                aria-label="Toggle compare mode"
                 onClick={() => { setCompareMode(!compareMode); if (compareMode) setCompareList([]); }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
                   compareMode
@@ -396,7 +478,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
                       <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all">
                         <div className="h-28 relative overflow-hidden">
                           {site.imageUrl ? (
-                            <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <OptimizedImage src={site.imageUrl} alt={site.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                               <span className="text-3xl opacity-30">{site.religion?.symbol || "🏛"}</span>
@@ -547,9 +629,9 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
                     {compareSites.map((site) => (
                       <th key={site.id} className="p-4 text-center min-w-[200px]">
                         <div className="flex flex-col items-center gap-2">
-                          <div className="w-20 h-20 rounded-xl overflow-hidden">
+                          <div className="w-20 h-20 rounded-xl overflow-hidden relative">
                             {site.imageUrl ? (
-                              <img src={site.imageUrl} alt={site.name} className="w-full h-full object-cover" />
+                              <OptimizedImage src={site.imageUrl} alt={site.name} fill className="object-cover" />
                             ) : (
                               <div className="w-full h-full bg-gray-100 flex items-center justify-center text-2xl">{site.religion?.symbol || "🏛"}</div>
                             )}
@@ -599,7 +681,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
                     <td className="p-4 text-gray-500 font-medium">{t("holySites.comparePrice")}</td>
                     {compareSites.map((site) => (
                       <td key={site.id} className="p-4 text-center text-gray-700">
-                        {site.ticketPrice != null ? (site.ticketPrice === 0 ? t("holySites.free") : `¥${site.ticketPrice}`) : <span className="text-gray-300">—</span>}
+                        {site.ticketPrice != null ? (site.ticketPrice === "0" || site.ticketPrice === "免费" ? t("holySites.free") : site.ticketPrice) : <span className="text-gray-300">—</span>}
                       </td>
                     ))}
                   </tr>
@@ -653,7 +735,7 @@ export default function HolySitesClient({ religions, holySites, error }: Props) 
                 {t("holySites.ctaAI")}
               </Link>
               <Link
-                href="/routes"
+                href="/holy-sites#routes"
                 className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-colors border border-gray-200 text-sm"
               >
                 {t("holySites.ctaRoutes")}

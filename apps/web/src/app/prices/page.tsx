@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
-import { fetchRoutes } from "@/lib/api";
+import { fetchRoutes, fetchPackages, type PackageItem } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
 interface RoutePrice {
@@ -39,7 +39,7 @@ function useCountdown(targetHour: number) {
 
 // ─── Tiny inline sparkline (SVG) ─────────────────────────────────────────────
 function Sparkline({ data, color }: { data: number[]; color: string }) {
-  if (!data.length) return null;
+  if (data.length < 2) return null;
   const max = Math.max(...data);
   const min = Math.min(...data);
   const range = max - min || 1;
@@ -83,6 +83,7 @@ function getSparklineData(seed: string, base: number): number[] {
 export default function PricesPage() {
   const { t } = useTranslation();
   const [routes, setRoutes] = useState<RoutePrice[]>([]);
+  const [packages, setPackages] = useState<PackageItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Budget calculator state
@@ -113,6 +114,9 @@ export default function PricesPage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
+    fetchPackages({ page: 1 })
+      .then((data) => setPackages(Array.isArray(data.items) ? data.items.slice(0, 6) : []))
+      .catch(() => {});
   }, []);
 
   const maxPrice = Math.max(...routes.map((r) => r.priceFrom), 1);
@@ -198,10 +202,10 @@ export default function PricesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-20 pb-16">
+    <main className="min-h-screen bg-gray-50 pt-16 pb-16">
 
       {/* ── FEATURE 1: Deal of the Day Flash Banner (Priceline style) ─────── */}
-      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-3 px-4">
+      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 px-4">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
@@ -239,7 +243,7 @@ export default function PricesPage() {
       {/* Hero */}
       <section className="hero-bg text-white py-14">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-blue-200 text-sm font-medium tracking-widest uppercase mb-3">Smart Travel Pricing</p>
+          <p className="text-blue-200 text-sm font-medium tracking-widest uppercase mb-3">{t("prices.hero.tagline")}</p>
           <h1 className="text-3xl md:text-4xl font-bold mb-3">{t("prices.hub.title")}</h1>
           <p className="text-blue-100 text-lg max-w-2xl mx-auto">{t("prices.hub.subtitle")}</p>
 
@@ -406,7 +410,7 @@ export default function PricesPage() {
             <h2 className="text-2xl font-bold text-gray-900">{t("prices.popularRoutes")}</h2>
             <p className="text-gray-500 text-sm mt-1">{t("prices.popularRoutesDesc")}</p>
           </div>
-          <Link href="/routes" className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium">
+          <Link href="/holy-sites#routes" className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium">
             {t("common.viewAll")}
           </Link>
         </div>
@@ -434,7 +438,7 @@ export default function PricesPage() {
               return (
                 <Link
                   key={route.slug}
-                  href={`/routes/${route.slug}`}
+                  href={`/holy-sites/routes/${route.slug}`}
                   className="group bg-white rounded-xl p-5 border border-gray-100 hover:shadow-md hover:border-[#0066FF]/20 transition-all"
                 >
                   <div className="flex items-start justify-between gap-2 mb-1">
@@ -632,6 +636,89 @@ export default function PricesPage() {
           ))}
         </div>
       </section>
+
+      {/* ── Featured Packages Section ── */}
+      {packages.length > 0 && (
+        <section id="packages" className="max-w-6xl mx-auto px-4 pb-14">
+          <div className="bg-gradient-to-b from-[#0066FF]/5 to-transparent rounded-2xl p-6 md:p-8 border border-[#0066FF]/10">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">{t("prices.packages.hotBadge")}</span>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">{t("prices.packages.title")}</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">{t("prices.packages.subtitle")}</p>
+                </div>
+              </div>
+              <Link
+                href="/prices/packages"
+                className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium transition-colors whitespace-nowrap"
+              >
+                {t("prices.packages.viewAll")} →
+              </Link>
+            </div>
+            <div className="flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {packages.map((pkg) => {
+                const price = `¥${((pkg.basePrice ?? 0) / 100).toLocaleString()}`;
+                const memberPrice = pkg.memberPrice != null ? `¥${((pkg.memberPrice ?? 0) / 100).toLocaleString()}` : null;
+                const INCLUDES_MAP: Record<string, { icon: string; label: string }> = {
+                  transport: { icon: "🚌", label: t("prices.includes.transport") },
+                  hotel: { icon: "🏨", label: t("prices.includes.hotel") },
+                  meal: { icon: "🍽️", label: t("prices.includes.meal") },
+                  guide: { icon: "🎙️", label: t("prices.includes.guide") },
+                  insurance: { icon: "🛡️", label: t("prices.includes.insurance") },
+                  ticket: { icon: "🎫", label: t("prices.includes.ticket") },
+                };
+                return (
+                  <Link
+                    key={pkg.id}
+                    href={`/prices/packages/${pkg.id}`}
+                    className="group flex-none w-[280px] md:w-[320px] snap-start"
+                  >
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-[#0066FF]/30 transition-all duration-300 h-full flex flex-col">
+                      {/* Cover */}
+                      <div className="relative h-40 overflow-hidden">
+                        {pkg.coverImage ? (
+                          <img src={pkg.coverImage} alt={pkg.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center text-4xl">📦</div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                        <div className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-xs font-medium text-gray-700">
+                          {pkg.duration}{t("prices.packages.dayUnit")} · {t("prices.packages.maxPersons", { count: pkg.maxPersons })}
+                        </div>
+                        <div className="absolute bottom-3 left-3 right-3">
+                          <h3 className="text-white font-bold text-base line-clamp-1">{pkg.name}</h3>
+                          {pkg.description && <p className="text-white/80 text-xs mt-0.5 line-clamp-1">{pkg.description}</p>}
+                        </div>
+                      </div>
+                      {/* Includes */}
+                      <div className="px-4 pt-3 flex flex-wrap gap-2">
+                        {Object.entries(pkg.includes || {}).map(([key, included]) => {
+                          const info = INCLUDES_MAP[key];
+                          if (!info || !included) return null;
+                          return (
+                            <span key={key} className="inline-flex items-center gap-0.5 text-xs text-gray-600 bg-gray-50 px-2 py-0.5 rounded-full">
+                              <span>{info.icon}</span> {info.label}
+                            </span>
+                          );
+                        })}
+                      </div>
+                      {/* Price */}
+                      <div className="px-4 py-3 mt-auto flex items-end justify-between border-t border-gray-100">
+                        <div>
+                          {memberPrice && <p className="text-[#D4A855] text-xs font-semibold">{t("prices.packages.memberPriceFrom", { price: memberPrice })}</p>}
+                          <p className={`font-bold ${memberPrice ? "text-gray-400 line-through text-sm" : "text-lg text-[#0066FF]"}`}>{t("prices.packages.priceFrom", { price })}</p>
+                        </div>
+                        <span className="px-3 py-1.5 bg-[#0066FF] text-white text-xs font-semibold rounded-lg">{t("prices.packages.bookNow")}</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* How it works */}
       <section className="bg-white border-t border-b border-gray-100 py-14">

@@ -189,7 +189,7 @@ function RelatedRoutes() {
           <h2 className="text-lg font-bold text-[#0f294d]">{t("templeDetail.recommendedRoutes")}</h2>
           <p className="text-sm text-[#8592a6] mt-0.5">{t("templeDetail.fromPrice")} <span className="text-[#ff6600] font-bold">¥{(lowestPrice / 100).toLocaleString()}</span>{t("templeDetail.perPerson")}</p>
         </div>
-        <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">{t("templeDetail.viewAll")} →</Link>
+        <Link href="/holy-sites#routes" className="text-sm text-[#3264ff] hover:underline">{t("templeDetail.viewAll")} →</Link>
       </div>
       <div className="space-y-3">
         {routes.map((r) => {
@@ -198,7 +198,7 @@ function RelatedRoutes() {
             <div key={r.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#3264ff]/30 transition-all">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <Link href={`/routes/${r.slug}`} className="text-base font-bold text-[#0f294d] hover:text-[#3264ff] transition-colors">{r.title}</Link>
+                  <Link href={`/holy-sites/routes/${r.slug}`} className="text-base font-bold text-[#0f294d] hover:text-[#3264ff] transition-colors">{r.title}</Link>
                   {r.bookCount > 0 && <span className="text-xs text-[#8592a6] ml-2">{r.bookCount}+ {t("templeDetail.booked")}</span>}
                   <p className="text-sm text-[#8592a6] mt-1">{r.subtitle}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -213,7 +213,7 @@ function RelatedRoutes() {
                 <div className="text-right flex-shrink-0">
                   <p className="text-xs text-[#8592a6]">{t("templeDetail.startingPrice")}</p>
                   <p className="text-2xl font-bold text-[#ff6600]">¥{price}</p>
-                  <Link href={`/routes/${r.slug}`} className="mt-2 inline-block px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white text-sm font-bold rounded-lg transition-colors">
+                  <Link href={`/holy-sites/routes/${r.slug}`} className="mt-2 inline-block px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white text-sm font-bold rounded-lg transition-colors">
                     {t("templeDetail.bookNow")}
                   </Link>
                 </div>
@@ -336,7 +336,7 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
         >
           {t("templeDetail.aiPlannerConsult")}
         </Link>
-        <Link href="/routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
+        <Link href="/holy-sites#routes" className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors">
           {t("templeDetail.viewPilgrimageRoutes")}
         </Link>
 

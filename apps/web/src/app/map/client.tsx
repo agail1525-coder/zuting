@@ -46,17 +46,17 @@ export default function MapClient({ religions, holySites, temples, error }: Prop
   // Combine holy sites and temples as map markers
   const allMarkers = useMemo(() => {
     const siteMarkers: MapMarker[] = holySites.map((s) => ({ ...s, type: "site" as const }));
-    const templeMarkers: MapMarker[] = temples.map((t) => ({
-      id: t.id,
-      name: t.name,
-      nameEn: t.nameEn,
-      country: t.country,
-      latitude: t.latitude,
-      longitude: t.longitude,
-      description: t.description,
-      imageUrl: t.imageUrl,
-      religionId: t.religionId,
-      religion: t.religion,
+    const templeMarkers: MapMarker[] = temples.map((tp) => ({
+      id: tp.id,
+      name: tp.name,
+      nameEn: tp.nameEn,
+      country: tp.country,
+      latitude: tp.latitude,
+      longitude: tp.longitude,
+      description: tp.description,
+      imageUrl: tp.imageUrl,
+      religionId: tp.religionId,
+      religion: tp.religion,
       type: "temple" as const,
     }));
     return [...siteMarkers, ...templeMarkers];
@@ -66,7 +66,7 @@ export default function MapClient({ religions, holySites, temples, error }: Prop
   const stats = useMemo(() => {
     const countries = new Set([
       ...holySites.map((s) => s.country),
-      ...temples.map((t) => t.country),
+      ...temples.map((tp) => tp.country),
     ]);
     return {
       sites: holySites.length,
@@ -470,7 +470,7 @@ function SiteDetailCard({ site, t, onClose }: { site: HolySite; t: (key: string)
               {t("map.viewDetail")} &rarr;
             </Link>
             <Link
-              href={`/routes?site=${site.id}`}
+              href={`/holy-sites?site=${site.id}`}
               className="px-4 py-2 text-sm border border-gray-200 text-gray-600 rounded-full hover:bg-gray-50 transition-all"
             >
               {t("map.findRoutes")}

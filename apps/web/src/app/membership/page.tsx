@@ -19,16 +19,12 @@ import {
   type LevelInfo,
 } from "@/lib/api";
 
-function formatDate(str: string) {
-  return new Date(str).toLocaleDateString("zh-CN", {
+function formatDate(str: string, locale = "zh-CN") {
+  return new Date(str).toLocaleDateString(locale, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-}
-
-function formatPrice(cents: number) {
-  return `¥${(cents / 100).toFixed(2)}`;
 }
 
 const LEVEL_COLORS: Record<number, string> = {
@@ -188,7 +184,7 @@ function LevelProgressVisualization({ levels, currentLevel, membership, t }: {
 }
 
 export default function MembershipPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -337,8 +333,8 @@ export default function MembershipPage() {
         ))}
       </div>
 
-      {/* ══════ Missions Board (对标Booking Genius/Agoda任务系统) ══════ */}
-      {/* 静态展示：待后端API接入 — 任务列表为规划中的功能预览，完成状态仅签到项为实时数据 */}
+      {/* ══════ Missions Board (benchmarked against Booking Genius/Agoda missions) ══════ */}
+      {/* Static display: pending backend API — mission list is a planned feature preview; only check-in status is real-time */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <span>🎯</span> {t("membership.missions")}
@@ -347,9 +343,9 @@ export default function MembershipPage() {
           {[
             { icon: "✅", label: t("membership.missionCheckin"), points: 10, done: calendarDates.has(`${year}-${String(month).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`) },
             { icon: "📝", label: t("membership.missionJournal"), points: 50, done: false, href: "/journals/create" },
-            { icon: "⭐", label: t("membership.missionReview"), points: 30, done: false, href: "/routes" },
+            { icon: "⭐", label: t("membership.missionReview"), points: 30, done: false, href: "/holy-sites#routes" },
             { icon: "👥", label: t("membership.missionInvite"), points: 100, done: false, href: "/membership/referral" },
-            { icon: "🛒", label: t("membership.missionBooking"), points: 200, done: false, href: "/routes" },
+            { icon: "🛒", label: t("membership.missionBooking"), points: 200, done: false, href: "/holy-sites#routes" },
           ].map((mission) => (
             <div
               key={mission.label}
@@ -378,7 +374,7 @@ export default function MembershipPage() {
         </div>
       </div>
 
-      {/* ══════ Streak Counter (对标Duolingo连续签到) ══════ */}
+      {/* ══════ Streak Counter (benchmarked against Duolingo streak) ══════ */}
       {membership && (
         <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-5 border border-amber-200">
           <div className="flex items-center justify-between">
@@ -481,8 +477,8 @@ export default function MembershipPage() {
         </div>
       )}
 
-      {/* ══════ Member Exclusive Deals (对标Booking Genius优惠) ══════ */}
-      {/* 静态展示：待后端API接入 — 会员专属权益为规划中的功能预览，后续接入促销/优惠券API实现动态展示 */}
+      {/* ══════ Member Exclusive Deals (benchmarked against Booking Genius perks) ══════ */}
+      {/* Static display: pending backend API — exclusive perks are a planned feature preview; will integrate promotions/coupons API later */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <span>💎</span> {t("membership.exclusiveDeals")}
@@ -490,8 +486,8 @@ export default function MembershipPage() {
         <div className="grid grid-cols-2 gap-3">
           {[
             { icon: "🎫", title: t("membership.dealCouponTitle"), desc: t("membership.dealCouponDesc"), href: "/coupons", color: "from-blue-500/10 to-blue-600/10" },
-            { icon: "💰", title: t("membership.dealDiscountTitle"), desc: t("membership.dealDiscountDesc"), href: "/routes", color: "from-amber-500/10 to-yellow-500/10" },
-            { icon: "⚡", title: t("membership.dealPriorityTitle"), desc: t("membership.dealPriorityDesc"), href: "/routes", color: "from-purple-500/10 to-violet-500/10" },
+            { icon: "💰", title: t("membership.dealDiscountTitle"), desc: t("membership.dealDiscountDesc"), href: "/holy-sites#routes", color: "from-amber-500/10 to-yellow-500/10" },
+            { icon: "⚡", title: t("membership.dealPriorityTitle"), desc: t("membership.dealPriorityDesc"), href: "/holy-sites#routes", color: "from-purple-500/10 to-violet-500/10" },
             { icon: "🎁", title: t("membership.dealPointsTitle"), desc: t("membership.dealPointsDesc"), href: "/points-mall", color: "from-green-500/10 to-emerald-500/10" },
           ].map((deal) => (
             <Link
@@ -507,7 +503,7 @@ export default function MembershipPage() {
         </div>
       </div>
 
-      {/* ══════ Achievement Badges (gamification, 对标AmEx/Booking Genius) ══════ */}
+      {/* ══════ Achievement Badges (gamification, benchmarked against AmEx/Booking Genius) ══════ */}
       <section>
         <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
           <span>🏅</span> {t("membership.achievements")}
@@ -601,7 +597,7 @@ export default function MembershipPage() {
                 >
                   <div>
                     <p className="text-sm font-medium text-gray-800">{item.description || item.source}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{formatDate(item.createdAt)}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{formatDate(item.createdAt, locale)}</p>
                   </div>
                   <span
                     className={`text-base font-bold ${isEarn ? "text-green-600" : "text-red-500"}`}
@@ -626,7 +622,7 @@ export default function MembershipPage() {
           </p>
           <p className="text-sm text-gray-400 mt-2">{t("membership.upgradeHint")}</p>
           <Link
-            href="/routes"
+            href="/holy-sites#routes"
             className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-colors text-sm shadow-lg shadow-blue-500/20"
           >
             {t("membership.browseRoutes")}
@@ -638,7 +634,7 @@ export default function MembershipPage() {
       <section className="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl p-6 text-white text-center">
         <h2 className="text-xl font-bold">{t("membership.vipCta")}</h2>
         <p className="text-white/80 text-sm mt-2">{t("membership.vipCtaDesc")}</p>
-        <Link href="/routes" className="inline-block mt-4 px-8 py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors">
+        <Link href="/holy-sites#routes" className="inline-block mt-4 px-8 py-3 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-colors">
           {t("membership.startJourney")}
         </Link>
       </section>

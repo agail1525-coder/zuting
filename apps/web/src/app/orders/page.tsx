@@ -33,10 +33,10 @@ function getStatusStyle(status: string) {
   return STATUS_STYLE[upper] || DEFAULT_STYLE;
 }
 
-function formatDate(dateStr: string) {
+function formatDate(dateStr: string, locale?: string) {
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("zh-CN", {
+    return d.toLocaleDateString(locale || undefined, {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -46,11 +46,11 @@ function formatDate(dateStr: string) {
   }
 }
 
-function formatDateTime(dateStr: string | null) {
+function formatDateTime(dateStr: string | null, locale?: string) {
   if (!dateStr) return "-";
   try {
     const d = new Date(dateStr);
-    return d.toLocaleString("zh-CN", {
+    return d.toLocaleString(locale || undefined, {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -76,7 +76,7 @@ const PAYMENT_METHOD_I18N: Record<string, string> = {
 type SortMode = "newest" | "oldest" | "amountDesc" | "amountAsc";
 
 // --- Download invoice as plain-text receipt (no external libs) ---
-function downloadInvoice(order: OrderDetail, t: (k: string) => string) {
+function downloadInvoice(order: OrderDetail, t: (k: string) => string, locale?: string) {
   const lines = [
     "=".repeat(40),
     `  ${t("orders.invoiceTitle")}`,
@@ -85,7 +85,7 @@ function downloadInvoice(order: OrderDetail, t: (k: string) => string) {
     `${t("orders.invoiceOrderNo")}: ${order.orderNo}`,
     `${t("orders.invoiceStatus")}: ${order.status}`,
     `${t("orders.invoiceAmount")}: ${formatAmount(order.paidAmount ?? order.totalAmount)}`,
-    `${t("orders.invoiceDate")}: ${formatDateTime(order.paidAt ?? order.createdAt)}`,
+    `${t("orders.invoiceDate")}: ${formatDateTime(order.paidAt ?? order.createdAt, locale)}`,
     "-".repeat(40),
     `${t("orders.invoiceNote")}`,
     "=".repeat(40),
@@ -306,7 +306,7 @@ function OrderDrawer({
   onSkipReview: (id: string) => void;
   skippedReviews: Set<string>;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
   const [confirmModal, setConfirmModal] = useState<{
@@ -420,7 +420,7 @@ function OrderDrawer({
             {/* Download Invoice (paid/completed/refunded orders) */}
             {(upperStatus === "PAID" || upperStatus === "COMPLETED" || upperStatus === "REFUNDED") && (
               <button
-                onClick={() => downloadInvoice(order, t)}
+                onClick={() => downloadInvoice(order, t, locale)}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -442,7 +442,7 @@ function OrderDrawer({
             {/* Rebook (completed) */}
             {isCompleted && (
               <Link
-                href="/routes"
+                href="/holy-sites#routes"
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-700 hover:bg-green-100 transition-colors"
               >
                 <span>🔄</span>
@@ -482,24 +482,24 @@ function OrderDrawer({
               />
               <InfoRow
                 label={t("orders.createdTime")}
-                value={formatDateTime(order.createdAt)}
+                value={formatDateTime(order.createdAt, locale)}
               />
               {order.paidAt && (
                 <InfoRow
                   label={t("orders.paidTime")}
-                  value={formatDateTime(order.paidAt)}
+                  value={formatDateTime(order.paidAt, locale)}
                 />
               )}
               {order.cancelledAt && (
                 <InfoRow
                   label={t("orders.cancelledTime")}
-                  value={formatDateTime(order.cancelledAt)}
+                  value={formatDateTime(order.cancelledAt, locale)}
                 />
               )}
               {order.refundedAt && (
                 <InfoRow
                   label={t("orders.refundedTime")}
-                  value={formatDateTime(order.refundedAt)}
+                  value={formatDateTime(order.refundedAt, locale)}
                 />
               )}
             </div>
@@ -534,7 +534,7 @@ function OrderDrawer({
                     <p className="text-xs text-gray-400 mt-1">
                       {t("orders.routePrefix")}:{" "}
                       {order.trip.sites
-                        .map((s) => s.site.name)
+                        .map((s) => s.site?.name ?? "")
                         .join(" → ")}
                     </p>
                   )}
@@ -572,7 +572,7 @@ function OrderDrawer({
                     </p>
                     {evt.time && (
                       <p className="text-xs text-gray-400">
-                        {formatDateTime(evt.time)}
+                        {formatDateTime(evt.time, locale)}
                       </p>
                     )}
                   </div>
@@ -678,7 +678,7 @@ function getStatusTabs(t: (key: string) => string) {
 // --- Main Page ---
 export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const router = useRouter();
 
   const [orders, setOrders] = useState<OrderDetail[]>([]);
@@ -942,7 +942,7 @@ export default function OrdersPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
-                href="/routes"
+                href="/holy-sites#routes"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0055DD] transition-colors"
               >
                 <span>🗺️</span> {t("orders.emptyCta1")}
@@ -1032,7 +1032,7 @@ export default function OrdersPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       </svg>
                       <span className="truncate">
-                        {order.trip.sites.map((s) => s.site.name).join(" → ")}
+                        {order.trip.sites.map((s) => s.site?.name ?? "").join(" → ")}
                       </span>
                     </div>
                   )}
@@ -1044,14 +1044,14 @@ export default function OrdersPage() {
                         {formatAmount(order.totalAmount)}
                       </span>
                       <span className="text-xs text-gray-400 ml-2">
-                        {formatDate(order.createdAt)}
+                        {formatDate(order.createdAt, locale)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Download receipt for paid/completed */}
                       {(upperStatus === "PAID" || upperStatus === "COMPLETED") && (
                         <button
-                          onClick={() => downloadInvoice(order, t)}
+                          onClick={() => downloadInvoice(order, t, locale)}
                           title={t("orders.downloadInvoiceHint")}
                           className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors"
                         >
@@ -1062,7 +1062,7 @@ export default function OrdersPage() {
                       )}
                       {isCompleted && (
                         <Link
-                          href="/routes"
+                          href="/holy-sites#routes"
                           className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 border border-green-200 text-green-600 hover:bg-green-100 transition-colors"
                         >
                           {t("orders.rebook")}

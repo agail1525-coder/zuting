@@ -27,6 +27,7 @@ import type { HolySite, Route, ReviewStats, Review } from "@/lib/api";
    ═══════════════════════════════════════════════════════════ */
 
 function GalleryGrid({ images, alt }: { images: string[]; alt: string }) {
+  const { t } = useTranslation();
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const display = images.slice(0, 5);
   const remaining = images.length - 5;
@@ -36,7 +37,7 @@ function GalleryGrid({ images, alt }: { images: string[]; alt: string }) {
   if (display.length === 1) {
     return (
       <div className="rounded-xl overflow-hidden">
-        <div className="relative h-[400px] cursor-pointer" onClick={() => setLightboxIdx(0)}>
+        <div role="button" aria-label={`${alt} - view photo`} className="relative h-[400px] cursor-pointer" onClick={() => setLightboxIdx(0)}>
           <OptimizedImage src={display[0]} alt={alt} fill className="object-cover" priority />
           <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-3 py-1.5 rounded-lg backdrop-blur-sm flex items-center gap-1.5">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
@@ -53,6 +54,8 @@ function GalleryGrid({ images, alt }: { images: string[]; alt: string }) {
       <div className="grid grid-cols-[1fr_160px] gap-1 rounded-xl overflow-hidden h-[400px]">
         {/* 左侧大图 */}
         <div
+          role="button"
+          aria-label={`${alt} - view photo 1`}
           className="relative cursor-pointer hover:brightness-95 transition"
           onClick={() => setLightboxIdx(0)}
         >
@@ -67,18 +70,20 @@ function GalleryGrid({ images, alt }: { images: string[]; alt: string }) {
             return (
               <div
                 key={i}
+                role="button"
+                aria-label={`${alt} - view photo ${i + 1}`}
                 className="relative cursor-pointer hover:brightness-90 transition overflow-hidden"
                 onClick={() => setLightboxIdx(Math.min(i, images.length - 1))}
               >
                 {img && <OptimizedImage src={img} alt={alt} fill className="object-cover" />}
                 {isLast && remaining > 0 && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">+{remaining} 张</span>
+                    <span className="text-white font-semibold text-sm">+{remaining} {t("holysite.galleryPhotos") || "张"}</span>
                   </div>
                 )}
                 {isLast && remaining <= 0 && (
                   <div className="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded backdrop-blur-sm">
-                    查看全部
+                    {t("holysite.viewAll") || "查看全部"}
                   </div>
                 )}
               </div>
@@ -98,12 +103,14 @@ function Lightbox({
   if (idx === null) return null;
   return (
     <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center" onClick={onClose}>
-      <button className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl z-10" onClick={onClose}>×</button>
+      <button aria-label="Close lightbox" className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl z-10" onClick={onClose}>×</button>
       <button
+        aria-label="Previous image"
         className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl z-10"
         onClick={(e) => { e.stopPropagation(); onNav((idx - 1 + images.length) % images.length); }}
       >‹</button>
       <button
+        aria-label="Next image"
         className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-xl z-10"
         onClick={(e) => { e.stopPropagation(); onNav((idx + 1) % images.length); }}
       >›</button>
@@ -220,13 +227,11 @@ function ReviewPreview({ targetType, targetId, siteName }: { targetType: string;
 
 function RatingDistribution({ stats }: { stats: ReviewStats }) {
   const { t } = useTranslation();
-  const dist = [
-    { star: 5, pct: 68 },
-    { star: 4, pct: 22 },
-    { star: 3, pct: 6 },
-    { star: 2, pct: 3 },
-    { star: 1, pct: 1 },
-  ];
+  const dist = [5, 4, 3, 2, 1].map((star) => {
+    const count = stats.distribution?.[star] ?? 0;
+    const pct = stats.totalCount > 0 ? Math.round((count / stats.totalCount) * 100) : 0;
+    return { star, pct };
+  });
   return (
     <div className="flex items-start gap-6 p-5 bg-[#f5f7fa] rounded-xl">
       <div className="text-center">
@@ -263,23 +268,25 @@ function AvailableRoutes({ siteId }: { siteId: string }) {
   const [dateTab, setDateTab] = useState(0);
 
   const today = new Date();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const dateTabs = [
     { label: t("holysite.recentlyBookable") || "近期可订", date: today },
-    { label: `${today.getMonth() + 1}月${today.getDate() + 1}日`, date: new Date(today.getTime() + 86400000) },
-    { label: `${today.getMonth() + 1}月${today.getDate() + 2}日`, date: new Date(today.getTime() + 172800000) },
+    ...[1, 2].map((offset) => {
+      const d = new Date(today.getTime() + offset * 86400000);
+      return { label: d.toLocaleDateString(locale || "zh-CN", { month: "short", day: "numeric" }), date: d };
+    }),
   ];
 
   useEffect(() => {
     fetchRoutesBySite(siteId)
       .then((data) => setRoutes(data.slice(0, 6)))
-      .catch(() => {})
+      .catch(() => setRoutes([]))
       .finally(() => setLoading(false));
   }, [siteId]);
 
   if (loading || routes.length === 0) return null;
 
-  const lowestPrice = Math.min(...routes.map((r) => r.priceFrom));
+  const lowestPrice = Math.min(...routes.filter((r) => r.priceFrom != null).map((r) => r.priceFrom));
 
   return (
     <div className="mt-6">
@@ -288,7 +295,7 @@ function AvailableRoutes({ siteId }: { siteId: string }) {
           <h2 className="text-lg font-bold text-[#0f294d]">{t("holysite.routesIncluding") || "包含此圣地的路线"}</h2>
           <p className="text-sm text-[#8592a6] mt-0.5">{t("common.fromPrice") || "从"} <span className="text-[#ff6600] font-bold">¥{(lowestPrice / 100).toLocaleString()}</span>{t("common.pricePerPerson") || "/人起"}</p>
         </div>
-        <Link href="/routes" className="text-sm text-[#3264ff] hover:underline">{t("common.viewAll") || "查看全部 →"}</Link>
+        <Link href="/holy-sites#routes" className="text-sm text-[#3264ff] hover:underline">{t("common.viewAll") || "查看全部 →"}</Link>
       </div>
 
       {/* 日期Tab */}
@@ -310,16 +317,16 @@ function AvailableRoutes({ siteId }: { siteId: string }) {
 
       <div className="space-y-3">
         {routes.map((r) => {
-          const price = (r.priceFrom / 100).toLocaleString();
+          const price = ((r.priceFrom ?? 0) / 100).toLocaleString();
           return (
             <div key={r.id} className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow hover:border-[#3264ff]/30">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <Link href={`/routes/${r.slug}`} className="text-base font-bold text-[#0f294d] hover:text-[#3264ff] transition-colors">
+                  <Link href={`/holy-sites/routes/${r.slug}`} className="text-base font-bold text-[#0f294d] hover:text-[#3264ff] transition-colors">
                     {r.title}
                   </Link>
-                  {r.bookCount > 0 && (
-                    <span className="text-xs text-[#8592a6] ml-2">{r.bookCount}{t("common.bookedCount") || "+ 人已预订"}</span>
+                  {(r.bookCount ?? 0) > 0 && (
+                    <span className="text-xs text-[#8592a6] ml-2">{r.bookCount ?? 0}{t("common.bookedCount") || "+ 人已预订"}</span>
                   )}
                   <p className="text-sm text-gray-500 mt-1">{r.subtitle}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
@@ -339,7 +346,7 @@ function AvailableRoutes({ siteId }: { siteId: string }) {
                   <p className="text-xs text-[#8592a6]">{t("common.startingPrice") || "起价"}</p>
                   <p className="text-2xl font-bold text-[#ff6600]">¥{price}</p>
                   <Link
-                    href={`/routes/${r.slug}`}
+                    href={`/holy-sites/routes/${r.slug}`}
                     className="mt-2 inline-block px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white text-sm font-bold rounded-lg transition-colors"
                   >
                     {t("common.bookNow") || "立即预订"}
@@ -362,12 +369,12 @@ function FAQSection({ siteName, country }: { siteName: string; country: string }
   const { t } = useTranslation();
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `如何到达${siteName}？`, a: `${siteName}位于${country}，可通过公共交通或自驾前往。建议提前查看具体交通路线，部分圣地可能需要步行一段距离。推荐使用AI规划师获取详细交通方案。` },
-    { q: "最佳参访时间是什么时候？", a: "一般推荐春秋两季参访，天气宜人且游客相对较少。重要宗教节日期间会有特殊活动，但也会更加拥挤。建议避开公共假期高峰期。" },
-    { q: "需要购买门票吗？", a: "不同圣地的门票政策各异。部分宗教场所免费开放，部分收取象征性的维护费用。具体票价请查看路线详情页或咨询AI规划师。" },
-    { q: "周边有住宿推荐吗？", a: "大部分圣地周边都有丰富的住宿选择，从经济型客栈到修行中心、禅修民宿应有尽有。预订包含此圣地的路线套餐可享受精选住宿安排。" },
-    { q: "有着装要求吗？", a: "参访宗教圣地通常需要得体着装，避免过于暴露的服装。部分殿堂内需要脱鞋，建议穿易穿脱的鞋子。请尊重当地宗教文化习俗。" },
-    { q: "可以拍照吗？", a: "户外区域通常允许拍照，但殿堂内部可能禁止拍照或使用闪光灯。请留意现场标识，尊重宗教场所的规定。" },
+    { q: (t("holysite.faq.q1") || `如何到达${siteName}？`).replace("{name}", siteName).replace("{country}", country), a: (t("holysite.faq.a1") || `${siteName}位于${country}，可通过公共交通或自驾前往。建议提前查看具体交通路线，部分圣地可能需要步行一段距离。推荐使用AI规划师获取详细交通方案。`).replace("{name}", siteName).replace("{country}", country) },
+    { q: t("holysite.faq.q2") || "最佳参访时间是什么时候？", a: t("holysite.faq.a2") || "一般推荐春秋两季参访，天气宜人且游客相对较少。重要宗教节日期间会有特殊活动，但也会更加拥挤。建议避开公共假期高峰期。" },
+    { q: t("holysite.faq.q3") || "需要购买门票吗？", a: t("holysite.faq.a3") || "不同圣地的门票政策各异。部分宗教场所免费开放，部分收取象征性的维护费用。具体票价请查看路线详情页或咨询AI规划师。" },
+    { q: t("holysite.faq.q4") || "周边有住宿推荐吗？", a: t("holysite.faq.a4") || "大部分圣地周边都有丰富的住宿选择，从经济型客栈到修行中心、禅修民宿应有尽有。预订包含此圣地的路线套餐可享受精选住宿安排。" },
+    { q: t("holysite.faq.q5") || "有着装要求吗？", a: t("holysite.faq.a5") || "参访宗教圣地通常需要得体着装，避免过于暴露的服装。部分殿堂内需要脱鞋，建议穿易穿脱的鞋子。请尊重当地宗教文化习俗。" },
+    { q: t("holysite.faq.q6") || "可以拍照吗？", a: t("holysite.faq.a6") || "户外区域通常允许拍照，但殿堂内部可能禁止拍照或使用闪光灯。请留意现场标识，尊重宗教场所的规定。" },
   ];
 
   return (
@@ -461,27 +468,26 @@ function NearbySites({ currentSite }: { currentSite: HolySite }) {
 
 function MoreRecommendations({ religion, country }: { religion?: string; country: string }) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState<string | null>(null);
   const items = [
-    { key: "nearby", label: t("holysite.nearbySites")?.replace("{country}", country) || `${country}附近圣地` },
-    { key: "popular", label: t("holysite.popularRoutes") || "热门朝圣路线" },
-    { key: "guides", label: t("holysite.recommendedGuides") || "推荐朝圣攻略" },
-    { key: "tips", label: t("holysite.travelTips") || "旅行实用贴士" },
-    ...(religion ? [{ key: "religion", label: t("holysite.relatedSites")?.replace("{religion}", religion) || `${religion}相关圣地` }] : []),
+    { href: `/holy-sites?country=${encodeURIComponent(country)}`, label: t("holysite.nearbySites")?.replace("{country}", country) || `${country}附近圣地` },
+    { href: "/holy-sites#routes", label: t("holysite.popularRoutes") || "热门朝圣路线" },
+    { href: "/community?type=guide", label: t("holysite.recommendedGuides") || "推荐朝圣攻略" },
+    { href: "/community?type=tip", label: t("holysite.travelTips") || "旅行实用贴士" },
+    ...(religion ? [{ href: `/holy-sites?religion=${encodeURIComponent(religion)}`, label: t("holysite.relatedSites")?.replace("{religion}", religion) || `${religion}相关圣地` }] : []),
   ];
   return (
     <div className="mt-6">
       <h2 className="text-lg font-bold text-[#0f294d] mb-4">{t("common.moreRecommendations") || "更多推荐"}</h2>
       <div className="divide-y divide-gray-200 border border-gray-200 rounded-xl overflow-hidden">
         {items.map((item) => (
-          <button
-            key={item.key}
-            onClick={() => setOpen(open === item.key ? null : item.key)}
+          <Link
+            key={item.href}
+            href={item.href}
             className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[#f5f7fa] transition-colors"
           >
             <span className="font-medium text-[#0f294d] text-sm">{item.label}</span>
-            <span className={`text-[#8592a6] transition-transform ${open === item.key ? "rotate-180" : ""}`}>▾</span>
-          </button>
+            <span className="text-[#8592a6]">→</span>
+          </Link>
         ))}
       </div>
     </div>
@@ -595,7 +601,13 @@ function CulturalEtiquette() {
    ═══════════════════════════════════════════════════════════ */
 
 function BestTimeToVisit() {
-  const months = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+  const { t } = useTranslation();
+  const months = [
+    t("common.month.1") || "1月", t("common.month.2") || "2月", t("common.month.3") || "3月",
+    t("common.month.4") || "4月", t("common.month.5") || "5月", t("common.month.6") || "6月",
+    t("common.month.7") || "7月", t("common.month.8") || "8月", t("common.month.9") || "9月",
+    t("common.month.10") || "10月", t("common.month.11") || "11月", t("common.month.12") || "12月",
+  ];
   const heat = [3,3,4,5,5,3,2,2,4,5,5,3];
   const currentMonth = new Date().getMonth();
   const colors = ["bg-gray-200","bg-gray-200","bg-green-100","bg-green-200","bg-green-300","bg-green-400"];
@@ -603,7 +615,7 @@ function BestTimeToVisit() {
     <div className="mt-4 p-4 bg-[#f5f7fa] rounded-xl border border-gray-100">
       <div className="flex items-center gap-2 mb-3">
         <svg className="w-4 h-4 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-        <span className="text-sm font-medium text-[#0f294d]">最佳到访时间</span>
+        <span className="text-sm font-medium text-[#0f294d]">{t("holysite.bestTime.title") || "最佳到访时间"}</span>
       </div>
       <div className="grid grid-cols-12 gap-1">
         {months.map((m, i) => (
@@ -614,9 +626,9 @@ function BestTimeToVisit() {
         ))}
       </div>
       <div className="flex items-center gap-3 mt-2 text-[10px] text-[#8592a6]">
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-400" /> 最佳</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-200" /> 适宜</span>
-        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-gray-200" /> 一般</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-400" /> {t("holysite.bestTime.best") || "最佳"}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-green-200" /> {t("holysite.bestTime.good") || "适宜"}</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-gray-200" /> {t("holysite.bestTime.average") || "一般"}</span>
       </div>
     </div>
   );
@@ -627,17 +639,18 @@ function BestTimeToVisit() {
    ═══════════════════════════════════════════════════════════ */
 
 function AccessibilityInfo() {
+  const { t } = useTranslation();
   const items = [
-    { available: true, label: "轮椅通道" },
-    { available: true, label: "无障碍洗手间" },
-    { available: false, label: "盲文指引" },
-    { available: true, label: "老年人友好" },
-    { available: true, label: "婴儿车通行" },
-    { available: false, label: "手语导览" },
+    { available: true, label: t("holysite.accessibility.wheelchair") || "轮椅通道" },
+    { available: true, label: t("holysite.accessibility.restroom") || "无障碍洗手间" },
+    { available: false, label: t("holysite.accessibility.braille") || "盲文指引" },
+    { available: true, label: t("holysite.accessibility.elderly") || "老年人友好" },
+    { available: true, label: t("holysite.accessibility.stroller") || "婴儿车通行" },
+    { available: false, label: t("holysite.accessibility.signLang") || "手语导览" },
   ];
   return (
     <div className="mt-4">
-      <h3 className="text-sm font-bold text-[#0f294d] mb-2">无障碍设施</h3>
+      <h3 className="text-sm font-bold text-[#0f294d] mb-2">{t("holysite.accessibility.title") || "无障碍设施"}</h3>
       <div className="grid grid-cols-3 gap-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-1.5 text-xs">
@@ -659,11 +672,18 @@ function AccessibilityInfo() {
    ═══════════════════════════════════════════════════════════ */
 
 function PaymentMethodIcons() {
+  const { t } = useTranslation();
+  const methods = [
+    t("holysite.payment.wechat") || "微信支付",
+    t("holysite.payment.alipay") || "支付宝",
+    "Visa",
+    t("holysite.payment.unionpay") || "银联",
+  ];
   return (
     <div className="mt-3 pt-3 border-t border-gray-100">
-      <p className="text-[10px] text-[#8592a6] mb-2">支持支付方式</p>
+      <p className="text-[10px] text-[#8592a6] mb-2">{t("holysite.payment.title") || "支持支付方式"}</p>
       <div className="flex items-center gap-2">
-        {["微信支付", "支付宝", "Visa", "银联"].map((m) => (
+        {methods.map((m) => (
           <span key={m} className="px-2 py-1 bg-[#f5f7fa] rounded text-[10px] text-[#455873] border border-gray-100">{m}</span>
         ))}
       </div>
@@ -676,19 +696,20 @@ function PaymentMethodIcons() {
    ═══════════════════════════════════════════════════════════ */
 
 function PackingChecklist() {
+  const { t } = useTranslation();
   const items = [
-    { checked: true, label: "有效身份证件/护照" },
-    { checked: true, label: "舒适的步行鞋" },
-    { checked: true, label: "防晒帽/遮阳伞" },
-    { checked: true, label: "饮用水" },
-    { checked: true, label: "得体的长袖衣物" },
-    { checked: false, label: "相机（注意拍照规定）" },
-    { checked: false, label: "雨具（视天气）" },
-    { checked: false, label: "小额现金/零钱" },
+    { checked: true, label: t("holysite.packing.passport") || "有效身份证件/护照" },
+    { checked: true, label: t("holysite.packing.shoes") || "舒适的步行鞋" },
+    { checked: true, label: t("holysite.packing.sun") || "防晒帽/遮阳伞" },
+    { checked: true, label: t("holysite.packing.water") || "饮用水" },
+    { checked: true, label: t("holysite.packing.clothes") || "得体的长袖衣物" },
+    { checked: false, label: t("holysite.packing.camera") || "相机（注意拍照规定）" },
+    { checked: false, label: t("holysite.packing.rain") || "雨具（视天气）" },
+    { checked: false, label: t("holysite.packing.cash") || "小额现金/零钱" },
   ];
   return (
     <div className="mt-6" id="sec-packing">
-      <h2 className="text-lg font-bold text-[#0f294d] mb-3">出行准备清单</h2>
+      <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("holysite.packing.title") || "出行准备清单"}</h2>
       <div className="grid grid-cols-2 gap-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
@@ -710,24 +731,25 @@ function PackingChecklist() {
    ═══════════════════════════════════════════════════════════ */
 
 function TravelerTypeTags() {
+  const { t } = useTranslation();
   const types = [
-    { label: "独行朝圣", pct: 35 },
-    { label: "家庭出行", pct: 25 },
-    { label: "情侣同行", pct: 20 },
-    { label: "朋友结伴", pct: 15 },
-    { label: "团队参访", pct: 5 },
+    { label: t("holysite.travelerTypes.solo") || "独行朝圣", pct: 35 },
+    { label: t("holysite.travelerTypes.family") || "家庭出行", pct: 25 },
+    { label: t("holysite.travelerTypes.couple") || "情侣同行", pct: 20 },
+    { label: t("holysite.travelerTypes.friends") || "朋友结伴", pct: 15 },
+    { label: t("holysite.travelerTypes.group") || "团队参访", pct: 5 },
   ];
   return (
     <div className="mb-4 p-4 bg-[#f5f7fa] rounded-xl">
-      <p className="text-sm font-medium text-[#0f294d] mb-3">旅行者类型分布</p>
+      <p className="text-sm font-medium text-[#0f294d] mb-3">{t("holysite.travelerTypes.title") || "旅行者类型分布"}</p>
       <div className="space-y-2">
-        {types.map((t) => (
-          <div key={t.label} className="flex items-center gap-3">
-            <span className="text-xs text-[#455873] w-20">{t.label}</span>
+        {types.map((tp) => (
+          <div key={tp.label} className="flex items-center gap-3">
+            <span className="text-xs text-[#455873] w-20">{tp.label}</span>
             <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-[#3264ff] rounded-full" style={{ width: `${t.pct}%` }} />
+              <div className="h-full bg-[#3264ff] rounded-full" style={{ width: `${tp.pct}%` }} />
             </div>
-            <span className="text-xs text-[#8592a6] w-8 text-right">{t.pct}%</span>
+            <span className="text-xs text-[#8592a6] w-8 text-right">{tp.pct}%</span>
           </div>
         ))}
       </div>
@@ -740,25 +762,26 @@ function TravelerTypeTags() {
    ═══════════════════════════════════════════════════════════ */
 
 function StickyCTACard({ site, lowestPrice }: { site: HolySite; lowestPrice: number | null }) {
+  const { t } = useTranslation();
   return (
     <div className="sticky top-20">
       <div className="bg-white rounded-xl border border-gray-200 p-5" style={{ boxShadow: "0 4px 20px rgba(15,41,77,0.12)" }}>
         {lowestPrice !== null && lowestPrice > 0 ? (
           <>
-            <p className="text-xs text-[#8592a6]">路线起价</p>
+            <p className="text-xs text-[#8592a6]">{t("holysite.cta.routePrice") || "路线起价"}</p>
             <p className="text-3xl font-bold text-[#ff6600]">¥{(lowestPrice / 100).toLocaleString()}</p>
-            <p className="text-xs text-[#8592a6]">每人起</p>
+            <p className="text-xs text-[#8592a6]">{t("holysite.cta.perPerson") || "每人起"}</p>
 
             <Link
               href="#routes"
               className="mt-4 block w-full py-3 rounded-lg bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold text-center transition-colors text-base"
             >
-              立即预订
+              {t("holysite.cta.bookNow") || "立即预订"}
             </Link>
           </>
         ) : (
           <>
-            <p className="text-center text-sm text-[#8592a6]">探访圣地</p>
+            <p className="text-center text-sm text-[#8592a6]">{t("holysite.cta.explore") || "探访圣地"}</p>
             <p className="text-center text-lg font-bold text-[#0f294d] mt-1">{site.name}</p>
           </>
         )}
@@ -767,28 +790,28 @@ function StickyCTACard({ site, lowestPrice }: { site: HolySite; lowestPrice: num
           href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的朝圣路线`)}`}
           className="mt-3 block w-full py-2.5 rounded-lg bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold text-center transition-colors text-sm"
         >
-          AI规划师咨询
+          {t("holysite.cta.aiConsult") || "AI规划师咨询"}
         </Link>
         <Link
-          href="/routes"
+          href="/holy-sites#routes"
           className="mt-2 block w-full py-2.5 rounded-lg border border-gray-200 text-[#0f294d] hover:bg-[#f5f7fa] font-medium text-center text-sm transition-colors"
         >
-          查看相关路线
+          {t("holysite.cta.viewRoutes") || "查看相关路线"}
         </Link>
 
         {/* 保障标签 */}
         <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
           <div className="flex items-center gap-2 text-xs text-[#455873]">
             <svg className="w-3.5 h-3.5 text-[#00b341] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-            即时确认
+            {t("holysite.cta.instantConfirm") || "即时确认"}
           </div>
           <div className="flex items-center gap-2 text-xs text-[#455873]">
             <svg className="w-3.5 h-3.5 text-[#00b341] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-            14天免费取消
+            {t("holysite.cta.freeCancel") || "14天免费取消"}
           </div>
           <div className="flex items-center gap-2 text-xs text-[#455873]">
             <svg className="w-3.5 h-3.5 text-[#00b341] shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-            安全支付保障
+            {t("holysite.cta.securePayment") || "安全支付保障"}
           </div>
         </div>
 
@@ -807,7 +830,7 @@ function StickyCTACard({ site, lowestPrice }: { site: HolySite; lowestPrice: num
           <WorldMapDynamic holySites={[site]} height="144px" selectedSiteId={site.id} interactive={false} />
         </div>
         <Link href={`/map?lat=${site.latitude}&lng=${site.longitude}`} className="block text-center text-sm text-[#3264ff] hover:underline py-2 border-t border-gray-100">
-          查看大地图 →
+          {`${t("holysite.cta.viewMap") || "查看大地图"} →`}
         </Link>
       </div>
     </div>
@@ -847,7 +870,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
       <div className="max-w-[1120px] mx-auto px-4 pt-20 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-[#8592a6]">
-            <Link href="/" className="hover:text-[#3264ff] transition-colors">首页</Link>
+            <Link href="/" className="hover:text-[#3264ff] transition-colors">{t("holysite.breadcrumb.home") || "首页"}</Link>
             <span>&gt;</span>
             <Link href="/holy-sites" className="hover:text-[#3264ff] transition-colors">{t("nav.holySites") || "圣地"}</Link>
             <span>&gt;</span>
@@ -875,15 +898,16 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
       {/* ═══ Sticky跳转导航栏 ═══ */}
       <SectionNav sections={[
-        { id: "sec-info", label: "概览" },
-        { id: "routes", label: "路线预订" },
-        { id: "sec-intro", label: "圣地介绍" },
-        { id: "reviews", label: "评价" },
-        { id: "sec-facilities", label: "设施" },
-        { id: "sec-etiquette", label: "参访礼仪" },
-        { id: "sec-packing", label: "出行准备" },
-        { id: "sec-faq", label: "常见问题" },
-        { id: "sec-nearby", label: "周边推荐" },
+        { id: "sec-info", label: t("holysite.nav.overview") || "概览" },
+        { id: "routes", label: t("holysite.nav.routes") || "路线预订" },
+        { id: "sec-intro", label: t("holysite.nav.intro") || "圣地介绍" },
+        { id: "reviews", label: t("holysite.nav.reviews") || "评价" },
+        { id: "sec-facilities", label: t("holysite.nav.facilities") || "设施" },
+        { id: "sec-etiquette", label: t("holysite.nav.etiquette") || "参访礼仪" },
+        { id: "sec-packing", label: t("holysite.nav.packing") || "出行准备" },
+        { id: "sec-faq", label: t("holysite.nav.faq") || "常见问题" },
+        ...(site.transport ? [{ id: "sec-transport", label: t("holysite.nav.transport") || "交通指南" }] : []),
+        { id: "sec-nearby", label: t("holysite.nav.nearby") || "周边推荐" },
       ]} />
 
       {/* ═══ S4-S16. 两栏布局 ═══ */}
@@ -898,7 +922,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <JoinusBestBadge />
-                    <PopularityBadge count={Math.floor(Math.random() * 200) + 50} />
+                    <PopularityBadge count={site.collectionCount ?? 0} />
                   </div>
                   <h1 className="text-2xl font-bold text-[#0f294d]">{site.name}</h1>
                   {site.nameEn && <p className="text-sm text-[#8592a6] mt-0.5">{site.nameEn}</p>}
@@ -926,10 +950,10 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                 </span>
                 <span className="px-2.5 py-1 bg-[#f5f7fa] text-[#455873] rounded text-xs flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-                  建议2-3小时
+                  {t("holysite.suggestHours") || "建议2-3小时"}
                 </span>
                 {site.religion && (
-                  <span className="px-2.5 py-1 bg-[#f5f7fa] text-[#455873] rounded text-xs">{site.religion.name}圣地</span>
+                  <span className="px-2.5 py-1 bg-[#f5f7fa] text-[#455873] rounded text-xs">{t("holysite.faithSite")?.replace("{religion}", site.religion.name) || `${site.religion.name}圣地`}</span>
                 )}
               </div>
             </div>
@@ -941,28 +965,29 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#00b341]" />
-                  <span className="font-medium text-[#00b341]">开放参观</span>
+                  <span className="font-medium text-[#00b341]">{t("holysite.openStatus") || "开放参观"}</span>
+                  {site.openingHours && <span className="text-[#455873] font-normal ml-1">({site.openingHours})</span>}
                 </span>
                 <span className="text-[#8592a6]">·</span>
-                <span className="text-[#455873]">建议参访时长 2-3小时</span>
+                <span className="text-[#455873]">{site.visitDuration || t("holysite.visitDuration") || "建议参访时长 2-3小时"}</span>
               </div>
               {/* 地址 */}
               <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                 <span className="flex-1">{site.country} <span className="text-[#8592a6]">({site.latitude.toFixed(4)}°N, {site.longitude.toFixed(4)}°E)</span></span>
                 <Link href={`/map?lat=${site.latitude}&lng=${site.longitude}`} className="text-[#3264ff] hover:underline text-sm">
-                  查看地图
+                  {t("holysite.viewOnMap") || "查看地图"}
                 </Link>
               </div>
               {/* 时区 */}
               <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
-                <span>时区 UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}</span>
+                <span>{t("holysite.timezoneLabel") || "时区"} UTC{site.utcOffset >= 0 ? "+" : ""}{site.utcOffset}</span>
               </div>
               {/* 着装提醒 */}
               <div className="flex items-center gap-2 text-sm text-[#0f294d]">
                 <svg className="w-4 h-4 text-[#8592a6] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
-                <span>得体着装，殿堂内禁止拍照</span>
+                <span>{t("holysite.dressReminder") || "得体着装，殿堂内禁止拍照"}</span>
               </div>
 
               {/* 最佳到访时间热力图 */}
@@ -979,7 +1004,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
             {/* S9. 圣地介绍 */}
             <div id="sec-intro" className="mt-6">
-              <h2 className="text-lg font-bold text-[#0f294d] mb-3">圣地介绍</h2>
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("holysite.introTitle") || "圣地介绍"}</h2>
               <ExpandableText text={site.description} maxLength={300} />
             </div>
 
@@ -991,7 +1016,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
                   <p className="font-semibold text-[#0f294d]">{site.religion.name}</p>
                   <p className="text-sm text-[#8592a6]">{site.religion.nameEn}</p>
                 </div>
-                <Link href={`/religions/${site.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">了解更多 →</Link>
+                <Link href={`/religions/${site.religion.slug}`} className="text-sm text-[#3264ff] hover:underline">{`${t("holysite.learnMore") || "了解更多"} →`}</Link>
               </div>
             )}
 
@@ -1014,12 +1039,12 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
             {/* S11. 设施与服务 */}
             <div id="sec-facilities" className="mt-6">
-              <h2 className="text-base font-bold text-[#0f294d] mb-3">设施与服务</h2>
+              <h2 className="text-base font-bold text-[#0f294d] mb-3">{t("holysite.facilitiesTitle") || "设施与服务"}</h2>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "停车场" }, { label: "洗手间" },
-                  { label: "无障碍通道" }, { label: "寄存处" },
-                  { label: "讲解服务" }, { label: "WiFi" },
+                  { label: t("holysite.facility.parking") || "停车场" }, { label: t("holysite.facility.restroom") || "洗手间" },
+                  { label: t("holysite.facility.accessible") || "无障碍通道" }, { label: t("holysite.facility.storage") || "寄存处" },
+                  { label: t("holysite.facility.guide") || "讲解服务" }, { label: "WiFi" },
                 ].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#f5f7fa] rounded-lg">
                     <svg className="w-4 h-4 text-[#00b341] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -1043,6 +1068,19 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
               <FAQSection siteName={site.name} country={site.country} />
             </div>
 
+            {/* 交通指南 */}
+            {site.transport && (
+              <div id="sec-transport" className="mt-6">
+                <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M8 7h8m-8 4h4m-2 4v3m-4 0h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v11a2 2 0 002 2z" /></svg>
+                  {t("holysite.transportTitle") || "交通指南"}
+                </h2>
+                <div className="p-4 bg-[#f5f7fa] rounded-xl text-sm text-[#455873] leading-relaxed whitespace-pre-line">
+                  {site.transport}
+                </div>
+              </div>
+            )}
+
             {/* S10. 周边推荐 */}
             <div id="sec-nearby">
               <NearbySites currentSite={site} />
@@ -1060,7 +1098,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
             {/* S13. 你可能也喜欢 */}
             <div className="mt-6">
-              <RelatedEntities entityType="HOLY_SITE" entityId={site.id} title="你可能也喜欢" />
+              <RelatedEntities entityType="HOLY_SITE" entityId={site.id} title={t("holysite.youMayLike") || "你可能也喜欢"} />
             </div>
 
             {/* S16. 更多推荐手风琴 */}
@@ -1079,14 +1117,14 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
         <div className="flex-1 min-w-0">
           {lowestPrice !== null && lowestPrice > 0 ? (
             <div>
-              <span className="text-xs text-[#8592a6]">起价 </span>
+              <span className="text-xs text-[#8592a6]">{t("holysite.cta.startingPrice") || "起价"} </span>
               <span className="text-lg font-bold text-[#ff6600]">¥{(lowestPrice / 100).toLocaleString()}</span>
             </div>
           ) : reviewStats && reviewStats.totalCount > 0 ? (
             <div className="flex items-center gap-1 text-sm">
               <span className="inline-flex items-center px-1 py-0.5 rounded text-[10px] font-bold bg-[#00b341] text-white">{reviewStats.averageRating.toFixed(1)}</span>
               <span className="text-[#0f294d] font-medium">
-                {reviewStats.averageRating >= 4.5 ? "卓越" : reviewStats.averageRating >= 4 ? "优秀" : "很好"}
+                {reviewStats.averageRating >= 4.5 ? (t("holysite.ratingExcellent") || "卓越") : reviewStats.averageRating >= 4 ? (t("holysite.ratingGreat") || "优秀") : (t("holysite.ratingGood") || "很好")}
               </span>
             </div>
           ) : (
@@ -1097,7 +1135,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
           href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的朝圣路线`)}`}
           className="px-5 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
         >
-          立即预订
+          {t("holysite.cta.bookNow") || "立即预订"}
         </Link>
       </div>
 
@@ -1108,6 +1146,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
 
 /* ─── ExpandableText ─── */
 function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: number }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const needsTruncation = text.length > maxLength;
   return (
@@ -1117,7 +1156,7 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
       </p>
       {needsTruncation && (
         <button onClick={() => setExpanded(!expanded)} className="mt-2 text-[#3264ff] hover:underline text-sm font-medium">
-          {expanded ? "收起" : "展开全部"} {expanded ? "△" : "▽"}
+          {expanded ? (t("holysite.collapse") || "收起") : (t("holysite.expand") || "展开全部")} {expanded ? "△" : "▽"}
         </button>
       )}
     </div>

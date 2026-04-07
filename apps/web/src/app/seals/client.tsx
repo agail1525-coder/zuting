@@ -63,10 +63,10 @@ const SERIES_GRADIENT: Record<string, string> = {
 };
 
 // Difficulty badge styles
-const DIFFICULTY_STYLE: Record<"beginner" | "intermediate" | "advanced", { label: string; enLabel: string; bg: string; text: string; icon: string }> = {
-  beginner:     { label: "入门", enLabel: "Beginner",     bg: "bg-green-100",  text: "text-green-700",  icon: "🌱" },
-  intermediate: { label: "进阶", enLabel: "Intermediate", bg: "bg-amber-100",  text: "text-amber-700",  icon: "🔥" },
-  advanced:     { label: "深修", enLabel: "Advanced",     bg: "bg-purple-100", text: "text-purple-700", icon: "💎" },
+const DIFFICULTY_STYLE: Record<"beginner" | "intermediate" | "advanced", { bg: string; text: string; icon: string }> = {
+  beginner:     { bg: "bg-green-100",  text: "text-green-700",  icon: "🌱" },
+  intermediate: { bg: "bg-amber-100",  text: "text-amber-700",  icon: "🔥" },
+  advanced:     { bg: "bg-purple-100", text: "text-purple-700", icon: "💎" },
 };
 
 function useSortOptions(t: (key: string) => string) {
@@ -382,7 +382,7 @@ function SeriesJourneyMap({
 
 /* ─── Main Component ─── */
 export default function SealsClient({ seals, error }: Props) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const SERIES_META = useSeriesMeta(t);
   const SORT_OPTIONS = useSortOptions(t);
   const [filter, setFilter] = useState<SealSeries | null>(null);
@@ -406,8 +406,8 @@ export default function SealsClient({ seals, error }: Props) {
           (s.essence ?? "").toLowerCase().includes(q)
       );
     }
-    if (sort === "name-asc") result = [...result].sort((a, b) => a.name.localeCompare(b.name, "zh"));
-    if (sort === "name-desc") result = [...result].sort((a, b) => b.name.localeCompare(a.name, "zh"));
+    if (sort === "name-asc") result = [...result].sort((a, b) => a.name.localeCompare(b.name, locale));
+    if (sort === "name-desc") result = [...result].sort((a, b) => b.name.localeCompare(a.name, locale));
     if (sort === "difficulty-asc") {
       result = [...result].sort(
         (a, b) => DIFFICULTY_ORDER[SERIES_DIFFICULTY[a.series]] - DIFFICULTY_ORDER[SERIES_DIFFICULTY[b.series]]
@@ -419,7 +419,7 @@ export default function SealsClient({ seals, error }: Props) {
       );
     }
     return result;
-  }, [seals, filter, search, sort]);
+  }, [seals, filter, search, sort, locale]);
 
   // Group by series
   const displayGroups = useMemo(() => {
@@ -767,7 +767,7 @@ export default function SealsClient({ seals, error }: Props) {
                 {t("seals.cta.aiPlan")}
               </Link>
               <Link
-                href="/routes"
+                href="/holy-sites#routes"
                 className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20"
               >
                 {t("seals.cta.browseRoutes")}

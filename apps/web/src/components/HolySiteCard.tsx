@@ -102,9 +102,9 @@ export default function HolySiteCard({ site, compareMode, isCompared, onToggleCo
               )}
               {site.ticketPrice != null && (
                 <span>
-                  {site.ticketPrice === 0
+                  {site.ticketPrice === "0" || site.ticketPrice.toLowerCase() === "free" || site.ticketPrice === "免费"
                     ? t("holySites.free")
-                    : `¥${site.ticketPrice}`}
+                    : site.ticketPrice}
                 </span>
               )}
               {site.visitDuration && (

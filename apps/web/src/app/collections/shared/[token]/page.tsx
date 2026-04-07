@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchSharedCollection,
   type Collection,
@@ -10,12 +11,12 @@ import {
 } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
-const ENTITY_TYPE_LABELS: Record<CollectionEntityType, string> = {
-  HOLY_SITE: "圣地",
-  TEMPLE: "祖庭",
-  PATRIARCH: "祖师",
-  TRIP: "行程",
-  ROUTE: "路线",
+const ENTITY_TYPE_I18N_KEYS: Record<CollectionEntityType, string> = {
+  HOLY_SITE: "collections.entityType.holySite",
+  TEMPLE: "collections.entityType.temple",
+  PATRIARCH: "collections.entityType.patriarch",
+  TRIP: "collections.entityType.trip",
+  ROUTE: "collections.entityType.route",
 };
 
 const ENTITY_TYPE_COLORS: Record<CollectionEntityType, string> = {
@@ -31,10 +32,16 @@ const ENTITY_TYPE_LINKS: Record<CollectionEntityType, string> = {
   TEMPLE: "/temples",
   PATRIARCH: "/patriarchs",
   TRIP: "/trips",
-  ROUTE: "/routes",
+  ROUTE: "/holy-sites#routes",
 };
 
-function SharedItemCard({ item }: { item: CollectionItem }) {
+function SharedItemCard({
+  item,
+  t,
+}: {
+  item: CollectionItem;
+  t: (key: string, params?: Record<string, string | number>) => string;
+}) {
   const link = `${ENTITY_TYPE_LINKS[item.entityType]}/${item.entityId}`;
 
   return (
@@ -43,7 +50,7 @@ function SharedItemCard({ item }: { item: CollectionItem }) {
         <span
           className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${ENTITY_TYPE_COLORS[item.entityType]}`}
         >
-          {ENTITY_TYPE_LABELS[item.entityType]}
+          {t(ENTITY_TYPE_I18N_KEYS[item.entityType])}
         </span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 truncate transition-colors">
@@ -75,6 +82,7 @@ export default function SharedCollectionPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = use(params);
+  const { t, locale } = useTranslation();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -106,13 +114,15 @@ export default function SharedCollectionPage({
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
           </div>
-          <h2 className="text-lg font-medium text-gray-700 mb-2">收藏夹不存在</h2>
-          <p className="text-sm text-gray-400 mb-6">此分享链接可能已失效或收藏夹不公开</p>
-          <Link href="/" className="text-blue-600 hover:underline text-sm">返回首页</Link>
+          <h2 className="text-lg font-medium text-gray-700 mb-2">{t("collections.shared.notFoundTitle")}</h2>
+          <p className="text-sm text-gray-400 mb-6">{t("collections.shared.notFoundDesc")}</p>
+          <Link href="/" className="text-blue-600 hover:underline text-sm">{t("collections.shared.backHome")}</Link>
         </div>
       </div>
     );
   }
+
+  const itemsArr = Array.isArray(collection.items) ? collection.items : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,27 +138,30 @@ export default function SharedCollectionPage({
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl font-bold text-gray-900">{collection.name}</h1>
-                <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">公开收藏</span>
+                <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">{t("collections.shared.publicBadge")}</span>
               </div>
               {collection.description && (
                 <p className="text-sm text-gray-500 mt-2">{collection.description}</p>
               )}
               <p className="text-xs text-gray-400 mt-2">
-                {collection.items.length} 个收藏 · 更新于 {new Date(collection.updatedAt).toLocaleDateString("zh-CN")}
+                {t("collections.shared.itemsAndDate", {
+                  count: itemsArr.length,
+                  date: new Date(collection.updatedAt).toLocaleDateString(locale),
+                })}
               </p>
             </div>
           </div>
         </div>
 
         {/* Items */}
-        {collection.items.length === 0 ? (
+        {itemsArr.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-400 text-sm">此收藏夹暂无内容</p>
+            <p className="text-gray-400 text-sm">{t("collections.shared.emptyContent")}</p>
           </div>
         ) : (
           <div className="space-y-3 mb-8">
-            {collection.items.map((item) => (
-              <SharedItemCard key={item.id} item={item} />
+            {itemsArr.map((item) => (
+              <SharedItemCard key={item.id} item={item} t={t} />
             ))}
           </div>
         )}
@@ -160,20 +173,20 @@ export default function SharedCollectionPage({
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </div>
-          <h3 className="font-semibold text-gray-900 mb-2">加入祖庭旅行，创建你自己的收藏夹</h3>
-          <p className="text-sm text-gray-500 mb-4">收藏圣地、祖庭和祖师，规划你的朝圣之旅</p>
+          <h3 className="font-semibold text-gray-900 mb-2">{t("collections.shared.ctaTitle")}</h3>
+          <p className="text-sm text-gray-500 mb-4">{t("collections.shared.ctaDesc")}</p>
           <div className="flex gap-3 justify-center">
             <Link
               href="/register"
               className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors"
             >
-              立即注册
+              {t("collections.shared.register")}
             </Link>
             <Link
               href="/login"
               className="px-5 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm rounded-xl transition-colors"
             >
-              登录
+              {t("collections.shared.login")}
             </Link>
           </div>
         </div>

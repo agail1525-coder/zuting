@@ -87,8 +87,8 @@ export default function PackageDetailPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <p className="text-gray-500 mb-4">{error || "套餐不存在"}</p>
-        <Link href="/packages" className="text-[#0066FF] hover:underline text-sm">
-          返回套餐列表
+        <Link href="/prices#packages" className="text-[#0066FF] hover:underline text-sm">
+          返回价格中心
         </Link>
       </div>
     );
@@ -102,7 +102,7 @@ export default function PackageDetailPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-400 mb-4 flex items-center gap-2">
-        <Link href="/packages" className="hover:text-[#0066FF] transition-colors">套餐</Link>
+        <Link href="/prices#packages" className="hover:text-[#0066FF] transition-colors">价格中心</Link>
         <span>/</span>
         <span className="text-gray-700 truncate">{pkg.name}</span>
       </nav>
@@ -135,7 +135,7 @@ export default function PackageDetailPage() {
               <ShareButton
                 title={pkg.name}
                 description={pkg.description ?? undefined}
-                url={`/packages/${pkg.id || id}`}
+                url={`/prices/packages/${pkg.id || id}`}
                 entityType="PACKAGE"
                 entityId={pkg.id || id}
               />

@@ -1,4 +1,4 @@
-import { fetchReligions, fetchHolySites, type Religion, type HolySite } from "@/lib/api";
+import { fetchReligions, fetchHolySites, fetchFeaturedRoutes, type Religion, type HolySite, type Route } from "@/lib/api";
 import HolySitesClient from "./client";
 
 export const dynamic = "force-dynamic";
@@ -19,17 +19,18 @@ export const metadata = {
 };
 
 export default async function HolySitesPage() {
-  let religions: Religion[] = [];
-  let holySites: HolySite[] = [];
-  let error = false;
-  try {
-    [religions, holySites] = await Promise.all([
-      fetchReligions(),
-      fetchHolySites(),
-    ]);
-  } catch {
-    error = true;
-  }
+  const results = await Promise.allSettled([
+    fetchReligions(),
+    fetchHolySites(),
+    fetchFeaturedRoutes(6),
+  ]);
 
-  return <HolySitesClient religions={religions} holySites={holySites} error={error} />;
+  const religions: Religion[] = results[0].status === "fulfilled" ? results[0].value : [];
+  const holySites: HolySite[] = results[1].status === "fulfilled" ? results[1].value : [];
+  const featuredRoutes: Route[] = results[2].status === "fulfilled"
+    ? (Array.isArray(results[2].value) ? results[2].value : [])
+    : [];
+  const error = results[0].status === "rejected" && results[1].status === "rejected";
+
+  return <HolySitesClient religions={religions} holySites={holySites} featuredRoutes={featuredRoutes} error={error} />;
 }

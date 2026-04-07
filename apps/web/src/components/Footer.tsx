@@ -24,7 +24,6 @@ export default function Footer() {
           <div>
             <h3 className="text-gray-900 font-semibold text-sm mb-4">{t("footer.explore") || "探索"}</h3>
             <div className="flex flex-col gap-2.5">
-              <Link href="/routes" className="text-gray-500 hover:text-[#0066FF] text-sm transition-colors">路线</Link>
               <Link href="/holy-sites" className="text-gray-500 hover:text-[#0066FF] text-sm transition-colors">目的地</Link>
               <Link href="/religions" className="text-gray-500 hover:text-[#0066FF] text-sm transition-colors">文化百科</Link>
               <Link href="/chat" className="text-gray-500 hover:text-[#0066FF] text-sm transition-colors">AI助手</Link>

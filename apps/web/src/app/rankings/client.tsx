@@ -55,7 +55,7 @@ export default function RankingsClient() {
   }, [sites, religionFilter]);
 
   const filteredTemples = useMemo(() => {
-    const list = religionFilter === "all" ? temples : temples.filter(t => t.religion?.id === religionFilter);
+    const list = religionFilter === "all" ? temples : temples.filter(tp => tp.religion?.id === religionFilter);
     return [...list].slice(0, 20);
   }, [temples, religionFilter]);
 
@@ -231,7 +231,7 @@ export default function RankingsClient() {
               {routes.map((route, i) => (
                 <Link
                   key={route.id}
-                  href={`/routes/${route.slug ?? route.id}`}
+                  href={`/holy-sites/routes/${route.slug ?? route.id}`}
                   className="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all group"
                 >
                   <div className="w-10 h-10 flex items-center justify-center text-xl font-bold shrink-0">

@@ -23,52 +23,28 @@ const RELIGION_ERA: Record<string, "ancient" | "medieval" | "modern"> = {
   bahai: "modern",
 };
 
-const RELIGION_FOLLOWERS: Record<string, string> = {
-  buddhism: "5.2亿",
-  taoism: "3亿",
-  hinduism: "12亿",
-  judaism: "1500万",
-  confucianism: "6亿",
-  shinto: "1亿",
-  christianity: "24亿",
-  islam: "19亿",
-  tibetan_buddhism: "2000万",
-  sikhism: "3000万",
-  indigenous: "3亿",
-  bahai: "800万",
-};
-const RELIGION_FOLLOWERS_EN: Record<string, string> = {
-  buddhism: "520M",
-  taoism: "300M",
-  hinduism: "1.2B",
-  judaism: "15M",
-  confucianism: "600M",
-  shinto: "100M",
-  christianity: "2.4B",
-  islam: "1.9B",
-  tibetan_buddhism: "20M",
-  sikhism: "30M",
-  indigenous: "300M",
-  bahai: "8M",
-};
+// Follower counts keyed by i18n key suffix, actual display via t()
+const RELIGION_FOLLOWER_KEYS: string[] = [
+  "buddhism", "taoism", "hinduism", "judaism", "confucianism", "shinto",
+  "christianity", "islam", "tibetan_buddhism", "sikhism", "indigenous", "bahai",
+];
 
-// Continent bounding boxes [minLon, maxLon, minLat, maxLat]
+// Continent bounding boxes for SVG map
 const CONTINENT_BOXES: Array<{
   id: string;
-  labelZh: string;
-  labelEn: string;
+  i18nKey: string; // i18n key suffix for continent label
   x: number; // SVG x (0-1000)
   y: number; // SVG y (0-500)
   w: number;
   h: number;
   color: string;
 }> = [
-  { id: "na", labelZh: "北美洲", labelEn: "N. America", x: 50, y: 60, w: 180, h: 180, color: "#e8f4fd" },
-  { id: "sa", labelZh: "南美洲", labelEn: "S. America", x: 160, y: 250, w: 130, h: 190, color: "#f0fdf4" },
-  { id: "eu", labelZh: "欧洲", labelEn: "Europe", x: 430, y: 30, w: 120, h: 130, color: "#fef9ec" },
-  { id: "af", labelZh: "非洲", labelEn: "Africa", x: 430, y: 165, w: 150, h: 240, color: "#fff7ed" },
-  { id: "as", labelZh: "亚洲", labelEn: "Asia", x: 555, y: 20, w: 300, h: 270, color: "#fdf4ff" },
-  { id: "oc", labelZh: "大洋洲", labelEn: "Oceania", x: 700, y: 300, w: 200, h: 150, color: "#ecfeff" },
+  { id: "na", i18nKey: "religions.continentNA", x: 50, y: 60, w: 180, h: 180, color: "#e8f4fd" },
+  { id: "sa", i18nKey: "religions.continentSA", x: 160, y: 250, w: 130, h: 190, color: "#f0fdf4" },
+  { id: "eu", i18nKey: "religions.continentEU", x: 430, y: 30, w: 120, h: 130, color: "#fef9ec" },
+  { id: "af", i18nKey: "religions.continentAF", x: 430, y: 165, w: 150, h: 240, color: "#fff7ed" },
+  { id: "as", i18nKey: "religions.continentAS", x: 555, y: 20, w: 300, h: 270, color: "#fdf4ff" },
+  { id: "oc", i18nKey: "religions.continentOC", x: 700, y: 300, w: 200, h: 150, color: "#ecfeff" },
 ];
 
 // Map lat/lon → approximate SVG x,y (0-1000 x, 0-500 y)
@@ -156,11 +132,10 @@ function ReligionCard({
   onView?: (slug: string) => void;
   compact?: boolean;
 }) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const eraKey = Object.entries(RELIGION_ERA).find(([k]) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k))?.[1];
-  const followersZh = Object.entries(RELIGION_FOLLOWERS).find(([k]) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k))?.[1];
-  const followersEn = Object.entries(RELIGION_FOLLOWERS_EN).find(([k]) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k))?.[1];
-  const followers = locale === "zh-CN" ? followersZh : followersEn;
+  const followerKey = RELIGION_FOLLOWER_KEYS.find((k) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
+  const followers = followerKey ? t(`religions.followers_${followerKey}`) : null;
 
   return (
     <Link key={r.id} href={`/religions/${r.slug}`} onClick={() => onView?.(r.slug)}>
@@ -254,7 +229,7 @@ function WorldMapSection({ holySites, religionStats }: { holySites: HolySite[]; 
                   textAnchor="middle" dominantBaseline="middle"
                   fontSize="11" fill="#64748b" fontWeight="500"
                 >
-                  {c.labelZh}
+                  {t(c.i18nKey)}
                 </text>
               </g>
             ))}
@@ -312,10 +287,10 @@ function FeaturedSpotlight({ religionStats, onView }: { religionStats: ReligionS
 
   if (!current) return null;
 
-  const followersKey = Object.keys(RELIGION_FOLLOWERS).find((k) =>
+  const followerKey = RELIGION_FOLLOWER_KEYS.find((k) =>
     current.slug?.includes(k) || current.nameEn?.toLowerCase().includes(k)
   );
-  const followers = followersKey ? RELIGION_FOLLOWERS[followersKey] : null;
+  const followers = followerKey ? t(`religions.followers_${followerKey}`) : null;
   const eraKey = Object.entries(RELIGION_ERA).find(([k]) => current.slug?.includes(k) || current.nameEn?.toLowerCase().includes(k))?.[1];
 
   return (
@@ -507,7 +482,7 @@ function EraTimelineFilter({
 
 // ─── Compare Tool ─────────────────────────────────────────────────────────────
 function CompareReligions({ religionStats }: { religionStats: ReligionStat[] }) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string[]>([]);
 
   const toggle = (id: string) => {
@@ -519,8 +494,8 @@ function CompareReligions({ religionStats }: { religionStats: ReligionStat[] }) 
   const compareList = religionStats.filter((r) => selected.includes(r.id));
 
   const getFollowers = (r: ReligionStat) => {
-    const key = Object.keys(RELIGION_FOLLOWERS).find((k) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
-    return key ? (locale === "zh-CN" ? RELIGION_FOLLOWERS[key] : RELIGION_FOLLOWERS_EN[key]) : "—";
+    const key = RELIGION_FOLLOWER_KEYS.find((k) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
+    return key ? t(`religions.followers_${key}`) : "—";
   };
 
   const getEra = (r: ReligionStat) => {
@@ -935,8 +910,8 @@ export default function ReligionsClient({ religions, holySites, temples, patriar
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                       {religionStats.map((r) => {
-                        const followersKey = Object.keys(RELIGION_FOLLOWERS).find((k) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
-                        const followersVal = followersKey ? RELIGION_FOLLOWERS[followersKey] : "—";
+                        const fKey = RELIGION_FOLLOWER_KEYS.find((k) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
+                        const followersVal = fKey ? t(`religions.followers_${fKey}`) : "—";
                         const eraEntry = Object.entries(RELIGION_ERA).find(([k]) => r.slug?.includes(k) || r.nameEn?.toLowerCase().includes(k));
                         const eraKey = eraEntry?.[1];
                         return (
@@ -1019,7 +994,7 @@ export default function ReligionsClient({ religions, holySites, temples, patriar
           <h2 className="text-2xl md:text-3xl font-bold mb-3">{t("religions.ctaTitle")}</h2>
           <p className="text-blue-100 mb-6 max-w-xl mx-auto">{t("religions.ctaDesc")}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/routes" className="px-8 py-3 bg-white text-[#0066FF] rounded-xl font-bold hover:bg-blue-50 transition-colors">
+            <Link href="/holy-sites#routes" className="px-8 py-3 bg-white text-[#0066FF] rounded-xl font-bold hover:bg-blue-50 transition-colors">
               {t("religions.ctaBrowseRoutes")}
             </Link>
             <Link href="/chat" className="px-8 py-3 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors border border-white/20">

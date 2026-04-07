@@ -644,7 +644,7 @@ export default function TripsPage() {
                 {t("trips.createNew")}
               </Link>
               <Link
-                href="/routes"
+                href="/holy-sites#routes"
                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl text-sm hover:border-[#0066FF] hover:text-[#0066FF] transition-colors"
               >
                 {t("trips.browseRoutes")}
@@ -655,7 +655,7 @@ export default function TripsPage() {
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-lg mx-auto">
               {[
                 { icon: "🕌", titleKey: "trips.empty.rec1.title", descKey: "trips.empty.rec1.desc", href: "/holy-sites" },
-                { icon: "🗺️", titleKey: "trips.empty.rec2.title", descKey: "trips.empty.rec2.desc", href: "/routes" },
+                { icon: "🗺️", titleKey: "trips.empty.rec2.title", descKey: "trips.empty.rec2.desc", href: "/holy-sites#routes" },
                 { icon: "✨", titleKey: "trips.empty.rec3.title", descKey: "trips.empty.rec3.desc", href: "/community" },
               ].map((rec) => (
                 <Link

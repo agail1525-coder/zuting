@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import {
   fetchCollection,
   updateCollection,
@@ -15,12 +16,12 @@ import {
 } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
-const ENTITY_TYPE_LABELS: Record<CollectionEntityType, string> = {
-  HOLY_SITE: "圣地",
-  TEMPLE: "祖庭",
-  PATRIARCH: "祖师",
-  TRIP: "行程",
-  ROUTE: "路线",
+const ENTITY_TYPE_I18N_KEYS: Record<CollectionEntityType, string> = {
+  HOLY_SITE: "collections.entityType.holySite",
+  TEMPLE: "collections.entityType.temple",
+  PATRIARCH: "collections.entityType.patriarch",
+  TRIP: "collections.entityType.trip",
+  ROUTE: "collections.entityType.route",
 };
 
 const ENTITY_TYPE_COLORS: Record<CollectionEntityType, string> = {
@@ -36,15 +37,19 @@ const ENTITY_TYPE_LINKS: Record<CollectionEntityType, string> = {
   TEMPLE: "/temples",
   PATRIARCH: "/patriarchs",
   TRIP: "/trips",
-  ROUTE: "/routes",
+  ROUTE: "/holy-sites#routes",
 };
 
 function CollectionItemCard({
   item,
   onRemove,
+  t,
+  locale,
 }: {
   item: CollectionItem;
   onRemove: (id: string) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
+  locale: string;
 }) {
   const [removing, setRemoving] = useState(false);
   const link = `${ENTITY_TYPE_LINKS[item.entityType]}/${item.entityId}`;
@@ -62,7 +67,7 @@ function CollectionItemCard({
       <span
         className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${ENTITY_TYPE_COLORS[item.entityType]}`}
       >
-        {ENTITY_TYPE_LABELS[item.entityType]}
+        {t(ENTITY_TYPE_I18N_KEYS[item.entityType])}
       </span>
 
       {/* Entity info */}
@@ -77,7 +82,7 @@ function CollectionItemCard({
           <p className="text-xs text-gray-400 mt-0.5 truncate">{item.note}</p>
         )}
         <p className="text-xs text-gray-300 mt-0.5">
-          {new Date(item.createdAt).toLocaleDateString("zh-CN")}
+          {new Date(item.createdAt).toLocaleDateString(locale)}
         </p>
       </div>
 
@@ -87,13 +92,13 @@ function CollectionItemCard({
           href={link}
           className="text-xs text-blue-600 hover:text-blue-800 transition-colors opacity-0 group-hover:opacity-100"
         >
-          查看
+          {t("collections.detail.view")}
         </Link>
         <button
           onClick={handleRemove}
           disabled={removing}
           className="p-1.5 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-red-50"
-          aria-label="从收藏夹移除"
+          aria-label={t("collections.detail.removeLabel")}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -108,9 +113,11 @@ function CollectionItemCard({
 function ShareModal({
   shareUrl,
   onClose,
+  t,
 }: {
   shareUrl: string;
   onClose: () => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -128,7 +135,7 @@ function ShareModal({
     >
       <div className="bg-white rounded-2xl w-full max-w-md shadow-xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-900">分享收藏夹</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t("collections.share.title")}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -137,7 +144,7 @@ function ShareModal({
           </button>
         </div>
 
-        <p className="text-sm text-gray-500 mb-4">分享此链接，其他人可以查看你的收藏夹：</p>
+        <p className="text-sm text-gray-500 mb-4">{t("collections.share.desc")}</p>
 
         <div className="flex gap-2">
           <input
@@ -154,7 +161,7 @@ function ShareModal({
                 : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
-            {copied ? "已复制" : "复制"}
+            {copied ? t("collections.share.copied") : t("collections.share.copy")}
           </button>
         </div>
       </div>
@@ -166,10 +173,12 @@ function EditModal({
   collection,
   onClose,
   onUpdate,
+  t,
 }: {
   collection: Collection;
   onClose: () => void;
   onUpdate: (updated: Collection) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }) {
   const [name, setName] = useState(collection.name);
   const [description, setDescription] = useState(collection.description ?? "");
@@ -179,7 +188,7 @@ function EditModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) { setError("请输入名称"); return; }
+    if (!name.trim()) { setError(t("collections.edit.nameRequired")); return; }
     setLoading(true);
     setError(null);
     try {
@@ -190,7 +199,7 @@ function EditModal({
       });
       onUpdate(updated);
     } catch {
-      setError("更新失败，请重试");
+      setError(t("collections.edit.updateFailed"));
       setLoading(false);
     }
   };
@@ -202,7 +211,7 @@ function EditModal({
     >
       <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">编辑收藏夹</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t("collections.edit.title")}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -212,7 +221,7 @@ function EditModal({
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">名称</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("collections.edit.nameLabel")}</label>
             <input
               type="text"
               value={name}
@@ -222,7 +231,7 @@ function EditModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">描述（选填）</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("collections.edit.descLabel")}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -239,13 +248,13 @@ function EditModal({
             >
               <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isPublic ? "translate-x-5" : "translate-x-1"}`} />
             </button>
-            <span className="text-sm text-gray-700">公开收藏夹</span>
+            <span className="text-sm text-gray-700">{t("collections.edit.publicToggle")}</span>
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors">取消</button>
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors">{t("collections.edit.cancel")}</button>
             <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm transition-colors disabled:opacity-50">
-              {loading ? "保存中..." : "保存"}
+              {loading ? t("collections.edit.saving") : t("collections.edit.save")}
             </button>
           </div>
         </form>
@@ -261,6 +270,7 @@ export default function CollectionDetailPage({
 }) {
   const { id } = use(params);
   const { user, loading: authLoading } = useAuth();
+  const { t, locale } = useTranslation();
   const router = useRouter();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [items, setItems] = useState<CollectionItem[]>([]);
@@ -322,8 +332,8 @@ export default function CollectionDetailPage({
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">收藏夹未找到</p>
-          <Link href="/collections" className="text-blue-600 hover:underline text-sm">返回我的收藏夹</Link>
+          <p className="text-gray-500 mb-4">{t("collections.detail.notFound")}</p>
+          <Link href="/collections" className="text-blue-600 hover:underline text-sm">{t("collections.detail.backToCollections")}</Link>
         </div>
       </div>
     );
@@ -335,7 +345,7 @@ export default function CollectionDetailPage({
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-            <Link href="/collections" className="hover:text-blue-600 transition-colors">我的收藏夹</Link>
+            <Link href="/collections" className="hover:text-blue-600 transition-colors">{t("collections.detail.breadcrumb")}</Link>
             <span>/</span>
             <span className="text-gray-600">{collection.name}</span>
           </div>
@@ -345,13 +355,13 @@ export default function CollectionDetailPage({
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-2xl font-bold text-gray-900">{collection.name}</h1>
                 {collection.isPublic && (
-                  <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">公开</span>
+                  <span className="bg-blue-100 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">{t("collections.card.public")}</span>
                 )}
               </div>
               {collection.description && (
                 <p className="text-sm text-gray-500 mt-2">{collection.description}</p>
               )}
-              <p className="text-xs text-gray-400 mt-2">{items.length} 个收藏</p>
+              <p className="text-xs text-gray-400 mt-2">{t("collections.card.items", { count: items.length })}</p>
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
@@ -363,7 +373,7 @@ export default function CollectionDetailPage({
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
-                编辑
+                {t("collections.detail.edit")}
               </button>
               <button
                 onClick={handleShare}
@@ -377,7 +387,7 @@ export default function CollectionDetailPage({
                   <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                 </svg>
-                {sharingLoading ? "生成中..." : "分享"}
+                {sharingLoading ? t("collections.detail.sharing") : t("collections.detail.share")}
               </button>
             </div>
           </div>
@@ -391,11 +401,11 @@ export default function CollectionDetailPage({
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </div>
-            <h2 className="text-lg font-medium text-gray-700 mb-2">收藏夹是空的</h2>
-            <p className="text-sm text-gray-400 mb-6">浏览圣地、祖庭或祖师，点击爱心图标收藏</p>
+            <h2 className="text-lg font-medium text-gray-700 mb-2">{t("collections.detail.emptyTitle")}</h2>
+            <p className="text-sm text-gray-400 mb-6">{t("collections.detail.emptyDesc")}</p>
             <div className="flex gap-3">
-              <Link href="/holy-sites" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">浏览圣地</Link>
-              <Link href="/temples" className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm rounded-lg transition-colors">浏览祖庭</Link>
+              <Link href="/holy-sites" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">{t("collections.detail.browseHolySites")}</Link>
+              <Link href="/temples" className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm rounded-lg transition-colors">{t("collections.detail.browseTemples")}</Link>
             </div>
           </div>
         ) : (
@@ -405,6 +415,8 @@ export default function CollectionDetailPage({
                 key={item.id}
                 item={item}
                 onRemove={handleRemoveItem}
+                t={t}
+                locale={locale}
               />
             ))}
           </div>
@@ -419,6 +431,7 @@ export default function CollectionDetailPage({
             setCollection(updated);
             setShowEditModal(false);
           }}
+          t={t}
         />
       )}
 
@@ -426,6 +439,7 @@ export default function CollectionDetailPage({
         <ShareModal
           shareUrl={shareUrl}
           onClose={() => setShareUrl(null)}
+          t={t}
         />
       )}
       <MobileNav />
