@@ -17,6 +17,7 @@ const navLinks = [
   { key: "nav.community", href: "/community", highlight: false },
   { key: "nav.deals", href: "/promotions", highlight: true },
   { key: "nav.aiPlanner", href: "/chat", highlight: true },
+  { key: "nav.teamCulture", href: "/team-culture", highlight: true },
   { key: "nav.myTrips", href: "/trips", highlight: false },
 ];
 
