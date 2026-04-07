@@ -1252,3 +1252,42 @@ async function deleteRequest<T>(path: string): Promise<T> {
     throw err
   }
 }
+
+// ======== Team Culture 团队文化 (M32) ========
+
+export interface TeamCultureTheme {
+  id: string
+  slug: string
+  title: string
+  subtitle: string | null
+  description: string
+  color: string
+  icon: string | null
+  coverUrl: string | null
+  keywords: string[]
+  priceFrom: number | null
+  durationDays: number | null
+}
+
+export interface TeamCase {
+  id: string
+  slug: string
+  teamName: string
+  orgType: string
+  industry: string | null
+  headcount: number
+  story: string
+  highlights: string[]
+  photos: string[]
+  testimonial: string | null
+}
+
+export async function fetchTeamCultureThemes(): Promise<TeamCultureTheme[]> {
+  const res = await request<{ items: TeamCultureTheme[] }>('/team-culture/themes')
+  return Array.isArray(res?.items) ? res.items : []
+}
+
+export async function fetchTeamCases(): Promise<TeamCase[]> {
+  const res = await request<{ items: TeamCase[] }>('/team-culture/cases')
+  return Array.isArray(res?.items) ? res.items : []
+}

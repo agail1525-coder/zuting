@@ -1347,3 +1347,61 @@ export async function fetchMediaByEntity(entityType: string, entityId: string): 
   const res = await request<{ data: MediaContent[] }>('/media', { entityType, entityId });
   return Array.isArray(res.data) ? res.data.filter((m) => m.isActive) : [];
 }
+
+// ======== Team Culture 团队文化 (M32) ========
+
+export interface TeamCultureTheme {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  description: string;
+  color: string;
+  icon: string | null;
+  coverUrl: string | null;
+  keywords: string[];
+  priceFrom: number | null;
+  durationDays: number | null;
+}
+
+export interface TeamCase {
+  id: string;
+  slug: string;
+  teamName: string;
+  orgType: string;
+  industry: string | null;
+  headcount: number;
+  story: string;
+  highlights: string[];
+  photos: string[];
+  testimonial: string | null;
+  publishedAt: string | null;
+}
+
+export interface TeamInquiryInput {
+  themeId?: string;
+  contactName: string;
+  contactRole?: string;
+  phone: string;
+  email?: string;
+  orgName: string;
+  headcount: number;
+  budget?: number;
+  preferredAt?: string;
+  message?: string;
+  source?: string;
+}
+
+export async function fetchTeamCultureThemes(): Promise<TeamCultureTheme[]> {
+  const res = await request<{ items: TeamCultureTheme[] }>('/team-culture/themes');
+  return Array.isArray(res?.items) ? res.items : [];
+}
+
+export async function fetchTeamCases(): Promise<TeamCase[]> {
+  const res = await request<{ items: TeamCase[] }>('/team-culture/cases');
+  return Array.isArray(res?.items) ? res.items : [];
+}
+
+export async function submitTeamInquiry(input: TeamInquiryInput): Promise<{ id: string }> {
+  return requestMutate<{ id: string }>('/team-culture/inquiries', 'POST', input as unknown as Record<string, unknown>);
+}

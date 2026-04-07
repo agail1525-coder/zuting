@@ -54,7 +54,8 @@ export default defineAppConfig({
     'pages/referral/index',
     'pages/about/index',
     'pages/privacy/index',
-    'pages/terms/index'
+    'pages/terms/index',
+    'pages/team-culture/index'
   ],
   tabBar: {
     color: '#9CA3AF',
