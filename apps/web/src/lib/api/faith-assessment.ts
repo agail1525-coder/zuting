@@ -1,4 +1,6 @@
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
+import { API_BASE } from "../api";
+
+const API = `${API_BASE}/api`;
 
 async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, { ...init, next: { revalidate: 0 } });
