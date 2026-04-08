@@ -1619,6 +1619,27 @@ async function main() {
   await prisma.route.deleteMany();
   await prisma.tripSite.deleteMany();
   await prisma.holySite.deleteMany();
+
+  // Build religion-keyed image pool from sites that have explicit local images.
+  // Sites without explicit mapping fall back to a deterministic pick from their religion's pool.
+  const imagesByReligion: Record<string, string[]> = {};
+  for (const s of holySites) {
+    const img = HOLY_SITE_IMAGES[s.name];
+    if (img) (imagesByReligion[s.religionSlug] ||= []).push(img);
+  }
+  const hashStr = (str: string): number => {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  };
+  const pickHolySiteImage = (s: HolySiteData): string | null => {
+    const direct = HOLY_SITE_IMAGES[s.name];
+    if (direct) return direct;
+    const pool = imagesByReligion[s.religionSlug];
+    if (!pool || pool.length === 0) return null;
+    return pool[hashStr(s.name) % pool.length];
+  };
+
   for (const site of holySites) {
     await prisma.holySite.create({
       data: {
@@ -1630,7 +1651,7 @@ async function main() {
         utcOffset: site.utcOffset,
         description: site.description,
         soundEffect: site.soundEffect,
-        imageUrl: HOLY_SITE_IMAGES[site.name] || null,
+        imageUrl: pickHolySiteImage(site),
         religionId: religionMap[site.religionSlug],
       },
     });
@@ -9216,6 +9237,13 @@ async function main() {
 
   // ── 7. Routes (路线产品) ──
   console.log('Creating routes...');
+  // Build fallback cover pool from all mapped route covers,
+  // so routes lacking explicit images still get a deterministic, valid cover.
+  const routeCoverPool = Object.values(ROUTE_IMAGES).map((v) => v.cover);
+  const routeFallbackCover = (slug: string): string | null => {
+    if (routeCoverPool.length === 0) return null;
+    return routeCoverPool[hashStr(slug) % routeCoverPool.length];
+  };
   await prisma.routeSite.deleteMany();
   await prisma.routeBooking.deleteMany();
   await prisma.route.deleteMany();
@@ -9247,7 +9275,7 @@ async function main() {
         tips: r.tips,
         season: r.season,
         groupSize: r.groupSize,
-        coverImage: ROUTE_IMAGES[r.slug]?.cover || null,
+        coverImage: ROUTE_IMAGES[r.slug]?.cover || routeFallbackCover(r.slug),
         images: ROUTE_IMAGES[r.slug]?.images || [],
         status: RouteStatus.PUBLISHED,
         religionId: r.religionSlug ? religionMap[r.religionSlug] : null,
