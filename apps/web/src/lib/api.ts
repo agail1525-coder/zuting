@@ -60,6 +60,10 @@ export interface Religion {
   contributions?: string | null;
   controversies?: string | null;
   sacredTexts?: ReligionSacredText[] | null;
+  // 商业实践 (信仰与企业文化)
+  businessPhilosophy?: string | null;
+  businessValues?: Array<{ key: string; label: string; description: string }> | null;
+  businessInsight?: string | null;
 }
 
 export interface HolySite {

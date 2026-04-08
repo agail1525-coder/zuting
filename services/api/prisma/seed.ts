@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 // ── Religion data ──────────────────────────────────────
 import { RELIGION_DEEP_CONTENT } from './seed-religion-content';
+import { RELIGION_BUSINESS_CONTENT } from './seed-religion-business';
 
 const religions = [
   { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
@@ -1952,6 +1953,7 @@ async function main() {
 
   for (const r of religions) {
     const deep = RELIGION_DEEP_CONTENT[r.slug] ?? {};
+    const biz = RELIGION_BUSINESS_CONTENT[r.slug] ?? {};
     const deepData = {
       heroImage: deep.heroImage ?? null,
       tagline: deep.tagline ?? null,
@@ -1965,6 +1967,9 @@ async function main() {
       contributions: deep.contributions ?? null,
       controversies: deep.controversies ?? null,
       sacredTexts: (deep.sacredTexts as unknown) ?? undefined,
+      businessPhilosophy: biz.businessPhilosophy ?? null,
+      businessValues: (biz.businessValues as unknown) ?? undefined,
+      businessInsight: biz.businessInsight ?? null,
     };
     const record = await prisma.religion.upsert({
       where: { slug: r.slug },

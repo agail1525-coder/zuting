@@ -189,6 +189,93 @@ function ReligionCard({
   );
 }
 
+// ─── Business Practice Card ──────────────────────────────────────────────────
+function BusinessPracticeCard({ r }: { r: ReligionStat }) {
+  const { t } = useTranslation();
+  const values = (r as Record<string, unknown>).businessValues as Array<{ key: string; label: string; description: string }> | null | undefined;
+  const philosophy = (r as Record<string, unknown>).businessPhilosophy as string | null | undefined;
+  const insight = (r as Record<string, unknown>).businessInsight as string | null | undefined;
+
+  if (!philosophy) {
+    return (
+      <Link href={`/religions/${r.slug}`}>
+        <div
+          className="bg-white rounded-xl border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 h-full flex flex-col items-center justify-center text-center gap-3"
+          style={{ borderTopColor: r.color || '#0066FF', borderTopWidth: 3 }}
+        >
+          {r.symbol && <span className="text-4xl">{r.symbol}</span>}
+          <h3 className="font-bold text-gray-900 text-lg">{r.name}</h3>
+          <p className="text-gray-400 text-xs">{r.nameEn}</p>
+        </div>
+      </Link>
+    );
+  }
+
+  const accentColor = r.color || '#0066FF';
+
+  return (
+    <div
+      className="bg-gradient-to-br from-white to-gray-50/80 rounded-xl border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 h-full flex flex-col group"
+      style={{ borderTopColor: accentColor, borderTopWidth: 3 }}
+    >
+      {/* Header: symbol + name */}
+      <div className="flex items-center gap-3 mb-4">
+        {r.symbol && <span className="text-3xl">{r.symbol}</span>}
+        <div>
+          <h3 className="font-bold text-gray-900 text-lg group-hover:text-[#0066FF] transition-colors">{r.name}</h3>
+          <p className="text-gray-400 text-xs">{r.nameEn}</p>
+        </div>
+      </div>
+
+      {/* Philosophy tagline */}
+      <p className="text-sm font-medium text-gray-800 leading-relaxed mb-4 italic border-l-2 pl-3" style={{ borderColor: accentColor }}>
+        &ldquo;{philosophy}&rdquo;
+      </p>
+
+      {/* Value chips */}
+      {values && values.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {values.map((v) => (
+            <span
+              key={v.key}
+              className="text-xs px-2.5 py-1 rounded-full font-medium"
+              style={{ backgroundColor: `${accentColor}12`, color: accentColor }}
+              title={v.description}
+            >
+              {v.label}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Business insight */}
+      {insight && (
+        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3 mb-4 flex-1">
+          {insight}
+        </p>
+      )}
+
+      {/* CTAs */}
+      <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+        <Link
+          href={`/religions/${r.slug}`}
+          className="text-sm font-medium hover:underline flex items-center gap-1"
+          style={{ color: accentColor }}
+        >
+          {t("religions.businessLearnMore")}
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </Link>
+        <Link
+          href="/team-culture"
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          {t("religions.businessTeamCulture")} &rarr;
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 // ─── World Map Section ────────────────────────────────────────────────────────
 function WorldMapSection({ holySites, religionStats }: { holySites: HolySite[]; religionStats: ReligionStat[] }) {
   const { t } = useTranslation();
@@ -866,23 +953,15 @@ export default function ReligionsClient({ religions, holySites, temples, patriar
           {/* Era Timeline Filter + Grid */}
           <EraTimelineFilter religionStats={religionStats} onView={addViewed} />
 
-          {/* All Religions quick grid header */}
-          <section className="max-w-6xl mx-auto px-4 pb-4">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">{t("religions.exploreTitle")}</h2>
-                <p className="text-gray-500 text-sm mt-1">{t("religions.exploreDesc")}</p>
-              </div>
-              <Link href="/map" className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium flex items-center gap-1">
-                {t("religions.mapBrowse")}
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
+          {/* Faith & Business Practice */}
+          <section className="max-w-6xl mx-auto px-4 pb-12">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl font-bold text-gray-900">{t("religions.businessTitle")}</h2>
+              <p className="text-gray-500 text-sm mt-2 max-w-2xl mx-auto">{t("religions.businessDesc")}</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {religionStats.map((r) => (
-                <ReligionCard key={r.id} r={r} onView={addViewed} />
+                <BusinessPracticeCard key={r.id} r={r} />
               ))}
             </div>
           </section>
