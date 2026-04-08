@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth-context";
@@ -241,6 +241,48 @@ function DestinationCard({ site }: { site: HolySite }) {
   );
 }
 
+/* ─── Social Proof Ticker (vertical slide-up, 10s interval) ─── */
+
+const TICKER_MESSAGES_KEYS = [
+  "home.socialProof",
+  "home.socialProof2",
+  "home.socialProof3",
+  "home.socialProof4",
+];
+
+function SocialProofTicker({ t }: { t: (key: string) => string }) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentIdx((prev) => (prev + 1) % TICKER_MESSAGES_KEYS.length);
+        setIsAnimating(false);
+      }, 500);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="bg-white border-b border-gray-100 py-2.5 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="relative h-5 overflow-hidden">
+          <div
+            className={`flex items-center gap-2 text-sm text-gray-500 absolute inset-x-0 transition-all duration-500 ease-in-out ${
+              isAnimating ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
+            }`}
+          >
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0" />
+            <span>{t(TICKER_MESSAGES_KEYS[currentIdx])}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main Component ─── */
 
 export default function HomeClient({ religions, holySites, temples, patriarchs, featuredRoutes, teachings, error }: Props) {
@@ -399,18 +441,11 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </div>
       </section>
 
-      {/* ══════ Social Proof Ticker (Booking.com style) ══════ */}
-      <div className="bg-white border-b border-gray-100 py-2.5 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-2 text-sm text-gray-500 animate-marquee">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span>{t("home.socialProof")}</span>
-          </div>
-        </div>
-      </div>
+      {/* ══════ Social Proof Ticker — Vertical Slide-Up ══════ */}
+      <SocialProofTicker t={t} />
 
       {/* ══════ Seasonal Banner (Agoda style) ══════ */}
-      <div className="max-w-6xl mx-auto px-4 -mt-6 relative z-10 mb-8">
+      <div className="max-w-6xl mx-auto px-4 mt-4 relative z-10 mb-8">
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/50 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl" role="img" aria-label="cherry blossom">&#127800;</span>
