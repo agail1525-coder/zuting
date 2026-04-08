@@ -1,5 +1,28 @@
 import { API_BASE } from "../api";
 
+export interface ThemeRichContent {
+  dimension?: { code: string; label: string; kicker: string };
+  founderPainPoint?: { title: string; body: string; signs?: string[] };
+  philosophy?: {
+    title: string;
+    body: string;
+    quotes?: Array<{ source: string; text: string; translation?: string }>;
+  };
+  dailyItinerary?: Array<{
+    day: number;
+    title: string;
+    location: string;
+    morning?: string;
+    afternoon?: string;
+    evening?: string;
+    rituals?: string[];
+  }>;
+  mentorTeam?: Array<{ name: string; title: string; bio: string }>;
+  deliverables?: string[];
+  targetAudience?: string[];
+  whyZuting?: string[];
+}
+
 export interface TeamCultureTheme {
   id: string;
   slug: string;
@@ -13,6 +36,7 @@ export interface TeamCultureTheme {
   holySites: string[];
   routes: string[];
   rituals: Array<{ name: string; durationMin: number; description: string }> | null;
+  richContent: ThemeRichContent | null;
   priceFrom: number | null;
   durationDays: number | null;
 }

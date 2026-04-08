@@ -1377,6 +1377,7 @@ model TeamCultureTheme {
   holySites   String[]      // holySite slug array
   routes      String[]      // route slug array
   rituals     Json?         // [{name,durationMin,description}]
+  richContent Json?         // M32 v1.3 — 深度内容: dimension/founderPainPoint/philosophy/dailyItinerary/mentorTeam/deliverables/targetAudience/whyZuting
   priceFrom   Int?          // 起价(分)
   durationDays Int?
   sortOrder   Int           @default(0)
