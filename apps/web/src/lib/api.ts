@@ -150,9 +150,7 @@ export async function fetchReligions(): Promise<Religion[]> {
 }
 
 export async function fetchReligion(slug: string): Promise<Religion> {
-  const res = await fetchJson<PaginatedResponse<Religion>>(`/api/religions?slug=${slug}&limit=100`);
-  if (res.items.length === 0) throw new Error(`Religion not found: ${slug}`);
-  return res.items[0];
+  return fetchJson<Religion>(`/api/religions/${encodeURIComponent(slug)}`);
 }
 
 // --- Holy Sites ---
