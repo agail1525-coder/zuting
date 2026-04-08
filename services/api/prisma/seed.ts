@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 // ── Religion data ──────────────────────────────────────
 import { RELIGION_DEEP_CONTENT } from './seed-religion-content';
 import { RELIGION_BUSINESS_CONTENT } from './seed-religion-business';
+import { RELIGION_BUSINESS_CASES } from './seed-religion-business-cases';
 
 const religions = [
   { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
@@ -1970,6 +1971,7 @@ async function main() {
       businessPhilosophy: biz.businessPhilosophy ?? null,
       businessValues: (biz.businessValues as unknown) ?? undefined,
       businessInsight: biz.businessInsight ?? null,
+      businessCases: (RELIGION_BUSINESS_CASES[r.slug] as unknown) ?? undefined,
     };
     const record = await prisma.religion.upsert({
       where: { slug: r.slug },

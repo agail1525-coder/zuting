@@ -112,6 +112,7 @@ model Religion {
   businessPhilosophy  String?  @db.Text   // 核心商业哲学 (1-2句)
   businessValues      Json?               // [{key, label, description}] 核心价值标签
   businessInsight     String?  @db.Text   // 如何助力企业 (2-3句)
+  businessCases       Json?              // 结构化商业案例 (企业/大师/方法论/研究/书单)
 
   holySites  HolySite[]
   temples    Temple[]

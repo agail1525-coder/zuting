@@ -64,6 +64,50 @@ export interface Religion {
   businessPhilosophy?: string | null;
   businessValues?: Array<{ key: string; label: string; description: string }> | null;
   businessInsight?: string | null;
+  businessCases?: ReligionBusinessCases | null;
+}
+
+export interface BusinessCase {
+  company: string;
+  founder: string;
+  industry: string;
+  story: string;
+  achievements: string[];
+  faithPrinciple: string;
+}
+
+export interface BusinessMasterQuote {
+  master: string;
+  title: string;
+  quote: string;
+  context: string;
+}
+
+export interface BusinessPractice {
+  name: string;
+  description: string;
+  companies: string[];
+  outcome: string;
+}
+
+export interface BusinessResearch {
+  title: string;
+  source: string;
+  finding: string;
+}
+
+export interface BusinessBook {
+  title: string;
+  author: string;
+  description: string;
+}
+
+export interface ReligionBusinessCases {
+  cases: BusinessCase[];
+  masterQuotes: BusinessMasterQuote[];
+  practices: BusinessPractice[];
+  research: BusinessResearch[];
+  books: BusinessBook[];
 }
 
 export interface HolySite {

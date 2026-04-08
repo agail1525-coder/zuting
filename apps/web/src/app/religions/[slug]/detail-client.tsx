@@ -12,7 +12,7 @@ import SocialProof from "@/components/SocialProof";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
 import MediaTour from "@/components/MediaTour";
-import type { Religion, HolySite, Temple, Patriarch, Teaching } from "@/lib/api";
+import type { Religion, HolySite, Temple, Patriarch, Teaching, ReligionBusinessCases } from "@/lib/api";
 
 const RELIGION_ICONS: Record<string, string> = {
   佛教: "☸️", 道教: "☯️", 基督教: "✝️", 伊斯兰教: "☪️",
@@ -104,6 +104,247 @@ function FAQSection({ religionName, t }: { religionName: string; t: (key: string
             )}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══ 商业实践深度版块 (标杆企业/大师语录/实践方法/研究/书单) ═══ */
+
+function BusinessPracticeDetailSection({ religion, color }: { religion: Religion; color: string }) {
+  const biz = religion.businessCases as ReligionBusinessCases | null | undefined;
+  if (!biz) return null;
+
+  const { cases, masterQuotes, practices, research, books } = biz;
+  const hasContent = (cases?.length ?? 0) > 0 || (masterQuotes?.length ?? 0) > 0;
+  if (!hasContent) return null;
+
+  return (
+    <div id="sec-business" className="bg-gradient-to-b from-gray-50 to-white border-b border-gray-200">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-20">
+
+        {/* 标题 */}
+        <div className="text-center">
+          <span className="text-4xl block mb-3">💼</span>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-2">
+            信仰与商业实践
+          </h2>
+          <p className="text-sm tracking-widest uppercase" style={{ color }}>
+            Faith & Business Practice
+          </p>
+          <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-sm leading-relaxed">
+            探索{religion.name}智慧如何塑造世界级企业文化——从标杆案例到实践方法，为CEO与高管提供信仰驱动的商业灵感
+          </p>
+        </div>
+
+        {/* ① 核心商业哲学 (复用已有字段) */}
+        {religion.businessPhilosophy && (
+          <section>
+            <SectionTitle icon="🧭" label="核心商业哲学" subLabel="Core Philosophy" color={color} />
+            <div
+              className="relative rounded-2xl p-8 md:p-10"
+              style={{ backgroundColor: `${color}08` }}
+            >
+              <span className="absolute top-4 left-6 text-6xl opacity-15" style={{ color }}>❝</span>
+              <p className="relative text-xl md:text-2xl font-serif font-medium text-gray-800 leading-relaxed text-center italic z-10">
+                {religion.businessPhilosophy}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* ② 核心商业价值 (复用已有字段，展开description) */}
+        {religion.businessValues && religion.businessValues.length > 0 && (
+          <section>
+            <SectionTitle icon="💎" label="核心商业价值" subLabel="Core Values" color={color} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {religion.businessValues.map((v, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-5 border bg-white hover:shadow-md transition-shadow"
+                  style={{ borderColor: `${color}25` }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                      style={{ backgroundColor: color }}
+                    >
+                      {i + 1}
+                    </span>
+                    <h4 className="font-bold text-gray-900">{v.label}</h4>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">{v.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ③ 标杆企业案例 */}
+        {cases && cases.length > 0 && (
+          <section>
+            <SectionTitle icon="🏢" label="标杆企业案例" subLabel="Benchmark Cases" color={color} />
+            <div className="space-y-6">
+              {cases.map((c, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border bg-white overflow-hidden hover:shadow-lg transition-shadow"
+                  style={{ borderColor: `${color}20` }}
+                >
+                  <div className="p-6 md:p-8">
+                    {/* 公司头部 */}
+                    <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-900">{c.company}</h4>
+                        <p className="text-sm text-gray-500">{c.founder} · {c.industry}</p>
+                      </div>
+                      <span
+                        className="text-xs font-medium px-3 py-1 rounded-full"
+                        style={{ backgroundColor: `${color}15`, color }}
+                      >
+                        {religion.name}智慧
+                      </span>
+                    </div>
+                    {/* 故事 */}
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4">{c.story}</p>
+                    {/* 成就 */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {c.achievements.map((a, j) => (
+                        <span
+                          key={j}
+                          className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100"
+                        >
+                          ✓ {a}
+                        </span>
+                      ))}
+                    </div>
+                    {/* 信仰原则 */}
+                    <div
+                      className="rounded-lg p-3 text-sm border-l-3"
+                      style={{ backgroundColor: `${color}06`, borderLeftColor: color, borderLeftWidth: '3px' }}
+                    >
+                      <span className="font-semibold" style={{ color }}>信仰原则：</span>
+                      <span className="text-gray-700">{c.faithPrinciple}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ④ 商业大师语录 */}
+        {masterQuotes && masterQuotes.length > 0 && (
+          <section>
+            <SectionTitle icon="🎙️" label="商业大师推荐" subLabel="Master Quotes" color={color} />
+            <div className="space-y-5">
+              {masterQuotes.map((q, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-6 bg-white border border-gray-100 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex gap-4">
+                    <span className="text-3xl opacity-30 flex-shrink-0" style={{ color }}>❝</span>
+                    <div className="flex-1">
+                      <p className="text-gray-800 font-serif text-base md:text-lg leading-relaxed italic mb-3">
+                        {q.quote}
+                      </p>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-bold text-gray-900">— {q.master}</span>
+                        <span className="text-gray-400">|</span>
+                        <span className="text-gray-500">{q.title}</span>
+                      </div>
+                      <p className="text-gray-500 text-xs mt-2 leading-relaxed">{q.context}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ⑤ 实践方法论 */}
+        {practices && practices.length > 0 && (
+          <section>
+            <SectionTitle icon="🔧" label="实践方法论" subLabel="Methodologies" color={color} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {practices.map((p, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-5 bg-white border border-gray-100 hover:shadow-md transition-shadow"
+                >
+                  <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                    <span
+                      className="w-6 h-6 rounded text-xs flex items-center justify-center text-white"
+                      style={{ backgroundColor: color }}
+                    >
+                      {i + 1}
+                    </span>
+                    {p.name}
+                  </h4>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-3">{p.description}</p>
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {p.companies.map((co, j) => (
+                      <span key={j} className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
+                        {co}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs font-medium" style={{ color }}>
+                    效果：{p.outcome}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ⑥ 研究与数据 */}
+        {research && research.length > 0 && (
+          <section>
+            <SectionTitle icon="📊" label="研究与数据" subLabel="Research" color={color} />
+            <div className="space-y-4">
+              {research.map((r, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg p-4 bg-white border border-gray-100 hover:shadow-sm transition-shadow"
+                >
+                  <h4 className="font-semibold text-gray-900 text-sm mb-1">{r.title}</h4>
+                  <p className="text-xs text-gray-400 mb-2">{r.source}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{r.finding}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ⑦ 推荐阅读 */}
+        {books && books.length > 0 && (
+          <section>
+            <SectionTitle icon="📚" label="推荐阅读" subLabel="Recommended Books" color={color} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {books.map((b, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-5 bg-white border border-gray-100 hover:shadow-md transition-shadow group"
+                >
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg mb-3"
+                    style={{ backgroundColor: `${color}12`, color }}
+                  >
+                    📖
+                  </div>
+                  <h4 className="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                    {b.title}
+                  </h4>
+                  <p className="text-xs text-gray-400 mb-2">{b.author}</p>
+                  <p className="text-gray-600 text-xs leading-relaxed">{b.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
     </div>
   );
@@ -407,8 +648,12 @@ export default function ReligionDetailClient({
       {/* ========== 深度内容:起源 / 发展 / 大事记 / 贡献 / 争议 / 圣典 ========== */}
       <DeepContentSection religion={religion} color={color} />
 
+      {/* ========== 信仰与商业实践 — 深度内容 ========== */}
+      <BusinessPracticeDetailSection religion={religion} color={color} />
+
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
+        { id: "sec-business", label: "信仰与商业" },
         { id: "sec-content", label: t("religion.sectionContent") },
         { id: "sec-media", label: t("religion.sectionMedia") },
         { id: "sec-reviews", label: t("religion.sectionReviews") },
