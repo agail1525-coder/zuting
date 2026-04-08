@@ -76,11 +76,19 @@ export class TripPlannerService {
 
     // Rule-based fallback
     const rulePlans = this.generateRulePlans(input, candidates, days);
+    if (rulePlans.length === 0) {
+      return {
+        plans: [],
+        source: 'rule',
+        warning:
+          'AI 暂时不可用，且未在圣地库中匹配到与您诉求高度相关的目的地。请尝试在标题或备注中提及具体的宗教/祖师/圣地名称，或在下方手动选择圣地。',
+      };
+    }
     return {
       plans: rulePlans,
       source: 'rule',
       warning: this.isLLMEnabled
-        ? 'AI 暂时不可用，已为您匹配规则方案'
+        ? 'AI 暂时不可用，已根据您的关键词为您匹配相关圣地'
         : undefined,
     };
   }
@@ -102,7 +110,7 @@ export class TripPlannerService {
       country: s.country || '',
       religionName: s.religion?.name || '',
       religionSlug: s.religion?.slug || '',
-      description: (s.description || '').substring(0, 80),
+      description: (s.description || '').substring(0, 300),
     }));
   }
 
@@ -224,6 +232,40 @@ ${input.budgetCents ? `预算：¥${(input.budgetCents / 100).toLocaleString()}`
     return parsed.plans;
   }
 
+  /**
+   * Extract content tokens from user query for text matching.
+   * For CJK input, generates 2-char and 3-char substrings (since description text
+   * mentions things like "六祖慧能" / "禅宗" — substring containment is the cheapest match).
+   * For ASCII input, splits on whitespace and keeps tokens of length >= 3.
+   */
+  private extractQueryTokens(text: string): string[] {
+    const stopwords = new Set([
+      '的', '了', '和', '是', '我', '想', '去', '要', '在', '有', '一', '个', '路线', '行程',
+      '设计', '根据', '时间', '大师', '请', '帮我', '安排', '需要', '希望',
+      'the', 'and', 'for', 'with', 'trip', 'route', 'plan', 'tour',
+    ]);
+    const tokens = new Set<string>();
+
+    // CJK 2-char and 3-char windows
+    const cjkOnly = text.replace(/[^\u4e00-\u9fa5]+/g, ' ');
+    for (const segment of cjkOnly.split(/\s+/)) {
+      if (segment.length < 2) continue;
+      for (let len = 2; len <= 3; len++) {
+        for (let i = 0; i + len <= segment.length; i++) {
+          const tok = segment.substring(i, i + len);
+          if (!stopwords.has(tok)) tokens.add(tok.toLowerCase());
+        }
+      }
+    }
+
+    // ASCII words
+    for (const w of text.toLowerCase().split(/[^a-z0-9]+/)) {
+      if (w.length >= 3 && !stopwords.has(w)) tokens.add(w);
+    }
+
+    return [...tokens];
+  }
+
   private stripThinkingPrefix(content: string): string {
     const thinkTagMatch = content.match(/<\/think>\s*([\s\S]*)/);
     if (thinkTagMatch) return thinkTagMatch[1].trim();
@@ -275,45 +317,68 @@ ${input.budgetCents ? `预算：¥${(input.budgetCents / 100).toLocaleString()}`
     candidates: SiteCandidate[],
     days: number,
   ): AiTripPlan[] {
-    const text = `${input.title} ${input.note || ''}`.toLowerCase();
+    const text = `${input.title} ${input.note || ''}`;
+    const textLower = text.toLowerCase();
 
-    // Score each candidate by relevance to user input
-    const keywords = [
-      { kw: ['六祖', '慧能', '禅宗', '禅'], religionSlug: 'buddhism' },
-      { kw: ['佛', '佛教', '菩萨', '寺'], religionSlug: 'buddhism' },
-      { kw: ['道', '道教', '老子', '庄子'], religionSlug: 'taoism' },
-      { kw: ['基督', '教堂', '耶稣'], religionSlug: 'christianity' },
-      { kw: ['伊斯兰', '清真', '麦加', '穆斯林'], religionSlug: 'islam' },
-      { kw: ['印度教', '印度'], religionSlug: 'hinduism' },
-      { kw: ['犹太'], religionSlug: 'judaism' },
-      { kw: ['神道', '日本'], religionSlug: 'shinto' },
-      { kw: ['藏传', '西藏', '密宗'], religionSlug: 'tibetan_buddhism' },
+    // Religion keyword groups (slug must match Religion.slug in DB exactly)
+    const keywordGroups = [
+      { kw: ['六祖', '慧能', '禅宗', '禅', '佛', '佛教', '菩萨', '寺', '和尚', '法师', '出家'], religionSlug: 'buddhism' },
+      { kw: ['道', '道教', '老子', '庄子', '太极', '三清'], religionSlug: 'taoism' },
+      { kw: ['基督', '天主', '教堂', '耶稣', '圣母', '教皇'], religionSlug: 'christianity' },
+      { kw: ['伊斯兰', '清真', '麦加', '穆斯林', '古兰', '安拉'], religionSlug: 'islam' },
+      { kw: ['印度教', 'hindu', '湿婆', '梵天', '毗湿奴'], religionSlug: 'hinduism' },
+      { kw: ['犹太', '希伯来', '圣殿山', '哭墙'], religionSlug: 'judaism' },
+      { kw: ['神道', '日本神社', '天照'], religionSlug: 'shinto' },
+      { kw: ['藏传', '西藏', '密宗', '喇嘛', '活佛', '唐卡'], religionSlug: 'tibetan-buddhism' },
+      { kw: ['儒', '孔子', '孟子', '书院', '文庙'], religionSlug: 'confucianism' },
+      { kw: ['锡克', '古鲁'], religionSlug: 'sikhism' },
+      { kw: ['巴哈伊', '灵曦堂'], religionSlug: 'bahai' },
+      { kw: ['原住民', '萨满', '图腾'], religionSlug: 'indigenous' },
     ];
 
-    let matchedSlug = '';
-    for (const k of keywords) {
-      if (k.kw.some((w) => text.includes(w.toLowerCase()))) {
-        matchedSlug = k.religionSlug;
-        break;
+    const matchedSlugs = new Set<string>();
+    for (const g of keywordGroups) {
+      if (g.kw.some((w) => textLower.includes(w.toLowerCase()))) {
+        matchedSlugs.add(g.religionSlug);
       }
     }
 
-    // Also score by name match
+    // Extract content tokens from user query (Chinese 2+ char substrings) for description match
+    const queryTokens = this.extractQueryTokens(text);
+
     const scored = candidates
       .map((c) => {
         let score = 0;
-        if (matchedSlug && c.religionSlug === matchedSlug) score += 10;
-        if (c.name && text.includes(c.name.toLowerCase())) score += 20;
-        if (c.country && text.includes(c.country.toLowerCase())) score += 5;
+        const nameLower = c.name.toLowerCase();
+        const descLower = (c.description || '').toLowerCase();
+
+        // Religion match
+        if (matchedSlugs.has(c.religionSlug)) score += 10;
+
+        // Strong: name fragment in user text or vice versa
+        if (textLower.includes(nameLower)) score += 50;
+
+        // Strong: any query token appears in description (this is what links 六祖慧能 → 南华禅寺)
+        for (const tok of queryTokens) {
+          if (nameLower.includes(tok)) score += 30;
+          if (descLower.includes(tok)) score += 20;
+        }
+
+        // Mild: country match
+        if (c.country && textLower.includes(c.country.toLowerCase())) score += 5;
+
         return { c, score };
       })
       .sort((a, b) => b.score - a.score);
 
     const topMatches = scored.filter((s) => s.score > 0).map((s) => s.c);
-    const fallbackPool =
-      topMatches.length >= 2
-        ? topMatches
-        : candidates.slice(0, 8);
+
+    // No blind alphabetical fallback — if nothing matches, return empty so caller surfaces a clear warning
+    if (topMatches.length < 2) {
+      return [];
+    }
+
+    const fallbackPool = topMatches;
 
     const classicCount = Math.min(5, fallbackPool.length);
     const deepCount = Math.min(8, fallbackPool.length);

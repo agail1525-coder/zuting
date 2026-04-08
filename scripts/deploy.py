@@ -217,8 +217,8 @@ def sftp_upload_dir(sftp, local_dir, remote_dir, excludes=None):
         # Apply excludes
         dirs[:] = [d for d in dirs if d not in excludes and not d.startswith('.')]
 
-        rel = Path(root).relative_to(local_path)
-        remote_sub = f"{remote_dir}/{rel}" if str(rel) != "." else remote_dir
+        rel = Path(root).relative_to(local_path).as_posix()
+        remote_sub = f"{remote_dir}/{rel}" if rel != "." else remote_dir
         _sftp_mkdir_p(sftp, remote_sub)
 
         for f in files:
@@ -244,7 +244,7 @@ def _sftp_mkdir_p(sftp, remote_dir):
             break
         except FileNotFoundError:
             dirs.append(d)
-            d = os.path.dirname(d)
+            d = d.rsplit("/", 1)[0] if "/" in d else ""
     for d in reversed(dirs):
         try:
             sftp.mkdir(d)

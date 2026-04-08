@@ -197,12 +197,17 @@ export default function TripCreatePage() {
       setAiPlans(result.plans);
       setAiSource(result.source);
       setAiWarning(result.warning || "");
+      // If we have no plans (rule fallback found nothing), auto-open manual picker
+      if (result.plans.length === 0) {
+        if (holySites.length === 0) loadHolySites();
+        setShowManualSites(true);
+      }
     } catch (e) {
       setAiError(e instanceof Error ? e.message : t("tripCreate.aiPlanFailed"));
     } finally {
       setAiLoading(false);
     }
-  }, [title, note, startDate, endDate, persons, getBudgetCents, t]);
+  }, [title, note, startDate, endDate, persons, getBudgetCents, t, holySites.length, loadHolySites]);
 
   // Step 2 → 3 validation
   const goToStep3 = async () => {
