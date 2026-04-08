@@ -795,9 +795,9 @@ export async function planTripWithAI(input: {
   persons?: number;
   budgetCents?: number;
 }): Promise<PlanTripResult> {
-  // Public endpoint with long timeout — LLM call can take 5-30s
+  // Public endpoint with long timeout — vLLM Qwen3.5 can take 60-150s under load
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90000);
+  const timeout = setTimeout(() => controller.abort(), 180000);
   try {
     const res = await fetch(`${API_BASE}/api/trips/plan`, {
       method: "POST",
