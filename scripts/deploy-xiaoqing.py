@@ -178,18 +178,6 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding team-culture (M32)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-team-culture.ts 2>&1 | tail -10")
 
-    # Flush Redis caches that contain stale entity IDs from previous seed
-    # (list endpoints cache 30min, but seed wipes+recreates → IDs become stale)
-    print("  Flushing stale Redis entity caches...")
-    flush_cmd = (
-        "docker exec zuoyelang-redis sh -c \""
-        "for prefix in holy-site temple patriarch teaching seal route religion; do "
-        "  redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning --scan --pattern \\\"$prefix:*\\\" | "
-        "  xargs -r redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning DEL; "
-        "done\""
-    )
-    run(ssh, flush_cmd)
-
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
@@ -324,6 +312,18 @@ echo "Admin container: zuting-admin-nginx on port {ADMIN_PORT}"
     print(f"  API   :{API_PORT} → HTTP {api_code}")
     print(f"  Web   :{WEB_PORT} → HTTP {web_code}")
     print(f"  Admin :{ADMIN_PORT} → HTTP {admin_code}")
+
+    # Flush Redis caches AFTER API restart to clear stale entity IDs
+    # Must run after restart — old API caches stale IDs during seed's deleteMany+create window
+    print("  Flushing stale Redis entity caches...")
+    flush_cmd = (
+        "docker exec zuoyelang-redis sh -c \""
+        "for prefix in holy-site temple patriarch teaching seal route religion; do "
+        "  redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning --scan --pattern \\\"$prefix:*\\\" | "
+        "  xargs -r redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning DEL; "
+        "done\""
+    )
+    run(ssh, flush_cmd)
 
     if api_code != "200":
         print("\n  API日志:")
