@@ -61,48 +61,48 @@ export default function TeamWorkspacePage() {
 
   if (loading || fetching) {
     return (
-      <main className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center">
-        <div className="text-white/60">加载中...</div>
+      <main className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
+        <div className="text-gray-500">加载中...</div>
       </main>
     );
   }
 
   if (error || !team) {
     return (
-      <main className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center">
-        <div className="text-red-300">{error || "团队不存在"}</div>
+      <main className="min-h-screen bg-white text-gray-900 flex items-center justify-center">
+        <div className="text-red-600">{error || "团队不存在"}</div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white">
+    <main className="min-h-screen bg-white text-gray-900">
       <section className="py-12 max-w-6xl mx-auto px-6">
         <Link
           href="/team-culture/dashboard"
-          className="text-[#D4A855] hover:underline mb-6 inline-block"
+          className="text-[#3264ff] hover:text-[#1e4dcc] hover:underline mb-6 inline-block font-medium"
         >
           ← 返回我的团队
         </Link>
 
         <div className="flex items-center gap-5 mb-10">
           {team.logoUrl ? (
-            <img src={team.logoUrl} alt={team.name} className="w-20 h-20 rounded-2xl object-cover" />
+            <img src={team.logoUrl} alt={team.name} className="w-20 h-20 rounded-2xl object-cover shadow-md" />
           ) : (
-            <div className="w-20 h-20 rounded-2xl bg-[#D4A855]/20 flex items-center justify-center text-3xl text-[#D4A855] font-bold">
+            <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-3xl text-[#3264ff] font-bold">
               {team.name[0]}
             </div>
           )}
           <div>
-            <h1 className="text-3xl font-bold mb-1">{team.name}</h1>
-            <div className="text-white/60 text-sm">
+            <h1 className="text-3xl font-bold mb-1 text-gray-900">{team.name}</h1>
+            <div className="text-gray-600 text-sm">
               {team.orgType} · {team._count.members} 成员 · {team._count.certificates} 证书
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-white/10 mb-8">
+        <div className="flex gap-2 border-b border-gray-200 mb-8">
           {(
             [
               { k: "overview", l: "概览" },
@@ -115,8 +115,8 @@ export default function TeamWorkspacePage() {
               onClick={() => setTab(t.k)}
               className={`px-5 py-3 font-medium transition ${
                 tab === t.k
-                  ? "text-[#D4A855] border-b-2 border-[#D4A855]"
-                  : "text-white/60 hover:text-white"
+                  ? "text-[#3264ff] border-b-2 border-[#3264ff]"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
               {t.l}
@@ -135,22 +135,22 @@ export default function TeamWorkspacePage() {
         {tab === "members" && (
           <div>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold">团队成员 ({members.length})</h2>
+              <h2 className="text-xl font-bold text-gray-900">团队成员 ({members.length})</h2>
               <button
                 onClick={handleInvite}
-                className="px-5 py-2 bg-[#D4A855] text-[#0f172a] font-semibold rounded-lg"
+                className="px-5 py-2 bg-[#3264ff] text-white font-semibold rounded-lg hover:bg-[#1e4dcc] shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5"
               >
                 邀请成员
               </button>
             </div>
             {inviteLink && (
-              <div className="mb-5 p-4 rounded-lg bg-[#D4A855]/10 border border-[#D4A855]/30">
-                <p className="text-sm mb-2">邀请链接 (24h 有效):</p>
+              <div className="mb-5 p-4 rounded-lg bg-blue-50 border border-blue-100">
+                <p className="text-sm mb-2 text-gray-700">邀请链接 (24h 有效):</p>
                 <input
                   readOnly
                   value={inviteLink}
                   onClick={(e) => (e.target as HTMLInputElement).select()}
-                  className="w-full px-3 py-2 rounded bg-[#0f172a] border border-white/10 text-white text-xs"
+                  className="w-full px-3 py-2 rounded bg-white border border-gray-300 text-gray-900 text-xs focus:border-[#3264ff] focus:ring-2 focus:ring-blue-100 focus:outline-none"
                 />
               </div>
             )}
@@ -158,22 +158,22 @@ export default function TeamWorkspacePage() {
               {members.map((m) => (
                 <div
                   key={m.id}
-                  className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4"
+                  className="p-4 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all flex items-center gap-4"
                 >
                   {m.user.avatar ? (
                     <img src={m.user.avatar} alt="" className="w-12 h-12 rounded-full" />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-blue-50 text-[#3264ff] font-bold flex items-center justify-center">
                       {m.user.nickname[0]}
                     </div>
                   )}
                   <div className="flex-1">
-                    <div className="font-medium">{m.user.nickname}</div>
-                    <div className="text-xs text-white/50">
+                    <div className="font-medium text-gray-900">{m.user.nickname}</div>
+                    <div className="text-xs text-gray-500">
                       加入于 {new Date(m.joinedAt).toLocaleDateString()}
                     </div>
                   </div>
-                  <span className="text-sm text-[#D4A855]">{m.role}</span>
+                  <span className="text-sm text-[#3264ff] font-medium">{m.role}</span>
                 </div>
               ))}
             </div>
@@ -182,9 +182,9 @@ export default function TeamWorkspacePage() {
 
         {tab === "certificates" && (
           <div>
-            <h2 className="text-xl font-bold mb-5">文化证书 ({certs.length})</h2>
+            <h2 className="text-xl font-bold mb-5 text-gray-900">文化证书 ({certs.length})</h2>
             {certs.length === 0 ? (
-              <div className="p-12 rounded-2xl bg-white/5 border border-white/10 text-center text-white/50">
+              <div className="p-12 rounded-2xl bg-white border border-gray-200 shadow-sm text-center text-gray-500">
                 还没有证书。完成一次朝圣之旅后，由平台签发文化证书。
               </div>
             ) : (
@@ -192,14 +192,14 @@ export default function TeamWorkspacePage() {
                 {certs.map((c) => (
                   <div
                     key={c.id}
-                    className="p-6 rounded-2xl bg-gradient-to-br from-[#D4A855]/10 to-transparent border border-[#D4A855]/30"
+                    className="p-6 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-blue-50 border border-blue-100 shadow-sm hover:shadow-md transition-all"
                   >
-                    <div className="text-2xl text-[#D4A855] mb-2">✦</div>
-                    <h3 className="font-bold mb-2">{c.title}</h3>
-                    <div className="text-xs text-white/50 mb-3">
+                    <div className="text-2xl text-[#3264ff] mb-2">✦</div>
+                    <h3 className="font-bold mb-2 text-gray-900">{c.title}</h3>
+                    <div className="text-xs text-gray-500 mb-3">
                       编号 {c.serialNo}
                     </div>
-                    <div className="text-xs text-white/60">
+                    <div className="text-xs text-gray-600">
                       签发于 {new Date(c.issuedAt).toLocaleDateString()}
                     </div>
                     {c.pdfUrl && (
@@ -207,7 +207,7 @@ export default function TeamWorkspacePage() {
                         href={c.pdfUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-3 inline-block text-[#D4A855] hover:underline text-sm"
+                        className="mt-3 inline-block text-[#3264ff] hover:text-[#1e4dcc] hover:underline text-sm font-medium"
                       >
                         下载 PDF →
                       </a>
@@ -225,9 +225,9 @@ export default function TeamWorkspacePage() {
 
 function StatCard({ num, label }: { num: number; label: string }) {
   return (
-    <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-      <div className="text-4xl font-bold text-[#D4A855] mb-2">{num}</div>
-      <div className="text-white/60">{label}</div>
+    <div className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all">
+      <div className="text-4xl font-bold text-[#3264ff] mb-2">{num}</div>
+      <div className="text-gray-600">{label}</div>
     </div>
   );
 }

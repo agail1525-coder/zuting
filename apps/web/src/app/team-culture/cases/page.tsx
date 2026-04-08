@@ -18,20 +18,27 @@ export default async function Page() {
     /* empty */
   }
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white">
-      <section className="py-20 max-w-7xl mx-auto px-6">
-        <Link
-          href="/team-culture"
-          className="text-[#D4A855] hover:underline mb-6 inline-block"
-        >
-          ← 返回团队文化
-        </Link>
-        <h1 className="text-4xl lg:text-5xl font-bold mb-4">成功案例</h1>
-        <p className="text-white/60 mb-10">
-          真实组织、真实故事、真实改变
-        </p>
+    <main className="min-h-screen bg-white text-gray-900">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#3264ff] via-[#4a7aff] to-[#1e4dcc]">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-24">
+          <Link
+            href="/team-culture"
+            className="text-white/90 hover:text-white mb-6 inline-block font-medium"
+          >
+            ← 返回团队文化
+          </Link>
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">成功案例</h1>
+          <p className="text-white/90 text-lg">
+            真实组织、真实故事、真实改变
+          </p>
+        </div>
+      </section>
+
+      <section className="py-16 max-w-7xl mx-auto px-6">
         {cases.length === 0 ? (
-          <div className="p-10 rounded-2xl bg-white/5 border border-white/10 text-center text-white/50">
+          <div className="p-10 rounded-2xl bg-white border border-gray-200 shadow-sm text-center text-gray-500">
             暂无案例
           </div>
         ) : (

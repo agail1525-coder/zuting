@@ -64,10 +64,10 @@ export default function TeamInquiryForm({
 
   if (done) {
     return (
-      <div className="p-10 rounded-2xl bg-[#D4A855]/10 border border-[#D4A855]/40 text-center">
-        <div className="text-5xl mb-4">✓</div>
-        <h3 className="text-2xl font-bold mb-2 text-white">已收到您的需求</h3>
-        <p className="text-white/70">
+      <div className="p-10 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#3264ff] text-white text-3xl flex items-center justify-center">✓</div>
+        <h3 className="text-2xl font-bold mb-2 text-gray-900">已收到您的需求</h3>
+        <p className="text-gray-600">
           我们的文化顾问将在 48 小时内联系您。
         </p>
       </div>
@@ -77,7 +77,7 @@ export default function TeamInquiryForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-8 rounded-2xl bg-white/5 border border-white/10 space-y-5"
+      className="space-y-5"
     >
       <div className="grid md:grid-cols-2 gap-4">
         <Field label="联系人 *">
@@ -166,23 +166,23 @@ export default function TeamInquiryForm({
         />
       </Field>
       {error && (
-        <div className="px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
           {error}
         </div>
       )}
       <button
         type="submit"
         disabled={submitting}
-        className="w-full py-4 bg-[#D4A855] text-[#0f172a] font-bold rounded-lg hover:bg-[#E5B968] transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-4 bg-[#3264ff] text-white font-bold rounded-lg hover:bg-[#1e4dcc] transition shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {submitting ? "提交中..." : "提交需求"}
+        {submitting ? "提交中..." : "提交需求 →"}
       </button>
     </form>
   );
 }
 
 const inputCls =
-  "w-full px-4 py-3 rounded-lg bg-[#0f172a] border border-white/10 text-white focus:border-[#D4A855] focus:outline-none transition";
+  "w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#3264ff] focus:ring-2 focus:ring-blue-100 focus:outline-none transition";
 
 function Field({
   label,
@@ -193,7 +193,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-sm text-white/70 mb-2">{label}</span>
+      <span className="block text-sm text-gray-700 font-medium mb-2">{label}</span>
       {children}
     </label>
   );

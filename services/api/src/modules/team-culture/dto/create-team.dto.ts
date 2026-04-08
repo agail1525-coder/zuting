@@ -11,6 +11,8 @@ import {
 
 export const TEAM_ORG_TYPES = [
   'ENTERPRISE',
+  'EXECUTIVE',
+  'FAMILY_OFFICE',
   'SCHOOL',
   'RELIGIOUS',
   'NGO',

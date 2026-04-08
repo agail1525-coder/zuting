@@ -9,12 +9,11 @@ import TeamThemeCard from "./components/TeamThemeCard";
 import TeamCaseCard from "./components/TeamCaseCard";
 
 const INDUSTRIES = [
-  { key: "ENTERPRISE", label: "企业 / Enterprise" },
-  { key: "SCHOOL", label: "学校 / School" },
-  { key: "RELIGIOUS", label: "宗教组织 / Religious" },
-  { key: "FAMILY", label: "家族 / Family" },
-  { key: "NGO", label: "公益 / NGO" },
-  { key: "GOVERNMENT", label: "政府 / Gov" },
+  { key: "ENTERPRISE", labelKey: "teamCulture.orgEnterpriseLabel", copyKey: "teamCulture.orgEnterpriseCopy", icon: "🏢" },
+  { key: "EXECUTIVE", labelKey: "teamCulture.orgExecutiveLabel", copyKey: "teamCulture.orgExecutiveCopy", icon: "👔" },
+  { key: "FAMILY_OFFICE", labelKey: "teamCulture.orgFamilyOfficeLabel", copyKey: "teamCulture.orgFamilyOfficeCopy", icon: "🏛️" },
+  { key: "NGO", labelKey: "teamCulture.orgNGOLabel", copyKey: "teamCulture.orgNGOCopy", icon: "🤝" },
+  { key: "GOVERNMENT", labelKey: "teamCulture.orgGovernmentLabel", copyKey: "teamCulture.orgGovernmentCopy", icon: "🏛" },
 ];
 
 interface Props {
@@ -25,112 +24,84 @@ interface Props {
 export default function TeamCultureLanding({ themes, cases }: Props) {
   const { t } = useTranslation();
   const [activeIndustry, setActiveIndustry] = useState("ENTERPRISE");
+  const activeCopy = INDUSTRIES.find((i) => i.key === activeIndustry);
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white">
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1545569310-25c4e8eb7eb1?w=2000')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a]/80 via-[#0f172a]/60 to-[#0f172a]" />
-        <div className="relative max-w-7xl mx-auto px-6 py-28 lg:py-40">
+    <main className="min-h-screen bg-white text-gray-900">
+      {/* ════════ Hero ════════ */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#3264ff] via-[#4a7aff] to-[#1e4dcc]">
+        {/* Decorative orbs */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-300/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+
+        <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-32">
           <div className="max-w-3xl">
-            <p className="text-[#D4A855] font-medium tracking-[0.2em] mb-4 uppercase">
-              {t("team_culture.hero_kicker") || "Team Culture Building"}
-            </p>
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight mb-6">
-              {t("team_culture.hero_title") || "让朝圣成为团队最深的纪念"}
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 border border-white/30 rounded-full text-white text-sm font-medium tracking-wide mb-6">
+              ✨ {t("teamCulture.heroKicker")}
+            </span>
+            <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
+              {t("teamCulture.heroTitle")}
             </h1>
-            <p className="text-lg lg:text-xl text-white/80 mb-10 max-w-2xl">
-              {t("team_culture.hero_subtitle") ||
-                "把团建升级为团队文化打造。6 大文化主题包，60 座祖庭圣地，12 大信仰深度共修。"}
+            <p className="text-lg lg:text-xl text-white/90 mb-10 max-w-2xl leading-relaxed">
+              {t("teamCulture.heroSubtitle")}
             </p>
             <div className="flex flex-wrap gap-4">
               <a
                 href="#inquiry"
-                className="px-8 py-4 bg-[#D4A855] text-[#0f172a] font-semibold rounded-lg hover:bg-[#E5B968] transition shadow-lg"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#3264ff] font-semibold rounded-lg hover:bg-blue-50 transition-all shadow-lg shadow-blue-900/20 hover:shadow-xl hover:-translate-y-0.5"
               >
-                {t("team_culture.cta_inquiry") || "免费方案咨询"}
+                {t("teamCulture.ctaInquiry")} →
               </a>
               <Link
                 href="/team-culture/themes"
-                className="px-8 py-4 border border-white/30 text-white font-semibold rounded-lg hover:bg-white/10 transition"
+                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 hover:border-white/60 transition-all"
               >
-                {t("team_culture.cta_themes") || "浏览主题包"}
+                {t("teamCulture.ctaThemes")}
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Value Props */}
+      {/* ════════ Value Props ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {[
-            {
-              icon: "☸",
-              title: t("team_culture.value_depth_title") || "文化深度",
-              desc:
-                t("team_culture.value_depth_desc") ||
-                "12 大信仰、60 座圣地、27 处祖庭，专业策划师与导师全程陪伴。",
-            },
-            {
-              icon: "✦",
-              title: t("team_culture.value_global_title") || "全球祖庭",
-              desc:
-                t("team_culture.value_global_desc") ||
-                "从少林到耶路撒冷，从普陀到圣彼得堡，覆盖人类文明源头。",
-            },
-            {
-              icon: "◈",
-              title: t("team_culture.value_custom_title") || "定制共修",
-              desc:
-                t("team_culture.value_custom_desc") ||
-                "为团队量身定制主题包、共修仪式、文化证书。",
-            },
+            { icon: "🎯", titleKey: "teamCulture.valueDepthTitle", descKey: "teamCulture.valueDepthDesc" },
+            { icon: "🌍", titleKey: "teamCulture.valueGlobalTitle", descKey: "teamCulture.valueGlobalDesc" },
+            { icon: "✨", titleKey: "teamCulture.valueCustomTitle", descKey: "teamCulture.valueCustomDesc" },
           ].map((v) => (
             <div
-              key={v.title}
-              className="p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-[#D4A855]/50 transition"
+              key={v.titleKey}
+              className="p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:border-[#3264ff]/30 hover:-translate-y-1 transition-all"
             >
-              <div className="text-5xl text-[#D4A855] mb-4">{v.icon}</div>
-              <h3 className="text-xl font-bold mb-3">{v.title}</h3>
-              <p className="text-white/70 leading-relaxed">{v.desc}</p>
+              <div className="text-4xl mb-4">{v.icon}</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{t(v.titleKey)}</h3>
+              <p className="text-gray-600 leading-relaxed">{t(v.descKey)}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Themes Grid */}
-      <section className="py-20 bg-[#020617]">
+      {/* ════════ Themes Grid ════════ */}
+      <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-                {t("team_culture.themes_title") || "6 大文化主题包"}
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                {t("teamCulture.themesTitle")}
               </h2>
-              <p className="text-white/60">
-                {t("team_culture.themes_subtitle") || "选一个最契合你的团队当下需要"}
-              </p>
+              <p className="text-gray-600">{t("teamCulture.themesSubtitle")}</p>
             </div>
             <Link
               href="/team-culture/themes"
-              className="hidden md:block text-[#D4A855] hover:underline"
+              className="hidden md:inline-flex items-center text-[#3264ff] hover:text-[#1e4dcc] font-medium"
             >
-              {t("team_culture.view_all") || "查看全部 →"}
+              {t("teamCulture.viewAll")}
             </Link>
           </div>
           {themes.length === 0 ? (
-            <div className="text-center py-20 text-white/50">
-              {t("common.empty") || "暂无数据"}
-            </div>
+            <div className="text-center py-20 text-gray-400">{t("common.empty")}</div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {themes.map((th) => (
@@ -141,47 +112,55 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
         </div>
       </section>
 
-      {/* Industries */}
+      {/* ════════ Industries Tabs ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-          {t("team_culture.industries_title") || "为不同组织量身打造"}
-        </h2>
-        <p className="text-white/60 mb-10">
-          {t("team_culture.industries_subtitle") ||
-            "无论你领导的是企业、学校、宗教组织、家族还是公益团体"}
-        </p>
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+            {t("teamCulture.industriesTitle")}
+          </h2>
+          <p className="text-gray-600">{t("teamCulture.industriesSubtitle")}</p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
           {INDUSTRIES.map((i) => (
             <button
               key={i.key}
               onClick={() => setActiveIndustry(i.key)}
-              className={`px-5 py-2 rounded-full border transition ${
+              className={`inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 font-medium transition-all ${
                 activeIndustry === i.key
-                  ? "bg-[#D4A855] text-[#0f172a] border-[#D4A855]"
-                  : "border-white/20 text-white/70 hover:border-white/50"
+                  ? "bg-[#3264ff] text-white border-[#3264ff] shadow-lg shadow-blue-200"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-[#3264ff] hover:text-[#3264ff]"
               }`}
             >
-              {i.label}
+              <span>{i.icon}</span>
+              {t(i.labelKey)}
             </button>
           ))}
         </div>
-        <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
-          <p className="text-white/80 leading-relaxed">
-            {industryCopy(activeIndustry)}
-          </p>
-        </div>
+
+        {activeCopy && (
+          <div className="max-w-4xl mx-auto p-8 lg:p-12 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-blue-50 border border-blue-100 shadow-sm">
+            <div className="flex items-start gap-4">
+              <span className="text-5xl flex-shrink-0">{activeCopy.icon}</span>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{t(activeCopy.labelKey)}</h3>
+                <p className="text-gray-700 leading-relaxed text-base lg:text-lg">{t(activeCopy.copyKey)}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* Cases */}
+      {/* ════════ Cases ════════ */}
       {cases.length > 0 && (
-        <section className="py-20 bg-[#020617]">
+        <section id="cases" className="py-20 bg-gradient-to-b from-white to-blue-50">
           <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-3">
-              {t("team_culture.cases_title") || "他们已经在路上"}
-            </h2>
-            <p className="text-white/60 mb-10">
-              {t("team_culture.cases_subtitle") || "真实案例，真实改变"}
-            </p>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                {t("teamCulture.casesTitle")}
+              </h2>
+              <p className="text-gray-600">{t("teamCulture.casesSubtitle")}</p>
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
               {cases.map((c) => (
                 <TeamCaseCard key={c.id} item={c} />
@@ -191,82 +170,57 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
         </section>
       )}
 
-      {/* Process Timeline */}
+      {/* ════════ Process Timeline ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-center">
-          {t("team_culture.process_title") || "六步交付，全程陪伴"}
+        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-12 text-center">
+          {t("teamCulture.processTitle")}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          {[
-            "询价",
-            "方案",
-            "签约",
-            "行前",
-            "朝圣",
-            "沉淀",
-          ].map((s, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
             <div
-              key={s}
-              className="p-5 rounded-xl bg-white/5 border border-white/10 text-center"
+              key={n}
+              className="relative p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md hover:border-[#3264ff]/40 transition-all text-center"
             >
-              <div className="text-2xl font-bold text-[#D4A855] mb-2">
-                {String(i + 1).padStart(2, "0")}
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-[#3264ff] to-[#1e4dcc] text-white font-bold text-lg flex items-center justify-center shadow-lg shadow-blue-200">
+                {String(n).padStart(2, "0")}
               </div>
-              <div className="text-white/80">{s}</div>
+              <div className="text-gray-800 font-medium">{t(`teamCulture.processStep${n}`)}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Trust */}
-      <section className="py-20 bg-[#020617]">
+      {/* ════════ Trust Numbers ════════ */}
+      <section className="py-20 bg-gradient-to-br from-[#3264ff] to-[#1e4dcc]">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { num: "60+", label: t("team_culture.trust_sites") || "圣地" },
-            { num: "27+", label: t("team_culture.trust_temples") || "祖庭" },
-            { num: "12", label: t("team_culture.trust_religions") || "大信仰" },
-            { num: "100%", label: t("team_culture.trust_custom") || "定制化" },
+            { num: "60+", labelKey: "teamCulture.trustSites" },
+            { num: "27+", labelKey: "teamCulture.trustTemples" },
+            { num: "12", labelKey: "teamCulture.trustReligions" },
+            { num: "100%", labelKey: "teamCulture.trustCustom" },
           ].map((s) => (
-            <div key={s.label}>
-              <div className="text-4xl lg:text-5xl font-bold text-[#D4A855] mb-2">
-                {s.num}
-              </div>
-              <div className="text-white/60">{s.label}</div>
+            <div key={s.labelKey}>
+              <div className="text-4xl lg:text-6xl font-bold text-white mb-2">{s.num}</div>
+              <div className="text-blue-100 text-lg">{t(s.labelKey)}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Inquiry Form */}
-      <section id="inquiry" className="py-20 max-w-3xl mx-auto px-6">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-center">
-          {t("team_culture.inquiry_title") || "与文化顾问对话"}
-        </h2>
-        <p className="text-white/60 mb-10 text-center">
-          {t("team_culture.inquiry_subtitle") ||
-            "提交需求，48 小时内收到定制方案"}
-        </p>
-        <TeamInquiryForm />
+      {/* ════════ Inquiry Form ════════ */}
+      <section id="inquiry" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+              {t("teamCulture.inquiryTitle")}
+            </h2>
+            <p className="text-gray-600">{t("teamCulture.inquirySubtitle")}</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
+            <TeamInquiryForm />
+          </div>
+        </div>
       </section>
     </main>
   );
-}
-
-function industryCopy(key: string): string {
-  switch (key) {
-    case "ENTERPRISE":
-      return "为企业团队提供超越庸俗团建的文化共修：在祖庭与圣地之间，让员工回到工作之外的连接，重塑组织凝聚力与同心。";
-    case "SCHOOL":
-      return "为中小学、大学的研学之旅注入深度。让学生在真实祖庭中学习传统文化，让老师在朝圣中重新理解师者使命。";
-    case "RELIGIOUS":
-      return "为寺院、教会、道观的朝山团、共修团提供端到端组织工具：报名、行程、签到、证书、回忆全闭环。";
-    case "FAMILY":
-      return "为家族寻根之旅提供专业策划：从祖籍地到祖庭，从家训到族谱，让一次旅行变成家族文化的传承时刻。";
-    case "NGO":
-      return "为公益组织、慈善基金会设计慈悲主题之旅：在朝圣中完成施食、放生、捐书等公益行动。";
-    case "GOVERNMENT":
-      return "为政府机关、文化系统提供文化传承考察方案：打通祖庭、圣地、非遗的研学通道。";
-    default:
-      return "";
-  }
 }

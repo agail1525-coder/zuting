@@ -43,10 +43,11 @@ export default function TeamCulturePage() {
   return (
     <ScrollView scrollY className='tc-page'>
       <View className='tc-hero'>
-        <Text className='tc-hero-title'>团队文化打造</Text>
-        <Text className='tc-hero-sub'>以祖庭文化为载体,深度凝聚团队精神</Text>
+        <Text className='tc-hero-kicker'>B2B 旗舰 · 企业与高管团队文化打造</Text>
+        <Text className='tc-hero-title'>把祖庭变成团队的精神高地</Text>
+        <Text className='tc-hero-sub'>为企业、高管圈层与家族办公室定制深度文化朝圣</Text>
         <View className='tc-tags'>
-          {['企业', '学校', '宗教组织', 'NGO', '家族', '政府'].map((tag) => (
+          {['企业团队', '高管团队', '家族办公室', '公益组织', '政府机关'].map((tag) => (
             <View key={tag} className='tc-tag'>
               <Text className='tc-tag-text'>{tag}</Text>
             </View>
@@ -68,7 +69,7 @@ export default function TeamCulturePage() {
           </View>
         ) : (
           themes.map((theme) => (
-            <View key={theme.id} className='tc-theme-card' style={{ borderLeftColor: theme.color || '#D4A855' }}>
+            <View key={theme.id} className='tc-theme-card' style={{ borderLeftColor: theme.color || '#3264ff' }}>
               {theme.coverUrl ? (
                 <Image src={theme.coverUrl} className='tc-theme-cover' mode='aspectFill' />
               ) : null}
@@ -118,7 +119,7 @@ export default function TeamCulturePage() {
                   {c.orgType} · {c.headcount}人{c.industry ? ` · ${c.industry}` : ''}
                 </Text>
                 <Text className='tc-case-story'>{c.story}</Text>
-                {c.testimonial && <Text className='tc-testimonial'>"{c.testimonial}"</Text>}
+                {c.testimonial && <Text className='tc-testimonial'>“{c.testimonial}”</Text>}
               </View>
             </View>
           ))

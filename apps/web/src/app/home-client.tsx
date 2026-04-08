@@ -447,38 +447,37 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
 
       {/* ══════ Section 2.5: Team Culture B2B Banner ══════ */}
       <section className="py-14 max-w-6xl mx-auto px-4">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1410] via-[#2a1a14] to-[#0f0c0a] border border-[#D4A855]/30 shadow-2xl">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#3264ff] via-[#4a7aff] to-[#1e4dcc] shadow-2xl shadow-blue-200">
           {/* Decorative gradient orbs */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4A855]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#8B4513]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
           <div className="relative grid lg:grid-cols-2 gap-8 p-8 md:p-12">
             {/* Left: Copy */}
             <div className="flex flex-col justify-center">
-              <span className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-[#D4A855]/15 border border-[#D4A855]/40 text-[#D4A855] text-xs font-semibold mb-4">
-                ✨ {t("home.teamCulture.badge")}
+              <span className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-white/15 border border-white/30 text-white text-xs font-semibold mb-4">
+                ✨ {t("teamCulture.homeBadge")}
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                {t("home.teamCulture.title")}
+                {t("teamCulture.heroTitle")}
               </h2>
-              <p className="text-lg text-[#D4A855] mb-3">{t("home.teamCulture.subtitle")}</p>
-              <p className="text-sm md:text-base text-white/70 mb-6 leading-relaxed">
-                {t("home.teamCulture.desc")}
+              <p className="text-lg text-white/90 mb-3">{t("teamCulture.heroKicker")}</p>
+              <p className="text-sm md:text-base text-white/80 mb-6 leading-relaxed">
+                {t("teamCulture.heroSubtitle")}
               </p>
 
               {/* Org type tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {[
-                  "home.teamCulture.orgEnterprise",
-                  "home.teamCulture.orgSchool",
-                  "home.teamCulture.orgReligious",
-                  "home.teamCulture.orgNGO",
-                  "home.teamCulture.orgFamily",
-                  "home.teamCulture.orgGovernment",
+                  "teamCulture.orgEnterpriseLabel",
+                  "teamCulture.orgExecutiveLabel",
+                  "teamCulture.orgFamilyOfficeLabel",
+                  "teamCulture.orgNGOLabel",
+                  "teamCulture.orgGovernmentLabel",
                 ].map((k) => (
                   <span
                     key={k}
-                    className="px-3 py-1 rounded-md border border-[#D4A855]/40 text-[#D4A855] text-xs"
+                    className="px-3 py-1 rounded-md bg-white/10 border border-white/30 text-white text-xs"
                   >
                     {t(k)}
                   </span>
@@ -489,15 +488,15 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/team-culture"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A855] text-[#1a1410] font-semibold rounded-lg hover:bg-[#E5BA6A] transition-colors shadow-lg shadow-[#D4A855]/20"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#3264ff] font-semibold rounded-lg hover:bg-blue-50 transition-all shadow-lg shadow-blue-900/20 hover:-translate-y-0.5"
                 >
-                  {t("home.teamCulture.cta")} →
+                  {t("teamCulture.ctaInquiry")} →
                 </Link>
                 <Link
                   href="/team-culture#cases"
-                  className="inline-flex items-center gap-2 px-6 py-3 border border-[#D4A855]/50 text-[#D4A855] font-semibold rounded-lg hover:bg-[#D4A855]/10 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 hover:border-white/60 transition-all"
                 >
-                  {t("home.teamCulture.ctaSecondary")}
+                  {t("teamCulture.ctaCases")}
                 </Link>
               </div>
             </div>
@@ -505,18 +504,18 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
             {/* Right: Feature cards */}
             <div className="grid gap-4 content-center">
               {[
-                { icon: "🎭", titleKey: "home.teamCulture.feature1", descKey: "home.teamCulture.feature1Desc" },
-                { icon: "🤝", titleKey: "home.teamCulture.feature2", descKey: "home.teamCulture.feature2Desc" },
-                { icon: "🏆", titleKey: "home.teamCulture.feature3", descKey: "home.teamCulture.feature3Desc" },
+                { icon: "🎯", titleKey: "teamCulture.homeFeature1", descKey: "teamCulture.homeFeature1Desc" },
+                { icon: "🌍", titleKey: "teamCulture.homeFeature2", descKey: "teamCulture.homeFeature2Desc" },
+                { icon: "✨", titleKey: "teamCulture.homeFeature3", descKey: "teamCulture.homeFeature3Desc" },
               ].map((f) => (
                 <div
                   key={f.titleKey}
-                  className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-[#D4A855]/30 transition-all"
+                  className="flex items-start gap-4 p-5 rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm hover:bg-white/15 hover:border-white/40 transition-all"
                 >
                   <span className="text-3xl flex-shrink-0">{f.icon}</span>
                   <div>
                     <h3 className="text-white font-semibold mb-1">{t(f.titleKey)}</h3>
-                    <p className="text-white/60 text-sm">{t(f.descKey)}</p>
+                    <p className="text-white/75 text-sm">{t(f.descKey)}</p>
                   </div>
                 </div>
               ))}

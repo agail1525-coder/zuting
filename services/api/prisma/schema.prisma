@@ -1305,6 +1305,8 @@ model Team {
 
 enum TeamOrgType {
   ENTERPRISE
+  EXECUTIVE
+  FAMILY_OFFICE
   SCHOOL
   RELIGIOUS
   NGO

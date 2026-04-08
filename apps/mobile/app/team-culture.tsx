@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Image,
-  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -12,7 +10,7 @@ import {
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
+import { spacing, borderRadius } from '../src/lib/theme';
 import {
   fetchTeamCultureThemes,
   fetchTeamCases,
@@ -20,7 +18,7 @@ import {
   type TeamCase,
 } from '../src/lib/api';
 
-const GOLD = '#D4A855';
+const BLUE = '#3264ff';
 
 export default function TeamCultureScreen() {
   const [themes, setThemes] = useState<TeamCultureTheme[]>([]);
@@ -56,24 +54,33 @@ export default function TeamCultureScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color={GOLD} />
+        <ActivityIndicator size="large" color={BLUE} />
       </View>
     );
   }
 
   return (
     <>
-      <Stack.Screen options={{ title: '团队文化', headerTintColor: GOLD }} />
+      <Stack.Screen
+        options={{
+          title: '团队文化',
+          headerStyle: { backgroundColor: BLUE },
+          headerTintColor: '#fff',
+        }}
+      />
       <ScrollView
         style={styles.container}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={GOLD} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={BLUE} />}
       >
         {/* Hero */}
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>团队文化打造</Text>
-          <Text style={styles.heroSub}>以祖庭文化为载体,深度凝聚团队精神</Text>
+          <Text style={styles.heroKicker}>B2B 旗舰 · 企业与高管团队文化打造</Text>
+          <Text style={styles.heroTitle}>把祖庭变成团队的精神高地</Text>
+          <Text style={styles.heroSub}>
+            为企业、高管圈层与家族办公室定制深度文化朝圣
+          </Text>
           <View style={styles.tagsRow}>
-            {['企业', '学校', '宗教组织', 'NGO', '家族', '政府'].map((t) => (
+            {['企业团队', '高管团队', '家族办公室', '公益组织', '政府机关'].map((t) => (
               <View key={t} style={styles.tag}>
                 <Text style={styles.tagText}>{t}</Text>
               </View>
@@ -93,12 +100,12 @@ export default function TeamCultureScreen() {
           <Text style={styles.sectionSub}>共 {themes.length} 个文化主题</Text>
           {themes.length === 0 ? (
             <View style={styles.empty}>
-              <Ionicons name="leaf-outline" size={48} color={GOLD} />
+              <Ionicons name="leaf-outline" size={48} color={BLUE} />
               <Text style={styles.emptyText}>暂无主题</Text>
             </View>
           ) : (
             themes.map((theme) => (
-              <View key={theme.id} style={[styles.themeCard, { borderLeftColor: theme.color || GOLD }]}>
+              <View key={theme.id} style={[styles.themeCard, { borderLeftColor: theme.color || BLUE }]}>
                 {theme.coverUrl ? (
                   <Image source={{ uri: theme.coverUrl }} style={styles.themeCover} resizeMode="cover" />
                 ) : null}
@@ -138,7 +145,7 @@ export default function TeamCultureScreen() {
           <Text style={styles.sectionSub}>真实团队的朝圣故事</Text>
           {cases.length === 0 ? (
             <View style={styles.empty}>
-              <Ionicons name="people-outline" size={48} color={GOLD} />
+              <Ionicons name="people-outline" size={48} color={BLUE} />
               <Text style={styles.emptyText}>暂无案例</Text>
             </View>
           ) : (
@@ -156,7 +163,7 @@ export default function TeamCultureScreen() {
                     {c.story}
                   </Text>
                   {c.testimonial ? (
-                    <Text style={styles.testimonial}>"{c.testimonial}"</Text>
+                    <Text style={styles.testimonial}>&ldquo;{c.testimonial}&rdquo;</Text>
                   ) : null}
                 </View>
               </View>
@@ -174,71 +181,94 @@ export default function TeamCultureScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: '#fff' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
   hero: {
     padding: spacing.lg,
-    backgroundColor: '#1a1410',
-    borderBottomWidth: 1,
-    borderBottomColor: '#2a2418',
+    backgroundColor: BLUE,
   },
-  heroTitle: { fontSize: fontSize.xl + 4, color: GOLD, fontWeight: '700', marginBottom: 6 },
-  heroSub: { fontSize: fontSize.md, color: '#bbb', marginBottom: spacing.md },
+  heroKicker: { fontSize: 12, color: 'rgba(255,255,255,0.85)', marginBottom: 6, fontWeight: '600' },
+  heroTitle: { fontSize: 24, color: '#fff', fontWeight: '700', marginBottom: 8 },
+  heroSub: { fontSize: 14, color: 'rgba(255,255,255,0.9)', marginBottom: spacing.md, lineHeight: 20 },
   tagsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   tag: {
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: borderRadius.sm,
+    backgroundColor: 'rgba(255,255,255,0.18)',
     borderWidth: 1,
-    borderColor: GOLD,
+    borderColor: 'rgba(255,255,255,0.35)',
   },
-  tagText: { color: GOLD, fontSize: fontSize.sm },
-  errorBox: { padding: spacing.md, backgroundColor: '#3a1818', margin: spacing.md, borderRadius: borderRadius.md },
-  errorText: { color: '#f88', fontSize: fontSize.sm },
+  tagText: { color: '#fff', fontSize: 12 },
+  errorBox: { padding: spacing.md, backgroundColor: '#fef2f2', margin: spacing.md, borderRadius: borderRadius.md, borderWidth: 1, borderColor: '#fecaca' },
+  errorText: { color: '#b91c1c', fontSize: 13 },
   section: { padding: spacing.lg },
-  sectionTitle: { fontSize: fontSize.lg, color: '#fff', fontWeight: '700', marginBottom: 4 },
-  sectionSub: { fontSize: fontSize.sm, color: '#888', marginBottom: spacing.md },
+  sectionTitle: { fontSize: 18, color: '#111827', fontWeight: '700', marginBottom: 4 },
+  sectionSub: { fontSize: 13, color: '#6b7280', marginBottom: spacing.md },
   empty: { alignItems: 'center', padding: spacing.xl },
-  emptyText: { color: '#666', marginTop: spacing.sm },
+  emptyText: { color: '#9ca3af', marginTop: spacing.sm },
   themeCard: {
-    backgroundColor: '#1a1814',
+    backgroundColor: '#fff',
     borderRadius: borderRadius.md,
     marginBottom: spacing.md,
     overflow: 'hidden',
     borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
   },
   themeCover: { width: '100%', height: 140 },
   themeBody: { padding: spacing.md },
-  themeTitle: { fontSize: fontSize.lg, color: '#fff', fontWeight: '600' },
-  themeSub: { fontSize: fontSize.sm, color: GOLD, marginTop: 2 },
-  themeDesc: { fontSize: fontSize.sm, color: '#bbb', marginTop: 8, lineHeight: 20 },
+  themeTitle: { fontSize: 16, color: '#111827', fontWeight: '600' },
+  themeSub: { fontSize: 13, color: BLUE, marginTop: 2 },
+  themeDesc: { fontSize: 13, color: '#6b7280', marginTop: 8, lineHeight: 20 },
   keywordRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: spacing.sm },
-  keyword: { paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#2a2418', borderRadius: borderRadius.sm },
-  keywordText: { color: GOLD, fontSize: fontSize.xs },
+  keyword: { paddingHorizontal: 8, paddingVertical: 2, backgroundColor: '#eff6ff', borderRadius: borderRadius.sm },
+  keywordText: { color: BLUE, fontSize: 11, fontWeight: '600' },
   themeMeta: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
-  price: { color: GOLD, fontSize: fontSize.md, fontWeight: '600' },
-  metaText: { color: '#888', fontSize: fontSize.sm },
+  price: { color: BLUE, fontSize: 14, fontWeight: '700' },
+  metaText: { color: '#6b7280', fontSize: 13 },
   caseCard: {
-    backgroundColor: '#1a1814',
+    backgroundColor: '#fff',
     borderRadius: borderRadius.md,
     marginBottom: spacing.md,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 1,
   },
   caseCover: { width: '100%', height: 160 },
   caseBody: { padding: spacing.md },
-  caseTitle: { fontSize: fontSize.lg, color: '#fff', fontWeight: '600' },
-  caseMeta: { fontSize: fontSize.xs, color: '#888', marginTop: 2 },
-  caseStory: { fontSize: fontSize.sm, color: '#bbb', marginTop: 8, lineHeight: 20 },
-  testimonial: { fontSize: fontSize.sm, color: GOLD, marginTop: 8, fontStyle: 'italic' },
+  caseTitle: { fontSize: 16, color: '#111827', fontWeight: '600' },
+  caseMeta: { fontSize: 11, color: '#6b7280', marginTop: 2 },
+  caseStory: { fontSize: 13, color: '#4b5563', marginTop: 8, lineHeight: 20 },
+  testimonial: {
+    fontSize: 13,
+    color: '#1e40af',
+    marginTop: 10,
+    fontStyle: 'italic',
+    backgroundColor: '#eff6ff',
+    borderLeftWidth: 4,
+    borderLeftColor: BLUE,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
   cta: {
     margin: spacing.lg,
     padding: spacing.lg,
-    backgroundColor: '#1a1410',
+    backgroundColor: BLUE,
     borderRadius: borderRadius.md,
-    borderWidth: 1,
-    borderColor: GOLD,
     alignItems: 'center',
   },
-  ctaText: { color: GOLD, fontSize: fontSize.lg, fontWeight: '600' },
-  ctaSub: { color: '#888', fontSize: fontSize.sm, marginTop: 6, textAlign: 'center' },
+  ctaText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  ctaSub: { color: 'rgba(255,255,255,0.85)', fontSize: 13, marginTop: 6, textAlign: 'center' },
 });

@@ -1,8 +1,35 @@
 # M32-PRD 团队文化打造 (Team Culture Building)
 
-> 主模块PRD | Owner: CEO++ | 状态: Draft v1.0 | 创建: 2026-04-08
+> 主模块PRD | Owner: CEO++ | 状态: Active v1.1 | 创建: 2026-04-08 | 更新: 2026-04-08
 > 协议依据: SCP-02(竞品全吸收) / SCP-03(PRD先行) / SCP-06(Phase F扩展)
 > 关联协议: 项目++ / 业务++ / 页面++ / 飞轮++ / 五全++
+
+---
+
+## v1.1 重大调整 (CEO++亲令 · 2026-04-08)
+
+**背景**: v1.0 落地后 CEO++ 巡检发现两个原则性偏差,即刻 hotfix:
+
+1. **UI 体系冲突**: v1.0 团队文化模块沿用了"暗色殿堂风(#0f172a 黑底 + #D4A855 金色)",
+   与 ZUTING/Joinus 主品牌的"蓝色光明体系(#3264ff 蓝 + 白底)"产生强烈视觉割裂。
+   决议: 团队文化模块全量改造为蓝色光明体系,与 Header / 首页 / 路线 / 行程 等模块统一。
+   - Hero: `bg-gradient-to-br from-[#3264ff] via-[#4a7aff] to-[#1e4dcc]`
+   - Body: `bg-white text-gray-900`
+   - 强调色: `text-[#3264ff]`, hover `bg-blue-50`
+   - 不再出现 `#D4A855` / `#0f172a` / `#020617` / `bg-white/5`
+
+2. **业务焦点偏移**: v1.0 把"学校 / 宗教组织"列为同等优先客户,稀释了 B2B 旗舰定位。
+   决议: **核心客户聚焦企业 (ENTERPRISE) / 高管团队 (EXECUTIVE) / 家族办公室 (FAMILY_OFFICE)**,
+   学校 / 宗教组织从前台 UI 隐藏(数据库 enum 保留以兼容历史数据)。
+   前台 5 个组织类型 Tab: 企业团队 / 高管团队 / 家族办公室 / 公益组织 / 政府机关。
+
+**影响范围**:
+- Web: TeamCultureLanding + 7 个子页面 + home-client 卡片 + i18n keys 重写
+- Mobile: app/team-culture.tsx 全量蓝色化
+- Miniprogram: pages/team-culture/* 全量蓝色化
+- Backend: Prisma TeamOrgType 新增 EXECUTIVE / FAMILY_OFFICE
+- Admin: TeamCultureManagePage 组织类型下拉用中文 label
+- Seed: SCHOOL 案例替换为 EXECUTIVE 案例
 
 ---
 

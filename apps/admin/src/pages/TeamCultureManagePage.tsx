@@ -366,7 +366,16 @@ export default function TeamCultureManagePage() {
           <Form.Item name="slug" label="Slug" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="teamName" label="团队名称" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="orgType" label="组织类型" rules={[{ required: true }]}>
-            <Select options={['ENTERPRISE', 'SCHOOL', 'RELIGIOUS', 'NGO', 'FAMILY', 'GOVERNMENT', 'OTHER'].map((v) => ({ value: v, label: v }))} />
+            <Select
+              options={[
+                { value: 'ENTERPRISE', label: '企业团队' },
+                { value: 'EXECUTIVE', label: '高管团队' },
+                { value: 'FAMILY_OFFICE', label: '家族办公室' },
+                { value: 'NGO', label: '公益组织' },
+                { value: 'GOVERNMENT', label: '政府机关' },
+                { value: 'OTHER', label: '其他' },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="industry" label="行业"><Input /></Form.Item>
           <Form.Item name="themeId" label="关联主题">
