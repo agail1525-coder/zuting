@@ -788,10 +788,23 @@ export async function planTripWithAI(input: {
   persons?: number;
   budgetCents?: number;
 }): Promise<PlanTripResult> {
-  return fetchAuthed<PlanTripResult>("/api/trips/plan", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  // Public endpoint with long timeout — LLM call can take 5-30s
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 90000);
+  try {
+    const res = await fetch(`${API_BASE}/api/trips/plan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+    return res.json() as Promise<PlanTripResult>;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export async function removeSiteFromTrip(
@@ -1842,7 +1855,14 @@ export async function fetchGuides(params?: { tag?: string; sort?: string; page?:
   if (params?.sort) p.set("sort", params.sort);
   if (params?.page) p.set("page", String(params.page));
   if (params?.limit) p.set("limit", String(params.limit));
-  return fetchJson<GuideListResponse>(`/api/guides?${p}`);
+  // Backend returns {data, total, page, limit}; normalize to {items, total, page, pageSize}
+  const raw = await fetchJson<{ data?: GuideItem[]; items?: GuideItem[]; total: number; page: number; limit?: number; pageSize?: number }>(`/api/guides?${p}`);
+  return {
+    items: raw.items ?? raw.data ?? [],
+    total: raw.total ?? 0,
+    page: raw.page ?? 1,
+    pageSize: raw.pageSize ?? raw.limit ?? 20,
+  };
 }
 
 export async function fetchGuide(id: string): Promise<GuideItem> {
@@ -1888,7 +1908,13 @@ export async function fetchQuestions(params?: { tag?: string; status?: string; s
   if (params?.status) p.set("status", params.status);
   if (params?.sort) p.set("sort", params.sort);
   if (params?.page) p.set("page", String(params.page));
-  return fetchJson<QuestionListResponse>(`/api/questions?${p}`);
+  const raw = await fetchJson<{ data?: QuestionItem[]; items?: QuestionItem[]; total: number; page: number; limit?: number; pageSize?: number }>(`/api/questions?${p}`);
+  return {
+    items: raw.items ?? raw.data ?? [],
+    total: raw.total ?? 0,
+    page: raw.page ?? 1,
+    pageSize: raw.pageSize ?? raw.limit ?? 20,
+  };
 }
 
 export async function fetchQuestion(id: string): Promise<QuestionDetail> {

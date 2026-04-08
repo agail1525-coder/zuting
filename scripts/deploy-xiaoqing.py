@@ -154,7 +154,7 @@ PORT={API_PORT}
 NODE_ENV=production
 JWT_SECRET="zuting-prod-jwt-s3cret-2026-k9x7m"
 LLM_BASE_URL="http://120.24.31.151:18001/v1"
-LLM_MODEL="/root/autodl-tmp/models/qwen3.5-35b-a3b-fp8"
+LLM_MODEL="/root/autodl-tmp/models/Qwen/Qwen3___5-122B-A10B-GPTQ-Int4"
 LLM_API_KEY="zuoyelang2026"
 """
     with sftp.open(f"{REMOTE_BASE}/api/.env", "w") as f:

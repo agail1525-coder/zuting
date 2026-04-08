@@ -285,7 +285,13 @@ ${input.budgetCents ? `预算：¥${(input.budgetCents / 100).toLocaleString()}`
     const validIds = new Set(candidates.map((c) => c.id));
     return plans
       .map((p, idx) => {
-        const filteredIds = (p.siteIds || []).filter((id) => validIds.has(id));
+        // Filter to valid IDs and dedupe (LLM occasionally repeats the same id)
+        const seen = new Set<string>();
+        const filteredIds = (p.siteIds || []).filter((id) => {
+          if (!validIds.has(id) || seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        });
         return {
           id: p.id || `plan_${idx + 1}`,
           title: p.title || `方案 ${idx + 1}`,

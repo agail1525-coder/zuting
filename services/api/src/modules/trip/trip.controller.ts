@@ -44,7 +44,7 @@ export class TripController {
   ) {}
 
   @Post('plan')
-  @ApiBearerAuth('bearer')
+  @Public()
   @ApiOperation({
     summary: 'AI 行程规划 / Generate AI trip plan proposals',
     description:

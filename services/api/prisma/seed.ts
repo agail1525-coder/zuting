@@ -9344,7 +9344,7 @@ async function main() {
       label: '模型选择',
       category: 'model',
       description: 'vLLM使用的模型路径（OpenAI兼容格式）',
-      value: '/root/autodl-tmp/models/qwen3.5-35b-a3b-fp8',
+      value: '/root/autodl-tmp/models/Qwen/Qwen3___5-122B-A10B-GPTQ-Int4',
     },
     {
       key: 'max_tokens',
