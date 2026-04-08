@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
-import { fetchRoutes, fetchPackages, type PackageItem } from "@/lib/api";
+import { fetchRoutes, fetchPackages, fetchPromotions, type PackageItem, type PromotionItem } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
 
 interface RoutePrice {
@@ -84,6 +84,8 @@ export default function PricesPage() {
   const { t } = useTranslation();
   const [routes, setRoutes] = useState<RoutePrice[]>([]);
   const [packages, setPackages] = useState<PackageItem[]>([]);
+  const [promotions, setPromotions] = useState<PromotionItem[]>([]);
+  const [promoTab, setPromoTab] = useState<"all" | "FLASH_SALE" | "EARLY_BIRD" | "DISCOUNT">("all");
   const [loading, setLoading] = useState(true);
 
   // Budget calculator state
@@ -117,7 +119,15 @@ export default function PricesPage() {
     fetchPackages({ page: 1 })
       .then((data) => setPackages(Array.isArray(data.items) ? data.items.slice(0, 6) : []))
       .catch(() => {});
+    fetchPromotions(undefined, 1)
+      .then((data) => setPromotions(Array.isArray(data.items) ? data.items : []))
+      .catch(() => {});
   }, []);
+
+  const filteredPromos = useMemo(() => {
+    if (promoTab === "all") return promotions;
+    return promotions.filter((p) => p.type?.toUpperCase() === promoTab);
+  }, [promotions, promoTab]);
 
   const maxPrice = Math.max(...routes.map((r) => r.priceFrom), 1);
   const minPrice = routes.length > 0 ? Math.min(...routes.map((r) => r.priceFrom)) : 0;
@@ -349,6 +359,83 @@ export default function PricesPage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* ── Promotions (merged from /promotions) ─────────────────────────── */}
+      <section className="max-w-6xl mx-auto px-4 mt-10">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{t("nav.deals")}</h2>
+            <p className="text-gray-500 text-sm mt-1">{t("promotions.subtitle")}</p>
+          </div>
+          <Link href="/promotions" className="text-sm text-[#0066FF] hover:text-[#0052CC] font-medium">
+            {t("common.viewAll")} →
+          </Link>
+        </div>
+        <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
+          {([
+            { key: "all" as const, label: t("promotions.tabAll"), icon: "🎯" },
+            { key: "FLASH_SALE" as const, label: t("promotions.tabFlashSale"), icon: "⚡" },
+            { key: "EARLY_BIRD" as const, label: t("promotions.tabEarlyBird"), icon: "🌅" },
+            { key: "DISCOUNT" as const, label: t("promotions.tabDiscount"), icon: "🏷️" },
+          ]).map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setPromoTab(tab.key)}
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                promoTab === tab.key
+                  ? "bg-[#0066FF] text-white shadow-sm"
+                  : "bg-white border border-gray-200 text-gray-600 hover:border-[#0066FF]/40"
+              }`}
+            >
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+        {filteredPromos.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredPromos.slice(0, 8).map((promo) => {
+              const typeUpper = promo.type?.toUpperCase();
+              const tagColor = typeUpper === "FLASH_SALE" ? "bg-red-500" : typeUpper === "EARLY_BIRD" ? "bg-green-500" : "bg-[#0066FF]";
+              const tagLabel = typeUpper === "FLASH_SALE" ? t("promotions.tabFlashSale") : typeUpper === "EARLY_BIRD" ? t("promotions.tabEarlyBird") : t("promotions.tabDiscount");
+              const gradientBg = typeUpper === "FLASH_SALE" ? "from-red-500 to-orange-400" : typeUpper === "EARLY_BIRD" ? "from-green-500 to-teal-400" : "from-[#0066FF] to-purple-500";
+              return (
+                <div key={promo.id} className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                  {promo.coverImage ? (
+                    <div className="h-28 bg-cover bg-center" style={{ backgroundImage: `url(${promo.coverImage})` }} />
+                  ) : (
+                    <div className={`h-28 bg-gradient-to-r ${gradientBg} flex items-center justify-center`}>
+                      <span className="text-3xl">{typeUpper === "FLASH_SALE" ? "⚡" : typeUpper === "EARLY_BIRD" ? "🌅" : "🏷️"}</span>
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-1">{promo.name}</h3>
+                      <span className={`shrink-0 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full ${tagColor}`}>{tagLabel}</span>
+                    </div>
+                    {promo.description && <p className="text-xs text-gray-500 mb-2 line-clamp-2">{promo.description}</p>}
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold text-red-500">
+                        {promo.discountType === "PERCENT"
+                          ? t("promotions.percentOff", { value: promo.discountValue })
+                          : t("promotions.amountOff", { value: (promo.discountValue / 100).toFixed(0) })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl border border-gray-100 py-10 text-center">
+            <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-2xl">🎁</span>
+            </div>
+            <p className="font-medium text-gray-900 mb-1">{t("promotions.noActivePromo")}</p>
+            <p className="text-sm text-gray-500">{t("promotions.comingSoon")}</p>
+          </div>
+        )}
       </section>
 
       {/* ── FEATURE 3: Best Time to Book (Kayak style) ───────────────────── */}

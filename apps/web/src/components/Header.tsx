@@ -15,7 +15,6 @@ const navLinks = [
   { key: "nav.map", href: "/map", highlight: false },
   { key: "nav.wiki", href: "/religions", highlight: false },
   { key: "nav.community", href: "/community", highlight: false },
-  { key: "nav.deals", href: "/promotions", highlight: true },
   { key: "nav.aiPlanner", href: "/chat", highlight: true },
   { key: "nav.teamCulture", href: "/team-culture", highlight: true },
   { key: "nav.myTrips", href: "/trips", highlight: false },
