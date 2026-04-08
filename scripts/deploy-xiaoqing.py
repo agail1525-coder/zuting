@@ -34,6 +34,25 @@ def run(ssh, cmd, show=True):
     return out
 
 
+def build_local():
+    """本地构建: API (nest build) + Web (next build) + Admin (vite build)"""
+    print("  构建 API (nest build)...")
+    subprocess.run(
+        ["pnpm", "--filter", "@zuting/api", "build"],
+        cwd=str(PROJECT_ROOT), check=True, shell=(os.name == "nt"),
+    )
+    print("  构建 Web (next build)...")
+    subprocess.run(
+        ["pnpm", "--filter", "@zuting/web", "build"],
+        cwd=str(PROJECT_ROOT), check=True, shell=(os.name == "nt"),
+    )
+    print("  构建 Admin (vite build)...")
+    subprocess.run(
+        ["pnpm", "--filter", "@zuting/admin", "build"],
+        cwd=str(PROJECT_ROOT), check=True, shell=(os.name == "nt"),
+    )
+
+
 def pack_local():
     """本地打包 API / Web / Admin 构建产物"""
     tmp = tempfile.gettempdir()
@@ -74,8 +93,13 @@ def main():
     print("  ZUTING → 小轻部署")
     print("=" * 60)
 
-    # ── 0. 本地打包 ──
-    print("\n[0/7] 本地打包构建产物...")
+    # ── 0a. 本地构建 ──
+    print("\n[0/8] 本地构建 (API + Web + Admin)...")
+    build_local()
+    print("  ✓ 构建完成")
+
+    # ── 0b. 本地打包 ──
+    print("\n[1/8] 本地打包构建产物...")
     tmp = pack_local()
     print("  ✓ 打包完成")
 
