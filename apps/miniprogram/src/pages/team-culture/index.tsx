@@ -61,6 +61,30 @@ export default function TeamCulturePage() {
         </View>
       )}
 
+      <View className='tc-methodology'>
+        <Text className='tc-methodology-kicker'>⚡ ZUTING 文化朝圣五步法</Text>
+        <Text className='tc-methodology-title'>把一次朝圣 · 变成企业的百年文化</Text>
+        <Text className='tc-methodology-sub'>五步沉淀,百年传承。可被代际继承的文化基因。</Text>
+        {[
+          { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评' },
+          { n: '02', icon: '🗺️', title: '朝圣定制', sub: '12 信仰 × 60 圣地匹配' },
+          { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会' },
+          { n: '04', icon: '📜', title: '沉淀转化', sub: '影像 + 证书 + 文化手册' },
+          { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班传承' },
+        ].map((step) => (
+          <View key={step.n} className='tc-step'>
+            <View className='tc-step-left'>
+              <Text className='tc-step-num'>{step.n}</Text>
+              <Text className='tc-step-icon'>{step.icon}</Text>
+            </View>
+            <View className='tc-step-right'>
+              <Text className='tc-step-title'>{step.title}</Text>
+              <Text className='tc-step-sub'>{step.sub}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+
       <View className='tc-section'>
         <Text className='tc-section-title'>主题方案 ({themes.length})</Text>
         {themes.length === 0 ? (

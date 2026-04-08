@@ -71,6 +71,88 @@
   }
 }
 
+.tc-methodology {
+  padding: 32rpx;
+  background: #f8faff;
+
+  &-kicker {
+    display: block;
+    font-size: 22rpx;
+    color: #3264ff;
+    font-weight: 700;
+    margin-bottom: 8rpx;
+  }
+
+  &-title {
+    display: block;
+    font-size: 36rpx;
+    color: #111827;
+    font-weight: 700;
+    margin-bottom: 8rpx;
+    line-height: 1.4;
+  }
+
+  &-sub {
+    display: block;
+    font-size: 24rpx;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 24rpx;
+  }
+}
+
+.tc-step {
+  display: flex;
+  flex-direction: row;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 16rpx;
+  border: 2rpx solid #e5e7eb;
+  box-shadow: 0 2rpx 8rpx rgba(50, 100, 255, 0.06);
+
+  &-left {
+    width: 96rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 24rpx;
+  }
+
+  &-num {
+    display: block;
+    font-size: 40rpx;
+    font-weight: 900;
+    color: #3264ff;
+    line-height: 1;
+  }
+
+  &-icon {
+    display: block;
+    font-size: 36rpx;
+    margin-top: 8rpx;
+  }
+
+  &-right {
+    flex: 1;
+  }
+
+  &-title {
+    display: block;
+    font-size: 28rpx;
+    color: #111827;
+    font-weight: 700;
+    margin-bottom: 6rpx;
+  }
+
+  &-sub {
+    display: block;
+    font-size: 22rpx;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+}
+
 .tc-section {
   padding: 32rpx;
 

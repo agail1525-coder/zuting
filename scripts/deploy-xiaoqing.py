@@ -174,6 +174,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed.ts 2>&1 | tail -5")
 
+    # Seed team-culture (independent, idempotent — runs even if main seed aborted on FK)
+    print("  Seeding team-culture (M32)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-team-culture.ts 2>&1 | tail -10")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''

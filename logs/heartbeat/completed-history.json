@@ -1253,5 +1253,95 @@
         "id":  "miniprogram-fix-route-detail-wrong-navigation",
         "name":  "小程序路线详情页\u0027立即预订\u0027按钮导航到行程列表而非结账页 — 核心转化流程断裂",
         "completedAt":  "2026-03-29 06:20:07"
+    },
+    {
+        "id":  "web-fix-prices-mock-data-replace",
+        "name":  "Web价格工具4页仍使用generateMock函数 — 商业核心功能展示假数据",
+        "completedAt":  "2026-03-30 05:29:41"
+    },
+    {
+        "id":  "mobile-fix-price-pages-mock-data",
+        "name":  "Mobile价格提醒和价格日历页使用mock数据 — 商业功能展示假数据",
+        "completedAt":  "2026-03-30 05:29:41"
+    },
+    {
+        "id":  "miniprogram-fix-empty-catch-blocks-batch",
+        "name":  "小程序10+处空catch块 — 收藏/搜索/结账/通知操作失败静默吞错",
+        "completedAt":  "2026-03-30 05:29:41"
+    },
+    {
+        "id":  "api-fix-analytics-findmany-no-take",
+        "name":  "API Analytics服务3处findMany缺少take — 数据增长后OOM崩溃",
+        "completedAt":  "2026-03-30 05:29:41"
+    },
+    {
+        "id":  "miniprogram-fix-checkout-simulated-payment",
+        "name":  "小程序结账页模拟支付逻辑 — 绕过真实支付网关直接标记成功",
+        "completedAt":  "2026-03-30 05:29:41"
+    },
+    {
+        "id":  "mobile-fix-empty-catch-blocks",
+        "name":  "Mobile通知/订单/结账页空catch块 — 操作失败用户无感知",
+        "completedAt":  "2026-03-30 05:30:26"
+    },
+    {
+        "id":  "web-fix-i18n-community-constants",
+        "name":  "Web社区3页SORT_OPTIONS/TAGS等常量中文硬编码 — 国际用户无法使用筛选功能",
+        "completedAt":  "2026-03-30 05:30:26"
+    },
+    {
+        "id":  "web-fix-i18n-prices-constants",
+        "name":  "Web价格工具5页常量标签中文硬编码 — 价格比较/日历/趋势/提醒筛选器国际化缺失",
+        "completedAt":  "2026-03-30 05:30:27"
+    },
+    {
+        "id":  "mobile-fix-merchants-prices-missing-error-ui",
+        "name":  "Mobile商家/价格/套餐/优惠券/分销5页无error状态UI — API失败用户看到空白",
+        "completedAt":  "2026-03-30 05:49:43"
+    },
+    {
+        "id":  "api-fix-media-controller-missing-roles-guard",
+        "name":  "API Media控制器POST/PATCH/DELETE缺少@Roles(\u0027ADMIN\u0027)守卫 — 任何登录用户可增删改多媒体内容",
+        "completedAt":  "2026-03-30 05:49:43"
+    },
+    {
+        "id":  "mobile-fix-community-leaderboard-mock-data",
+        "name":  "Mobile社区页排行榜使用LEADERBOARD_MOCK硬编码假数据 — 违反HH-V02空壳零容忍",
+        "completedAt":  "2026-03-30 05:49:43"
+    },
+    {
+        "id":  "miniprogram-fix-api-url-inconsistency",
+        "name":  "小程序api.ts和auth.ts开发环境URL不一致 — 开发调试时认证和数据请求指向不同服务器",
+        "completedAt":  "2026-03-30 05:49:43"
+    },
+    {
+        "id":  "web-fix-i18n-checkout-page-hardcoded",
+        "name":  "Web结账页面30+处中文硬编码 — 国际用户无法完成支付流程",
+        "completedAt":  "2026-03-30 05:49:43"
+    },
+    {
+        "id":  "mobile-fix-console-error-production-remaining",
+        "name":  "Mobile 15+处console.error在生产环境输出 — 泄露API路径和内部错误详情",
+        "completedAt":  "2026-03-30 05:50:39"
+    },
+    {
+        "id":  "mobile-fix-empty-catch-blocks-batch",
+        "name":  "Mobile 8处空catch块静默吞错 — 地图/日志创建/结账等操作失败用户无感知",
+        "completedAt":  "2026-03-30 05:50:39"
+    },
+    {
+        "id":  "miniprogram-fix-index-silent-api-failures",
+        "name":  "小程序首页3处API调用.catch(() =\u003e [])静默失败 — 推荐/趋势/促销区域默默消失",
+        "completedAt":  "2026-03-30 05:50:39"
+    },
+    {
+        "id":  "miniprogram-fix-leaderboard-no-error-ui",
+        "name":  "小程序排行榜页加载失败无错误UI — 用户看到空白内容无法重试",
+        "completedAt":  "2026-03-30 05:50:39"
+    },
+    {
+        "id":  "web-fix-i18n-collections-page-hardcoded",
+        "name":  "Web收藏页面15+处中文硬编码 — 国际用户收藏功能不可用",
+        "completedAt":  "2026-03-30 05:50:39"
     }
 ]

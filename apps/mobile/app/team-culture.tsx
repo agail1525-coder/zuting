@@ -94,6 +94,33 @@ export default function TeamCultureScreen() {
           </View>
         )}
 
+        {/* 五步法 Methodology */}
+        <View style={styles.methodologySection}>
+          <Text style={styles.methodologyKicker}>⚡ ZUTING 文化朝圣五步法</Text>
+          <Text style={styles.methodologyTitle}>把一次朝圣 · 变成企业的百年文化</Text>
+          <Text style={styles.methodologySub}>
+            五步沉淀,百年传承。我们帮企业铸造可被代际继承的文化基因。
+          </Text>
+          {[
+            { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评 → 母题报告' },
+            { n: '02', icon: '🗺️', title: '朝圣定制', sub: '12 信仰 × 60 圣地匹配 → 专属方案书' },
+            { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会 + 集体宣誓' },
+            { n: '04', icon: '📜', title: '沉淀转化', sub: '影像档案 + 团队证书 + 文化手册 v1.0' },
+            { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班人传承 + 全球网络' },
+          ].map((step) => (
+            <View key={step.n} style={styles.stepCard}>
+              <View style={styles.stepLeft}>
+                <Text style={styles.stepNumber}>{step.n}</Text>
+                <Text style={styles.stepIcon}>{step.icon}</Text>
+              </View>
+              <View style={styles.stepRight}>
+                <Text style={styles.stepTitle}>{step.title}</Text>
+                <Text style={styles.stepSub}>{step.sub}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
         {/* Themes */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>主题方案</Text>
@@ -202,6 +229,30 @@ const styles = StyleSheet.create({
   tagText: { color: '#fff', fontSize: 12 },
   errorBox: { padding: spacing.md, backgroundColor: '#fef2f2', margin: spacing.md, borderRadius: borderRadius.md, borderWidth: 1, borderColor: '#fecaca' },
   errorText: { color: '#b91c1c', fontSize: 13 },
+  methodologySection: { padding: spacing.lg, backgroundColor: '#f8faff' },
+  methodologyKicker: { fontSize: 12, color: BLUE, fontWeight: '700', marginBottom: 6 },
+  methodologyTitle: { fontSize: 20, color: '#111827', fontWeight: '700', marginBottom: 6, lineHeight: 28 },
+  methodologySub: { fontSize: 13, color: '#6b7280', lineHeight: 20, marginBottom: spacing.md },
+  stepCard: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.sm,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  stepLeft: { width: 56, alignItems: 'center', marginRight: spacing.md },
+  stepNumber: { fontSize: 22, fontWeight: '900', color: BLUE, lineHeight: 24 },
+  stepIcon: { fontSize: 20, marginTop: 4 },
+  stepRight: { flex: 1 },
+  stepTitle: { fontSize: 15, fontWeight: '700', color: '#111827', marginBottom: 4 },
+  stepSub: { fontSize: 12, color: '#6b7280', lineHeight: 18 },
   section: { padding: spacing.lg },
   sectionTitle: { fontSize: 18, color: '#111827', fontWeight: '700', marginBottom: 4 },
   sectionSub: { fontSize: 13, color: '#6b7280', marginBottom: spacing.md },

@@ -7,6 +7,8 @@ import type { TeamCultureTheme, TeamCase } from "@/lib/api/team-culture";
 import TeamInquiryForm from "./components/TeamInquiryForm";
 import TeamThemeCard from "./components/TeamThemeCard";
 import TeamCaseCard from "./components/TeamCaseCard";
+import MethodologySection from "./components/MethodologySection";
+import ComparisonTable from "./components/ComparisonTable";
 
 const INDUSTRIES = [
   { key: "ENTERPRISE", labelKey: "teamCulture.orgEnterpriseLabel", copyKey: "teamCulture.orgEnterpriseCopy", icon: "🏢" },
@@ -63,6 +65,9 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
         </div>
       </section>
 
+      {/* ════════ 五步法 Methodology ════════ */}
+      <MethodologySection />
+
       {/* ════════ Value Props ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-3 gap-6">
@@ -101,7 +106,18 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
             </Link>
           </div>
           {themes.length === 0 ? (
-            <div className="text-center py-20 text-gray-400">{t("common.empty")}</div>
+            <div className="text-center py-20">
+              <div className="text-5xl mb-4">🏛️</div>
+              <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
+                {t("teamCulture.themesEmptyHint")}
+              </p>
+              <a
+                href="#inquiry"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] text-white rounded-lg font-semibold hover:bg-[#1e4dcc] transition-all"
+              >
+                {t("teamCulture.ctaInquiry")} →
+              </a>
+            </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {themes.map((th) => (
@@ -169,6 +185,9 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
           </div>
         </section>
       )}
+
+      {/* ════════ Comparison + Legacy ════════ */}
+      <ComparisonTable />
 
       {/* ════════ Process Timeline ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">

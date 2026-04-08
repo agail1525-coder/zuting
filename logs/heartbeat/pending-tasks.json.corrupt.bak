@@ -1,7 +1,7 @@
 ﻿{
-    "id":  "miniprogram-fix-route-detail-wrong-navigation",
-    "name":  "小程序路线详情页\u0027立即预订\u0027按钮导航到行程列表而非结账页 — 核心转化流程断裂",
-    "app":  "miniprogram",
+    "id":  "web-fix-i18n-prices-constants",
+    "name":  "Web价格工具5页常量标签中文硬编码 — 价格比较/日历/趋势/提醒筛选器国际化缺失",
+    "app":  "web",
     "priority":  1,
-    "description":  "文件: apps/miniprogram/src/pages/route-detail/index.tsx 第178行\n问题: \u0027立即预订\u0027 CTA按钮执行 Taro.navigateTo({ url: \u0027/pages/trips/index\u0027 })，导航到行程列表页而非结账页。结账页 pages/checkout/index.tsx 已存在且接受slug参数。\n修复: 将导航目标改为 Taro.navigateTo({ url: `/pages/checkout/index?slug=${route.slug}` })。\n同时检查以下文件的相同问题:\n- pages/temple-detail/index.tsx 第126行: \u0027加入行程\u0027按钮也导航到trips列表\n- pages/patriarch-detail/index.tsx 第95行: \u0027规划行程\u0027按钮也导航到trips列表\n- pages/teaching-detail/index.tsx 第92行: \u0027规划行程\u0027按钮也导航到trips列表\n这些页面应导航到行程创建流程或结账页，而非trips列表。\n铁律: HH-V03(交互可用), BLG-01(数据服务于业务目的)\n验证: npx tsc --noEmit -p apps/miniprogram/tsconfig.json"
+    "description":  "Web价格工具5个页面的ENTITY_OPTIONS、COMPARE_ROWS、PERIODS等常量使用中文标签。\n\n修改文件:\n1. apps/web/src/app/prices/compare/page.tsx — COMPARE_ROWS labels(~行72-77)和ALL_PACKAGES(~行8-14)\n2. apps/web/src/app/prices/trend/page.tsx — ENTITY_OPTIONS(~行8-11)和PERIODS(~行15-17)\n3. apps/web/src/app/prices/calendar/page.tsx — ENTITY_OPTIONS(~行7-11)、WEEKDAYS(~行36)、MONTH_NAMES(~行37)\n4. apps/web/src/app/prices/alerts/page.tsx — ENTITY_OPTIONS(~行7-12)\n5. apps/web/src/app/prices/page.tsx — 如有中文标签也一并处理\n\n使用useTranslation()的t()函数替换所有中文label，添加对应翻译key。\n\n对标: Skyscanner/Kayak的价格工具支持全球多语言\n铁律: SCP-02\n验证: pnpm --filter @zuting/web build"
 }
