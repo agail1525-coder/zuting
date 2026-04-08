@@ -4,13 +4,13 @@ import HolySitesClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "全球60圣地 - 横跨12大信仰的朝圣圣地",
+  title: "全球300圣地 - 横跨12大信仰的朝圣圣地",
   description:
-    "探索全球60个宗教圣地，横跨佛教、道教、基督教、伊斯兰教等12大信仰传统。含GPS坐标、详细介绍、地图导览。Explore 60 holy sites across 12 world faiths with maps and guides.",
+    "探索全球300个宗教圣地，横跨佛教、道教、基督教、伊斯兰教等12大信仰传统。含GPS坐标、详细介绍、地图导览。Explore 300 holy sites across 12 world faiths with maps and guides.",
   openGraph: {
-    title: "全球60圣地 - 朝圣圣地导览 | 祖庭之旅",
+    title: "全球300圣地 - 朝圣圣地导览 | 祖庭之旅",
     description:
-      "探索全球60个宗教圣地，横跨12大信仰传统，含互动地图和详细介绍。",
+      "探索全球300个宗教圣地，横跨12大信仰传统，含互动地图和详细介绍。",
     url: "https://zuting.fszyl.top/holy-sites",
   },
   alternates: {

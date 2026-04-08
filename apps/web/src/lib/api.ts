@@ -230,11 +230,18 @@ export async function fetchReligion(slug: string): Promise<Religion> {
 export async function fetchHolySites(
   religionId?: string
 ): Promise<HolySite[]> {
-  const params = new URLSearchParams({ limit: "100" });
-  if (religionId) params.set("religionId", religionId);
-  const res = await fetchJson<PaginatedResponse<HolySite> | HolySite[]>(`/api/holy-sites?${params}`);
-  if (Array.isArray(res)) return res;
-  return res?.items || [];
+  // Backend caps limit at 100, so paginate to fetch all sites (300+ globally)
+  const all: HolySite[] = [];
+  const MAX_PAGES = 10; // safety cap (1000 sites max)
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const params = new URLSearchParams({ limit: "100", page: String(page) });
+    if (religionId) params.set("religionId", religionId);
+    const res = await fetchJson<PaginatedResponse<HolySite> | HolySite[]>(`/api/holy-sites?${params}`);
+    const items = Array.isArray(res) ? res : (res?.items || []);
+    all.push(...items);
+    if (items.length < 100) break;
+  }
+  return all;
 }
 
 export async function fetchHolySite(id: string): Promise<HolySite> {
