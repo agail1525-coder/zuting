@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
+import { RouteSiteItemDto } from './dto/replace-route-sites.dto';
 import { RouteCategory, RouteDifficulty, RouteStatus } from '@prisma/client';
 
 @Injectable()
@@ -182,6 +183,62 @@ export class RouteService {
     const result = await this.prisma.route.update({ where: { id }, data });
     await this.invalidateCache();
     return result;
+  }
+
+  /**
+   * Replace all RouteSite entries for a route in one transaction.
+   * Recomputes Route.duration and Route.nights from the max day.
+   */
+  async replaceSites(routeId: string, sites: RouteSiteItemDto[]) {
+    const route = await this.prisma.route.findUnique({ where: { id: routeId }, select: { id: true } });
+    if (!route) throw new NotFoundException('Route not found');
+
+    // Validate all siteIds exist
+    if (sites.length > 0) {
+      const siteIds = [...new Set(sites.map((s) => s.siteId))];
+      const found = await this.prisma.holySite.findMany({
+        where: { id: { in: siteIds } },
+        select: { id: true },
+      });
+      if (found.length !== siteIds.length) {
+        const foundSet = new Set(found.map((f) => f.id));
+        const missing = siteIds.filter((id) => !foundSet.has(id));
+        throw new NotFoundException(`Holy sites not found: ${missing.join(', ')}`);
+      }
+    }
+
+    const maxDay = sites.length > 0 ? Math.max(...sites.map((s) => s.day)) : 1;
+    const nights = Math.max(0, maxDay - 1);
+
+    await this.prisma.$transaction([
+      this.prisma.routeSite.deleteMany({ where: { routeId } }),
+      ...(sites.length > 0
+        ? [
+            this.prisma.routeSite.createMany({
+              data: sites.map((s) => ({
+                routeId,
+                siteId: s.siteId,
+                day: s.day,
+                order: s.order,
+                duration: s.duration != null ? String(s.duration) : null,
+                note: s.note ?? null,
+              })),
+            }),
+          ]
+        : []),
+      this.prisma.route.update({
+        where: { id: routeId },
+        data: { duration: maxDay, nights },
+      }),
+    ]);
+
+    await this.invalidateCache();
+
+    // Return refreshed route with sites
+    return this.prisma.route.findUnique({
+      where: { id: routeId },
+      include: this.includeRelations,
+    });
   }
 
   async remove(id: string) {
