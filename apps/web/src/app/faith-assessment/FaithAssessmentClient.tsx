@@ -202,7 +202,7 @@ export default function FaithAssessmentClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-[#1a1206] to-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
       {step === 'landing' && <LandingSection onStart={() => setStep('mode')} />}
       {step === 'mode' && (
         <ModeSelector onSelect={handleSelectMode} loading={loading} />
@@ -212,7 +212,7 @@ export default function FaithAssessmentClient() {
           questions={questions}
           currentQ={currentQ}
           answers={answers}
-          modeColor={modeObj?.color || '#D4A855'}
+          modeColor={modeObj?.color || '#8B5CF6'}
           onAnswer={handleAnswer}
           onBack={() => setCurrentQ((q) => Math.max(0, q - 1))}
           onNext={() => setCurrentQ((q) => Math.min(questions.length - 1, q + 1))}
@@ -234,19 +234,19 @@ function LandingSection({ onStart }: { onStart: () => void }) {
     <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
       {/* Floating orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-96 h-96 rounded-full bg-[#D4A855]/8 blur-3xl top-20 -left-48" />
-        <div className="absolute w-80 h-80 rounded-full bg-[#D4A855]/5 blur-3xl bottom-20 right-[-10rem]" />
+        <div className="absolute w-96 h-96 rounded-full bg-violet-500/10 blur-3xl top-20 -left-48" />
+        <div className="absolute w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl bottom-20 right-[-10rem]" />
       </div>
 
       <div className="relative z-10 max-w-3xl">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4A855]/10 border border-[#D4A855]/30 text-[#D4A855] text-sm mb-8">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-8">
           <span>🔮</span>
           <span>五维信仰力评估</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
           发现你的
-          <span className="text-[#D4A855]">
+          <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
             信仰力
           </span>
         </h1>
@@ -261,7 +261,7 @@ function LandingSection({ onStart }: { onStart: () => void }) {
 
         <button
           onClick={onStart}
-          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-[#D4A855] to-[#C49B3C] text-gray-900 text-lg font-bold hover:from-[#E0B96E] hover:to-[#D4A855] transition-all shadow-2xl shadow-amber-900/20 hover:shadow-amber-900/40 hover:-translate-y-0.5"
+          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-lg font-bold hover:from-violet-500 hover:to-indigo-500 transition-all shadow-2xl shadow-violet-500/20 hover:shadow-violet-500/40 hover:-translate-y-0.5"
         >
           开始评估
         </button>
@@ -453,9 +453,9 @@ function CalculatingAnimation() {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
       <div className="relative w-32 h-32 mb-8">
-        <div className="absolute inset-0 rounded-full border-4 border-[#D4A855]/20 animate-ping" />
-        <div className="absolute inset-4 rounded-full border-4 border-[#D4A855]/30 animate-pulse" />
-        <div className="absolute inset-8 rounded-full bg-[#D4A855]/20 animate-pulse flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full border-4 border-violet-500/20 animate-ping" />
+        <div className="absolute inset-4 rounded-full border-4 border-indigo-500/30 animate-pulse" />
+        <div className="absolute inset-8 rounded-full bg-violet-500/20 animate-pulse flex items-center justify-center">
           <span className="text-3xl">🔮</span>
         </div>
       </div>
@@ -623,7 +623,7 @@ function ResultSection({
         </div>
 
         {/* 旅行修行计划 */}
-        <div className="bg-gradient-to-br from-[#1a1206] to-gray-900 border border-[#D4A855]/20 rounded-3xl p-8 mb-8">
+        <div className="bg-gradient-to-br from-violet-950/40 to-indigo-950/40 border border-violet-500/20 rounded-3xl p-8 mb-8">
           <h3 className="text-xl font-bold text-white mb-2">🗺️ 你的专属旅行修行计划</h3>
           <p className="text-gray-400 text-sm mb-6">
             基于你的{weakest.label}成长需求，我们为你量身定制的朝圣修行方案
@@ -634,7 +634,7 @@ function ResultSection({
               <div className="bg-gray-900/60 rounded-2xl p-6 border border-gray-800">
                 <div className="flex flex-col md:flex-row md:items-start gap-6">
                   <div className="flex-1">
-                    <div className="text-[#D4A855] text-sm font-medium mb-1">推荐目的地</div>
+                    <div className="text-violet-300 text-sm font-medium mb-1">推荐目的地</div>
                     <div className="text-white text-xl font-bold mb-4">{plan.destination}</div>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
@@ -650,8 +650,8 @@ function ResultSection({
                       <div className="text-gray-500 text-xs mb-1">修行内容</div>
                       <div className="text-gray-300 text-sm leading-relaxed">{plan.activity}</div>
                     </div>
-                    <div className="bg-[#D4A855]/10 rounded-xl p-4 border border-[#D4A855]/20">
-                      <div className="text-[#D4A855] text-xs font-medium mb-1">✨ 修行洞见</div>
+                    <div className="bg-violet-500/10 rounded-xl p-4 border border-violet-500/20">
+                      <div className="text-violet-300 text-xs font-medium mb-1">✨ 修行洞见</div>
                       <p className="text-gray-300 text-sm leading-relaxed">{plan.insight}</p>
                     </div>
                   </div>
@@ -659,13 +659,13 @@ function ResultSection({
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     href="/holy-sites"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#D4A855] text-gray-900 font-medium hover:bg-[#E0B96E] transition-all hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-500 transition-all hover:-translate-y-0.5"
                   >
                     探索更多圣地 →
                   </Link>
                   <Link
                     href="/trips/create"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[#D4A855]/30 text-[#D4A855] font-medium hover:bg-[#D4A855]/10 transition-all"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-violet-500/30 text-violet-300 font-medium hover:bg-violet-500/10 transition-all"
                   >
                     开始规划行程
                   </Link>
