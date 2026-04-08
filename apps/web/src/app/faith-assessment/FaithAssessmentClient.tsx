@@ -60,6 +60,77 @@ const LEVELS = [
   { code: 'YUANRONG', name: '圆融', color: '#F59E0B', desc: '内外圆满的生命状态' },
 ];
 
+/* ═══════════ 维度深度解读 (按分数段) ═══════════ */
+
+const DIMENSION_INSIGHTS: Record<string, { high: string; mid: string; low: string }> = {
+  AWARENESS: {
+    high: '你具备极强的自我觉知能力，能在压力下保持清醒的内观。这种觉察力是所有成长的起点——你已经掌握了"停下来看见自己"的能力。建议：尝试将觉察延伸到身体感受层面，通过正念行走或禅坐加深与当下的连接。',
+    mid: '你有一定的自我觉知基础，但在高压情境下可能会失去觉察。你的"自动驾驶模式"偶尔会接管你的反应。建议：每天设置3个"觉察闹钟"，在提醒时暂停30秒，感受当下的身体状态和情绪。',
+    low: '你可能长期处于忙碌中，很少有机会停下来审视自己的内心状态。情绪和反应模式在不知不觉中主导着你的决策。建议：从每天5分钟的静坐冥想开始，不需要任何技巧，只是安静地坐着，观察呼吸。',
+  },
+  RESILIENCE: {
+    high: '你拥有坚韧的内在力量，逆境对你来说是锤炼而非打击。你能在风暴中保持内心的平静，这种定力是领袖最稀缺的品质。建议：将这种定力传递给身边的人，成为团队和家庭的"定海神针"。',
+    mid: '你有应对挫折的基本能力，但在连续打击下可能会动摇。你的恢复力还有提升空间，尤其在情绪持久战中。建议：建立"韧性仪式"——一个你在低谷时必做的行为（散步、写日记、冥想），让它成为你的心理锚点。',
+    low: '面对压力和挫折时，你容易感到被淹没。情绪波动影响着你的判断力和行动力。这不是弱点，而是一个巨大的成长机会。建议：从培养"微定力"开始——遇到情绪冲击时，先做3次深呼吸再回应。',
+  },
+  VISION: {
+    high: '你能站在很高的维度看问题，不被眼前的得失困住。你的战略思维和长线布局能力是企业家最珍贵的资产。建议：定期与不同领域的思想者交流，保持视野的广度和新鲜度。',
+    mid: '你有一定的格局意识，但可能在执行压力下回到短期思维。大方向清楚，但中长期规划还不够坚定。建议：每月留出半天"战略静思时间"，远离日常事务，专注思考3-5年的愿景。',
+    low: '你可能过于聚焦在眼前事务，缺少抬头看路的习惯。当下的忙碌遮蔽了长远的方向感。建议：每周阅读一篇跨行业趋势文章，逐步培养"跳出棋盘看棋"的思维习惯。',
+  },
+  CONNECTION: {
+    high: '你是天生的关系构建者，能与人建立深度的信任和共鸣。你的共情能力让周围的人感到被理解和支持。建议：有意识地扩大你的关系网络半径，与更多元背景的人建立连接。',
+    mid: '你能维护现有关系，但在建立深度信任方面还有空间。你可能更擅长工作关系，而非心灵层面的连接。建议：在重要关系中练习"深度聆听"——完全放下自己的判断和回应欲，只是全身心地听。',
+    low: '你可能在关系中偏向独立和效率导向，深度连接是你的成长盲区。信任的建立需要你主动展示更多的开放和脆弱。建议：选择一个你信任的人，尝试分享一件你从未说过的心里话。',
+  },
+  LEGACY: {
+    high: '你已经超越了个人成功的追求，开始思考"我能为这个世界留下什么"。使命感驱动着你的行动，这种力量将成倍放大你的影响力。建议：将你的智慧和经验系统化，开始有计划地培养接班人或年轻领袖。',
+    mid: '你偶尔会思考生命的意义和长期影响，但日常忙碌让这些思考时断时续。你有传承的意识，但还没有形成清晰的使命宣言。建议：尝试写一封"给10年后的自己"的信，通过书写来激活你的使命意识。',
+    low: '你目前更聚焦在个人目标的实现上，对"留下什么"的思考还比较模糊。这很正常——当你准备好时，传承力会自然觉醒。建议：找一位你钦佩的导师聊聊，了解他们是如何找到人生使命的。',
+  },
+};
+
+/* ═══════════ 旅行修行计划模板 ═══════════ */
+
+const PILGRIMAGE_PLANS: Record<string, Record<string, { destination: string; activity: string; duration: string; insight: string }>> = {
+  AWARENESS: {
+    PERSONAL: { destination: '日本京都·南禅寺', activity: '三日止观禅修 + 枯山水冥想 + 茶道觉察训练', duration: '3-5天', insight: '在禅宗发源地，通过"只管打坐"的修行法门，深度唤醒你的觉察力' },
+    FAMILY: { destination: '泰国清迈·松德寺', activity: '家庭正念营 + 亲子冥想 + 感恩仪式', duration: '4-6天', insight: '全家一起学习正念，在安静的寺院中重新"看见"彼此' },
+    ENTERPRISE: { destination: '印度瑞诗凯诗', activity: '企业领袖正念闭关 + 瑜伽觉察 + 恒河晨祷', duration: '5-7天', insight: '在瑜伽发源地，修炼领导者最核心的能力——深度觉察' },
+  },
+  RESILIENCE: {
+    PERSONAL: { destination: '西藏拉萨·色拉寺', activity: '高原磨炼 + 辩经观摩 + 转山朝圣', duration: '5-7天', insight: '在世界屋脊，用身体的极限挑战锻造内心的坚韧' },
+    FAMILY: { destination: '尼泊尔加德满都', activity: '家庭徒步修行 + 佛塔祈福 + 共渡难关挑战', duration: '5-7天', insight: '通过共同面对自然的挑战，锻造家庭的集体韧性' },
+    ENTERPRISE: { destination: '韩国海印寺', activity: '团队寺院生活体验 + 108拜修行 + 领导力定力训练', duration: '3-5天', insight: '在千年古刹中，团队一起经历严格的修行纪律，磨炼组织定力' },
+  },
+  VISION: {
+    PERSONAL: { destination: '以色列耶路撒冷', activity: '三教圣城深度研学 + 历史智慧对话 + 领袖格局工作坊', duration: '6-8天', insight: '站在三大文明的交汇点，用千年智慧打开你的格局视野' },
+    FAMILY: { destination: '意大利梵蒂冈+佛罗伦萨', activity: '文艺复兴人文探索 + 家庭愿景工作坊 + 教堂冥思', duration: '5-7天', insight: '在西方文明的精神高地，与家人一起探讨"我们要去哪里"' },
+    ENTERPRISE: { destination: '希腊雅典·德尔菲', activity: '哲学溯源之旅 + 战略思维训练 + "认识你自己"工作坊', duration: '5-7天', insight: '在西方哲学的发源地，提升企业战略的纵深与格局' },
+  },
+  CONNECTION: {
+    PERSONAL: { destination: '印度菩提伽耶', activity: '慈悲禅修 + 布施体验 + 社区服务 + 深度对话', duration: '5-7天', insight: '在佛陀悟道之地，修炼从"我"到"我们"的连接力转化' },
+    FAMILY: { destination: '巴厘岛乌布', activity: '家庭净化仪式 + 水神庙共祈 + 感恩家书 + 亲密关系重建', duration: '5-7天', insight: '在"神之岛"的灵性氛围中，重新编织家庭的情感纽带' },
+    ENTERPRISE: { destination: '不丹廷布', activity: '幸福国度团建 + GNH幸福理念学习 + 团队信任重建', duration: '5-7天', insight: '在全球最幸福的国度，重新定义团队的"连接"方式' },
+  },
+  LEGACY: {
+    PERSONAL: { destination: '中国曲阜·孔庙', activity: '儒家传承研修 + 家训撰写 + 立志仪式 + 导师精神工作坊', duration: '3-5天', insight: '在至圣先师的故里，找到"为天地立心"的传承使命' },
+    FAMILY: { destination: '中国嵩山·少林寺', activity: '家族传承之旅 + 禅武体验 + 家训刻碑 + 三代共修', duration: '4-6天', insight: '在千年祖庭，让家风家训从口号变成可传承的精神DNA' },
+    ENTERPRISE: { destination: '日本高野山', activity: '百年企业朝圣 + 真言密教智慧 + 企业精神宪章制定', duration: '5-7天', insight: '在空海大师的道场，探索日本百年企业基业长青的精神密码' },
+  },
+};
+
+/* ═══════════ 推荐主题名称映射 ═══════════ */
+
+const THEME_NAME_MAP: Record<string, string> = {
+  'pg-awakening': '觉醒之旅', 'pg-fortitude': '定力之旅', 'pg-vision': '格局之旅',
+  'pg-rebirth': '重生之旅', 'pg-compassion': '慈悲之旅', 'pg-legacy': '传灯之旅',
+  'fh-unity': '同心之旅', 'fh-heritage': '传家之旅', 'fh-reconciliation': '和解之旅',
+  'fh-gratitude': '感恩之旅', 'fh-guardian': '守护之旅', 'fh-roots': '归根之旅',
+  'tc-zen-retreat': '企业禅修营', 'tc-leadership-dao': '领导力道场', 'tc-warrior-spirit': '战士精神',
+  'tc-resilient-culture': '韧性文化', 'tc-gratitude-economy': '感恩经济', 'tc-legacy-building': '传承基业',
+};
+
 type Step = 'landing' | 'mode' | 'quiz' | 'calculating' | 'result';
 
 /* ═══════════════ Main Component ═══════════════ */
@@ -394,6 +465,16 @@ function CalculatingAnimation() {
   );
 }
 
+/* ═══════════════ Insight Helper ═══════════════ */
+
+function getInsight(dimension: string, score: number): string {
+  const d = DIMENSION_INSIGHTS[dimension];
+  if (!d) return '';
+  if (score >= 70) return d.high;
+  if (score >= 40) return d.mid;
+  return d.low;
+}
+
 /* ═══════════════ Result Section ═══════════════ */
 
 function ResultSection({
@@ -502,33 +583,142 @@ function ResultSection({
             <div className="text-emerald-400 font-bold mb-2">
               💪 最强维度: {strongest.label}
             </div>
-            <p className="text-gray-400 text-sm">
-              这是你最突出的内在力量。{strongest.desc}已经成为你的核心优势，继续发挥它来带动其他维度的成长。
+            <p className="text-gray-400 text-sm leading-relaxed">
+              {getInsight(result.strongestDimension, scores[result.strongestDimension.toLowerCase() as keyof typeof scores] || 0)}
             </p>
           </div>
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-6">
             <div className="text-amber-400 font-bold mb-2">
               🌱 成长空间: {weakest.label}
             </div>
-            <p className="text-gray-400 text-sm">
-              {weakest.desc}是你目前最大的成长机会。我们为你推荐了针对性的修炼主题，帮你突破这个瓶颈。
+            <p className="text-gray-400 text-sm leading-relaxed">
+              {getInsight(result.weakestDimension, scores[result.weakestDimension.toLowerCase() as keyof typeof scores] || 0)}
             </p>
           </div>
         </div>
 
-        {/* Recommended themes CTA */}
-        <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-8 mb-8 text-center">
-          <h3 className="text-xl font-bold text-white mb-3">为你推荐的修炼主题</h3>
-          <p className="text-gray-400 mb-6">
+        {/* 五维深度解读 */}
+        <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-8 mb-8">
+          <h3 className="text-xl font-bold text-white mb-6">📖 五维深度解读</h3>
+          <div className="space-y-6">
+            {dims.map((d) => (
+              <div key={d.key} className="border-l-2 pl-5 py-1" style={{ borderColor: d.score >= 70 ? '#10B981' : d.score >= 40 ? '#F59E0B' : '#EF4444' }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">{d.icon}</span>
+                  <span className="font-bold text-white">{d.label}</span>
+                  <span className="text-sm px-2 py-0.5 rounded-full" style={{
+                    backgroundColor: d.score >= 70 ? '#10B98120' : d.score >= 40 ? '#F59E0B20' : '#EF444420',
+                    color: d.score >= 70 ? '#10B981' : d.score >= 40 ? '#F59E0B' : '#EF4444',
+                  }}>
+                    {d.score >= 70 ? '优秀' : d.score >= 40 ? '中等' : '待提升'}
+                  </span>
+                  <span className="text-gray-500 text-sm ml-auto">{d.score}/100</span>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {getInsight(d.key.toUpperCase(), d.score)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 旅行修行计划 */}
+        <div className="bg-gradient-to-br from-violet-950/40 to-indigo-950/40 border border-violet-500/20 rounded-3xl p-8 mb-8">
+          <h3 className="text-xl font-bold text-white mb-2">🗺️ 你的专属旅行修行计划</h3>
+          <p className="text-gray-400 text-sm mb-6">
+            基于你的{weakest.label}成长需求，我们为你量身定制的朝圣修行方案
+          </p>
+          {(() => {
+            const plan = PILGRIMAGE_PLANS[result.weakestDimension]?.[modeObj.key] || PILGRIMAGE_PLANS.AWARENESS.PERSONAL;
+            return (
+              <div className="bg-gray-900/60 rounded-2xl p-6 border border-gray-800">
+                <div className="flex flex-col md:flex-row md:items-start gap-6">
+                  <div className="flex-1">
+                    <div className="text-violet-300 text-sm font-medium mb-1">推荐目的地</div>
+                    <div className="text-white text-xl font-bold mb-4">{plan.destination}</div>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <div className="text-gray-500 text-xs mb-1">建议时长</div>
+                        <div className="text-white font-medium">{plan.duration}</div>
+                      </div>
+                      <div>
+                        <div className="text-gray-500 text-xs mb-1">提升维度</div>
+                        <div className="text-white font-medium">{weakest.icon} {weakest.label}</div>
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <div className="text-gray-500 text-xs mb-1">修行内容</div>
+                      <div className="text-gray-300 text-sm leading-relaxed">{plan.activity}</div>
+                    </div>
+                    <div className="bg-violet-500/10 rounded-xl p-4 border border-violet-500/20">
+                      <div className="text-violet-300 text-xs font-medium mb-1">✨ 修行洞见</div>
+                      <p className="text-gray-300 text-sm leading-relaxed">{plan.insight}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link
+                    href="/holy-sites"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-600 text-white font-medium hover:bg-violet-500 transition-all hover:-translate-y-0.5"
+                  >
+                    探索更多圣地 →
+                  </Link>
+                  <Link
+                    href="/trips/create"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-violet-500/30 text-violet-300 font-medium hover:bg-violet-500/10 transition-all"
+                  >
+                    开始规划行程
+                  </Link>
+                </div>
+              </div>
+            );
+          })()}
+          {/* 次优先修行 */}
+          {(() => {
+            const secondDim = result.strongestDimension === result.weakestDimension ? 'AWARENESS' : result.strongestDimension;
+            const plan2 = PILGRIMAGE_PLANS[secondDim]?.[modeObj.key];
+            if (!plan2) return null;
+            const dim2 = DIMENSIONS[secondDim] || DIMENSIONS.AWARENESS;
+            return (
+              <div className="mt-4 bg-gray-900/40 rounded-2xl p-5 border border-gray-800/50">
+                <div className="text-gray-400 text-sm mb-2">💪 巩固优势: {dim2.label}深化之旅</div>
+                <div className="text-white font-bold mb-1">{plan2.destination}</div>
+                <div className="text-gray-400 text-sm">{plan2.activity} · {plan2.duration}</div>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* 推荐修炼主题 */}
+        <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-8 mb-8">
+          <h3 className="text-xl font-bold text-white mb-3">🎯 为你推荐的修炼主题</h3>
+          <p className="text-gray-400 text-sm mb-6">
             根据你的评估结果，以下主题最能帮助你突破{weakest.label}的瓶颈
           </p>
-          <Link
-            href={`${modeObj.href}/themes`}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-white font-bold transition-all hover:-translate-y-0.5"
-            style={{ backgroundColor: modeObj.color }}
-          >
-            探索{modeObj.label}主题 →
-          </Link>
+          <div className="grid sm:grid-cols-2 gap-4 mb-6">
+            {result.recommendedThemes.map((slug) => (
+              <div key={slug} className="p-5 rounded-2xl border border-gray-800 bg-gray-900/40 hover:border-gray-600 transition-all">
+                <div className="text-lg font-bold text-white mb-1">{THEME_NAME_MAP[slug] || slug}</div>
+                <div className="text-gray-500 text-sm mb-3">主题包 · {modeObj.label}</div>
+                <Link
+                  href={`${modeObj.href}/themes`}
+                  className="text-sm font-medium transition-all hover:opacity-80"
+                  style={{ color: modeObj.color }}
+                >
+                  查看详情 →
+                </Link>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Link
+              href={`${modeObj.href}/themes`}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-white font-bold transition-all hover:-translate-y-0.5"
+              style={{ backgroundColor: modeObj.color }}
+            >
+              探索全部{modeObj.label}主题 →
+            </Link>
+          </div>
         </div>
 
         {/* Actions */}
