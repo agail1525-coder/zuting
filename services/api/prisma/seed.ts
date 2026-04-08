@@ -1613,10 +1613,11 @@ async function main() {
 
   // ── 2. Holy Sites ──
   console.log(`Creating ${holySites.length} holy sites...`);
-  // Must delete route dependencies first (FK constraint)
+  // Must delete dependencies first (FK constraints on HolySite)
   await prisma.routeSite.deleteMany();
   await prisma.routeBooking.deleteMany();
   await prisma.route.deleteMany();
+  await prisma.tripSite.deleteMany();
   await prisma.holySite.deleteMany();
   for (const site of holySites) {
     await prisma.holySite.create({
