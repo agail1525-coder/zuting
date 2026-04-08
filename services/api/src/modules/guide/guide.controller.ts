@@ -22,6 +22,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateGuideDto } from './dto/create-guide.dto';
 import { UpdateGuideDto } from './dto/update-guide.dto';
 import { GuideQueryDto } from './dto/guide-query.dto';
+import { AiDraftGuideDto } from './dto/ai-draft-guide.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('guides')
@@ -58,6 +59,24 @@ export class GuideController {
   @ApiResponse({ status: 401, description: '未授权。' })
   create(@Body() dto: CreateGuideDto, @CurrentUser('id') userId: string) {
     return this.guideService.create(userId, dto);
+  }
+
+  // ---- Auth: AI-assisted draft generation ----
+  @Post('ai-draft')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'AI辅助游记草稿生成',
+    description:
+      '用户提交大白话素材+图片，AI整理成结构化游记（标题/正文/标签/建议封面）。不直接落库，前端预填后用户可编辑再发布。\n\n' +
+      'User submits raw notes + uploaded images; AI refines into structured guide draft (title, markdown content, tags, suggested cover). Does NOT persist — frontend pre-fills the draft for user to edit before publish.',
+  })
+  @ApiBody({ type: AiDraftGuideDto })
+  @ApiResponse({ status: 201, description: 'AI 草稿生成成功。' })
+  @ApiResponse({ status: 400, description: '素材过短或格式错误。' })
+  @ApiResponse({ status: 401, description: '未授权。' })
+  @ApiResponse({ status: 503, description: 'AI 服务不可用。' })
+  aiDraft(@Body() dto: AiDraftGuideDto) {
+    return this.guideService.aiDraft(dto);
   }
 
   // ---- Public: Get guide detail ----

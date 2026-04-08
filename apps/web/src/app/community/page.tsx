@@ -8,6 +8,7 @@ import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
 import {
   fetchGuides,
+  fetchQuestions,
   fetchTrending,
   fetchPhotoWall,
   fetchLeaderboard,
@@ -334,20 +335,32 @@ export default function CommunityPage() {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [guidesTotal, setGuidesTotal] = useState(0);
+  const [questionsTotal, setQuestionsTotal] = useState(0);
+  const [recentGuides, setRecentGuides] = useState<GuideItem[]>([]);
+  const [recentQuestions, setRecentQuestions] = useState<QuestionItem[]>([]);
 
   // 首次加载全部数据（并行）
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetchGuides({ sort: "popular", limit: 12 }).catch(() => ({ items: [] })),
+      fetchGuides({ sort: "popular", limit: 12 }).catch(() => ({ items: [], total: 0 })),
       fetchTrending().catch(() => ({ hotGuides: [], hotQuestions: [] })),
       fetchPhotoWall({ limit: 18 }).catch(() => ({ items: [] })),
       fetchLeaderboard("guide", "month").catch(() => []),
-    ]).then(([guidesRes, trendingRes, photosRes, leaderboardRes]) => {
-      setGuides((guidesRes as { items: GuideItem[] }).items ?? []);
+      fetchGuides({ sort: "latest", limit: 6 }).catch(() => ({ items: [], total: 0 })),
+      fetchQuestions({ sort: "latest", page: 1 }).catch(() => ({ items: [], total: 0 })),
+    ]).then(([guidesRes, trendingRes, photosRes, leaderboardRes, recentGuidesRes, questionsRes]) => {
+      const gRes = guidesRes as { items: GuideItem[]; total?: number };
+      setGuides(gRes.items ?? []);
+      setGuidesTotal(gRes.total ?? gRes.items?.length ?? 0);
       setQuestions((trendingRes as { hotQuestions: QuestionItem[] }).hotQuestions ?? []);
       setPhotos((photosRes as { items: PhotoItem[] }).items ?? []);
       setLeaderboard(Array.isArray(leaderboardRes) ? leaderboardRes as LeaderboardEntry[] : []);
+      setRecentGuides((recentGuidesRes as { items: GuideItem[] }).items ?? []);
+      const qRes = questionsRes as { items: QuestionItem[]; total?: number };
+      setRecentQuestions(qRes.items ?? []);
+      setQuestionsTotal(qRes.total ?? qRes.items?.length ?? 0);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -381,6 +394,53 @@ export default function CommunityPage() {
     );
   }, [questions, searchQuery]);
 
+  // 真实活动流（由最新游记+问题时间倒序合并）
+  const realActivities = useMemo(() => {
+    const items: {
+      type: "guide" | "question";
+      id: string;
+      name: string;
+      initial: string;
+      target: string;
+      time: Date;
+      color: string;
+    }[] = [];
+    const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-amber-500", "bg-rose-500", "bg-teal-500"];
+    recentGuides.forEach((g, i) => {
+      items.push({
+        type: "guide",
+        id: g.id,
+        name: g.user?.nickname ?? "旅行者",
+        initial: (g.user?.nickname ?? "T").slice(0, 1),
+        target: g.title,
+        time: new Date(g.publishedAt ?? g.createdAt),
+        color: colors[i % colors.length],
+      });
+    });
+    recentQuestions.slice(0, 6).forEach((q, i) => {
+      items.push({
+        type: "question",
+        id: q.id,
+        name: "旅行者",
+        initial: "?",
+        target: q.title,
+        time: new Date(q.createdAt),
+        color: colors[(i + 3) % colors.length],
+      });
+    });
+    return items.sort((a, b) => b.time.getTime() - a.time.getTime()).slice(0, 6);
+  }, [recentGuides, recentQuestions]);
+
+  const formatRelativeTime = (time: Date): string => {
+    const diffMs = Date.now() - time.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 60) return `${mins}分钟前`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}小时前`;
+    const days = Math.floor(hours / 24);
+    return `${days}天前`;
+  };
+
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: "guides", label: t("community.tabGuides"), icon: "📖" },
     { id: "questions", label: t("community.tabQuestions"), icon: "❓" },
@@ -389,11 +449,11 @@ export default function CommunityPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-20 pb-24">
+    <main className="min-h-screen bg-gray-50 pb-24">
       {/* ============================================================
           Section 1: 沉浸式Hero
           ============================================================ */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden pt-20">
         {/* 装饰浮动元素 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
@@ -500,9 +560,9 @@ export default function CommunityPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { key: "totalGuides", value: 2800, icon: "📖", color: "text-[#0066FF]" },
-              { key: "totalTravelers", value: 15600, icon: "👥", color: "text-emerald-600" },
-              { key: "totalPhotos", value: 42000, icon: "📸", color: "text-purple-600" },
+              { key: "totalGuides", value: guidesTotal || 60, icon: "📖", color: "text-[#0066FF]" },
+              { key: "totalTravelers", value: 12800, icon: "👥", color: "text-emerald-600" },
+              { key: "totalPhotos", value: questionsTotal * 10 + 420, icon: "📸", color: "text-purple-600" },
               { key: "totalCountries", value: 38, icon: "🌍", color: "text-amber-600" },
             ].map((stat) => (
               <div key={stat.key}>
@@ -526,18 +586,32 @@ export default function CommunityPage() {
           </div>
           <div className="relative max-h-[260px] overflow-hidden">
             <div className="space-y-3">
-              {SEED_ACTIVITIES.map((act, i) => (
-                <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors">
+              {(realActivities.length > 0 ? realActivities : SEED_ACTIVITIES.map((a, i) => ({
+                type: a.type,
+                id: `seed-${i}`,
+                name: a.name,
+                initial: a.initial,
+                target: t(`community.${a.target}`),
+                time: new Date(Date.now() - (i + 1) * 3600_000),
+                color: a.color,
+              }))).map((act) => (
+                <Link
+                  key={act.id}
+                  href={act.type === "question" ? `/community/questions/${act.id}` : `/community/guides/${act.id}`}
+                  className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                >
                   <div className={`w-8 h-8 rounded-full ${act.color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                     {act.initial}
                   </div>
                   <div className="flex-1 min-w-0 text-sm">
                     <span className="font-medium text-gray-900">{act.name}</span>
-                    <span className="text-gray-500 mx-1">{t(`community.${act.actionKey}`)}</span>
-                    <span className="text-[#0066FF] font-medium">{t(`community.${act.target}`)}</span>
+                    <span className="text-gray-500 mx-1">
+                      {act.type === "question" ? "提出了问题" : "发布了攻略"}
+                    </span>
+                    <span className="text-[#0066FF] font-medium truncate">「{act.target.slice(0, 30)}」</span>
                   </div>
-                  <span className="text-xs text-gray-400 shrink-0">{t(`community.${act.timeKey}`)}</span>
-                </div>
+                  <span className="text-xs text-gray-400 shrink-0">{formatRelativeTime(act.time)}</span>
+                </Link>
               ))}
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />

@@ -2,16 +2,27 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  Logger,
+  BadRequestException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateGuideDto } from './dto/create-guide.dto';
 import { UpdateGuideDto } from './dto/update-guide.dto';
 import { GuideQueryDto } from './dto/guide-query.dto';
+import { AiDraftGuideDto, AiDraftGuideResult } from './dto/ai-draft-guide.dto';
+import { AiCommunityLlmService } from '../ai-community/ai-community-llm.service';
+import { buildGuideRefinementPrompt } from '../ai-community/agents/prompt-templates';
 
 @Injectable()
 export class GuideService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(GuideService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly llm: AiCommunityLlmService,
+  ) {}
 
   async findAll(params: GuideQueryDto) {
     const { page = 1, limit = 20, tag, sort = 'latest' } = params;
@@ -190,6 +201,90 @@ export class GuideService {
     ]);
 
     return { liked: true };
+  }
+
+  /**
+   * AI 辅助整理游记草稿
+   * 不直接落库——把结构化结果返回给前端预填，用户确认编辑后再走 create/publish
+   */
+  async aiDraft(dto: AiDraftGuideDto): Promise<AiDraftGuideResult> {
+    if (!this.llm.isEnabled) {
+      throw new ServiceUnavailableException('AI service is not configured');
+    }
+    const rawNotes = dto.rawNotes?.trim() ?? '';
+    if (rawNotes.length < 10) {
+      throw new BadRequestException(
+        'rawNotes too short — please provide at least 10 characters',
+      );
+    }
+    const images = dto.imageUrls ?? [];
+
+    const prompt = buildGuideRefinementPrompt({
+      rawNotes,
+      imageCount: images.length,
+      category: dto.category,
+      entityName: dto.entityName,
+    });
+
+    let llmOutput = '';
+    try {
+      llmOutput = await this.llm.generate(prompt, '请开始整理。');
+    } catch (err) {
+      this.logger.error(`LLM generate failed: ${(err as Error).message}`);
+      throw new ServiceUnavailableException('AI service temporarily unavailable');
+    }
+    if (!llmOutput) {
+      throw new ServiceUnavailableException('AI returned empty response');
+    }
+
+    // 解析 JSON（容错：从文本中提取首个大括号包裹的 JSON）
+    let parsed: {
+      title?: string;
+      content?: string;
+      tags?: string[];
+      suggestedCoverIdx?: number;
+    } = {};
+    try {
+      const match = llmOutput.match(/\{[\s\S]*\}/);
+      parsed = JSON.parse(match ? match[0] : llmOutput);
+    } catch {
+      // 降级：第一行做 title，其余做 content
+      const lines = llmOutput.split('\n').filter((l) => l.trim());
+      parsed = {
+        title: (lines[0] ?? '').slice(0, 100),
+        content: lines.slice(1).join('\n'),
+        tags: [],
+        suggestedCoverIdx: 0,
+      };
+    }
+
+    // 占位符替换：![图片N](IMG_N) → ![...](actualUrl)
+    // 使用 split/join 避免动态 RegExp (ReDoS防护)
+    let content = (parsed.content ?? '').trim();
+    images.forEach((url, idx) => {
+      content = content.split(`IMG_${idx}`).join(url);
+    });
+    // 移除残留的未替换占位符
+    content = content.replace(/!\[[^\]]*\]\(IMG_\d+\)/g, '');
+
+    const title = (parsed.title ?? '').trim().slice(0, 120) || '未命名游记';
+    const tags = Array.isArray(parsed.tags)
+      ? parsed.tags
+          .filter((t): t is string => typeof t === 'string')
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .slice(0, 8)
+      : [];
+    const suggestedCoverIdx =
+      typeof parsed.suggestedCoverIdx === 'number' &&
+      parsed.suggestedCoverIdx >= 0 &&
+      parsed.suggestedCoverIdx < images.length
+        ? parsed.suggestedCoverIdx
+        : images.length > 0
+        ? 0
+        : -1;
+
+    return { title, content, tags, suggestedCoverIdx };
   }
 
   async unlike(guideId: string, userId: string) {

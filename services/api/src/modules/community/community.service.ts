@@ -268,24 +268,25 @@ export class CommunityService {
   }> {
     const page = query.page ?? 1;
     const limit = Math.min(query.limit ?? 20, 50);
-    const skip = (page - 1) * limit;
 
-    const where: Record<string, unknown> = {};
+    // ===== Review 来源 =====
+    const reviewWhere: Record<string, unknown> = { images: { isEmpty: false } };
+    if (query.entityType) reviewWhere['targetType'] = query.entityType;
+    if (query.entityId) reviewWhere['targetId'] = query.entityId;
 
-    // Filter by entity if provided
-    if (query.entityType) {
-      where['targetType'] = query.entityType;
-    }
-    if (query.entityId) {
-      where['targetId'] = query.entityId;
-    }
+    // ===== Guide 来源（coverImage 非空的已发布游记）=====
+    const guideWhere: Record<string, unknown> = {
+      status: 'PUBLISHED',
+      coverImage: { not: null },
+    };
+    if (query.entityType) guideWhere['entityType'] = query.entityType;
+    if (query.entityId) guideWhere['entityId'] = query.entityId;
 
-    // Reviews with non-empty images
-    where['images'] = { isEmpty: false };
-
-    const [reviews, total] = await Promise.all([
+    // 并行查两张表（每表取 page*limit 条，合并后再分页）
+    const fetchCount = page * limit;
+    const [reviews, guides, reviewCount, guideCount] = await Promise.all([
       this.prisma.review.findMany({
-        where,
+        where: reviewWhere,
         select: {
           id: true,
           images: true,
@@ -296,16 +297,30 @@ export class CommunityService {
           user: { select: { nickname: true, avatar: true } },
         },
         orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
+        take: fetchCount,
       }),
-      this.prisma.review.count({ where }),
+      this.prisma.guide.findMany({
+        where: guideWhere,
+        select: {
+          id: true,
+          coverImage: true,
+          entityType: true,
+          entityId: true,
+          createdAt: true,
+          userId: true,
+          user: { select: { nickname: true, avatar: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: fetchCount,
+      }),
+      this.prisma.review.count({ where: reviewWhere }),
+      this.prisma.guide.count({ where: guideWhere }),
     ]);
 
-    // Flatten review images into photo items
-    const items: PhotoItem[] = reviews.flatMap((r) =>
+    // 合并为 PhotoItem 流
+    const reviewItems: PhotoItem[] = reviews.flatMap((r) =>
       r.images.map((url, idx) => ({
-        id: `${r.id}-${idx}`,
+        id: `r-${r.id}-${idx}`,
         url,
         userId: r.userId,
         userName: r.user.nickname,
@@ -315,30 +330,76 @@ export class CommunityService {
         createdAt: r.createdAt,
       })),
     );
+    const guideItems: PhotoItem[] = guides
+      .filter((g) => !!g.coverImage)
+      .map((g) => ({
+        id: `g-${g.id}`,
+        url: g.coverImage as string,
+        userId: g.userId,
+        userName: g.user.nickname,
+        userAvatar: g.user.avatar,
+        entityType: g.entityType,
+        entityId: g.entityId,
+        createdAt: g.createdAt,
+      }));
 
-    return { items, total, page, limit };
+    // 合并 + 按时间倒序 + 分页
+    const merged = [...reviewItems, ...guideItems].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    const start = (page - 1) * limit;
+    const items = merged.slice(start, start + limit);
+
+    return {
+      items,
+      total: reviewCount + guideCount,
+      page,
+      limit,
+    };
   }
 
   async getFeaturedPhotos(): Promise<PhotoItem[]> {
-    const reviews = await this.prisma.review.findMany({
-      where: { images: { isEmpty: false } },
-      select: {
-        id: true,
-        images: true,
-        targetType: true,
-        targetId: true,
-        createdAt: true,
-        userId: true,
-        helpfulCount: true,
-        user: { select: { nickname: true, avatar: true } },
-      },
-      orderBy: { helpfulCount: 'desc' },
-      take: 20,
-    });
+    // Top-20 by helpfulCount (reviews) + top-20 by likeCount (guides)
+    const [reviews, guides] = await Promise.all([
+      this.prisma.review.findMany({
+        where: { images: { isEmpty: false } },
+        select: {
+          id: true,
+          images: true,
+          targetType: true,
+          targetId: true,
+          createdAt: true,
+          userId: true,
+          helpfulCount: true,
+          user: { select: { nickname: true, avatar: true } },
+        },
+        orderBy: { helpfulCount: 'desc' },
+        take: 20,
+      }),
+      this.prisma.guide.findMany({
+        where: {
+          status: 'PUBLISHED',
+          coverImage: { not: null },
+        },
+        select: {
+          id: true,
+          coverImage: true,
+          entityType: true,
+          entityId: true,
+          createdAt: true,
+          userId: true,
+          likeCount: true,
+          user: { select: { nickname: true, avatar: true } },
+        },
+        orderBy: { likeCount: 'desc' },
+        take: 20,
+      }),
+    ]);
 
-    return reviews.flatMap((r) =>
+    const reviewItems: PhotoItem[] = reviews.flatMap((r) =>
       r.images.map((url, idx) => ({
-        id: `${r.id}-${idx}`,
+        id: `r-${r.id}-${idx}`,
         url,
         userId: r.userId,
         userName: r.user.nickname,
@@ -347,6 +408,23 @@ export class CommunityService {
         entityId: r.targetId,
         createdAt: r.createdAt,
       })),
+    );
+    const guideItems: PhotoItem[] = guides
+      .filter((g) => !!g.coverImage)
+      .map((g) => ({
+        id: `g-${g.id}`,
+        url: g.coverImage as string,
+        userId: g.userId,
+        userName: g.user.nickname,
+        userAvatar: g.user.avatar,
+        entityType: g.entityType,
+        entityId: g.entityId,
+        createdAt: g.createdAt,
+      }));
+
+    return [...reviewItems, ...guideItems].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   }
 }
