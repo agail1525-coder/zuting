@@ -61,7 +61,8 @@ PROJECTS = {
                     "cd /opt/zuting/api && npx prisma db push --accept-data-loss 2>&1 | tail -2",
                 ],
                 "restart_cmd": (
-                    "pkill -f 'node.*opt/zuting/api' 2>/dev/null; sleep 1; "
+                    "fuser -k 3002/tcp 2>/dev/null; "
+                    "pkill -9 -f 'node dist/main.js' 2>/dev/null; sleep 2; "
                     "cd /opt/zuting/api && "
                     "NODE_ENV=production PORT=3002 "
                     "nohup node dist/main.js > /opt/zuting/api.log 2>&1 & "
