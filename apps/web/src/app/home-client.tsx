@@ -266,11 +266,11 @@ function SocialProofTicker({ t }: { t: (key: string) => string }) {
   }, []);
 
   return (
-    <div className="bg-white border-b border-gray-100 py-2.5 overflow-hidden">
+    <div className="bg-white border-b border-gray-100 py-2 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="relative h-5 overflow-hidden">
+        <div className="relative h-5 overflow-hidden flex justify-center">
           <div
-            className={`flex items-center gap-2 text-sm text-gray-500 absolute inset-x-0 transition-all duration-500 ease-in-out ${
+            className={`flex items-center gap-2 text-sm text-gray-500 absolute transition-all duration-500 ease-in-out ${
               isAnimating ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
             }`}
           >
@@ -445,7 +445,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       <SocialProofTicker t={t} />
 
       {/* ══════ Seasonal Banner (Agoda style) ══════ */}
-      <div className="max-w-6xl mx-auto px-4 mt-4 relative z-10 mb-8">
+      <div className="max-w-6xl mx-auto px-4 mt-2 relative z-10 mb-6">
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/50 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl" role="img" aria-label="cherry blossom">&#127800;</span>
