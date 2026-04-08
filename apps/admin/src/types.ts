@@ -264,6 +264,14 @@ export interface AdminRoute {
   religionId: string | null;
   createdAt: string;
   religion?: { id: string; name: string };
+  sites?: {
+    siteId: string;
+    day: number;
+    order: number;
+    duration: string | null;
+    note: string | null;
+    site: { id: string; name: string; nameEn: string; country: string };
+  }[];
 }
 
 export interface AdminBooking {

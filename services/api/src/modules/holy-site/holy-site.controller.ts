@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Query, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, NotFoundException, HttpCode } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -11,6 +11,7 @@ import {
 import { HolySiteService } from './holy-site.service';
 import { CreateHolySiteDto } from './dto/create-holy-site.dto';
 import { UpdateHolySiteDto } from './dto/update-holy-site.dto';
+import { BulkCreateEnrichedHolySitesDto } from './dto/create-enriched-holy-site.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ReligionFilterQueryDto } from '../../common/dto/religion-filter-query.dto';
@@ -81,6 +82,22 @@ export class HolySiteController {
     const site = await this.holySiteService.findById(id);
     if (!site) throw new NotFoundException();
     return site;
+  }
+
+  @Post('from-enriched')
+  @Public()
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Bulk create holy sites from AI-enriched data (used by trip planner)',
+    description:
+      'Phase 1: AI 知识库为用户在备注中提到的祖庭补全了结构化数据,前端在创建行程前调用此端点把它们落库。\n\n' +
+      '幂等: 同名+同国家+source=AI_KNOWLEDGE 的记录会被复用。\n' +
+      '返回: { extId → realId } 映射,前端用于回填 plan.siteIds。',
+  })
+  @ApiBody({ type: BulkCreateEnrichedHolySitesDto })
+  @ApiResponse({ status: 200, description: 'extId → realId 映射' })
+  bulkCreateEnriched(@Body() dto: BulkCreateEnrichedHolySitesDto) {
+    return this.holySiteService.bulkCreateEnriched(dto);
   }
 
   @Post()

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Patch, Delete, Param, Query, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Param, Query, Body, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { RouteService } from './route.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
+import { ReplaceRouteSitesDto } from './dto/replace-route-sites.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 
@@ -95,6 +96,21 @@ export class RouteController {
   @ApiResponse({ status: 200, description: '路线更新成功' })
   update(@Param('id') id: string, @Body() dto: UpdateRouteDto) {
     return this.routeService.update(id, dto);
+  }
+
+  @Put(':id/sites')
+  @Roles('ADMIN')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: '替换路线行程编排(Admin)',
+    description: '一次性替换路线的全部 RouteSite 站点(逐日/顺序/停留/备注)，并自动重算 duration 与 nights。',
+  })
+  @ApiParam({ name: 'id', description: '路线ID' })
+  @ApiBody({ type: ReplaceRouteSitesDto })
+  @ApiResponse({ status: 200, description: '编排已替换，返回最新路线详情' })
+  @ApiResponse({ status: 404, description: '路线或圣地不存在' })
+  replaceSites(@Param('id') id: string, @Body() dto: ReplaceRouteSitesDto) {
+    return this.routeService.replaceSites(id, dto.sites);
   }
 
   @Delete(':id')

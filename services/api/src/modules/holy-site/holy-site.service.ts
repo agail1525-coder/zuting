@@ -3,6 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { CreateHolySiteDto } from './dto/create-holy-site.dto';
 import { UpdateHolySiteDto } from './dto/update-holy-site.dto';
+import { BulkCreateEnrichedHolySitesDto } from './dto/create-enriched-holy-site.dto';
 
 @Injectable()
 export class HolySiteService {
@@ -116,6 +117,81 @@ export class HolySiteService {
     const result = await this.prisma.holySite.update({ where: { id }, data: dto });
     await this.invalidateCache(id);
     return result;
+  }
+
+  /**
+   * Bulk-create holy sites from AI-enriched data (used by trip planner Phase 1).
+   * Idempotent: if a site with same name+country already exists with source=AI_KNOWLEDGE,
+   * reuse it instead of creating a duplicate.
+   *
+   * Returns a map from extId → realId so the caller can update plan.siteIds in place.
+   */
+  async bulkCreateEnriched(dto: BulkCreateEnrichedHolySitesDto): Promise<Record<string, string>> {
+    if (!dto.sites || dto.sites.length === 0) return {};
+
+    // Resolve religionSlug → religionId once
+    const slugs = [...new Set(dto.sites.map((s) => s.religionSlug))];
+    const religions = await this.prisma.religion.findMany({
+      where: { slug: { in: slugs } },
+      select: { id: true, slug: true },
+    });
+    const religionIdBySlug = new Map(religions.map((r) => [r.slug, r.id]));
+
+    const result: Record<string, string> = {};
+
+    for (const site of dto.sites) {
+      const religionId = religionIdBySlug.get(site.religionSlug);
+      if (!religionId) {
+        this.logger.warn(`Skipping enriched site "${site.name}" — unknown religion slug "${site.religionSlug}"`);
+        continue;
+      }
+
+      // Idempotency: reuse existing AI_KNOWLEDGE site by name+country
+      const existing = await this.prisma.holySite.findFirst({
+        where: {
+          name: site.name,
+          country: site.country,
+          source: 'AI_KNOWLEDGE',
+        },
+        select: { id: true },
+      });
+
+      if (existing) {
+        result[site.extId] = existing.id;
+        continue;
+      }
+
+      try {
+        const created = await this.prisma.holySite.create({
+          data: {
+            name: site.name,
+            nameEn: site.nameEn || site.name,
+            country: site.country,
+            latitude: site.latitude,
+            longitude: site.longitude,
+            utcOffset: this.guessUtcOffset(site.longitude),
+            description: site.description,
+            religionId,
+            source: 'AI_KNOWLEDGE',
+            status: 'PENDING_REVIEW',
+          },
+          select: { id: true },
+        });
+        result[site.extId] = created.id;
+      } catch (err) {
+        this.logger.error(`Failed to create enriched site "${site.name}": ${(err as Error).message}`);
+      }
+    }
+
+    if (Object.keys(result).length > 0) {
+      await this.invalidateCache();
+    }
+    return result;
+  }
+
+  /** Rough UTC offset estimate from longitude (15° per hour). Admin can correct later. */
+  private guessUtcOffset(longitude: number): number {
+    return Math.round(longitude / 15);
   }
 
   async remove(id: string) {

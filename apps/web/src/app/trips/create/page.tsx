@@ -13,13 +13,16 @@ import {
   fetchReligions,
   fetchHolySites,
   planTripWithAI,
+  bulkCreateEnrichedHolySites,
   type Route,
   type Religion,
   type HolySite,
   type AiTripPlan,
+  type EnrichedSiteData,
 } from "@/lib/api";
 import { toast } from "@/lib/toast";
 import MobileNav from "@/components/MobileNav";
+import { AiPlanningProgress } from "@/components/AiPlanningProgress";
 
 const STEPS = [
   { num: 1, key: "tripCreate.step1Label" },
@@ -86,6 +89,7 @@ export default function TripCreatePage() {
   const [aiWarning, setAiWarning] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [showManualSites, setShowManualSites] = useState(false);
+  const [enrichedSitesMap, setEnrichedSitesMap] = useState<Record<string, EnrichedSiteData>>({});
 
   // Submission
   const [submitting, setSubmitting] = useState(false);
@@ -197,6 +201,7 @@ export default function TripCreatePage() {
       setAiPlans(result.plans);
       setAiSource(result.source);
       setAiWarning(result.warning || "");
+      setEnrichedSitesMap(result.enrichedSites || {});
       // If we have no plans (rule fallback found nothing), auto-open manual picker
       if (result.plans.length === 0) {
         if (holySites.length === 0) loadHolySites();
@@ -229,12 +234,32 @@ export default function TripCreatePage() {
     requestAiPlans();
   };
 
-  // Select an AI plan → fill sites + append summary to note
-  const selectAiPlan = (plan: AiTripPlan) => {
-    setSelectedSiteIds(plan.siteIds);
+  // Select an AI plan → fill sites + append summary to note.
+  // If plan.siteIds contains ext_* synthetic ids (AI-enriched missing sites),
+  // bulk-create them via /holy-sites/from-enriched and remap to real cuids before set.
+  const selectAiPlan = async (plan: AiTripPlan) => {
     setSelectedPlanId(plan.id);
-    // Lazy-load holy sites for name lookup in chips
-    if (holySites.length === 0) loadHolySites();
+    let finalSiteIds = plan.siteIds;
+    const extIds = plan.siteIds.filter((id) => id.startsWith("ext_"));
+    if (extIds.length > 0) {
+      const toCreate: Record<string, EnrichedSiteData> = {};
+      for (const extId of extIds) {
+        if (enrichedSitesMap[extId]) toCreate[extId] = enrichedSitesMap[extId];
+      }
+      if (Object.keys(toCreate).length > 0) {
+        try {
+          const mapping = await bulkCreateEnrichedHolySites(toCreate);
+          finalSiteIds = plan.siteIds.map((id) => mapping[id] ?? id).filter((id) => !id.startsWith("ext_"));
+        } catch (e) {
+          toast.error(t("tripCreate.aiPlanFailed"));
+          // Fall back to dropping ext ids so user can still proceed
+          finalSiteIds = plan.siteIds.filter((id) => !id.startsWith("ext_"));
+        }
+      }
+    }
+    setSelectedSiteIds(finalSiteIds);
+    // Lazy-load holy sites for name lookup in chips (refresh in case new ones were just created)
+    loadHolySites();
     // Smooth scroll to summary
     setTimeout(() => {
       document.getElementById("trip-confirm-summary")?.scrollIntoView({
@@ -936,26 +961,8 @@ export default function TripCreatePage() {
             )}
           </div>
 
-          {/* AI Loading Skeleton */}
-          {aiLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl bg-white border border-gray-100 p-5 animate-pulse"
-                >
-                  <div className="h-5 bg-gray-200 rounded w-2/3 mb-3" />
-                  <div className="h-3 bg-gray-100 rounded w-full mb-2" />
-                  <div className="h-3 bg-gray-100 rounded w-4/5 mb-4" />
-                  <div className="flex gap-2 mb-3">
-                    <div className="h-6 bg-gray-100 rounded-full w-16" />
-                    <div className="h-6 bg-gray-100 rounded-full w-20" />
-                  </div>
-                  <div className="h-10 bg-gray-100 rounded-xl" />
-                </div>
-              ))}
-            </div>
-          )}
+          {/* AI Planning Progress — zen poetic waiting experience */}
+          {aiLoading && <AiPlanningProgress enrichingCount={Object.keys(enrichedSitesMap).length} />}
 
           {/* AI Error */}
           {aiError && !aiLoading && (
@@ -1085,6 +1092,53 @@ export default function TripCreatePage() {
               >
                 🔄 {t("tripCreate.aiPlanRegenerate")}
               </button>
+            </div>
+          )}
+
+          {/* Community Routes + Official Contact */}
+          {!aiLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {/* Community recommended routes */}
+              <a
+                href="/routes"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 hover:shadow-md transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                  👥
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-gray-900 text-sm mb-0.5">
+                    {t("tripCreate.communityRoutes")}
+                  </h4>
+                  <p className="text-xs text-gray-500 line-clamp-1">
+                    {t("tripCreate.communityRoutesHint")}
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+
+              {/* Contact official travel consultant */}
+              <a
+                href="/about"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 hover:shadow-md transition-all group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                  🧭
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-gray-900 text-sm mb-0.5">
+                    {t("tripCreate.contactOfficial")}
+                  </h4>
+                  <p className="text-xs text-gray-500 line-clamp-1">
+                    {t("tripCreate.contactOfficialHint")}
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
             </div>
           )}
 

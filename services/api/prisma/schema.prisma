@@ -25,6 +25,7 @@ model User {
   emailVerified   Boolean   @default(false)
   phoneVerified   Boolean   @default(false)
   lastLoginAt     DateTime?
+  isAiAgent       Boolean   @default(false)
   isActive        Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -147,6 +148,11 @@ model HolySite {
   nearbyExperience Json?  // [{name, duration, price}]
   nearbySights     Json?  // [{name, distance, description}]
 
+  // 来源 / 审核 (Phase 1: AI 知识补全的祖庭入库)
+  source        HolySiteSource @default(ADMIN)
+  status        HolySiteStatus @default(ACTIVE)
+  submittedById String?  // Phase 2: 用户提交的祖庭
+
   religionId String
   religion   Religion    @relation(fields: [religionId], references: [id])
   tripSites  TripSite[]
@@ -154,6 +160,19 @@ model HolySite {
 
   @@index([religionId])
   @@index([latitude, longitude])
+  @@index([source, status])
+}
+
+enum HolySiteSource {
+  ADMIN          // 后台手工录入
+  AI_KNOWLEDGE   // AI 知识库补全
+  USER_SUBMITTED // Phase 2: 用户提交
+}
+
+enum HolySiteStatus {
+  ACTIVE
+  PENDING_REVIEW
+  REJECTED
 }
 
 model Temple {

@@ -369,6 +369,18 @@ export const updateRoute = (id: string, data: Record<string, unknown>) =>
   fetchJson<AdminRoute>(`/routes/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 export const deleteRoute = (id: string) =>
   fetchJson<DeleteResponse>(`/routes/${id}`, { method: 'DELETE' });
+export interface RouteSiteItem {
+  siteId: string;
+  day: number;
+  order: number;
+  duration?: string | null;
+  note?: string | null;
+}
+export const replaceRouteSites = (id: string, sites: RouteSiteItem[]) =>
+  fetchJson<AdminRoute>(`/routes/${id}/sites`, {
+    method: 'PUT',
+    body: JSON.stringify({ sites }),
+  });
 
 // ---- Bookings ----
 export const getBookings = (page = 1, limit = 20, status?: string) => {
