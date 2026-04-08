@@ -21,6 +21,7 @@ export interface ThemeRichContent {
   deliverables?: string[];
   targetAudience?: string[];
   whyZuting?: string[];
+  gallery?: string[];
 }
 
 export interface TeamCultureTheme {

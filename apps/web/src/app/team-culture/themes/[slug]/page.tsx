@@ -93,6 +93,29 @@ export default async function Page({ params }: Props) {
         </div>
       </section>
 
+      {/* Gallery */}
+      {Array.isArray(rich?.gallery) && rich.gallery.length > 0 && (
+        <section className="py-12 bg-white">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-xs font-bold text-[#3264ff] tracking-wider mb-3">
+              影像志 · GALLERY
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {rich.gallery.map((src, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={i}
+                  src={src}
+                  alt={`${theme.title} ${i + 1}`}
+                  loading="lazy"
+                  className="w-full h-48 md:h-56 object-cover rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow"
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Founder Pain Point */}
       {rich?.founderPainPoint && (
         <section className="py-16 bg-gradient-to-b from-blue-50/60 to-white">
