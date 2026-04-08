@@ -648,12 +648,8 @@ export default function ReligionDetailClient({
       {/* ========== 深度内容:起源 / 发展 / 大事记 / 贡献 / 争议 / 圣典 ========== */}
       <DeepContentSection religion={religion} color={color} />
 
-      {/* ========== 信仰与商业实践 — 深度内容 ========== */}
-      <BusinessPracticeDetailSection religion={religion} color={color} />
-
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
-        { id: "sec-business", label: "信仰与商业" },
         { id: "sec-content", label: t("religion.sectionContent") },
         { id: "sec-media", label: t("religion.sectionMedia") },
         { id: "sec-reviews", label: t("religion.sectionReviews") },

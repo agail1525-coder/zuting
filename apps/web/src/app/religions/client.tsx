@@ -259,7 +259,7 @@ function BusinessPracticeCard({ r }: { r: ReligionStat }) {
       {/* CTAs */}
       <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
         <Link
-          href={`/religions/${r.slug}#sec-business`}
+          href={`/religions/${r.slug}/business`}
           className="text-sm font-medium hover:underline flex items-center gap-1"
           style={{ color: accentColor }}
         >
@@ -267,7 +267,7 @@ function BusinessPracticeCard({ r }: { r: ReligionStat }) {
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </Link>
         <Link
-          href={`/religions/${r.slug}#sec-business`}
+          href={`/religions/${r.slug}/business`}
           className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
         >
           {t("religions.businessTeamCulture")} &rarr;
