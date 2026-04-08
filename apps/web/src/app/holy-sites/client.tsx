@@ -226,8 +226,8 @@ export default function HolySitesClient({ religions, holySites, featuredRoutes =
 
         {/* ══════ Featured Routes — Top Prominence ══════ */}
         {featuredRoutes.length > 0 && (
-          <div id="routes" className="mb-10 bg-gradient-to-b from-[#0066FF]/5 to-transparent rounded-2xl p-6 md:p-8 border border-[#0066FF]/10">
-            <div className="flex items-center justify-between mb-5">
+          <div id="routes" className="mb-10">
+            <div className="flex items-center justify-between mb-5 px-2">
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">HOT</span>
                 <div>
@@ -242,7 +242,10 @@ export default function HolySitesClient({ religions, holySites, featuredRoutes =
                 {t("holySites.routes.viewAll")} →
               </Link>
             </div>
-            <div className="flex gap-5 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {/* Short centered blue band — cards overflow equally above and below for layered depth */}
+            <div className="relative py-12 md:py-14">
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-32 md:h-36 bg-gradient-to-b from-[#0066FF]/8 via-[#0066FF]/12 to-[#0066FF]/8 rounded-2xl border border-[#0066FF]/15 shadow-[0_4px_20px_-8px_rgba(0,102,255,0.25)]" aria-hidden="true" />
+            <div className="relative flex gap-5 overflow-x-auto pb-2 px-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {featuredRoutes.map((route) => {
                 const price = route.priceFrom ? (route.priceFrom / 100).toLocaleString() : null;
                 const siteNames = (route.sites || []).slice(0, 4).map((s: { site?: { name?: string }; siteName?: string }) => s.site?.name || s.siteName || "");
@@ -296,6 +299,7 @@ export default function HolySitesClient({ religions, holySites, featuredRoutes =
                   </Link>
                 );
               })}
+            </div>
             </div>
           </div>
         )}
