@@ -445,6 +445,86 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
         </section>
       )}
 
+      {/* ══════ Section 2.5: Team Culture B2B Banner ══════ */}
+      <section className="py-14 max-w-6xl mx-auto px-4">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1a1410] via-[#2a1a14] to-[#0f0c0a] border border-[#D4A855]/30 shadow-2xl">
+          {/* Decorative gradient orbs */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4A855]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#8B4513]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+          <div className="relative grid lg:grid-cols-2 gap-8 p-8 md:p-12">
+            {/* Left: Copy */}
+            <div className="flex flex-col justify-center">
+              <span className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-[#D4A855]/15 border border-[#D4A855]/40 text-[#D4A855] text-xs font-semibold mb-4">
+                ✨ {t("home.teamCulture.badge")}
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                {t("home.teamCulture.title")}
+              </h2>
+              <p className="text-lg text-[#D4A855] mb-3">{t("home.teamCulture.subtitle")}</p>
+              <p className="text-sm md:text-base text-white/70 mb-6 leading-relaxed">
+                {t("home.teamCulture.desc")}
+              </p>
+
+              {/* Org type tags */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {[
+                  "home.teamCulture.orgEnterprise",
+                  "home.teamCulture.orgSchool",
+                  "home.teamCulture.orgReligious",
+                  "home.teamCulture.orgNGO",
+                  "home.teamCulture.orgFamily",
+                  "home.teamCulture.orgGovernment",
+                ].map((k) => (
+                  <span
+                    key={k}
+                    className="px-3 py-1 rounded-md border border-[#D4A855]/40 text-[#D4A855] text-xs"
+                  >
+                    {t(k)}
+                  </span>
+                ))}
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/team-culture"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A855] text-[#1a1410] font-semibold rounded-lg hover:bg-[#E5BA6A] transition-colors shadow-lg shadow-[#D4A855]/20"
+                >
+                  {t("home.teamCulture.cta")} →
+                </Link>
+                <Link
+                  href="/team-culture#cases"
+                  className="inline-flex items-center gap-2 px-6 py-3 border border-[#D4A855]/50 text-[#D4A855] font-semibold rounded-lg hover:bg-[#D4A855]/10 transition-colors"
+                >
+                  {t("home.teamCulture.ctaSecondary")}
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Feature cards */}
+            <div className="grid gap-4 content-center">
+              {[
+                { icon: "🎭", titleKey: "home.teamCulture.feature1", descKey: "home.teamCulture.feature1Desc" },
+                { icon: "🤝", titleKey: "home.teamCulture.feature2", descKey: "home.teamCulture.feature2Desc" },
+                { icon: "🏆", titleKey: "home.teamCulture.feature3", descKey: "home.teamCulture.feature3Desc" },
+              ].map((f) => (
+                <div
+                  key={f.titleKey}
+                  className="flex items-start gap-4 p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-[#D4A855]/30 transition-all"
+                >
+                  <span className="text-3xl flex-shrink-0">{f.icon}</span>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">{t(f.titleKey)}</h3>
+                    <p className="text-white/60 text-sm">{t(f.descKey)}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ══════ Section 3: Explore by Category ══════ */}
       {exploreItems.length > 0 && (
         <section className="py-14 bg-gray-50">
