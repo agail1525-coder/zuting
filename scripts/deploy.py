@@ -75,6 +75,7 @@ PROJECTS = {
                 "build_cmd": "pnpm --filter @zuting/web build",
                 "upload": [
                     ("apps/web/.next", "/opt/zuting/web/apps/web/.next", ["cache"]),
+                    ("apps/web/public", "/opt/zuting/web/apps/web/public", []),
                     ("apps/web/server.js", "/opt/zuting/web/apps/web/server.js", []),
                     ("apps/web/package.json", "/opt/zuting/web/apps/web/package.json", []),
                 ],

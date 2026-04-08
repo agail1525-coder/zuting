@@ -75,9 +75,20 @@ subprocess.run([
     "package.json", "export-marker.json",
     "server", "static",
 ], check=True)
+# Create tar for public/ static assets (favicon, /images/*, manifest, sw.js)
+# Next.js standalone build does NOT auto-copy public/, must sync manually
+tar_public_path = os.path.join(tmp, "zuting-web-public.tar.gz")
+subprocess.run([
+    "tar", "czf", tar_public_path,
+    "-C", "E:/ZUTING/apps/web",
+    "public",
+], check=True)
+
 size1 = os.path.getsize(tar_path) // 1024
 size2 = os.path.getsize(tar_next_path) // 1024
+size3 = os.path.getsize(tar_public_path) // 1024
 print(f"  ✓ .next packed ({size2}KB)")
+print(f"  ✓ public packed ({size3}KB)")
 
 # Step 2: Upload
 print("\n=== 2. 上传到服务器 ===")
@@ -88,13 +99,17 @@ sftp.put(tar_path, '/opt/zuting/web-standalone.tar.gz')
 print(f"  ✓ Standalone ({size1}KB)")
 sftp.put(tar_next_path, '/opt/zuting/web-next.tar.gz')
 print(f"  ✓ .next build ({size2}KB)")
+sftp.put(tar_public_path, '/opt/zuting/web-public.tar.gz')
+print(f"  ✓ public ({size3}KB)")
 
 # Step 3: Extract — standalone goes to /opt/zuting/web/ directly
 print("\n=== 3. 解压 ===")
 run('cd /opt/zuting/web && tar xzf /opt/zuting/web-standalone.tar.gz', show=False)
 # .next build output goes to apps/web/.next/
 run('mkdir -p /opt/zuting/web/apps/web/.next && cd /opt/zuting/web/apps/web/.next && tar xzf /opt/zuting/web-next.tar.gz', show=False)
-run('rm -f /opt/zuting/web-standalone.tar.gz /opt/zuting/web-next.tar.gz', show=False)
+# public/ goes to apps/web/public/
+run('cd /opt/zuting/web/apps/web && tar xzf /opt/zuting/web-public.tar.gz', show=False)
+run('rm -f /opt/zuting/web-standalone.tar.gz /opt/zuting/web-next.tar.gz /opt/zuting/web-public.tar.gz', show=False)
 
 # Verify structure
 print("  Structure:")
