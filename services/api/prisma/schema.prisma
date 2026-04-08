@@ -94,6 +94,20 @@ model Religion {
   symbol String?
   color  String?
 
+  // ── 深度内容 (文化百科) ──
+  heroImage     String? // 宏大场景图 (Hero 背景)
+  tagline       String? // 一句话标语 / 恢弘口号
+  summary       String? @db.Text // 2-3 句总览
+  foundedYear   String? // "约公元前6世纪" / "约公元610年"
+  founder       String? // 创始人 (可选)
+  followers     String? // "约18亿"
+  origin        String? @db.Text // 起源故事
+  development   String? @db.Text // 发展历程
+  keyEvents     Json?   // [{year, title, description}] 历史大事记
+  contributions String? @db.Text // 对人类文明的贡献
+  controversies String? @db.Text // 争议与反思
+  sacredTexts   Json?   // [{name, description}] 圣典/经文
+
   holySites  HolySite[]
   temples    Temple[]
   patriarchs Patriarch[]

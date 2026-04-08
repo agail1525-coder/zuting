@@ -29,6 +29,17 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 // --- Types ---
 
+export interface ReligionKeyEvent {
+  year: string;
+  title: string;
+  description: string;
+}
+
+export interface ReligionSacredText {
+  name: string;
+  description: string;
+}
+
 export interface Religion {
   id: string;
   name: string;
@@ -36,6 +47,19 @@ export interface Religion {
   slug: string;
   symbol: string | null;
   color: string | null;
+  // 深度内容 (文化百科)
+  heroImage?: string | null;
+  tagline?: string | null;
+  summary?: string | null;
+  foundedYear?: string | null;
+  founder?: string | null;
+  followers?: string | null;
+  origin?: string | null;
+  development?: string | null;
+  keyEvents?: ReligionKeyEvent[] | null;
+  contributions?: string | null;
+  controversies?: string | null;
+  sacredTexts?: ReligionSacredText[] | null;
 }
 
 export interface HolySite {

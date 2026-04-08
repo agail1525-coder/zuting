@@ -4,6 +4,8 @@ import { HOLY_SITE_IMAGES, TEMPLE_IMAGES, PATRIARCH_IMAGES, ROUTE_IMAGES } from 
 const prisma = new PrismaClient();
 
 // ── Religion data ──────────────────────────────────────
+import { RELIGION_DEEP_CONTENT } from './seed-religion-content';
+
 const religions = [
   { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
   { name: '道教', nameEn: 'Taoism', slug: 'taoism', symbol: '☯', color: '#10B981' },
@@ -1949,6 +1951,21 @@ async function main() {
   const religionMap: Record<string, string> = {};
 
   for (const r of religions) {
+    const deep = RELIGION_DEEP_CONTENT[r.slug] ?? {};
+    const deepData = {
+      heroImage: deep.heroImage ?? null,
+      tagline: deep.tagline ?? null,
+      summary: deep.summary ?? null,
+      foundedYear: deep.foundedYear ?? null,
+      founder: deep.founder ?? null,
+      followers: deep.followers ?? null,
+      origin: deep.origin ?? null,
+      development: deep.development ?? null,
+      keyEvents: (deep.keyEvents as unknown) ?? undefined,
+      contributions: deep.contributions ?? null,
+      controversies: deep.controversies ?? null,
+      sacredTexts: (deep.sacredTexts as unknown) ?? undefined,
+    };
     const record = await prisma.religion.upsert({
       where: { slug: r.slug },
       update: {
@@ -1956,6 +1973,7 @@ async function main() {
         nameEn: r.nameEn,
         symbol: r.symbol,
         color: r.color,
+        ...deepData,
       },
       create: {
         name: r.name,
@@ -1963,6 +1981,7 @@ async function main() {
         slug: r.slug,
         symbol: r.symbol,
         color: r.color,
+        ...deepData,
       },
     });
     religionMap[r.slug] = record.id;

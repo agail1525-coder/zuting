@@ -109,6 +109,167 @@ function FAQSection({ religionName, t }: { religionName: string; t: (key: string
   );
 }
 
+/* ═══ 深度内容章节 (起源/发展/大事记/贡献/争议/圣典) ═══ */
+
+function DeepContentSection({ religion, color }: { religion: Religion; color: string }) {
+  const hasAnyContent =
+    religion.origin ||
+    religion.development ||
+    (religion.keyEvents && religion.keyEvents.length > 0) ||
+    religion.contributions ||
+    religion.controversies ||
+    (religion.sacredTexts && religion.sacredTexts.length > 0);
+
+  if (!hasAnyContent) return null;
+
+  return (
+    <div className="bg-white border-b border-gray-200">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16">
+        {/* 起源 */}
+        {religion.origin && (
+          <section>
+            <SectionTitle icon="🌱" label="起源" subLabel="Origin" color={color} />
+            <p className="text-gray-700 leading-[1.9] text-base md:text-lg font-serif whitespace-pre-wrap">
+              {religion.origin}
+            </p>
+          </section>
+        )}
+
+        {/* 发展 */}
+        {religion.development && (
+          <section>
+            <SectionTitle icon="🌊" label="发展历程" subLabel="Development" color={color} />
+            <p className="text-gray-700 leading-[1.9] text-base md:text-lg font-serif whitespace-pre-wrap">
+              {religion.development}
+            </p>
+          </section>
+        )}
+
+        {/* 历史大事记 */}
+        {religion.keyEvents && religion.keyEvents.length > 0 && (
+          <section>
+            <SectionTitle icon="📜" label="历史大事记" subLabel="Timeline" color={color} />
+            <div className="relative">
+              {/* 时间线竖线 */}
+              <div
+                className="absolute left-[7px] top-2 bottom-2 w-0.5"
+                style={{ backgroundColor: `${color}30` }}
+              />
+              <ul className="space-y-6">
+                {religion.keyEvents.map((ev, i) => (
+                  <li key={i} className="relative pl-8">
+                    {/* 时间点 */}
+                    <span
+                      className="absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-white shadow"
+                      style={{ backgroundColor: color }}
+                    />
+                    <div className="text-xs font-bold tracking-wider mb-1" style={{ color }}>
+                      {ev.year}
+                    </div>
+                    <h4 className="font-serif font-bold text-gray-900 text-lg mb-1">
+                      {ev.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm leading-relaxed">{ev.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* 贡献 */}
+        {religion.contributions && (
+          <section>
+            <SectionTitle
+              icon="✨"
+              label="对人类文明的贡献"
+              subLabel="Contributions"
+              color={color}
+            />
+            <div
+              className="rounded-2xl p-6 md:p-8 border-l-4"
+              style={{
+                backgroundColor: `${color}08`,
+                borderLeftColor: color,
+              }}
+            >
+              <p className="text-gray-700 leading-[1.9] text-base md:text-lg font-serif whitespace-pre-wrap">
+                {religion.contributions}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* 争议与反思 */}
+        {religion.controversies && (
+          <section>
+            <SectionTitle
+              icon="⚖️"
+              label="争议与反思"
+              subLabel="Controversies"
+              color={color}
+            />
+            <div className="rounded-2xl p-6 md:p-8 bg-gray-50 border-l-4 border-gray-400">
+              <p className="text-gray-700 leading-[1.9] text-base md:text-lg font-serif whitespace-pre-wrap">
+                {religion.controversies}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* 圣典 */}
+        {religion.sacredTexts && religion.sacredTexts.length > 0 && (
+          <section>
+            <SectionTitle
+              icon="📖"
+              label="圣典与经文"
+              subLabel="Sacred Texts"
+              color={color}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {religion.sacredTexts.map((txt, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl p-5 border border-gray-200 bg-white hover:shadow-md transition-shadow"
+                >
+                  <h4 className="font-serif font-bold text-gray-900 text-lg mb-2">
+                    {txt.name}
+                  </h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">{txt.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({
+  icon,
+  label,
+  subLabel,
+  color,
+}: {
+  icon: string;
+  label: string;
+  subLabel: string;
+  color: string;
+}) {
+  return (
+    <div className="mb-6 flex items-center gap-3">
+      <span className="text-3xl">{icon}</span>
+      <div>
+        <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900">{label}</h2>
+        <p className="text-xs tracking-widest uppercase" style={{ color }}>
+          {subLabel}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ReligionDetailClient({
   religion,
   holySites,
@@ -130,37 +291,93 @@ export default function ReligionDetailClient({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ========== Hero Section ========== */}
-      <div className="relative py-20 overflow-hidden">
+      {/* ========== Hero Section — 宏大场景图 ========== */}
+      <div className="relative h-[560px] md:h-[680px] overflow-hidden">
+        {/* 背景大图 */}
+        {religion.heroImage ? (
+          <img
+            src={religion.heroImage}
+            alt={religion.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <div
+            className="absolute inset-0"
+            style={{ background: `linear-gradient(135deg, ${color}, #0f172a)` }}
+          />
+        )}
+        {/* 暗色蒙层 */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/80" />
+        {/* 色调蒙层 */}
         <div
-          className="absolute inset-0 opacity-10"
-          style={{ background: `radial-gradient(ellipse at 50% 0%, ${color}, transparent 70%)` }}
+          className="absolute inset-0 mix-blend-overlay opacity-30"
+          style={{ background: `radial-gradient(ellipse at 50% 30%, ${color}, transparent 70%)` }}
         />
-        <div className="relative max-w-5xl mx-auto px-4 text-center">
+
+        <div className="relative h-full max-w-5xl mx-auto px-4 flex flex-col items-center justify-center text-center text-white">
           {/* Breadcrumb */}
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mb-6">
-            <Link href="/religions" className="hover:text-[#3264ff] transition-colors">
+          <div className="flex items-center justify-center gap-2 text-sm text-white/70 mb-6">
+            <Link href="/religions" className="hover:text-white transition-colors">
               {t("nav.religions") || "信仰"}
             </Link>
             <span>/</span>
-            <span className="text-gray-700">{religion.name}</span>
+            <span className="text-white">{religion.name}</span>
           </div>
 
           {religion.symbol && (
-            <span className="text-7xl block mb-4">{religion.symbol}</span>
+            <span className="text-7xl block mb-4 drop-shadow-lg">{religion.symbol}</span>
           )}
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-2">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold mb-3 drop-shadow-lg">
             {religion.name}
           </h1>
-          <p className="text-xl" style={{ color }}>
+          <p className="text-xl md:text-2xl font-light tracking-wide text-white/90 mb-6">
             {religion.nameEn}
           </p>
 
+          {/* 恢弘标语 */}
+          {religion.tagline && (
+            <p
+              className="max-w-2xl text-lg md:text-xl italic font-serif text-white/95 mb-6 px-4"
+              style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
+            >
+              「{religion.tagline}」
+            </p>
+          )}
+
+          {/* 简介 */}
+          {religion.summary && (
+            <p className="max-w-3xl text-sm md:text-base leading-relaxed text-white/80 mb-8 px-4">
+              {religion.summary}
+            </p>
+          )}
+
+          {/* Meta chips */}
+          <div className="flex flex-wrap justify-center gap-3 mb-6 text-xs md:text-sm">
+            {religion.foundedYear && (
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
+                <span className="text-white/60">创立:</span>{" "}
+                <span className="text-white font-medium">{religion.foundedYear}</span>
+              </div>
+            )}
+            {religion.founder && (
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
+                <span className="text-white/60">创始:</span>{" "}
+                <span className="text-white font-medium">{religion.founder}</span>
+              </div>
+            )}
+            {religion.followers && (
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5">
+                <span className="text-white/60">信众:</span>{" "}
+                <span className="text-white font-medium">{religion.followers}</span>
+              </div>
+            )}
+          </div>
+
           {/* Share button */}
-          <div className="flex items-center justify-center gap-3 mt-4">
+          <div className="flex items-center justify-center gap-3 mb-6">
             <ShareButton
               title={religion.name}
-              description={`${religion.nameEn} — ${totalItems}项文化遗产`}
+              description={religion.tagline ?? `${religion.nameEn} — ${totalItems}项文化遗产`}
               url={typeof window !== "undefined" ? window.location.href : ""}
               entityType="RELIGION"
               entityId={religion.id}
@@ -169,7 +386,7 @@ export default function ReligionDetailClient({
           </div>
 
           {/* Stats grid */}
-          <div className="flex flex-wrap justify-center gap-6 mt-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -177,15 +394,18 @@ export default function ReligionDetailClient({
                 className="text-center group cursor-pointer"
               >
                 <span className="text-2xl block mb-1">{tab.icon}</span>
-                <p className="text-2xl font-bold text-gray-900 group-hover:text-[#3264ff] transition-colors">
+                <p className="text-2xl font-bold text-white group-hover:scale-110 transition-transform">
                   {tab.count}
                 </p>
-                <p className="text-gray-500 text-sm">{tab.label}</p>
+                <p className="text-white/70 text-sm">{tab.label}</p>
               </button>
             ))}
           </div>
         </div>
       </div>
+
+      {/* ========== 深度内容:起源 / 发展 / 大事记 / 贡献 / 争议 / 圣典 ========== */}
+      <DeepContentSection religion={religion} color={color} />
 
       {/* Sticky跳转导航栏 */}
       <SectionNav sections={[
