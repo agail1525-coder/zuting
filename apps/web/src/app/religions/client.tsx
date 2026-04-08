@@ -192,9 +192,10 @@ function ReligionCard({
 // ─── Business Practice Card ──────────────────────────────────────────────────
 function BusinessPracticeCard({ r }: { r: ReligionStat }) {
   const { t } = useTranslation();
-  const values = (r as Record<string, unknown>).businessValues as Array<{ key: string; label: string; description: string }> | null | undefined;
-  const philosophy = (r as Record<string, unknown>).businessPhilosophy as string | null | undefined;
-  const insight = (r as Record<string, unknown>).businessInsight as string | null | undefined;
+  const rx = r as unknown as Record<string, unknown>;
+  const values = rx.businessValues as Array<{ key: string; label: string; description: string }> | null | undefined;
+  const philosophy = rx.businessPhilosophy as string | null | undefined;
+  const insight = rx.businessInsight as string | null | undefined;
 
   if (!philosophy) {
     return (
