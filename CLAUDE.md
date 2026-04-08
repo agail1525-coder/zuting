@@ -1,6 +1,6 @@
 # 全球祖庭旅行平台 — Global Ancestral Temple Travel Platform
 
-> Monorepo | 路径: E:\ZUTING\ | Phase A→E2 全交付 | 66页Web+52屏Mobile+44页小程序+28页Admin (2026-03-29)
+> Monorepo | 路径: E:\ZUTING\ | Phase A→F2 全交付 | 78页Web+52屏Mobile+44页小程序+28页Admin | 300圣地·12信仰 (2026-04-08)
 
 ## 愿景
 帮助100万人走祖庭，建立全球宗教文化和平使者网络。
@@ -123,18 +123,30 @@ JOINUS.COM = 全球祖庭文化旅行平台 NO.1
     ✓ 数据分析 — 运营面板+用户行为+转化漏斗 (对标Agoda分析)
     ✓ 移动优先 — PWA+离线+推送通知 (对标Agoda移动体验)
 
-  Phase E (沉浸体验 — ✅ 进行中):
+  Phase E (沉浸体验 — ✅ 完成):
     ✓ 实时消息 — WebSocket+私信+商家咨询 (Sprint E1)
     ✓ 多媒体导览 — 视频+360全景+音频讲解 (Sprint E2)
     □ 二级分销 — 邀请码+佣金+团队管理 (已有API,待强化)
+
+  Phase F (内容深化 — ✅ 完成):
+    ✓ 圣地扩充 — 60→300，12信仰全球覆盖，真实GPS+经文 (M33)
+    ✓ AI社区 — 12智能体自动发帖+游记+问答+CRON (M32+AI)
+    ✓ 团队文化 — B2B模块，6主题包+五步法+哲学 (M32)
+    ✓ 宗教百科 — 12大宗教深度文化内容，起源+大事记+圣典
+    ✓ 宪法升级 — 项目++系统10技能+协议规则库
+
+  Phase F2 (企业家信仰三部曲 — ✅ 完成):
+    ✓ 个人成长 (M34) — 企业家修炼6主题包，暗金色#D4A855，禅宗/道教/儒教/基督/藏传/融合
+    ✓ 家庭和谐 (M35) — 家庭修炼6主题包，翡翠绿#2D8B6F，同心/传家/和解/感恩/守护/归根
+    ✓ 信仰修炼导航 — 三模块(个人/家庭/企业)共享CultureCategory枚举，下拉菜单整合
 ```
 
 ---
 
 ## 技术栈
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7 (40模块, 241路由, 63表)
-- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (66页面)
+- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7 (42模块, 265路由, 63表)
+- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (78页面)
 - **Admin**: Vite + React 19 + Ant Design 5 + Recharts (28页面)
 - **Mobile**: React Native + Expo 52 + Expo Router (52屏, 5 tabs)
 - **小程序**: Taro 4.x + React (44页面)
@@ -146,7 +158,7 @@ JOINUS.COM = 全球祖庭文化旅行平台 NO.1
 E:\ZUTING\
 ├── apps/
 │   ├── web/                     # Next.js 15 官网 (@zuting/web)
-│   │   ├── src/app/             # 66个页面路由 (App Router)
+│   │   ├── src/app/             # 78个页面路由 (App Router)
 │   │   ├── src/components/      # 30+ 组件 (MediaTour, ReviewSection, SaveButton等)
 │   │   └── src/lib/             # API客户端 + i18n (7语言)
 │   ├── admin/                   # Vite管理后台 (@zuting/admin)
@@ -166,7 +178,7 @@ E:\ZUTING\
 │   └── api/                     # NestJS 后端 (@zuting/api)
 │       ├── src/modules/         # 40个模块 (241个路由)
 │       │   ├── religion/        # 12大信仰
-│       │   ├── holy-site/       # 60圣地
+│       │   ├── holy-site/       # 300圣地 (12信仰全球覆盖)
 │       │   ├── temple/          # 祖庭管理
 │       │   ├── patriarch/       # 祖师管理
 │       │   ├── teaching/        # 祖训管理
@@ -198,12 +210,14 @@ E:\ZUTING\
 │       │   ├── notification/    # 推送通知
 │       │   ├── recommendation/  # 推荐引擎
 │       │   ├── moderation/      # 内容审核
+│       │   ├── personal-growth/ # 个人成长 (M34, CultureCategory=PERSONAL)
+│       │   ├── family-harmony/  # 家庭和谐 (M35, CultureCategory=FAMILY)
 │       │   └── auth,health,redis,upload,payment,user/
 │       ├── src/common/          # TripStateMachine
 │       ├── prisma/schema.prisma # 数据模型 (63个表)
-│       └── prisma/seed.ts       # 种子数据 (200+条记录)
+│       └── prisma/seed.ts       # 种子数据 (500+条记录)
 ├── docs/
-│   ├── prd/                     # 60份PRD (M31+P29+F09)
+│   ├── prd/                     # 65+份PRD (M35+P30+F11)
 │   └── protocols/               # 开发协议规则库
 ├── desktop/                     # 原有Python桌面修行助手
 ├── docker/docker-compose.yml    # PostgreSQL:5435 + Redis:6380
@@ -228,7 +242,7 @@ pnpm --filter @zuting/mobile dev       # Expo开发服务器
 pnpm --filter @zuting/miniprogram dev  # Taro微信小程序
 ```
 
-## API端点 (40个模块, 241个路由)
+## API端点 (42个模块, 265个路由)
 | 类别 | 模块 | 路由数 | 说明 |
 |------|------|--------|------|
 | 内容 | religions, holy-sites, temples, patriarchs, teachings, seals | ~24 | 核心文化内容CRUD |
@@ -239,8 +253,9 @@ pnpm --filter @zuting/miniprogram dev  # Taro微信小程序
 | 运营 | merchants, analytics, moderation, notifications, search | ~30 | 商家+分析+审核+通知+搜索 |
 | AI | xiaohong, recommendation, ai-config | ~15 | 小鸿聊天+推荐+配置 |
 | 媒体 | media, upload, share, chat | ~27 | 多媒体+上传+分享+消息 |
+| 信仰修炼 | personal-growth, family-harmony | ~24 | 个人成长+家庭和谐(共享TeamCulture表) |
 
-## Web 页面 (66页)
+## Web 页面 (78页)
 核心内容(12): 首页, 信仰列表/详情, 圣地列表/详情, 祖庭列表/详情, 祖师列表/详情, 祖训列表/详情, 印列表/详情
 路线行程(8): 路线列表/详情, 行程列表/创建/详情, 套餐列表/详情, 结账
 社区(10): 社区首页, 攻略列表/编辑/详情, 问答广场/详情, 排行榜, 照片墙, 日志列表/创建/详情
@@ -248,6 +263,7 @@ pnpm --filter @zuting/miniprogram dev  # Taro微信小程序
 价格(5): 价格中心, 日历, 比价, 趋势, 提醒
 用户(8): 登录/注册, 个人中心, 用户主页, 收藏列表/详情/分享, 消息, 通知
 商家(3): 商家列表/详情, 商家注册
+信仰修炼(12): 个人成长首页/主题列表/主题详情/案例列表/案例详情, 家庭和谐首页/主题列表/主题详情/案例列表/案例详情, +各2组件
 其他(9): AI聊天, 地图, 搜索, 关于/隐私/条款, 离线页, 实时消息
 
 ## Admin 后台 (28页)
@@ -278,9 +294,11 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 | Admin | 3003 |
 | Expo | 8081 |
 
-## 数据内容 (200+条种子记录)
+## 数据内容 (500+条种子记录)
 - **12大信仰**: 佛教/道教/基督教/伊斯兰教/印度教/犹太教/儒教/锡克教/神道教/藏传佛教/原住民灵性/巴哈伊教
-- **60圣地**: 每信仰5个，含GPS坐标、UTC偏移、描述、图片
+- **300圣地**: 12信仰×20~35个，覆盖全球主要宗教场所，含真实GPS坐标、UTC偏移、经文描述
+  - 数据文件: `services/api/prisma/data/holy-sites-data.ts` (~2500行)
+  - 图片兜底: 新站点通过宗教分组+名称哈希确定性选取已有图片
 - **27祖庭**: 各信仰重要祖庭，含建立时间、坐标
 - **28祖师**: 各信仰创始人/重要人物，含传记
 - **39祖训**: 原文+来源+中文翻译
@@ -288,6 +306,10 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 - **10路线**: 精品朝圣路线，含站点+价格+时长
 - **11 AI配置**: 小鸿AI参数+推荐问题
 - **6多媒体**: 视频/全景/音频示例内容
+- **12 AI社区**: 12智能体+60游记+36问答+72回答+51评论 (CRON自动发帖)
+- **6团队文化主题**: 企业禅修/领导力/传承精神等 B2B主题包
+- **6个人成长主题**: 觉醒/定力/格局/重生/慈悲/传灯 (M34, 暗金色#D4A855)
+- **6家庭和谐主题**: 同心/传家/和解/感恩/守护/归根 (M35, 翡翠绿#2D8B6F)
 
 ## 设计主题
 - 深色殿堂风: 背景 #0f172a → #020617, 金色点缀 #D4A855
@@ -309,7 +331,8 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 | D3 | 数据分析+PWA离线推送 | ✅ |
 | E1 | 实时消息系统 (WebSocket+私信) | ✅ |
 | E2 | 多媒体导览 (视频+全景+音频) | ✅ |
-| F1 | 宪法升级+移动端对齐 | 🔄 进行中 |
+| F1 | 宪法升级+移动端对齐+圣地300扩充+AI社区+团队文化 | ✅ |
+| F2 | 企业家信仰三部曲: 个人成长(M34)+家庭和谐(M35)+导航整合 | ✅ |
 
 ## 注意事项
 - NestJS使用SWC编译 (nest-cli.json配置builder:swc)，因为tsx不支持emitDecoratorMetadata
@@ -317,6 +340,8 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 - Web用 `force-dynamic` 避免构建时需要API运行
 - 桌面应用独立运行: `cd desktop && python zuting_app.py`
 - **可选依赖(Sentry等)必须用运行时字符串拼接+new Function绕过打包器**，禁止静态import/require
+- **生产环境API必须 `NODE_NO_COMPILE_CACHE=1`** — Node v20 compile cache 破坏 Prisma enum
+- **seed后必须flush Redis** — deleteMany+create生成新cuid，旧缓存ID导致404
 
 ---
 
@@ -367,6 +392,36 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 [R-65] 外部HTTP调用必须有超时
 [R-68] 接受userId param的端点必须验证访问权限 (IDOR防护)
 [R-74] @Roles()必须配合@UseGuards使用，否则装饰器无效
+```
+
+### 前端API对接
+```
+[FE-01] 新增前端API函数时必须 curl 验证真实响应格式，不能只看后端代码推断
+[FE-02] 兼容裸数组和{items}包装: Array.isArray(res) ? res : (res?.items ?? [])
+[FE-03] 后端 @Max(100) 分页上限时，前端需全量数据必须循环分页 (安全上限 page<=10)
+```
+
+### 类型对齐 (Schema→DTO→前端)
+```
+[TS-01] DTO 字段类型必须与 Prisma Schema 一致。新增前先 grep schema.prisma 确认
+[TS-02] Service 层跨类型赋值必须显式转换: String()/Number()，禁止隐式
+[TS-03] 类型变更必须走完整链路: Schema → DTO → Service → Admin前端 → Web前端
+```
+
+### 运维部署
+```
+[OPS-01] 生产API启动必须 NODE_NO_COMPILE_CACHE=1 (Node v20 + Prisma 6 兼容性)
+[OPS-02] 部署脚本必须内置 build，禁止依赖手动 build
+[OPS-03] 多 node 进程用 fuser -k {port}/tcp 杀进程，禁止 pidof/killall
+[OPS-04] Redis flush 在新进程就绪后执行，不能在杀旧进程之前
+[OPS-05] seed deleteMany 按外键反向顺序: 先删子表再删父表
+[OPS-06] seed 后必须清除 Redis 实体缓存 (deleteMany+create 生成新ID)
+[OPS-07] 新模块 seed 必须独立成文件，不依赖主 seed 执行顺序
+```
+
+### 数据扩充
+```
+[DATA-01] 大批量新增数据图片兜底: 同类别图片池 + 名称哈希确定性选取，禁止 Math.random()
 ```
 
 ### 备份铁律
@@ -537,4 +592,23 @@ V5-性能: bundle大小/lazy loading/图片优化/缓存
 <type>(<scope>): <subject>
 type:  feat | fix | refactor | style | docs | test | chore | perf
 scope: api | web | admin | mobile | miniprogram | shared | deploy | desktop
+```
+
+## 部署链路 (deploy-xiaoqing.py)
+```
+build_local() → pack tar.gz → SSH upload → unpack
+→ pnpm install → prisma generate → db push → seed.ts → seed-team-culture.ts → seed-personal-growth.ts → seed-family-harmony.ts
+→ kill old (fuser -k port/tcp) → start new (NODE_NO_COMPILE_CACHE=1)
+→ health check (API:3002 Web:3000 Admin:3003)
+→ Redis flush (holy-site:*/route:*/religion:*/temple:*/patriarch:*/teaching:*/seal:*)
+→ 报告成功
+```
+
+## 知识沉淀体系 (E:\ZUTING-APP\)
+```
+业务逻辑PRD/     — 63+份 (M01-M33主模块 + P01-P30子页面 + F01-F11功能)
+经验沉淀/         — 11份踩坑实录 (部署/类型/缓存/跨模块/AI社区等)
+修复档案库/       — 修复存档
+开发标准文档/     — 52份标准文档 (HH宪法对齐)
+PLAN/             — 规划文档
 ```

@@ -16,14 +16,19 @@ const navLinks = [
   { key: "nav.wiki", href: "/religions", highlight: false },
   { key: "nav.community", href: "/community", highlight: false },
   { key: "nav.aiPlanner", href: "/chat", highlight: true },
-  { key: "nav.teamCulture", href: "/team-culture", highlight: true },
+  { key: "nav.faithPractice", href: "/personal-growth", highlight: true, dropdown: [
+    { key: "nav.personalGrowth", href: "/personal-growth", icon: "🧘" },
+    { key: "nav.familyHarmony", href: "/family-harmony", icon: "🏠" },
+    { key: "nav.teamCulture", href: "/team-culture", icon: "🏢" },
+  ] },
   { key: "nav.myTrips", href: "/trips", highlight: false },
-];
+] as const;
 
 export default function Header() {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [faithOpen, setFaithOpen] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -43,6 +48,52 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-0.5" role="navigation" aria-label="Main navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+
+              if ('dropdown' in link && link.dropdown) {
+                const dropdownActive = link.dropdown.some(
+                  (d) => pathname === d.href || pathname.startsWith(d.href + "/"),
+                );
+                return (
+                  <div
+                    key={link.key}
+                    className="relative"
+                    onMouseEnter={() => setFaithOpen(true)}
+                    onMouseLeave={() => setFaithOpen(false)}
+                  >
+                    <button
+                      className={`px-3 py-2 text-sm transition-colors rounded-lg flex items-center gap-1 ${
+                        dropdownActive
+                          ? "text-white font-semibold bg-white/15 border border-white/30"
+                          : "text-white font-semibold hover:bg-white/15 border border-white/30 hover:border-white/50"
+                      }`}
+                    >
+                      {t(link.key)} <span className="text-[10px]">▾</span>
+                    </button>
+                    {faithOpen && (
+                      <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                        {link.dropdown.map((d) => {
+                          const subActive = pathname === d.href || pathname.startsWith(d.href + "/");
+                          return (
+                            <Link
+                              key={d.href}
+                              href={d.href}
+                              className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                                subActive
+                                  ? "bg-blue-50 text-[#3264ff] font-medium"
+                                  : "text-gray-700 hover:bg-gray-50"
+                              }`}
+                            >
+                              <span>{d.icon}</span>
+                              {t(d.key)}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={link.href}
@@ -127,6 +178,32 @@ export default function Header() {
         <div className="lg:hidden bg-[#3264ff] border-t border-white/10">
           <nav className="px-4 py-3 flex flex-col gap-0.5" role="navigation" aria-label="Mobile navigation">
             {navLinks.map((link) => {
+              if ('dropdown' in link && link.dropdown) {
+                return (
+                  <div key={link.key}>
+                    <div className="px-3 py-2 text-xs text-white/50 font-semibold uppercase tracking-wider mt-2">
+                      {t(link.key)}
+                    </div>
+                    {link.dropdown.map((d) => {
+                      const subActive = pathname === d.href || pathname.startsWith(d.href + "/");
+                      return (
+                        <Link
+                          key={d.href}
+                          href={d.href}
+                          className={`px-3 py-2.5 pl-6 flex items-center gap-2 transition-colors rounded-lg ${
+                            subActive
+                              ? "text-white font-semibold bg-white/15"
+                              : "text-white/85 hover:text-white hover:bg-white/10"
+                          }`}
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span>{d.icon}</span> {t(d.key)}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              }
               const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
               return (
                 <Link

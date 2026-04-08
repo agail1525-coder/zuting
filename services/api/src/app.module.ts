@@ -44,6 +44,9 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { MediaModule } from './modules/media/media.module';
 import { TeamCultureModule } from './modules/team-culture/team-culture.module';
+import { PersonalGrowthModule } from './modules/personal-growth/personal-growth.module';
+import { FamilyHarmonyModule } from './modules/family-harmony/family-harmony.module';
+import { AiCommunityModule } from './modules/ai-community/ai-community.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -93,6 +96,9 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     ChatModule,
     MediaModule,
     TeamCultureModule,
+    PersonalGrowthModule,
+    FamilyHarmonyModule,
+    AiCommunityModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
