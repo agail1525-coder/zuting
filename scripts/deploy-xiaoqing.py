@@ -184,6 +184,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding family-harmony (M35)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-family-harmony.ts 2>&1 | tail -10")
 
+    # Seed faith-assessment (M36)
+    print("  Seeding faith-assessment (M36)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-faith-assessment.ts 2>&1 | tail -10")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''

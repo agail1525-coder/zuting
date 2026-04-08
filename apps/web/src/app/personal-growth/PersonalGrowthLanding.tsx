@@ -227,7 +227,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               active: true,
             },
             {
-              title: "家庭和谐",
+              title: "家庭幸福",
               desc: "以信仰智慧为根基，构建幸福家庭的系统方法",
               href: "/family-harmony",
               color: "#2D8B6F",
@@ -235,7 +235,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               active: true,
             },
             {
-              title: "团队文化",
+              title: "企业长青",
               desc: "把祖庭变成团队的精神高地，打造百年组织文化",
               href: "/team-culture",
               color: "#3264ff",

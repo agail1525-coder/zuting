@@ -47,7 +47,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
         <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-36">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 border border-white/30 rounded-full text-white text-sm font-medium tracking-wide mb-6">
-              🏠 信仰修炼 · 家庭和谐根基
+              🏠 信仰修炼 · 家庭幸福根基
             </span>
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
               让信仰成为家庭
@@ -203,8 +203,8 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
         <div className="grid md:grid-cols-3 gap-6">
           {[
             { title: "个人成长", desc: "企业家自我进化之旅", href: "/personal-growth", color: "#D4A855", icon: "🧘", active: true },
-            { title: "家庭和谐", desc: "以信仰智慧构建和谐家庭", href: "/family-harmony", color: "#2D8B6F", icon: "🏠", active: true },
-            { title: "团队文化", desc: "把祖庭变成团队精神高地", href: "/team-culture", color: "#3264ff", icon: "🏢", active: true },
+            { title: "家庭幸福", desc: "以信仰智慧构建幸福家庭", href: "/family-harmony", color: "#2D8B6F", icon: "🏠", active: true },
+            { title: "企业长青", desc: "把祖庭变成团队精神高地", href: "/team-culture", color: "#3264ff", icon: "🏢", active: true },
           ].map((item) => (
             <Link
               key={item.title}
@@ -228,7 +228,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              预约家庭和谐咨询
+              预约家庭幸福咨询
             </h2>
             <p className="text-gray-600">
               我们的家庭顾问将根据您的家庭情况，推荐最适合的和谐主题

@@ -47,6 +47,7 @@ import { TeamCultureModule } from './modules/team-culture/team-culture.module';
 import { PersonalGrowthModule } from './modules/personal-growth/personal-growth.module';
 import { FamilyHarmonyModule } from './modules/family-harmony/family-harmony.module';
 import { AiCommunityModule } from './modules/ai-community/ai-community.module';
+import { FaithAssessmentModule } from './modules/faith-assessment/faith-assessment.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -99,6 +100,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     PersonalGrowthModule,
     FamilyHarmonyModule,
     AiCommunityModule,
+    FaithAssessmentModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

@@ -1517,3 +1517,64 @@ model TeamCertificate {
 
   @@index([teamId])
 }
+
+// ========== 信仰力评估体系 (Faith Power Assessment) ==========
+
+enum AssessmentMode {
+  PERSONAL
+  FAMILY
+  ENTERPRISE
+}
+
+enum FaithDimension {
+  AWARENESS    // 觉察力
+  RESILIENCE   // 定力
+  VISION       // 格局力
+  CONNECTION   // 连接力
+  LEGACY       // 传承力
+}
+
+model FaithQuestion {
+  id             String          @id @default(cuid())
+  dimension      FaithDimension
+  mode           AssessmentMode
+  sortOrder      Int             @default(0)
+  questionText   String          @db.Text
+  options        Json            // [{key:"A"|"B"|"C"|"D", text:string, score:number, crossScores?:{}}]
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([mode, dimension, isActive])
+  @@index([sortOrder])
+}
+
+model FaithAssessment {
+  id          String          @id @default(cuid())
+  userId      String?
+  sessionId   String?
+  mode        AssessmentMode
+  answers     Json            // [{questionId, selectedOption, score}]
+
+  awareness   Int             @default(0)
+  resilience  Int             @default(0)
+  vision      Int             @default(0)
+  connection  Int             @default(0)
+  legacy      Int             @default(0)
+  totalScore  Int             @default(0)
+
+  level       String
+  levelCode   String
+
+  strongestDimension  String?
+  weakestDimension    String?
+  recommendedThemes   String[]
+
+  pointsEarned  Int           @default(0)
+  completedAt   DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+
+  @@index([userId, completedAt])
+  @@index([sessionId])
+  @@index([mode])
+}

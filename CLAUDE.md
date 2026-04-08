@@ -1,6 +1,6 @@
 # 全球祖庭旅行平台 — Global Ancestral Temple Travel Platform
 
-> Monorepo | 路径: E:\ZUTING\ | Phase A→F2 全交付 | 78页Web+52屏Mobile+44页小程序+28页Admin | 300圣地·12信仰 (2026-04-08)
+> Monorepo | 路径: E:\ZUTING\ | Phase A→F3 全交付 | 79页Web+52屏Mobile+44页小程序+28页Admin | 300圣地·12信仰 (2026-04-09)
 
 ## 愿景
 帮助100万人走祖庭，建立全球宗教文化和平使者网络。
@@ -139,14 +139,20 @@ JOINUS.COM = 全球祖庭文化旅行平台 NO.1
     ✓ 个人成长 (M34) — 企业家修炼6主题包，暗金色#D4A855，禅宗/道教/儒教/基督/藏传/融合
     ✓ 家庭和谐 (M35) — 家庭修炼6主题包，翡翠绿#2D8B6F，同心/传家/和解/感恩/守护/归根
     ✓ 信仰修炼导航 — 三模块(个人/家庭/企业)共享CultureCategory枚举，下拉菜单整合
+
+  Phase F3 (信仰力评估体系 — ✅ 完成):
+    ✓ 信仰力评估 (M36) — 五维评估(觉察力/定力/格局力/连接力/传承力)，60题3模式
+    ✓ 信仰力等级 — 初觉→明心→见性→证道→圆融，五系颜色映射
+    ✓ 评估积分 — 完成评估获50+积分，7天冷却
+    ✓ 更名 — 家庭和谐→家庭幸福，团队文化→企业长青(显示名称)
 ```
 
 ---
 
 ## 技术栈
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7 (42模块, 265路由, 63表)
-- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (78页面)
+- **Backend**: NestJS 11 + TypeScript + SWC + Prisma 6 + PostgreSQL 16 + Redis 7 (43模块, 270路由, 65表)
+- **Web**: Next.js 15 + React 19 + TailwindCSS v4 (79页面)
 - **Admin**: Vite + React 19 + Ant Design 5 + Recharts (28页面)
 - **Mobile**: React Native + Expo 52 + Expo Router (52屏, 5 tabs)
 - **小程序**: Taro 4.x + React (44页面)
@@ -333,6 +339,7 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 | E2 | 多媒体导览 (视频+全景+音频) | ✅ |
 | F1 | 宪法升级+移动端对齐+圣地300扩充+AI社区+团队文化 | ✅ |
 | F2 | 企业家信仰三部曲: 个人成长(M34)+家庭和谐(M35)+导航整合 | ✅ |
+| F3 | 信仰力评估体系(M36)+积分集成+家庭幸福/企业长青更名 | ✅ |
 
 ## 注意事项
 - NestJS使用SWC编译 (nest-cli.json配置builder:swc)，因为tsx不支持emitDecoratorMetadata

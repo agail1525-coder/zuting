@@ -16,10 +16,11 @@ const navLinks = [
   { key: "nav.wiki", href: "/religions", highlight: false },
   { key: "nav.community", href: "/community", highlight: false },
   { key: "nav.aiPlanner", href: "/chat", highlight: true },
-  { key: "nav.faithPractice", href: "/personal-growth", highlight: true, dropdown: [
+  { key: "nav.faithPractice", href: "/faith-assessment", highlight: true, dropdown: [
+    { key: "nav.faithAssessment", href: "/faith-assessment", icon: "🔮" },
     { key: "nav.personalGrowth", href: "/personal-growth", icon: "🧘" },
-    { key: "nav.familyHarmony", href: "/family-harmony", icon: "🏠" },
-    { key: "nav.teamCulture", href: "/team-culture", icon: "🏢" },
+    { key: "nav.familyHappiness", href: "/family-harmony", icon: "🏠" },
+    { key: "nav.enterpriseEvergreen", href: "/team-culture", icon: "🏢" },
   ] },
   { key: "nav.myTrips", href: "/trips", highlight: false },
 ] as const;
