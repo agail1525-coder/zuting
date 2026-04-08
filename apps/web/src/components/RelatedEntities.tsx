@@ -96,7 +96,7 @@ export default function RelatedEntities({
     if (!entityId) return;
     setLoading(true);
     fetchRelatedItems(entityType, entityId, 8)
-      .then((res) => setItems(res.items))
+      .then(setItems)
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, [entityType, entityId]);

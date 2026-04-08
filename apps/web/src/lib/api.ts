@@ -540,23 +540,24 @@ export interface NotificationListResponse {
 
 async function fetchAuthed<T>(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
   const { getAccessToken } = await import("./auth");
   const token = getAccessToken();
   if (!token) throw new Error("Not authenticated");
 
+  const { timeoutMs = 15_000, ...fetchOptions } = options;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const res = await fetch(`${API_BASE}${url}`, {
-      ...options,
+      ...fetchOptions,
       signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        ...options.headers,
+        ...fetchOptions.headers,
       },
     });
     if (!res.ok) {
@@ -781,10 +782,54 @@ export interface AiTripPlan {
   packageHints: AiTripPlanPackageHints;
 }
 
+export interface EnrichedSiteData {
+  name: string;
+  nameEn?: string;
+  country: string;
+  city?: string;
+  latitude: number;
+  longitude: number;
+  religionSlug: string;
+  description: string;
+  source: "AI_KNOWLEDGE";
+  confidence: number;
+}
+
 export interface PlanTripResult {
   plans: AiTripPlan[];
   source: "llm" | "rule";
   warning?: string;
+  enrichedSites?: Record<string, EnrichedSiteData>;
+}
+
+/**
+ * Bulk-create AI-enriched holy sites and return ext_xxx → realId map.
+ * Used after AI plan selection if plan.siteIds contains ext_* synthetic ids.
+ */
+export async function bulkCreateEnrichedHolySites(
+  enrichedSites: Record<string, EnrichedSiteData>,
+): Promise<Record<string, string>> {
+  const sites = Object.entries(enrichedSites).map(([extId, data]) => ({
+    extId,
+    name: data.name,
+    nameEn: data.nameEn,
+    country: data.country,
+    city: data.city,
+    latitude: data.latitude,
+    longitude: data.longitude,
+    religionSlug: data.religionSlug,
+    description: data.description,
+    confidence: data.confidence,
+  }));
+  const res = await fetch(`${API_BASE}/api/holy-sites/from-enriched`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sites }),
+  });
+  if (!res.ok) {
+    throw new Error(`API error: ${res.status} ${res.statusText}`);
+  }
+  return res.json() as Promise<Record<string, string>>;
 }
 
 export async function planTripWithAI(input: {
@@ -1186,9 +1231,10 @@ export async function fetchRelatedItems(
   entityType: string,
   entityId: string,
   limit = 6
-): Promise<{ items: RecommendationItem[] }> {
+): Promise<RecommendationItem[]> {
   const params = new URLSearchParams({ entityType, entityId, limit: String(limit) });
-  return fetchJson<{ items: RecommendationItem[] }>(`/api/recommendations/related?${params}`);
+  const res = await fetchJson<RecommendationItem[] | { items: RecommendationItem[] }>(`/api/recommendations/related?${params}`);
+  return Array.isArray(res) ? res : (res?.items ?? []);
 }
 
 export async function fetchHomepageRecommendations(limit = 12): Promise<{ items: RecommendationItem[] }> {
@@ -1890,6 +1936,32 @@ export async function deleteGuide(id: string): Promise<void> {
 
 export async function publishGuide(id: string): Promise<GuideItem> {
   return fetchAuthed<GuideItem>(`/api/guides/${id}/publish`, { method: "POST" });
+}
+
+// --- AI Draft Guide ---
+export interface AiDraftGuideInput {
+  rawNotes: string;
+  imageUrls?: string[];
+  category?: string;
+  entityType?: string;
+  entityId?: string;
+  entityName?: string;
+}
+
+export interface AiDraftGuideResult {
+  title: string;
+  content: string; // markdown with inline ![](url)
+  tags: string[];
+  suggestedCoverIdx: number; // -1 if none
+}
+
+export async function aiDraftGuide(input: AiDraftGuideInput): Promise<AiDraftGuideResult> {
+  // LLM 生成耗时通常 20-60s，给 3 分钟缓冲
+  return fetchAuthed<AiDraftGuideResult>("/api/guides/ai-draft", {
+    method: "POST",
+    body: JSON.stringify(input),
+    timeoutMs: 180_000,
+  });
 }
 
 export async function fetchGuideComments(guideId: string, page = 1): Promise<GuideCommentListResponse> {
