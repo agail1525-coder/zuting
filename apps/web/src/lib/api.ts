@@ -754,6 +754,46 @@ export async function addSiteToTrip(
   });
 }
 
+// ───── AI Trip Planner ─────
+export interface AiTripPlanPackageHints {
+  accommodation: string;
+  transportation: string;
+  meals: string;
+  pace: string;
+  highlights: string[];
+}
+
+export interface AiTripPlan {
+  id: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  days: number;
+  estimatedBudgetCents: number;
+  siteIds: string[];
+  packageHints: AiTripPlanPackageHints;
+}
+
+export interface PlanTripResult {
+  plans: AiTripPlan[];
+  source: "llm" | "rule";
+  warning?: string;
+}
+
+export async function planTripWithAI(input: {
+  title: string;
+  note?: string;
+  startDate?: string;
+  endDate?: string;
+  persons?: number;
+  budgetCents?: number;
+}): Promise<PlanTripResult> {
+  return fetchAuthed<PlanTripResult>("/api/trips/plan", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
 export async function removeSiteFromTrip(
   tripId: string,
   siteId: string

@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import type { TripStatus } from '@prisma/client';
 import { TripService } from './trip.service';
+import { TripPlannerService } from './trip-planner.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { TripQueryDto } from '../../common/dto/trip-query.dto';
@@ -26,6 +27,7 @@ import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TransitionTripDto } from './dto/transition-trip.dto';
 import { AddTripSiteDto } from './dto/add-trip-site.dto';
+import { PlanTripDto } from './dto/plan-trip.dto';
 
 const TRIP_STATUS_ENUM = [
   'DRAFT', 'PLANNING', 'SUBMITTED', 'CONFIRMED', 'PAID',
@@ -36,7 +38,28 @@ const TRIP_STATUS_ENUM = [
 @ApiTags('trips')
 @Controller('trips')
 export class TripController {
-  constructor(private readonly tripService: TripService) {}
+  constructor(
+    private readonly tripService: TripService,
+    private readonly tripPlannerService: TripPlannerService,
+  ) {}
+
+  @Post('plan')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({
+    summary: 'AI 行程规划 / Generate AI trip plan proposals',
+    description:
+      '根据用户填写的行程标题、备注、日期、人数、预算，调用 LLM 生成 2-3 条针对性的路线方案，'
+      + '每条方案包含精选圣地ID列表和旅途配套建议（住宿/交通/餐饮/节奏/亮点）。'
+      + 'LLM 失败时降级到规则匹配方案，保证始终有结果返回。\n\n'
+      + 'Generate 2-3 personalized trip plan proposals via LLM based on title/note/dates/persons/budget. '
+      + 'Each plan contains curated site IDs and package hints. Falls back to rule-based matching on LLM failure.',
+  })
+  @ApiBody({ type: PlanTripDto })
+  @ApiResponse({ status: 200, description: 'Trip plan proposals returned. / 行程方案返回成功。' })
+  @ApiResponse({ status: 400, description: 'Validation failed. / 数据校验失败。' })
+  planTrip(@Body() dto: PlanTripDto) {
+    return this.tripPlannerService.generatePlans(dto);
+  }
 
   @Post()
   @ApiBearerAuth('bearer')

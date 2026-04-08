@@ -12,9 +12,11 @@ import {
   fetchFeaturedRoutes,
   fetchReligions,
   fetchHolySites,
+  planTripWithAI,
   type Route,
   type Religion,
   type HolySite,
+  type AiTripPlan,
 } from "@/lib/api";
 import { toast } from "@/lib/toast";
 import MobileNav from "@/components/MobileNav";
@@ -75,6 +77,15 @@ export default function TripCreatePage() {
   const [selectedSiteIds, setSelectedSiteIds] = useState<string[]>([]);
   const [siteReligionFilter, setSiteReligionFilter] = useState("");
   const [loadingSites, setLoadingSites] = useState(false);
+
+  // Step 3 — AI Planner
+  const [aiPlans, setAiPlans] = useState<AiTripPlan[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+  const [aiSource, setAiSource] = useState<"llm" | "rule" | null>(null);
+  const [aiWarning, setAiWarning] = useState("");
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [showManualSites, setShowManualSites] = useState(false);
 
   // Submission
   const [submitting, setSubmitting] = useState(false);
@@ -160,6 +171,39 @@ export default function TripCreatePage() {
     setStep(2);
   };
 
+  // Compute budget cents helper
+  const getBudgetCents = useCallback(() => {
+    if (budgetTier === "custom") {
+      return Math.round(parseFloat(customBudget || "0") * 100);
+    }
+    return BUDGET_TIERS.find((b) => b.key === budgetTier)?.cents || 0;
+  }, [budgetTier, customBudget]);
+
+  // Request AI plans
+  const requestAiPlans = useCallback(async () => {
+    setAiLoading(true);
+    setAiError("");
+    setAiPlans([]);
+    setSelectedPlanId(null);
+    try {
+      const result = await planTripWithAI({
+        title: title.trim(),
+        note: note.trim() || undefined,
+        startDate: startDate || undefined,
+        endDate: endDate || undefined,
+        persons,
+        budgetCents: getBudgetCents() || undefined,
+      });
+      setAiPlans(result.plans);
+      setAiSource(result.source);
+      setAiWarning(result.warning || "");
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : t("tripCreate.aiPlanFailed"));
+    } finally {
+      setAiLoading(false);
+    }
+  }, [title, note, startDate, endDate, persons, getBudgetCents, t]);
+
   // Step 2 → 3 validation
   const goToStep3 = async () => {
     setError("");
@@ -175,8 +219,32 @@ export default function TripCreatePage() {
       setError(t("tripCreate.dateInvalid"));
       return;
     }
-    await loadHolySites();
     setStep(3);
+    // Trigger AI planning (don't await — let user see loading UI)
+    requestAiPlans();
+  };
+
+  // Select an AI plan → fill sites + append summary to note
+  const selectAiPlan = (plan: AiTripPlan) => {
+    setSelectedSiteIds(plan.siteIds);
+    setSelectedPlanId(plan.id);
+    // Lazy-load holy sites for name lookup in chips
+    if (holySites.length === 0) loadHolySites();
+    // Smooth scroll to summary
+    setTimeout(() => {
+      document.getElementById("trip-confirm-summary")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+  };
+
+  // Toggle manual site selection (lazy load on first open)
+  const toggleManualSites = () => {
+    if (!showManualSites && holySites.length === 0) {
+      loadHolySites();
+    }
+    setShowManualSites((prev) => !prev);
   };
 
   // Toggle site selection
@@ -198,10 +266,27 @@ export default function TripCreatePage() {
     setError("");
     setSubmitting(true);
 
-    const budgetCents =
-      budgetTier === "custom"
-        ? Math.round(parseFloat(customBudget || "0") * 100)
-        : BUDGET_TIERS.find((b) => b.key === budgetTier)?.cents || 0;
+    const budgetCents = getBudgetCents();
+
+    // If user picked an AI plan, append its summary + package hints to note
+    let finalNote = note.trim();
+    const chosenPlan = aiPlans.find((p) => p.id === selectedPlanId);
+    if (chosenPlan) {
+      const aiBlock = [
+        `[AI规划方案] ${chosenPlan.title}`,
+        chosenPlan.summary,
+        `住宿: ${chosenPlan.packageHints.accommodation}`,
+        `交通: ${chosenPlan.packageHints.transportation}`,
+        `餐饮: ${chosenPlan.packageHints.meals}`,
+        `节奏: ${chosenPlan.packageHints.pace}`,
+        chosenPlan.packageHints.highlights.length > 0
+          ? `亮点: ${chosenPlan.packageHints.highlights.join(" / ")}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
+      finalNote = finalNote ? `${finalNote}\n\n${aiBlock}` : aiBlock;
+    }
 
     try {
       const trip = await createTrip({
@@ -212,7 +297,7 @@ export default function TripCreatePage() {
         totalBudget: budgetCents > 0 ? budgetCents : undefined,
         contactName: contactName.trim() || undefined,
         contactPhone: contactPhone.trim() || undefined,
-        note: note.trim() || undefined,
+        note: finalNote || undefined,
       });
 
       // Add selected sites sequentially
@@ -823,155 +908,161 @@ export default function TripCreatePage() {
         </div>
       )}
 
-      {/* ═══════ STEP 3: Select Sites & Confirm ═══════ */}
+      {/* ═══════ STEP 3: AI Planner & Confirm ═══════ */}
       {step === 3 && (
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
-            <span>🏛️</span> {t("tripCreate.selectSitesTitle")}
-          </h2>
-          <p className="text-sm text-gray-500 mb-4">
-            {t("tripCreate.selectSitesSubtitle")}
-          </p>
-
-          {/* Selected Sites Chips */}
-          {selectedSiteIds.length > 0 && (
-            <div className="mb-5">
-              <span className="text-sm font-medium text-gray-700 mb-2 block">
-                {t("tripCreate.selectedSites")} ({selectedSiteIds.length})
-              </span>
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {selectedSiteIds.map((siteId, idx) => {
-                  const site = holySites.find((s) => s.id === siteId);
-                  const routeSite = selectedRoute?.sites?.find(
-                    (rs) => rs.site.id === siteId
-                  );
-                  const name = site?.name || routeSite?.site?.name || siteId;
-                  return (
-                    <div
-                      key={siteId}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-[#0066FF] text-sm font-medium whitespace-nowrap"
-                    >
-                      <span className="text-xs text-blue-400">{idx + 1}.</span>
-                      {name}
-                      <button
-                        type="button"
-                        onClick={() => removeSite(siteId)}
-                        className="ml-1 w-4 h-4 rounded-full bg-blue-200/60 hover:bg-blue-300 flex items-center justify-center"
-                      >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  );
-                })}
+          {/* AI Planner Header */}
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+              <span className="text-3xl">🤖</span>
+              {aiLoading
+                ? t("tripCreate.aiPlanningTitle")
+                : t("tripCreate.aiPlanCount", { count: aiPlans.length })}
+            </h2>
+            <p className="text-sm text-gray-500">
+              {aiLoading
+                ? t("tripCreate.aiPlanningHint")
+                : t("tripCreate.aiPlanSubtitle")}
+            </p>
+            {aiSource === "rule" && aiWarning && (
+              <div className="mt-3 inline-block px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs">
+                ⚠️ {aiWarning}
               </div>
+            )}
+          </div>
+
+          {/* AI Loading Skeleton */}
+          {aiLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl bg-white border border-gray-100 p-5 animate-pulse"
+                >
+                  <div className="h-5 bg-gray-200 rounded w-2/3 mb-3" />
+                  <div className="h-3 bg-gray-100 rounded w-full mb-2" />
+                  <div className="h-3 bg-gray-100 rounded w-4/5 mb-4" />
+                  <div className="flex gap-2 mb-3">
+                    <div className="h-6 bg-gray-100 rounded-full w-16" />
+                    <div className="h-6 bg-gray-100 rounded-full w-20" />
+                  </div>
+                  <div className="h-10 bg-gray-100 rounded-xl" />
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Religion Filter for Sites */}
-          <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
-            <button
-              onClick={() => setSiteReligionFilter("")}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                !siteReligionFilter
-                  ? "bg-[#0066FF] text-white"
-                  : "bg-white text-gray-600 border border-gray-200"
-              }`}
-            >
-              {t("tripCreate.filterAll")}
-            </button>
-            {religions.map((rel) => (
+          {/* AI Error */}
+          {aiError && !aiLoading && (
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-center">
+              <p className="text-red-600 text-sm mb-3">{aiError}</p>
               <button
-                key={rel.id}
-                onClick={() =>
-                  setSiteReligionFilter(
-                    siteReligionFilter === rel.id ? "" : rel.id
-                  )
-                }
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                  siteReligionFilter === rel.id
-                    ? "text-white"
-                    : "bg-white text-gray-600 border border-gray-200"
-                }`}
-                style={
-                  siteReligionFilter === rel.id
-                    ? { backgroundColor: rel.color || "#0066FF" }
-                    : undefined
-                }
+                type="button"
+                onClick={requestAiPlans}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700"
               >
-                {rel.symbol} {rel.name}
+                {t("tripCreate.aiPlanRetry")}
               </button>
-            ))}
-          </div>
+            </div>
+          )}
 
-          {/* Sites Grid */}
-          {loadingSites ? (
-            <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
-            </div>
-          ) : filteredSites.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">
-              {t("tripCreate.noSitesFound")}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-              {filteredSites.map((site) => {
-                const selected = selectedSiteIds.includes(site.id);
+          {/* AI Plans Grid */}
+          {!aiLoading && aiPlans.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+              {aiPlans.map((plan) => {
+                const selected = selectedPlanId === plan.id;
                 return (
                   <button
-                    key={site.id}
+                    key={plan.id}
                     type="button"
-                    onClick={() => toggleSite(site.id)}
-                    className={`group text-left rounded-xl overflow-hidden border-2 transition-all ${
+                    onClick={() => selectAiPlan(plan)}
+                    className={`group text-left rounded-2xl bg-white p-5 shadow-sm transition-all border-2 ${
                       selected
-                        ? "border-[#0066FF] shadow-md"
-                        : "border-gray-100 hover:border-gray-300"
+                        ? "border-[#0066FF] shadow-lg shadow-[#0066FF]/20 ring-2 ring-[#0066FF]/10"
+                        : "border-gray-100 hover:border-[#0066FF]/40 hover:shadow-md"
                     }`}
                   >
-                    {/* Image */}
-                    <div className="relative h-24 bg-gradient-to-br from-gray-100 to-gray-50">
-                      {site.imageUrl ? (
-                        <Image
-                          src={site.imageUrl}
-                          alt={site.name}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-2xl text-gray-300">
-                          🏛️
-                        </div>
-                      )}
-                      {/* Selection indicator */}
-                      <div
-                        className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                          selected
-                            ? "bg-[#0066FF] text-white"
-                            : "bg-white/80 text-gray-400 border border-gray-200"
-                        }`}
-                      >
-                        {selected ? (
-                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    {/* Title + Selected check */}
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-bold text-gray-900 text-lg flex-1">
+                        {plan.title}
+                      </h3>
+                      {selected && (
+                        <div className="w-6 h-6 rounded-full bg-[#0066FF] flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
                               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                               clipRule="evenodd"
                             />
                           </svg>
-                        ) : (
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                          </svg>
-                        )}
+                        </div>
+                      )}
+                    </div>
+                    {plan.subtitle && (
+                      <p className="text-xs text-[#0066FF] mb-2 line-clamp-1">
+                        {plan.subtitle}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                      {plan.summary}
+                    </p>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 mb-4 text-xs">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-50 text-[#0066FF] font-medium">
+                        📅 {plan.days}{t("tripCreate.routeDays")}
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 text-amber-700 font-medium">
+                        🏛️ {plan.siteIds.length}{t("tripCreate.sitesUnit")}
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
+                        ¥{(plan.estimatedBudgetCents / 100).toLocaleString()}
                       </div>
                     </div>
-                    {/* Info */}
-                    <div className="p-2.5">
-                      <h4 className="font-medium text-gray-900 text-sm line-clamp-1">
-                        {site.name}
-                      </h4>
-                      <p className="text-xs text-gray-500 mt-0.5">{site.country}</p>
+
+                    {/* Package hints */}
+                    <div className="space-y-1.5 text-xs text-gray-600 mb-4">
+                      <div className="flex gap-2">
+                        <span className="text-gray-400 w-10">{t("tripCreate.aiPlanAccommodation")}</span>
+                        <span className="flex-1 line-clamp-1">{plan.packageHints.accommodation}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-gray-400 w-10">{t("tripCreate.aiPlanTransportation")}</span>
+                        <span className="flex-1 line-clamp-1">{plan.packageHints.transportation}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-gray-400 w-10">{t("tripCreate.aiPlanMeals")}</span>
+                        <span className="flex-1 line-clamp-1">{plan.packageHints.meals}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="text-gray-400 w-10">{t("tripCreate.aiPlanPace")}</span>
+                        <span className="flex-1">{plan.packageHints.pace}</span>
+                      </div>
+                    </div>
+
+                    {/* Highlights chips */}
+                    {plan.packageHints.highlights.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-4">
+                        {plan.packageHints.highlights.slice(0, 3).map((h, i) => (
+                          <span
+                            key={i}
+                            className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
+                          >
+                            {h}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <div
+                      className={`text-center py-2.5 rounded-xl font-semibold text-sm transition-colors ${
+                        selected
+                          ? "bg-[#0066FF] text-white"
+                          : "bg-blue-50 text-[#0066FF] group-hover:bg-[#0066FF] group-hover:text-white"
+                      }`}
+                    >
+                      {selected ? `✓ ${t("tripCreate.aiPlanSelected")}` : t("tripCreate.aiPlanSelect")}
                     </div>
                   </button>
                 );
@@ -979,8 +1070,209 @@ export default function TripCreatePage() {
             </div>
           )}
 
+          {/* Regenerate */}
+          {!aiLoading && aiPlans.length > 0 && (
+            <div className="text-center mb-6">
+              <button
+                type="button"
+                onClick={requestAiPlans}
+                className="text-sm text-gray-500 hover:text-[#0066FF] underline"
+              >
+                🔄 {t("tripCreate.aiPlanRegenerate")}
+              </button>
+            </div>
+          )}
+
+          {/* Selected plan: site list preview */}
+          {selectedPlanId && selectedSiteIds.length > 0 && (
+            <div className="rounded-2xl bg-white border border-[#0066FF]/20 shadow-sm p-5 mb-6">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <span>📍</span> {t("tripCreate.selectedPlanSites")} ({selectedSiteIds.length})
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {selectedSiteIds.map((siteId, idx) => {
+                  const site = holySites.find((s) => s.id === siteId);
+                  const name = site?.name || siteId.substring(0, 8);
+                  return (
+                    <div
+                      key={siteId}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 text-[#0066FF] text-sm font-medium"
+                    >
+                      <span className="text-xs text-blue-400">{idx + 1}.</span>
+                      {name}
+                      {site?.country && (
+                        <span className="text-xs text-gray-400">· {site.country}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Manual sites toggle */}
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={toggleManualSites}
+              className="w-full text-center py-3 rounded-xl border border-dashed border-gray-300 text-sm text-gray-600 hover:border-[#0066FF] hover:text-[#0066FF] transition-colors"
+            >
+              {showManualSites
+                ? `▲ ${t("tripCreate.manualToggleClose")}`
+                : `▼ ${t("tripCreate.manualToggle")}`}
+            </button>
+          </div>
+
+          {/* Manual sites grid (collapsed by default) */}
+          {showManualSites && (
+            <div className="rounded-2xl bg-gray-50 border border-gray-200 p-5 mb-6">
+              {/* Selected sites chips (manual mode) */}
+              {selectedSiteIds.length > 0 && (
+                <div className="mb-4">
+                  <span className="text-sm font-medium text-gray-700 mb-2 block">
+                    {t("tripCreate.selectedSites")} ({selectedSiteIds.length})
+                  </span>
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    {selectedSiteIds.map((siteId, idx) => {
+                      const site = holySites.find((s) => s.id === siteId);
+                      const name = site?.name || siteId.substring(0, 8);
+                      return (
+                        <div
+                          key={siteId}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white text-[#0066FF] text-sm font-medium whitespace-nowrap border border-blue-200"
+                        >
+                          <span className="text-xs text-blue-400">{idx + 1}.</span>
+                          {name}
+                          <button
+                            type="button"
+                            onClick={() => removeSite(siteId)}
+                            className="ml-1 w-4 h-4 rounded-full bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Religion filter */}
+              <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
+                <button
+                  onClick={() => setSiteReligionFilter("")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                    !siteReligionFilter
+                      ? "bg-[#0066FF] text-white"
+                      : "bg-white text-gray-600 border border-gray-200"
+                  }`}
+                >
+                  {t("tripCreate.filterAll")}
+                </button>
+                {religions.map((rel) => (
+                  <button
+                    key={rel.id}
+                    onClick={() =>
+                      setSiteReligionFilter(
+                        siteReligionFilter === rel.id ? "" : rel.id
+                      )
+                    }
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                      siteReligionFilter === rel.id
+                        ? "text-white"
+                        : "bg-white text-gray-600 border border-gray-200"
+                    }`}
+                    style={
+                      siteReligionFilter === rel.id
+                        ? { backgroundColor: rel.color || "#0066FF" }
+                        : undefined
+                    }
+                  >
+                    {rel.symbol} {rel.name}
+                  </button>
+                ))}
+              </div>
+
+              {/* Sites grid */}
+              {loadingSites ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-6 h-6 border-2 border-[#0066FF]/30 border-t-[#0066FF] rounded-full animate-spin" />
+                </div>
+              ) : filteredSites.length === 0 ? (
+                <div className="text-center py-8 text-gray-400 text-sm">
+                  {t("tripCreate.noSitesFound")}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {filteredSites.map((site) => {
+                    const selected = selectedSiteIds.includes(site.id);
+                    return (
+                      <button
+                        key={site.id}
+                        type="button"
+                        onClick={() => toggleSite(site.id)}
+                        className={`group text-left rounded-xl overflow-hidden border-2 transition-all bg-white ${
+                          selected
+                            ? "border-[#0066FF] shadow-md"
+                            : "border-gray-100 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="relative h-20 bg-gradient-to-br from-gray-100 to-gray-50">
+                          {site.imageUrl ? (
+                            <Image
+                              src={site.imageUrl}
+                              alt={site.name}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-xl text-gray-300">
+                              🏛️
+                            </div>
+                          )}
+                          <div
+                            className={`absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                              selected
+                                ? "bg-[#0066FF] text-white"
+                                : "bg-white/80 text-gray-400 border border-gray-200"
+                            }`}
+                          >
+                            {selected ? (
+                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            ) : (
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                        <div className="p-2">
+                          <h4 className="font-medium text-gray-900 text-xs line-clamp-1">
+                            {site.name}
+                          </h4>
+                          <p className="text-[10px] text-gray-500 mt-0.5">{site.country}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Trip Summary & Confirm */}
-          <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6 mb-6">
+          <div
+            id="trip-confirm-summary"
+            className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6 mb-6"
+          >
             <h3 className="text-sm font-semibold text-gray-900 mb-4">
               {t("tripCreate.confirmSummary")}
             </h3>
@@ -1010,6 +1302,37 @@ export default function TripCreatePage() {
                 </div>
               </div>
             </div>
+
+            {/* Selected AI plan package details */}
+            {selectedPlanId && (() => {
+              const plan = aiPlans.find((p) => p.id === selectedPlanId);
+              if (!plan) return null;
+              return (
+                <div className="rounded-xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 p-4">
+                  <div className="text-xs font-semibold text-[#0066FF] mb-3 flex items-center gap-1.5">
+                    <span>✨</span> {t("tripCreate.includedPackage")} — {plan.title}
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <div className="text-gray-400">{t("tripCreate.aiPlanAccommodation")}</div>
+                      <div className="text-gray-700 mt-0.5">{plan.packageHints.accommodation}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400">{t("tripCreate.aiPlanTransportation")}</div>
+                      <div className="text-gray-700 mt-0.5">{plan.packageHints.transportation}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400">{t("tripCreate.aiPlanMeals")}</div>
+                      <div className="text-gray-700 mt-0.5">{plan.packageHints.meals}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400">{t("tripCreate.aiPlanPace")}</div>
+                      <div className="text-gray-700 mt-0.5">{plan.packageHints.pace}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Navigation */}
@@ -1024,7 +1347,7 @@ export default function TripCreatePage() {
             <button
               type="button"
               onClick={handleCreate}
-              disabled={submitting}
+              disabled={submitting || selectedSiteIds.length === 0}
               className="flex-1 py-3 rounded-xl bg-[#0066FF] text-white font-semibold hover:bg-[#0052CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? (
@@ -1032,6 +1355,8 @@ export default function TripCreatePage() {
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   {t("tripCreate.creating")}
                 </>
+              ) : selectedSiteIds.length === 0 ? (
+                t("tripCreate.confirmCreateDisabled")
               ) : (
                 t("tripCreate.confirmCreate")
               )}
