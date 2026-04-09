@@ -17,7 +17,7 @@ const STAGES = [
     stage: "02",
     title: "心智锻造",
     age: "35-45 岁",
-    desc: "在风暴中修炼定力，从管理者蜕变为领袖",
+    desc: "在风暴中锻造定力，从管理者蜕变为领袖",
     icon: "⚔️",
   },
   {
@@ -38,7 +38,7 @@ const STAGES = [
 
 const TRUST_NUMBERS = [
   { num: "300+", label: "全球圣地" },
-  { num: "12", label: "信仰智慧" },
+  { num: "12", label: "文化智慧" },
   { num: "1:1", label: "导师辅导" },
   { num: "30天", label: "回程跟踪" },
 ];
@@ -58,27 +58,27 @@ export default function PersonalGrowthLanding({ themes }: Props) {
         <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-36">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 border border-white/30 rounded-full text-white text-sm font-medium tracking-wide mb-6">
-              🧘 企业家心灵修炼 · 个人深度成长
+              🧘 圆满之路 · 个人圆满
             </span>
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              企业家<span className="text-amber-200">觉醒</span>之旅
+              企业家<span className="text-amber-200">圆满</span>之旅
             </h1>
             <p className="text-lg lg:text-xl text-white/85 mb-10 max-w-2xl leading-relaxed">
               从创业者到跨国集团董事长，每一次跃迁都需要一次心灵的重生。
-              在12种信仰的智慧中，找到属于你的精神进化之路。
+              在12种文化的智慧中，找到属于你的精神进化之路。
             </p>
             <div className="flex flex-wrap gap-4">
               <a
                 href="#inquiry"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#8B6914] font-semibold rounded-lg hover:bg-amber-50 transition-all shadow-lg shadow-amber-900/20 hover:shadow-xl hover:-translate-y-0.5"
               >
-                预约个人咨询
+                预约圆满咨询
               </a>
               <Link
                 href="/personal-growth/themes"
                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 hover:border-white/60 transition-all"
               >
-                浏览修炼主题
+                浏览成长主题
               </Link>
             </div>
           </div>
@@ -92,10 +92,10 @@ export default function PersonalGrowthLanding({ themes }: Props) {
             企业家进化阶梯
           </span>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            每个阶段，都有一场修行在等你
+            每个阶段，都有一场历练在等你
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
-            从初创到巅峰，企业家的心灵成长不会自动发生——它需要刻意的修炼和正确的引导
+            从初创到巅峰，企业家的心灵成长不会自动发生——它需要刻意的历练和正确的引导
           </p>
         </div>
 
@@ -126,12 +126,12 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               {
                 icon: "🎯",
                 title: "不是团建，是个人深修",
-                desc: "每次修行只有1-3人同行，确保导师能深度关注你的成长。独处时间占全程40%以上。",
+                desc: "每次历练只有1-3人同行，确保导师能深度关注你的成长。独处时间占全程40%以上。",
               },
               {
                 icon: "🌍",
-                title: "12种信仰，找到你的",
-                desc: "禅宗·道家·儒教·基督教·藏传佛教……不同的人适合不同的修炼路径，我们帮你找到最适合你的那条。",
+                title: "12种文化智慧，找到你的",
+                desc: "禅宗·道家·儒教·基督教·藏传佛教……不同的人适合不同的成长路径，我们帮你找到最适合你的那条。",
               },
               {
                 icon: "🔄",
@@ -158,7 +158,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
           <div className="flex items-end justify-between mb-12">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-                六大修炼主题
+                六大成长主题
               </h2>
               <p className="text-gray-500">
                 每个主题对应企业家不同阶段的核心挑战
@@ -212,14 +212,14 @@ export default function PersonalGrowthLanding({ themes }: Props) {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            企业家信仰修炼三部曲
+            企业家圆满之路三部曲
           </h2>
           <p className="text-gray-500">个人 → 家庭 → 企业，构建完整的精神根基</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {[
             {
-              title: "个人成长",
+              title: "个人圆满",
               desc: "企业家自我进化——从创业者到领袖的心灵跃迁",
               href: "/personal-growth",
               icon: "🧘",
@@ -227,14 +227,14 @@ export default function PersonalGrowthLanding({ themes }: Props) {
             },
             {
               title: "家庭幸福",
-              desc: "以信仰智慧为根基，构建幸福家庭的系统方法",
+              desc: "以文化智慧为根基，构建幸福家庭的系统方法",
               href: "/family-harmony",
               icon: "🏠",
               active: true,
             },
             {
-              title: "企业长青",
-              desc: "把祖庭变成团队的精神高地，打造百年组织文化",
+              title: "企业兴旺",
+              desc: "把文化之旅变成团队的精神高地，打造百年组织文化",
               href: "/team-culture",
               icon: "🏢",
               active: true,
@@ -262,10 +262,10 @@ export default function PersonalGrowthLanding({ themes }: Props) {
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-              预约个人成长咨询
+              预约个人圆满咨询
             </h2>
             <p className="text-gray-600">
-              我们的成长顾问将根据您的阶段和挑战，推荐最适合的修炼主题
+              我们的成长顾问将根据您的阶段和挑战，推荐最适合的成长主题
             </p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">

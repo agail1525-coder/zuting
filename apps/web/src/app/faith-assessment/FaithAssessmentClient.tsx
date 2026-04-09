@@ -14,7 +14,7 @@ import {
 const MODES = [
   {
     key: 'PERSONAL',
-    label: '个人成长',
+    label: '个人圆满',
     sub: '适合创业者与管理者',
     icon: '🧘',
     color: '#D4A855',
@@ -34,7 +34,7 @@ const MODES = [
   },
   {
     key: 'ENTERPRISE',
-    label: '企业长青',
+    label: '企业兴旺',
     sub: '适合企业团队与领导层',
     icon: '🏢',
     color: '#3264ff',
@@ -90,37 +90,37 @@ const DIMENSION_INSIGHTS: Record<string, { high: string; mid: string; low: strin
   },
 };
 
-/* ═══════════ 旅行修行计划模板 ═══════════ */
+/* ═══════════ 文化之旅计划模板 ═══════════ */
 
 const PILGRIMAGE_PLANS: Record<string, Record<string, { destination: string; activity: string; duration: string; insight: string }>> = {
   AWARENESS: {
-    PERSONAL: { destination: '日本京都·南禅寺', activity: '三日止观禅修 + 枯山水冥想 + 茶道觉察训练', duration: '3-5天', insight: '在禅宗发源地，通过"只管打坐"的修行法门，深度唤醒你的觉察力' },
+    PERSONAL: { destination: '日本京都·南禅寺', activity: '三日止观禅修 + 枯山水冥想 + 茶道觉察训练', duration: '3-5天', insight: '在禅宗发源地，通过"只管打坐"的文化体验，深度唤醒你的觉察力' },
     FAMILY: { destination: '泰国清迈·松德寺', activity: '家庭正念营 + 亲子冥想 + 感恩仪式', duration: '4-6天', insight: '全家一起学习正念，在安静的寺院中重新"看见"彼此' },
-    ENTERPRISE: { destination: '印度瑞诗凯诗', activity: '企业领袖正念闭关 + 瑜伽觉察 + 恒河晨祷', duration: '5-7天', insight: '在瑜伽发源地，修炼领导者最核心的能力——深度觉察' },
+    ENTERPRISE: { destination: '印度瑞诗凯诗', activity: '企业领袖正念闭关 + 瑜伽觉察 + 恒河晨祷', duration: '5-7天', insight: '在瑜伽发源地，提升领导者最核心的能力——深度觉察' },
   },
   RESILIENCE: {
-    PERSONAL: { destination: '西藏拉萨·色拉寺', activity: '高原磨炼 + 辩经观摩 + 转山朝圣', duration: '5-7天', insight: '在世界屋脊，用身体的极限挑战锻造内心的坚韧' },
-    FAMILY: { destination: '尼泊尔加德满都', activity: '家庭徒步修行 + 佛塔祈福 + 共渡难关挑战', duration: '5-7天', insight: '通过共同面对自然的挑战，锻造家庭的集体韧性' },
-    ENTERPRISE: { destination: '韩国海印寺', activity: '团队寺院生活体验 + 108拜修行 + 领导力定力训练', duration: '3-5天', insight: '在千年古刹中，团队一起经历严格的修行纪律，磨炼组织定力' },
+    PERSONAL: { destination: '西藏拉萨·色拉寺', activity: '高原磨炼 + 辩经观摩 + 转山文化之旅', duration: '5-7天', insight: '在世界屋脊，用身体的极限挑战锻造内心的坚韧' },
+    FAMILY: { destination: '尼泊尔加德满都', activity: '家庭徒步体验 + 佛塔祈福 + 共渡难关挑战', duration: '5-7天', insight: '通过共同面对自然的挑战，锻造家庭的集体韧性' },
+    ENTERPRISE: { destination: '韩国海印寺', activity: '团队寺院生活体验 + 108拜体验 + 领导力定力训练', duration: '3-5天', insight: '在千年古刹中，团队一起经历严格的文化体验，磨炼组织定力' },
   },
   VISION: {
-    PERSONAL: { destination: '以色列耶路撒冷', activity: '三教圣城深度研学 + 历史智慧对话 + 领袖格局工作坊', duration: '6-8天', insight: '站在三大文明的交汇点，用千年智慧打开你的格局视野' },
+    PERSONAL: { destination: '以色列耶路撒冷', activity: '三教圣城深度研学 + 历史智慧对话 + 领袖格局工作坊', duration: '6-8天', insight: '站在三大文明的交汇点，用千年文化智慧打开你的格局视野' },
     FAMILY: { destination: '意大利梵蒂冈+佛罗伦萨', activity: '文艺复兴人文探索 + 家庭愿景工作坊 + 教堂冥思', duration: '5-7天', insight: '在西方文明的精神高地，与家人一起探讨"我们要去哪里"' },
     ENTERPRISE: { destination: '希腊雅典·德尔菲', activity: '哲学溯源之旅 + 战略思维训练 + "认识你自己"工作坊', duration: '5-7天', insight: '在西方哲学的发源地，提升企业战略的纵深与格局' },
   },
   CONNECTION: {
-    PERSONAL: { destination: '印度菩提伽耶', activity: '慈悲禅修 + 布施体验 + 社区服务 + 深度对话', duration: '5-7天', insight: '在佛陀悟道之地，修炼从"我"到"我们"的连接力转化' },
+    PERSONAL: { destination: '印度菩提伽耶', activity: '慈悲禅修 + 布施体验 + 社区服务 + 深度对话', duration: '5-7天', insight: '在佛陀悟道之地，体验从"我"到"我们"的连接力转化' },
     FAMILY: { destination: '巴厘岛乌布', activity: '家庭净化仪式 + 水神庙共祈 + 感恩家书 + 亲密关系重建', duration: '5-7天', insight: '在"神之岛"的灵性氛围中，重新编织家庭的情感纽带' },
     ENTERPRISE: { destination: '不丹廷布', activity: '幸福国度团建 + GNH幸福理念学习 + 团队信任重建', duration: '5-7天', insight: '在全球最幸福的国度，重新定义团队的"连接"方式' },
   },
   LEGACY: {
     PERSONAL: { destination: '中国曲阜·孔庙', activity: '儒家传承研修 + 家训撰写 + 立志仪式 + 导师精神工作坊', duration: '3-5天', insight: '在至圣先师的故里，找到"为天地立心"的传承使命' },
     FAMILY: { destination: '中国嵩山·少林寺', activity: '家族传承之旅 + 禅武体验 + 家训刻碑 + 三代共修', duration: '4-6天', insight: '在千年祖庭，让家风家训从口号变成可传承的精神DNA' },
-    ENTERPRISE: { destination: '日本高野山', activity: '百年企业朝圣 + 真言密教智慧 + 企业精神宪章制定', duration: '5-7天', insight: '在空海大师的道场，探索日本百年企业基业长青的精神密码' },
+    ENTERPRISE: { destination: '日本高野山', activity: '百年企业文化探访 + 真言密教智慧 + 企业精神宪章制定', duration: '5-7天', insight: '在空海大师的道场，探索日本百年企业基业长青的精神密码' },
   },
 };
 
-/* ═══════════ 推荐主题名称映射 ═══════════ */
+/* ═══════════ 推荐成长主题名称映射 ═══════════ */
 
 const THEME_NAME_MAP: Record<string, string> = {
   'pg-awakening': '觉醒之旅', 'pg-fortitude': '定力之旅', 'pg-vision': '格局之旅',
@@ -241,18 +241,18 @@ function LandingSection({ onStart }: { onStart: () => void }) {
       <div className="relative z-10 max-w-3xl">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-8">
           <span>🔮</span>
-          <span>五维信仰力评估</span>
+          <span>五维佳绩力评估</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
           发现你的
           <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            信仰力
+            佳绩力
           </span>
         </h1>
 
         <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">
-          每个人内心都有一座精神的祖庭。通过五维评估，发现你的觉察力、定力、格局力、连接力和传承力分布，找到最适合你的成长路径。
+          每个人内心都有一座精神的祖庭。通过五维佳绩力评估，发现你的觉察力、定力、格局力、连接力和传承力分布，找到最适合你的成长路径。
         </p>
 
         <p className="text-gray-500 mb-12">
@@ -459,7 +459,7 @@ function CalculatingAnimation() {
           <span className="text-3xl">🔮</span>
         </div>
       </div>
-      <h2 className="text-2xl font-bold text-white mb-2">正在分析你的信仰力...</h2>
+      <h2 className="text-2xl font-bold text-white mb-2">正在分析你的佳绩力...</h2>
       <p className="text-gray-400">五维评估计算中</p>
     </section>
   );
@@ -515,7 +515,7 @@ function ResultSection({
             {modeObj.icon} {modeObj.label}模式
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-            你的信仰力报告
+            你的佳绩力报告
           </h1>
         </div>
 
@@ -622,11 +622,11 @@ function ResultSection({
           </div>
         </div>
 
-        {/* 旅行修行计划 */}
+        {/* 文化之旅计划 */}
         <div className="bg-gradient-to-br from-violet-950/40 to-indigo-950/40 border border-violet-500/20 rounded-3xl p-8 mb-8">
-          <h3 className="text-xl font-bold text-white mb-2">🗺️ 你的专属旅行修行计划</h3>
+          <h3 className="text-xl font-bold text-white mb-2">🗺️ 你的专属文化之旅计划</h3>
           <p className="text-gray-400 text-sm mb-6">
-            基于你的{weakest.label}成长需求，我们为你量身定制的朝圣修行方案
+            基于你的{weakest.label}成长需求，我们为你量身定制的文化探访方案
           </p>
           {(() => {
             const plan = PILGRIMAGE_PLANS[result.weakestDimension]?.[modeObj.key] || PILGRIMAGE_PLANS.AWARENESS.PERSONAL;
@@ -647,11 +647,11 @@ function ResultSection({
                       </div>
                     </div>
                     <div className="mb-4">
-                      <div className="text-gray-500 text-xs mb-1">修行内容</div>
+                      <div className="text-gray-500 text-xs mb-1">体验内容</div>
                       <div className="text-gray-300 text-sm leading-relaxed">{plan.activity}</div>
                     </div>
                     <div className="bg-violet-500/10 rounded-xl p-4 border border-violet-500/20">
-                      <div className="text-violet-300 text-xs font-medium mb-1">✨ 修行洞见</div>
+                      <div className="text-violet-300 text-xs font-medium mb-1">✨ 文化洞见</div>
                       <p className="text-gray-300 text-sm leading-relaxed">{plan.insight}</p>
                     </div>
                   </div>
@@ -673,7 +673,7 @@ function ResultSection({
               </div>
             );
           })()}
-          {/* 次优先修行 */}
+          {/* 次优先文化之旅 */}
           {(() => {
             const secondDim = result.strongestDimension === result.weakestDimension ? 'AWARENESS' : result.strongestDimension;
             const plan2 = PILGRIMAGE_PLANS[secondDim]?.[modeObj.key];
@@ -689,9 +689,9 @@ function ResultSection({
           })()}
         </div>
 
-        {/* 推荐修炼主题 */}
+        {/* 推荐成长主题 */}
         <div className="bg-gray-900/50 border border-gray-800 rounded-3xl p-8 mb-8">
-          <h3 className="text-xl font-bold text-white mb-3">🎯 为你推荐的修炼主题</h3>
+          <h3 className="text-xl font-bold text-white mb-3">🎯 为你推荐的成长主题</h3>
           <p className="text-gray-400 text-sm mb-6">
             根据你的评估结果，以下主题最能帮助你突破{weakest.label}的瓶颈
           </p>
@@ -741,7 +741,7 @@ function ResultSection({
         {result.pointsEarned > 0 && (
           <div className="text-center mt-8">
             <span className="text-amber-400 text-sm">
-              ✨ 恭喜获得 {result.pointsEarned} 信仰积分
+              ✨ 恭喜获得 {result.pointsEarned} 佳绩积分
             </span>
           </div>
         )}

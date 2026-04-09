@@ -6,8 +6,8 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "修炼主题 | 企业家个人成长 | Joinus",
-  description: "六大企业家心灵修炼主题：觉醒·定力·格局·重生·慈悲·传灯",
+  title: "成长主题 | 企业家个人圆满 | Joinus",
+  description: "六大企业家心灵成长主题：觉醒·定力·格局·重生·慈悲·传灯",
 };
 
 export default async function Page() {
@@ -23,10 +23,10 @@ export default async function Page() {
           </Link>
         </div>
         <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-3">
-          修炼主题
+          成长主题
         </h1>
         <p className="text-gray-500 mb-12 max-w-2xl">
-          每个主题对应企业家不同人生阶段的核心挑战，由深度信仰智慧驱动
+          每个主题对应企业家不同人生阶段的核心挑战，由深度文化智慧驱动
         </p>
         {themes.length === 0 ? (
           <div className="text-center py-20">

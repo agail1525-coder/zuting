@@ -5,7 +5,7 @@ import { listCases } from "@/lib/api/personal-growth";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "蜕变案例 | 企业家个人成长 | Joinus",
+  title: "蜕变案例 | 企业家个人圆满 | Joinus",
   description: "真实企业家的蜕变故事——从迷茫到觉醒、从焦虑到定力",
 };
 

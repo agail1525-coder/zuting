@@ -47,16 +47,16 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
         <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-36">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 border border-white/30 rounded-full text-white text-sm font-medium tracking-wide mb-6">
-              🏠 信仰修炼 · 家庭幸福根基
+              🏠 圆满之路 · 家庭幸福根基
             </span>
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              让信仰成为家庭
+              让文化智慧成为家庭
               <br />
               <span className="text-emerald-200">最深的纽带</span>
             </h1>
             <p className="text-lg lg:text-xl text-white/85 mb-10 max-w-2xl leading-relaxed">
               一个成功的家庭，是个人成长的根基，也是事业持续发展的隐性支撑。
-              通过12种信仰的智慧，帮助您的家庭找到和谐的根基。
+              通过12种文化的智慧，帮助您的家庭找到和谐的根基。
             </p>
             <div className="flex flex-wrap gap-4">
               <a
@@ -80,7 +80,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-[#2D8B6F] text-sm font-medium mb-4">
-            每种家庭，都有对应的修行
+            每种家庭，都有对应的成长之路
           </span>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             您的家庭需要哪种滋养？
@@ -112,13 +112,13 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
             },
             {
               icon: "💝",
-              title: "12种信仰，找到你家的根",
+              title: "12种文化智慧，找到你家的根",
               desc: "佛教因缘·儒家孝道·基督宽恕·印度感恩……每个家庭的文化根基不同，我们帮你找到最契合的。",
             },
             {
               icon: "🔄",
               title: "回家后才是开始",
-              desc: "每个主题包都有\u201C回家练习\u201D手册。21天家庭微习惯，让朝圣的感动变成日常的滋养。",
+              desc: "每个主题包都有\u201C回家练习\u201D手册。21天家庭微习惯，让文化之旅的感动变成日常的滋养。",
             },
           ].map((v) => (
             <div
@@ -142,7 +142,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
                 六大和谐主题
               </h2>
               <p className="text-gray-500">
-                每个主题由不同信仰智慧驱动，适合不同家庭类型
+                每个主题由不同文化智慧驱动，适合不同家庭类型
               </p>
             </div>
             <Link
@@ -180,7 +180,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { num: "300+", label: "全球圣地" },
-            { num: "12", label: "信仰智慧" },
+            { num: "12", label: "文化智慧" },
             { num: "21天", label: "回家练习" },
             { num: "100%", label: "定制方案" },
           ].map((s) => (
@@ -196,15 +196,15 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            企业家信仰修炼三部曲
+            企业家圆满之路三部曲
           </h2>
           <p className="text-gray-500">个人 → 家庭 → 企业，构建完整的精神根基</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { title: "个人成长", desc: "企业家自我进化之旅", href: "/personal-growth", color: "#D4A855", icon: "🧘", active: true },
-            { title: "家庭幸福", desc: "以信仰智慧构建幸福家庭", href: "/family-harmony", color: "#2D8B6F", icon: "🏠", active: true },
-            { title: "企业长青", desc: "把祖庭变成团队精神高地", href: "/team-culture", color: "#3264ff", icon: "🏢", active: true },
+            { title: "个人圆满", desc: "企业家自我进化之旅", href: "/personal-growth", color: "#D4A855", icon: "🧘", active: true },
+            { title: "家庭幸福", desc: "以文化智慧构建幸福家庭", href: "/family-harmony", color: "#2D8B6F", icon: "🏠", active: true },
+            { title: "企业兴旺", desc: "把文化之旅变成团队精神高地", href: "/team-culture", color: "#3264ff", icon: "🏢", active: true },
           ].map((item) => (
             <Link
               key={item.title}

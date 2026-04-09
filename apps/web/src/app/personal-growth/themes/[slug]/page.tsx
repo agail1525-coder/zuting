@@ -15,9 +15,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
     const theme = await getTheme(slug);
-    return { title: `${theme.title} | 企业家个人成长 | Joinus` };
+    return { title: `${theme.title} | 企业家个人圆满 | Joinus` };
   } catch {
-    return { title: "修炼主题 | Joinus" };
+    return { title: "成长主题 | Joinus" };
   }
 }
 
@@ -53,7 +53,7 @@ export default async function Page({ params }: Props) {
             href="/personal-growth/themes"
             className="inline-flex items-center text-white/80 hover:text-white text-sm mb-4"
           >
-            ← 修炼主题
+            ← 成长主题
           </Link>
           <div className="flex items-center gap-4 mb-2">
             <span className="text-4xl">{theme.icon}</span>
