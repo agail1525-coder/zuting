@@ -58,12 +58,12 @@ export default function PersonalInquiryForm({
 
   if (done) {
     return (
-      <div className="p-10 rounded-2xl bg-amber-950/30 border border-[#D4A855]/30 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#D4A855] text-gray-900 text-3xl flex items-center justify-center">
+      <div className="p-10 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#8B6914] text-white text-3xl flex items-center justify-center">
           ✓
         </div>
-        <h3 className="text-2xl font-bold mb-2 text-white">已收到您的咨询</h3>
-        <p className="text-amber-100/70">我们的成长顾问将在 24 小时内联系您。</p>
+        <h3 className="text-2xl font-bold mb-2 text-gray-900">已收到您的咨询</h3>
+        <p className="text-gray-600">我们的成长顾问将在 24 小时内联系您。</p>
       </div>
     );
   }
@@ -127,14 +127,14 @@ export default function PersonalInquiryForm({
         />
       </Field>
       {error && (
-        <div className="px-4 py-3 rounded-lg bg-red-900/30 border border-red-500/30 text-red-300 text-sm">
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
           {error}
         </div>
       )}
       <button
         type="submit"
         disabled={submitting}
-        className="w-full py-4 bg-gradient-to-r from-[#D4A855] to-[#C49B3C] text-gray-900 font-bold rounded-lg hover:from-[#E0B96E] hover:to-[#D4A855] transition shadow-lg shadow-amber-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-4 bg-[#8B6914] text-white font-bold rounded-lg hover:bg-[#A67C1E] transition shadow-lg shadow-amber-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {submitting ? "提交中..." : "预约个人咨询"}
       </button>
@@ -143,7 +143,7 @@ export default function PersonalInquiryForm({
 }
 
 const inputCls =
-  "w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 focus:border-[#D4A855] focus:ring-2 focus:ring-amber-900/30 focus:outline-none transition";
+  "w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#8B6914] focus:ring-2 focus:ring-amber-200/50 focus:outline-none transition";
 
 function Field({
   label,
@@ -154,7 +154,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-sm text-amber-100/80 font-medium mb-2">{label}</span>
+      <span className="block text-sm text-gray-700 font-medium mb-2">{label}</span>
       {children}
     </label>
   );

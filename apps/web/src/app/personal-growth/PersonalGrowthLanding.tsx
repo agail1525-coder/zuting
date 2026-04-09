@@ -49,34 +49,34 @@ interface Props {
 
 export default function PersonalGrowthLanding({ themes }: Props) {
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-[#FFFBF0] text-gray-900">
       {/* ════════ Hero ════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-[#1a1206] to-gray-950">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#D4A855]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#D4A855]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#8B6914] via-[#A67C1E] to-[#6B5210]">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-200/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
 
         <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-36">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#D4A855]/10 border border-[#D4A855]/30 rounded-full text-[#D4A855] text-sm font-medium tracking-wide mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/15 border border-white/30 rounded-full text-white text-sm font-medium tracking-wide mb-6">
               🧘 企业家心灵修炼 · 个人深度成长
             </span>
             <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              企业家<span className="text-[#D4A855]">觉醒</span>之旅
+              企业家<span className="text-amber-200">觉醒</span>之旅
             </h1>
-            <p className="text-lg lg:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
+            <p className="text-lg lg:text-xl text-white/85 mb-10 max-w-2xl leading-relaxed">
               从创业者到跨国集团董事长，每一次跃迁都需要一次心灵的重生。
               在12种信仰的智慧中，找到属于你的精神进化之路。
             </p>
             <div className="flex flex-wrap gap-4">
               <a
                 href="#inquiry"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#D4A855] to-[#C49B3C] text-gray-900 font-semibold rounded-lg hover:from-[#E0B96E] hover:to-[#D4A855] transition-all shadow-lg shadow-amber-900/20 hover:shadow-xl hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#8B6914] font-semibold rounded-lg hover:bg-amber-50 transition-all shadow-lg shadow-amber-900/20 hover:shadow-xl hover:-translate-y-0.5"
               >
                 预约个人咨询
               </a>
               <Link
                 href="/personal-growth/themes"
-                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-[#D4A855]/30 text-[#D4A855] font-semibold rounded-lg hover:bg-[#D4A855]/10 hover:border-[#D4A855]/50 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white/40 text-white font-semibold rounded-lg hover:bg-white/10 hover:border-white/60 transition-all"
               >
                 浏览修炼主题
               </Link>
@@ -88,10 +88,10 @@ export default function PersonalGrowthLanding({ themes }: Props) {
       {/* ════════ 进化阶梯 ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-[#D4A855]/10 border border-[#D4A855]/30 rounded-full text-[#D4A855] text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-[#8B6914] text-sm font-medium mb-4">
             企业家进化阶梯
           </span>
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             每个阶段，都有一场修行在等你
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
@@ -103,14 +103,14 @@ export default function PersonalGrowthLanding({ themes }: Props) {
           {STAGES.map((s) => (
             <div
               key={s.stage}
-              className="relative p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-[#D4A855]/30 hover:bg-gray-900 transition-all group"
+              className="relative p-6 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#8B6914]/30 hover:-translate-y-1 transition-all group"
             >
               <div className="text-4xl mb-4">{s.icon}</div>
-              <div className="text-[#D4A855] text-xs font-mono mb-1">STAGE {s.stage}</div>
-              <h3 className="text-xl font-bold text-white mb-1">{s.title}</h3>
-              <div className="text-amber-200/60 text-sm mb-3">{s.age}</div>
+              <div className="text-[#8B6914] text-xs font-mono mb-1">STAGE {s.stage}</div>
+              <h3 className="text-xl font-bold text-gray-900 mb-1">{s.title}</h3>
+              <div className="text-[#A67C1E] text-sm mb-3">{s.age}</div>
               <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#D4A855]/10 flex items-center justify-center text-[#D4A855] opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-[#8B6914] opacity-0 group-hover:opacity-100 transition-opacity">
                 →
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
       </section>
 
       {/* ════════ 三大价值主张 ════════ */}
-      <section className="py-20 bg-gray-900/50">
+      <section className="py-20 bg-gradient-to-b from-amber-50/50 to-[#FFFBF0]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -141,11 +141,11 @@ export default function PersonalGrowthLanding({ themes }: Props) {
             ].map((v) => (
               <div
                 key={v.title}
-                className="p-8 rounded-2xl bg-gray-950 border border-gray-800 hover:border-[#D4A855]/30 hover:-translate-y-1 transition-all"
+                className="p-8 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all"
               >
                 <div className="text-4xl mb-4">{v.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-3">{v.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{v.desc}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{v.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{v.desc}</p>
               </div>
             ))}
           </div>
@@ -157,7 +157,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
                 六大修炼主题
               </h2>
               <p className="text-gray-500">
@@ -166,7 +166,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
             </div>
             <Link
               href="/personal-growth/themes"
-              className="hidden md:inline-flex items-center text-[#D4A855] hover:text-[#E0B96E] font-medium"
+              className="hidden md:inline-flex items-center text-[#8B6914] hover:text-[#A67C1E] font-medium"
             >
               查看全部 →
             </Link>
@@ -179,7 +179,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               </p>
               <a
                 href="#inquiry"
-                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#D4A855] text-gray-900 rounded-lg font-semibold hover:bg-[#E0B96E] transition-all"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#8B6914] text-white rounded-lg font-semibold hover:bg-[#A67C1E] transition-all"
               >
                 预约咨询 →
               </a>
@@ -195,14 +195,14 @@ export default function PersonalGrowthLanding({ themes }: Props) {
       </section>
 
       {/* ════════ Trust Numbers ════════ */}
-      <section className="py-20 bg-gradient-to-br from-[#1a1206] via-gray-900 to-gray-950">
+      <section className="py-20 bg-gradient-to-br from-[#8B6914] to-[#6B5210]">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {TRUST_NUMBERS.map((s) => (
             <div key={s.label}>
-              <div className="text-4xl lg:text-6xl font-bold text-[#D4A855] mb-2">
+              <div className="text-4xl lg:text-6xl font-bold text-white mb-2">
                 {s.num}
               </div>
-              <div className="text-gray-500 text-lg">{s.label}</div>
+              <div className="text-amber-100 text-lg">{s.label}</div>
             </div>
           ))}
         </div>
@@ -211,7 +211,7 @@ export default function PersonalGrowthLanding({ themes }: Props) {
       {/* ════════ 三部曲导航 ════════ */}
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
             企业家信仰修炼三部曲
           </h2>
           <p className="text-gray-500">个人 → 家庭 → 企业，构建完整的精神根基</p>
@@ -222,7 +222,6 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               title: "个人成长",
               desc: "企业家自我进化——从创业者到领袖的心灵跃迁",
               href: "/personal-growth",
-              color: "#D4A855",
               icon: "🧘",
               active: true,
             },
@@ -230,7 +229,6 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               title: "家庭幸福",
               desc: "以信仰智慧为根基，构建幸福家庭的系统方法",
               href: "/family-harmony",
-              color: "#2D8B6F",
               icon: "🏠",
               active: true,
             },
@@ -238,7 +236,6 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               title: "企业长青",
               desc: "把祖庭变成团队的精神高地，打造百年组织文化",
               href: "/team-culture",
-              color: "#3264ff",
               icon: "🏢",
               active: true,
             },
@@ -247,36 +244,31 @@ export default function PersonalGrowthLanding({ themes }: Props) {
               key={item.title}
               href={item.href}
               className={`p-8 rounded-2xl border transition-all hover:-translate-y-1 ${
-                item.active
-                  ? "bg-gray-900 border-gray-700 hover:border-gray-600"
-                  : "bg-gray-900/50 border-gray-800 hover:border-gray-700 opacity-60"
+                item.href === "/personal-growth"
+                  ? "bg-amber-50 border-[#8B6914]/30 shadow-md"
+                  : "bg-white border-gray-200 hover:border-gray-300"
               }`}
             >
               <div className="text-4xl mb-4">{item.icon}</div>
-              <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              {!item.active && (
-                <span className="inline-block mt-3 text-xs text-gray-600 bg-gray-800 px-2 py-1 rounded">
-                  即将上线
-                </span>
-              )}
             </Link>
           ))}
         </div>
       </section>
 
       {/* ════════ Inquiry Form ════════ */}
-      <section id="inquiry" className="py-20 bg-gray-900/50">
+      <section id="inquiry" className="py-20 bg-amber-50/50">
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
               预约个人成长咨询
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-600">
               我们的成长顾问将根据您的阶段和挑战，推荐最适合的修炼主题
             </p>
           </div>
-          <div className="bg-gray-950 rounded-2xl border border-gray-800 shadow-lg p-8">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
             <PersonalInquiryForm />
           </div>
         </div>

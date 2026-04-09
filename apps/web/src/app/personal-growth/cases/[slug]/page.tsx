@@ -30,35 +30,35 @@ export default async function Page({ params }: Props) {
   if (!item) notFound();
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-[#FFFBF0] text-gray-900">
       <section className="py-20 max-w-4xl mx-auto px-6">
-        <Link href="/personal-growth/cases" className="text-[#D4A855] hover:text-[#E0B96E] text-sm">
+        <Link href="/personal-growth/cases" className="text-[#8B6914] hover:text-[#A67C1E] text-sm">
           ← 蜕变案例
         </Link>
-        <h1 className="text-3xl font-bold text-white mt-4 mb-2">{item.teamName}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mt-4 mb-2">{item.teamName}</h1>
         {item.theme && (
-          <span className="inline-block px-3 py-1 text-sm rounded-full bg-[#D4A855]/10 text-[#D4A855] border border-[#D4A855]/20 mb-6">
+          <span className="inline-block px-3 py-1 text-sm rounded-full bg-amber-50 text-[#8B6914] border border-amber-200 mb-6">
             {item.theme.title}
           </span>
         )}
-        <div className="prose prose-invert max-w-none mt-6">
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line">{item.story}</p>
+        <div className="prose max-w-none mt-6">
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line">{item.story}</p>
         </div>
         {item.highlights.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-xl font-bold text-white mb-4">亮点</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">亮点</h2>
             <ul className="space-y-2">
               {item.highlights.map((h, i) => (
-                <li key={i} className="flex items-start gap-2 text-gray-300">
-                  <span className="text-[#D4A855]">✦</span> {h}
+                <li key={i} className="flex items-start gap-2 text-gray-700">
+                  <span className="text-[#8B6914]">✦</span> {h}
                 </li>
               ))}
             </ul>
           </div>
         )}
         {item.testimonial && (
-          <div className="mt-8 p-6 rounded-2xl bg-gray-900/80 border border-[#D4A855]/10">
-            <p className="text-[#D4A855] text-lg italic">&ldquo;{item.testimonial}&rdquo;</p>
+          <div className="mt-8 p-6 rounded-2xl bg-white border border-amber-100 shadow-sm">
+            <p className="text-[#8B6914] text-lg italic">&ldquo;{item.testimonial}&rdquo;</p>
           </div>
         )}
         {item.photos.length > 0 && (

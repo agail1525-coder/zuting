@@ -35,23 +35,23 @@ export default async function Page({ params }: Props) {
   const rich = (theme.richContent ?? null) as PersonalGrowthRichContent | null;
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-[#FFFBF0] text-gray-900">
       {/* Hero */}
       <section
         className="relative h-[60vh] flex items-end"
         style={{
           backgroundImage: theme.coverUrl
             ? `url(${theme.coverUrl})`
-            : `linear-gradient(135deg, ${theme.color}, #1a1206)`,
+            : `linear-gradient(135deg, ${theme.color || '#8B6914'}, #6B5210)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="relative max-w-7xl mx-auto px-6 pb-12 w-full">
           <Link
             href="/personal-growth/themes"
-            className="inline-flex items-center text-[#D4A855]/80 hover:text-[#D4A855] text-sm mb-4"
+            className="inline-flex items-center text-white/80 hover:text-white text-sm mb-4"
           >
             ← 修炼主题
           </Link>
@@ -60,21 +60,21 @@ export default async function Page({ params }: Props) {
             <h1 className="text-4xl lg:text-5xl font-bold text-white">{theme.title}</h1>
           </div>
           {theme.subtitle && (
-            <p className="text-lg text-amber-100/70 mt-2 max-w-2xl">{theme.subtitle}</p>
+            <p className="text-lg text-white/75 mt-2 max-w-2xl">{theme.subtitle}</p>
           )}
           <div className="flex flex-wrap gap-4 mt-6">
             {theme.durationDays && (
-              <span className="px-3 py-1.5 bg-gray-900/80 backdrop-blur rounded-full text-sm text-gray-300 border border-gray-700">
+              <span className="px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm text-white border border-white/30">
                 {theme.durationDays} 天
               </span>
             )}
             {priceYuan && (
-              <span className="px-3 py-1.5 bg-[#D4A855]/20 backdrop-blur rounded-full text-sm text-[#D4A855] font-semibold border border-[#D4A855]/30">
+              <span className="px-3 py-1.5 bg-white/25 backdrop-blur rounded-full text-sm text-white font-semibold border border-white/40">
                 ¥{priceYuan.toLocaleString()} 起 / 人
               </span>
             )}
             {theme.keywords.map((k) => (
-              <span key={k} className="px-3 py-1.5 bg-gray-900/80 backdrop-blur rounded-full text-sm text-gray-400 border border-gray-700">
+              <span key={k} className="px-3 py-1.5 bg-white/20 backdrop-blur rounded-full text-sm text-white/90 border border-white/30">
                 {k}
               </span>
             ))}
@@ -85,34 +85,34 @@ export default async function Page({ params }: Props) {
       <div className="max-w-7xl mx-auto px-6">
         {/* Dimension Kicker */}
         {rich?.dimension && (
-          <section className="py-16 border-b border-gray-800">
-            <span className="text-[#D4A855] text-sm font-mono">{rich.dimension.code}</span>
-            <h2 className="text-2xl font-bold text-white mt-1">{rich.dimension.label}</h2>
-            <p className="text-gray-400 text-lg mt-2 italic">&ldquo;{rich.dimension.kicker}&rdquo;</p>
+          <section className="py-16 border-b border-gray-200">
+            <span className="text-[#8B6914] text-sm font-mono">{rich.dimension.code}</span>
+            <h2 className="text-2xl font-bold text-gray-900 mt-1">{rich.dimension.label}</h2>
+            <p className="text-gray-600 text-lg mt-2 italic">&ldquo;{rich.dimension.kicker}&rdquo;</p>
           </section>
         )}
 
         {/* Description */}
-        <section className="py-12 border-b border-gray-800">
-          <p className="text-gray-300 leading-relaxed text-lg max-w-4xl">{theme.description}</p>
+        <section className="py-12 border-b border-gray-200">
+          <p className="text-gray-700 leading-relaxed text-lg max-w-4xl">{theme.description}</p>
         </section>
 
         {/* Pain Point */}
         {rich?.entrepreneurPainPoint && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
               {rich.entrepreneurPainPoint.title}
             </h2>
-            <p className="text-gray-400 leading-relaxed mb-8 max-w-4xl">
+            <p className="text-gray-600 leading-relaxed mb-8 max-w-4xl">
               {rich.entrepreneurPainPoint.body}
             </p>
             {rich.entrepreneurPainPoint.signs && (
               <div className="space-y-3">
-                <h3 className="text-[#D4A855] font-semibold mb-4">你是否有以下信号？</h3>
+                <h3 className="text-[#8B6914] font-semibold mb-4">你是否有以下信号？</h3>
                 {rich.entrepreneurPainPoint.signs.map((s, i) => (
-                  <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-                    <span className="text-red-400 mt-0.5">⚠</span>
-                    <span className="text-gray-300">{s}</span>
+                  <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+                    <span className="text-red-500 mt-0.5">⚠</span>
+                    <span className="text-gray-700">{s}</span>
                   </div>
                 ))}
               </div>
@@ -127,11 +127,11 @@ export default async function Page({ params }: Props) {
 
         {/* Philosophy */}
         {rich?.philosophy && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
               {rich.philosophy.title}
             </h2>
-            <p className="text-gray-400 leading-relaxed mb-8 max-w-4xl">
+            <p className="text-gray-600 leading-relaxed mb-8 max-w-4xl">
               {rich.philosophy.body}
             </p>
             {rich.philosophy.quotes && (
@@ -139,9 +139,9 @@ export default async function Page({ params }: Props) {
                 {rich.philosophy.quotes.map((q, i) => (
                   <div
                     key={i}
-                    className="p-6 rounded-2xl bg-gray-900/80 border border-[#D4A855]/10"
+                    className="p-6 rounded-2xl bg-white border border-amber-100 shadow-sm"
                   >
-                    <p className="text-[#D4A855] text-lg font-medium mb-2 leading-relaxed">
+                    <p className="text-[#8B6914] text-lg font-medium mb-2 leading-relaxed">
                       &ldquo;{q.text}&rdquo;
                     </p>
                     <div className="text-gray-500 text-sm">—— {q.source}</div>
@@ -157,23 +157,23 @@ export default async function Page({ params }: Props) {
 
         {/* Daily Itinerary */}
         {rich?.dailyItinerary && rich.dailyItinerary.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">
               行程安排
             </h2>
             <div className="space-y-6">
               {rich.dailyItinerary.map((day) => (
                 <div
                   key={day.day}
-                  className="rounded-2xl bg-gray-900/50 border border-gray-800 overflow-hidden"
+                  className="rounded-2xl bg-white border border-gray-100 shadow-sm overflow-hidden"
                 >
-                  <div className="p-6 bg-gradient-to-r from-[#D4A855]/10 to-transparent border-b border-gray-800">
+                  <div className="p-6 bg-gradient-to-r from-amber-50 to-transparent border-b border-gray-100">
                     <div className="flex items-center gap-4">
-                      <span className="w-12 h-12 rounded-full bg-[#D4A855]/20 text-[#D4A855] font-bold flex items-center justify-center text-lg">
+                      <span className="w-12 h-12 rounded-full bg-[#8B6914]/20 text-[#8B6914] font-bold flex items-center justify-center text-lg">
                         D{day.day}
                       </span>
                       <div>
-                        <h3 className="text-xl font-bold text-white">{day.title}</h3>
+                        <h3 className="text-xl font-bold text-gray-900">{day.title}</h3>
                         <span className="text-sm text-gray-500">{day.location}</span>
                       </div>
                     </div>
@@ -197,7 +197,7 @@ export default async function Page({ params }: Props) {
                     {day.rituals && day.rituals.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {day.rituals.map((r) => (
-                          <span key={r} className="px-2.5 py-1 text-xs rounded-full bg-[#D4A855]/10 text-[#D4A855] border border-[#D4A855]/20">
+                          <span key={r} className="px-2.5 py-1 text-xs rounded-full bg-[#8B6914]/10 text-[#8B6914] border border-[#8B6914]/20">
                             {r}
                           </span>
                         ))}
@@ -212,21 +212,21 @@ export default async function Page({ params }: Props) {
 
         {/* Rituals */}
         {theme.rituals && theme.rituals.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">
               核心修行仪式
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {theme.rituals.map((r) => (
                 <div
                   key={r.name}
-                  className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800"
+                  className="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-bold text-white">{r.name}</h3>
+                    <h3 className="text-lg font-bold text-gray-900">{r.name}</h3>
                     <span className="text-sm text-gray-500">{r.durationMin} 分钟</span>
                   </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">{r.description}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{r.description}</p>
                 </div>
               ))}
             </div>
@@ -235,18 +235,18 @@ export default async function Page({ params }: Props) {
 
         {/* Mentor Profile */}
         {rich?.mentorProfile && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">
               导师介绍
             </h2>
-            <div className="p-8 rounded-2xl bg-gray-900/80 border border-[#D4A855]/10">
-              <h3 className="text-2xl font-bold text-[#D4A855] mb-1">{rich.mentorProfile.name}</h3>
-              <div className="text-gray-400 text-sm mb-4">{rich.mentorProfile.title}</div>
-              <p className="text-gray-300 leading-relaxed mb-4">{rich.mentorProfile.bio}</p>
+            <div className="p-8 rounded-2xl bg-white border border-amber-100 shadow-sm">
+              <h3 className="text-2xl font-bold text-[#8B6914] mb-1">{rich.mentorProfile.name}</h3>
+              <div className="text-gray-600 text-sm mb-4">{rich.mentorProfile.title}</div>
+              <p className="text-gray-700 leading-relaxed mb-4">{rich.mentorProfile.bio}</p>
               {rich.mentorProfile.expertise && (
                 <div className="flex flex-wrap gap-2 mb-4">
                   {rich.mentorProfile.expertise.map((e) => (
-                    <span key={e} className="px-3 py-1 text-xs rounded-full bg-[#D4A855]/10 text-[#D4A855] border border-[#D4A855]/20">
+                    <span key={e} className="px-3 py-1 text-xs rounded-full bg-[#8B6914]/10 text-[#8B6914] border border-[#8B6914]/20">
                       {e}
                     </span>
                   ))}
@@ -261,17 +261,17 @@ export default async function Page({ params }: Props) {
 
         {/* Transformation Path */}
         {rich?.transformationPath && rich.transformationPath.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">
               蜕变路径
             </h2>
             <div className="space-y-4">
               {rich.transformationPath.map((step, i) => (
                 <div key={i} className="flex items-start gap-4">
-                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-[#D4A855]/20 text-[#D4A855] font-bold text-sm flex items-center justify-center">
+                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-[#8B6914]/20 text-[#8B6914] font-bold text-sm flex items-center justify-center">
                     {i + 1}
                   </div>
-                  <p className="text-gray-300 pt-1">{step}</p>
+                  <p className="text-gray-700 pt-1">{step}</p>
                 </div>
               ))}
             </div>
@@ -280,32 +280,32 @@ export default async function Page({ params }: Props) {
 
         {/* Testimonials */}
         {rich?.testimonials && rich.testimonials.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">
               蜕变见证
             </h2>
             <div className="space-y-6">
               {rich.testimonials.map((t, i) => (
-                <div key={i} className="p-8 rounded-2xl bg-gray-900/80 border border-gray-800">
-                  <p className="text-xl text-[#D4A855] font-medium mb-6 leading-relaxed">
+                <div key={i} className="p-8 rounded-2xl bg-white border border-gray-100 shadow-sm">
+                  <p className="text-xl text-[#8B6914] font-medium mb-6 leading-relaxed">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div className="p-4 rounded-xl bg-red-900/10 border border-red-900/20">
-                      <div className="text-red-400 text-xs font-semibold mb-2">BEFORE</div>
-                      <p className="text-gray-400 text-sm">{t.before}</p>
+                    <div className="p-4 rounded-xl bg-red-50 border border-red-100">
+                      <div className="text-red-500 text-xs font-semibold mb-2">BEFORE</div>
+                      <p className="text-gray-600 text-sm">{t.before}</p>
                     </div>
-                    <div className="p-4 rounded-xl bg-green-900/10 border border-green-900/20">
-                      <div className="text-green-400 text-xs font-semibold mb-2">AFTER</div>
-                      <p className="text-gray-400 text-sm">{t.after}</p>
+                    <div className="p-4 rounded-xl bg-green-50 border border-green-100">
+                      <div className="text-green-600 text-xs font-semibold mb-2">AFTER</div>
+                      <p className="text-gray-600 text-sm">{t.after}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#D4A855]/20 text-[#D4A855] font-bold flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-[#8B6914]/20 text-[#8B6914] font-bold flex items-center justify-center">
                       {t.name[0]}
                     </div>
                     <div>
-                      <div className="text-white font-medium">{t.name}</div>
+                      <div className="text-gray-900 font-medium">{t.name}</div>
                       <div className="text-gray-500 text-sm">{t.role} · {t.company}</div>
                     </div>
                   </div>
@@ -317,8 +317,8 @@ export default async function Page({ params }: Props) {
 
         {/* Gallery */}
         {rich?.gallery && rich.gallery.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">实景图集</h2>
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">实景图集</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {rich.gallery.map((url, i) => (
                 <div key={i} className="aspect-square rounded-xl overflow-hidden">
@@ -331,13 +331,13 @@ export default async function Page({ params }: Props) {
 
         {/* Target Audience */}
         {rich?.targetAudience && rich.targetAudience.length > 0 && (
-          <section className="py-16 border-b border-gray-800">
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-8">适合人群</h2>
+          <section className="py-16 border-b border-gray-200">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-8">适合人群</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {rich.targetAudience.map((a, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-900/50 border border-gray-800">
-                  <span className="text-[#D4A855] mt-0.5">✦</span>
-                  <span className="text-gray-300">{a}</span>
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+                  <span className="text-[#8B6914] mt-0.5">✦</span>
+                  <span className="text-gray-700">{a}</span>
                 </div>
               ))}
             </div>
@@ -348,12 +348,12 @@ export default async function Page({ params }: Props) {
         <section className="py-16">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 开启{theme.title}
               </h2>
               <p className="text-gray-500">填写咨询表，我们的成长顾问将为您量身定制</p>
             </div>
-            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-8">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
               <PersonalInquiryForm defaultThemeId={theme.slug} />
             </div>
           </div>
@@ -368,8 +368,8 @@ function TimeBlock({ label, icon, text }: { label: string; icon: string; text: s
     <div className="flex items-start gap-3">
       <span className="text-lg mt-0.5 flex-shrink-0">{icon}</span>
       <div>
-        <span className="text-[#D4A855] text-xs font-semibold">{label}</span>
-        <p className="text-gray-400 text-sm mt-0.5 leading-relaxed">{text}</p>
+        <span className="text-[#8B6914] text-xs font-semibold">{label}</span>
+        <p className="text-gray-600 text-sm mt-0.5 leading-relaxed">{text}</p>
       </div>
     </div>
   );

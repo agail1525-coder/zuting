@@ -15,14 +15,14 @@ export default async function Page() {
   const themes = Array.isArray(res) ? res : (res?.items ?? []);
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-[#FFFBF0] text-gray-900">
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="mb-4">
-          <Link href="/personal-growth" className="text-[#D4A855] hover:text-[#E0B96E] text-sm">
+          <Link href="/personal-growth" className="text-[#8B6914] hover:text-[#A67C1E] text-sm">
             ← 个人成长
           </Link>
         </div>
-        <h1 className="text-3xl lg:text-5xl font-bold text-white mb-3">
+        <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-3">
           修炼主题
         </h1>
         <p className="text-gray-500 mb-12 max-w-2xl">
