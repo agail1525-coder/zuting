@@ -4,8 +4,8 @@ import MerchantsClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "旅途配套服务 — Joinus 全球祖庭旅行平台",
-  description: "精选餐饮、住宿、导游、养生、摄影等优质旅游配套商家，让每一段朝圣之旅充实有趣。",
+  title: "旅途配套服务 — 佳绩之旅",
+  description: "精选餐饮、住宿、导游、养生、摄影等优质旅游配套商家，让每一段文化之旅充实有趣。",
   openGraph: {
     title: "Travel Services & Partners — Joinus",
     description: "Curated dining, lodging, guides, wellness & more for your spiritual journey.",

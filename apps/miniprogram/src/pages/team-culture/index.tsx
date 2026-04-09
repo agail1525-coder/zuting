@@ -45,7 +45,7 @@ export default function TeamCulturePage() {
       <View className='tc-hero'>
         <Text className='tc-hero-kicker'>B2B 旗舰 · 企业与高管团队文化打造</Text>
         <Text className='tc-hero-title'>把祖庭变成团队的精神高地</Text>
-        <Text className='tc-hero-sub'>为企业、高管圈层与家族办公室定制深度文化朝圣</Text>
+        <Text className='tc-hero-sub'>为企业、高管圈层与家族办公室定制深度文化探访</Text>
         <View className='tc-tags'>
           {['企业团队', '高管团队', '家族办公室', '公益组织', '政府机关'].map((tag) => (
             <View key={tag} className='tc-tag'>
@@ -62,12 +62,12 @@ export default function TeamCulturePage() {
       )}
 
       <View className='tc-methodology'>
-        <Text className='tc-methodology-kicker'>⚡ ZUTING 文化朝圣五步法</Text>
-        <Text className='tc-methodology-title'>把一次朝圣 · 变成企业的百年文化</Text>
+        <Text className='tc-methodology-kicker'>⚡ ZUTING 文化探访五步法</Text>
+        <Text className='tc-methodology-title'>把一次文化之旅 · 变成企业的百年文化</Text>
         <Text className='tc-methodology-sub'>五步沉淀,百年传承。可被代际继承的文化基因。</Text>
         {[
           { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评' },
-          { n: '02', icon: '🗺️', title: '朝圣定制', sub: '12 信仰 × 60 圣地匹配' },
+          { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 60 圣地匹配' },
           { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会' },
           { n: '04', icon: '📜', title: '沉淀转化', sub: '影像 + 证书 + 文化手册' },
           { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班传承' },

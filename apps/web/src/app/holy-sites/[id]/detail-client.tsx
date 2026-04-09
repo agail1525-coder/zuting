@@ -201,7 +201,7 @@ function ReviewPreview({ targetType, targetId, siteName }: { targetType: string;
   return (
     <div className="border border-gray-200 rounded-xl p-4 mt-6">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-medium text-gray-500">{t("holysite.pilgrimReview")?.replace("{name}", siteName) || `朝圣者对${siteName}的评价`}</p>
+        <p className="text-sm font-medium text-gray-500">{t("holysite.pilgrimReview")?.replace("{name}", siteName) || `文化旅行者对${siteName}的评价`}</p>
         <a href="#reviews" className="text-sm text-[#3264ff] hover:underline">{t("common.viewMoreReviews") || "查看更多评价"}</a>
       </div>
       <div className="flex items-center gap-3">
@@ -370,11 +370,11 @@ function FAQSection({ siteName, country }: { siteName: string; country: string }
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
     { q: (t("holysite.faq.q1") || `如何到达${siteName}？`).replace("{name}", siteName).replace("{country}", country), a: (t("holysite.faq.a1") || `${siteName}位于${country}，可通过公共交通或自驾前往。建议提前查看具体交通路线，部分圣地可能需要步行一段距离。推荐使用AI规划师获取详细交通方案。`).replace("{name}", siteName).replace("{country}", country) },
-    { q: t("holysite.faq.q2") || "最佳参访时间是什么时候？", a: t("holysite.faq.a2") || "一般推荐春秋两季参访，天气宜人且游客相对较少。重要宗教节日期间会有特殊活动，但也会更加拥挤。建议避开公共假期高峰期。" },
-    { q: t("holysite.faq.q3") || "需要购买门票吗？", a: t("holysite.faq.a3") || "不同圣地的门票政策各异。部分宗教场所免费开放，部分收取象征性的维护费用。具体票价请查看路线详情页或咨询AI规划师。" },
+    { q: t("holysite.faq.q2") || "最佳参访时间是什么时候？", a: t("holysite.faq.a2") || "一般推荐春秋两季参访，天气宜人且游客相对较少。重要文化节日期间会有特殊活动，但也会更加拥挤。建议避开公共假期高峰期。" },
+    { q: t("holysite.faq.q3") || "需要购买门票吗？", a: t("holysite.faq.a3") || "不同圣地的门票政策各异。部分文化场所免费开放，部分收取象征性的维护费用。具体票价请查看路线详情页或咨询AI规划师。" },
     { q: t("holysite.faq.q4") || "周边有住宿推荐吗？", a: t("holysite.faq.a4") || "大部分圣地周边都有丰富的住宿选择，从经济型客栈到修行中心、禅修民宿应有尽有。预订包含此圣地的路线套餐可享受精选住宿安排。" },
-    { q: t("holysite.faq.q5") || "有着装要求吗？", a: t("holysite.faq.a5") || "参访宗教圣地通常需要得体着装，避免过于暴露的服装。部分殿堂内需要脱鞋，建议穿易穿脱的鞋子。请尊重当地宗教文化习俗。" },
-    { q: t("holysite.faq.q6") || "可以拍照吗？", a: t("holysite.faq.a6") || "户外区域通常允许拍照，但殿堂内部可能禁止拍照或使用闪光灯。请留意现场标识，尊重宗教场所的规定。" },
+    { q: t("holysite.faq.q5") || "有着装要求吗？", a: t("holysite.faq.a5") || "参访文化圣地通常需要得体着装，避免过于暴露的服装。部分殿堂内需要脱鞋，建议穿易穿脱的鞋子。请尊重当地文化习俗。" },
+    { q: t("holysite.faq.q6") || "可以拍照吗？", a: t("holysite.faq.a6") || "户外区域通常允许拍照，但殿堂内部可能禁止拍照或使用闪光灯。请留意现场标识，尊重文化场所的规定。" },
   ];
 
   return (
@@ -470,8 +470,8 @@ function MoreRecommendations({ religion, country }: { religion?: string; country
   const { t } = useTranslation();
   const items = [
     { href: `/holy-sites?country=${encodeURIComponent(country)}`, label: t("holysite.nearbySites")?.replace("{country}", country) || `${country}附近圣地` },
-    { href: "/holy-sites#routes", label: t("holysite.popularRoutes") || "热门朝圣路线" },
-    { href: "/community?type=guide", label: t("holysite.recommendedGuides") || "推荐朝圣攻略" },
+    { href: "/holy-sites#routes", label: t("holysite.popularRoutes") || "热门文化路线" },
+    { href: "/community?type=guide", label: t("holysite.recommendedGuides") || "推荐旅行攻略" },
     { href: "/community?type=tip", label: t("holysite.travelTips") || "旅行实用贴士" },
     ...(religion ? [{ href: `/holy-sites?religion=${encodeURIComponent(religion)}`, label: t("holysite.relatedSites")?.replace("{religion}", religion) || `${religion}相关圣地` }] : []),
   ];
@@ -574,7 +574,7 @@ function CulturalEtiquette() {
     { icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", title: t("etiquette.dressCode") || "着装规范", desc: t("etiquette.dressDesc") || "穿着得体，遮盖肩膀和膝盖，避免暴露服装" },
     { icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z", title: t("etiquette.photography") || "拍照须知", desc: t("etiquette.photoDesc") || "殿堂内禁止拍照和使用闪光灯，户外可自由拍摄" },
     { icon: "M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z", title: t("etiquette.quiet") || "保持安静", desc: t("etiquette.quietDesc") || "殿堂内保持肃静，手机调为静音模式" },
-    { icon: "M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11", title: t("etiquette.worship") || "参拜礼仪", desc: t("etiquette.worshipDesc") || "请遵循当地宗教参拜方式，入乡随俗" },
+    { icon: "M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11", title: t("etiquette.worship") || "参拜礼仪", desc: t("etiquette.worshipDesc") || "请遵循当地文化参拜方式，入乡随俗" },
     { icon: "M13 10V3L4 14h7v7l9-11h-7z", title: t("etiquette.shoes") || "脱鞋区域", desc: t("etiquette.shoesDesc") || "部分殿堂需脱鞋进入，穿易穿脱的鞋子" },
     { icon: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636", title: t("etiquette.taboos") || "禁忌事项", desc: t("etiquette.taboosDesc") || "勿触摸佛像，勿用手指向神像" },
   ];
@@ -733,7 +733,7 @@ function PackingChecklist() {
 function TravelerTypeTags() {
   const { t } = useTranslation();
   const types = [
-    { label: t("holysite.travelerTypes.solo") || "独行朝圣", pct: 35 },
+    { label: t("holysite.travelerTypes.solo") || "独行探访", pct: 35 },
     { label: t("holysite.travelerTypes.family") || "家庭出行", pct: 25 },
     { label: t("holysite.travelerTypes.couple") || "情侣同行", pct: 20 },
     { label: t("holysite.travelerTypes.friends") || "朋友结伴", pct: 15 },
@@ -787,7 +787,7 @@ function StickyCTACard({ site, lowestPrice }: { site: HolySite; lowestPrice: num
         )}
 
         <Link
-          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的朝圣路线`)}`}
+          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的文化之旅路线`)}`}
           className="mt-3 block w-full py-2.5 rounded-lg bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold text-center transition-colors text-sm"
         >
           {t("holysite.cta.aiConsult") || "AI规划师咨询"}
@@ -1132,7 +1132,7 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
           )}
         </div>
         <Link
-          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的朝圣路线`)}`}
+          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${site.name}"的文化之旅路线`)}`}
           className="px-5 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
         >
           {t("holysite.cta.bookNow") || "立即预订"}

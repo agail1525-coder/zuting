@@ -20,7 +20,7 @@ const GOLD = '#D4A855';
 
 const TYPE_TABS = [
   { key: '', label: '全部' },
-  { key: 'PILGRIMAGE', label: '朝圣之旅' },
+  { key: 'PILGRIMAGE', label: '文化之旅' },
   { key: 'CULTURAL', label: '文化体验' },
   { key: 'MEDITATION', label: '修行静修' },
   { key: 'ADVENTURE', label: '探索探险' },

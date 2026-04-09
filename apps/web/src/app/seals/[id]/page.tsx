@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const numId = parseInt(id, 10);
   try {
     const seal = await fetchSeal(numId);
-    const title = `第${seal.id}印 ${seal.name} | 祖庭旅行`;
+    const title = `第${seal.id}印 ${seal.name} | 佳绩之旅`;
     const description = seal.essence
       ? seal.essence.slice(0, 160)
       : `曹溪愿命三十印 - 第${seal.id}印「${seal.name}」。`;
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "印详情 | 祖庭旅行" };
+    return { title: "印详情 | 佳绩之旅" };
   }
 }
 

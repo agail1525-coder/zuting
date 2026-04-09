@@ -5,18 +5,18 @@ import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 
 const FEATURES = [
-  { icon: 'globe-outline' as const, label: '12大信仰', desc: '佛教、道教、基督教等全球宗教文化' },
-  { icon: 'location-outline' as const, label: '60+圣地', desc: '覆盖全球宗教圣地与朝圣目的地' },
-  { icon: 'business-outline' as const, label: '27祖庭', desc: '各信仰重要祖庭完整档案' },
-  { icon: 'people-outline' as const, label: '28祖师', desc: '各信仰创始人与重要人物传记' },
+  { icon: 'globe-outline' as const, label: '12大文化传统', desc: '佛教文化、道教文化、基督文化等全球文化传统' },
+  { icon: 'location-outline' as const, label: '60+圣地', desc: '覆盖全球文化圣地与文化探访目的地' },
+  { icon: 'business-outline' as const, label: '27祖庭', desc: '各文化传统重要祖庭完整档案' },
+  { icon: 'people-outline' as const, label: '28祖师', desc: '各文化传统创始人与重要人物传记' },
   { icon: 'language-outline' as const, label: '7语言', desc: '中/英/日/韩/泰/印地/阿拉伯' },
-  { icon: 'chatbubble-ellipses-outline' as const, label: '小鸿AI', desc: '智能问答助手，随时解答宗教文化问题' },
+  { icon: 'chatbubble-ellipses-outline' as const, label: '小鸿AI', desc: '智能问答助手，随时解答文化知识问题' },
 ];
 
 const PLATFORM_STATS = [
-  { value: '60+', label: '朝圣圣地' },
+  { value: '60+', label: '文化圣地' },
   { value: '27+', label: '历史祖庭' },
-  { value: '12', label: '世界宗教' },
+  { value: '12', label: '文化传统' },
   { value: '7', label: '支持语言' },
   { value: '5', label: '跨端平台' },
   { value: '10+', label: '精品路线' },
@@ -44,7 +44,7 @@ export default function AboutScreen() {
           <Ionicons name="earth" size={56} color={colors.gold} />
         </View>
         <Text style={styles.title}>JOINUS.COM</Text>
-        <Text style={styles.subtitle}>全球祖庭之旅</Text>
+        <Text style={styles.subtitle}>佳绩之旅</Text>
       </View>
 
       {/* Platform Stats Bar */}
@@ -61,10 +61,10 @@ export default function AboutScreen() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>我们的使命</Text>
         <Text style={styles.missionText}>
-          帮助100万人走祖庭，建立全球宗教文化和平使者网络。
+          帮助100万人走祖庭，建立全球文化和平使者网络。
         </Text>
         <Text style={styles.cardDesc}>
-          JOINUS.COM 致力于成为全球宗教文化旅行平台 NO.1，融合十大顶级旅行网站的全部优势功能，同时深耕宗教文化垂直领域，为每一位旅行者提供沉浸式的朝圣体验。
+          JOINUS.COM 致力于成为全球文化旅行平台 NO.1，融合十大顶级旅行网站的全部优势功能，同时深耕文化垂直领域，为每一位旅行者提供沉浸式的文化之旅体验。
         </Text>
       </View>
 
@@ -110,9 +110,9 @@ export default function AboutScreen() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>核心价值观</Text>
         <View style={styles.valueGrid}>
-          <ValueItem title="跨文明对话" desc="促进不同宗教信仰之间的理解与尊重" />
+          <ValueItem title="跨文明对话" desc="促进不同文化传统之间的理解与尊重" />
           <ValueItem title="和平使者" desc="通过旅行传播和平理念，连接世界" />
-          <ValueItem title="数字传承" desc="用科技保存和传播珍贵的宗教文化遗产" />
+          <ValueItem title="数字传承" desc="用科技保存和传播珍贵的文化遗产" />
           <ValueItem title="沉浸体验" desc="视频、全景、音频导览，身临其境" />
         </View>
       </View>
@@ -127,8 +127,8 @@ export default function AboutScreen() {
 
       {/* Bottom CTA */}
       <View style={styles.bottomCTA}>
-        <Text style={styles.ctaTitle}>开始你的朝圣之旅</Text>
-        <Text style={styles.ctaSubtitle}>探索全球圣地，体验宗教文化之美</Text>
+        <Text style={styles.ctaTitle}>开始你的文化之旅</Text>
+        <Text style={styles.ctaSubtitle}>探索全球圣地，体验文化之美</Text>
         <View style={styles.ctaButtons}>
           <Pressable style={styles.ctaBtn} onPress={() => router.push('/holy-sites')}>
             <Ionicons name="location-outline" size={16} color="#FFFFFF" />
@@ -143,7 +143,7 @@ export default function AboutScreen() {
 
       {/* Version */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>全球祖庭旅行平台 v0.2.0</Text>
+        <Text style={styles.footerText}>佳绩之旅 v0.2.0</Text>
         <Text style={styles.footerSubtext}>
           加入我们，探索世界
         </Text>

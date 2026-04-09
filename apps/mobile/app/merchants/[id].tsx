@@ -50,7 +50,7 @@ export default function MerchantDetailScreen() {
     try {
       await Share.share({
         title: merchant.name,
-        message: `查看合作商家「${merchant.name}」— 全球祖庭旅行平台`,
+        message: `查看合作商家「${merchant.name}」— 佳绩之旅`,
       });
     } catch {
       // user cancelled

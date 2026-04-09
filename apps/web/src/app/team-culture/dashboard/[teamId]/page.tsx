@@ -185,7 +185,7 @@ export default function TeamWorkspacePage() {
             <h2 className="text-xl font-bold mb-5 text-gray-900">文化证书 ({certs.length})</h2>
             {certs.length === 0 ? (
               <div className="p-12 rounded-2xl bg-white border border-gray-200 shadow-sm text-center text-gray-500">
-                还没有证书。完成一次朝圣之旅后，由平台签发文化证书。
+                还没有证书。完成一次文化之旅后，由平台签发文化证书。
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 gap-5">

@@ -45,7 +45,7 @@ function ReviewItem({ review }: ReviewItemProps) {
             {(review.user.nickname ?? '匿').charAt(0)}
           </Text>
         </View>
-        <Text className='review-card__nickname'>{review.user.nickname ?? '匿名朝圣者'}</Text>
+        <Text className='review-card__nickname'>{review.user.nickname ?? '匿名旅行者'}</Text>
         <Text className='review-card__date'>{review.createdAt.slice(0, 10)}</Text>
       </View>
       <StarRating value={review.rating} readonly size='small' />
@@ -100,7 +100,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
   if (loading) {
     return (
       <View className='review-section'>
-        <Text className='review-section__title'>朝圣评价</Text>
+        <Text className='review-section__title'>文化之旅评价</Text>
         <Text className='review-section__loading'>加载评价中...</Text>
       </View>
     )
@@ -111,7 +111,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
   return (
     <View className='review-section'>
       <View className='review-section__header'>
-        <Text className='review-section__title'>朝圣评价</Text>
+        <Text className='review-section__title'>文化之旅评价</Text>
         <View className='review-section__write-btn' onClick={handleWriteReview}>
           <Text className='review-section__write-text'>写评价</Text>
         </View>

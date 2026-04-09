@@ -39,7 +39,7 @@ function RootLayout() {
         />
         <Stack.Screen
           name="religions/[slug]"
-          options={{ title: '信仰详情' }}
+          options={{ title: '文化详情' }}
         />
         <Stack.Screen
           name="holy-sites/[id]"
@@ -67,7 +67,7 @@ function RootLayout() {
         />
         <Stack.Screen
           name="journals/index"
-          options={{ title: '朝圣日记' }}
+          options={{ title: '文化日记' }}
         />
         <Stack.Screen
           name="search"
@@ -143,7 +143,7 @@ function RootLayout() {
         />
         <Stack.Screen
           name="about"
-          options={{ title: '关于祖庭之旅' }}
+          options={{ title: '关于佳绩之旅' }}
         />
         <Stack.Screen
           name="privacy"

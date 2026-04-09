@@ -50,8 +50,8 @@ export default function LoginScreen() {
           <View style={styles.logoCircle}>
             <Text style={styles.logoText}>🏛</Text>
           </View>
-          <Text style={styles.title}>全球祖庭之旅</Text>
-          <Text style={styles.subtitle}>登录开始您的朝圣旅程</Text>
+          <Text style={styles.title}>佳绩之旅</Text>
+          <Text style={styles.subtitle}>登录开始您的文化之旅</Text>
         </View>
 
         {/* Form */}

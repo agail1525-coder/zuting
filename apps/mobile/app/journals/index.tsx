@@ -129,8 +129,8 @@ export default function JournalsScreen() {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <Text style={styles.emptyEmoji}>📖</Text>
-        <Text style={styles.emptyTitle}>还没有朝圣日志</Text>
-        <Text style={styles.emptySubtitle}>记录你的修行感悟和朝圣之旅</Text>
+        <Text style={styles.emptyTitle}>还没有文化之旅日志</Text>
+        <Text style={styles.emptySubtitle}>记录你的感悟和文化之旅</Text>
         <Pressable
           style={({ pressed }) => [styles.fab, styles.fabInline, pressed && styles.fabPressed]}
           onPress={() => router.push('/journals/create' as any)}
@@ -153,9 +153,9 @@ export default function JournalsScreen() {
             {/* Header */}
             <View style={styles.header}>
               <Text style={styles.headerEmoji}>📖</Text>
-              <Text style={styles.headerTitle}>朝圣日记</Text>
+              <Text style={styles.headerTitle}>文化之旅日记</Text>
               <Text style={styles.headerSubtitle}>
-                记录每一段修行与朝圣的感悟
+                记录每一段文化探访的感悟
               </Text>
             </View>
 

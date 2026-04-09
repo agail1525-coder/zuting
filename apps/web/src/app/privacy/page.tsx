@@ -4,7 +4,7 @@ import MobileNav from "@/components/MobileNav";
 export const metadata: Metadata = {
   title: "隐私政策",
   description:
-    "全球祖庭旅行平台隐私政策，了解我们如何收集、使用和保护您的个人信息。",
+    "佳绩之旅隐私政策，了解我们如何收集、使用和保护您的个人信息。",
   alternates: {
     canonical: "https://zuting.fszyl.top/privacy",
   },
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
         {/* 引言 */}
         <section>
           <p>
-            全球祖庭旅行平台（以下简称&ldquo;本平台&rdquo;或&ldquo;我们&rdquo;）深知个人信息对您的重要性，并会尽全力保护您的个人信息安全可靠。我们致力于维持您对我们的信任，恪守以下原则保护您的个人信息：权责一致原则、目的明确原则、选择同意原则、最少够用原则、确保安全原则、主体参与原则、公开透明原则等。
+            佳绩之旅（以下简称&ldquo;本平台&rdquo;或&ldquo;我们&rdquo;）深知个人信息对您的重要性，并会尽全力保护您的个人信息安全可靠。我们致力于维持您对我们的信任，恪守以下原则保护您的个人信息：权责一致原则、目的明确原则、选择同意原则、最少够用原则、确保安全原则、主体参与原则、公开透明原则等。
           </p>
           <p className="mt-3">
             本隐私政策适用于您通过本平台的网站、移动应用程序、微信小程序等渠道使用我们的服务。请您在使用我们的服务前，仔细阅读并了解本隐私政策。
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong className="text-temple-200">行程数据：</strong>
-              您创建的行程信息、朝圣日志、浏览记录等，用于提供个性化服务。
+              您创建的行程信息、旅行日志、浏览记录等，用于提供个性化服务。
             </li>
             <li>
               <strong className="text-temple-200">支付信息：</strong>
@@ -84,11 +84,11 @@ export default function PrivacyPage() {
           <ul className="list-disc list-inside space-y-2 ml-2">
             <li>
               <strong className="text-temple-200">提供核心服务：</strong>
-              宗教文化内容浏览、圣地查询、祖庭信息展示。
+              文化内容浏览、圣地查询、祖庭信息展示。
             </li>
             <li>
               <strong className="text-temple-200">行程管理：</strong>
-              创建、管理和跟踪您的朝圣行程，提供行程状态更新。
+              创建、管理和跟踪您的文化之旅行程，提供行程状态更新。
             </li>
             <li>
               <strong className="text-temple-200">支付处理：</strong>
@@ -96,7 +96,7 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong className="text-temple-200">AI助手服务：</strong>
-              基于您的提问提供宗教文化知识问答和行程建议。
+              基于您的提问提供文化知识问答和行程建议。
             </li>
             <li>
               <strong className="text-temple-200">数据分析：</strong>
@@ -253,7 +253,7 @@ export default function PrivacyPage() {
           <div className="bg-temple-900/60 rounded-xl p-6 border border-gold/10 space-y-2">
             <p>
               <strong className="text-temple-200">平台名称：</strong>
-              全球祖庭旅行平台
+              佳绩之旅
             </p>
             <p>
               <strong className="text-temple-200">电子邮箱：</strong>

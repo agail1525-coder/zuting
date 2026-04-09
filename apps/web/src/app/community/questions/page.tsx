@@ -11,7 +11,7 @@ import MobileNav from "@/components/MobileNav";
 
 const SORT_KEYS = ["latest", "hot", "unanswered"] as const;
 
-const POPULAR_TAGS = ["朝圣路线", "签证", "住宿", "交通", "佛教", "道教", "伊斯兰教", "印度教", "基督教", "朝圣礼仪"];
+const POPULAR_TAGS = ["文化路线", "签证", "住宿", "交通", "佛教", "道教", "伊斯兰教", "印度教", "基督教", "参访礼仪"];
 
 function formatDate(dateStr: string, t: (key: string) => string) {
   const d = new Date(dateStr);
@@ -324,7 +324,7 @@ export default function QuestionsPage() {
           <div className="bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10 text-center">
             <span className="text-2xl block mb-2">💡</span>
             <h3 className="text-base font-semibold text-gray-900">找不到答案？试试AI助手</h3>
-            <p className="text-gray-500 text-xs mt-1">小鸿AI可以回答各种朝圣相关问题</p>
+            <p className="text-gray-500 text-xs mt-1">小鸿AI可以回答各种文化之旅相关问题</p>
             <Link
               href="/chat"
               className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"

@@ -176,7 +176,7 @@ export default function WriteReviewModal({
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="分享你的朝圣体验，帮助其他旅行者..."
+                placeholder="分享你的文化之旅体验，帮助其他旅行者..."
                 rows={4}
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-[#0066FF]/50 focus:ring-2 focus:ring-[#0066FF]/10 resize-none"
               />

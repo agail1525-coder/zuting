@@ -9,7 +9,7 @@ import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 const TYPES = [
   { key: 'guide', label: '游记达人', icon: '📖', unit: '篇' },
   { key: 'review', label: '评价达人', icon: '⭐', unit: '条' },
-  { key: 'pilgrim', label: '朝圣达人', icon: '🕌', unit: '个' },
+  { key: 'pilgrim', label: '文化达人', icon: '🕌', unit: '个' },
 ];
 
 const PERIODS = [

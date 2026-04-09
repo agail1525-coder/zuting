@@ -5,7 +5,7 @@ import { listCases } from "@/lib/api/personal-growth";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "蜕变案例 | 企业家个人圆满 | Joinus",
+  title: "蜕变案例 | 个人圆满 | Joinus",
   description: "真实企业家的蜕变故事——从迷茫到觉醒、从焦虑到定力",
 };
 
@@ -18,7 +18,7 @@ export default async function Page() {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="mb-4">
           <Link href="/personal-growth" className="text-[#8B6914] hover:text-[#A67C1E] text-sm">
-            ← 个人成长
+            ← 个人圆满
           </Link>
         </div>
         <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-3">蜕变案例</h1>
@@ -32,7 +32,7 @@ export default async function Page() {
               href="/personal-growth"
               className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#8B6914] text-white rounded-lg font-semibold hover:bg-[#A67C1E] transition-all"
             >
-              返回个人成长 →
+              返回个人圆满 →
             </Link>
           </div>
         ) : (

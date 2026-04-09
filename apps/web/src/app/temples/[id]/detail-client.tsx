@@ -331,7 +331,7 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
           </>
         )}
         <Link
-          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"祖庭的朝圣路线`)}`}
+          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"祖庭的文化之旅路线`)}`}
           className="mt-3 block w-full py-2.5 rounded-lg bg-[#3264ff] hover:bg-[#2854e0] text-white font-semibold text-center transition-colors text-sm"
         >
           {t("templeDetail.aiPlannerConsult")}
@@ -370,7 +370,7 @@ function StickyCTACard({ temple, lowestPrice }: { temple: Temple; lowestPrice: n
         </div>
       )}
 
-      {/* 朝圣日志入口 */}
+      {/* 旅行日志入口 */}
       <div className="mt-3 bg-white rounded-lg border border-[#dadfe6] p-3" style={{ boxShadow: "0 2px 8px rgba(15,41,77,0.08)" }}>
         <div className="flex items-center gap-3">
           <svg className="w-6 h-6 text-[#3264ff] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
@@ -916,7 +916,7 @@ export default function TempleDetailClient({ temple }: { temple: Temple }) {
           )}
         </div>
         <Link
-          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"的朝圣路线`)}`}
+          href={`/chat?q=${encodeURIComponent(`帮我规划包含"${temple.name}"的文化之旅路线`)}`}
           className="px-5 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
         >
           {t("templeDetail.bookNow")}

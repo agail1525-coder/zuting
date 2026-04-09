@@ -1,7 +1,7 @@
 {
   "miniprogramRoot": "dist/",
   "projectname": "zuting-miniprogram",
-  "description": "全球祖庭旅行平台",
+  "description": "佳绩之旅",
   "appid": "touristappid",
   "setting": {
     "urlCheck": true,

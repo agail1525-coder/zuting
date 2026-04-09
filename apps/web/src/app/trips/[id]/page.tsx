@@ -325,7 +325,7 @@ export default function TripDetailPage() {
             href="/journals/create"
             className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 text-sm"
           >
-            写朝圣日志 →
+            写旅行日志 →
           </Link>
         )}
         <Link

@@ -77,7 +77,7 @@ export default function TeamCultureScreen() {
           <Text style={styles.heroKicker}>B2B 旗舰 · 企业与高管团队文化打造</Text>
           <Text style={styles.heroTitle}>把祖庭变成团队的精神高地</Text>
           <Text style={styles.heroSub}>
-            为企业、高管圈层与家族办公室定制深度文化朝圣
+            为企业、高管圈层与家族办公室定制深度文化探访
           </Text>
           <View style={styles.tagsRow}>
             {['企业团队', '高管团队', '家族办公室', '公益组织', '政府机关'].map((t) => (
@@ -96,14 +96,14 @@ export default function TeamCultureScreen() {
 
         {/* 五步法 Methodology */}
         <View style={styles.methodologySection}>
-          <Text style={styles.methodologyKicker}>⚡ ZUTING 文化朝圣五步法</Text>
-          <Text style={styles.methodologyTitle}>把一次朝圣 · 变成企业的百年文化</Text>
+          <Text style={styles.methodologyKicker}>⚡ ZUTING 文化探访五步法</Text>
+          <Text style={styles.methodologyTitle}>把一次文化之旅 · 变成企业的百年文化</Text>
           <Text style={styles.methodologySub}>
             五步沉淀,百年传承。我们帮企业铸造可被代际继承的文化基因。
           </Text>
           {[
             { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评 → 母题报告' },
-            { n: '02', icon: '🗺️', title: '朝圣定制', sub: '12 信仰 × 60 圣地匹配 → 专属方案书' },
+            { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 60 圣地匹配 → 专属方案书' },
             { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会 + 集体宣誓' },
             { n: '04', icon: '📜', title: '沉淀转化', sub: '影像档案 + 团队证书 + 文化手册 v1.0' },
             { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班人传承 + 全球网络' },
@@ -169,7 +169,7 @@ export default function TeamCultureScreen() {
         {/* Cases */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>案例实拍</Text>
-          <Text style={styles.sectionSub}>真实团队的朝圣故事</Text>
+          <Text style={styles.sectionSub}>真实团队的文化之旅故事</Text>
           {cases.length === 0 ? (
             <View style={styles.empty}>
               <Ionicons name="people-outline" size={48} color={BLUE} />

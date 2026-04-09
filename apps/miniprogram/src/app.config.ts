@@ -92,7 +92,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#FFFFFF',
-    navigationBarTitleText: '祖庭之旅',
+    navigationBarTitleText: '佳绩之旅',
     navigationBarTextStyle: 'black',
     backgroundColor: '#F5F5F5'
   }

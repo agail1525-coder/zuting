@@ -21,7 +21,7 @@ type Stage = "collect" | "review" | "done";
 
 const CATEGORIES = [
   { value: "", label: "选择分类（可选）" },
-  { value: "pilgrimage-diary", label: "朝圣日记" },
+  { value: "pilgrimage-diary", label: "文化之旅日记" },
   { value: "travel-tips", label: "旅行贴士" },
   { value: "cultural-insight", label: "文化感悟" },
   { value: "route-review", label: "路线测评" },

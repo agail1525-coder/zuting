@@ -35,7 +35,7 @@ export default function ReligionsListScreen() {
 
   return (
     <View style={s.container}>
-      <Stack.Screen options={{ title: '十二大信仰', headerStyle: { backgroundColor: '#FFFFFF' }, headerTintColor: colors.gold }} />
+      <Stack.Screen options={{ title: '十二大文化传统', headerStyle: { backgroundColor: '#FFFFFF' }, headerTintColor: colors.gold }} />
       <FlatList
         data={religions}
         keyExtractor={(item) => item.id}

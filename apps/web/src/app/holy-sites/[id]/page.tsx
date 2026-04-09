@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const site = await fetchHolySite(id);
-    const title = `${site.name} - ${site.country} | 祖庭旅行`;
+    const title = `${site.name} - ${site.country} | 佳绩之旅`;
     const description = site.description || `${site.name}（${site.nameEn}）- ${site.country}的圣地。`;
     return {
       title,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "圣地详情 | 祖庭旅行" };
+    return { title: "圣地详情 | 佳绩之旅" };
   }
 }
 

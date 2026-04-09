@@ -62,7 +62,7 @@ export default function CollectionDetailScreen() {
     if (!collection) return;
     try {
       await Share.share({
-        message: `我在祖庭之旅收藏了"${collection.name}"，包含 ${collection.items?.length ?? 0} 个地点，快来看看！`,
+        message: `我在佳绩之旅收藏了"${collection.name}"，包含 ${collection.items?.length ?? 0} 个地点，快来看看！`,
         title: collection.name,
       });
     } catch {

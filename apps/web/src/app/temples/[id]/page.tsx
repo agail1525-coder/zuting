@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const temple = await fetchTemple(id);
-    const title = `${temple.name} | 祖庭旅行`;
+    const title = `${temple.name} | 佳绩之旅`;
     const description = temple.description || `${temple.name}（${temple.nameEn}）- ${temple.country}的祖庭。`;
     return {
       title,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "祖庭详情 | 祖庭旅行" };
+    return { title: "祖庭详情 | 佳绩之旅" };
   }
 }
 

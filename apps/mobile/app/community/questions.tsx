@@ -50,7 +50,7 @@ export default function QuestionsScreen() {
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={22} color="#111827" />
         </Pressable>
-        <Text style={styles.headerTitle}>朝圣问答</Text>
+        <Text style={styles.headerTitle}>文化问答</Text>
         <View style={{ width: 36 }} />
       </View>
 

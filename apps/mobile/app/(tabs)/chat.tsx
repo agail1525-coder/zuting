@@ -33,12 +33,12 @@ interface Message {
 }
 
 const DEFAULT_SUGGESTIONS = [
-  '推荐一条朝圣路线',
-  '佛教有哪些圣地？',
+  '推荐一条文化之旅路线',
+  '佛教文化有哪些圣地？',
   '什么是曹溪三十印？',
   '如何开始修行？',
-  '基督教圣地介绍',
-  '道教祖庭在哪里？',
+  '基督文化圣地介绍',
+  '道教文化祖庭在哪里？',
 ];
 
 const ERROR_RESPONSE = 'AI助手暂时不可用，请稍后重试';
@@ -46,7 +46,7 @@ const ERROR_RESPONSE = 'AI助手暂时不可用，请稍后重试';
 const WELCOME_MESSAGE: Message = {
   id: 'welcome',
   role: 'bot',
-  content: '您好！我是小鸿 🏛，您的全球祖庭旅行AI助手。\n\n我可以帮您了解世界各大信仰的圣地、祖庭、祖师和修行法门，也可以为您规划朝圣路线。\n\n请问有什么可以帮您的？',
+  content: '您好！我是小鸿 🏛，您的佳绩之旅AI助手。\n\n我可以帮您了解世界各大文化传统的圣地、祖庭、祖师和修行法门，也可以为您规划文化之旅路线。\n\n请问有什么可以帮您的？',
   timestamp: new Date(),
 };
 
@@ -267,7 +267,7 @@ export default function ChatScreen() {
             小鸿 AI 助手
           </Text>
           <Text style={{ color: colors.textSecondary, fontSize: fontSize.md, textAlign: 'center', marginBottom: spacing.xl, lineHeight: 22 }}>
-            登录后即可与小鸿对话{'\n'}了解全球圣地、规划朝圣路线
+            登录后即可与小鸿对话{'\n'}了解全球圣地、规划文化之旅路线
           </Text>
           <Pressable
             style={{

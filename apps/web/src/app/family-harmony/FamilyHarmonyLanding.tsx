@@ -55,7 +55,7 @@ export default function FamilyHarmonyLanding({ themes }: Props) {
               <span className="text-emerald-200">最深的纽带</span>
             </h1>
             <p className="text-lg lg:text-xl text-white/85 mb-10 max-w-2xl leading-relaxed">
-              一个成功的家庭，是个人成长的根基，也是事业持续发展的隐性支撑。
+              一个成功的家庭，是个人圆满的根基，也是事业持续发展的隐性支撑。
               通过12种文化的智慧，帮助您的家庭找到和谐的根基。
             </p>
             <div className="flex flex-wrap gap-4">

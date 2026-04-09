@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '信仰详情'
+  navigationBarTitleText: '文化传统详情'
 })

@@ -127,7 +127,7 @@ function ShareBtn({ teaching, copiedLabel, shareLabel }: ShareBtnProps) {
         teaching.sourceText ? `—— ${teaching.sourceText}` : "",
         teaching.religion?.name ? `【${teaching.religion.name}】` : "",
         "",
-        "via JOINUS.COM 祖庭之旅",
+        "via JOINUS.COM 佳绩之旅",
       ]
         .filter(Boolean)
         .join("\n");

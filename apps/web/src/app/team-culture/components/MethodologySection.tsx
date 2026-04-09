@@ -3,8 +3,8 @@
 import { useTranslation } from "@/lib/i18n";
 
 /**
- * ZUTING 文化朝圣五步法
- * 把"祖庭之旅"拆解成可交付、可复用、可迭代的企业文化工程
+ * ZUTING 文化探访五步法
+ * 把"佳绩之旅"拆解成可交付、可复用、可迭代的企业文化工程
  */
 const STEPS = [
   {

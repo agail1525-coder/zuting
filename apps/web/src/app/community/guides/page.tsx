@@ -10,7 +10,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 
 const POPULAR_TAGS = [
-  { value: "朝圣", key: "tagPilgrimage" },
+  { value: "文化之旅", key: "tagPilgrimage" },
   { value: "佛教", key: "tagBuddhism" },
   { value: "道教", key: "tagTaoism" },
   { value: "伊斯兰教", key: "tagIslam" },
@@ -253,9 +253,9 @@ export default function GuidesPage() {
             <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#0066FF]/10 rounded-full blur-3xl" />
             <div className="relative">
               <span className="text-3xl block mb-3">✍️</span>
-              <h2 className="text-xl font-bold text-white">分享你的朝圣体验</h2>
+              <h2 className="text-xl font-bold text-white">分享你的文化之旅体验</h2>
               <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
-                写下你的旅行故事，帮助更多朝圣者规划路线
+                写下你的旅行故事，帮助更多文化旅行者规划路线
               </p>
               <Link
                 href="/community/guides/write"

@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const teaching = await fetchTeaching(id);
-    const title = `${teaching.name} | 祖庭旅行`;
+    const title = `${teaching.name} | 佳绩之旅`;
     const description = teaching.translationCn
       ? teaching.translationCn.slice(0, 160)
       : teaching.originalText.slice(0, 160);
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "祖训详情 | 祖庭旅行" };
+    return { title: "祖训详情 | 佳绩之旅" };
   }
 }
 

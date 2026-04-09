@@ -25,7 +25,7 @@ const ACTIONS = [
   {
     href: "/journals",
     icon: "📖",
-    label: "朝圣日志",
+    label: "旅行日志",
     labelEn: "Journal",
   },
 ];

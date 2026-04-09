@@ -17,7 +17,7 @@ import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
 
 const TYPE_TABS = [
   { key: 'all', label: '全部' },
-  { key: 'religion', label: '信仰' },
+  { key: 'religion', label: '文化' },
   { key: 'holy-site', label: '圣地' },
   { key: 'temple', label: '祖庭' },
   { key: 'patriarch', label: '祖师' },
@@ -26,7 +26,7 @@ const TYPE_TABS = [
 ];
 
 const TYPE_LABELS: Record<string, string> = {
-  religion: '信仰',
+  religion: '文化',
   'holy-site': '圣地',
   temple: '祖庭',
   patriarch: '祖师',

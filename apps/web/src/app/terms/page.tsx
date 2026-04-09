@@ -4,7 +4,7 @@ import MobileNav from "@/components/MobileNav";
 export const metadata: Metadata = {
   title: "用户协议",
   description:
-    "全球祖庭旅行平台用户服务协议，了解使用本平台的条款和条件。",
+    "佳绩之旅用户服务协议，了解使用本平台的条款和条件。",
   alternates: {
     canonical: "https://zuting.fszyl.top/terms",
   },
@@ -28,7 +28,7 @@ export default function TermsPage() {
         {/* 引言 */}
         <section>
           <p>
-            欢迎使用全球祖庭旅行平台（以下简称&ldquo;本平台&rdquo;）。本用户协议（以下简称&ldquo;本协议&rdquo;）是您与本平台运营方之间关于使用本平台各项服务的法律协议。请您在注册或使用本平台服务前，仔细阅读本协议的全部内容。如果您不同意本协议的任何条款，请勿注册或使用本平台。
+            欢迎使用佳绩之旅（以下简称&ldquo;本平台&rdquo;）。本用户协议（以下简称&ldquo;本协议&rdquo;）是您与本平台运营方之间关于使用本平台各项服务的法律协议。请您在注册或使用本平台服务前，仔细阅读本协议的全部内容。如果您不同意本协议的任何条款，请勿注册或使用本平台。
           </p>
         </section>
 
@@ -38,16 +38,16 @@ export default function TermsPage() {
             一、服务说明
           </h2>
           <p className="mb-3">
-            本平台致力于为用户提供全球宗教圣地旅行服务，包括但不限于：
+            本平台致力于为用户提供全球文化圣地旅行服务，包括但不限于：
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2">
-            <li>十二大信仰的宗教文化知识展示与教育。</li>
-            <li>全球60个宗教圣地的信息查询与导览。</li>
+            <li>十二大文化传统的文化知识展示与教育。</li>
+            <li>全球60个文化圣地的信息查询与导览。</li>
             <li>27个祖庭、28位祖师、39条祖训的详细介绍。</li>
             <li>曹溪愿命三十印的修行内容。</li>
-            <li>小鸿AI智能助手，提供宗教文化知识问答。</li>
-            <li>朝圣行程的创建、预订和管理。</li>
-            <li>朝圣日志的记录与分享。</li>
+            <li>小鸿AI智能助手，提供文化知识问答。</li>
+            <li>文化之旅行程的创建、预订和管理。</li>
+            <li>旅行日志的记录与分享。</li>
             <li>订单管理与在线支付。</li>
           </ul>
         </section>
@@ -85,8 +85,8 @@ export default function TermsPage() {
           <p className="mb-3">使用本平台时，您应遵守以下规范：</p>
           <ul className="list-disc list-inside space-y-2 ml-2">
             <li>
-              <strong className="text-temple-200">尊重宗教信仰：</strong>
-              本平台涵盖多种宗教文化，请尊重各宗教信仰和传统，不得发布侮辱、歧视、攻击任何宗教或信仰的内容。
+              <strong className="text-temple-200">尊重文化传统：</strong>
+              本平台涵盖多种文化传统，请尊重各文化传统，不得发布侮辱、歧视、攻击任何文化传统的内容。
             </li>
             <li>
               <strong className="text-temple-200">禁止不当内容：</strong>
@@ -174,7 +174,7 @@ export default function TermsPage() {
               未经本平台书面许可，您不得以任何方式复制、转载、传播或以其他方式使用平台内容。
             </li>
             <li>
-              您在本平台发布的朝圣日志等用户生成内容，著作权归您所有。但您同意授予本平台非独占的、免费的许可，用于平台内展示和推广。
+              您在本平台发布的旅行日志等用户生成内容，著作权归您所有。但您同意授予本平台非独占的、免费的许可，用于平台内展示和推广。
             </li>
           </ul>
         </section>
@@ -187,11 +187,11 @@ export default function TermsPage() {
           <ul className="list-disc list-inside space-y-2 ml-2">
             <li>
               <strong className="text-temple-200">旅行风险：</strong>
-              朝圣旅行可能存在固有风险，包括但不限于交通、天气、健康等方面的风险。用户应自行评估旅行风险并采取适当的安全措施。本平台建议您出行前购买旅行保险。
+              文化之旅可能存在固有风险，包括但不限于交通、天气、健康等方面的风险。用户应自行评估旅行风险并采取适当的安全措施。本平台建议您出行前购买旅行保险。
             </li>
             <li>
               <strong className="text-temple-200">信息准确性：</strong>
-              本平台尽力确保所提供的宗教文化信息的准确性，但不对其完整性、时效性作出保证。宗教教义和文化内容仅供参考。
+              本平台尽力确保所提供的文化信息的准确性，但不对其完整性、时效性作出保证。文化内容仅供参考。
             </li>
             <li>
               <strong className="text-temple-200">第三方服务：</strong>
@@ -199,7 +199,7 @@ export default function TermsPage() {
             </li>
             <li>
               <strong className="text-temple-200">AI助手：</strong>
-              小鸿AI助手提供的信息仅供参考，不构成专业的宗教、法律或医疗建议。
+              小鸿AI助手提供的信息仅供参考，不构成专业的文化、法律或医疗建议。
             </li>
             <li>
               <strong className="text-temple-200">不可抗力：</strong>
@@ -262,7 +262,7 @@ export default function TermsPage() {
           <div className="bg-temple-900/60 rounded-xl p-6 border border-gold/10 space-y-2">
             <p>
               <strong className="text-temple-200">平台名称：</strong>
-              全球祖庭旅行平台
+              佳绩之旅
             </p>
             <p>
               <strong className="text-temple-200">电子邮箱：</strong>

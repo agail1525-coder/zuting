@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 
 /**
- * AI 朝圣方案规划等待页 — 进度条 + 阶段 + 禅意诗句轮播
+ * AI 文化之旅方案规划等待页 — 进度条 + 阶段 + 禅意诗句轮播
  *
  * 进度策略 (伪进度,给用户安全感):
  *  0-5s    → 0-30%   📚 翻阅祖庭典籍

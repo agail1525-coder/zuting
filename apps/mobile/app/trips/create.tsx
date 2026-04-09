@@ -103,7 +103,7 @@ export default function TripCreateScreen() {
       <View style={styles.centerContainer}>
         <Ionicons name="lock-closed-outline" size={48} color={colors.textMuted} />
         <Text style={styles.emptyText}>请先登录</Text>
-        <Text style={styles.emptySubtext}>登录后即可创建朝圣行程</Text>
+        <Text style={styles.emptySubtext}>登录后即可创建文化之旅行程</Text>
       </View>
     );
   }
@@ -126,7 +126,7 @@ export default function TripCreateScreen() {
           <View style={{ width: 40 }} />
         </View>
 
-        <Text style={styles.headerSubtitle}>规划您的祖庭朝圣之旅</Text>
+        <Text style={styles.headerSubtitle}>规划您的文化之旅</Text>
 
         {/* Error */}
         {error ? (
@@ -143,7 +143,7 @@ export default function TripCreateScreen() {
             style={styles.input}
             value={title}
             onChangeText={setTitle}
-            placeholder="如：东方禅宗祖庭朝圣之旅"
+            placeholder="如：东方禅宗文化之旅"
             placeholderTextColor={colors.textMuted}
             maxLength={100}
           />

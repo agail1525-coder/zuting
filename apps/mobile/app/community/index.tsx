@@ -294,7 +294,7 @@ function LeaderboardTab({ entries, loading }: { entries: LeaderboardEntry[]; loa
     <ScrollView contentContainerStyle={styles.listContent}>
       <View style={styles.leaderboardHeader}>
         <Text style={styles.leaderboardTitle}>本月游记排行</Text>
-        <Text style={styles.leaderboardSubtitle}>发布游记最多的朝圣者</Text>
+        <Text style={styles.leaderboardSubtitle}>发布游记最多的旅行者</Text>
       </View>
       {entries.length === 0 ? (
         <EmptyState icon="trophy-outline" text="暂无排行数据" />

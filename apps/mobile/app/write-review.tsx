@@ -82,7 +82,7 @@ export default function WriteReviewScreen() {
             style={[styles.textInput, content.trim().length > 0 && content.trim().length < 10 && styles.textInputError]}
             value={content}
             onChangeText={setContent}
-            placeholder="分享你的朝圣体验，帮助更多旅行者..."
+            placeholder="分享你的文化之旅体验，帮助更多旅行者..."
             placeholderTextColor="#9CA3AF"
             multiline
             numberOfLines={6}
@@ -97,7 +97,7 @@ export default function WriteReviewScreen() {
         <View style={styles.tipsCard}>
           <Ionicons name="bulb-outline" size={16} color="#F5A623" />
           <Text style={styles.tipsText}>
-            真实的评价能帮助其他朝圣者做出更好的选择。请分享你的真实体验。
+            真实的评价能帮助其他文化旅行者做出更好的选择。请分享你的真实体验。
           </Text>
         </View>
 

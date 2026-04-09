@@ -109,7 +109,7 @@ export default function WriteGuideScreen() {
               style={styles.contentInput}
               value={content}
               onChangeText={setContent}
-              placeholder="分享你的朝圣旅程、心得体会...&#10;&#10;可以描述沿途的风景、感悟到的禅意、遇到的人和事..."
+              placeholder="分享你的文化之旅旅程、心得体会...&#10;&#10;可以描述沿途的风景、感悟到的禅意、遇到的人和事..."
               placeholderTextColor="#9CA3AF"
               multiline
               textAlignVertical="top"
@@ -119,12 +119,12 @@ export default function WriteGuideScreen() {
 
             {/* Tags */}
             <Text style={styles.fieldLabel}>标签</Text>
-            <Text style={styles.fieldHint}>用逗号或空格分隔，例如：禅宗,南华寺,朝圣</Text>
+            <Text style={styles.fieldHint}>用逗号或空格分隔，例如：禅宗,南华寺,文化之旅</Text>
             <TextInput
               style={styles.tagInput}
               value={tagsInput}
               onChangeText={setTagsInput}
-              placeholder="禅宗, 朝圣之旅, 圣地探访..."
+              placeholder="禅宗, 文化之旅, 圣地探访..."
               placeholderTextColor="#9CA3AF"
               editable={!busy}
             />
@@ -146,9 +146,9 @@ export default function WriteGuideScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.tipsTitle}>写作建议</Text>
                 <Text style={styles.tipsText}>
-                  • 描述独特的朝圣体验和感悟{'\n'}
+                  • 描述独特的文化之旅体验和感悟{'\n'}
                   • 分享实用的旅行信息和建议{'\n'}
-                  • 加入标签让更多朝圣者发现你的游记
+                  • 加入标签让更多文化旅行者发现你的游记
                 </Text>
               </View>
             </View>

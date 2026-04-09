@@ -50,7 +50,7 @@ export default function ProfileScreen() {
           </>
         ) : (
           <>
-            <Text style={styles.loginPrompt}>登录以开始朝圣之旅</Text>
+            <Text style={styles.loginPrompt}>登录以开始文化之旅</Text>
             <Pressable
               style={styles.loginButton}
               onPress={() => router.push('/login')}
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
 
       {/* Pilgrimage Menu */}
       <Animated.View entering={FadeInDown.duration(300).delay(200)} style={styles.menuSection}>
-        <Text style={styles.menuSectionTitle}>我的朝圣</Text>
+        <Text style={styles.menuSectionTitle}>我的旅程</Text>
         <MenuItem
           icon="chatbubbles"
           label="消息"
@@ -89,7 +89,7 @@ export default function ProfileScreen() {
         />
         <MenuItem
           icon="book"
-          label="朝圣日记"
+          label="文化日记"
           subtitle={`${counts?.journals ?? 0} 篇日记`}
           onPress={() => router.push('/journals')}
         />
@@ -191,7 +191,7 @@ export default function ProfileScreen() {
       {/* About */}
       <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>
-        <MenuItem icon="information-circle" label="关于祖庭之旅" onPress={() => router.push('/about' as never)} />
+        <MenuItem icon="information-circle" label="关于佳绩之旅" onPress={() => router.push('/about' as never)} />
         <MenuItem icon="document-text" label="用户协议" onPress={() => router.push('/terms' as never)} />
         <MenuItem icon="shield-checkmark" label="隐私政策" onPress={() => router.push('/privacy' as never)} />
       </Animated.View>
@@ -212,7 +212,7 @@ export default function ProfileScreen() {
       )}
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>全球祖庭旅行平台 v0.2.0</Text>
+        <Text style={styles.footerText}>佳绩之旅 v0.2.0</Text>
         <Text style={styles.footerSubtext}>
           帮助100万人走祖庭
         </Text>

@@ -66,7 +66,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">我的团队</h1>
-              <p className="text-white/90">管理你创建或加入的所有朝圣团队</p>
+              <p className="text-white/90">管理你创建或加入的所有文化之旅团队</p>
             </div>
             <button
               onClick={() => setShowCreate(true)}

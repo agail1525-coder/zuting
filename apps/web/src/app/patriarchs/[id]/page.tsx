@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
     const patriarch = await fetchPatriarch(id);
-    const title = `${patriarch.name} | 祖庭旅行`;
+    const title = `${patriarch.name} | 佳绩之旅`;
     const description = patriarch.biography
       ? patriarch.biography.slice(0, 160)
       : `${patriarch.name}（${patriarch.nameEn}）- ${patriarch.title || "祖师"}。`;
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return { title: "祖师详情 | 祖庭旅行" };
+    return { title: "祖师详情 | 佳绩之旅" };
   }
 }
 

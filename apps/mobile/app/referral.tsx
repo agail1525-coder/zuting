@@ -85,7 +85,7 @@ export default function ReferralScreen() {
   const handleShare = async () => {
     if (!inviteCode) return;
     await Share.share({
-      message: `加入祖庭旅行平台，探索世界圣地！使用我的邀请码 ${inviteCode.code} 注册，双方均可获得积分奖励。${inviteCode.link}`,
+      message: `加入佳绩之旅，探索世界圣地！使用我的邀请码 ${inviteCode.code} 注册，双方均可获得积分奖励。${inviteCode.link}`,
       url: inviteCode.link,
     });
   };

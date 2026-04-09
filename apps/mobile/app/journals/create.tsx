@@ -122,7 +122,7 @@ export default function JournalCreateScreen() {
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color={colors.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>写朝圣日记</Text>
+          <Text style={styles.headerTitle}>写文化之旅日记</Text>
           <View style={styles.backButton} />
         </View>
 
@@ -155,7 +155,7 @@ export default function JournalCreateScreen() {
             style={[styles.input, styles.textArea]}
             value={content}
             onChangeText={setContent}
-            placeholder="写下您的朝圣感悟..."
+            placeholder="写下您的文化探访感悟..."
             placeholderTextColor={colors.textMuted}
             maxLength={5000}
             multiline
@@ -200,7 +200,7 @@ export default function JournalCreateScreen() {
         <View style={styles.toggleRow}>
           <View>
             <Text style={styles.toggleLabel}>公开日记</Text>
-            <Text style={styles.toggleHint}>公开后其他朝圣者可以看到</Text>
+            <Text style={styles.toggleHint}>公开后其他旅行者可以看到</Text>
           </View>
           <Switch
             value={isPublic}

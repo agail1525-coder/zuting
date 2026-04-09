@@ -69,7 +69,7 @@ export default function RegisterScreen() {
             <Text style={styles.logoText}>🏛</Text>
           </View>
           <Text style={styles.title}>创建账号</Text>
-          <Text style={styles.subtitle}>加入全球祖庭朝圣社区</Text>
+          <Text style={styles.subtitle}>加入佳绩之旅文化社区</Text>
         </View>
 
         {/* Form */}

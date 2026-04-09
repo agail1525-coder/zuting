@@ -16,12 +16,12 @@ import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 const CATEGORIES = [
   { value: '', label: '全部' },
   { value: 'ZEN', label: '禅宗' },
-  { value: 'BUDDHIST', label: '佛教' },
-  { value: 'TAOIST', label: '道教' },
+  { value: 'BUDDHIST', label: '佛教文化' },
+  { value: 'TAOIST', label: '道教文化' },
   { value: 'CHRISTIAN', label: '基督' },
   { value: 'ISLAMIC', label: '伊斯兰' },
   { value: 'CROSS_CULTURAL', label: '跨文化' },
-  { value: 'HINDU', label: '印度教' },
+  { value: 'HINDU', label: '印度文化' },
 ];
 
 const DIFFICULTY_LABELS: Record<string, string> = {

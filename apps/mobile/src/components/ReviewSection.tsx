@@ -84,7 +84,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
   if (loading) {
     return (
       <View style={st.container}>
-        <Text style={st.title}>朝圣评价</Text>
+        <Text style={st.title}>文化评价</Text>
         <Text style={st.loadingText}>加载评价中...</Text>
       </View>
     );
@@ -96,7 +96,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
     <View style={st.container}>
       {/* Header */}
       <View style={st.headerRow}>
-        <Text style={st.title}>朝圣评价</Text>
+        <Text style={st.title}>文化评价</Text>
         <Pressable style={st.writeBtn} onPress={handleWriteReview}>
           <Ionicons name="create-outline" size={14} color="#0066FF" />
           <Text style={st.writeBtnText}>写评价</Text>
@@ -146,7 +146,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
                   </Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={st.nickname}>{review.user.nickname ?? '匿名朝圣者'}</Text>
+                  <Text style={st.nickname}>{review.user.nickname ?? '匿名旅行者'}</Text>
                   <Text style={st.date}>{review.createdAt.slice(0, 10)}</Text>
                 </View>
                 <Stars rating={review.rating} />

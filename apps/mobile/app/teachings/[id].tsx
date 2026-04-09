@@ -89,7 +89,7 @@ export default function TeachingDetailScreen() {
       {/* Religion */}
       {religionName ? (
         <View style={s.section}>
-          <Text style={s.sectionTitle}>所属信仰</Text>
+          <Text style={s.sectionTitle}>所属文化</Text>
           <View style={s.card}>
             <Text style={s.cardText}>{religionName}</Text>
           </View>

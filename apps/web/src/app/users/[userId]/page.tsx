@@ -9,11 +9,11 @@ import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 
 const PILGRIM_LEVELS: Record<number, { label: string; color: string }> = {
-  1: { label: "初级朝圣者", color: "bg-gray-100 text-gray-600" },
-  2: { label: "朝圣探索者", color: "bg-blue-100 text-blue-700" },
-  3: { label: "资深朝圣者", color: "bg-purple-100 text-purple-700" },
-  4: { label: "朝圣导师", color: "bg-amber-100 text-amber-700" },
-  5: { label: "朝圣大使", color: "bg-yellow-100 text-yellow-700" },
+  1: { label: "初级文化旅行者", color: "bg-gray-100 text-gray-600" },
+  2: { label: "文化探索者", color: "bg-blue-100 text-blue-700" },
+  3: { label: "资深文化旅行者", color: "bg-purple-100 text-purple-700" },
+  4: { label: "文化导师", color: "bg-amber-100 text-amber-700" },
+  5: { label: "文化大使", color: "bg-yellow-100 text-yellow-700" },
 };
 
 function StatCard({ label, value, icon }: { label: string; value: number; icon: string }) {
