@@ -212,10 +212,10 @@ export default function PricesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 pt-16 pb-16">
+    <main className="min-h-screen bg-gray-50 pb-16">
 
       {/* ── FEATURE 1: Deal of the Day Flash Banner (Priceline style) ─────── */}
-      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 px-4">
+      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white pt-[4.5rem] pb-2 px-4">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
