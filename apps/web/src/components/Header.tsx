@@ -39,6 +39,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <span className="text-2xl font-bold text-white">Joinus</span>
+            <span className="text-white/60 font-medium text-base hidden sm:block ml-1">佳绩之旅</span>
             <span className="text-white/40 font-light text-sm hidden sm:block">|</span>
             <span className="text-white/80 font-medium text-sm hidden sm:block">
               {t("site.title")}
