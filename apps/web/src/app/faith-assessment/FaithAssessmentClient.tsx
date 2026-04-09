@@ -245,9 +245,9 @@ function LandingSection({ onStart }: { onStart: () => void }) {
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
-          发现你的
+          让信仰成为
           <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            信仰力
+            你的力量
           </span>
         </h1>
 
