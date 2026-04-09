@@ -241,18 +241,18 @@ function LandingSection({ onStart }: { onStart: () => void }) {
       <div className="relative z-10 max-w-3xl">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-8">
           <span>🔮</span>
-          <span>五维佳绩力评估</span>
+          <span>五维信仰力评估</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
           发现你的
           <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            佳绩力
+            信仰力
           </span>
         </h1>
 
         <p className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto">
-          每个人内心都有一座精神的祖庭。通过五维佳绩力评估，发现你的觉察力、定力、格局力、连接力和传承力分布，找到最适合你的成长路径。
+          每个人内心都有一座精神的祖庭。通过五维信仰力评估，发现你的觉察力、定力、格局力、连接力和传承力分布，找到最适合你的成长路径。
         </p>
 
         <p className="text-gray-500 mb-12">
@@ -459,7 +459,7 @@ function CalculatingAnimation() {
           <span className="text-3xl">🔮</span>
         </div>
       </div>
-      <h2 className="text-2xl font-bold text-white mb-2">正在分析你的佳绩力...</h2>
+      <h2 className="text-2xl font-bold text-white mb-2">正在分析你的信仰力...</h2>
       <p className="text-gray-400">五维评估计算中</p>
     </section>
   );
@@ -515,7 +515,7 @@ function ResultSection({
             {modeObj.icon} {modeObj.label}模式
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-            你的佳绩力报告
+            你的信仰力报告
           </h1>
         </div>
 
