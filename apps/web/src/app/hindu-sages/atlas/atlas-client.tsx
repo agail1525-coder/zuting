@@ -13,7 +13,7 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const HINDU_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "hindu",
-  title: "印度教圣贤大图谱",
+  title: "印度教文化圣贤大图谱",
   subtitle: "吠檀多 · 虔信 · 瑜伽",
   themeColor: "#F97316",
   backUrl: "/hindu-sages",
@@ -41,12 +41,12 @@ const HINDU_ATLAS_CONFIG: AtlasConfig = {
     dharma: "证悟",
     teaching: "弘法",
     founding: "建院",
-    pilgrimage: "朝圣",
+    pilgrimage: "文化之旅",
     exile: "苦行",
     death: "涅槃",
     other: "事件",
   },
-  loadingText: "正在加载印度教圣贤大图谱...",
+  loadingText: "正在加载印度教文化圣贤大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(HINDU_ATLAS_CONFIG);
@@ -117,7 +117,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="印度教主要流派"
+          title="印度教文化主要流派"
           items={HINDU_ATLAS_CONFIG.legendItems}
           themeColor={HINDU_ATLAS_CONFIG.themeColor}
         />
@@ -139,7 +139,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#F97316]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            印度教圣贤大图谱
+            印度教文化圣贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位圣贤 · 吠檀多 · 虔信 · 瑜伽

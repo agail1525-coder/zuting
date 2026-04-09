@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const description = `探索${religion.name}智慧如何塑造世界级企业文化——标杆企业案例、商业大师语录、实践方法论、研究数据、推荐书单。`;
     return { title, description };
   } catch {
-    return { title: "信仰与商业实践 | 祖庭旅行" };
+    return { title: "文化智慧与商业实践 | 祖庭旅行" };
   }
 }
 
@@ -33,7 +33,7 @@ export default async function ReligionBusinessPage({ params }: Props) {
   if (!religion) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl text-gold">信仰未找到</h1>
+        <h1 className="text-2xl text-gold">文化传统未找到</h1>
       </div>
     );
   }

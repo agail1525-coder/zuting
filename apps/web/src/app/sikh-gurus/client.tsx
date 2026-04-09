@@ -98,11 +98,11 @@ export default function SikhGurusClient({
       <section className="relative bg-gradient-to-b from-[#7C2D12] via-[#9A3412] to-[#FFF7ED] pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-5xl block mb-3">☬</span>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">锡克教古鲁传承</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">锡克教文化古鲁传承</h1>
           <p className="text-[#FDBA74] text-sm mb-6">十位古鲁的神圣传承，旁遮普精神的永恒光辉</p>
           <Link href="/sikh-gurus/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#EA580C] via-[#F97316] to-[#EA580C] text-white hover:from-[#F97316] hover:via-[#FB923C] hover:to-[#F97316] shadow-lg shadow-[#EA580C]/20 hover:shadow-[#EA580C]/40">
             <span className="text-xl">🗺</span>
-            <span><span className="block text-left">锡克教古鲁大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span><span className="block text-left">锡克教文化古鲁大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
             <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
           </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
@@ -140,7 +140,7 @@ export default function SikhGurusClient({
         </div>
 
         <div className="mb-6">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索锡克教古鲁..."
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索锡克教文化古鲁..."
             className="w-full px-4 py-3 rounded-xl border border-[#FED7AA]/40 bg-white text-sm placeholder:text-[#A0887A] focus:border-[#EA580C] focus:ring-1 focus:ring-[#EA580C]/30 outline-none" />
           <p className="text-xs text-[#7C2D12] mt-2">找到 {filtered.length} 位古鲁</p>
         </div>
@@ -158,7 +158,7 @@ export default function SikhGurusClient({
         )}
 
         <div className="bg-gradient-to-r from-[#7C2D12] to-[#9A3412] rounded-2xl p-8 text-center mb-12">
-          <h3 className="text-xl font-serif font-bold text-white mb-2">探索锡克教圣地朝圣之旅</h3>
+          <h3 className="text-xl font-serif font-bold text-white mb-2">探索锡克教文化圣地文化之旅</h3>
           <p className="text-[#FDBA74] text-sm mb-5">踏访黄金神庙，感受古鲁的永恒光辉</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/chat" className="px-6 py-3 bg-[#EA580C] hover:bg-[#C2410C] text-white font-semibold rounded-xl transition-colors text-sm">咨询小鸿AI</Link>

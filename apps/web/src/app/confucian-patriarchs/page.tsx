@@ -5,9 +5,9 @@ import ConfucianPatriarchsClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "儒教先贤传承 — 五大学派28位圣贤 | JOINUS",
+  title: "儒教文化先贤传承 — 五大学派28位圣贤 | JOINUS",
   description:
-    "探索儒教从孔子孟子到阳明心学、从汉唐经学到现代新儒学的完整传承",
+    "探索儒教文化从孔子孟子到阳明心学、从汉唐经学到现代新儒学的完整传承",
 };
 
 export default async function ConfucianPatriarchsPage() {

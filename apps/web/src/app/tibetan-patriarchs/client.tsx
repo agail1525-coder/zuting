@@ -98,11 +98,11 @@ export default function TibetanPatriarchsClient({
       <section className="relative bg-gradient-to-b from-[#2E1065] via-[#4C1D95] to-[#F5F3FF] pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-5xl block mb-3">☸</span>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">藏传佛教大师传承</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">藏传佛教文化大师传承</h1>
           <p className="text-[#C4B5FD] text-sm mb-6">从莲花生大士到当代仁波切，雪域高原的智慧传灯</p>
           <Link href="/tibetan-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#7C3AED] via-[#8B5CF6] to-[#7C3AED] text-white hover:from-[#8B5CF6] hover:via-[#A78BFA] hover:to-[#8B5CF6] shadow-lg shadow-[#7C3AED]/20 hover:shadow-[#7C3AED]/40">
             <span className="text-xl">🗺</span>
-            <span><span className="block text-left">藏传佛教大师大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span><span className="block text-left">藏传佛教文化大师大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
             <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
           </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
@@ -140,7 +140,7 @@ export default function TibetanPatriarchsClient({
         </div>
 
         <div className="mb-6">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索藏传佛教大师..."
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索藏传佛教文化大师..."
             className="w-full px-4 py-3 rounded-xl border border-[#DDD6FE]/40 bg-white text-sm placeholder:text-[#8B5CF6] focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]/30 outline-none" />
           <p className="text-xs text-[#4C1D95] mt-2">找到 {filtered.length} 位大师</p>
         </div>
@@ -158,7 +158,7 @@ export default function TibetanPatriarchsClient({
         )}
 
         <div className="bg-gradient-to-r from-[#2E1065] to-[#4C1D95] rounded-2xl p-8 text-center mb-12">
-          <h3 className="text-xl font-serif font-bold text-white mb-2">探索西藏雪域朝圣之旅</h3>
+          <h3 className="text-xl font-serif font-bold text-white mb-2">探索西藏雪域文化之旅</h3>
           <p className="text-[#C4B5FD] text-sm mb-5">踏访布达拉宫，感受藏传佛法的无尽智慧</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/chat" className="px-6 py-3 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold rounded-xl transition-colors text-sm">咨询小鸿AI</Link>

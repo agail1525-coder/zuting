@@ -66,7 +66,7 @@ export default function ShintoKamiDetailClient({ patriarch: p }: { patriarch: Pa
       <MobileNav />
       <section className="bg-gradient-to-b from-[#4C0519] via-[#9F1239] to-[#FFF1F2] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/shinto-kami" className="text-[#FDA4AF] text-sm hover:underline mb-4 inline-block">← 返回神道教神灵</Link>
+          <Link href="/shinto-kami" className="text-[#FDA4AF] text-sm hover:underline mb-4 inline-block">← 返回神道教文化神灵</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#E11D48]/30 to-[#BE123C]/20 border-3 border-[#E11D48]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

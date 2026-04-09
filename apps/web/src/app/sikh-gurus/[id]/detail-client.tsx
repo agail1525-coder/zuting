@@ -66,7 +66,7 @@ export default function SikhGuruDetailClient({ patriarch: p }: { patriarch: Patr
       <MobileNav />
       <section className="bg-gradient-to-b from-[#7C2D12] via-[#9A3412] to-[#FFF7ED] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/sikh-gurus" className="text-[#FDBA74] text-sm hover:underline mb-4 inline-block">← 返回锡克教古鲁</Link>
+          <Link href="/sikh-gurus" className="text-[#FDBA74] text-sm hover:underline mb-4 inline-block">← 返回锡克教文化古鲁</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#EA580C]/30 to-[#C2410C]/20 border-3 border-[#EA580C]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

@@ -98,11 +98,11 @@ export default function JewishPatriarchsClient({
       <section className="relative bg-gradient-to-b from-[#312E81] via-[#4338CA] to-[#EEF2FF] pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-5xl block mb-3">✡</span>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">犹太教先贤传承</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">犹太教文化先贤传承</h1>
           <p className="text-[#A5B4FC] text-sm mb-6">从摩西律法到拉比智慧、从卡巴拉奥秘到哈西迪喜乐</p>
           <Link href="/jewish-patriarchs/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#6366F1] text-white hover:from-[#818CF8] hover:via-[#A5B4FC] hover:to-[#818CF8] shadow-lg shadow-[#6366F1]/20 hover:shadow-[#6366F1]/40">
             <span className="text-xl">🗺</span>
-            <span><span className="block text-left">犹太教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span><span className="block text-left">犹太教文化先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
             <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
           </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
@@ -140,7 +140,7 @@ export default function JewishPatriarchsClient({
         </div>
 
         <div className="mb-6">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索犹太教先贤..."
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索犹太教文化先贤..."
             className="w-full px-4 py-3 rounded-xl border border-[#C7D2FE]/40 bg-white text-sm placeholder:text-[#818CF8] focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1]/30 outline-none" />
           <p className="text-xs text-[#312E81] mt-2">找到 {filtered.length} 位先贤</p>
         </div>
@@ -158,8 +158,8 @@ export default function JewishPatriarchsClient({
         )}
 
         <div className="bg-gradient-to-r from-[#312E81] to-[#4338CA] rounded-2xl p-8 text-center mb-12">
-          <h3 className="text-xl font-serif font-bold text-white mb-2">探索犹太教圣地朝圣之旅</h3>
-          <p className="text-[#A5B4FC] text-sm mb-5">踏访耶路撒冷圣城，感受千年信仰传承</p>
+          <h3 className="text-xl font-serif font-bold text-white mb-2">探索犹太教文化圣地文化之旅</h3>
+          <p className="text-[#A5B4FC] text-sm mb-5">踏访耶路撒冷圣城，感受千年文化传统传承</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/chat" className="px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold rounded-xl transition-colors text-sm">咨询小鸿AI</Link>
             <Link href="/patriarchs" className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-colors border border-white/20 text-sm">浏览所有先贤</Link>

@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "全球圣地地图 | 全球祖庭旅行平台",
-  description: "在交互式世界地图上探索全球60个圣地与27座祖庭，横跨12大信仰传统",
+  description: "在交互式世界地图上探索全球60个圣地与27座祖庭，横跨12大文化传统",
 };
 
 export default async function MapPage() {

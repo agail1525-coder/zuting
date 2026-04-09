@@ -13,8 +13,8 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const SIKH_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "sikh",
-  title: "锡克教古鲁大图谱",
-  subtitle: "十大古鲁 · 卡尔萨 · 信仰之路",
+  title: "锡克教文化古鲁大图谱",
+  subtitle: "十大古鲁 · 卡尔萨 · 文化传统之路",
   themeColor: "#EA580C",
   backUrl: "/sikh-gurus",
   detailUrlPrefix: "/sikh-gurus",
@@ -39,12 +39,12 @@ const SIKH_ATLAS_CONFIG: AtlasConfig = {
     dharma: "感悟",
     teaching: "弘道",
     founding: "建寺",
-    pilgrimage: "朝圣",
+    pilgrimage: "文化之旅",
     exile: "殉道",
     death: "升天",
     other: "事件",
   },
-  loadingText: "正在加载锡克教古鲁大图谱...",
+  loadingText: "正在加载锡克教文化古鲁大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(SIKH_ATLAS_CONFIG);
@@ -115,7 +115,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="锡克教主要类别"
+          title="锡克教文化主要类别"
           items={SIKH_ATLAS_CONFIG.legendItems}
           themeColor={SIKH_ATLAS_CONFIG.themeColor}
         />
@@ -137,10 +137,10 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#EA580C]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            锡克教古鲁大图谱
+            锡克教文化古鲁大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            {patriarchs.length}位古鲁 · 十大古鲁 · 卡尔萨 · 信仰之路
+            {patriarchs.length}位古鲁 · 十大古鲁 · 卡尔萨 · 文化传统之路
           </p>
         </div>
       )}

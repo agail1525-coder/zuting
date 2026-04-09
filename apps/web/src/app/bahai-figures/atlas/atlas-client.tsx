@@ -13,8 +13,8 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const BAHAI_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "bahai",
-  title: "巴哈伊教圣贤大图谱",
-  subtitle: "统一信仰 · 世界和平",
+  title: "巴哈伊教文化圣贤大图谱",
+  subtitle: "统一文化 · 世界和平",
   themeColor: "#0891B2",
   backUrl: "/bahai-figures",
   detailUrlPrefix: "/bahai-figures",
@@ -44,7 +44,7 @@ const BAHAI_ATLAS_CONFIG: AtlasConfig = {
     death: "升天",
     other: "事件",
   },
-  loadingText: "正在加载巴哈伊教圣贤大图谱...",
+  loadingText: "正在加载巴哈伊教文化圣贤大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(BAHAI_ATLAS_CONFIG);
@@ -115,7 +115,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="巴哈伊教体系"
+          title="巴哈伊教文化体系"
           items={BAHAI_ATLAS_CONFIG.legendItems}
           themeColor={BAHAI_ATLAS_CONFIG.themeColor}
         />
@@ -137,10 +137,10 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#0891B2]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            巴哈伊教圣贤大图谱
+            巴哈伊教文化圣贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            {patriarchs.length}位圣贤 · 统一信仰 · 世界和平
+            {patriarchs.length}位圣贤 · 统一文化 · 世界和平
           </p>
         </div>
       )}

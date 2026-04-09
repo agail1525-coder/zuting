@@ -10,11 +10,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   try {
     const p = await fetchPatriarch(id);
     return {
-      title: `${p.name}${p.title ? " · " + p.title : ""} — 犹太教先贤 | JOINUS`,
+      title: `${p.name}${p.title ? " · " + p.title : ""} — 犹太教文化先贤 | JOINUS`,
       description: p.biography?.slice(0, 160),
-      openGraph: { title: `${p.name} — 犹太教先贤`, description: p.biography?.slice(0, 160), ...(p.imageUrl ? { images: [p.imageUrl] } : {}) },
+      openGraph: { title: `${p.name} — 犹太教文化先贤`, description: p.biography?.slice(0, 160), ...(p.imageUrl ? { images: [p.imageUrl] } : {}) },
     };
-  } catch { return { title: "犹太教先贤 | JOINUS" }; }
+  } catch { return { title: "犹太教文化先贤 | JOINUS" }; }
 }
 
 export default async function JewishPatriarchDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -29,7 +29,7 @@ export default async function JewishPatriarchDetailPage({ params }: { params: Pr
           <span className="text-6xl block mb-4">✡</span>
           <h1 className="text-2xl font-serif font-bold text-[#1E1B4B] mb-2">先贤未找到</h1>
           <p className="text-[#312E81] text-sm mb-4">该先贤信息暂不存在</p>
-          <Link href="/jewish-patriarchs" className="px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-medium rounded-xl transition-colors text-sm">返回犹太教先贤</Link>
+          <Link href="/jewish-patriarchs" className="px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-medium rounded-xl transition-colors text-sm">返回犹太教文化先贤</Link>
         </div>
       </main>
     );

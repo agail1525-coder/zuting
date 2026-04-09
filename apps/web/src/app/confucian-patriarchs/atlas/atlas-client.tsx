@@ -25,7 +25,7 @@ const CONFUCIAN_TYPE_LABELS = {
 
 const CONFUCIAN_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "confucian",
-  title: "儒教先贤大图谱",
+  title: "儒教文化先贤大图谱",
   subtitle: "圣贤之道 · 书院薪传",
   themeColor: "#DC2626",
   backUrl: "/confucian-patriarchs",
@@ -47,7 +47,7 @@ const CONFUCIAN_ATLAS_CONFIG: AtlasConfig = {
   ],
   schoolColors: SCHOOL_COLORS,
   typeLabels: CONFUCIAN_TYPE_LABELS,
-  loadingText: "正在加载儒教先贤大图谱...",
+  loadingText: "正在加载儒教文化先贤大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(CONFUCIAN_ATLAS_CONFIG);
@@ -140,7 +140,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#DC2626]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            儒教先贤大图谱
+            儒教文化先贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位先贤 · 圣贤之道 · 书院薪传

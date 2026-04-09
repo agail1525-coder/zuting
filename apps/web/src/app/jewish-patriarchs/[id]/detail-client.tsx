@@ -66,7 +66,7 @@ export default function JewishPatriarchDetailClient({ patriarch: p }: { patriarc
       <MobileNav />
       <section className="bg-gradient-to-b from-[#312E81] via-[#4338CA] to-[#EEF2FF] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/jewish-patriarchs" className="text-[#A5B4FC] text-sm hover:underline mb-4 inline-block">← 返回犹太教先贤</Link>
+          <Link href="/jewish-patriarchs" className="text-[#A5B4FC] text-sm hover:underline mb-4 inline-block">← 返回犹太教文化先贤</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#6366F1]/30 to-[#4F46E5]/20 border-3 border-[#6366F1]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

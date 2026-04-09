@@ -66,7 +66,7 @@ export default function HinduSageDetailClient({ patriarch: p }: { patriarch: Pat
       <MobileNav />
       <section className="bg-gradient-to-b from-[#9A3412] via-[#C2410C] to-[#FFF7ED] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/hindu-sages" className="text-[#FDBA74] text-sm hover:underline mb-4 inline-block">← 返回印度教圣贤</Link>
+          <Link href="/hindu-sages" className="text-[#FDBA74] text-sm hover:underline mb-4 inline-block">← 返回印度教文化圣贤</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#F97316]/30 to-[#EA580C]/20 border-3 border-[#F97316]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

@@ -13,7 +13,7 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const JEWISH_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "jewish",
-  title: "犹太教先知大图谱",
+  title: "犹太教文化先知大图谱",
   subtitle: "圣约 · 律法 · 流散",
   themeColor: "#6366F1",
   backUrl: "/jewish-patriarchs",
@@ -46,7 +46,7 @@ const JEWISH_ATLAS_CONFIG: AtlasConfig = {
     death: "安息",
     other: "事件",
   },
-  loadingText: "正在加载犹太教先知大图谱...",
+  loadingText: "正在加载犹太教文化先知大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(JEWISH_ATLAS_CONFIG);
@@ -117,7 +117,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="犹太教历史时期"
+          title="犹太教文化历史时期"
           items={JEWISH_ATLAS_CONFIG.legendItems}
           themeColor={JEWISH_ATLAS_CONFIG.themeColor}
         />
@@ -139,7 +139,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#6366F1]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            犹太教先知大图谱
+            犹太教文化先知大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位先知 · 圣约 · 律法 · 流散

@@ -13,7 +13,7 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const TIBETAN_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "tibetan",
-  title: "藏传佛教祖师大图谱",
+  title: "藏传佛教文化祖师大图谱",
   subtitle: "雪域法脉 · 密教传承",
   themeColor: "#7C3AED",
   backUrl: "/tibetan-patriarchs",
@@ -41,12 +41,12 @@ const TIBETAN_ATLAS_CONFIG: AtlasConfig = {
     dharma: "灌顶",
     teaching: "弘法",
     founding: "建寺",
-    pilgrimage: "朝圣",
+    pilgrimage: "文化之旅",
     exile: "流亡",
     death: "圆寂",
     other: "事件",
   },
-  loadingText: "正在加载藏传佛教祖师大图谱...",
+  loadingText: "正在加载藏传佛教文化祖师大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(TIBETAN_ATLAS_CONFIG);
@@ -117,7 +117,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="藏传佛教诸派"
+          title="藏传佛教文化诸派"
           items={TIBETAN_ATLAS_CONFIG.legendItems}
           themeColor={TIBETAN_ATLAS_CONFIG.themeColor}
         />
@@ -139,7 +139,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#7C3AED]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            藏传佛教祖师大图谱
+            藏传佛教文化祖师大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位祖师 · 雪域法脉 · 密教传承

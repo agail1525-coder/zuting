@@ -5,8 +5,8 @@ import SikhGurusClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "锡克教十位古鲁传承 — 五大传统 | JOINUS",
-  description: "探索锡克教从那纳克古鲁到十位古鲁、从殉道英雄到近现代领袖的完整传承",
+  title: "锡克教文化十位古鲁传承 — 五大传统 | JOINUS",
+  description: "探索锡克教文化从那纳克古鲁到十位古鲁、从殉道英雄到近现代领袖的完整传承",
 };
 
 export default async function SikhGurusPage() {

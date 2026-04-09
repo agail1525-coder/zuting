@@ -66,7 +66,7 @@ export default function TibetanPatriarchDetailClient({ patriarch: p }: { patriar
       <MobileNav />
       <section className="bg-gradient-to-b from-[#2E1065] via-[#4C1D95] to-[#F5F3FF] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/tibetan-patriarchs" className="text-[#C4B5FD] text-sm hover:underline mb-4 inline-block">← 返回藏传佛教大师</Link>
+          <Link href="/tibetan-patriarchs" className="text-[#C4B5FD] text-sm hover:underline mb-4 inline-block">← 返回藏传佛教文化大师</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#7C3AED]/30 to-[#6D28D9]/20 border-3 border-[#7C3AED]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

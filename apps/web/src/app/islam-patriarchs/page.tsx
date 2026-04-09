@@ -5,9 +5,9 @@ import IslamPatriarchsClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "伊斯兰教先贤传承 — 五大学派25位大师 | JOINUS",
+  title: "伊斯兰教文化先贤传承 — 五大学派25位大师 | JOINUS",
   description:
-    "探索伊斯兰教从先知穆罕默德到苏菲大师、从四大教法学派到学者旅行家的完整传承",
+    "探索伊斯兰教文化从先知穆罕默德到苏菲大师、从四大教法学派到学者旅行家的完整传承",
 };
 
 export default async function IslamPatriarchsPage() {

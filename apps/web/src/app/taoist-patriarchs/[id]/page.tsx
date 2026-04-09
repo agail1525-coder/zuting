@@ -14,16 +14,16 @@ export async function generateMetadata({
   try {
     const p = await fetchPatriarch(id);
     return {
-      title: `${p.name}${p.title ? " · " + p.title : ""} — 道教先贤 | JOINUS`,
+      title: `${p.name}${p.title ? " · " + p.title : ""} — 道教文化先贤 | JOINUS`,
       description: p.biography?.slice(0, 160),
       openGraph: {
-        title: `${p.name} — 道教先贤`,
+        title: `${p.name} — 道教文化先贤`,
         description: p.biography?.slice(0, 160),
         ...(p.imageUrl ? { images: [p.imageUrl] } : {}),
       },
     };
   } catch {
-    return { title: "道教先贤 | JOINUS" };
+    return { title: "道教文化先贤 | JOINUS" };
   }
 }
 
@@ -53,7 +53,7 @@ export default async function TaoistPatriarchDetailPage({
             href="/taoist-patriarchs"
             className="px-6 py-3 bg-[#10B981] hover:bg-[#059669] text-white font-medium rounded-xl transition-colors text-sm"
           >
-            返回道教先贤
+            返回道教文化先贤
           </Link>
         </div>
       </main>

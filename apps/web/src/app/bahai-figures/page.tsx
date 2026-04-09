@@ -5,8 +5,8 @@ import BahaiFiguresClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "巴哈伊教人物传承 — 五大传统 | JOINUS",
-  description: "探索巴哈伊教从巴比运动先驱到圣约中心、从信仰之手到教务先驱的完整传承",
+  title: "巴哈伊教文化人物传承 — 五大传统 | JOINUS",
+  description: "探索巴哈伊教文化从巴比运动先驱到圣约中心、从信仰之手到教务先驱的完整传承",
 };
 
 export default async function BahaiFiguresPage() {

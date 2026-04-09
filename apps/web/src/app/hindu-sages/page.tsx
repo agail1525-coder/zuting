@@ -5,8 +5,8 @@ import HinduSagesClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "印度教圣贤传承 — 五大学派 | JOINUS",
-  description: "探索印度教从吠檀多哲学到瑜伽修行、从虔信运动到近现代复兴的完整圣贤传承",
+  title: "印度教文化圣贤传承 — 五大学派 | JOINUS",
+  description: "探索印度教文化从吠檀多哲学到瑜伽修行、从虔信运动到近现代复兴的完整圣贤传承",
 };
 
 export default async function HinduSagesPage() {

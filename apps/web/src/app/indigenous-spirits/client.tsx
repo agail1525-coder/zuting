@@ -158,7 +158,7 @@ export default function IndigenousSpiritsClient({
         )}
 
         <div className="bg-gradient-to-r from-[#1C1917] to-[#292524] rounded-2xl p-8 text-center mb-12">
-          <h3 className="text-xl font-serif font-bold text-white mb-2">探索原住民圣地朝圣之旅</h3>
+          <h3 className="text-xl font-serif font-bold text-white mb-2">探索原住民圣地文化之旅</h3>
           <p className="text-[#D6D3D1] text-sm mb-5">聆听大地的呼唤，感受远古智慧的力量</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/chat" className="px-6 py-3 bg-[#78716C] hover:bg-[#57534E] text-white font-semibold rounded-xl transition-colors text-sm">咨询小鸿AI</Link>

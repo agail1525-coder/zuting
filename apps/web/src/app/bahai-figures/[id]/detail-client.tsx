@@ -66,7 +66,7 @@ export default function BahaiFigureDetailClient({ patriarch: p }: { patriarch: P
       <MobileNav />
       <section className="bg-gradient-to-b from-[#083344] via-[#0E7490] to-[#ECFEFF] pt-20 pb-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
-          <Link href="/bahai-figures" className="text-[#A5F3FC] text-sm hover:underline mb-4 inline-block">← 返回巴哈伊教人物</Link>
+          <Link href="/bahai-figures" className="text-[#A5F3FC] text-sm hover:underline mb-4 inline-block">← 返回巴哈伊教文化人物</Link>
           <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[#0891B2]/30 to-[#0E7490]/20 border-3 border-[#0891B2]/40 flex items-center justify-center mb-4">
             {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full rounded-full object-cover" /> : <InkAvatar name={p.name} size={96} />}
           </div>

@@ -5,8 +5,8 @@ import JewishPatriarchsClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "犹太教先贤传承 — 五大传统 | JOINUS",
-  description: "探索犹太教从圣经先知到拉比传统、从卡巴拉神秘主义到近现代思想的完整先贤传承",
+  title: "犹太教文化先贤传承 — 五大传统 | JOINUS",
+  description: "探索犹太教文化从圣经先知到拉比传统、从卡巴拉神秘主义到近现代思想的完整先贤传承",
 };
 
 export default async function JewishPatriarchsPage() {

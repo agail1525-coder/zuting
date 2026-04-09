@@ -13,7 +13,7 @@ import type { AtlasConfig, PatriarchMapData } from "@/components/atlas";
 
 const SHINTO_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "shinto",
-  title: "神道教神灵大图谱",
+  title: "神道教文化神灵大图谱",
   subtitle: "八百万神 · 神宫 · 国学",
   themeColor: "#E11D48",
   backUrl: "/shinto-kami",
@@ -45,7 +45,7 @@ const SHINTO_ATLAS_CONFIG: AtlasConfig = {
     death: "昇天",
     other: "事件",
   },
-  loadingText: "正在加载神道教神灵大图谱...",
+  loadingText: "正在加载神道教文化神灵大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(SHINTO_ATLAS_CONFIG);
@@ -116,7 +116,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="神道教主要流派"
+          title="神道教文化主要流派"
           items={SHINTO_ATLAS_CONFIG.legendItems}
           themeColor={SHINTO_ATLAS_CONFIG.themeColor}
         />
@@ -138,7 +138,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#E11D48]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            神道教神灵大图谱
+            神道教文化神灵大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位神灵 · 八百万神 · 神宫 · 国学

@@ -81,10 +81,10 @@ function SectionNav({ sections }: { sections: { id: string; label: string }[] })
 function FAQSection({ religionName, t }: { religionName: string; t: (key: string) => string }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const faqs = [
-    { q: `${religionName}的核心信仰是什么？`, a: `${religionName}有着悠久的历史和深厚的文化传承，其核心教义涵盖了对宇宙、生命和修行的独特理解。详细内容可通过平台的祖训和祖师板块深入了解。` },
-    { q: "如何开始了解这个信仰？", a: "建议从浏览相关圣地和祖庭开始，了解信仰的历史脉络。同时可以阅读祖训板块的经典原文，或使用AI规划师获取个性化的学习路径。" },
-    { q: "有哪些朝圣路线推荐？", a: "平台提供多条精品朝圣路线，涵盖各大信仰的核心圣地。可以通过路线板块筛选相关路线，或咨询AI规划师获取个性化推荐。" },
-    { q: "如何参与社区交流？", a: "欢迎在社区板块发表攻略、提问和分享照片。您也可以在朝圣日志中记录您的参访体验，与其他朝圣者交流心得。" },
+    { q: `${religionName}的核心文化智慧是什么？`, a: `${religionName}有着悠久的历史和深厚的文化传承，其核心教义涵盖了对宇宙、生命和修行的独特理解。详细内容可通过平台的祖训和祖师板块深入了解。` },
+    { q: "如何开始了解这个文化传统？", a: "建议从浏览相关圣地和祖庭开始，了解文化传统的历史脉络。同时可以阅读祖训板块的经典原文，或使用AI规划师获取个性化的学习路径。" },
+    { q: "有哪些文化探访路线推荐？", a: "平台提供多条精品文化探访路线，涵盖各大文化传统的核心圣地。可以通过路线板块筛选相关路线，或咨询AI规划师获取个性化推荐。" },
+    { q: "如何参与社区交流？", a: "欢迎在社区板块发表攻略、提问和分享照片。您也可以在文化日志中记录您的参访体验，与其他文化探访者交流心得。" },
   ];
   return (
     <div className="mt-10" id="sec-faq">
@@ -127,13 +127,13 @@ function BusinessPracticeDetailSection({ religion, color }: { religion: Religion
         <div className="text-center">
           <span className="text-4xl block mb-3">💼</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-2">
-            信仰与商业实践
+            文化智慧与商业实践
           </h2>
           <p className="text-sm tracking-widest uppercase" style={{ color }}>
             Faith & Business Practice
           </p>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-sm leading-relaxed">
-            探索{religion.name}智慧如何塑造世界级企业文化——从标杆案例到实践方法，为CEO与高管提供信仰驱动的商业灵感
+            探索{religion.name}智慧如何塑造世界级企业文化——从标杆案例到实践方法，为CEO与高管提供文化智慧驱动的商业灵感
           </p>
         </div>
 
@@ -218,12 +218,12 @@ function BusinessPracticeDetailSection({ religion, color }: { religion: Religion
                         </span>
                       ))}
                     </div>
-                    {/* 信仰原则 */}
+                    {/* 文化原则 */}
                     <div
                       className="rounded-lg p-3 text-sm border-l-3"
                       style={{ backgroundColor: `${color}06`, borderLeftColor: color, borderLeftWidth: '3px' }}
                     >
-                      <span className="font-semibold" style={{ color }}>信仰原则：</span>
+                      <span className="font-semibold" style={{ color }}>文化原则：</span>
                       <span className="text-gray-700">{c.faithPrinciple}</span>
                     </div>
                   </div>
@@ -559,7 +559,7 @@ export default function ReligionDetailClient({
           {/* Breadcrumb */}
           <div className="flex items-center justify-center gap-2 text-sm text-white/70 mb-6">
             <Link href="/religions" className="hover:text-white transition-colors">
-              {t("nav.religions") || "信仰"}
+              {t("nav.religions") || "文化"}
             </Link>
             <span>/</span>
             <span className="text-white">{religion.name}</span>
@@ -771,7 +771,7 @@ export default function ReligionDetailClient({
         {/* ========== Bottom CTAs ========== */}
         <div className="text-center mt-12 space-y-4">
           <Link
-            href={`/chat?q=${encodeURIComponent(`我想了解${religion.name}的朝圣路线`)}`}
+            href={`/chat?q=${encodeURIComponent(`我想了解${religion.name}的文化探访路线`)}`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#3264ff] hover:bg-[#0052CC] text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20"
           >
             ✨ {t("religion.exploreRoutes").replace("{name}", religion.name)}
@@ -781,7 +781,7 @@ export default function ReligionDetailClient({
               href="/religions"
               className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-all border border-gray-200 inline-block"
             >
-              ← {t("detail.backToList") || "返回信仰列表"}
+              ← {t("detail.backToList") || "返回文化列表"}
             </Link>
           </div>
         </div>

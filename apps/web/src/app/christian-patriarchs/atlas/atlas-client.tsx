@@ -17,7 +17,7 @@ const CHRISTIAN_TYPE_LABELS = {
   dharma: "蒙召",
   teaching: "传道",
   founding: "建堂",
-  pilgrimage: "朝圣",
+  pilgrimage: "文化之旅",
   exile: "流放",
   death: "殉道",
   other: "事件",
@@ -25,7 +25,7 @@ const CHRISTIAN_TYPE_LABELS = {
 
 const CHRISTIAN_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "christian",
-  title: "基督教先贤大图谱",
+  title: "基督教文化先贤大图谱",
   subtitle: "使徒足迹 · 福音传承",
   themeColor: "#3B82F6",
   backUrl: "/christian-patriarchs",
@@ -47,7 +47,7 @@ const CHRISTIAN_ATLAS_CONFIG: AtlasConfig = {
   ],
   schoolColors: SCHOOL_COLORS,
   typeLabels: CHRISTIAN_TYPE_LABELS,
-  loadingText: "正在加载基督教先贤大图谱...",
+  loadingText: "正在加载基督教文化先贤大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(CHRISTIAN_ATLAS_CONFIG);
@@ -118,7 +118,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="基督教教派传承"
+          title="基督教文化教派传承"
           items={CHRISTIAN_ATLAS_CONFIG.legendItems}
           themeColor={CHRISTIAN_ATLAS_CONFIG.themeColor}
         />
@@ -140,7 +140,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#3B82F6]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            基督教先贤大图谱
+            基督教文化先贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位先贤 · 使徒足迹 · 福音传承

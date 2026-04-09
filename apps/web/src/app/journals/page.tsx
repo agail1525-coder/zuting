@@ -289,7 +289,7 @@ export default function JournalsPage() {
         <div className="mt-8 bg-gradient-to-r from-[#0066FF]/5 to-blue-50 rounded-2xl p-6 border border-[#0066FF]/10 text-center">
           <span className="text-2xl block mb-2">🏛</span>
           <h3 className="text-base font-semibold text-gray-900">探索更多圣地，记录更多感悟</h3>
-          <p className="text-gray-500 text-xs mt-1">每一次朝圣都值得记录</p>
+          <p className="text-gray-500 text-xs mt-1">每一次文化之旅都值得记录</p>
           <Link
             href="/holy-sites"
             className="inline-block mt-4 px-6 py-2.5 bg-[#0066FF] text-white font-semibold rounded-xl text-sm hover:bg-[#0052CC] transition-colors"

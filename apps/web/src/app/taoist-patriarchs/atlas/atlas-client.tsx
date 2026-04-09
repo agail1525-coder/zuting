@@ -25,7 +25,7 @@ const TAOIST_TYPE_LABELS = {
 
 const TAOIST_ATLAS_CONFIG: AtlasConfig = {
   religionKey: "taoist",
-  title: "道教先贤大图谱",
+  title: "道教文化先贤大图谱",
   subtitle: "仙踪道迹 · 洞天福地",
   themeColor: "#10B981",
   backUrl: "/taoist-patriarchs",
@@ -47,7 +47,7 @@ const TAOIST_ATLAS_CONFIG: AtlasConfig = {
   ],
   schoolColors: SCHOOL_COLORS,
   typeLabels: TAOIST_TYPE_LABELS,
-  loadingText: "正在加载道教先贤大图谱...",
+  loadingText: "正在加载道教文化先贤大图谱...",
 };
 
 const AtlasMapDynamic = createAtlasMapDynamic(TAOIST_ATLAS_CONFIG);
@@ -118,7 +118,7 @@ export default function AtlasClient({ patriarchs }: Props) {
 
       {!selectedId && (
         <AtlasLegend
-          title="道教法脉传承"
+          title="道教文化法脉传承"
           items={TAOIST_ATLAS_CONFIG.legendItems}
           themeColor={TAOIST_ATLAS_CONFIG.themeColor}
         />
@@ -140,7 +140,7 @@ export default function AtlasClient({ patriarchs }: Props) {
           <h1 className="text-2xl md:text-3xl font-bold text-[#10B981]/80 tracking-wider"
             style={{ fontFamily: "'Noto Serif SC', serif" }}
           >
-            道教先贤大图谱
+            道教文化先贤大图谱
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {patriarchs.length}位先贤 · 仙踪道迹 · 洞天福地

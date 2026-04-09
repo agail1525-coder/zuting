@@ -5,9 +5,9 @@ import ChristianPatriarchsClient from "./client";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "基督教先贤传承 — 五大传统28位大师 | JOINUS",
+  title: "基督教文化先贤传承 — 五大传统28位大师 | JOINUS",
   description:
-    "探索基督教从耶稣基督到近现代影响者、从使徒教父到宗教改革家的完整传承",
+    "探索基督教文化从耶稣基督到近现代影响者、从使徒教父到宗教改革家的完整传承",
 };
 
 export default async function ChristianPatriarchsPage() {

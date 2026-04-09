@@ -72,7 +72,7 @@ export default function BusinessClient({ religion }: { religion: Religion }) {
           {/* Breadcrumb */}
           <div className="flex items-center justify-center gap-2 text-sm text-white/70 mb-6">
             <Link href="/religions" className="hover:text-white transition-colors">
-              信仰
+              文化
             </Link>
             <span>/</span>
             <Link href={`/religions/${religion.slug}`} className="hover:text-white transition-colors">
@@ -90,7 +90,7 @@ export default function BusinessClient({ religion }: { religion: Religion }) {
             Faith & Business Practice
           </p>
           <p className="max-w-2xl text-sm md:text-base leading-relaxed text-white/80 px-4">
-            探索{religion.name}智慧如何塑造世界级企业文化——从标杆案例到实践方法，为CEO与高管提供信仰驱动的商业灵感
+            探索{religion.name}智慧如何塑造世界级企业文化——从标杆案例到实践方法，为CEO与高管提供文化智慧驱动的商业灵感
           </p>
         </div>
       </div>
@@ -180,7 +180,7 @@ export default function BusinessClient({ religion }: { religion: Religion }) {
                       className="rounded-lg p-3 text-sm"
                       style={{ backgroundColor: `${color}06`, borderLeftColor: color, borderLeftWidth: '3px' }}
                     >
-                      <span className="font-semibold" style={{ color }}>信仰原则：</span>
+                      <span className="font-semibold" style={{ color }}>文化原则：</span>
                       <span className="text-gray-700">{c.faithPrinciple}</span>
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export default function BusinessClient({ religion }: { religion: Religion }) {
         {!hasDeepContent && (
           <div className="text-center py-16">
             <span className="text-5xl block mb-4">📋</span>
-            <p className="text-gray-400">该信仰的商业实践深度内容正在整理中...</p>
+            <p className="text-gray-400">该文化传统的商业实践深度内容正在整理中...</p>
           </div>
         )}
 
@@ -323,7 +323,7 @@ export default function BusinessClient({ religion }: { religion: Religion }) {
               href="/religions"
               className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
             >
-              查看全部信仰 →
+              查看全部文化 →
             </Link>
           </div>
         </div>

@@ -98,11 +98,11 @@ export default function BahaiFiguresClient({
       <section className="relative bg-gradient-to-b from-[#083344] via-[#0E7490] to-[#ECFEFF] pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-5xl block mb-3">✦</span>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">巴哈伊教人物传承</h1>
-          <p className="text-[#A5F3FC] text-sm mb-6">从巴孛先声到巴哈欧拉启示，天下一家的世界宗教</p>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">巴哈伊教文化人物传承</h1>
+          <p className="text-[#A5F3FC] text-sm mb-6">从巴孛先声到巴哈欧拉启示，天下一家的世界文化</p>
           <Link href="/bahai-figures/atlas" className="inline-flex items-center gap-3 px-6 py-3 mt-2 mb-4 rounded-2xl text-base font-bold transition-all duration-300 group bg-gradient-to-r from-[#0891B2] via-[#06B6D4] to-[#0891B2] text-white hover:from-[#06B6D4] hover:via-[#22D3EE] hover:to-[#06B6D4] shadow-lg shadow-[#0891B2]/20 hover:shadow-[#0891B2]/40">
             <span className="text-xl">🗺</span>
-            <span><span className="block text-left">巴哈伊教先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
+            <span><span className="block text-left">巴哈伊教文化先贤大图谱</span><span className="block text-xs font-normal opacity-70 text-left">全球法脉地图 · 追寻先贤足迹</span></span>
             <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
           </Link>
           <div className="flex justify-center gap-8 text-white/90 text-sm">
@@ -140,7 +140,7 @@ export default function BahaiFiguresClient({
         </div>
 
         <div className="mb-6">
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索巴哈伊教人物..."
+          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="搜索巴哈伊教文化人物..."
             className="w-full px-4 py-3 rounded-xl border border-[#A5F3FC]/40 bg-white text-sm placeholder:text-[#67E8F9] focus:border-[#0891B2] focus:ring-1 focus:ring-[#0891B2]/30 outline-none" />
           <p className="text-xs text-[#155E75] mt-2">找到 {filtered.length} 位人物</p>
         </div>
@@ -158,7 +158,7 @@ export default function BahaiFiguresClient({
         )}
 
         <div className="bg-gradient-to-r from-[#083344] to-[#0E7490] rounded-2xl p-8 text-center mb-12">
-          <h3 className="text-xl font-serif font-bold text-white mb-2">探索巴哈伊圣地朝圣之旅</h3>
+          <h3 className="text-xl font-serif font-bold text-white mb-2">探索巴哈伊文化圣地文化之旅</h3>
           <p className="text-[#A5F3FC] text-sm mb-5">踏访海法世界中心，感受天下一家的宏大愿景</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/chat" className="px-6 py-3 bg-[#0891B2] hover:bg-[#0E7490] text-white font-semibold rounded-xl transition-colors text-sm">咨询小鸿AI</Link>
