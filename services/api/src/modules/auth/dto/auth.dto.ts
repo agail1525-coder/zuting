@@ -34,7 +34,7 @@ export class RegisterDto {
 
   @ApiProperty({
     description: 'User display name / nickname. / 用户显示昵称',
-    example: '朝圣者',
+    example: '文化旅行者',
     minLength: 1,
     maxLength: 32,
   })
@@ -145,7 +145,7 @@ export class VerifyCodeDto {
 export class UpdateProfileDto {
   @ApiPropertyOptional({
     description: 'User display name, 2-20 characters. / 用户昵称，2-20个字符',
-    example: '朝圣者',
+    example: '文化旅行者',
     minLength: 2,
     maxLength: 20,
   })
@@ -176,7 +176,7 @@ export class UpdateProfileDto {
 
   @ApiPropertyOptional({
     description: 'User bio / self-introduction, max 200 characters. / 个人简介，最多200字',
-    example: '虔诚朝圣者，探索世界宗教文化',
+    example: '文化旅行者，探索世界文化传统',
     maxLength: 200,
   })
   @IsOptional()

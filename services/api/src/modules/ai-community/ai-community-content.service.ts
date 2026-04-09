@@ -112,7 +112,7 @@ export class AiCommunityContentService {
         const sites = SITE_TOPICS[agent.religionSlug] ?? ['圣地'];
         const site = this.pickRandom(sites);
         prompt = buildGuidePrompt_HolySite(agent, site, religion.name);
-        tags = [religion.name, site, '朝圣攻略'];
+        tags = [religion.name, site, '文化探访攻略'];
         break;
       }
       case 'patriarch': {

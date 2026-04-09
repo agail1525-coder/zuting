@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateGuideDto {
-  @ApiProperty({ description: '攻略标题', example: '菩提伽耶朝圣完全指南' })
+  @ApiProperty({ description: '攻略标题', example: '菩提伽耶文化探访完全指南' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(200)
@@ -37,7 +37,7 @@ export class CreateGuideDto {
   @ApiPropertyOptional({
     description: '标签列表',
     type: [String],
-    example: ['佛教', '印度', '朝圣'],
+    example: ['佛教文化', '印度', '文化之旅'],
   })
   @IsOptional()
   @IsArray()

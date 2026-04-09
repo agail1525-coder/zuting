@@ -26,7 +26,7 @@ export class CreateJournalDto {
 
   @ApiProperty({
     description: 'Title of the journal entry. Max 200 characters. / 日志标题，最多200字符',
-    example: '菩提伽耶朝圣记 — A Pilgrimage to Bodh Gaya',
+    example: '菩提伽耶文化探访记 — A Cultural Journey to Bodh Gaya',
     maxLength: 200,
   })
   @IsString()

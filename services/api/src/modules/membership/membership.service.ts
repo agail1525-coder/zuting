@@ -8,11 +8,11 @@ import { RedisService } from '../redis/redis.service';
 
 // Level thresholds: [minPoints, levelNumber, levelName]
 const LEVEL_CONFIG = [
-  { level: 1, name: '朝圣新手', minPoints: 0 },
+  { level: 1, name: '文化新手', minPoints: 0 },
   { level: 2, name: '虔诚行者', minPoints: 1000 },
-  { level: 3, name: '法脉传人', minPoints: 5000 },
+  { level: 3, name: '文化传人', minPoints: 5000 },
   { level: 4, name: '祖庭守护', minPoints: 20000 },
-  { level: 5, name: '宗门圣使', minPoints: 50000 },
+  { level: 5, name: '文化圣使', minPoints: 50000 },
 ] as const;
 
 @Injectable()
@@ -33,7 +33,7 @@ export class MembershipService {
       data: {
         userId,
         level: 1,
-        levelName: '朝圣新手',
+        levelName: '文化新手',
         totalPoints: 0,
         availablePoints: 0,
       },

@@ -18,7 +18,7 @@ export class CreateCouponDto {
   @MaxLength(32)
   code: string;
 
-  @ApiProperty({ description: '优惠券名称', example: '春季朝圣优惠' })
+  @ApiProperty({ description: '优惠券名称', example: '春季文化之旅优惠' })
   @IsString()
   @MinLength(1)
   @MaxLength(100)

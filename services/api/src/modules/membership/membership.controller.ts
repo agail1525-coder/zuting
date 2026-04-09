@@ -40,7 +40,7 @@ export class MembershipController {
         type: 'object',
         properties: {
           level: { type: 'number', example: 1 },
-          name: { type: 'string', example: '朝圣新手' },
+          name: { type: 'string', example: '文化新手' },
           minPoints: { type: 'number', example: 0 },
           nextLevelPoints: { type: 'number', nullable: true, example: 1000 },
           benefits: { type: 'array', items: { type: 'string' } },
@@ -69,7 +69,7 @@ export class MembershipController {
         id: { type: 'string' },
         userId: { type: 'string' },
         level: { type: 'number', example: 1 },
-        levelName: { type: 'string', example: '朝圣新手' },
+        levelName: { type: 'string', example: '文化新手' },
         totalPoints: { type: 'number', example: 150 },
         availablePoints: { type: 'number', example: 100 },
         createdAt: { type: 'string', format: 'date-time' },

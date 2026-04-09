@@ -10,18 +10,18 @@ import { RELIGION_BUSINESS_CASES } from './seed-religion-business-cases';
 import { holySites } from './data/holy-sites-data';
 
 const religions = [
-  { name: '佛教', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
-  { name: '道教', nameEn: 'Taoism', slug: 'taoism', symbol: '☯', color: '#10B981' },
-  { name: '基督教', nameEn: 'Christianity', slug: 'christianity', symbol: '✝', color: '#3B82F6' },
-  { name: '伊斯兰教', nameEn: 'Islam', slug: 'islam', symbol: '☪', color: '#059669' },
-  { name: '印度教', nameEn: 'Hinduism', slug: 'hinduism', symbol: '🕉', color: '#F97316' },
-  { name: '犹太教', nameEn: 'Judaism', slug: 'judaism', symbol: '✡', color: '#6366F1' },
-  { name: '儒教', nameEn: 'Confucianism', slug: 'confucianism', symbol: '儒', color: '#DC2626' },
-  { name: '锡克教', nameEn: 'Sikhism', slug: 'sikhism', symbol: '☬', color: '#EA580C' },
-  { name: '神道教', nameEn: 'Shinto', slug: 'shinto', symbol: '⛩', color: '#E11D48' },
-  { name: '藏传佛教', nameEn: 'Tibetan Buddhism', slug: 'tibetan-buddhism', symbol: '☸', color: '#7C3AED' },
-  { name: '原住民灵性', nameEn: 'Indigenous Spirituality', slug: 'indigenous', symbol: '◉', color: '#78716C' },
-  { name: '巴哈伊教', nameEn: 'Bahai', slug: 'bahai', symbol: '✦', color: '#0891B2' },
+  { name: '佛教文化', nameEn: 'Buddhism', slug: 'buddhism', symbol: '☸', color: '#F59E0B' },
+  { name: '道教文化', nameEn: 'Taoism', slug: 'taoism', symbol: '☯', color: '#10B981' },
+  { name: '基督文化', nameEn: 'Christianity', slug: 'christianity', symbol: '✝', color: '#3B82F6' },
+  { name: '伊斯兰文化', nameEn: 'Islam', slug: 'islam', symbol: '☪', color: '#059669' },
+  { name: '印度文化', nameEn: 'Hinduism', slug: 'hinduism', symbol: '🕉', color: '#F97316' },
+  { name: '犹太文化', nameEn: 'Judaism', slug: 'judaism', symbol: '✡', color: '#6366F1' },
+  { name: '儒家文化', nameEn: 'Confucianism', slug: 'confucianism', symbol: '儒', color: '#DC2626' },
+  { name: '锡克文化', nameEn: 'Sikhism', slug: 'sikhism', symbol: '☬', color: '#EA580C' },
+  { name: '神道文化', nameEn: 'Shinto', slug: 'shinto', symbol: '⛩', color: '#E11D48' },
+  { name: '藏传文化', nameEn: 'Tibetan Buddhism', slug: 'tibetan-buddhism', symbol: '☸', color: '#7C3AED' },
+  { name: '原住民文化', nameEn: 'Indigenous Spirituality', slug: 'indigenous', symbol: '◉', color: '#78716C' },
+  { name: '巴哈伊文化', nameEn: 'Bahai', slug: 'bahai', symbol: '✦', color: '#0891B2' },
 ];
 
 // ── Holy Sites (300) — extracted to ./data/holy-sites-data.ts ──
@@ -40,11 +40,11 @@ interface TempleData {
 }
 
 const temples: TempleData[] = [
-  // ═══ 佛教 ═══
+  // ═══ 佛教文化 ═══
   {
     name: '鹿野苑', nameEn: 'Sarnath Deer Park', religionSlug: 'buddhism',
     country: '印度', foundingDate: '公元前528年',
-    description: '释迦牟尼初转法轮之地，佛教第一次说法处',
+    description: '释迦牟尼初转法轮之地，佛教文化第一次说法处',
     latitude: 25.381, longitude: 83.024,
   },
   {
@@ -59,36 +59,36 @@ const temples: TempleData[] = [
     description: '佛陀驻锡最久的道场，众多经典在此宣说',
     latitude: 27.513, longitude: 82.030,
   },
-  // ═══ 道教 ═══
+  // ═══ 道教文化 ═══
   {
     name: '鹤鸣山', nameEn: 'Mount Heming', religionSlug: 'taoism',
     country: '中国', foundingDate: '东汉142年',
-    description: '张道陵创立天师道之地，道教第一座祖庭',
+    description: '张道陵创立天师道之地，道教文化第一座祖庭',
     latitude: 30.558, longitude: 103.544,
   },
   {
     name: '终南山', nameEn: 'Mount Zhongnan', religionSlug: 'taoism',
     country: '中国', foundingDate: '远古',
-    description: '老子著《道德经》之地，道教修行圣地',
+    description: '老子著《道德经》之地，道教文化修行圣地',
     latitude: 33.960, longitude: 108.960,
   },
   {
     name: '楼观台', nameEn: 'Louguantai', religionSlug: 'taoism',
     country: '中国', foundingDate: '周朝',
-    description: '老子讲经著书之地，道教最早宫观',
+    description: '老子讲经著书之地，道教文化最早宫观',
     latitude: 34.050, longitude: 108.370,
   },
-  // ═══ 基督教 ═══
+  // ═══ 基督文化 ═══
   {
     name: '伯利恒主诞堂', nameEn: 'Church of the Nativity', religionSlug: 'christianity',
     country: '巴勒斯坦', foundingDate: '公元326年',
-    description: '耶稣基督降生之地，基督教最古老教堂之一',
+    description: '耶稣基督降生之地，基督文化最古老教堂之一',
     latitude: 31.704, longitude: 35.208,
   },
   {
     name: '各各他', nameEn: 'Golgotha / Calvary', religionSlug: 'christianity',
     country: '以色列', foundingDate: '公元1世纪',
-    description: '耶稣受难十字架之地，基督教信仰核心圣地',
+    description: '耶稣受难十字架之地，基督文化人文精神核心圣地',
     latitude: 31.779, longitude: 35.230,
   },
   {
@@ -97,7 +97,7 @@ const temples: TempleData[] = [
     description: '门徒首次被称为基督徒的城市，早期教会中心',
     latitude: 36.206, longitude: 36.157,
   },
-  // ═══ 伊斯兰教 ═══
+  // ═══ 伊斯兰文化 ═══
   {
     name: '希拉山洞', nameEn: 'Cave of Hira', religionSlug: 'islam',
     country: '沙特', foundingDate: '公元610年',
@@ -107,14 +107,14 @@ const temples: TempleData[] = [
   {
     name: '库巴清真寺', nameEn: 'Quba Mosque', religionSlug: 'islam',
     country: '沙特', foundingDate: '公元622年',
-    description: '伊斯兰教第一座清真寺',
+    description: '伊斯兰文化第一座清真寺',
     latitude: 24.440, longitude: 39.617,
   },
-  // ═══ 印度教 ═══
+  // ═══ 印度文化 ═══
   {
     name: '哈里德瓦尔', nameEn: 'Haridwar', religionSlug: 'hinduism',
     country: '印度', foundingDate: '远古',
-    description: '恒河出山入平原之地，印度教七大圣城之首',
+    description: '恒河出山入平原之地，印度文化七大圣城之首',
     latitude: 29.945, longitude: 78.164,
   },
   {
@@ -123,11 +123,11 @@ const temples: TempleData[] = [
     description: '瑜伽之都，古代圣人苦修之地',
     latitude: 30.087, longitude: 78.268,
   },
-  // ═══ 犹太教 ═══
+  // ═══ 犹太文化 ═══
   {
     name: '圣殿山', nameEn: 'Temple Mount', religionSlug: 'judaism',
     country: '以色列', foundingDate: '公元前957年',
-    description: '所罗门圣殿所在地，犹太教最神圣之地',
+    description: '所罗门圣殿所在地，犹太文化最神圣之地',
     latitude: 31.778, longitude: 35.236,
   },
   {
@@ -136,7 +136,7 @@ const temples: TempleData[] = [
     description: '亚伯拉罕、以撒、雅各安葬之地',
     latitude: 31.524, longitude: 35.110,
   },
-  // ═══ 儒教 ═══
+  // ═══ 儒家文化 ═══
   {
     name: '曲阜阙里', nameEn: 'Queli, Qufu', religionSlug: 'confucianism',
     country: '中国', foundingDate: '春秋',
@@ -149,7 +149,7 @@ const temples: TempleData[] = [
     description: '孔子讲学之地，杏坛教化天下',
     latitude: 35.596, longitude: 116.988,
   },
-  // ═══ 锡克教 ═══
+  // ═══ 锡克文化 ═══
   {
     name: '卡塔普尔', nameEn: 'Kartarpur Sahib', religionSlug: 'sikhism',
     country: '巴基斯坦', foundingDate: '1522年',
@@ -162,7 +162,7 @@ const temples: TempleData[] = [
     description: '第十代古鲁戈宾德·辛格圆寂之地',
     latitude: 19.149, longitude: 77.318,
   },
-  // ═══ 神道教 ═══
+  // ═══ 神道文化 ═══
   {
     name: '出云大社', nameEn: 'Izumo Taisha', religionSlug: 'shinto',
     country: '日本', foundingDate: '远古',
@@ -172,10 +172,10 @@ const temples: TempleData[] = [
   {
     name: '高天原', nameEn: 'Takamagahara', religionSlug: 'shinto',
     country: '日本', foundingDate: '神话',
-    description: '天照大神居住的天上世界，神道教创世之源',
+    description: '天照大神居住的天上世界，神道文化创世之源',
     latitude: 34.455, longitude: 136.726,
   },
-  // ═══ 藏传佛教 ═══
+  // ═══ 藏传文化 ═══
   {
     name: '桑耶寺', nameEn: 'Samye Monastery', religionSlug: 'tibetan-buddhism',
     country: '中国', foundingDate: '公元779年',
@@ -188,7 +188,7 @@ const temples: TempleData[] = [
     description: '宗喀巴创建格鲁派之地，黄教祖庭',
     latitude: 29.870, longitude: 91.518,
   },
-  // ═══ 原住民灵性 ═══
+  // ═══ 原住民文化 ═══
   {
     name: '梦时代圣地', nameEn: 'Aboriginal Dreamtime Sacred Site', religionSlug: 'indigenous',
     country: '澳大利亚', foundingDate: '远古',
@@ -201,11 +201,11 @@ const temples: TempleData[] = [
     description: '印加帝国太阳神殿，黄金之城的精神中心',
     latitude: -13.520, longitude: -71.978,
   },
-  // ═══ 巴哈伊教 ═══
+  // ═══ 巴哈伊文化 ═══
   {
     name: '巴格达Ridvan花园', nameEn: 'Ridvan Garden Baghdad', religionSlug: 'bahai',
     country: '伊拉克', foundingDate: '1863年',
-    description: '巴哈欧拉宣布使命之地，巴哈伊教创立圣地',
+    description: '巴哈欧拉宣布使命之地，巴哈伊文化创立圣地',
     latitude: 33.312, longitude: 44.361,
   },
   {
@@ -228,11 +228,11 @@ interface PatriarchData {
 }
 
 const patriarchs: PatriarchData[] = [
-  // ═══ 佛教 ═══
+  // ═══ 佛教文化 ═══
   {
     name: '释迦牟尼', nameEn: 'Siddhartha Gautama', religionSlug: 'buddhism',
     dates: '公元前563-483年', title: '世尊·佛陀',
-    biography: '创立佛教，悟道成佛，说法四十五年度化众生',
+    biography: '创立佛教文化，悟道成佛，说法四十五年度化众生',
     coreTeaching: '诸恶莫作，众善奉行，自净其意，是诸佛教',
   },
   {
@@ -247,7 +247,7 @@ const patriarchs: PatriarchData[] = [
     biography: '创顿悟法门，著《六祖坛经》，禅宗发扬光大',
     coreTeaching: '菩提本无树，明镜亦非台，本来无一物，何处惹尘埃',
   },
-  // ═══ 道教 ═══
+  // ═══ 道教文化 ═══
   {
     name: '老子', nameEn: 'Laozi', religionSlug: 'taoism',
     dates: '春秋', title: '太上老君',
@@ -257,39 +257,39 @@ const patriarchs: PatriarchData[] = [
   {
     name: '张道陵', nameEn: 'Zhang Daoling', religionSlug: 'taoism',
     dates: '34-156年', title: '张天师·正一真人',
-    biography: '创立天师道(正一道)，道教第一代天师',
+    biography: '创立天师道(正一道)，道教文化第一代天师',
     coreTeaching: '正一盟威之道，以清静为宗',
   },
   {
     name: '王重阳', nameEn: 'Wang Chongyang', religionSlug: 'taoism',
     dates: '1112-1170年', title: '重阳真人',
-    biography: '创立全真道，倡三教合一，道教革新',
+    biography: '创立全真道，倡三教合一，道教文化革新',
     coreTeaching: '心中端正，无须装饰；行事光明，何惧黑暗',
   },
-  // ═══ 基督教 ═══
+  // ═══ 基督文化 ═══
   {
     name: '耶稣基督', nameEn: 'Jesus Christ', religionSlug: 'christianity',
     dates: '公元前4-公元30年', title: '救世主·神子',
-    biography: '基督教创立者，传扬天国福音，十字架救赎',
+    biography: '基督文化创立者，传扬天国福音，十字架救赎',
     coreTeaching: '我就是道路、真理、生命',
   },
   {
     name: '使徒保罗', nameEn: 'Apostle Paul', religionSlug: 'christianity',
     dates: '5-67年', title: '外邦人使徒',
-    biography: '将基督教从犹太扩展到整个罗马帝国',
+    biography: '将基督文化从犹太扩展到整个罗马帝国',
     coreTeaching: '如今常存的有信、有望、有爱，其中最大的是爱',
   },
   {
     name: '奥古斯丁', nameEn: 'Augustine of Hippo', religionSlug: 'christianity',
     dates: '354-430年', title: '恩典博士',
-    biography: '基督教神学奠基人，著《忏悔录》《上帝之城》',
+    biography: '基督文化神学奠基人，著《忏悔录》《上帝之城》',
     coreTeaching: '你为自己创造了我们，我们的心不安息，直到安息在你里面',
   },
-  // ═══ 伊斯兰教 ═══
+  // ═══ 伊斯兰文化 ═══
   {
     name: '先知穆罕默德', nameEn: 'Prophet Muhammad', religionSlug: 'islam',
     dates: '570-632年', title: '封印先知·安拉的使者',
-    biography: '伊斯兰教创立者，接受《古兰经》启示',
+    biography: '伊斯兰文化创立者，接受《古兰经》启示',
     coreTeaching: '求知，从摇篮到坟墓',
   },
   {
@@ -298,11 +298,11 @@ const patriarchs: PatriarchData[] = [
     biography: '先知最亲密伙伴，首任正统哈里发',
     coreTeaching: '善良不会因为谦虚而减少',
   },
-  // ═══ 印度教 ═══
+  // ═══ 印度文化 ═══
   {
     name: '商羯罗', nameEn: 'Adi Shankara', religionSlug: 'hinduism',
     dates: '788-820年', title: '阿阇梨·世界导师',
-    biography: '创立不二论吠檀多，统一印度教各派',
+    biography: '创立不二论吠檀多，统一印度文化各派',
     coreTeaching: '梵我一如——个体灵魂与宇宙至上实在本质相同',
   },
   {
@@ -311,11 +311,11 @@ const patriarchs: PatriarchData[] = [
     biography: '创限定不二论，强调对神的虔爱(Bhakti)',
     coreTeaching: '虔诚的爱是通向解脱的最高道路',
   },
-  // ═══ 犹太教 ═══
+  // ═══ 犹太文化 ═══
   {
     name: '亚伯拉罕', nameEn: 'Abraham', religionSlug: 'judaism',
     dates: '约公元前2000年', title: '信心之父',
-    biography: '犹太教、基督教、伊斯兰教共同的先祖',
+    biography: '犹太文化、基督文化、伊斯兰文化共同的先祖',
     coreTeaching: '你要离开本地、本族、父家，往我所要指示你的地去',
   },
   {
@@ -324,7 +324,7 @@ const patriarchs: PatriarchData[] = [
     biography: '带领以色列人出埃及，在西奈山领受十诫',
     coreTeaching: '以色列啊，你要听！耶和华我们的神是独一的主',
   },
-  // ═══ 儒教 ═══
+  // ═══ 儒家文化 ═══
   {
     name: '孔子', nameEn: 'Confucius', religionSlug: 'confucianism',
     dates: '前551-前479年', title: '至圣先师·万世师表',
@@ -343,27 +343,27 @@ const patriarchs: PatriarchData[] = [
     biography: '集理学大成，注释四书成为科举标准',
     coreTeaching: '问渠那得清如许，为有源头活水来',
   },
-  // ═══ 锡克教 ═══
+  // ═══ 锡克文化 ═══
   {
     name: '古鲁那纳克', nameEn: 'Guru Nanak', religionSlug: 'sikhism',
     dates: '1469-1539年', title: '第一代古鲁',
-    biography: '锡克教创始人，倡一神论、平等、无私服务',
+    biography: '锡克文化创始人，倡一神论、平等、无私服务',
     coreTeaching: 'Ik Onkar——真理之名，创造者，无所畏惧，无有仇恨',
   },
   {
     name: '古鲁阿尔詹', nameEn: 'Guru Arjan', religionSlug: 'sikhism',
     dates: '1563-1606年', title: '第五代古鲁',
-    biography: '编纂锡克教圣典《古鲁·格兰特·萨希卜》',
+    biography: '编纂锡克文化圣典《古鲁·格兰特·萨希卜》',
     coreTeaching: '甘露之名充满我的心',
   },
-  // ═══ 神道教 ═══
+  // ═══ 神道文化 ═══
   {
     name: '天照大神', nameEn: 'Amaterasu', religionSlug: 'shinto',
     dates: '神话', title: '太阳女神·皇祖神',
-    biography: '神道教最高神，日本皇室祖神，太阳化身',
+    biography: '神道文化最高神，日本皇室祖神，太阳化身',
     coreTeaching: '以和为贵，万物共生',
   },
-  // ═══ 藏传佛教 ═══
+  // ═══ 藏传文化 ═══
   {
     name: '莲花生大士', nameEn: 'Padmasambhava', religionSlug: 'tibetan-buddhism',
     dates: '8世纪', title: '咕噜仁波切',
@@ -379,10 +379,10 @@ const patriarchs: PatriarchData[] = [
   {
     name: '阿底峡尊者', nameEn: 'Atisha', religionSlug: 'tibetan-buddhism',
     dates: '982-1054年', title: '吉祥燃灯智',
-    biography: '著《菩提道灯论》，复兴西藏佛教',
+    biography: '著《菩提道灯论》，复兴西藏佛教文化',
     coreTeaching: '诸法如梦如幻，如水中月影',
   },
-  // ═══ 原住民灵性 ═══
+  // ═══ 原住民文化 ═══
   {
     name: '梦时代祖灵', nameEn: 'Dreamtime Ancestral Spirits', religionSlug: 'indigenous',
     dates: '远古', title: '创世祖灵',
@@ -395,7 +395,7 @@ const patriarchs: PatriarchData[] = [
     biography: '印加帝国至高神，太阳的化身',
     coreTeaching: 'Ama sua, ama llulla, ama quella——不偷窃，不说谎，不懒惰',
   },
-  // ═══ 巴哈伊教 ═══
+  // ═══ 巴哈伊文化 ═══
   {
     name: '巴哈欧拉', nameEn: "Baha'u'llah", religionSlug: 'bahai',
     dates: '1817-1892年', title: '上帝的荣耀',
@@ -420,7 +420,7 @@ interface TeachingData {
 }
 
 const teachings: TeachingData[] = [
-  // ═══ 佛教 ═══
+  // ═══ 佛教文化 ═══
   {
     name: '诸恶莫作', religionSlug: 'buddhism',
     originalText: '诸恶莫作，众善奉行，自净其意，是诸佛教',
@@ -445,7 +445,7 @@ const teachings: TeachingData[] = [
     sourceText: '龙树菩萨',
     translationCn: '真理不偏向任何极端——走中间道路，超越二元对立',
   },
-  // ═══ 道教 ═══
+  // ═══ 道教文化 ═══
   {
     name: '道法自然', religionSlug: 'taoism',
     originalText: '人法地，地法天，天法道，道法自然',
@@ -470,7 +470,7 @@ const teachings: TeachingData[] = [
     sourceText: '王重阳',
     translationCn: '儒释道三家的道理是相通的——修行不拘形式，核心是心性修养',
   },
-  // ═══ 基督教 ═══
+  // ═══ 基督文化 ═══
   {
     name: '爱人如己', religionSlug: 'christianity',
     originalText: '你要尽心、尽性、尽意爱主你的神，又要爱人如己',
@@ -481,7 +481,7 @@ const teachings: TeachingData[] = [
     name: '信望爱三德', religionSlug: 'christianity',
     originalText: '如今常存的有信、有望、有爱这三样，其中最大的是爱',
     sourceText: '使徒保罗',
-    translationCn: '信仰、希望和爱是永恒的，而爱是其中最伟大的',
+    translationCn: '人文精神、希望和爱是永恒的，而爱是其中最伟大的',
   },
   {
     name: '悔改与恩典', religionSlug: 'christianity',
@@ -489,18 +489,18 @@ const teachings: TeachingData[] = [
     sourceText: '奥古斯丁',
     translationCn: '觉醒永远不嫌晚——上帝的恩典一直在等待',
   },
-  // ═══ 伊斯兰教 ═══
+  // ═══ 伊斯兰文化 ═══
   {
     name: '万物非主唯有真主', religionSlug: 'islam',
     originalText: 'Lā ilāha illā Allāh, Muḥammadur rasūlu Allāh',
     sourceText: '先知穆罕默德',
-    translationCn: '万物非主，唯有安拉；穆罕默德是安拉的使者——信仰的根基',
+    translationCn: '万物非主，唯有安拉；穆罕默德是安拉的使者——人文精神的根基',
   },
   {
-    name: '行善即信仰', religionSlug: 'islam',
+    name: '行善即人文精神', religionSlug: 'islam',
     originalText: '最好的人是对人们最有益的人',
     sourceText: '先知穆罕默德',
-    translationCn: '真正的信仰体现在善行上——帮助他人就是最好的功修',
+    translationCn: '真正的人文精神体现在善行上——帮助他人就是最好的功修',
   },
   {
     name: '求知义务', religionSlug: 'islam',
@@ -508,7 +508,7 @@ const teachings: TeachingData[] = [
     sourceText: '先知穆罕默德',
     translationCn: '学习知识是每个穆斯林的义务，终身不止',
   },
-  // ═══ 印度教 ═══
+  // ═══ 印度文化 ═══
   {
     name: '梵我一如', religionSlug: 'hinduism',
     originalText: 'Aham Brahmāsmi——我即是梵',
@@ -527,7 +527,7 @@ const teachings: TeachingData[] = [
     sourceText: '克里希纳(薄伽梵歌)',
     translationCn: '全力做好该做的事，但不执着于结果——这是无上智慧',
   },
-  // ═══ 犹太教 ═══
+  // ═══ 犹太文化 ═══
   {
     name: '十诫', religionSlug: 'judaism',
     originalText: '除我以外，你不可有别的神；不可杀人；不可偷盗',
@@ -546,7 +546,7 @@ const teachings: TeachingData[] = [
     sourceText: '摩西',
     translationCn: '以色列啊你要听——主我们的神是独一的主',
   },
-  // ═══ 儒教 ═══
+  // ═══ 儒家文化 ═══
   {
     name: '仁者爱人', religionSlug: 'confucianism',
     originalText: '仁者爱人',
@@ -571,26 +571,26 @@ const teachings: TeachingData[] = [
     sourceText: '朱熹',
     translationCn: '从探究事物本质开始，一步步通向修身治国的大道',
   },
-  // ═══ 锡克教 ═══
+  // ═══ 锡克文化 ═══
   {
     name: 'Ik Onkar', religionSlug: 'sikhism',
     originalText: 'Ik Onkar, Sat Naam——唯一的神，真理之名',
     sourceText: '古鲁那纳克',
-    translationCn: '只有一位创造者，真理是他的名号——超越宗教界限的信仰',
+    translationCn: '只有一位创造者，真理是他的名号——超越文化传统界限的人文精神',
   },
   {
     name: '三大支柱', religionSlug: 'sikhism',
     originalText: 'Kirat Karo, Naam Japo, Vand Chhako',
     sourceText: '古鲁那纳克',
-    translationCn: '诚实劳作、冥想神名、与人分享——锡克教徒日常生活的三个核心',
+    translationCn: '诚实劳作、冥想神名、与人分享——锡克文化徒日常生活的三个核心',
   },
   {
     name: 'Langar共食', religionSlug: 'sikhism',
-    originalText: '不论种姓、信仰、贫富，所有人坐在一起平等用餐',
+    originalText: '不论种姓、人文精神、贫富，所有人坐在一起平等用餐',
     sourceText: '古鲁阿尔詹',
     translationCn: '通过共同进餐打破社会等级——平等不是口号，是行动',
   },
-  // ═══ 神道教 ═══
+  // ═══ 神道文化 ═══
   {
     name: '清明正直', religionSlug: 'shinto',
     originalText: '清き明き直き心——清净、光明、正直之心',
@@ -609,7 +609,7 @@ const teachings: TeachingData[] = [
     sourceText: '神道传统',
     translationCn: '以感恩之心对待一切事物——祭祀的本质是感恩',
   },
-  // ═══ 藏传佛教 ═══
+  // ═══ 藏传文化 ═══
   {
     name: '六字真言', religionSlug: 'tibetan-buddhism',
     originalText: '嗡嘛呢叭咪吽——莲花中的珍宝',
@@ -628,7 +628,7 @@ const teachings: TeachingData[] = [
     sourceText: '宗喀巴大师',
     translationCn: '获得人身极为难得，应珍惜此生精进修行',
   },
-  // ═══ 原住民灵性 ═══
+  // ═══ 原住民文化 ═══
   {
     name: '大地母亲', religionSlug: 'indigenous',
     originalText: '大地不属于我们，我们属于大地',
@@ -647,12 +647,12 @@ const teachings: TeachingData[] = [
     sourceText: '印加传统',
     translationCn: '不偷窃、不说谎、不懒惰——简洁有力的人生准则',
   },
-  // ═══ 巴哈伊教 ═══
+  // ═══ 巴哈伊文化 ═══
   {
     name: '人类一体', religionSlug: 'bahai',
     originalText: '大地只是一个国家，人类都是其公民',
     sourceText: '巴哈欧拉',
-    translationCn: '消除一切偏见——种族、国籍、宗教、性别，人类本是一家',
+    translationCn: '消除一切偏见——种族、国籍、文化传统、性别，人类本是一家',
   },
   {
     name: '独立探究真理', religionSlug: 'bahai',
@@ -791,8 +791,8 @@ const seals: SealData[] = [
   {
     id: 14, name: '联宗归愿印', series: '中印系',
     poem: '宗不隔愿海，道本归灯心；\n万法虽异路，归源即愿轮。\n不争谁最上，惟问谁能行；\n愿心若无界，万教皆同门。',
-    essence: '联宗归愿： 佛不执佛，道不执道，愿者归一； 众宗本为一愿之异形，众法本为一灯之分光。 此印印可成就"以愿为本、超宗入愿"的统摄智慧， 令你能在佛教、道教、儒家、基督、伊斯兰、教育、心理、哲学之间游刃有余、化法为愿， 建立以愿命为本的无碍统整。',
-    practice: '愿命交汇图谱 绘制一图，中心为你本愿，四周标出你所涉宗教/系统/文化，如：',
+    essence: '联宗归愿： 佛不执佛，道不执道，愿者归一； 众宗本为一愿之异形，众法本为一灯之分光。 此印印可成就"以愿为本、超宗入愿"的统摄智慧， 令你能在佛教文化、道教文化、儒家、基督、伊斯兰、教育、心理、哲学之间游刃有余、化法为愿， 建立以愿命为本的无碍统整。',
+    practice: '愿命交汇图谱 绘制一图，中心为你本愿，四周标出你所涉文化传统/系统/文化，如：',
     vow: '愿我不执一宗之法，不限一教之形，\n惟以愿为归，法为用，万教为助缘；\n愿我能于道中弘佛，于商中布施，于儒中育德，于教中传光；\n愿我之愿，能统摄一切归真者，使千门同出、一愿成舟。',
   },
   {
@@ -909,7 +909,7 @@ const seals: SealData[] = [
   },
 ];
 
-// ── Route data (21条路线: 13禅宗+2佛教+1道教+1基督教+1伊斯兰+1印度教+2跨文化) ──
+// ── Route data (21条路线: 13禅宗+2佛教文化+1道教文化+1基督文化+1伊斯兰+1印度文化+2跨文化) ──
 
 interface RouteData {
   slug: string;
@@ -972,7 +972,7 @@ const routes: RouteData[] = [
     difficulty: RouteDifficulty.MODERATE,
     duration: 4, nights: 3,
     highlights: ['少林功夫', '嵩山风光', '达摩面壁洞', '白马寺'],
-    description: '从达摩东渡登岸的广州出发，一路北上至嵩山少林寺，探访达摩面壁九年的洞穴，感受"一苇渡江"的传奇。途经中国第一座佛教寺院白马寺，领略禅武合一的独特文化。',
+    description: '从达摩东渡登岸的广州出发，一路北上至嵩山少林寺，探访达摩面壁九年的洞穴，感受"一苇渡江"的传奇。途经中国第一座佛教文化寺院白马寺，领略禅武合一的独特文化。',
     itinerary: [
       { day: 1, title: '广州·西来初地', activities: ['华林寺参观(达摩登岸处)', '西关文化区漫步'], meals: ['午餐：广州早茶'], accommodation: '广州市区' },
       { day: 2, title: '飞往洛阳·白马寺', activities: ['白马寺参观', '洛阳龙门石窟'], meals: ['午餐：洛阳水席'], accommodation: '洛阳市区' },
@@ -988,16 +988,16 @@ const routes: RouteData[] = [
     religionSlug: 'buddhism',
     siteLinks: [],
   },
-  // ═══ 3. 佛教：印度佛陀足迹 ═══
+  // ═══ 3. 佛教文化：印度佛陀足迹 ═══
   {
     slug: 'buddha-footsteps-india',
     title: '印度佛陀足迹',
     titleEn: 'Buddha Footsteps in India',
-    subtitle: '走访佛教四大圣地，重温佛陀一生',
+    subtitle: '走访佛教文化四大圣地，重温佛陀一生',
     category: RouteCategory.BUDDHIST,
     difficulty: RouteDifficulty.CHALLENGING,
     duration: 8, nights: 7,
-    highlights: ['菩提伽耶', '鹿野苑', '印度文化', '佛教四大圣地'],
+    highlights: ['菩提伽耶', '鹿野苑', '印度文化', '佛教文化四大圣地'],
     description: '从佛陀诞生地蓝毗尼到成道地菩提伽耶，从初转法轮的鹿野苑到涅槃地拘尸那罗，完整重走佛陀一生的关键圣地。深度体验印度文化，品尝当地美食，与僧侣交流。',
     itinerary: [
       { day: 1, title: '抵达德里', activities: ['接机', '德里印度门', '甘地纪念馆'], meals: ['晚餐：北印度料理'], accommodation: '德里五星酒店' },
@@ -1021,17 +1021,17 @@ const routes: RouteData[] = [
       { siteName: '鹿野苑', day: 3, order: 1, duration: '半天', note: '初转法轮处' },
     ],
   },
-  // ═══ 4. 道教：武当问道 ═══
+  // ═══ 4. 道教文化：武当问道 ═══
   {
     slug: 'wudang-taoist-heritage',
     title: '武当问道',
     titleEn: 'Wudang Taoist Heritage',
-    subtitle: '问道武当，寻访三大道教名山',
+    subtitle: '问道武当，寻访三大道教文化名山',
     category: RouteCategory.TAOIST,
     difficulty: RouteDifficulty.MODERATE,
     duration: 5, nights: 4,
-    highlights: ['武当太极', '道教养生', '名山胜景', '道教宫观'],
-    description: '武当山→龙虎山→青城山，走访中国三大道教名山。学习太极拳，品尝道教养生膳食，体验道教文化的天人合一理念。从张三丰到张道陵，从太极到天师道，全方位感受道教文化。',
+    highlights: ['武当太极', '道教文化养生', '名山胜景', '道教文化宫观'],
+    description: '武当山→龙虎山→青城山，走访中国三大道教文化名山。学习太极拳，品尝道教文化养生膳食，体验道教文化的天人合一理念。从张三丰到张道陵，从太极到天师道，全方位感受道教文化。',
     itinerary: [
       { day: 1, title: '抵达武当山', activities: ['紫霄宫', '南岩宫', '金顶远眺'], meals: ['午餐：武当道膳'], accommodation: '武当山脚' },
       { day: 2, title: '武当山全日', activities: ['金顶日出', '太极拳晨练', '太和宫', '逍遥谷'], meals: ['全餐'], accommodation: '武当山脚' },
@@ -1047,25 +1047,25 @@ const routes: RouteData[] = [
     groupSize: '2-8人',
     religionSlug: 'taoism',
     siteLinks: [
-      { siteName: '武当山', day: 1, order: 1, duration: '2天', note: '道教第一名山' },
+      { siteName: '武当山', day: 1, order: 1, duration: '2天', note: '道教文化第一名山' },
       { siteName: '龙虎山', day: 3, order: 1, duration: '全天', note: '天师道发源地' },
-      { siteName: '青城山', day: 4, order: 1, duration: '全天', note: '道教四大名山' },
+      { siteName: '青城山', day: 4, order: 1, duration: '全天', note: '道教文化四大名山' },
     ],
   },
-  // ═══ 5. 基督教：耶路撒冷朝圣 ═══
+  // ═══ 5. 基督文化：耶路撒冷文化探访 ═══
   {
     slug: 'jerusalem-pilgrimage',
-    title: '耶路撒冷朝圣之旅',
+    title: '耶路撒冷文化之旅',
     titleEn: 'Jerusalem Pilgrimage',
-    subtitle: '走进圣城，感受三大宗教交汇',
+    subtitle: '走进圣城，感受三大文化传统交汇',
     category: RouteCategory.CHRISTIAN,
     difficulty: RouteDifficulty.EASY,
     duration: 5, nights: 4,
     highlights: ['圣墓教堂', '苦路十四站', '哭墙', '橄榄山'],
-    description: '深入耶路撒冷老城，走访基督教、犹太教、伊斯兰教三大宗教的神圣之地。从苦路十四站到圣墓教堂，从哭墙到圆顶清真寺，感受这座永恒之城的千年历史与信仰力量。',
+    description: '深入耶路撒冷老城，走访基督文化、犹太文化、伊斯兰文化三大文化传统的神圣之地。从苦路十四站到圣墓教堂，从哭墙到圆顶清真寺，感受这座永恒之城的千年历史与佳绩力量。',
     itinerary: [
       { day: 1, title: '抵达特拉维夫→耶路撒冷', activities: ['接机', '橄榄山远眺圣城', '客西马尼园'], meals: ['晚餐'], accommodation: '耶路撒冷老城酒店' },
-      { day: 2, title: '耶路撒冷老城·基督教区', activities: ['苦路十四站', '圣墓教堂', '最后晚餐厅'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 2, title: '耶路撒冷老城·基督文化区', activities: ['苦路十四站', '圣墓教堂', '最后晚餐厅'], meals: ['全餐'], accommodation: '耶路撒冷' },
       { day: 3, title: '耶路撒冷·犹太区+伊斯兰区', activities: ['哭墙', '圣殿山远观', '圆顶清真寺', '大卫城'], meals: ['全餐'], accommodation: '耶路撒冷' },
       { day: 4, title: '伯利恒+死海', activities: ['伯利恒主诞堂', '牧羊人田野', '死海漂浮体验'], meals: ['全餐'], accommodation: '耶路撒冷' },
       { day: 5, title: '返程', activities: ['雅法老城', '特拉维夫送机'], meals: ['早餐'], accommodation: '' },
@@ -1078,9 +1078,9 @@ const routes: RouteData[] = [
     groupSize: '4-12人',
     religionSlug: 'christianity',
     siteLinks: [
-      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '半天', note: '基督教最神圣地点' },
-      { siteName: '耶路撒冷哭墙', day: 3, order: 1, duration: '1小时', note: '犹太教圣地' },
-      { siteName: '圆顶清真寺', day: 3, order: 2, duration: '1小时', note: '伊斯兰教圣地' },
+      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '半天', note: '基督文化最神圣地点' },
+      { siteName: '耶路撒冷哭墙', day: 3, order: 1, duration: '1小时', note: '犹太文化圣地' },
+      { siteName: '圆顶清真寺', day: 3, order: 2, duration: '1小时', note: '伊斯兰文化圣地' },
     ],
   },
   // ═══ 6. 伊斯兰：丝绸之路清真寺 ═══
@@ -1127,24 +1127,24 @@ const routes: RouteData[] = [
     difficulty: RouteDifficulty.EASY,
     duration: 4, nights: 3,
     highlights: ['三教圣地', '文化对话', '美食融合', '历史纵深'],
-    description: '在耶路撒冷这座独特的城市中，同时体验犹太教、基督教、伊斯兰教的圣地与文化。理解三大文明如何在同一空间中共存千年，感受人类信仰的多样性与统一性。',
+    description: '在耶路撒冷这座独特的城市中，同时体验犹太文化、基督文化、伊斯兰文化的圣地与文化。理解三大文明如何在同一空间中共存千年，感受人类人文精神的多样性与统一性。',
     itinerary: [
-      { day: 1, title: '抵达·犹太教日', activities: ['哭墙祈祷', '犹太区漫步', '大卫城地下隧道'], meals: ['晚餐：犹太安息日晚餐体验'], accommodation: '耶路撒冷' },
-      { day: 2, title: '基督教日', activities: ['苦路十四站', '圣墓教堂', '橄榄山', '客西马尼园'], meals: ['全餐'], accommodation: '耶路撒冷' },
-      { day: 3, title: '伊斯兰教日', activities: ['圣殿山(远观)', '阿克萨清真寺区域', '穆斯林区', '以色列博物馆'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 1, title: '抵达·犹太文化日', activities: ['哭墙祈祷', '犹太区漫步', '大卫城地下隧道'], meals: ['晚餐：犹太安息日晚餐体验'], accommodation: '耶路撒冷' },
+      { day: 2, title: '基督文化日', activities: ['苦路十四站', '圣墓教堂', '橄榄山', '客西马尼园'], meals: ['全餐'], accommodation: '耶路撒冷' },
+      { day: 3, title: '伊斯兰文化日', activities: ['圣殿山(远观)', '阿克萨清真寺区域', '穆斯林区', '以色列博物馆'], meals: ['全餐'], accommodation: '耶路撒冷' },
       { day: 4, title: '融合与反思·返程', activities: ['锡安山(三教交汇)', '雅法门集市', '送机'], meals: ['早餐'], accommodation: '' },
     ],
     priceFrom: 680000,
     included: ['全程交通', '3晚住宿', '景点门票', '三教专业导游', '8餐'],
     excluded: ['国际机票', '签证费', '个人消费'],
-    tips: ['尊重每个宗教的习俗和禁忌', '安息日(周五日落-周六日落)部分设施关闭', '保持开放包容的心态'],
+    tips: ['尊重每个文化传统的习俗和禁忌', '安息日(周五日落-周六日落)部分设施关闭', '保持开放包容的心态'],
     season: '全年适宜，春秋最佳',
     groupSize: '4-12人',
     religionSlug: null,
     siteLinks: [
-      { siteName: '耶路撒冷哭墙', day: 1, order: 1, duration: '2小时', note: '犹太教最神圣之地' },
-      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '2小时', note: '基督教最神圣之地' },
-      { siteName: '圆顶清真寺', day: 3, order: 1, duration: '1小时', note: '伊斯兰教圣地' },
+      { siteName: '耶路撒冷哭墙', day: 1, order: 1, duration: '2小时', note: '犹太文化最神圣之地' },
+      { siteName: '耶路撒冷圣墓教堂', day: 2, order: 1, duration: '2小时', note: '基督文化最神圣之地' },
+      { siteName: '圆顶清真寺', day: 3, order: 1, duration: '1小时', note: '伊斯兰文化圣地' },
     ],
   },
   // ═══ 8. 跨文化：日本神佛习合 ═══
@@ -1152,12 +1152,12 @@ const routes: RouteData[] = [
     slug: 'japan-shinbutsu',
     title: '日本神佛习合之旅',
     titleEn: 'Japan Shinbutsu Shūgō',
-    subtitle: '神道与佛教交融的千年美学',
+    subtitle: '神道与佛教文化交融的千年美学',
     category: RouteCategory.CROSS_CULTURAL,
     difficulty: RouteDifficulty.EASY,
     duration: 6, nights: 5,
     highlights: ['京都古寺', '奈良大佛', '高野山宿坊', '伊势神宫'],
-    description: '深度体验日本独特的"神佛习合"文化——神道教与佛教千年共存的智慧。从京都的金阁寺到高野山的宿坊住宿，从奈良大佛到伊势神宫，领略东方美学的极致。',
+    description: '深度体验日本独特的"神佛习合"文化——神道文化与佛教文化千年共存的智慧。从京都的金阁寺到高野山的宿坊住宿，从奈良大佛到伊势神宫，领略东方美学的极致。',
     itinerary: [
       { day: 1, title: '大阪→京都', activities: ['金阁寺', '龙安寺枯山水', '祇园漫步'], meals: ['晚餐：京都怀石料理'], accommodation: '京都' },
       { day: 2, title: '京都全日', activities: ['清水寺', '伏见稻荷大社', '东福寺禅修体验'], meals: ['午餐：汤豆腐'], accommodation: '京都' },
@@ -1174,21 +1174,21 @@ const routes: RouteData[] = [
     groupSize: '2-8人',
     religionSlug: null,
     siteLinks: [
-      { siteName: '伊势神宫', day: 5, order: 1, duration: '半天', note: '神道教最高圣地' },
+      { siteName: '伊势神宫', day: 5, order: 1, duration: '半天', note: '神道文化最高圣地' },
       { siteName: '法隆寺', day: 3, order: 1, duration: '2小时', note: '世界最古老木构建筑' },
     ],
   },
-  // ═══ 9. 印度教：恒河圣城 ═══
+  // ═══ 9. 印度文化：恒河圣城 ═══
   {
     slug: 'ganges-holy-cities',
     title: '恒河圣城文化之旅',
     titleEn: 'Ganges Holy Cities Cultural Journey',
-    subtitle: '沿恒河探访印度教圣城与文明',
+    subtitle: '沿恒河探访印度文化圣城与文明',
     category: RouteCategory.HINDU,
     difficulty: RouteDifficulty.MODERATE,
     duration: 7, nights: 6,
     highlights: ['恒河日出', '瓦拉纳西夜祭', '泰姬陵', '瑜伽体验'],
-    description: '从德里出发，经阿格拉泰姬陵，沿恒河到达印度教圣城瓦拉纳西。体验恒河晨浴的震撼，观赏千年不断的恒河夜祭，在瑞诗凯诗练习瑜伽，感受印度文明的深邃与活力。',
+    description: '从德里出发，经阿格拉泰姬陵，沿恒河到达印度文化圣城瓦拉纳西。体验恒河晨浴的震撼，观赏千年不断的恒河夜祭，在瑞诗凯诗练习瑜伽，感受印度文明的深邃与活力。',
     itinerary: [
       { day: 1, title: '抵达德里', activities: ['印度门', '胡马雍陵', '月光集市'], meals: ['晚餐'], accommodation: '德里' },
       { day: 2, title: '德里→阿格拉', activities: ['泰姬陵', '阿格拉堡', '法塔赫普尔西克里'], meals: ['全餐'], accommodation: '阿格拉' },
@@ -1217,7 +1217,7 @@ const routes: RouteData[] = [
     difficulty: RouteDifficulty.MODERATE,
     duration: 5, nights: 4,
     highlights: ['少林功夫', '武当太极', '孔子故里', '中华文明'],
-    description: '一次旅程，三种智慧。从嵩山少林寺的佛教禅宗，到武当山的道教太极，再到曲阜的儒教圣地，完整体验中华三教合一的独特文化。学武术、练太极、拜孔庙，感受中华文明的博大精深。',
+    description: '一次旅程，三种智慧。从嵩山少林寺的佛教文化禅宗，到武当山的道教文化太极，再到曲阜的儒家文化圣地，完整体验中华三教合一的独特文化。学武术、练太极、拜孔庙，感受中华文明的博大精深。',
     itinerary: [
       { day: 1, title: '郑州→嵩山(佛)', activities: ['少林寺', '武术表演', '塔林', '达摩面壁洞'], meals: ['午餐：少林素斋'], accommodation: '登封' },
       { day: 2, title: '嵩山→武汉→武当山(道)', activities: ['高铁至武汉转武当', '武当山紫霄宫'], meals: ['全餐'], accommodation: '武当山' },
@@ -1233,20 +1233,20 @@ const routes: RouteData[] = [
     groupSize: '2-10人',
     religionSlug: null,
     siteLinks: [
-      { siteName: '武当山', day: 2, order: 1, duration: '2天', note: '道教第一名山' },
-      { siteName: '曲阜孔庙', day: 4, order: 1, duration: '半天', note: '儒教圣地' },
+      { siteName: '武当山', day: 2, order: 1, duration: '2天', note: '道教文化第一名山' },
+      { siteName: '曲阜孔庙', day: 4, order: 1, duration: '半天', note: '儒家文化圣地' },
     ],
   },
   // ═══ 11. 禅宗：虚云大师路线 ═══
   {
     slug: 'xuyun-master-route',
-    title: '虚云大师朝圣路线',
+    title: '虚云大师文化探访路线',
     titleEn: 'Master Xuyun Pilgrimage Route',
     subtitle: '追随一代禅门泰斗，走访五大重建祖庭',
     category: RouteCategory.ZEN,
     difficulty: RouteDifficulty.CHALLENGING,
     duration: 8, nights: 7,
-    highlights: ['虚云重建五寺', '云居山禅修', '鸡足山朝圣', '鼓山涌泉寺', '南华寺六祖真身'],
+    highlights: ['虚云重建五寺', '云居山禅修', '鸡足山文化探访', '鼓山涌泉寺', '南华寺六祖真身'],
     description: '虚云老和尚(1840-1959)是近代禅宗最伟大的高僧，一生重建六大祖庭。本路线从福州鼓山涌泉寺出发，经韶关南华寺、乳源云门寺、江西云居山真如禅寺，最终抵达云南鸡足山祝圣寺，完整追寻虚云大师一生弘法足迹。每站深度体验禅修、素斋、早晚课，感受百年禅风。',
     itinerary: [
       { day: 1, title: '福州·鼓山涌泉寺', activities: ['涌泉寺朝拜(虚云早年驻锡处)', '鼓山摩崖石刻', '喝水岩品茶', '涌泉寺晚课'], meals: ['午餐：涌泉寺素斋', '晚餐：福州鱼丸'], accommodation: '福州市区酒店' },
@@ -1436,7 +1436,7 @@ const routes: RouteData[] = [
     difficulty: RouteDifficulty.CHALLENGING,
     duration: 10, nights: 9,
     highlights: ['禅宗五家七宗', '十大祖庭巡礼', '深度禅修体验', '江西福建广东三省'],
-    description: '中国禅宗在唐末五代形成五大流派(临济、曹洞、云门、法眼、沩仰)，史称"一花开五叶"。本路线是最完整的禅宗文化朝圣之旅，10天走遍五家核心祖庭。从河北临济寺出发，经江西洞山、曹山、仰山，至广东云门寺、福建地藏院(法眼道场)，最终在南华寺圆满。适合深度禅宗爱好者。',
+    description: '中国禅宗在唐末五代形成五大流派(临济、曹洞、云门、法眼、沩仰)，史称"一花开五叶"。本路线是最完整的禅宗文化之旅，10天走遍五家核心祖庭。从河北临济寺出发，经江西洞山、曹山、仰山，至广东云门寺、福建地藏院(法眼道场)，最终在南华寺圆满。适合深度禅宗爱好者。',
     itinerary: [
       { day: 1, title: '石家庄·正定·临济寺(临济宗)', activities: ['临济寺朝拜', '义玄祖师塔', '正定古城', '隆兴寺'], meals: ['午餐：正定素斋', '晚餐：河北菜'], accommodation: '正定古城客栈' },
       { day: 2, title: '正定→赵县→南昌', activities: ['柏林禅寺参访(赵州禅)', '赵州桥', '飞往南昌'], meals: ['午餐：柏林禅寺素斋'], accommodation: '南昌市区酒店' },
@@ -1898,9 +1898,9 @@ async function main() {
       school: '曹洞宗',
       generation: 8,
       teacherId: touzi.id,
-      biography: '芙蓉道楷，山东沂州（今临沂）人。初习道教长生术，后转入佛门。参投子义青得法。住芙蓉湖华严禅院弘法，门下极盛。度僧九十三人，开默照禅之先河。政和八年（1118）示寂。',
+      biography: '芙蓉道楷，山东沂州（今临沂）人。初习道教文化长生术，后转入佛门。参投子义青得法。住芙蓉湖华严禅院弘法，门下极盛。度僧九十三人，开默照禅之先河。政和八年（1118）示寂。',
       coreTeaching: '默照禅——默默忘言，昭昭现前。静坐观照，不立文字。',
-      achievements: '曹洞宗第八世，成功使曹洞宗从近于断绝恢复至显赫。度僧九十三人。开创默照禅修行体系。早年曾修道教长生术，后转入禅宗。政和七年（1117）受赐御匾。',
+      achievements: '曹洞宗第八世，成功使曹洞宗从近于断绝恢复至显赫。度僧九十三人。开创默照禅修行体系。早年曾修道教文化长生术，后转入禅宗。政和七年（1117）受赐御匾。',
       templeNames: [{ name: '芙蓉湖华严禅院', nameEn: 'Furong Huayan Temple', role: '驻锡', location: '山东沂州' }],
       koans: [],
       classicQuotes: ['默默忘言，昭昭现前', '但办肯心，必不相赚'],
@@ -2035,7 +2035,7 @@ async function main() {
       teacherId: zhijian.id,
       biography: '天童如净，南宋僧。嘉定十七年（1224）受请住持天童景德禅寺。为人清俭，不自高于众僧，著常服黑袍。宝庆三年（1227）传法于日本僧道元（1200-1253），道元归国后创立日本曹洞宗，影响至今。绍定元年（1228）示寂。',
       coreTeaching: '只管打坐，身心脱落。不假外缘，直下承当。',
-      achievements: '曹洞宗重要传人。嘉定十七年（1224）住持天童寺。宝庆三年（1227）传法于日本僧道元，道元归国创立日本曹洞宗（Soto Zen），为日本最大佛教宗派之一。为人谦逊，拒受紫衣。',
+      achievements: '曹洞宗重要传人。嘉定十七年（1224）住持天童寺。宝庆三年（1227）传法于日本僧道元，道元归国创立日本曹洞宗（Soto Zen），为日本最大佛教文化宗派之一。为人谦逊，拒受紫衣。',
       templeNames: [{ name: '天童景德禅寺', nameEn: 'Tiantong Jingde Temple', role: '住持', location: '浙江宁波' }],
       koans: [{ title: '只管打坐', content: '参禅只须打坐，坐禅乃是身心脱落。不用烧香、礼拜、念佛、修忏、看经。', source: '如净语录' }],
       classicQuotes: ['坐禅乃是身心脱落', '参禅不用烧香礼拜念佛修忏看经，只须打坐'],
@@ -2314,7 +2314,7 @@ async function main() {
       school: '曹洞宗',
       generation: 26,
       teacherId: yuanxian.id,
-      biography: '为霖道霈，福建建宁人。参永觉元贤得法。继住鼓山涌泉寺，为曹洞宗第二十六世。著述丰富，对闽地佛教影响深远。康熙四十一年（1702）示寂，世寿八十八。',
+      biography: '为霖道霈，福建建宁人。参永觉元贤得法。继住鼓山涌泉寺，为曹洞宗第二十六世。著述丰富，对闽地佛教文化影响深远。康熙四十一年（1702）示寂，世寿八十八。',
       coreTeaching: '继承永觉法脉，禅净双修。',
       achievements: '曹洞宗第二十六世，继住鼓山涌泉寺。著有《还山录》《华严经疏论纂要》等。',
       templeNames: [{ name: '鼓山涌泉寺', nameEn: 'Gushan Yongquan Temple', role: '住持', location: '福建福州' }],
@@ -2483,7 +2483,7 @@ async function main() {
       teacherId: null,
       biography: '虚云，俗姓萧，福建泉州人。十九岁于鼓山涌泉寺出家。一生坐阅五帝四朝，历经清末、民国、新中国三个时代。朝五台、峨眉、九华、普陀四大名山，三步一拜朝五台山。遍参名宿，苦行精修。于高旻寺禅七中，因杯子扑落地而豁然大悟。一生重建大小道场数十座：重建南华寺（1934-1943，建殿堂243间、造佛像670尊）、重建云门山大觉寺（1943-1951）、重建云居山真如禅寺。兼承禅宗五宗法脉，为史上唯一之人。1953年任中国佛教协会名誉会长。1959年于云居山真如寺安详示寂，世寿一百二十岁。',
       coreTeaching: '参禅的秘诀就是——看话头。看话头就是一个"疑"字。疑者，疑此一念未生以前是什么。',
-      achievements: '近代禅宗最伟大的复兴者。兼承禅宗五宗法脉（曹洞、临济、云门、法眼、沩仰），为禅宗史上唯一一人。重建大小道场数十座，其中南华寺、云门寺、云居寺为最著名。1953年任中国佛教协会名誉会长。世寿一百二十岁（传统说法），为近代佛教界最具影响力人物。',
+      achievements: '近代禅宗最伟大的复兴者。兼承禅宗五宗法脉（曹洞、临济、云门、法眼、沩仰），为禅宗史上唯一一人。重建大小道场数十座，其中南华寺、云门寺、云居寺为最著名。1953年任中国佛教协会名誉会长。世寿一百二十岁（传统说法），为近代佛教文化界最具影响力人物。',
       templeNames: [
         { name: '云居山真如禅寺', nameEn: 'Yunju Zhenru Temple', role: '重建', location: '江西永修' },
         { name: '南华禅寺', nameEn: 'Nanhua Temple', role: '重建', location: '广东韶关' },
@@ -2515,7 +2515,7 @@ async function main() {
       teacherId: xuyun.id,
       biography: '圆瑛，福建古田人，俗名吴昌发。于福州梅峰寺剃度出家，于涌泉寺受具足戒。师从冶开禅师参禅四年。一生精研楞严经，创办圆明楞严专宗学院。1953年当选中国佛教协会首任会长。同年九月圆寂，世寿七十五岁。',
       coreTeaching: '禅净双修，以楞严经为修行纲要。',
-      achievements: '中国佛教协会首任会长（1953年当选）。创办圆明楞严专宗学院（1945），专弘楞严经。一生致力于佛教组织建设和人才培养。',
+      achievements: '中国佛教协会首任会长（1953年当选）。创办圆明楞严专宗学院（1945），专弘楞严经。一生致力于佛教文化组织建设和人才培养。',
       templeNames: [{ name: '鼓山涌泉寺', nameEn: 'Gushan Yongquan Temple', role: '住持', location: '福建福州' }],
       koans: [],
       classicQuotes: ['求福求慧求生净土，念佛念法念侣僧伽'],
@@ -2686,9 +2686,9 @@ async function main() {
       school: '净土宗',
       generation: 1,
       teacherId: null,
-      biography: '慧远，俗姓贾，雁门楼烦（今山西原平）人。少为书生，博综六经，尤善庄老。二十一岁闻道安法师讲般若经，叹曰"儒道九流皆糠秕耳"，遂投簪出家。太元六年（381）入庐山，建东林寺。元兴元年（402）于东林寺般若台前，与刘遗民、雷次宗等一百二十三人共结白莲社，立誓专修念佛三昧，期生西方极乐世界。此为中国净土信仰之始，后世尊为净土宗初祖。义熙十二年（416）示寂，世寿八十三。',
+      biography: '慧远，俗姓贾，雁门楼烦（今山西原平）人。少为书生，博综六经，尤善庄老。二十一岁闻道安法师讲般若经，叹曰"儒道九流皆糠秕耳"，遂投簪出家。太元六年（381）入庐山，建东林寺。元兴元年（402）于东林寺般若台前，与刘遗民、雷次宗等一百二十三人共结白莲社，立誓专修念佛三昧，期生西方极乐世界。此为中国净土人文精神之始，后世尊为净土宗初祖。义熙十二年（416）示寂，世寿八十三。',
       coreTeaching: '念佛三昧——专注忆念阿弥陀佛，定心观想西方净土依正庄严，以此三昧力求往生极乐世界。',
-      achievements: '净土宗初祖。创建庐山东林寺白莲社，一百二十三人共修念佛三昧，开中国净土信仰之先河。著《沙门不敬王者论》，确立中国僧团独立于王权之地位。门下弟子三千余人。',
+      achievements: '净土宗初祖。创建庐山东林寺白莲社，一百二十三人共修念佛三昧，开中国净土人文精神之先河。著《沙门不敬王者论》，确立中国僧团独立于王权之地位。门下弟子三千余人。',
       templeNames: [{ name: '庐山东林寺', nameEn: 'Donglin Temple', role: '创建', location: '江西庐山' }],
       koans: [{ title: '虎溪三笑', content: '慧远送客不过虎溪，一日送陶渊明、陆修静，谈笑间不觉过溪，三人相视大笑。', source: '庐山记' }],
       classicQuotes: ['儒道九流，皆糠秕耳', '愿与含灵，同生净土'],
@@ -2769,7 +2769,7 @@ async function main() {
       teacherId: chengyuan.id,
       biography: '法照，身世不详。大历二年（767）于衡山弥陀寺参承远和尚学净土。后入五台山，传于定中见文殊菩萨，菩萨指示念佛法门。遂创"五会念佛"法——以五种声调节奏念阿弥陀佛名号，由缓至急，摄心入定。大历七年（772）唐代宗迎入宫中教授五会念佛，封为"国师"。元和年间（约821年前后）示寂。',
       coreTeaching: '五会念佛——以五种声调渐次念佛：第一会平声缓念，第二至第四渐急，第五会急念入定。以音声摄心，契入念佛三昧。',
-      achievements: '净土宗四祖，承远大师弟子（唯一直接师徒传承）。创立五会念佛法，以音声摄心。被唐代宗封为"国师"，入宫教授念佛。五会念佛对后世佛教音乐和念佛仪轨影响深远。',
+      achievements: '净土宗四祖，承远大师弟子（唯一直接师徒传承）。创立五会念佛法，以音声摄心。被唐代宗封为"国师"，入宫教授念佛。五会念佛对后世佛教文化音乐和念佛仪轨影响深远。',
       templeNames: [{ name: '五台山竹林寺', nameEn: 'Wutaishan Zhulin Temple', role: '驻锡', location: '山西五台山' }],
       koans: [{ title: '五会念佛', content: '第一会平声缓念，第二会平上声，第三会非缓非急，第四会渐急，第五会转急。五会念毕，寂然入定。', source: '五会法事赞' }],
       classicQuotes: ['此世界众生，应当念佛。以念佛故，得生极乐'],
@@ -2791,7 +2791,7 @@ async function main() {
       teacherId: null,
       biography: '少康，缙云（今浙江丽水）人。十五岁出家，习法华、楞严等经。贞元初至洛阳白马寺，见善导大师《西方化导文》放光，遂专修净土。至新定（今浙江建德）乌龙山弘法，聚人念佛。以钱诱引小儿念佛一声给一钱，渐至满城念佛。当时人称为"后善导"。贞元二十一年（805）示寂。',
       coreTeaching: '称名念佛，善巧方便，以种种方便接引众生归于净土。',
-      achievements: '净土宗五祖，被誉为"后善导"。以善巧方便在民间大弘念佛，以钱诱小儿念佛的方法新颖独特。使新定一带满城念佛，净土信仰深入民间。',
+      achievements: '净土宗五祖，被誉为"后善导"。以善巧方便在民间大弘念佛，以钱诱小儿念佛的方法新颖独特。使新定一带满城念佛，净土人文精神深入民间。',
       templeNames: [{ name: '乌龙山净土道场', nameEn: 'Wulongshan Pure Land', role: '建立', location: '浙江建德' }],
       koans: [{ title: '以钱诱念佛', content: '少康至新定，以钱诱引小儿念佛。念佛一声予一钱，久之满城念佛，人称"后善导"。', source: '往生集' }],
       classicQuotes: ['念佛之人，阿弥陀佛常住其顶，日夜拥护'],
@@ -2813,7 +2813,7 @@ async function main() {
       teacherId: null,
       biography: '延寿，余杭（今浙江）人，字冲元。初为吴越国税务官，挪公款放生被判死刑，临刑面不改色，吴越王感其诚而赦免，许其出家。参天台德韶国师得法，为法眼宗第三代。住杭州永明寺（净慈寺），日课一百零八件佛事，夜往别峰行道念佛。著《宗镜录》百卷，融会禅教律净，主张"万善同归"，为禅净双修的理论奠基者。开宝八年（975）示寂，世寿七十二。',
       coreTeaching: '禅净双修，万善同归——"有禅有净土，犹如戴角虎；现世为人师，来生作佛祖。"',
-      achievements: '净土宗六祖，兼为法眼宗三代传人。著《宗镜录》百卷，为中国佛教史上最大部头著作之一。首倡禅净双修理论，影响深远。日行一百零八件佛事，被誉为"弥陀化身"。',
+      achievements: '净土宗六祖，兼为法眼宗三代传人。著《宗镜录》百卷，为中国佛教文化史上最大部头著作之一。首倡禅净双修理论，影响深远。日行一百零八件佛事，被誉为"弥陀化身"。',
       templeNames: [{ name: '杭州净慈寺', nameEn: 'Jingci Temple', role: '住持', location: '浙江杭州' }],
       koans: [{ title: '四料简', content: '有禅有净土，犹如戴角虎，现世为人师，来生作佛祖。无禅有净土，万修万人去，若得见弥陀，何愁不开悟。', source: '万善同归集' }],
       classicQuotes: ['有禅有净土，犹如戴角虎', '无禅有净土，万修万人去', '万善同归，一心念佛'],
@@ -2837,7 +2837,7 @@ async function main() {
       generation: 7,
       teacherId: null,
       biography: '省常，钱塘（今浙江杭州）人。七岁出家，十七岁受具足戒。淳化年间于杭州西湖昭庆寺建净行社，效慕庐山白莲社故事，结社念佛。当时宰相王旦为社首，士大夫参加者达一百二十余人，僧俗社众逾千人。刺血书《华严经》净行品以为社规。天禧四年（1020）示寂，世寿六十二。',
-      coreTeaching: '结社念佛，以士大夫居士为核心推动净土信仰。',
+      coreTeaching: '结社念佛，以士大夫居士为核心推动净土人文精神。',
       achievements: '净土宗七祖。建净行社，宰相王旦为社首，推动北宋士大夫阶层念佛运动。刺血书华严经净行品。',
       templeNames: [{ name: '杭州昭庆寺', nameEn: 'Zhaoqing Temple', role: '建净行社', location: '浙江杭州' }],
       koans: [],
@@ -2982,7 +2982,7 @@ async function main() {
       teacherId: null,
       biography: '圣量，陕西郃阳（今合阳）人，俗姓赵，法名圣量，字印光。幼年随兄习儒，受韩愈欧阳修辟佛影响而谤佛。后因病方信因果，二十一岁于终南山南五台莲花洞寺出家。先后驻锡法雨寺、报国寺等名刹。一生不建道场，不收出家弟子，不作住持。专以书信弘法，四众弟子遍及全国。民国十九年（1930）移居苏州灵岩山寺，将其定为专修净土道场。所著书信汇编为《印光法师文钞》，被推为净土宗最后一位大师。民国二十九年（1940）于灵岩山寺安详示寂，大众闻异香。世寿八十。',
       coreTeaching: '敦伦尽分，闲邪存诚，信愿念佛，求生净土——此十六字为印光大师一生教化之总纲。',
-      achievements: '净土宗十三祖，近代最具影响力的净土宗大师。一生不作住持，以书信弘法，皈依弟子遍天下。《印光法师文钞》为近代最广泛流通的佛教著作。推蕅益大师《弥陀要解》为"古今第一"。民国时期佛教复兴的核心推动者之一。',
+      achievements: '净土宗十三祖，近代最具影响力的净土宗大师。一生不作住持，以书信弘法，皈依弟子遍天下。《印光法师文钞》为近代最广泛流通的佛教文化著作。推蕅益大师《弥陀要解》为"古今第一"。民国时期佛教文化复兴的核心推动者之一。',
       templeNames: [
         { name: '苏州灵岩山寺', nameEn: 'Lingyan Mountain Temple', role: '晚年驻锡', location: '江苏苏州' },
         { name: '普陀山法雨寺', nameEn: 'Putuoshan Fayu Temple', role: '早年驻锡', location: '浙江舟山' },
@@ -2990,7 +2990,7 @@ async function main() {
       koans: [{ title: '十六字纲宗', content: '敦伦尽分，闲邪存诚，信愿念佛，求生净土。', source: '印光法师文钞' }],
       classicQuotes: ['敦伦尽分，闲邪存诚，信愿念佛，求生净土', '无论在家出家，必须上敬下和', '念佛之人，当存好心，说好话，行好事'],
       works: [
-        { title: '印光法师文钞', description: '正续三编，书信集大成，近代流通最广佛教著作' },
+        { title: '印光法师文钞', description: '正续三编，书信集大成，近代流通最广佛教文化著作' },
         { title: '印光法师嘉言录', description: '精要开示汇编' },
       ],
       imageUrl: null,
@@ -3016,7 +3016,7 @@ async function main() {
       teacherId: null,
       biography: '昙柯迦罗（又名昙摩迦罗、法时），中天竺人。善学四韦陀论，通晓天文地理。出家后博学三藏，以律学见长。嘉平年间（249-253）至洛阳，时中国虽有沙门，皆未受戒，只剃发披缦衣而已。昙柯迦罗见此深感痛心，遂翻译《僧祇戒心》，并立羯磨法（受戒仪轨），邀请梵僧十人于白马寺设戒坛，为中国僧尼正式授戒之始。中国有律宗，实以此为嚆矢。',
       coreTeaching: '正法住世，以律为本——在中国首创正式受戒制度（羯磨法），奠定中国僧团戒律传承的根基。',
-      achievements: '中国律宗初祖。在洛阳白马寺创立中国第一个正式受戒仪轨，首翻《僧祇戒心》。自此中国僧人始有正式受戒之法，标志着中国佛教戒律传承的正式开端。',
+      achievements: '中国律宗初祖。在洛阳白马寺创立中国第一个正式受戒仪轨，首翻《僧祇戒心》。自此中国僧人始有正式受戒之法，标志着中国佛教文化戒律传承的正式开端。',
       templeNames: [{ name: '洛阳白马寺', nameEn: 'White Horse Temple', role: '首设戒坛', location: '河南洛阳' }],
       koans: [{ title: '首创羯磨', content: '昙柯迦罗至洛阳，见中国沙门皆未受戒，深感痛心。遂译出戒本，请梵僧十人，于白马寺设戒坛，行羯磨法。中国沙门始有正式受戒之仪。', source: '高僧传' }],
       classicQuotes: ['正法住世，以律为本', '沙门之为沙门，首在持戒'],
@@ -3270,7 +3270,7 @@ async function main() {
       school: '律宗',
       generation: 11,
       teacherId: null,
-      biography: '弘一，俗名李叔同，天津人。出家前为近代中国艺术先驱——画家、音乐家、戏剧家、书法家、篆刻家、教育家。中国话剧运动创始人之一，主演《茶花女》轰动一时。1918年（三十九岁）于杭州虎跑寺剃度出家，法名演音，号弘一。出家后弃尽繁华，持律精严，专研南山律学。以二十余年心力，校勘注释南山三大部及灵芝三记，著《四分律比丘戒相表记》《南山律在家备览》等，使南山律学在断绝数百年后再度复兴。持戒之严，三千威仪、八万细行一丝不苟，被称为"重兴南山律宗"之第十一代世祖。1942年示寂于泉州温陵养老院，临终绝笔"悲欣交集"四字，为中国佛教史上最感人的遗墨之一。',
+      biography: '弘一，俗名李叔同，天津人。出家前为近代中国艺术先驱——画家、音乐家、戏剧家、书法家、篆刻家、教育家。中国话剧运动创始人之一，主演《茶花女》轰动一时。1918年（三十九岁）于杭州虎跑寺剃度出家，法名演音，号弘一。出家后弃尽繁华，持律精严，专研南山律学。以二十余年心力，校勘注释南山三大部及灵芝三记，著《四分律比丘戒相表记》《南山律在家备览》等，使南山律学在断绝数百年后再度复兴。持戒之严，三千威仪、八万细行一丝不苟，被称为"重兴南山律宗"之第十一代世祖。1942年示寂于泉州温陵养老院，临终绝笔"悲欣交集"四字，为中国佛教文化史上最感人的遗墨之一。',
       coreTeaching: '以戒为师，持律精严——"三千威仪，八万细行"一丝不苟。将律学从古籍中复活，以身作则诠释持戒之美。',
       achievements: '南山律宗第十一代世祖，近代律宗复兴之唯一关键人物。以二十余年专研南山律学，校勘注释，使断绝数百年的律宗学脉得以延续。出家前为近代文化先驱（李叔同），其出家修律的传奇经历感召无数后学。著《戒相表记》为律学入门经典。临终"悲欣交集"四字成为绝响。',
       templeNames: [
@@ -3279,7 +3279,7 @@ async function main() {
         { name: '泉州承天寺', nameEn: 'Chengtian Temple', role: '讲律', location: '福建泉州' },
       ],
       koans: [
-        { title: '悲欣交集', content: '弘一法师临终前，以颤抖之手写下"悲欣交集"四字。悲者，悲众生之苦；欣者，欣往生之乐。此四字遂成中国佛教史上最感人的遗墨。', source: '弘一大师年谱' },
+        { title: '悲欣交集', content: '弘一法师临终前，以颤抖之手写下"悲欣交集"四字。悲者，悲众生之苦；欣者，欣往生之乐。此四字遂成中国佛教文化史上最感人的遗墨。', source: '弘一大师年谱' },
         { title: '华枝春满', content: '弘一法师临终偈："君子之交，其淡如水。执象而求，咫尺千里。问余何适，廓尔忘言。华枝春满，天心月圆。"', source: '弘一大师年谱' },
       ],
       classicQuotes: ['华枝春满，天心月圆', '悲欣交集', '以戒为师', '不为自己求安乐，但愿众生得离苦'],
@@ -3302,15 +3302,15 @@ async function main() {
     data: {
       name: '龙树菩萨', nameEn: 'Nagarjuna', religionId: buddhismId,
       dates: '约150-250', title: '天台初祖', school: '天台宗', generation: 1, teacherId: null,
-      biography: '龙树（梵文Nāgārjuna），南印度人，大乘佛教最重要的论师之一。出身婆罗门种姓，少年博学多闻，后出家修行，得大龙菩萨引入龙宫，于龙宫中读《华严经》等大乘经典，遂弘扬大乘。著《中论》《大智度论》《十二门论》等，建立中观学说（空宗），以"八不中道"破一切执著。其思想为天台宗止观双修的理论源头，智者大师依其《大智度论》建立一心三观之说。被尊为"八宗共祖"——禅宗、天台、华严、三论、净土、密宗、律宗、法相诸宗皆推为祖师。',
+      biography: '龙树（梵文Nāgārjuna），南印度人，大乘佛教文化最重要的论师之一。出身婆罗门种姓，少年博学多闻，后出家修行，得大龙菩萨引入龙宫，于龙宫中读《华严经》等大乘经典，遂弘扬大乘。著《中论》《大智度论》《十二门论》等，建立中观学说（空宗），以"八不中道"破一切执著。其思想为天台宗止观双修的理论源头，智者大师依其《大智度论》建立一心三观之说。被尊为"八宗共祖"——禅宗、天台、华严、三论、净土、密宗、律宗、法相诸宗皆推为祖师。',
       coreTeaching: '中观——"不生不灭，不常不断，不一不异，不来不去"八不中道，破一切执著，显示诸法实相。',
-      achievements: '大乘佛教最伟大的论师，"八宗共祖"。著《中论》建立中观学说，《大智度论》百卷为大乘佛教百科全书。其中观思想为天台止观、三论中观、禅宗心法的共同理论源泉。',
+      achievements: '大乘佛教文化最伟大的论师，"八宗共祖"。著《中论》建立中观学说，《大智度论》百卷为大乘佛教文化百科全书。其中观思想为天台止观、三论中观、禅宗心法的共同理论源泉。',
       templeNames: [{ name: '龙树菩萨道场', nameEn: 'Nagarjuna Monastery', role: '弘法', location: '南印度' }],
       koans: [{ title: '八不中道', content: '不生亦不灭，不常亦不断，不一亦不异，不来亦不出。能说是因缘，善灭诸戏论。', source: '中论·观因缘品' }],
       classicQuotes: ['不生亦不灭，不常亦不断，不一亦不异，不来亦不出', '因缘所生法，我说即是空，亦为是假名，亦是中道义', '众因缘生法，我说即是无，亦为是假名，亦是中道义'],
       works: [
         { title: '中论', description: '四卷，中观学派根本论典，以"八不"破一切执著' },
-        { title: '大智度论', description: '百卷，大乘佛教百科全书' },
+        { title: '大智度论', description: '百卷，大乘佛教文化百科全书' },
         { title: '十二门论', description: '中观入门著作' },
       ],
       imageUrl: null,
@@ -3323,7 +3323,7 @@ async function main() {
       dates: '约550年活跃', title: '天台二祖', school: '天台宗', generation: 2, teacherId: null,
       biography: '慧文，北齐高僧，生平事迹不详。读龙树《大智度论》中"三智一心中得"之语及《中论》"因缘所生法"偈，豁然大悟，悟得"一心三观"——空、假、中三观于一念心中同时成立。此悟成为天台宗止观法门的核心理论基础。以此观法授慧思，慧思传智顗，遂开天台一宗。',
       coreTeaching: '一心三观——空观、假观、中观三观于一念心中同时成立，非前后次第。',
-      achievements: '天台宗二祖。读《大智度论》悟"一心三观"，为天台止观法门奠定理论基础。虽生平不详，但其一心三观之悟对中国佛教影响深远。',
+      achievements: '天台宗二祖。读《大智度论》悟"一心三观"，为天台止观法门奠定理论基础。虽生平不详，但其一心三观之悟对中国佛教文化影响深远。',
       templeNames: [], koans: [{ title: '一心三观', content: '慧文读《大智度论》"三智一心中得"，又读《中论》"因缘所生法，我说即是空，亦为是假名，亦是中道义"，豁然大悟，悟一心三观。', source: '佛祖统纪' }],
       classicQuotes: ['三智一心中得'], works: [], imageUrl: null,
     },
@@ -3348,9 +3348,9 @@ async function main() {
     data: {
       name: '智顗大师', nameEn: 'Zhiyi', religionId: buddhismId,
       dates: '538-597', title: '天台智者', school: '天台宗', generation: 4, teacherId: huisiTT.id,
-      biography: '智顗，字德安，荆州华容（今湖南华容）人，俗姓陈。十八岁出家，师从慧思大师于大苏山学止观。后入天台山，于华顶峰修止观，大悟"一念三千"之理。建国清寺，在此讲经弘法三十余年。创立天台宗完整教观体系：以"五时八教"判释全部佛经，以"一心三观""一念三千"为核心义理，以《摩诃止观》为修行指南。隋炀帝（杨广）受其菩萨戒，赐号"智者大师"。开皇十七年（597）示寂于天台山，世寿六十。其著述被称为"天台三大部"和"天台五小部"，为中国佛教最完整的教观体系。',
+      biography: '智顗，字德安，荆州华容（今湖南华容）人，俗姓陈。十八岁出家，师从慧思大师于大苏山学止观。后入天台山，于华顶峰修止观，大悟"一念三千"之理。建国清寺，在此讲经弘法三十余年。创立天台宗完整教观体系：以"五时八教"判释全部佛经，以"一心三观""一念三千"为核心义理，以《摩诃止观》为修行指南。隋炀帝（杨广）受其菩萨戒，赐号"智者大师"。开皇十七年（597）示寂于天台山，世寿六十。其著述被称为"天台三大部"和"天台五小部"，为中国佛教文化最完整的教观体系。',
       coreTeaching: '一念三千——一念心中具足三千世界一切法。止观双修，定慧等持。五时八教判释一切佛法。',
-      achievements: '天台宗实际创始人（四祖但为建宗者）。创立中国佛教第一个完整教观体系。著"天台三大部"（法华玄义/法华文句/摩诃止观）。以"五时八教"统摄全部佛经。隋炀帝赐号"智者大师"。中国佛教史上最伟大的思想家之一。',
+      achievements: '天台宗实际创始人（四祖但为建宗者）。创立中国佛教文化第一个完整教观体系。著"天台三大部"（法华玄义/法华文句/摩诃止观）。以"五时八教"统摄全部佛经。隋炀帝赐号"智者大师"。中国佛教文化史上最伟大的思想家之一。',
       templeNames: [
         { name: '天台山国清寺', nameEn: 'Guoqing Temple', role: '创建弘法', location: '浙江天台' },
         { name: '玉泉寺', nameEn: 'Yuquan Temple', role: '讲经', location: '湖北当阳' },
@@ -3444,7 +3444,7 @@ async function main() {
       dates: '643-712', title: '贤首国师', school: '华严宗', generation: 3, teacherId: zhiyanHY.id,
       biography: '法藏，康居国（中亚）人后裔，祖籍长安，字贤首。十七岁于太白山求法，后从智俨学华严。智俨圆寂后，法藏完成华严宗完整教理体系。创立"五教十宗"判教体系——小教、始教、终教、顿教、圆教，以华严为圆教之极致。提出"六相圆融"与完善"十玄缘起"学说。武则天令其讲华严经，法藏以金狮子为喻，说一多相即之理，武则天豁然开悟。则天赐号"贤首"，故华严宗又称"贤首宗"。先天元年（712）示寂，世寿七十。',
       coreTeaching: '法界缘起，六相圆融——一切事物具总相、别相、同相、异相、成相、坏相六相，互不相碍，圆融无碍。五教十宗判释一切佛法。',
-      achievements: '华严宗三祖，实际教理体系完成者。创立"五教十宗"判教体系。完善十玄缘起、六相圆融学说。以"金狮子章"为武则天说法，成为佛教史上著名的教学范例。华严宗因其号"贤首"而又称"贤首宗"。',
+      achievements: '华严宗三祖，实际教理体系完成者。创立"五教十宗"判教体系。完善十玄缘起、六相圆融学说。以"金狮子章"为武则天说法，成为佛教文化史上著名的教学范例。华严宗因其号"贤首"而又称"贤首宗"。',
       templeNames: [{ name: '长安荐福寺', nameEn: 'Jianfu Temple', role: '弘法', location: '陕西长安' }, { name: '华严寺', nameEn: 'Huayan Temple', role: '讲经', location: '陕西长安' }],
       koans: [
         { title: '金狮子章', content: '以金铸狮子为喻：金无自性，随工匠缘成狮子；金即狮子，狮子即金。以此说明理事无碍、事事无碍之义。武则天闻之豁然。', source: '华严金狮子章' },
@@ -3452,7 +3452,7 @@ async function main() {
       ],
       classicQuotes: ['理事无碍，事事无碍', '一即一切，一切即一，圆融自在'],
       works: [
-        { title: '华严金狮子章', description: '以金狮子喻华严法界，佛教经典教学范例' },
+        { title: '华严金狮子章', description: '以金狮子喻华严法界，佛教文化经典教学范例' },
         { title: '华严一乘教义分齐章', description: '华严宗教理体系总纲' },
         { title: '华严经探玄记', description: '二十卷，华严经注疏' },
       ],
@@ -3464,7 +3464,7 @@ async function main() {
     data: {
       name: '澄观大师', nameEn: 'Chengguan', religionId: buddhismId,
       dates: '738-839', title: '清凉国师', school: '华严宗', generation: 4, teacherId: fazangHY.id,
-      biography: '澄观，越州山阴（今浙江绍兴）人，字大休。十一岁出家，遍学三藏，兼通儒道。以华严为宗，住五台山清凉寺四十年，号"清凉国师"。著《华严经疏》六十卷、《随疏演义钞》九十卷，合称"华严疏钞"，为华严经注释的集大成之作。历唐代宗、德宗、顺宗、宪宗、穆宗、敬宗、文宗七朝，皆为国师。开成四年（839）示寂，世寿一百零二岁（一说九十七），为中国佛教史上最长寿的高僧之一。',
+      biography: '澄观，越州山阴（今浙江绍兴）人，字大休。十一岁出家，遍学三藏，兼通儒道。以华严为宗，住五台山清凉寺四十年，号"清凉国师"。著《华严经疏》六十卷、《随疏演义钞》九十卷，合称"华严疏钞"，为华严经注释的集大成之作。历唐代宗、德宗、顺宗、宪宗、穆宗、敬宗、文宗七朝，皆为国师。开成四年（839）示寂，世寿一百零二岁（一说九十七），为中国佛教文化史上最长寿的高僧之一。',
       coreTeaching: '华严法界——以四法界（事法界/理法界/理事无碍法界/事事无碍法界）统摄华严教理。',
       achievements: '华严宗四祖。著"华严疏钞"（疏六十卷+钞九十卷）为华严经注释集大成之作。历七朝国师，寿逾百岁。住五台山清凉寺四十年，使五台山成为华严圣地。',
       templeNames: [{ name: '五台山清凉寺', nameEn: 'Qingliang Temple', role: '驻锡四十年', location: '山西五台山' }],
@@ -3484,7 +3484,7 @@ async function main() {
       dates: '780-841', title: '圭峰宗密', school: '华严宗', generation: 5, teacherId: null,
       biography: '宗密，果州西充（今四川西充）人，俗姓何。初习儒学，后出家。先于荷泽宗参禅得法，后读澄观之《华严经疏》，遂投澄观门下学华严。兼通禅教，主张"禅教一致"——禅宗与教下（天台、华严等）本质相同，只是入门方式不同。著《原人论》融会儒释道三教，著《禅源诸诠集都序》统摄禅教诸宗。住终南山圭峰草堂寺，号"圭峰禅师"。会昌元年（841）示寂，世寿六十二。',
       coreTeaching: '禅教一致——禅宗与教下（天台/华严等）本无差别，皆归一真法界。三教会通，融合儒释道。',
-      achievements: '华严宗五祖。主张"禅教一致"，融通禅宗与华严教理。著《原人论》会通儒释道三教。著《禅源诸诠集都序》统摄禅宗各派。为中国佛教"禅教融合"的先驱。',
+      achievements: '华严宗五祖。主张"禅教一致"，融通禅宗与华严教理。著《原人论》会通儒释道三教。著《禅源诸诠集都序》统摄禅宗各派。为中国佛教文化"禅教融合"的先驱。',
       templeNames: [{ name: '终南山草堂寺', nameEn: 'Caotang Temple', role: '驻锡弘法', location: '陕西户县' }],
       koans: [{ title: '禅教一致', content: '禅者，佛之心也；教者，佛之口也。心口不相违，禅教岂有异？达磨以心传心，如来以口说法，同一佛法。', source: '禅源诸诠集都序' }],
       classicQuotes: ['禅是佛心，教是佛口', '三教本一，归于至善'],
@@ -3507,9 +3507,9 @@ async function main() {
     data: {
       name: '玄奘大师', nameEn: 'Xuanzang', religionId: buddhismId,
       dates: '602-664', title: '三藏法师', school: '法相宗', generation: 1, teacherId: null,
-      biography: '玄奘，俗姓陈，名祎，洛州缑氏（今河南偃师）人。十三岁出家于洛阳净土寺。因感当时佛经翻译不全且有歧义，于贞观三年（629）独自西行求法。经历西域、中亚，抵达印度那烂陀寺，师从戒贤论师学唯识学、因明学等五年。又遍游印度各地参学。贞观十九年（645）回到长安，携回佛经657部。此后十九年主持译经事业，翻译经论75部1335卷，为中国佛教史上最伟大的译经家。以《成唯识论》为核心创立法相宗（唯识宗），建立"万法唯识"的完整教理体系。其西行求法事迹后被演绎为《西游记》。麟德元年（664）示寂于玉华宫，世寿六十三。',
+      biography: '玄奘，俗姓陈，名祎，洛州缑氏（今河南偃师）人。十三岁出家于洛阳净土寺。因感当时佛经翻译不全且有歧义，于贞观三年（629）独自西行求法。经历西域、中亚，抵达印度那烂陀寺，师从戒贤论师学唯识学、因明学等五年。又遍游印度各地参学。贞观十九年（645）回到长安，携回佛经657部。此后十九年主持译经事业，翻译经论75部1335卷，为中国佛教文化史上最伟大的译经家。以《成唯识论》为核心创立法相宗（唯识宗），建立"万法唯识"的完整教理体系。其西行求法事迹后被演绎为《西游记》。麟德元年（664）示寂于玉华宫，世寿六十三。',
       coreTeaching: '万法唯识——一切外境皆是八识（眼耳鼻舌身意末那阿赖耶）之变现，离识无境。转识成智，转八识为四智。',
-      achievements: '法相宗（唯识宗）创始人。西行求法十七年，往返五万里。译经75部1335卷，为中国佛教最伟大译经家。著《成唯识论》建立唯识学体系。创大慈恩寺译经场。其事迹被演绎为《西游记》。',
+      achievements: '法相宗（唯识宗）创始人。西行求法十七年，往返五万里。译经75部1335卷，为中国佛教文化最伟大译经家。著《成唯识论》建立唯识学体系。创大慈恩寺译经场。其事迹被演绎为《西游记》。',
       templeNames: [
         { name: '长安大慈恩寺', nameEn: 'Dacien Temple', role: '译经弘法', location: '陕西西安' },
         { name: '玉华宫', nameEn: 'Yuhua Palace', role: '晚年译经', location: '陕西铜川' },
@@ -3540,8 +3540,8 @@ async function main() {
       classicQuotes: ['万法唯识，识外无境'],
       works: [
         { title: '成唯识论述记', description: '二十卷(存)，唯识学最权威注疏' },
-        { title: '法苑义林章', description: '佛教名相辞典式著作' },
-        { title: '因明入正理论疏', description: '因明学（佛教逻辑学）注释' },
+        { title: '法苑义林章', description: '佛教文化名相辞典式著作' },
+        { title: '因明入正理论疏', description: '因明学（佛教文化逻辑学）注释' },
       ],
       imageUrl: null,
     },
@@ -3646,7 +3646,7 @@ async function main() {
     data: {
       name: '空海大师', nameEn: 'Kukai', religionId: buddhismId,
       dates: '774-835', title: '弘法大师', school: '密宗', generation: 5, teacherId: huiguoES.id,
-      biography: '空海，日本赞岐国（今香川县）人，俗姓佐伯，法名空海，谥号"弘法大师"。延历二十三年（804）随遣唐使入唐，至长安青龙寺从惠果阿阇梨受两部大法灌顶。惠果将密教法脉完整传授空海，嘱其"早归东土，以此大法利益有情"。806年回日本，于高野山开创真言宗道场。创立日本真言宗（东密），建高野山金刚峰寺为总本山。又精通书法（日本书圣之一）、土木工程，创制片假名（一说）。承和二年（835）于高野山入定示寂。被尊为日本佛教最伟大的大师之一。',
+      biography: '空海，日本赞岐国（今香川县）人，俗姓佐伯，法名空海，谥号"弘法大师"。延历二十三年（804）随遣唐使入唐，至长安青龙寺从惠果阿阇梨受两部大法灌顶。惠果将密教法脉完整传授空海，嘱其"早归东土，以此大法利益有情"。806年回日本，于高野山开创真言宗道场。创立日本真言宗（东密），建高野山金刚峰寺为总本山。又精通书法（日本书圣之一）、土木工程，创制片假名（一说）。承和二年（835）于高野山入定示寂。被尊为日本佛教文化最伟大的大师之一。',
       coreTeaching: '即身成佛——众生本具佛性，以三密加持，此身此世即可成佛，无需累劫修行。十住心论判教。',
       achievements: '日本真言宗（东密）创始人。从惠果受唐密完整传承。创高野山金刚峰寺为真言宗总本山。著《十住心论》《秘密曼荼罗十住心论》建立真言宗判教体系。日本文化史上最具影响力的僧人之一。',
       templeNames: [
@@ -3674,7 +3674,7 @@ async function main() {
     data: {
       name: '鸠摩罗什', nameEn: 'Kumarajiva', religionId: buddhismId,
       dates: '344-413', title: '三论宗初祖', school: '三论宗', generation: 1, teacherId: null,
-      biography: '鸠摩罗什（梵名Kumārajīva），龟兹国（今新疆库车）人，父天竺人，母龟兹公主。七岁随母出家，遍学小乘、大乘经论。后秦弘始三年（401）姚兴迎至长安，住逍遥园西明阁译经。翻译《中论》《百论》《十二门论》（合称"三论"）、《大智度论》《妙法莲华经》《金刚经》《阿弥陀经》《维摩诘经》等35部294卷。其译文流畅优美，意译为主，影响中国佛教最深。临终焚身，舌不焦烂，以证所译无误。弘始十五年（413）示寂。',
+      biography: '鸠摩罗什（梵名Kumārajīva），龟兹国（今新疆库车）人，父天竺人，母龟兹公主。七岁随母出家，遍学小乘、大乘经论。后秦弘始三年（401）姚兴迎至长安，住逍遥园西明阁译经。翻译《中论》《百论》《十二门论》（合称"三论"）、《大智度论》《妙法莲华经》《金刚经》《阿弥陀经》《维摩诘经》等35部294卷。其译文流畅优美，意译为主，影响中国佛教文化最深。临终焚身，舌不焦烂，以证所译无误。弘始十五年（413）示寂。',
       coreTeaching: '中观般若——翻译三论（中论/百论/十二门论），以般若空观破一切执著，显示中道实相。',
       achievements: '三论宗初祖，中国四大译经家之首。译经35部294卷，《法华经》《金刚经》等至今仍为最通行版本。翻译"三论"奠定三论宗经典基础。门下三千弟子，号"关中四杰"（僧肇、道生、僧叡、道融）。临终舌不焦烂，以证所译之正。',
       templeNames: [{ name: '长安逍遥园', nameEn: 'Xiaoyao Garden', role: '主持译场', location: '陕西长安' }, { name: '草堂寺', nameEn: 'Caotang Temple', role: '译经', location: '陕西户县' }],
@@ -3693,14 +3693,14 @@ async function main() {
     data: {
       name: '僧肇大师', nameEn: 'Sengzhao', religionId: buddhismId,
       dates: '384-414', title: '解空第一', school: '三论宗', generation: 2, teacherId: kumarajivaSL.id,
-      biography: '僧肇，京兆（今陕西西安）人。少年家贫以抄书为业，遍读经史子集。读《老子》《庄子》觉有所不足，后见旧译《维摩诘经》，欢喜曰"始知所归矣"。遂出家。后至姑臧（今甘肃武威）从鸠摩罗什学般若。参与鸠摩罗什译场，为"关中四杰"之首。著《肇论》四篇（物不迁论/不真空论/般若无知论/涅槃无名论），以魏晋玄学语言阐释般若空义，被誉为中国佛教哲学的开山之作。弘始十六年（414）示寂，年仅三十一。',
+      biography: '僧肇，京兆（今陕西西安）人。少年家贫以抄书为业，遍读经史子集。读《老子》《庄子》觉有所不足，后见旧译《维摩诘经》，欢喜曰"始知所归矣"。遂出家。后至姑臧（今甘肃武威）从鸠摩罗什学般若。参与鸠摩罗什译场，为"关中四杰"之首。著《肇论》四篇（物不迁论/不真空论/般若无知论/涅槃无名论），以魏晋玄学语言阐释般若空义，被誉为中国佛教文化哲学的开山之作。弘始十六年（414）示寂，年仅三十一。',
       coreTeaching: '不真空——万物非真非假，非有非无。般若之智无所知而无不知，涅槃之道超言绝相。',
-      achievements: '三论宗二祖。著《肇论》四篇，以中国哲学语言完美阐释般若空观，为中国佛教哲学的开山之作。被鸠摩罗什誉为"解空第一"。虽年仅三十一岁即寂，但其哲学影响深远。',
+      achievements: '三论宗二祖。著《肇论》四篇，以中国哲学语言完美阐释般若空观，为中国佛教文化哲学的开山之作。被鸠摩罗什誉为"解空第一"。虽年仅三十一岁即寂，但其哲学影响深远。',
       templeNames: [{ name: '长安逍遥园', nameEn: 'Xiaoyao Garden', role: '参与译场', location: '陕西长安' }],
       koans: [{ title: '物不迁论', content: '旋岚偃岳而常静，江河竟注而不流，野马飘鼓而不动，日月历天而不周。', source: '肇论·物不迁论' }],
       classicQuotes: ['旋岚偃岳而常静，江河竟注而不流', '般若无知，无所不知', '不真空，即万法实相'],
       works: [
-        { title: '肇论', description: '四篇（物不迁/不真空/般若无知/涅槃无名），中国佛教哲学开山' },
+        { title: '肇论', description: '四篇（物不迁/不真空/般若无知/涅槃无名），中国佛教文化哲学开山' },
         { title: '注维摩诘经', description: '维摩诘经注释' },
       ],
       imageUrl: null,
@@ -3727,7 +3727,7 @@ async function main() {
       dates: '549-623', title: '嘉祥吉藏', school: '三论宗', generation: 4, teacherId: falangSL.id,
       biography: '吉藏，祖籍安息（伊朗），生于金陵（今南京）。七岁从法朗出家于兴皇寺，深研三论。隋统一后，住会稽嘉祥寺弘法，号"嘉祥大师"。后入长安，住日严寺、实际寺弘法。著《三论玄义》总括三论宗义，著《中观论疏》《百论疏》《十二门论疏》详解三论。又著《大乘玄论》《二谛义》等，建立三论宗完整教理体系。以"破邪显正""四重二谛"为核心方法，以中道实相为究竟。武德六年（623）示寂，世寿七十五。',
       coreTeaching: '破邪显正，四重二谛——以层层否定（破邪）来显示中道实相（显正）。俗谛与真谛层层递进四重，最终超越一切言说分别。',
-      achievements: '三论宗集大成者（四祖/实际建宗者）。著《三论玄义》建立三论宗完整体系。注释三论（中论疏/百论疏/十二门论疏）。以"破邪显正""四重二谛"为核心方法论。三论宗因其而成为中国佛教独立宗派。',
+      achievements: '三论宗集大成者（四祖/实际建宗者）。著《三论玄义》建立三论宗完整体系。注释三论（中论疏/百论疏/十二门论疏）。以"破邪显正""四重二谛"为核心方法论。三论宗因其而成为中国佛教文化独立宗派。',
       templeNames: [{ name: '会稽嘉祥寺', nameEn: 'Jiaxiang Temple', role: '弘法', location: '浙江绍兴' }, { name: '长安日严寺', nameEn: 'Riyan Temple', role: '弘法', location: '陕西长安' }],
       koans: [{ title: '四重二谛', content: '第一重：有为俗谛，空为真谛。第二重：有空为俗谛，非有非空为真谛。第三重：有空非有非空为俗谛，非非有非非空为真谛。第四重：前三重皆俗谛，言忘虑绝为真谛。', source: '二谛义' }],
       classicQuotes: ['破邪即显正，无别显正之法', '言忘虑绝，是第一义谛'],
@@ -3735,7 +3735,7 @@ async function main() {
         { title: '三论玄义', description: '三论宗教理总纲' },
         { title: '中观论疏', description: '中论详细注释' },
         { title: '百论疏', description: '百论详细注释' },
-        { title: '大乘玄论', description: '大乘佛教义理总论' },
+        { title: '大乘玄论', description: '大乘佛教文化义理总论' },
       ],
       imageUrl: null,
     },
@@ -3778,9 +3778,9 @@ async function main() {
       name: '道元禅師', nameEn: 'Dōgen Zenji', religionId: buddhismId,
       dates: '1200-1253', title: '承阳大師', school: '日本禅宗', generation: 2,
       teacherId: rujing.id,
-      biography: '道元禅師，日本曹洞宗开祖。嘉禄三年（1227）入宋，师事天童如净禅師得法。归国后著《正法眼藏》九十五卷，为日本佛教哲学最高峰。于越前（福井）创建永平寺，强调"只管打坐"（只管打坐即悟道本身），确立日本曹洞宗修行体系。一生不求权势，隐于深山专注修行与著述。',
+      biography: '道元禅師，日本曹洞宗开祖。嘉禄三年（1227）入宋，师事天童如净禅師得法。归国后著《正法眼藏》九十五卷，为日本佛教文化哲学最高峰。于越前（福井）创建永平寺，强调"只管打坐"（只管打坐即悟道本身），确立日本曹洞宗修行体系。一生不求权势，隐于深山专注修行与著述。',
       coreTeaching: '只管打坐（しかんたざ）。坐禅不是获得悟道的手段，坐禅本身即是悟道。修证一等——修行与证悟不二。身心脱落，当下即是。',
-      achievements: '日本曹洞宗开祖。师承天童如净，将曹洞禅法完整传入日本。著《正法眼藏》九十五卷，为日本佛教最伟大的哲学著作。创建永平寺，至今仍为曹洞宗大本山。提出"只管打坐"理念影响全球禅修。',
+      achievements: '日本曹洞宗开祖。师承天童如净，将曹洞禅法完整传入日本。著《正法眼藏》九十五卷，为日本佛教文化最伟大的哲学著作。创建永平寺，至今仍为曹洞宗大本山。提出"只管打坐"理念影响全球禅修。',
       templeNames: ['永平寺(福井)', '兴圣寺(京都宇治)'],
       koans: [
         { title: '身心脱落', description: '天童如净一喝"身心脱落！"道元大悟。非去除身心，而是放下对身心的执着。' },
@@ -3789,7 +3789,7 @@ async function main() {
       ],
       classicQuotes: ['身心脱落，脱落身心', '修证一等', '春花秋月夏杜鹃，冬雪寒洌亦清然'],
       works: [
-        { title: '正法眼藏', description: '九十五卷，日本佛教哲学最高峰' },
+        { title: '正法眼藏', description: '九十五卷，日本佛教文化哲学最高峰' },
         { title: '永平广录', description: '道元法语与上堂开示全集' },
         { title: '典座教训', description: '以做饭为修行——禅与日常生活' },
         { title: '普劝坐禅仪', description: '坐禅入门指南，面壁端坐法' },
@@ -3803,8 +3803,8 @@ async function main() {
       name: '瑩山紹瑾', nameEn: 'Keizan Jōkin', religionId: buddhismId,
       dates: '1268-1325', title: '常済大師', school: '日本禅宗', generation: 3,
       teacherId: null,
-      biography: '瑩山紹瑾，日本曹洞宗太祖（与道元并称"两祖"）。道元三传弟子。创建总持寺（横浜�的仓），使曹洞宗从精英修行走向民间普及。融合密教仪轨和民间信仰，让曹洞禅法深入日本社会各阶层。其努力使曹洞宗成为日本最大的禅宗宗派（约15000寺院）。',
-      coreTeaching: '禅法民间化。将道元严格的只管打坐与民间信仰、密教仪轨融合，让禅法不再局限于精英修行者，而深入农民、武士、商人各阶层。',
+      biography: '瑩山紹瑾，日本曹洞宗太祖（与道元并称"两祖"）。道元三传弟子。创建总持寺（横浜�的仓），使曹洞宗从精英修行走向民间普及。融合密教仪轨和民间文化传统，让曹洞禅法深入日本社会各阶层。其努力使曹洞宗成为日本最大的禅宗宗派（约15000寺院）。',
+      coreTeaching: '禅法民间化。将道元严格的只管打坐与民间文化传统、密教仪轨融合，让禅法不再局限于精英修行者，而深入农民、武士、商人各阶层。',
       achievements: '日本曹洞宗太祖。创建总持寺（与永平寺并列两大本山）。将曹洞禅法民间化、大众化，使其从精英修行扩展到全社会。曹洞宗今有约15000座寺院，为日本最大禅宗，瑩山功不可没。',
       templeNames: ['総持寺(横浜)', '永光寺(石川)'],
       koans: [],
@@ -3887,7 +3887,7 @@ async function main() {
       name: '鈴木大拙', nameEn: 'D.T. Suzuki', religionId: buddhismId,
       dates: '1870-1966', title: '禅学泰斗', school: '日本禅宗', generation: 7,
       teacherId: null,
-      biography: '鈴木大拙（Daisetsu Teitaro Suzuki），日本佛教学者、禅学家。于镰仓圆觉寺从今北洪川、释宗演参禅得悟。1897年赴美，以英文向西方世界系统介绍禅宗。著作等身，《禅与日本文化》《禅学入门》等以英文写就，影响了海德格尔、荣格、约翰·凯奇等西方思想家。被誉为"将禅传播到西方的第一人"。',
+      biography: '鈴木大拙（Daisetsu Teitaro Suzuki），日本佛教文化学者、禅学家。于镰仓圆觉寺从今北洪川、释宗演参禅得悟。1897年赴美，以英文向西方世界系统介绍禅宗。著作等身，《禅与日本文化》《禅学入门》等以英文写就，影响了海德格尔、荣格、约翰·凯奇等西方思想家。被誉为"将禅传播到西方的第一人"。',
       coreTeaching: '禅即直接经验。禅不是哲学理论，而是超越逻辑的直接生命体验。以西方哲学语言重新诠释禅宗——开创了"禅的跨文化对话"。',
       achievements: '将禅宗系统传入西方的第一人。以英文著作《禅与日本文化》《禅学入门》等影响整个20世纪西方思想界。影响海德格尔、荣格、约翰·凯奇、杰克·凯鲁亚克等巨匠。推动了20世纪60年代美国禅宗热潮。',
       templeNames: ['圆觉寺(镰仓)'],
@@ -3896,7 +3896,7 @@ async function main() {
       works: [
         { title: 'An Introduction to Zen Buddhism', description: '禅学入门，西方禅学经典' },
         { title: 'Zen and Japanese Culture', description: '禅与日本文化，禅的文化学巨著' },
-        { title: 'Essays in Zen Buddhism', description: '禅佛教论文集三卷' },
+        { title: 'Essays in Zen Buddhism', description: '禅佛教文化论文集三卷' },
         { title: 'The Training of the Zen Buddhist Monk', description: '禅僧训练实录' },
       ],
       imageUrl: null,
@@ -3909,16 +3909,16 @@ async function main() {
       name: '知訥', nameEn: 'Jinul (Bojo Guksa)', religionId: buddhismId,
       dates: '1158-1210', title: '普照国師', school: '韩国禅宗', generation: 1,
       teacherId: null,
-      biography: '知訥，号普照国師，韩国曹溪宗实际创始人。高丽时期最伟大的禅师。提出"定慧双修、顿悟渐修"的修行体系——先顿悟心性本净，再渐修除习气。融合禅宗与华严教理，创立"禅教合一"的韩国禅宗独特传统。于松广寺组建定慧社，推动佛教改革，影响韩国佛教至今。',
+      biography: '知訥，号普照国師，韩国曹溪宗实际创始人。高丽时期最伟大的禅师。提出"定慧双修、顿悟渐修"的修行体系——先顿悟心性本净，再渐修除习气。融合禅宗与华严教理，创立"禅教合一"的韩国禅宗独特传统。于松广寺组建定慧社，推动佛教文化改革，影响韩国佛教文化至今。',
       coreTeaching: '定慧双修、顿悟渐修。悟解与修行不可偏废：先以顿悟认识本心，再以渐修净除习气。禅教合一——禅宗直指与华严教理并非对立，而是互补。',
-      achievements: '韩国曹溪宗实际创始人。提出"定慧双修、顿悟渐修"修行体系。融合禅教，创立韩国佛教独特传统。曹溪宗今为韩国最大佛教宗派（约10000座寺院）。',
+      achievements: '韩国曹溪宗实际创始人。提出"定慧双修、顿悟渐修"修行体系。融合禅教，创立韩国佛教文化独特传统。曹溪宗今为韩国最大佛教文化宗派（约10000座寺院）。',
       templeNames: ['松广寺(顺天)'],
       koans: [
         { title: '顿悟渐修', description: '一念顿悟如初生婴儿——虽已具足人形，但四肢尚须渐渐长成。' },
       ],
       classicQuotes: ['真心本来清净', '顿悟见性后，仍须渐修除习'],
       works: [
-        { title: '劝修定慧结社文', description: '定慧社成立宣言，韩国佛教改革纲领' },
+        { title: '劝修定慧结社文', description: '定慧社成立宣言，韩国佛教文化改革纲领' },
         { title: '真心直说', description: '直指心性的修行指南' },
         { title: '修心诀', description: '修行心要' },
       ],
@@ -3931,9 +3931,9 @@ async function main() {
       name: '休静', nameEn: 'Hyujeong (Seosan Daesa)', religionId: buddhismId,
       dates: '1520-1604', title: '西山大師', school: '韩国禅宗', generation: 2,
       teacherId: null,
-      biography: '休静，号西山大師，朝鲜时代最伟大的禅师。精通儒释道三教，著《三家龟鉴》论三教会通。壬辰倭乱（1592）时年七十三岁，奉宣祖王命率僧兵五千抗倭，收复平壤。战后归山继续弘法。门下四大弟子开创朝鲜佛教四大法脉，影响延续至今。',
+      biography: '休静，号西山大師，朝鲜时代最伟大的禅师。精通儒释道三教，著《三家龟鉴》论三教会通。壬辰倭乱（1592）时年七十三岁，奉宣祖王命率僧兵五千抗倭，收复平壤。战后归山继续弘法。门下四大弟子开创朝鲜佛教文化四大法脉，影响延续至今。',
       coreTeaching: '三教会通——儒释道三教同归一理。禅以直指人心为本，兼融教理与念佛。出世修行与入世担当并不矛盾——国难当头，禅僧当奋起报国。',
-      achievements: '朝鲜时代最伟大禅师。壬辰倭乱率五千僧兵抗倭。著《三家龟鉴》论三教会通。门下四大法脉影响韩国佛教至今。被尊为韩国佛教中兴之祖。',
+      achievements: '朝鲜时代最伟大禅师。壬辰倭乱率五千僧兵抗倭。著《三家龟鉴》论三教会通。门下四大法脉影响韩国佛教文化至今。被尊为韩国佛教文化中兴之祖。',
       templeNames: ['兴国寺', '妙香山普贤寺'],
       koans: [],
       classicQuotes: ['儒释道三教，同出一源', '禅是佛心，教是佛语，律是佛行'],
@@ -3951,7 +3951,7 @@ async function main() {
       name: '鏡虛惺牛', nameEn: 'Gyeongheo Seong-u', religionId: buddhismId,
       dates: '1849-1912', title: '鏡虛禅師', school: '韩国禅宗', generation: 3,
       teacherId: null,
-      biography: '鏡虛惺牛，韩国近代禅宗复兴之父。日据时期韩国佛教衰微，鏡虛以一己之力重振禅修传统。于梵鱼寺、通度寺等地结禅堂、立清规，恢复中断百余年的禅修实践。门下弟子满韩、汉岩、慧月等人将禅法传承下去。其狂放作风酷似一休——终身不拘形式，以真修实证为本。',
+      biography: '鏡虛惺牛，韩国近代禅宗复兴之父。日据时期韩国佛教文化衰微，鏡虛以一己之力重振禅修传统。于梵鱼寺、通度寺等地结禅堂、立清规，恢复中断百余年的禅修实践。门下弟子满韩、汉岩、慧月等人将禅法传承下去。其狂放作风酷似一休——终身不拘形式，以真修实证为本。',
       coreTeaching: '看话禅复兴。重振"话头"修行——参"什么是无？"等话头，以大疑情打破妄想。强调修行在于实证，不在于学问多少。',
       achievements: '韩国近代禅宗复兴之父。日据时期重振韩国禅修传统。培养满韩、汉岩等弟子传承法脉。现代韩国曹溪宗禅修传统皆可追溯至鏡虛。',
       templeNames: ['梵鱼寺(釜山)', '通度寺(梁山)'],
@@ -3969,7 +3969,7 @@ async function main() {
       name: '性徹', nameEn: 'Seongcheol', religionId: buddhismId,
       dates: '1912-1993', title: '退翁', school: '韩国禅宗', generation: 4,
       teacherId: null,
-      biography: '性徹大宗師，韩国曹溪宗第七代宗正（最高领袖）。八年闭关长坐不卧（長坐不臥），以极端苦行闻名。提出"顿悟顿修"论挑战知訥的"顿悟渐修"——主张真正的彻悟当下即圆满，无须渐修。1981年就任宗正发表"山即是山、水即是水"法语，震动韩国社会。海印寺退居后仍被尊为韩国佛教精神领袖。',
+      biography: '性徹大宗師，韩国曹溪宗第七代宗正（最高领袖）。八年闭关长坐不卧（長坐不臥），以极端苦行闻名。提出"顿悟顿修"论挑战知訥的"顿悟渐修"——主张真正的彻悟当下即圆满，无须渐修。1981年就任宗正发表"山即是山、水即是水"法语，震动韩国社会。海印寺退居后仍被尊为韩国佛教文化精神领袖。',
       coreTeaching: '顿悟顿修——真正的彻悟当下圆满具足，不需要渐修补缀。"山是山，水是水"——回到最初的直接，超越一切分别与概念。',
       achievements: '韩国曹溪宗第七代宗正。提出"顿悟顿修"挑战传统。八年长坐不卧闻名。"山是山水是水"法语影响韩国社会。被尊为20世纪韩国最伟大禅师。',
       templeNames: ['海印寺(陕川)'],
@@ -3991,9 +3991,9 @@ async function main() {
       name: '毘尼多羅支', nameEn: 'Vinitaruci', religionId: buddhismId,
       dates: '?-594', title: '越南禅初祖', school: '越南禅宗', generation: 1,
       teacherId: sengcan?.id || null,
-      biography: '毘尼多羅支（Vinitaruci），南印度人，中国禅宗三祖僧璨弟子。580年到达交州（今越南），于法云寺传禅。创立越南第一个禅宗流派——毘尼多羅支禅派，传承十九代约六百年。将中国禅宗与印度密教元素融合，形成越南禅宗独特风格。是越南佛教史上最重要的开创性人物。',
+      biography: '毘尼多羅支（Vinitaruci），南印度人，中国禅宗三祖僧璨弟子。580年到达交州（今越南），于法云寺传禅。创立越南第一个禅宗流派——毘尼多羅支禅派，传承十九代约六百年。将中国禅宗与印度密教元素融合，形成越南禅宗独特风格。是越南佛教文化史上最重要的开创性人物。',
       coreTeaching: '禅密融合——将中国禅宗三祖僧璨的禅法与南印度密教修持融合。即心即佛，不立文字，同时包含陀罗尼与密咒修持。',
-      achievements: '越南禅宗初祖。将中国禅宗传入越南，创立毘尼多羅支禅派（传承十九代600年）。禅密融合的独特风格影响越南佛教根本方向。',
+      achievements: '越南禅宗初祖。将中国禅宗传入越南，创立毘尼多羅支禅派（传承十九代600年）。禅密融合的独特风格影响越南佛教文化根本方向。',
       templeNames: ['法云寺(北宁)'],
       koans: [],
       classicQuotes: ['心即是佛，佛即是心'],
@@ -4025,9 +4025,9 @@ async function main() {
       name: '陳仁宗', nameEn: 'Trần Nhân Tông', religionId: buddhismId,
       dates: '1258-1308', title: '竹林大士', school: '越南禅宗', generation: 3,
       teacherId: null,
-      biography: '陳仁宗，越南陈朝第三代皇帝（1278-1293在位），两次击退蒙古入侵。退位后出家修行，于安子山创立竹林禅派（Trúc Lâm）——越南本土第一个禅宗流派。融合禅宗、净土与越南本土信仰。主张"居尘乐道"——在世俗生活中修行。是越南历史上唯一出家为僧的皇帝，被尊为越南佛教最伟大的本土祖师。',
+      biography: '陳仁宗，越南陈朝第三代皇帝（1278-1293在位），两次击退蒙古入侵。退位后出家修行，于安子山创立竹林禅派（Trúc Lâm）——越南本土第一个禅宗流派。融合禅宗、净土与越南本土人文精神。主张"居尘乐道"——在世俗生活中修行。是越南历史上唯一出家为僧的皇帝，被尊为越南佛教文化最伟大的本土祖师。',
       coreTeaching: '居尘乐道——不必离尘出世，在日常生活中即可修行证悟。竹林禅融合禅净，以越南语弘法（而非文言文），让佛法真正走入民间。',
-      achievements: '越南本土第一个禅宗流派竹林禅派创始人。两退蒙古的英雄皇帝，退位出家。创"居尘乐道"理念。以越南语弘法开先河。被尊为越南佛教最伟大本土祖师。',
+      achievements: '越南本土第一个禅宗流派竹林禅派创始人。两退蒙古的英雄皇帝，退位出家。创"居尘乐道"理念。以越南语弘法开先河。被尊为越南佛教文化最伟大本土祖师。',
       templeNames: ['安子山(广宁)', '卧云寺', '琼林寺'],
       koans: [
         { title: '居尘乐道', description: '弟子问：如何在世间修行？帝师曰：居尘乐道——尘世即道场，何须另觅清净处？' },
@@ -4049,7 +4049,7 @@ async function main() {
       teacherId: null,
       biography: '一行禪師（Thích Nhất Hạnh），越南临济宗第四十二代传人。越战期间投身和平运动，马丁·路德·金提名其诺贝尔和平奖。1966年流亡海外，在法国创建梅村修行社区。以"正念"（Mindfulness）为核心教导——行走坐卧皆修行。著有百余本书，将佛法以最朴素的语言传达给全世界。是继铃木大拙后对西方影响最大的亚洲禅师。2022年在越南归元寺安详示寂。',
       coreTeaching: '正念修行——每一步行走、每一次呼吸都是修行的机会。活在当下。"相即"（Interbeing）——一切事物互相依存，无独立自性。以和平、慈悲、正念将佛法应用于日常生活。',
-      achievements: '当代全球最具影响力的禅师之一。创建梅村修行社区（全球最大佛教道场之一）。"正念"概念影响全球身心健康领域。百余本著作翻译成四十余语言。马丁·路德·金提名诺贝尔和平奖。',
+      achievements: '当代全球最具影响力的禅师之一。创建梅村修行社区（全球最大佛教文化道场之一）。"正念"概念影响全球身心健康领域。百余本著作翻译成四十余语言。马丁·路德·金提名诺贝尔和平奖。',
       templeNames: ['梅村(法国)', '归元寺(越南顺化)', '鹿苑寺(美国)'],
       koans: [
         { title: '洗碗禅', description: '洗碗时只是洗碗——不想过去、不想未来。每一个动作都是完整的修行。' },
@@ -4156,7 +4156,7 @@ async function main() {
   const overseasZenCount = 19;
   console.log(`  ✓ ${overseasZenCount} overseas Zen patriarchs created (Japan 7 + Korea 4 + Vietnam 4 + Western 4)`);
 
-  // ── 4l. 伊斯兰教先贤 (Islamic Patriarchs/Scholars) ──
+  // ── 4l. 伊斯兰文化先贤 (Islamic Patriarchs/Scholars) ──
   console.log('  Creating Islamic patriarchs (4l)...');
 
   const islamId = religionMap['islam'];
@@ -4172,9 +4172,9 @@ async function main() {
           title: '封印先知·安拉的使者',
           school: '正统哈里发',
           generation: 1,
-          biography: '穆罕默德（Muhammad），伊斯兰教创立者，被穆斯林尊为"封印先知"（最后的先知）。570年生于麦加古莱什部落。610年在希拉山洞接受天使吉卜利勒（加百列）首次启示，此后23年间陆续接受《古兰经》全部114章启示。622年从麦加迁徙至麦地那（希吉拉），建立第一个穆斯林公社（乌玛），此年定为伊斯兰历元年。630年和平收复麦加，清除克尔白天房中的偶像。632年在麦地那归真。穆罕默德不仅是宗教领袖，也是政治家、军事统帅、立法者，建立了横跨阿拉伯半岛的统一政权。其言行（圣训/哈迪斯）与《古兰经》并列为伊斯兰教法的两大源泉。',
+          biography: '穆罕默德（Muhammad），伊斯兰文化创立者，被穆斯林尊为"封印先知"（最后的先知）。570年生于麦加古莱什部落。610年在希拉山洞接受天使吉卜利勒（加百列）首次启示，此后23年间陆续接受《古兰经》全部114章启示。622年从麦加迁徙至麦地那（希吉拉），建立第一个穆斯林公社（乌玛），此年定为伊斯兰历元年。630年和平收复麦加，清除克尔白天房中的偶像。632年在麦地那归真。穆罕默德不仅是文化传统领袖，也是政治家、军事统帅、立法者，建立了横跨阿拉伯半岛的统一政权。其言行（圣训/哈迪斯）与《古兰经》并列为伊斯兰文化法的两大源泉。',
           coreTeaching: '万物非主，唯有真主，穆罕默德是真主的使者（清真言/舍哈达）。伊斯兰五功：念（清真言）、礼（每日五番拜）、斋（拉马丹月封斋）、课（天课/济贫税）、朝（朝觐麦加）。强调认主独一（陶希德）、善行、公正、慈悯。',
-          achievements: '伊斯兰教创立者。接受并传达《古兰经》114章。建立麦地那穆斯林公社（乌玛），开创政教合一的伊斯兰文明体系。统一阿拉伯半岛。其言行（圣训）成为伊斯兰教法两大源泉之一。影响全球19亿穆斯林至今。被《影响人类历史进程的100位名人》列为第一位。',
+          achievements: '伊斯兰文化创立者。接受并传达《古兰经》114章。建立麦地那穆斯林公社（乌玛），开创政教合一的伊斯兰文明体系。统一阿拉伯半岛。其言行（圣训）成为伊斯兰文化法两大源泉之一。影响全球19亿穆斯林至今。被《影响人类历史进程的100位名人》列为第一位。',
           templeNames: [
             { name: '麦加禁寺', nameEn: 'Masjid al-Haram', role: '伊斯兰第一圣地', location: '沙特阿拉伯麦加' },
             { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '先知长眠之地', location: '沙特阿拉伯麦地那' },
@@ -4186,7 +4186,7 @@ async function main() {
           ],
           classicQuotes: ['求知，从摇篮到坟墓', '你们中最优秀的人，是品德最优美的人', '不慈爱他人者，不会得到真主的慈爱', '学者的墨水比殉道者的血更神圣'],
           works: [
-            { title: '古兰经', description: '伊斯兰教最高经典，114章6236节，真主通过穆罕默德传达的启示' },
+            { title: '古兰经', description: '伊斯兰文化最高经典，114章6236节，真主通过穆罕默德传达的启示' },
           ],
           imageUrl: null,
         },
@@ -4195,8 +4195,8 @@ async function main() {
         data: {
           name: '先知穆罕默德', nameEn: 'Prophet Muhammad', religionId: islamId,
           dates: '570-632', title: '封印先知·安拉的使者', school: '正统哈里发', generation: 1,
-          biography: '伊斯兰教创立者，接受《古兰经》启示。', coreTeaching: '万物非主，唯有真主。',
-          achievements: '伊斯兰教创立者。', imageUrl: null,
+          biography: '伊斯兰文化创立者，接受《古兰经》启示。', coreTeaching: '万物非主，唯有真主。',
+          achievements: '伊斯兰文化创立者。', imageUrl: null,
         },
       });
 
@@ -4212,9 +4212,9 @@ async function main() {
           school: '正统哈里发',
           generation: 2,
           teacherId: muhammad.id,
-          biography: '阿布·伯克尔·西迪克（Abu Bakr al-Siddiq），先知穆罕默德最亲密的伙伴（萨哈比），伊斯兰教第一任正统哈里发（632-634在位）。穆罕默德传教初期第一个信仰伊斯兰的成年男性。希吉拉（迁徙）时与穆罕默德一同藏于骚尔山洞，后同赴麦地那。穆罕默德归真后，阿布·伯克尔稳定局势、平定叛乱（里达战争）、开始编纂《古兰经》、发起对波斯和拜占庭的征伐。在位仅两年三个月即归真，但奠定了伊斯兰帝国的基础。以谦逊、慷慨、忠诚著称。',
-          coreTeaching: '善良不会因为谦虚而减少。忠诚与信仰是一切美德的根基。阿布·伯克尔以"诚信者"（西迪克）之号闻名，因他在先知夜行登霄等事件中毫不犹豫地相信穆罕默德。',
-          achievements: '伊斯兰教第一任正统哈里发。穆罕默德归真后稳定伊斯兰国家。平定里达战争（叛教战争）。开始编纂《古兰经》。发起征服波斯和拜占庭帝国的战役。以"诚信者"（al-Siddiq）之号流芳。',
+          biography: '阿布·伯克尔·西迪克（Abu Bakr al-Siddiq），先知穆罕默德最亲密的伙伴（萨哈比），伊斯兰文化第一任正统哈里发（632-634在位）。穆罕默德传教初期第一个人文精神伊斯兰的成年男性。希吉拉（迁徙）时与穆罕默德一同藏于骚尔山洞，后同赴麦地那。穆罕默德归真后，阿布·伯克尔稳定局势、平定叛乱（里达战争）、开始编纂《古兰经》、发起对波斯和拜占庭的征伐。在位仅两年三个月即归真，但奠定了伊斯兰帝国的基础。以谦逊、慷慨、忠诚著称。',
+          coreTeaching: '善良不会因为谦虚而减少。忠诚与人文精神是一切美德的根基。阿布·伯克尔以"诚信者"（西迪克）之号闻名，因他在先知夜行登霄等事件中毫不犹豫地相信穆罕默德。',
+          achievements: '伊斯兰文化第一任正统哈里发。穆罕默德归真后稳定伊斯兰国家。平定里达战争（叛教战争）。开始编纂《古兰经》。发起征服波斯和拜占庭帝国的战役。以"诚信者"（al-Siddiq）之号流芳。',
           templeNames: [
             { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '安葬于先知旁', location: '沙特阿拉伯麦地那' },
           ],
@@ -4241,9 +4241,9 @@ async function main() {
       name: '欧麦尔·本·赫塔卜', nameEn: 'Umar ibn al-Khattab', religionId: islamId,
       dates: '584-644', title: '第二任正统哈里发·公正者', school: '正统哈里发', generation: 3,
       teacherId: muhammad.id,
-      biography: '欧麦尔·本·赫塔卜（Umar ibn al-Khattab），伊斯兰教第二任正统哈里发（634-644在位），号"公正者"（al-Faruq，辨别真伪者）。初为伊斯兰教最凶猛的反对者，后因听闻《古兰经》章节而皈依，极大鼓舞了早期穆斯林。任哈里发十年间，伊斯兰帝国疆域扩张至叙利亚、埃及、伊拉克、波斯。637年亲赴耶路撒冷接受投降，在圣殿山遗址处礼拜（后建圆顶清真寺）。建立迪万（行政体系）、伊斯兰历法、法官制度、军饷制度。以极简朴的生活和铁面公正闻名。644年在清真寺礼拜时被刺杀殉难。',
+      biography: '欧麦尔·本·赫塔卜（Umar ibn al-Khattab），伊斯兰文化第二任正统哈里发（634-644在位），号"公正者"（al-Faruq，辨别真伪者）。初为伊斯兰文化最凶猛的反对者，后因听闻《古兰经》章节而皈依，极大鼓舞了早期穆斯林。任哈里发十年间，伊斯兰帝国疆域扩张至叙利亚、埃及、伊拉克、波斯。637年亲赴耶路撒冷接受投降，在圣殿山遗址处礼拜（后建圆顶清真寺）。建立迪万（行政体系）、伊斯兰历法、法官制度、军饷制度。以极简朴的生活和铁面公正闻名。644年在清真寺礼拜时被刺杀殉难。',
       coreTeaching: '公正是统治的基石。即使对敌人也要公正。欧麦尔建立了伊斯兰世界最早的行政体系和法律制度，强调法律面前人人平等——哈里发与百姓同等受法律约束。',
-      achievements: '伊斯兰教第二任正统哈里发，伊斯兰帝国最伟大的扩张者。十年间征服叙利亚、埃及、伊拉克、波斯。建立迪万行政体系、伊斯兰历法、法官制度。亲赴耶路撒冷受降，保护基督教圣地。以公正和简朴著称。',
+      achievements: '伊斯兰文化第二任正统哈里发，伊斯兰帝国最伟大的扩张者。十年间征服叙利亚、埃及、伊拉克、波斯。建立迪万行政体系、伊斯兰历法、法官制度。亲赴耶路撒冷受降，保护基督文化圣地。以公正和简朴著称。',
       templeNames: [
         { name: '圆顶清真寺', nameEn: 'Dome of the Rock', role: '欧麦尔在圣殿山礼拜', location: '耶路撒冷' },
         { name: '欧麦尔清真寺', nameEn: 'Mosque of Umar', role: '纪念欧麦尔受降', location: '耶路撒冷' },
@@ -4263,9 +4263,9 @@ async function main() {
       name: '奥斯曼·本·阿凡', nameEn: 'Uthman ibn Affan', religionId: islamId,
       dates: '576-656', title: '第三任正统哈里发·两道光的拥有者', school: '正统哈里发', generation: 4,
       teacherId: muhammad.id,
-      biography: '奥斯曼·本·阿凡（Uthman ibn Affan），伊斯兰教第三任正统哈里发（644-656在位），号"两道光的拥有者"（Dhun-Nurayn），因先后娶了穆罕默德两个女儿。出身富裕的倭马亚家族，以慷慨著称——多次以巨资资助穆斯林事业。最伟大的贡献是主持《古兰经》标准化——组织学者统一古兰经文本，消除各地读法差异，制作标准版（奥斯曼定本）分发各地，确保古兰经的完整性和统一性。在位期间伊斯兰帝国继续扩张至北非和中亚。656年在家中被叛军杀害殉难。',
-      coreTeaching: '古兰经的统一与保存是伊斯兰文明的根基。奥斯曼以行动证明——保护神圣经文的完整性高于一切政治考量。慷慨是信仰的体现。',
-      achievements: '伊斯兰教第三任正统哈里发。主持《古兰经》标准化（奥斯曼定本），统一全球穆斯林经文。帝国扩张至北非和中亚。建立伊斯兰海军。以慷慨资助伊斯兰事业著称。',
+      biography: '奥斯曼·本·阿凡（Uthman ibn Affan），伊斯兰文化第三任正统哈里发（644-656在位），号"两道光的拥有者"（Dhun-Nurayn），因先后娶了穆罕默德两个女儿。出身富裕的倭马亚家族，以慷慨著称——多次以巨资资助穆斯林事业。最伟大的贡献是主持《古兰经》标准化——组织学者统一古兰经文本，消除各地读法差异，制作标准版（奥斯曼定本）分发各地，确保古兰经的完整性和统一性。在位期间伊斯兰帝国继续扩张至北非和中亚。656年在家中被叛军杀害殉难。',
+      coreTeaching: '古兰经的统一与保存是伊斯兰文明的根基。奥斯曼以行动证明——保护神圣经文的完整性高于一切政治考量。慷慨是人文精神的体现。',
+      achievements: '伊斯兰文化第三任正统哈里发。主持《古兰经》标准化（奥斯曼定本），统一全球穆斯林经文。帝国扩张至北非和中亚。建立伊斯兰海军。以慷慨资助伊斯兰事业著称。',
       templeNames: [
         { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '扩建先知寺', location: '沙特阿拉伯麦地那' },
       ],
@@ -4284,7 +4284,7 @@ async function main() {
       name: '阿里·本·阿比·塔利卜', nameEn: 'Ali ibn Abi Talib', religionId: islamId,
       dates: '601-661', title: '第四任正统哈里发·信士的长官', school: '正统哈里发', generation: 5,
       teacherId: muhammad.id,
-      biography: '阿里·本·阿比·塔利卜（Ali ibn Abi Talib），穆罕默德的堂弟和女婿（娶先知之女法蒂玛），伊斯兰教第四任正统哈里发（656-661在位）。第一个信仰伊斯兰的男孩（约10岁皈依）。以勇武、学识和公正著称，被穆罕默德称为"知识之城的门"。在逊尼派被尊为四大正统哈里发之末，在什叶派被尊为第一任伊玛目和穆罕默德的合法继承人。著有《辞章之道》（Nahj al-Balagha），为阿拉伯文学和伊斯兰哲学经典。661年在库法清真寺礼拜时被刺杀殉难，葬于纳杰夫。',
+      biography: '阿里·本·阿比·塔利卜（Ali ibn Abi Talib），穆罕默德的堂弟和女婿（娶先知之女法蒂玛），伊斯兰文化第四任正统哈里发（656-661在位）。第一个人文精神伊斯兰的男孩（约10岁皈依）。以勇武、学识和公正著称，被穆罕默德称为"知识之城的门"。在逊尼派被尊为四大正统哈里发之末，在什叶派被尊为第一任伊玛目和穆罕默德的合法继承人。著有《辞章之道》（Nahj al-Balagha），为阿拉伯文学和伊斯兰哲学经典。661年在库法清真寺礼拜时被刺杀殉难，葬于纳杰夫。',
       coreTeaching: '知识是最好的遗产，教养是最好的品质。阿里以智慧和辩才闻名，其《辞章之道》被誉为仅次于古兰经的阿拉伯语文学巅峰。强调公正、知识与灵性修养的统一。',
       achievements: '第四任正统哈里发，什叶派第一任伊玛目。穆罕默德最早的追随者之一。著《辞章之道》为阿拉伯文学经典。以智慧、勇武、公正著称。逊尼派和什叶派共同尊崇的核心人物。',
       templeNames: [
@@ -4295,7 +4295,7 @@ async function main() {
         { title: '知识之门', description: '穆罕默德说："我是知识之城，阿里是它的门。"阿里是先知学识和内在教导的首要传承者。' },
         { title: '战场上的宽恕', description: '战斗中阿里将敌人打倒，敌人朝他脸上吐口水。阿里放下剑转身离开。问其故，答："他吐我时我愤怒了。若此时杀他，是为私愤而非为真主。"' },
       ],
-      classicQuotes: ['知识是最好的遗产', '人的价值在于他所做的善事', '忍耐是信仰的一半', '不了解自己的人，不可能了解他人'],
+      classicQuotes: ['知识是最好的遗产', '人的价值在于他所做的善事', '忍耐是人文精神的一半', '不了解自己的人，不可能了解他人'],
       works: [
         { title: '辞章之道', description: 'Nahj al-Balagha，阿里的演讲、书信和格言集，阿拉伯文学经典' },
       ],
@@ -4309,16 +4309,16 @@ async function main() {
       name: '阿布·哈尼法', nameEn: 'Abu Hanifa', religionId: islamId,
       dates: '699-767', title: '大伊玛目·哈乃斐派创始人', school: '四大教法学派', generation: 1,
       teacherId: null,
-      biography: '阿布·哈尼法·努尔曼（Abu Hanifa al-Nu\'man），伊斯兰教逊尼派四大教法学派之首——哈乃斐派（Hanafi）创始人，被尊为"大伊玛目"（al-Imam al-A\'zam）。生于库法，波斯裔。以类比推理（格亚斯）和理性判断（伊智提哈德）著称，主张在古兰经和圣训无明确规定时，可运用理性推理制定教法。其学派最为开放灵活，后被奥斯曼帝国采为官方教法。今为全球信众最多的教法学派（约占逊尼派35%），主要分布于土耳其、中亚、南亚、中国。',
-      coreTeaching: '理性与启示并行。在教法判断中运用类比推理（格亚斯）和公共利益考量（伊斯提赫桑），使伊斯兰教法能适应不同时代和地域。宗教不应僵化——理性是真主赐予人类的工具。',
-      achievements: '哈乃斐派创始人，伊斯兰教法学奠基者。首创系统化教法推理方法。其学派为全球最大的逊尼派教法学派。被奥斯曼帝国/莫卧儿帝国采为官方教法。影响遍及土耳其、中亚、南亚、中国穆斯林。',
+      biography: '阿布·哈尼法·努尔曼（Abu Hanifa al-Nu\'man），伊斯兰文化逊尼派四大教法学派之首——哈乃斐派（Hanafi）创始人，被尊为"大伊玛目"（al-Imam al-A\'zam）。生于库法，波斯裔。以类比推理（格亚斯）和理性判断（伊智提哈德）著称，主张在古兰经和圣训无明确规定时，可运用理性推理制定教法。其学派最为开放灵活，后被奥斯曼帝国采为官方教法。今为全球信众最多的教法学派（约占逊尼派35%），主要分布于土耳其、中亚、南亚、中国。',
+      coreTeaching: '理性与启示并行。在教法判断中运用类比推理（格亚斯）和公共利益考量（伊斯提赫桑），使伊斯兰文化法能适应不同时代和地域。文化传统不应僵化——理性是真主赐予人类的工具。',
+      achievements: '哈乃斐派创始人，伊斯兰文化法学奠基者。首创系统化教法推理方法。其学派为全球最大的逊尼派教法学派。被奥斯曼帝国/莫卧儿帝国采为官方教法。影响遍及土耳其、中亚、南亚、中国穆斯林。',
       templeNames: [
         { name: '大伊玛目清真寺', nameEn: 'Abu Hanifa Mosque', role: '阿布·哈尼法陵墓', location: '伊拉克巴格达' },
       ],
       koans: [],
       classicQuotes: ['当你不确定时，选择最容易的路——真主不想为你制造困难', '知识如果不付诸实践，就像树木不结果实'],
       works: [
-        { title: '大学（Al-Fiqh al-Akbar）', description: '伊斯兰教义学基本信条' },
+        { title: '大学（Al-Fiqh al-Akbar）', description: '伊斯兰文化义学基本信条' },
       ],
       imageUrl: null,
     },
@@ -4329,16 +4329,16 @@ async function main() {
       name: '马立克·本·艾奈斯', nameEn: 'Malik ibn Anas', religionId: islamId,
       dates: '711-795', title: '麦地那伊玛目·马立克派创始人', school: '四大教法学派', generation: 2,
       teacherId: null,
-      biography: '马立克·本·艾奈斯（Malik ibn Anas），逊尼派四大教法学派之一——马立克派（Maliki）创始人。生于麦地那，终身未离开。被尊为"迁徙之城的伊玛目"。以重视麦地那学者的实践传统（阿玛勒）为特色——认为麦地那人民的习俗即是先知遗教的活传承。著《穆瓦塔》（al-Muwatta），为伊斯兰教最早的教法和圣训汇编之一。其学派主要分布于北非（马格里布）、西非、阿联酋和科威特。',
+      biography: '马立克·本·艾奈斯（Malik ibn Anas），逊尼派四大教法学派之一——马立克派（Maliki）创始人。生于麦地那，终身未离开。被尊为"迁徙之城的伊玛目"。以重视麦地那学者的实践传统（阿玛勒）为特色——认为麦地那人民的习俗即是先知遗教的活传承。著《穆瓦塔》（al-Muwatta），为伊斯兰文化最早的教法和圣训汇编之一。其学派主要分布于北非（马格里布）、西非、阿联酋和科威特。',
       coreTeaching: '麦地那的实践传统（阿玛勒）是教法的重要来源——先知生活过的城市，其居民的集体实践即是活的圣训。注重社会公共利益（马斯拉哈）在教法判断中的权重。',
-      achievements: '马立克派创始人。著《穆瓦塔》为伊斯兰教最早的教法圣训汇编。以麦地那实践传统（阿玛勒）为教法独特来源。其学派主导北非和西非伊斯兰世界。',
+      achievements: '马立克派创始人。著《穆瓦塔》为伊斯兰文化最早的教法圣训汇编。以麦地那实践传统（阿玛勒）为教法独特来源。其学派主导北非和西非伊斯兰世界。',
       templeNames: [
         { name: '麦地那先知寺', nameEn: "Prophet's Mosque", role: '终身在此教学', location: '沙特阿拉伯麦地那' },
       ],
       koans: [],
       classicQuotes: ['知识不在于记忆多少，而在于真主在你需要时放入你心中的光明', '每个人的话都可以被接受或拒绝，除了安息在这座坟墓中的人（指先知）'],
       works: [
-        { title: '穆瓦塔（Al-Muwatta）', description: '最早的教法圣训汇编，伊斯兰教法学基石' },
+        { title: '穆瓦塔（Al-Muwatta）', description: '最早的教法圣训汇编，伊斯兰文化法学基石' },
       ],
       imageUrl: null,
     },
@@ -4349,16 +4349,16 @@ async function main() {
       name: '沙斐仪', nameEn: 'Muhammad ibn Idris al-Shafi\'i', religionId: islamId,
       dates: '767-820', title: '教法学之父·沙斐仪派创始人', school: '四大教法学派', generation: 3,
       teacherId: null,
-      biography: '穆罕默德·本·伊德里斯·沙斐仪（al-Shafi\'i），逊尼派四大教法学派之一——沙斐仪派（Shafi\'i）创始人，被尊为"教法原理之父"（Usul al-Fiqh）。出身古莱什族，师从马立克·本·艾奈斯。游学于麦加、麦地那、伊拉克、埃及，博采众长。著《论证书》（al-Risala），首次系统化伊斯兰教法推理方法论——确立古兰经、圣训、公议（伊智玛）、类比（格亚斯）四大法源层级。其学派分布于东南亚、东非、埃及南部、也门。',
+      biography: '穆罕默德·本·伊德里斯·沙斐仪（al-Shafi\'i），逊尼派四大教法学派之一——沙斐仪派（Shafi\'i）创始人，被尊为"教法原理之父"（Usul al-Fiqh）。出身古莱什族，师从马立克·本·艾奈斯。游学于麦加、麦地那、伊拉克、埃及，博采众长。著《论证书》（al-Risala），首次系统化伊斯兰文化法推理方法论——确立古兰经、圣训、公议（伊智玛）、类比（格亚斯）四大法源层级。其学派分布于东南亚、东非、埃及南部、也门。',
       coreTeaching: '教法四大源泉（乌苏勒）：古兰经→圣训→公议→类比。沙斐仪创立了系统化的教法推理方法论，使教法判断有章可循。强调圣训的绝对权威性——有效圣训可以限定古兰经的一般性规定。',
-      achievements: '沙斐仪派创始人。著《论证书》首创伊斯兰教法原理学（Usul al-Fiqh）。确立四大法源层级体系。融合伊拉克理性学派和麦地那传统学派之长。其学派主导东南亚伊斯兰世界（印尼/马来西亚/文莱）。',
+      achievements: '沙斐仪派创始人。著《论证书》首创伊斯兰文化法原理学（Usul al-Fiqh）。确立四大法源层级体系。融合伊拉克理性学派和麦地那传统学派之长。其学派主导东南亚伊斯兰世界（印尼/马来西亚/文莱）。',
       templeNames: [
         { name: '伊玛目沙斐仪清真寺', nameEn: 'Imam al-Shafi\'i Mosque', role: '沙斐仪陵墓', location: '埃及开罗' },
       ],
       koans: [],
-      classicQuotes: ['知识分两种：宗教知识用于来世，医学知识用于身体', '我每与人辩论，都希望对方是对的', '不要与愚者争辩——旁观者分不清你们谁是傻瓜'],
+      classicQuotes: ['知识分两种：文化传统知识用于来世，医学知识用于身体', '我每与人辩论，都希望对方是对的', '不要与愚者争辩——旁观者分不清你们谁是傻瓜'],
       works: [
-        { title: '论证书（Al-Risala）', description: '伊斯兰教法原理学奠基之作' },
+        { title: '论证书（Al-Risala）', description: '伊斯兰文化法原理学奠基之作' },
         { title: '大全（Al-Umm）', description: '沙斐仪教法学全集' },
       ],
       imageUrl: null,
@@ -4370,18 +4370,18 @@ async function main() {
       name: '艾哈迈德·本·罕百勒', nameEn: 'Ahmad ibn Hanbal', religionId: islamId,
       dates: '780-855', title: '圣训学集大成者·罕百里派创始人', school: '四大教法学派', generation: 4,
       teacherId: null,
-      biography: '艾哈迈德·本·罕百勒（Ahmad ibn Hanbal），逊尼派四大教法学派之一——罕百里派（Hanbali）创始人，伊斯兰教最伟大的圣训学家之一。师从沙斐仪等多位学者。编纂《穆斯奈德》（Musnad），收录近三万则圣训。在"古兰经被造说"（米赫纳）事件中宁受酷刑也坚持古兰经为真主之言（非被造物），成为信仰坚定的象征。其学派强调严格回归经训，反对过多的理性推理。今主要分布于沙特阿拉伯和卡塔尔。',
+      biography: '艾哈迈德·本·罕百勒（Ahmad ibn Hanbal），逊尼派四大教法学派之一——罕百里派（Hanbali）创始人，伊斯兰文化最伟大的圣训学家之一。师从沙斐仪等多位学者。编纂《穆斯奈德》（Musnad），收录近三万则圣训。在"古兰经被造说"（米赫纳）事件中宁受酷刑也坚持古兰经为真主之言（非被造物），成为人文精神坚定的象征。其学派强调严格回归经训，反对过多的理性推理。今主要分布于沙特阿拉伯和卡塔尔。',
       coreTeaching: '严格回归古兰经和圣训。反对过多的理性推演和哲学思辨——教法的根基在经训，不在人的推理。宁可接受弱传述链的圣训，也不接受无经训根据的类比推理。',
-      achievements: '罕百里派创始人。编纂《穆斯奈德》收录近三万则圣训。在米赫纳迫害中坚守信仰，宁受酷刑不妥协。被尊为逊尼派信仰捍卫者。其学派影响沙特阿拉伯官方教法。',
+      achievements: '罕百里派创始人。编纂《穆斯奈德》收录近三万则圣训。在米赫纳迫害中坚守人文精神，宁受酷刑不妥协。被尊为逊尼派人文精神捍卫者。其学派影响沙特阿拉伯官方教法。',
       templeNames: [
         { name: '艾哈迈德·本·罕百勒清真寺', nameEn: 'Ahmad ibn Hanbal Mosque', role: '纪念罕百勒', location: '伊拉克巴格达' },
       ],
       koans: [
-        { title: '米赫纳', description: '阿拔斯王朝哈里发马蒙强制推行"古兰经被造说"，罕百勒坚持古兰经为真主之言。被囚禁鞭打两年不屈。后被释放，声望更隆，成为信仰坚定的象征。' },
+        { title: '米赫纳', description: '阿拔斯王朝哈里发马蒙强制推行"古兰经被造说"，罕百勒坚持古兰经为真主之言。被囚禁鞭打两年不屈。后被释放，声望更隆，成为人文精神坚定的象征。' },
       ],
       classicQuotes: ['人们最需要的知识，是求知本身', '忍耐是对付灾难的最好武器', '宁可在真理上孤独，也不在虚伪上合群'],
       works: [
-        { title: '穆斯奈德（Musnad）', description: '近三万则圣训汇编，伊斯兰教最大圣训集之一' },
+        { title: '穆斯奈德（Musnad）', description: '近三万则圣训汇编，伊斯兰文化最大圣训集之一' },
       ],
       imageUrl: null,
     },
@@ -4393,9 +4393,9 @@ async function main() {
       name: '哈桑·巴士里', nameEn: 'Hasan al-Basri', religionId: islamId,
       dates: '642-728', title: '苏菲先驱·巴士拉贤者', school: '苏菲派', generation: 1,
       teacherId: null,
-      biography: '哈桑·巴士里（Hasan al-Basri），伊斯兰教早期最重要的学者和禁欲主义者，被尊为苏菲主义的先驱。生于麦地那，后迁居巴士拉。以雄辩的布道和对后世的深切关注闻名。其教导强调恐惧真主（塔格瓦）、反省自我、淡泊今世。哈桑·巴士里的弟子中产生了伊斯兰教多个重要学术流派。被认为是连接圣门弟子时代与后来苏菲传统的关键人物。',
+      biography: '哈桑·巴士里（Hasan al-Basri），伊斯兰文化早期最重要的学者和禁欲主义者，被尊为苏菲主义的先驱。生于麦地那，后迁居巴士拉。以雄辩的布道和对后世的深切关注闻名。其教导强调恐惧真主（塔格瓦）、反省自我、淡泊今世。哈桑·巴士里的弟子中产生了伊斯兰文化多个重要学术流派。被认为是连接圣门弟子时代与后来苏菲传统的关键人物。',
       coreTeaching: '内心的净化重于外在的仪式。对今世的淡泊（祖赫德）是通向真主的道路。每日自省——如果今天的你没有比昨天更好，那你就在退步。',
-      achievements: '苏菲主义先驱，连接圣门弟子时代与苏菲传统的关键人物。伊斯兰教早期最有影响力的布道家。弟子众多，开创多个学术流派。以雄辩和敬虔著称。',
+      achievements: '苏菲主义先驱，连接圣门弟子时代与苏菲传统的关键人物。伊斯兰文化早期最有影响力的布道家。弟子众多，开创多个学术流派。以雄辩和敬虔著称。',
       templeNames: [
         { name: '巴士拉大清真寺', nameEn: 'Great Mosque of Basra', role: '长期布道之地', location: '伊拉克巴士拉' },
       ],
@@ -4411,7 +4411,7 @@ async function main() {
       name: '拉比亚·阿达维亚', nameEn: 'Rabia al-Adawiyya', religionId: islamId,
       dates: '717-801', title: '爱的苏菲·女性神秘主义先驱', school: '苏菲派', generation: 2,
       teacherId: null,
-      biography: '拉比亚·阿达维亚（Rabia al-Adawiyya），伊斯兰教苏菲主义最重要的女性圣者，"神圣之爱"（胡布·伊拉希）教义的开创者。生于巴士拉贫困家庭，幼年被卖为奴。获自由后终身未婚，全心奉献于对真主的爱。她将苏菲主义从恐惧和禁欲转向了纯粹的爱——爱真主不是因为害怕火狱或渴望天堂，而是因为真主本身值得被爱。这一转变深刻影响了整个苏菲传统的发展方向。',
+      biography: '拉比亚·阿达维亚（Rabia al-Adawiyya），伊斯兰文化苏菲主义最重要的女性圣者，"神圣之爱"（胡布·伊拉希）教义的开创者。生于巴士拉贫困家庭，幼年被卖为奴。获自由后终身未婚，全心奉献于对真主的爱。她将苏菲主义从恐惧和禁欲转向了纯粹的爱——爱真主不是因为害怕火狱或渴望天堂，而是因为真主本身值得被爱。这一转变深刻影响了整个苏菲传统的发展方向。',
       coreTeaching: '无条件的神圣之爱（胡布·伊拉希）。爱真主不因恐惧火狱，不因渴望天堂——只因真主值得被爱。拉比亚著名的祈祷："主啊，如果我因恐惧火狱而崇拜你，就让我在火狱中燃烧；如果我因渴望天堂而崇拜你，就将我拒之门外。但如果我只因你而崇拜你，就不要对我隐藏你永恒的美。"',
       achievements: '苏菲主义最重要的女性圣者。开创"神圣之爱"教义，将苏菲主义从恐惧转向爱。其名言和祈祷传颂千年。证明了女性在伊斯兰灵性传统中的崇高地位。',
       templeNames: [
@@ -4449,11 +4449,11 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '安萨里', nameEn: 'Abu Hamid al-Ghazali', religionId: islamId,
-      dates: '1058-1111', title: '伊斯兰复兴者·信仰的明证', school: '苏菲派', generation: 4,
+      dates: '1058-1111', title: '伊斯兰复兴者·人文精神的明证', school: '苏菲派', generation: 4,
       teacherId: null,
-      biography: '阿布·哈米德·安萨里（Al-Ghazali），被尊为"信仰的明证"（Hujjat al-Islam），中世纪伊斯兰教最伟大的思想家。生于波斯图斯。年轻时为巴格达尼扎米亚学院首席教授，声望达于顶峰。1095年经历严重的精神危机——对一切学术知识产生怀疑，突然离开巴格达，以苦行者身份游历叙利亚、耶路撒冷、麦加十年。通过苏菲修行重获信仰确信。著《宗教科学的复兴》（Ihya Ulum al-Din），融合教法学、神学和苏菲灵性，被认为"仅次于古兰经"的伊斯兰教最伟大著作。',
-      coreTeaching: '真知来自灵性体验而非理性论证。安萨里从哲学怀疑走向苏菲确信——证明理性有其限度，真正的信仰来自内心的直接体验（卡什夫）。教法（外在规范）和灵性（内在净化）不可分割。',
-      achievements: '伊斯兰教最伟大的思想家之一。著《宗教科学的复兴》融合教法与灵性。终结了伊斯兰世界的纯理性哲学倾向。使苏菲主义融入逊尼派正统。被称为"伊斯兰的复兴者"（Mujaddid）。',
+      biography: '阿布·哈米德·安萨里（Al-Ghazali），被尊为"人文精神的明证"（Hujjat al-Islam），中世纪伊斯兰文化最伟大的思想家。生于波斯图斯。年轻时为巴格达尼扎米亚学院首席教授，声望达于顶峰。1095年经历严重的精神危机——对一切学术知识产生怀疑，突然离开巴格达，以苦行者身份游历叙利亚、耶路撒冷、麦加十年。通过苏菲修行重获人文精神确信。著《宗教科学的复兴》（Ihya Ulum al-Din），融合教法学、神学和苏菲灵性，被认为"仅次于古兰经"的伊斯兰文化最伟大著作。',
+      coreTeaching: '真知来自灵性体验而非理性论证。安萨里从哲学怀疑走向苏菲确信——证明理性有其限度，真正的人文精神来自内心的直接体验（卡什夫）。教法（外在规范）和灵性（内在净化）不可分割。',
+      achievements: '伊斯兰文化最伟大的思想家之一。著《宗教科学的复兴》融合教法与灵性。终结了伊斯兰世界的纯理性哲学倾向。使苏菲主义融入逊尼派正统。被称为"伊斯兰的复兴者"（Mujaddid）。',
       templeNames: [
         { name: '安萨里陵墓', nameEn: 'Tomb of al-Ghazali', role: '安萨里长眠之地', location: '伊朗图斯' },
         { name: '倭马亚大清真寺', nameEn: 'Umayyad Mosque', role: '安萨里隐居修行之地', location: '叙利亚大马士革' },
@@ -4461,7 +4461,7 @@ async function main() {
       koans: [
         { title: '离开巴格达', description: '安萨里在学术声望顶峰突然离职。他后来写道："我审视自己的动机——我教书不是为了真主，而是为了名声和地位。我发现自己站在火狱的边缘。"他抛弃一切，开始了十年的苏菲修行之旅。' },
       ],
-      classicQuotes: ['知识无行动，是疯狂；行动无知识，是徒劳', '半数的不信，来自信仰者给宗教抹的黑', '欲望使智者变愚，忍耐使愚者变智'],
+      classicQuotes: ['知识无行动，是疯狂；行动无知识，是徒劳', '半数的不信，来自文化传统信奉者给文化传统抹的黑', '欲望使智者变愚，忍耐使愚者变智'],
       works: [
         { title: '宗教科学的复兴（Ihya Ulum al-Din）', description: '四十卷巨著，融合教法学、神学与苏菲灵性，被誉为仅次于古兰经' },
         { title: '迷途指津（Al-Munqidh min al-Dalal）', description: '精神自传，记录从怀疑到确信的心路历程' },
@@ -4476,7 +4476,7 @@ async function main() {
       name: '伊本·阿拉比', nameEn: 'Ibn Arabi', religionId: islamId,
       dates: '1165-1240', title: '至大导师·苏菲形而上学集大成者', school: '苏菲派', generation: 5,
       teacherId: null,
-      biography: '穆希丁·伊本·阿拉比（Muhyiddin Ibn Arabi），被尊为"至大导师"（al-Shaykh al-Akbar），伊斯兰教苏菲主义最伟大的形而上学家。生于西班牙穆尔西亚，游历北非、麦加、安纳托利亚、大马士革。提出"存在的统一"（Wahdat al-Wujud）——万物是真主存在的显现（tajalli），一切存在的本质是唯一的真实存在（真主）。著作超过350部，最重要的是《麦加启示》（al-Futuhat al-Makkiyya，37卷）和《智慧的珍珠》（Fusus al-Hikam）。其思想深刻影响了从奥斯曼帝国到莫卧儿帝国的伊斯兰灵性传统。',
+      biography: '穆希丁·伊本·阿拉比（Muhyiddin Ibn Arabi），被尊为"至大导师"（al-Shaykh al-Akbar），伊斯兰文化苏菲主义最伟大的形而上学家。生于西班牙穆尔西亚，游历北非、麦加、安纳托利亚、大马士革。提出"存在的统一"（Wahdat al-Wujud）——万物是真主存在的显现（tajalli），一切存在的本质是唯一的真实存在（真主）。著作超过350部，最重要的是《麦加启示》（al-Futuhat al-Makkiyya，37卷）和《智慧的珍珠》（Fusus al-Hikam）。其思想深刻影响了从奥斯曼帝国到莫卧儿帝国的伊斯兰灵性传统。',
       coreTeaching: '存在的统一（Wahdat al-Wujud）——唯一真正存在的是真主，万物是真主属性的不同显现。"完美之人"（Insan al-Kamil）是真主与世界之间的桥梁——先知是完美之人的典范。想象力（Khayal）是连接灵性世界与物质世界的中介。',
       achievements: '苏菲主义最伟大的形而上学家，"至大导师"。提出"存在的统一"理论。著作超过350部。《麦加启示》37卷为苏菲百科全书。深刻影响奥斯曼/莫卧儿/波斯伊斯兰灵性传统。',
       templeNames: [
@@ -4499,9 +4499,9 @@ async function main() {
       name: '贾拉鲁丁·鲁米', nameEn: 'Jalaluddin Rumi', religionId: islamId,
       dates: '1207-1273', title: '毛拉维教团创始人·苏菲诗歌巅峰', school: '苏菲派', generation: 6,
       teacherId: null,
-      biography: '贾拉鲁丁·穆罕默德·鲁米（Rumi），伊斯兰教苏菲主义最伟大的诗人，毛拉维教团（旋转苦行僧）创始人。生于巴尔赫（今阿富汗），因蒙古入侵随家人西迁，最终定居于科尼亚（今土耳其）。1244年遇到游方苦行僧沙姆斯·塔布里兹（Shams-i-Tabrizi），灵性觉醒，从学者转变为狂热的神秘主义诗人。著《玛斯纳维》（Masnavi）六卷约25000对偶诗行，被称为"波斯语的古兰经"。著《沙姆斯诗集》约40000诗行。其弟子创立毛拉维教团，以"旋转舞"（萨玛）闻名。今为全球最受欢迎的诗人之一——在美国诗集销量曾超过所有英语诗人。',
-      coreTeaching: '爱是宇宙的本质力量——万物因爱而运动，因爱而存在。神圣之爱（Ishq）超越宗教、种族、语言的界限。通过音乐、诗歌、旋转舞（萨玛）体验与真主的合一。"你不是一滴水——你是整片海洋包含在一滴水中。"',
-      achievements: '苏菲主义最伟大的诗人。著《玛斯纳维》被称"波斯语的古兰经"。毛拉维教团创始人（旋转苦行僧）。当今全球最受欢迎的诗人之一。其教导跨越宗教文化界限影响全人类。',
+      biography: '贾拉鲁丁·穆罕默德·鲁米（Rumi），伊斯兰文化苏菲主义最伟大的诗人，毛拉维教团（旋转苦行僧）创始人。生于巴尔赫（今阿富汗），因蒙古入侵随家人西迁，最终定居于科尼亚（今土耳其）。1244年遇到游方苦行僧沙姆斯·塔布里兹（Shams-i-Tabrizi），灵性觉醒，从学者转变为狂热的神秘主义诗人。著《玛斯纳维》（Masnavi）六卷约25000对偶诗行，被称为"波斯语的古兰经"。著《沙姆斯诗集》约40000诗行。其弟子创立毛拉维教团，以"旋转舞"（萨玛）闻名。今为全球最受欢迎的诗人之一——在美国诗集销量曾超过所有英语诗人。',
+      coreTeaching: '爱是宇宙的本质力量——万物因爱而运动，因爱而存在。神圣之爱（Ishq）超越文化传统、种族、语言的界限。通过音乐、诗歌、旋转舞（萨玛）体验与真主的合一。"你不是一滴水——你是整片海洋包含在一滴水中。"',
+      achievements: '苏菲主义最伟大的诗人。著《玛斯纳维》被称"波斯语的古兰经"。毛拉维教团创始人（旋转苦行僧）。当今全球最受欢迎的诗人之一。其教导跨越文化传统界限影响全人类。',
       templeNames: [
         { name: '鲁米博物馆（绿色陵墓）', nameEn: 'Mevlana Museum', role: '鲁米陵墓，毛拉维教团圣地', location: '土耳其科尼亚' },
       ],
@@ -4525,17 +4525,17 @@ async function main() {
       name: '侯赛因·本·阿里', nameEn: 'Husayn ibn Ali', religionId: islamId,
       dates: '626-680', title: '殉难之主·卡尔巴拉', school: '什叶派伊玛目', generation: 1,
       teacherId: ali.id,
-      biography: '侯赛因·本·阿里（Husayn ibn Ali），先知穆罕默德的外孙（阿里与法蒂玛之子），什叶派第三任伊玛目。680年（伊斯兰历61年），侯赛因拒绝向倭马亚王朝哈里发叶齐德效忠，率72名家人和追随者前往库法。在卡尔巴拉被叶齐德的数千大军包围。阿舒拉日（穆哈兰月第十日），侯赛因及其同伴全部壮烈殉难，仅幼子宰因·阿比丁幸存。卡尔巴拉事件成为伊斯兰教最悲壮的历史，是什叶派信仰的核心事件。每年穆哈兰月的阿舒拉纪念活动是全球什叶派最重要的宗教仪式。',
+      biography: '侯赛因·本·阿里（Husayn ibn Ali），先知穆罕默德的外孙（阿里与法蒂玛之子），什叶派第三任伊玛目。680年（伊斯兰历61年），侯赛因拒绝向倭马亚王朝哈里发叶齐德效忠，率72名家人和追随者前往库法。在卡尔巴拉被叶齐德的数千大军包围。阿舒拉日（穆哈兰月第十日），侯赛因及其同伴全部壮烈殉难，仅幼子宰因·阿比丁幸存。卡尔巴拉事件成为伊斯兰文化最悲壮的历史，是什叶派人文精神的核心事件。每年穆哈兰月的阿舒拉纪念活动是全球什叶派最重要的文化传统仪式。',
       coreTeaching: '宁为正义而死，不在不义面前苟活。侯赛因以自己和家人的牺牲证明——面对暴政，沉默即共谋。"我的起义不是为了欢乐、傲慢或腐败，而是为了改革我祖父的乌玛。"卡尔巴拉精神成为一切反抗压迫的象征。',
-      achievements: '什叶派第三任伊玛目。卡尔巴拉殉难事件是伊斯兰教最深刻的历史创伤和精神遗产。每年阿舒拉纪念日影响全球数亿什叶派穆斯林。"侯赛因的精神"成为正义抗暴的永恒象征。甘地曾说："我从侯赛因那里学到了如何在被压迫时取得胜利。"',
+      achievements: '什叶派第三任伊玛目。卡尔巴拉殉难事件是伊斯兰文化最深刻的历史创伤和精神遗产。每年阿舒拉纪念日影响全球数亿什叶派穆斯林。"侯赛因的精神"成为正义抗暴的永恒象征。甘地曾说："我从侯赛因那里学到了如何在被压迫时取得胜利。"',
       templeNames: [
         { name: '侯赛因圣陵', nameEn: 'Imam Husayn Shrine', role: '侯赛因殉难与安葬地', location: '伊拉克卡尔巴拉' },
         { name: '阿拔斯圣陵', nameEn: 'Al-Abbas Shrine', role: '侯赛因兄弟阿拔斯陵墓', location: '伊拉克卡尔巴拉' },
       ],
       koans: [
-        { title: '卡尔巴拉', description: '面对数千大军，72人赴死。侯赛因对敌军说："如果你们没有信仰，至少做一个自由的人。"阿舒拉日战至最后一刻。这不是军事失败——这是以血唤醒沉睡的良知。' },
+        { title: '卡尔巴拉', description: '面对数千大军，72人赴死。侯赛因对敌军说："如果你们没有人文精神，至少做一个自由的人。"阿舒拉日战至最后一刻。这不是军事失败——这是以血唤醒沉睡的良知。' },
       ],
-      classicQuotes: ['宁为正义站着死，不在不义面前跪着活', '如果你们没有信仰，至少做一个自由的人', '我的起义是为了改革我祖父的乌玛'],
+      classicQuotes: ['宁为正义站着死，不在不义面前跪着活', '如果你们没有人文精神，至少做一个自由的人', '我的起义是为了改革我祖父的乌玛'],
       works: [],
       imageUrl: null,
     },
@@ -4546,9 +4546,9 @@ async function main() {
       name: '阿里·宰因·阿比丁', nameEn: 'Ali Zayn al-Abidin', religionId: islamId,
       dates: '658-713', title: '第四伊玛目·祈祷之主', school: '什叶派伊玛目', generation: 2,
       teacherId: husayn.id,
-      biography: '阿里·宰因·阿比丁（Ali Zayn al-Abidin），侯赛因之子，什叶派第四任伊玛目，号"祈祷之主"（Sayyid al-Sajjidin）和"礼拜者的饰品"（Zayn al-Abidin）。卡尔巴拉事件中因重病未能参战，为唯一幸存的成年男性后裔。此后一生以祈祷、隐忍和慈善度过。著《祈祷书》（al-Sahifa al-Sajjadiyya），被什叶派尊为"阿里家族的诗篇"，是伊斯兰教最美的祈祷文学。以每日长时间礼拜和大量释放奴隶著称。',
+      biography: '阿里·宰因·阿比丁（Ali Zayn al-Abidin），侯赛因之子，什叶派第四任伊玛目，号"祈祷之主"（Sayyid al-Sajjidin）和"礼拜者的饰品"（Zayn al-Abidin）。卡尔巴拉事件中因重病未能参战，为唯一幸存的成年男性后裔。此后一生以祈祷、隐忍和慈善度过。著《祈祷书》（al-Sahifa al-Sajjadiyya），被什叶派尊为"阿里家族的诗篇"，是伊斯兰文化最美的祈祷文学。以每日长时间礼拜和大量释放奴隶著称。',
       coreTeaching: '以祈祷和忍耐回应苦难。宰因·阿比丁不以政治手段而以灵性修行延续先知家族的使命。其《祈祷书》将个人苦难转化为与真主对话的途径——每一次呼吸都是祈祷。',
-      achievements: '什叶派第四任伊玛目。卡尔巴拉唯一幸存成年男性后裔。著《祈祷书》为伊斯兰教最美的祈祷文学。以极度虔诚的礼拜和慷慨释放奴隶著称。',
+      achievements: '什叶派第四任伊玛目。卡尔巴拉唯一幸存成年男性后裔。著《祈祷书》为伊斯兰文化最美的祈祷文学。以极度虔诚的礼拜和慷慨释放奴隶著称。',
       templeNames: [
         { name: '麦地那巴基公墓', nameEn: "Jannat al-Baqi'", role: '安葬之地', location: '沙特阿拉伯麦地那' },
       ],
@@ -4567,8 +4567,8 @@ async function main() {
       name: '贾法尔·萨迪克', nameEn: "Ja'far al-Sadiq", religionId: islamId,
       dates: '702-765', title: '第六伊玛目·教法学家', school: '什叶派伊玛目', generation: 3,
       teacherId: zaynAlAbidin.id,
-      biography: '贾法尔·萨迪克（Ja\'far al-Sadiq），什叶派第六任伊玛目，也是逊尼派尊敬的大学者。阿布·哈尼法和马立克·本·艾奈斯都曾受教于他。被认为是什叶派贾法里教法学派（Ja\'fari）的创立者。除宗教学问外，还精通化学、医学和天文学——被尊为贾比尔·伊本·哈扬（"化学之父"）的导师。在政治最动荡的倭马亚-阿拔斯交替期，以学术传教而非政治斗争延续伊玛目传统。',
-      coreTeaching: '知识是先知家族最重要的遗产。萨迪克不仅传授宗教知识，还鼓励自然科学研究——认为认识真主的创造也是崇拜的方式。什叶派教法（贾法里法学派）的核心框架由他奠定。',
+      biography: '贾法尔·萨迪克（Ja\'far al-Sadiq），什叶派第六任伊玛目，也是逊尼派尊敬的大学者。阿布·哈尼法和马立克·本·艾奈斯都曾受教于他。被认为是什叶派贾法里教法学派（Ja\'fari）的创立者。除文化传统学问外，还精通化学、医学和天文学——被尊为贾比尔·伊本·哈扬（"化学之父"）的导师。在政治最动荡的倭马亚-阿拔斯交替期，以学术传教而非政治斗争延续伊玛目传统。',
+      coreTeaching: '知识是先知家族最重要的遗产。萨迪克不仅传授文化传统知识，还鼓励自然科学研究——认为认识真主的创造也是崇拜的方式。什叶派教法（贾法里法学派）的核心框架由他奠定。',
       achievements: '什叶派第六任伊玛目，贾法里教法学派创立者。四大逊尼派伊玛目中有二人（阿布·哈尼法、马立克）曾受教于他。精通化学/医学/天文学。培养大量学者，奠定什叶派学术传统。',
       templeNames: [
         { name: '麦地那巴基公墓', nameEn: "Jannat al-Baqi'", role: '安葬之地', location: '沙特阿拉伯麦地那' },
@@ -4585,16 +4585,16 @@ async function main() {
       name: '阿里·里达', nameEn: 'Ali al-Ridha', religionId: islamId,
       dates: '765-818', title: '第八伊玛目·满意者', school: '什叶派伊玛目', generation: 4,
       teacherId: null,
-      biography: '阿里·里达（Ali al-Ridha），什叶派第八任伊玛目，号"满意者"（al-Ridha）。阿拔斯王朝哈里发马蒙试图通过册封阿里·里达为继承人来调和逊尼-什叶矛盾。里达被迫接受但预言自己不会继位。818年在前往巴格达途中于图斯（今马什哈德）去世，什叶派认为是被马蒙毒杀。其陵墓（马什哈德伊玛目里达圣陵）是伊朗最神圣的朝圣地，也是全球最大的清真寺建筑群之一，每年接待超过2000万朝圣者。',
-      coreTeaching: '信仰与理性并行。里达以博学和辩论闻名——曾与基督教、犹太教、琐罗亚斯德教学者进行著名的宗教间对话。主张通过理性论证而非强迫来传达信仰。',
-      achievements: '什叶派第八任伊玛目。马什哈德圣陵为全球最大清真寺建筑群之一（年2000万+朝圣者）。以宗教间对话和博学闻名。被阿拔斯哈里发马蒙册封为继承人（唯一一位）。',
+      biography: '阿里·里达（Ali al-Ridha），什叶派第八任伊玛目，号"满意者"（al-Ridha）。阿拔斯王朝哈里发马蒙试图通过册封阿里·里达为继承人来调和逊尼-什叶矛盾。里达被迫接受但预言自己不会继位。818年在前往巴格达途中于图斯（今马什哈德）去世，什叶派认为是被马蒙毒杀。其陵墓（马什哈德伊玛目里达圣陵）是伊朗最神圣的文化探访地，也是全球最大的清真寺建筑群之一，每年接待超过2000万文化探访者。',
+      coreTeaching: '人文精神与理性并行。里达以博学和辩论闻名——曾与基督文化、犹太文化、琐罗亚斯德教学者进行著名的文化传统间对话。主张通过理性论证而非强迫来传达人文精神。',
+      achievements: '什叶派第八任伊玛目。马什哈德圣陵为全球最大清真寺建筑群之一（年2000万+文化探访者）。以文化传统间对话和博学闻名。被阿拔斯哈里发马蒙册封为继承人（唯一一位）。',
       templeNames: [
         { name: '伊玛目里达圣陵', nameEn: 'Imam Reza Shrine', role: '全球最大清真寺建筑群之一', location: '伊朗马什哈德' },
       ],
       koans: [
-        { title: '宗教间对话', description: '马蒙邀请各宗教学者辩论。里达对犹太教拉比引用《摩西五经》、对基督教主教引用《福音书》、对琐罗亚斯德教祭司引用《阿维斯塔》——以各教自身经典证明伊斯兰教的真理。学者们叹服其博学。' },
+        { title: '文化传统间对话', description: '马蒙邀请各文化传统学者辩论。里达对犹太文化拉比引用《摩西五经》、对基督文化主教引用《福音书》、对琐罗亚斯德教祭司引用《阿维斯塔》——以各教自身经典证明伊斯兰文化的真理。学者们叹服其博学。' },
       ],
-      classicQuotes: ['信仰是心灵的承认、口舌的表白、肢体的行动', '最好的人是对他人最有益的人'],
+      classicQuotes: ['人文精神是心灵的承认、口舌的表白、肢体的行动', '最好的人是对他人最有益的人'],
       works: [],
       imageUrl: null,
     },
@@ -4606,7 +4606,7 @@ async function main() {
       name: '布哈里', nameEn: 'Imam al-Bukhari', religionId: islamId,
       dates: '810-870', title: '圣训学泰斗', school: '学者与旅行家', generation: 1,
       teacherId: null,
-      biography: '穆罕默德·本·伊斯玛仪·布哈里（Al-Bukhari），伊斯兰教最伟大的圣训学家。生于布哈拉（今乌兹别克斯坦）。自幼记忆力惊人，十岁开始背诵圣训。游历中亚、阿拉伯、埃及、叙利亚十六年，搜集圣训。从约60万则传述中严格筛选出7275则编入《布哈里圣训实录》（Sahih al-Bukhari），被逊尼派穆斯林公认为仅次于古兰经的最权威经典。其筛选标准之严格——每则圣训的传述链中每个人的品德、记忆力、师承关系都必须经过验证。',
+      biography: '穆罕默德·本·伊斯玛仪·布哈里（Al-Bukhari），伊斯兰文化最伟大的圣训学家。生于布哈拉（今乌兹别克斯坦）。自幼记忆力惊人，十岁开始背诵圣训。游历中亚、阿拉伯、埃及、叙利亚十六年，搜集圣训。从约60万则传述中严格筛选出7275则编入《布哈里圣训实录》（Sahih al-Bukhari），被逊尼派穆斯林公认为仅次于古兰经的最权威经典。其筛选标准之严格——每则圣训的传述链中每个人的品德、记忆力、师承关系都必须经过验证。',
       coreTeaching: '圣训学的严格方法论——传述链（伊斯纳德）中每个传述人都必须是可靠的（正义/精确/无缺陷/无矛盾/无隐疾）。知识的传承必须有完整且可验证的链条。',
       achievements: '编纂《布哈里圣训实录》为逊尼派最权威的圣训集。从60万则传述中筛选7275则。建立圣训学严格的验证方法论。被尊为伊斯兰学术史上最伟大的圣训学家。',
       templeNames: [
@@ -4627,7 +4627,7 @@ async function main() {
       dates: '980-1037', title: '医学之父·万学之王', school: '学者与旅行家', generation: 2,
       teacherId: null,
       biography: '伊本·西那（Ibn Sina，拉丁名Avicenna），中世纪最伟大的博学家之一。生于布哈拉附近。十岁已精通古兰经，十八岁已掌握当时所有学科。著《医典》（Canon of Medicine）五卷，为中世纪欧亚最权威的医学教科书，在欧洲大学使用至17世纪。著《治愈之书》（Kitab al-Shifa）为百科全书式的哲学巨著，涵盖逻辑学、自然科学、数学、形而上学。提出的"飞人论证"（Flying Man argument）预示了笛卡尔的"我思故我在"。一生颠沛流离，在波斯各宫廷间辗转，但著作不辍。',
-      coreTeaching: '理性与信仰的和谐。伊本·西那融合亚里士多德哲学和伊斯兰神学——证明存在一个"必然存在者"（Wajib al-Wujud/真主）是所有可能存在者的终极原因。医学是最崇高的学问之一——治愈身体是服务真主创造的体现。',
+      coreTeaching: '理性与人文精神的和谐。伊本·西那融合亚里士多德哲学和伊斯兰神学——证明存在一个"必然存在者"（Wajib al-Wujud/真主）是所有可能存在者的终极原因。医学是最崇高的学问之一——治愈身体是服务真主创造的体现。',
       achievements: '中世纪最伟大的博学家之一。《医典》为欧亚大陆最权威医学教科书（使用至17世纪）。《治愈之书》为百科全书式哲学巨著。"飞人论证"预示笛卡尔。影响托马斯·阿奎那等西方哲学家。',
       templeNames: [
         { name: '伊本·西那陵墓', nameEn: 'Avicenna Mausoleum', role: '陵墓与纪念馆', location: '伊朗哈马丹' },
@@ -4647,8 +4647,8 @@ async function main() {
       name: '伊本·鲁世德', nameEn: 'Ibn Rushd (Averroes)', religionId: islamId,
       dates: '1126-1198', title: '亚里士多德注释家·理性之光', school: '学者与旅行家', generation: 3,
       teacherId: null,
-      biography: '伊本·鲁世德（Ibn Rushd，拉丁名Averroes），安达卢斯（西班牙穆斯林）最伟大的哲学家，被称为"注释家"（The Commentator），因其对亚里士多德著作的权威注释。生于科尔多瓦。担任法官和宫廷医生。著《矛盾的矛盾》（Tahafut al-Tahafut）反驳安萨里对哲学的批判，捍卫理性思辨在伊斯兰教中的地位。其亚里士多德注释被翻译成拉丁文和希伯来文，对欧洲中世纪经院哲学（特别是托马斯·阿奎那）产生决定性影响，被称为"欧洲启蒙运动的隐秘催化剂"。',
-      coreTeaching: '真理不会自相矛盾——哲学（理性）和宗教（启示）是认识同一真理的两种途径。理性思辨不是信仰的敌人，而是信仰的盟友。伊本·鲁世德主张"双重真理"——哲学和宗教各有各的论述方式，但指向同一真理。',
+      biography: '伊本·鲁世德（Ibn Rushd，拉丁名Averroes），安达卢斯（西班牙穆斯林）最伟大的哲学家，被称为"注释家"（The Commentator），因其对亚里士多德著作的权威注释。生于科尔多瓦。担任法官和宫廷医生。著《矛盾的矛盾》（Tahafut al-Tahafut）反驳安萨里对哲学的批判，捍卫理性思辨在伊斯兰文化中的地位。其亚里士多德注释被翻译成拉丁文和希伯来文，对欧洲中世纪经院哲学（特别是托马斯·阿奎那）产生决定性影响，被称为"欧洲启蒙运动的隐秘催化剂"。',
+      coreTeaching: '真理不会自相矛盾——哲学（理性）和文化传统（启示）是认识同一真理的两种途径。理性思辨不是人文精神的敌人，而是人文精神的盟友。伊本·鲁世德主张"双重真理"——哲学和文化传统各有各的论述方式，但指向同一真理。',
       achievements: '安达卢斯最伟大的哲学家。对亚里士多德的权威注释影响整个欧洲中世纪哲学。著《矛盾的矛盾》捍卫理性。直接影响托马斯·阿奎那和欧洲经院哲学。被称为"欧洲启蒙运动的隐秘催化剂"。',
       templeNames: [
         { name: '科尔多瓦大清真寺', nameEn: 'Mosque-Cathedral of Córdoba', role: '安达卢斯伊斯兰文明象征', location: '西班牙科尔多瓦' },
@@ -4656,7 +4656,7 @@ async function main() {
       koans: [],
       classicQuotes: ['无知导致恐惧，恐惧导致仇恨，仇恨导致暴力——这是等式', '如果你想控制人民，让他们无知'],
       works: [
-        { title: '矛盾的矛盾（Tahafut al-Tahafut）', description: '反驳安萨里，捍卫理性在伊斯兰教中的地位' },
+        { title: '矛盾的矛盾（Tahafut al-Tahafut）', description: '反驳安萨里，捍卫理性在伊斯兰文化中的地位' },
         { title: '亚里士多德注释全集', description: '对亚里士多德主要著作的三层注释（简/中/详）' },
       ],
       imageUrl: null,
@@ -4689,15 +4689,15 @@ async function main() {
       name: '伊本·白图泰', nameEn: 'Ibn Battuta', religionId: islamId,
       dates: '1304-1369', title: '中世纪最伟大旅行家', school: '学者与旅行家', generation: 5,
       teacherId: null,
-      biography: '伊本·白图泰（Ibn Battuta），中世纪世界最伟大的旅行家。生于摩洛哥丹吉尔。1325年（21岁）出发前往麦加朝圣，此后29年间走遍已知世界——北非、中东、东非、中亚、印度、中国、东南亚、西非、安达卢斯，总行程约12万公里（是马可·波罗的三倍）。到访约40个现代国家。曾在印度担任德里苏丹国法官七年，在马尔代夫担任法官。归国后口述《旅行记》（Rihla），为14世纪伊斯兰世界和亚非各国最珍贵的第一手记录。',
-      coreTeaching: '旅行是最好的学习。伊本·白图泰展示了14世纪伊斯兰文明的广袤——从摩洛哥到中国，穆斯林旅行者可以凭借共同信仰和法律知识在整个伊斯兰世界畅行无阻。"旅行——它会给你一个你无法从别处获得的故事。"',
+      biography: '伊本·白图泰（Ibn Battuta），中世纪世界最伟大的旅行家。生于摩洛哥丹吉尔。1325年（21岁）出发前往麦加文化探访，此后29年间走遍已知世界——北非、中东、东非、中亚、印度、中国、东南亚、西非、安达卢斯，总行程约12万公里（是马可·波罗的三倍）。到访约40个现代国家。曾在印度担任德里苏丹国法官七年，在马尔代夫担任法官。归国后口述《旅行记》（Rihla），为14世纪伊斯兰世界和亚非各国最珍贵的第一手记录。',
+      coreTeaching: '旅行是最好的学习。伊本·白图泰展示了14世纪伊斯兰文明的广袤——从摩洛哥到中国，穆斯林旅行者可以凭借共同人文精神和法律知识在整个伊斯兰世界畅行无阻。"旅行——它会给你一个你无法从别处获得的故事。"',
       achievements: '中世纪世界最伟大的旅行家。29年行程12万公里，到访约40个现代国家。《旅行记》为14世纪亚非世界最珍贵的第一手记录。比马可·波罗走得更远、记录更详实。被联合国教科文组织列为文化遗产。',
       templeNames: [
         { name: '伊本·白图泰纪念馆', nameEn: 'Ibn Battuta Memorial', role: '故乡纪念', location: '摩洛哥丹吉尔' },
         { name: '伊本·白图泰购物中心', nameEn: 'Ibn Battuta Mall', role: '以其旅行为主题的文化地标', location: '阿联酋迪拜' },
       ],
       koans: [
-        { title: '出发', description: '21岁的白图泰离开丹吉尔去麦加朝圣——这一走就是29年。他说："旅行首先让你无言，然后让你变成一个讲故事的人。"' },
+        { title: '出发', description: '21岁的白图泰离开丹吉尔去麦加文化探访——这一走就是29年。他说："旅行首先让你无言，然后让你变成一个讲故事的人。"' },
       ],
       classicQuotes: ['旅行——它让你无言，然后把你变成一个讲故事的人', '他所游历之地既广又远，足以使大地为之骄傲'],
       works: [
@@ -4713,7 +4713,7 @@ async function main() {
       dates: '1877-1938', title: '东方诗哲·巴基斯坦精神之父', school: '学者与旅行家', generation: 6,
       teacherId: null,
       biography: '穆罕默德·伊克巴勒（Muhammad Iqbal），南亚最伟大的穆斯林诗人和哲学家，被尊为"巴基斯坦精神之父"。生于旁遮普锡亚尔科特。留学剑桥和慕尼黑获哲学博士。以乌尔都语和波斯语写就的诗歌融合苏菲灵性和现代哲学——重新诠释鲁米的精神遗产，呼唤穆斯林世界的自我觉醒（Khudi/自我）。1930年在全印穆斯林联盟演讲中首次提出建立独立穆斯林国家的构想，为巴基斯坦建国奠定思想基础。其诗歌和思想至今是巴基斯坦和南亚穆斯林的精神支柱。',
-      coreTeaching: '自我（Khudi）哲学——人的使命是通过不断的努力和奋斗完善自我，最终成为真主在大地上的代理人（哈里发）。拒绝宿命论——伊斯兰教不是被动的顺从，而是积极的创造。重新诠释鲁米——将苏菲的"消融于真主"改为"在真主面前挺立自我"。',
+      coreTeaching: '自我（Khudi）哲学——人的使命是通过不断的努力和奋斗完善自我，最终成为真主在大地上的代理人（哈里发）。拒绝宿命论——伊斯兰文化不是被动的顺从，而是积极的创造。重新诠释鲁米——将苏菲的"消融于真主"改为"在真主面前挺立自我"。',
       achievements: '南亚最伟大的穆斯林诗人和哲学家。"巴基斯坦精神之父"，为巴基斯坦建国奠定思想基础。融合苏菲灵性和现代哲学。以乌尔都语和波斯语诗歌呼唤穆斯林世界觉醒。被巴基斯坦尊为国父级人物。',
       templeNames: [
         { name: '伊克巴勒陵墓', nameEn: 'Tomb of Iqbal', role: '伊克巴勒长眠之地', location: '巴基斯坦拉合尔巴德沙希清真寺旁' },
@@ -4724,7 +4724,7 @@ async function main() {
       works: [
         { title: '自我的秘密（Asrar-i-Khudi）', description: '波斯语长诗，论自我（Khudi）哲学' },
         { title: '东方讯息（Payam-i-Mashriq）', description: '对歌德《西东诗集》的回应' },
-        { title: '伊斯兰教中宗教思想的重建', description: '英文哲学讲座集，融合伊斯兰与现代哲学' },
+        { title: '伊斯兰文化中宗教思想的重建', description: '英文哲学讲座集，融合伊斯兰与现代哲学' },
       ],
       imageUrl: null,
     },
@@ -4733,7 +4733,7 @@ async function main() {
   const islamCount = 23; // 23 new + 2 updated
   console.log(`  ✓ ${islamCount} new Islamic patriarchs created + 2 updated (5 schools: Rashidun/Madhab/Sufi/Shia/Scholars)`);
 
-  // ── 4m. 基督教先贤 (Christian Patriarchs/Saints) ──
+  // ── 4m. 基督文化先贤 (Christian Patriarchs/Saints) ──
   console.log('  Creating Christian patriarchs (4m)...');
 
   const christianityId = religionMap['christianity'];
@@ -4749,9 +4749,9 @@ async function main() {
           title: '救世主·神之子·人子',
           school: '耶稣与使徒',
           generation: 1,
-          biography: '耶稣基督（Jesus Christ），基督教创立者，被基督徒尊为神之子、弥赛亚（救世主）。约公元前4年生于伯利恒，在拿撒勒长大。约30岁时受施洗约翰洗礼后开始公开传道，宣讲天国的福音——神的国度已经临近。拣选十二使徒，以比喻和神迹教导民众。核心教导：爱神爱人、宽恕仇敌、怜悯穷人。约公元30年在耶路撒冷被罗马总督彼拉多判处十字架刑，三日后从死里复活，四十日后升天。基督徒相信耶稣的死与复活完成了对人类罪的救赎。其教导记载于《新约》四福音书。全球约24亿基督徒以其为信仰中心。',
+          biography: '耶稣基督（Jesus Christ），基督文化创立者，被基督徒尊为神之子、弥赛亚（救世主）。约公元前4年生于伯利恒，在拿撒勒长大。约30岁时受施洗约翰洗礼后开始公开传道，宣讲天国的福音——神的国度已经临近。拣选十二使徒，以比喻和神迹教导民众。核心教导：爱神爱人、宽恕仇敌、怜悯穷人。约公元30年在耶路撒冷被罗马总督彼拉多判处十字架刑，三日后从死里复活，四十日后升天。基督徒相信耶稣的死与复活完成了对人类罪的救赎。其教导记载于《新约》四福音书。全球约24亿基督徒以其为人文精神中心。',
           coreTeaching: '爱神与爱人是一切律法的总纲。"你要尽心、尽性、尽意爱主你的神。其次也相仿，就是要爱人如己。"登山宝训是基督伦理的核心——虚心、哀恸、温柔、慕义、怜恤、清心、使人和睦。十字架的救赎——"神爱世人，甚至将他的独生子赐给他们，叫一切信他的不至灭亡，反得永生。"(约3:16)',
-          achievements: '基督教创立者。其教导改变了人类历史的走向。十字架和复活成为基督教信仰核心。《新约》四福音书记录其言行。全球24亿基督徒的信仰中心。公元纪年以其诞生为分界。深刻影响西方文明的伦理、法律、艺术、哲学。',
+          achievements: '基督文化创立者。其教导改变了人类历史的走向。十字架和复活成为基督文化人文精神核心。《新约》四福音书记录其言行。全球24亿基督徒的人文精神中心。公元纪年以其诞生为分界。深刻影响西方文明的伦理、法律、艺术、哲学。',
           templeNames: [
             { name: '圣墓教堂', nameEn: 'Church of the Holy Sepulchre', role: '耶稣受难与复活之地', location: '以色列耶路撒冷' },
             { name: '主诞堂', nameEn: 'Church of the Nativity', role: '耶稣诞生之地', location: '巴勒斯坦伯利恒' },
@@ -4771,8 +4771,8 @@ async function main() {
         data: {
           name: '耶稣基督', nameEn: 'Jesus Christ', religionId: christianityId,
           dates: '前4-30', title: '救世主·神之子', school: '耶稣与使徒', generation: 1,
-          biography: '基督教创立者。', coreTeaching: '爱神爱人。',
-          achievements: '基督教创立者。', imageUrl: null,
+          biography: '基督文化创立者。', coreTeaching: '爱神爱人。',
+          achievements: '基督文化创立者。', imageUrl: null,
         },
       });
 
@@ -4784,12 +4784,12 @@ async function main() {
         data: {
           nameEn: 'Apostle Paul',
           dates: '5-67',
-          title: '外邦人使徒·基督教神学奠基者',
+          title: '外邦人使徒·基督文化神学奠基者',
           school: '耶稣与使徒',
           generation: 3,
-          biography: '使徒保罗（Apostle Paul），原名扫罗（Saul），出生于基利家的大数（今土耳其），罗马公民，法利赛人。初为迫害基督徒的急先锋。约公元33年在大马士革路上遇见复活的耶稣，经历戏剧性归信。此后三次宣教旅行，横跨小亚细亚、希腊、罗马帝国，建立大量教会。著书信十三封（或更多），占《新约》近半篇幅，系统阐述因信称义、恩典救赎、基督的身体（教会论）等核心教义。将基督教从犹太教的一个分支发展为面向全人类的普世宗教。约公元67年在罗马殉道。',
+          biography: '使徒保罗（Apostle Paul），原名扫罗（Saul），出生于基利家的大数（今土耳其），罗马公民，法利赛人。初为迫害基督徒的急先锋。约公元33年在大马士革路上遇见复活的耶稣，经历戏剧性归信。此后三次宣教旅行，横跨小亚细亚、希腊、罗马帝国，建立大量教会。著书信十三封（或更多），占《新约》近半篇幅，系统阐述因信称义、恩典救赎、基督的身体（教会论）等核心教义。将基督文化从犹太文化的一个分支发展为面向全人类的普世文化传统。约公元67年在罗马殉道。',
           coreTeaching: '因信称义——人不是靠遵守律法而是靠信耶稣基督而被神称为义人。"如今常存的有信，有望，有爱，这三样，其中最大的是爱。"(林前13:13) 恩典神学——救赎是神白白的恩赐，不是人的功德所能赚取。',
-          achievements: '将基督教从犹太教分支发展为普世宗教。三次宣教旅行横跨罗马帝国。著新约书信十三封，系统阐述基督教核心教义。"因信称义"学说影响整个基督教神学史。被称为"基督教真正的创建者"。',
+          achievements: '将基督文化从犹太文化分支发展为普世文化传统。三次宣教旅行横跨罗马帝国。著新约书信十三封，系统阐述基督文化核心教义。"因信称义"学说影响整个基督文化神学史。被称为"基督文化真正的创建者"。',
           templeNames: [
             { name: '城外圣保禄大殿', nameEn: 'Basilica of Saint Paul Outside the Walls', role: '保罗殉道埋葬之地', location: '意大利罗马' },
             { name: '大马士革直街', nameEn: 'Straight Street, Damascus', role: '保罗归信之地', location: '叙利亚大马士革' },
@@ -4799,7 +4799,7 @@ async function main() {
           ],
           classicQuotes: ['如今常存的有信、有望、有爱，其中最大的是爱', '我活着就是基督，我死了就有益处', '我什么时候软弱，什么时候就刚强了', '忘记背后，努力面前，向着标杆直跑'],
           works: [
-            { title: '罗马书', description: '因信称义的系统神学论述，基督教神学基石' },
+            { title: '罗马书', description: '因信称义的系统神学论述，基督文化神学基石' },
             { title: '哥林多前后书', description: '教会伦理与爱的颂歌' },
             { title: '加拉太书', description: '基督徒自由宣言' },
           ],
@@ -4815,7 +4815,7 @@ async function main() {
       dates: '?-64', title: '首任教宗·磐石', school: '耶稣与使徒', generation: 2,
       teacherId: jesus.id,
       biography: '使徒彼得（Apostle Peter），原名西门，加利利渔夫。耶稣最早呼召的门徒之一，十二使徒之首。耶稣称他为"矶法"（磐石），说"我要把我的教会建造在这磐石上"(太16:18)。性格冲动热忱——曾在海面上行走，也曾三次否认耶稣。五旬节后成为耶路撒冷教会领袖，一次讲道三千人受洗。后前往罗马传道。约公元64年在尼禄迫害中被倒钉十字架殉道（自认不配与耶稣同样方式受死）。天主教传统视其为首任教宗，梵蒂冈圣彼得大教堂建于其墓地之上。',
-      coreTeaching: '信仰的根基是认耶稣为基督。"你是基督，是永生神的儿子"——彼得的信仰告白成为教会信仰的磐石。即使软弱跌倒，真诚悔改后仍可被恢复使用。',
+      coreTeaching: '人文精神的根基是认耶稣为基督。"你是基督，是永生神的儿子"——彼得的人文精神告白成为教会人文精神的磐石。即使软弱跌倒，真诚悔改后仍可被恢复使用。',
       achievements: '十二使徒之首，天主教首任教宗。五旬节讲道三千人受洗。在罗马建立教会。倒钉十字架殉道。梵蒂冈圣彼得大教堂建于其墓地上。',
       templeNames: [
         { name: '圣彼得大教堂', nameEn: "St. Peter's Basilica", role: '彼得墓地上建造的大教堂', location: '梵蒂冈' },
@@ -4839,7 +4839,7 @@ async function main() {
       teacherId: jesus.id,
       biography: '使徒约翰（Apostle John），加利利渔夫，雅各的兄弟，十二使徒之一。被称为"耶稣所爱的那门徒"。在十字架下接受耶稣托付照顾其母亲马利亚。著《约翰福音》以独特的神学视角呈现耶稣——"太初有道，道与神同在，道就是神"(约1:1)。著《约翰一二三书》强调"神就是爱"。晚年被流放到拔摩岛，在那里获得异象著《启示录》。是十二使徒中唯一寿终正寝的（约100岁）。教会传统认为他在以弗所终老。',
       coreTeaching: '神就是爱。"我们爱，因为神先爱我们。"(约一4:19) 约翰的核心信息是：认识神即是认识爱，不爱人的不认识神。道成肉身——永恒的道（Logos）成为肉身住在人间，充充满满有恩典有真理。',
-      achievements: '著《约翰福音》——最具神学深度的福音书。著《启示录》——基督教末世论经典。"神就是爱"成为基督教信仰核心表述。十二使徒中唯一寿终正寝者。',
+      achievements: '著《约翰福音》——最具神学深度的福音书。著《启示录》——基督文化末世论经典。"神就是爱"成为基督文化人文精神核心表述。十二使徒中唯一寿终正寝者。',
       templeNames: [
         { name: '圣约翰教堂(以弗所)', nameEn: 'Basilica of St. John', role: '约翰终老之地', location: '土耳其以弗所' },
         { name: '拔摩岛启示洞', nameEn: 'Cave of the Apocalypse', role: '启示录写作之地', location: '希腊拔摩岛' },
@@ -4850,7 +4850,7 @@ async function main() {
       classicQuotes: ['太初有道，道与神同在，道就是神', '神就是爱', '我们爱，因为神先爱我们', '你们必晓得真理，真理必叫你们得以自由'],
       works: [
         { title: '约翰福音', description: '最具神学深度的福音书，"道成肉身"神学' },
-        { title: '启示录', description: '基督教末世论经典，拔摩岛异象' },
+        { title: '启示录', description: '基督文化末世论经典，拔摩岛异象' },
         { title: '约翰一二三书', description: '"神就是爱"的核心阐述' },
       ],
       imageUrl: null,
@@ -4863,9 +4863,9 @@ async function main() {
       name: '抹大拉的马利亚', nameEn: 'Mary Magdalene', religionId: christianityId,
       dates: '1世纪', title: '复活首位见证者·使徒的使徒', school: '耶稣与使徒', generation: 5,
       teacherId: jesus.id,
-      biography: '抹大拉的马利亚（Mary Magdalene），耶稣最忠诚的女性追随者。福音书记载耶稣曾从她身上赶出七个鬼。此后她成为跟随耶稣的女性门徒团体的核心成员。十字架下，当大多数男性门徒逃散时，马利亚忠守至最后。更关键的是——她是耶稣复活后最先看见他的人。复活的耶稣委托她去告诉其他门徒这个消息，因此东正教尊她为"使徒的使徒"（Apostola Apostolorum）。她在基督教历史中代表了忠诚、勇气和女性在信仰中的核心角色。',
-      coreTeaching: '忠诚与勇气超越一切恐惧。当门徒逃散时，马利亚留在十字架下。复活的首位见证——证明信仰中女性与男性拥有同等的属灵地位和使命。',
-      achievements: '耶稣复活的首位见证者。东正教尊为"使徒的使徒"。十字架下最忠诚的追随者。代表女性在基督教信仰中的核心角色。被天主教、东正教、新教共同纪念。',
+      biography: '抹大拉的马利亚（Mary Magdalene），耶稣最忠诚的女性追随者。福音书记载耶稣曾从她身上赶出七个鬼。此后她成为跟随耶稣的女性门徒团体的核心成员。十字架下，当大多数男性门徒逃散时，马利亚忠守至最后。更关键的是——她是耶稣复活后最先看见他的人。复活的耶稣委托她去告诉其他门徒这个消息，因此东正教尊她为"使徒的使徒"（Apostola Apostolorum）。她在基督文化历史中代表了忠诚、勇气和女性在人文精神中的核心角色。',
+      coreTeaching: '忠诚与勇气超越一切恐惧。当门徒逃散时，马利亚留在十字架下。复活的首位见证——证明人文精神中女性与男性拥有同等的属灵地位和使命。',
+      achievements: '耶稣复活的首位见证者。东正教尊为"使徒的使徒"。十字架下最忠诚的追随者。代表女性在基督文化人文精神中的核心角色。被天主教、东正教、新教共同纪念。',
       templeNames: [
         { name: '圣抹大拉教堂', nameEn: 'Church of Saint Mary Magdalene', role: '纪念马利亚', location: '以色列耶路撒冷橄榄山' },
       ],
@@ -4882,11 +4882,11 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '使徒多马', nameEn: 'Apostle Thomas', religionId: christianityId,
-      dates: '?-72', title: '印度基督教开创者·疑惑者', school: '耶稣与使徒', generation: 6,
+      dates: '?-72', title: '印度基督文化开创者·疑惑者', school: '耶稣与使徒', generation: 6,
       teacherId: jesus.id,
-      biography: '使徒多马（Apostle Thomas），又称"双生子"（Didymus），十二使徒之一。以复活后的怀疑闻名——他要求亲手触摸耶稣的钉痕才肯相信，耶稣满足了他的要求后，多马发出信仰最高的告白："我的主！我的神！"传统记载多马约公元52年到达印度马拉巴尔海岸传教，在印度南部建立七个教会，成为印度基督教的开创者（圣多马基督徒至今有数百万）。约公元72年在印度金奈（马德拉斯）殉道。',
-      coreTeaching: '怀疑可以通向更深的信仰。多马不是盲目否认，而是诚实地表达疑惑——耶稣不是责备他，而是回应他的需要。"那没有看见就信的有福了"——但看见后信的也是信。',
-      achievements: '将基督教传入印度的第一人。约公元52年到达马拉巴尔海岸。在印度南部建立七座教会。印度圣多马基督徒（数百万）视其为始祖。"我的主我的神"为最高信仰告白。',
+      biography: '使徒多马（Apostle Thomas），又称"双生子"（Didymus），十二使徒之一。以复活后的怀疑闻名——他要求亲手触摸耶稣的钉痕才肯相信，耶稣满足了他的要求后，多马发出人文精神最高的告白："我的主！我的神！"传统记载多马约公元52年到达印度马拉巴尔海岸传教，在印度南部建立七个教会，成为印度基督文化的开创者（圣多马基督徒至今有数百万）。约公元72年在印度金奈（马德拉斯）殉道。',
+      coreTeaching: '怀疑可以通向更深的人文精神。多马不是盲目否认，而是诚实地表达疑惑——耶稣不是责备他，而是回应他的需要。"那没有看见就信的有福了"——但看见后信的也是信。',
+      achievements: '将基督文化传入印度的第一人。约公元52年到达马拉巴尔海岸。在印度南部建立七座教会。印度圣多马基督徒（数百万）视其为始祖。"我的主我的神"为最高人文精神告白。',
       templeNames: [
         { name: '圣多马大教堂', nameEn: 'San Thome Basilica', role: '多马殉道安葬之地', location: '印度金奈' },
         { name: '圣多马山', nameEn: 'St. Thomas Mount', role: '多马殉道之地', location: '印度金奈' },
@@ -4911,9 +4911,9 @@ async function main() {
           title: '恩典博士·西方教会之父',
           school: '教父与神学家',
           generation: 1,
-          biography: '奥古斯丁（Augustine of Hippo），基督教最具影响力的神学家之一，西方教会四大博士之一。生于北非塔加斯特（今阿尔及利亚），母亲莫妮加是虔诚基督徒。年轻时放荡不羁，信奉摩尼教，后转向新柏拉图主义。387年在米兰受安布罗修主教影响归信基督教，听见童声"拿起来读"后翻开圣经读到罗马书，豁然醒悟。著《忏悔录》为西方文学第一部自传，以极其坦诚的文字记录灵性转变。著《上帝之城》回应罗马陷落的神学危机——论述人间之城与上帝之城的对立。其恩典神学（原罪、预定、不可抗拒的恩典）深刻塑造了天主教和新教的神学传统。',
+          biography: '奥古斯丁（Augustine of Hippo），基督文化最具影响力的神学家之一，西方教会四大博士之一。生于北非塔加斯特（今阿尔及利亚），母亲莫妮加是虔诚基督徒。年轻时放荡不羁，信奉摩尼教，后转向新柏拉图主义。387年在米兰受安布罗修主教影响归信基督文化，听见童声"拿起来读"后翻开圣经读到罗马书，豁然醒悟。著《忏悔录》为西方文学第一部自传，以极其坦诚的文字记录灵性转变。著《上帝之城》回应罗马陷落的神学危机——论述人间之城与上帝之城的对立。其恩典神学（原罪、预定、不可抗拒的恩典）深刻塑造了天主教和新教的神学传统。',
           coreTeaching: '你为自己创造了我们，我们的心不安息，直到安息在你里面。恩典先于一切人的功德——人无法靠自己的力量得救，唯有神的恩典。原罪论——人因亚当的堕落而生来就有罪性。预定论的雏形——得救完全出于神的拣选。',
-          achievements: '西方教会最伟大的神学家之一。著《忏悔录》为西方第一部心灵自传。著《上帝之城》为基督教历史神学奠基。恩典神学深刻影响天主教和新教。原罪论和预定论的系统阐述者。影响马丁·路德和加尔文的宗教改革。',
+          achievements: '西方教会最伟大的神学家之一。著《忏悔录》为西方第一部心灵自传。著《上帝之城》为基督文化历史神学奠基。恩典神学深刻影响天主教和新教。原罪论和预定论的系统阐述者。影响马丁·路德和加尔文的宗教改革。',
           templeNames: [
             { name: '圣奥古斯丁教堂', nameEn: 'Basilica of San Pietro in Ciel d\'Oro', role: '奥古斯丁遗骸所在', location: '意大利帕维亚' },
             { name: '希波(安纳巴)', nameEn: 'Hippo Regius', role: '奥古斯丁主教座所在地', location: '阿尔及利亚安纳巴' },
@@ -4921,10 +4921,10 @@ async function main() {
           koans: [
             { title: '拿起来读', description: '米兰花园中，奥古斯丁听见邻家童声反复说"拿起来读，拿起来读"(Tolle, lege)。他拿起圣经随手翻开，读到罗马书13:13-14"不可荒宴醉酒…总要披戴主耶稣基督"。立刻平安充满心中——"一切疑惑的阴影顿时消散"。' },
           ],
-          classicQuotes: ['你为自己创造了我们，我们的心不安息，直到安息在你里面', '信仰是相信我们所不见的，而信仰的回报是看见我们所相信的', '拿起来读，拿起来读'],
+          classicQuotes: ['你为自己创造了我们，我们的心不安息，直到安息在你里面', '人文精神是相信我们所不见的，而人文精神的回报是看见我们所相信的', '拿起来读，拿起来读'],
           works: [
             { title: '忏悔录（Confessions）', description: '西方文学第一部心灵自传' },
-            { title: '上帝之城（City of God）', description: '基督教历史神学奠基之作' },
+            { title: '上帝之城（City of God）', description: '基督文化历史神学奠基之作' },
             { title: '论三位一体', description: '三一论系统神学' },
           ],
           imageUrl: null,
@@ -4938,17 +4938,17 @@ async function main() {
       name: '托马斯·阿奎那', nameEn: 'Thomas Aquinas', religionId: christianityId,
       dates: '1225-1274', title: '天使博士·经院哲学集大成者', school: '教父与神学家', generation: 2,
       teacherId: null,
-      biography: '托马斯·阿奎那（Thomas Aquinas），天主教最伟大的神学家和哲学家，多明我会修士。出身意大利贵族，家人曾囚禁他以阻止其出家。在巴黎和科隆师从大阿尔伯特。著《神学大全》（Summa Theologica）系统融合亚里士多德哲学与基督教神学，成为天主教官方神学体系的基石。提出"五路证明"论证上帝存在。区分自然理性与超自然信仰的领域——理性可以认识上帝的存在，但三位一体等教义需要信仰。1274年前往里昂公会议途中去世。1879年教宗利奥十三世宣布其学说为天主教哲学标准。',
-      coreTeaching: '信仰与理性和谐互补。自然理性可以认识上帝的存在（五路证明），但启示真理（三位一体、道成肉身）超越理性而不违反理性。恩典不废除自然，而是完善自然。',
-      achievements: '天主教最伟大的神学家。著《神学大全》为天主教官方神学体系基石。提出上帝存在的"五路证明"。融合亚里士多德哲学与基督教信仰。1879年被定为天主教哲学标准。被封为教会博士。',
+      biography: '托马斯·阿奎那（Thomas Aquinas），天主教最伟大的神学家和哲学家，多明我会修士。出身意大利贵族，家人曾囚禁他以阻止其出家。在巴黎和科隆师从大阿尔伯特。著《神学大全》（Summa Theologica）系统融合亚里士多德哲学与基督文化神学，成为天主教官方神学体系的基石。提出"五路证明"论证上帝存在。区分自然理性与超自然文化传统的领域——理性可以认识上帝的存在，但三位一体等教义需要人文精神。1274年前往里昂公会议途中去世。1879年教宗利奥十三世宣布其学说为天主教哲学标准。',
+      coreTeaching: '人文精神与理性和谐互补。自然理性可以认识上帝的存在（五路证明），但启示真理（三位一体、道成肉身）超越理性而不违反理性。恩典不废除自然，而是完善自然。',
+      achievements: '天主教最伟大的神学家。著《神学大全》为天主教官方神学体系基石。提出上帝存在的"五路证明"。融合亚里士多德哲学与基督文化人文精神。1879年被定为天主教哲学标准。被封为教会博士。',
       templeNames: [
         { name: '雅各宾教堂', nameEn: 'Church of the Jacobins', role: '阿奎那遗骸所在', location: '法国图卢兹' },
       ],
       koans: [],
-      classicQuotes: ['恩典不废除自然，而是完善自然', '信仰的最终目的不是知道什么，而是认识谁', '对于相信的人，无需解释；对于不相信的人，无法解释'],
+      classicQuotes: ['恩典不废除自然，而是完善自然', '人文精神的最终目的不是知道什么，而是认识谁', '对于相信的人，无需解释；对于不相信的人，无法解释'],
       works: [
         { title: '神学大全（Summa Theologica）', description: '天主教神学体系的集大成之作' },
-        { title: '反异教大全（Summa contra Gentiles）', description: '以理性论证基督教真理' },
+        { title: '反异教大全（Summa contra Gentiles）', description: '以理性论证基督文化真理' },
       ],
       imageUrl: null,
     },
@@ -4959,8 +4959,8 @@ async function main() {
       name: '凯撒利亚的巴西尔', nameEn: 'Basil of Caesarea', religionId: christianityId,
       dates: '329-379', title: '伟大的巴西尔·东方修道之父', school: '教父与神学家', generation: 3,
       teacherId: null,
-      biography: '凯撒利亚的巴西尔（Basil the Great），东方教会三大教父之一（与拿先斯的格列高利、尼撒的格列高利并称"卡帕多细亚三杰"）。出身基督教名门（姐姐玛克丽娜、弟弟尼撒的格列高利皆为圣人）。创立东方修道院会规——强调集体修道生活（相对于埃及沙漠隐修），平衡祈祷与劳动，修道院应服务社会。建立"巴西利亚德"——中世纪最早的大型慈善综合体（医院、济贫所、旅店）。在三位一体论争中捍卫尼西亚信条。',
-      coreTeaching: '修道不是逃离世界，而是更好地服务世界。巴西尔创立的修道会规强调：祈祷与劳动并重，修道院应办学校、医院、济贫所。信仰必须通过慈善行动来表达。',
+      biography: '凯撒利亚的巴西尔（Basil the Great），东方教会三大教父之一（与拿先斯的格列高利、尼撒的格列高利并称"卡帕多细亚三杰"）。出身基督文化名门（姐姐玛克丽娜、弟弟尼撒的格列高利皆为圣人）。创立东方修道院会规——强调集体修道生活（相对于埃及沙漠隐修），平衡祈祷与劳动，修道院应服务社会。建立"巴西利亚德"——中世纪最早的大型慈善综合体（医院、济贫所、旅店）。在三位一体论争中捍卫尼西亚信条。',
+      coreTeaching: '修道不是逃离世界，而是更好地服务世界。巴西尔创立的修道会规强调：祈祷与劳动并重，修道院应办学校、医院、济贫所。人文精神必须通过慈善行动来表达。',
       achievements: '东方修道制度奠基人。创立集体修道会规（至今东正教修道院沿用）。建立最早的大型慈善综合体。捍卫三位一体正统教义。东方教会三大教父之一。',
       templeNames: [
         { name: '凯撒利亚', nameEn: 'Caesarea in Cappadocia', role: '巴西尔主教座', location: '土耳其开塞利' },
@@ -4982,7 +4982,7 @@ async function main() {
       teacherId: null,
       biography: '金口约翰（John Chrysostom），意为"金嘴"，因其无与伦比的雄辩才能而得名。安提阿人，曾为隐修士。后成为君士坦丁堡大主教（398-404）。以直言不讳批评权贵的奢侈腐败著称——甚至批评皇后尤多克西亚。两次被流放，最终在流放途中去世。其讲道词超过700篇存世，对《马太福音》和《保罗书信》的释经被视为教父时代的最高成就。被天主教和东正教共同尊为教会博士。',
       coreTeaching: '基督徒的生活应当是一篇活的讲道。批评只关注礼仪不关注穷人的伪善。"如果你不能在穷人身上认出基督，你也不能在圣杯中认出他。"',
-      achievements: '基督教历史上最伟大的布道家。700篇讲道存世。释经讲道的典范。以批评权贵的勇气著称。被天主教和东正教共同尊为教会博士。',
+      achievements: '基督文化历史上最伟大的布道家。700篇讲道存世。释经讲道的典范。以批评权贵的勇气著称。被天主教和东正教共同尊为教会博士。',
       templeNames: [
         { name: '圣索菲亚大教堂', nameEn: 'Hagia Sophia', role: '金口约翰主教座', location: '土耳其伊斯坦布尔' },
       ],
@@ -5003,7 +5003,7 @@ async function main() {
       teacherId: null,
       biography: '哲罗姆（Saint Jerome），西方教会四大博士之一。生于达尔马提亚（今克罗地亚）。精通拉丁文、希腊文、希伯来文。受教宗达马苏一世之命，将《圣经》从希伯来文和希腊文翻译为拉丁文，历时15年完成《武加大译本》（Vulgate）——此后一千年间西方教会使用的标准圣经。晚年隐居伯利恒洞窟继续翻译和注释工作。性格尖锐易怒，以笔战闻名，但学术成就无人能及。',
       coreTeaching: '不认识圣经就是不认识基督。哲罗姆一生致力于让人们以最准确的文字读到圣经原意。圣经翻译不是文字游戏，而是让神的话语活在每个时代。',
-      achievements: '翻译《武加大译本》为西方基督教世界使用千年的标准圣经。精通三种圣经语言（拉丁/希腊/希伯来）。多部圣经注释。西方教会四大博士之一。',
+      achievements: '翻译《武加大译本》为西方基督文化世界使用千年的标准圣经。精通三种圣经语言（拉丁/希腊/希伯来）。多部圣经注释。西方教会四大博士之一。',
       templeNames: [
         { name: '伯利恒主诞堂', nameEn: 'Church of the Nativity', role: '哲罗姆隐居译经之洞窟', location: '巴勒斯坦伯利恒' },
       ],
@@ -5022,7 +5022,7 @@ async function main() {
       dates: '210-258', title: '教会合一之父', school: '教父与神学家', generation: 6,
       teacherId: null,
       biography: '西普里安（Cyprian），迦太基主教，早期教会最重要的拉丁教父之一。原为异教修辞学教师和富人，中年归信后散尽家财。在德西乌斯迫害（250年）和瓦勒良迫害（258年）期间领导北非教会。提出"教会之外无救恩"的著名论点。著《论教会的合一》强调主教制度是教会合一的保障。258年在迦太基殉道，成为北非教会最受尊敬的殉道者之一。',
-      coreTeaching: '不以教会为母者，不能以上帝为父。教会的合一建立在主教的合一之上。在逼迫面前，基督徒应当坚守信仰，但对软弱跌倒者也应给予悔改复和的机会。',
+      coreTeaching: '不以教会为母者，不能以上帝为父。教会的合一建立在主教的合一之上。在逼迫面前，基督徒应当坚守人文精神，但对软弱跌倒者也应给予悔改复和的机会。',
       achievements: '早期拉丁教会最重要的教父之一。"教会之外无救恩"论点影响深远。著《论教会的合一》奠定教会论基础。迦太基殉道者。推动教会对叛教者的接纳政策。',
       templeNames: [],
       koans: [],
@@ -5041,9 +5041,9 @@ async function main() {
       name: '马丁·路德', nameEn: 'Martin Luther', religionId: christianityId,
       dates: '1483-1546', title: '宗教改革发起者·因信称义', school: '宗教改革家', generation: 1,
       teacherId: null,
-      biography: '马丁·路德（Martin Luther），德国奥古斯丁会修士，基督教新教宗教改革的发起者。1517年10月31日在维滕贝格城堡教堂门口张贴《九十五条论纲》，抗议天主教会出售赎罪券。在沃尔姆斯帝国议会上面对皇帝和教宗的压力，宣称"这是我的立场，我别无选择"。被教宗逐出教会后，在瓦尔特堡将《新约》翻译为德语（仅用11周），使圣经走入普通德国人手中。其改革引发了基督教世界最深刻的分裂，同时也是欧洲现代化的重要推动力。',
-      coreTeaching: '唯独信仰（Sola Fide）、唯独恩典（Sola Gratia）、唯独圣经（Sola Scriptura）。人不是靠行为称义，而是靠信心接受神白白的恩典。圣经是信仰唯一的权威，高于教宗和教会传统。',
-      achievements: '基督教新教宗教改革发起者。1517年发表《九十五条论纲》。将圣经翻译为德语（现代德语的奠基之作）。提出"三个唯独"（信仰/恩典/圣经）。改变了欧洲和世界历史进程。今全球约9亿新教徒源于此改革。',
+      biography: '马丁·路德（Martin Luther），德国奥古斯丁会修士，基督文化新教宗教改革的发起者。1517年10月31日在维滕贝格城堡教堂门口张贴《九十五条论纲》，抗议天主教会出售赎罪券。在沃尔姆斯帝国议会上面对皇帝和教宗的压力，宣称"这是我的立场，我别无选择"。被教宗逐出教会后，在瓦尔特堡将《新约》翻译为德语（仅用11周），使圣经走入普通德国人手中。其改革引发了基督文化世界最深刻的分裂，同时也是欧洲现代化的重要推动力。',
+      coreTeaching: '唯独人文精神（Sola Fide）、唯独恩典（Sola Gratia）、唯独圣经（Sola Scriptura）。人不是靠行为称义，而是靠信心接受神白白的恩典。圣经是人文精神唯一的权威，高于教宗和教会传统。',
+      achievements: '基督文化新教宗教改革发起者。1517年发表《九十五条论纲》。将圣经翻译为德语（现代德语的奠基之作）。提出"三个唯独"（人文精神/恩典/圣经）。改变了欧洲和世界历史进程。今全球约9亿新教徒源于此改革。',
       templeNames: [
         { name: '维滕贝格城堡教堂', nameEn: 'All Saints\' Church, Wittenberg', role: '九十五条论纲张贴处', location: '德国维滕贝格' },
         { name: '瓦尔特堡', nameEn: 'Wartburg Castle', role: '路德翻译新约之地', location: '德国艾森纳赫' },
@@ -5067,16 +5067,16 @@ async function main() {
       name: '加尔文', nameEn: 'John Calvin', religionId: christianityId,
       dates: '1509-1564', title: '改革宗创始人·日内瓦导师', school: '宗教改革家', generation: 2,
       teacherId: null,
-      biography: '约翰·加尔文（John Calvin），法国人，宗教改革第二代领袖，改革宗（归正宗）传统创始人。因信仰被逼离法国后定居日内瓦，将该城建设为"新教的罗马"。著《基督教要义》（Institutes of the Christian Religion），为新教最系统的神学著作。其预定论（双重预定——神预定部分人得救、部分人灭亡）是最具争议也最有影响力的教义。加尔文主义强调神的主权绝对至上、人的全然败坏、不可抗拒的恩典。其思想深刻影响了清教徒运动、美国建国思想和现代资本主义伦理。',
+      biography: '约翰·加尔文（John Calvin），法国人，宗教改革第二代领袖，改革宗（归正宗）传统创始人。因人文精神被逼离法国后定居日内瓦，将该城建设为"新教的罗马"。著《基督文化要义》（Institutes of the Christian Religion），为新教最系统的神学著作。其预定论（双重预定——神预定部分人得救、部分人灭亡）是最具争议也最有影响力的教义。加尔文主义强调神的主权绝对至上、人的全然败坏、不可抗拒的恩典。其思想深刻影响了清教徒运动、美国建国思想和现代资本主义伦理。',
       coreTeaching: '神的主权绝对至上（TULIP五要点）：全然败坏、无条件拣选、有限救赎、不可抗拒的恩典、圣徒的坚忍。一切荣耀归于神（Soli Deo Gloria）。世俗职业也是神的呼召——勤劳工作荣耀神。',
-      achievements: '改革宗/归正宗传统创始人。著《基督教要义》为新教最系统神学著作。将日内瓦建为"新教的罗马"。深刻影响清教徒/美国建国/资本主义伦理。全球改革宗/长老会教会的思想之父。',
+      achievements: '改革宗/归正宗传统创始人。著《基督文化要义》为新教最系统神学著作。将日内瓦建为"新教的罗马"。深刻影响清教徒/美国建国/资本主义伦理。全球改革宗/长老会教会的思想之父。',
       templeNames: [
         { name: '圣彼得大教堂', nameEn: 'St. Pierre Cathedral', role: '加尔文布道之地', location: '瑞士日内瓦' },
       ],
       koans: [],
       classicQuotes: ['人心是制造偶像的工厂', '除非先认识神，否则无人能正确认识自己', '一切荣耀归于神'],
       works: [
-        { title: '基督教要义（Institutes）', description: '新教最系统的神学著作' },
+        { title: '基督文化要义（Institutes）', description: '新教最系统的神学著作' },
       ],
       imageUrl: null,
     },
@@ -5088,7 +5088,7 @@ async function main() {
       dates: '1703-1791', title: '卫理公会创始人·心灵温暖', school: '宗教改革家', generation: 3,
       teacherId: null,
       biography: '约翰·卫斯理（John Wesley），英国圣公会牧师，卫理公会运动创始人。1738年在伦敦阿尔德斯门街的一次聚会中经历著名的"心灵温暖"体验——"我感到心中奇异地温暖，我信靠基督、唯独基督来拯救我。"此后一生巡回布道，行程约25万英里（主要骑马），讲道超过4万次。在矿区、田野、街头向穷人布道。组织信徒成立小组（班会）互相督责。卫理公会后发展为全球性宗派，信众超过8000万。',
-      coreTeaching: '成圣——基督徒不仅要信，还要在恩典中不断长进，追求心灵的完全圣洁。"全世界是我的牧区。"信仰必须与社会关怀结合——卫斯理积极投身废奴运动、济贫、办学。',
+      coreTeaching: '成圣——基督徒不仅要信，还要在恩典中不断长进，追求心灵的完全圣洁。"全世界是我的牧区。"人文精神必须与社会关怀结合——卫斯理积极投身废奴运动、济贫、办学。',
       achievements: '卫理公会运动创始人。一生布道超4万次、行程25万英里。创立小组（班会）牧养模式。推动英国社会改革（废奴/济贫/教育）。全球卫理公会信众超8000万。',
       templeNames: [
         { name: '卫斯理教堂', nameEn: 'Wesley\'s Chapel', role: '卫理公会母堂', location: '英国伦敦' },
@@ -5099,7 +5099,7 @@ async function main() {
       classicQuotes: ['尽你所能地赚取，尽你所能地节省，尽你所能地给予', '全世界是我的牧区', '我感到心中奇异地温暖'],
       works: [
         { title: '讲道集', description: '151篇标准讲道，卫理宗教义基础' },
-        { title: '日记', description: '55年的信仰日记，18世纪英国社会珍贵记录' },
+        { title: '日记', description: '55年的人文精神日记，18世纪英国社会珍贵记录' },
       ],
       imageUrl: null,
     },
@@ -5131,7 +5131,7 @@ async function main() {
       dates: '1514-1572', title: '苏格兰长老会之父', school: '宗教改革家', generation: 5,
       teacherId: null,
       biography: '约翰·诺克斯（John Knox），苏格兰宗教改革领袖，长老会的创始人。曾在日内瓦师从加尔文。回到苏格兰后以火一般的布道推动改革——1560年苏格兰议会正式采纳新教。建立长老制教会治理模式（教会由长老集体治理而非主教个人统治）。以"给我苏格兰，否则就让我死"的祷告闻名。其民主化的教会治理思想深刻影响了后来的民主政治理论和美国宪政体制。',
-      coreTeaching: '教会应由长老集体治理（长老制），而非一人独裁。每个信徒都有权利和义务阅读圣经。教育是信仰的基础——诺克斯推动苏格兰建立全民教育体系。',
+      coreTeaching: '教会应由长老集体治理（长老制），而非一人独裁。每个信徒都有权利和义务阅读圣经。教育是人文精神的基础——诺克斯推动苏格兰建立全民教育体系。',
       achievements: '苏格兰宗教改革领袖。创立长老制教会治理模式。推动苏格兰全民教育。长老制民主精神影响美国宪政。全球长老会/改革宗教会的精神之父。',
       templeNames: [
         { name: '圣吉尔斯大教堂', nameEn: "St Giles' Cathedral", role: '诺克斯主要布道之地', location: '英国爱丁堡' },
@@ -5151,9 +5151,9 @@ async function main() {
       name: '亚西西的方济各', nameEn: 'Francis of Assisi', religionId: christianityId,
       dates: '1181-1226', title: '方济各会创始人·贫穷的小兄弟', school: '神秘主义与灵修', generation: 1,
       teacherId: null,
-      biography: '亚西西的方济各（Francis of Assisi），基督教历史上最受爱戴的圣人之一，方济各会创始人。出身意大利富商家庭。年轻时过着纨绔生活，在一次生病和灵性体验后彻底转变——脱去华服、放弃继承权，选择与穷人为伍。创立"小兄弟会"（方济各会），强调彻底的贫穷、谦卑和喜乐。以对大自然的热爱闻名——传说他向鸟儿布道、驯服恶狼。著《太阳歌》为意大利文学最早的杰作之一。晚年身上出现圣痕（与基督钉痕对应的伤痕），是历史上第一个记录的圣痕者。',
+      biography: '亚西西的方济各（Francis of Assisi），基督文化历史上最受爱戴的圣人之一，方济各会创始人。出身意大利富商家庭。年轻时过着纨绔生活，在一次生病和灵性体验后彻底转变——脱去华服、放弃继承权，选择与穷人为伍。创立"小兄弟会"（方济各会），强调彻底的贫穷、谦卑和喜乐。以对大自然的热爱闻名——传说他向鸟儿布道、驯服恶狼。著《太阳歌》为意大利文学最早的杰作之一。晚年身上出现圣痕（与基督钉痕对应的伤痕），是历史上第一个记录的圣痕者。',
       coreTeaching: '彻底的贫穷就是彻底的自由。"主啊，使我做你和平的工具。"方济各不是厌恶世界，而是热爱一切受造物——在每一棵树、每一只鸟中看见造物主的荣耀。喜乐是基督徒的标志——即使在贫穷和苦难中。',
-      achievements: '方济各会创始人（至今全球最大修会之一）。基督教历史上最受爱戴的圣人。以彻底贫穷和对自然的爱闻名。《太阳歌》为意大利文学先驱。第一位有记录的圣痕者。教宗方济各以其命名。',
+      achievements: '方济各会创始人（至今全球最大修会之一）。基督文化历史上最受爱戴的圣人。以彻底贫穷和对自然的爱闻名。《太阳歌》为意大利文学先驱。第一位有记录的圣痕者。教宗方济各以其命名。',
       templeNames: [
         { name: '亚西西圣方济各圣殿', nameEn: 'Basilica of San Francesco d\'Assisi', role: '方济各墓地与纪念圣殿', location: '意大利亚西西' },
         { name: '天使之后圣殿', nameEn: 'Basilica of Santa Maria degli Angeli', role: '方济各会创立之地', location: '意大利亚西西' },
@@ -5175,9 +5175,9 @@ async function main() {
       name: '阿维拉的德兰', nameEn: 'Teresa of Ávila', religionId: christianityId,
       dates: '1515-1582', title: '灵修博士·灵魂的城堡', school: '神秘主义与灵修', generation: 2,
       teacherId: null,
-      biography: '阿维拉的德兰（Teresa of Ávila），西班牙加尔默罗会修女，基督教最伟大的神秘主义者之一。1535年入修道院。经历长期灵性枯干后，约1554年开始获得深刻的神秘体验——灵魂出神、心灵的刺穿（贝尼尼著名雕塑即描绘此景）。推动加尔默罗会改革（赤足加尔默罗会），建立17座革新修院。著《灵魂的城堡》以七重居所比喻灵魂走向与神合一的旅程。1970年被封为教会博士——历史上第一位获此殊荣的女性。',
+      biography: '阿维拉的德兰（Teresa of Ávila），西班牙加尔默罗会修女，基督文化最伟大的神秘主义者之一。1535年入修道院。经历长期灵性枯干后，约1554年开始获得深刻的神秘体验——灵魂出神、心灵的刺穿（贝尼尼著名雕塑即描绘此景）。推动加尔默罗会改革（赤足加尔默罗会），建立17座革新修院。著《灵魂的城堡》以七重居所比喻灵魂走向与神合一的旅程。1970年被封为教会博士——历史上第一位获此殊荣的女性。',
       coreTeaching: '灵魂是一座有七重居所的城堡——从外到内，从自我认知走向与神完全合一。祈祷是打开城堡之门的钥匙。即使在最深的神秘体验中也要保持实际的判断力——德兰以幽默感和务实精神著称。',
-      achievements: '基督教最伟大的神秘主义者之一。著《灵魂的城堡》《自传》。推动加尔默罗会改革。建立17座修院。1970年成为第一位女性教会博士。',
+      achievements: '基督文化最伟大的神秘主义者之一。著《灵魂的城堡》《自传》。推动加尔默罗会改革。建立17座修院。1970年成为第一位女性教会博士。',
       templeNames: [
         { name: '道成肉身修院', nameEn: 'Convent of the Incarnation', role: '德兰入修道院之地', location: '西班牙阿维拉' },
       ],
@@ -5199,16 +5199,16 @@ async function main() {
       name: '十字若望', nameEn: 'John of the Cross', religionId: christianityId,
       dates: '1542-1591', title: '心灵暗夜·神秘主义诗人', school: '神秘主义与灵修', generation: 3,
       teacherId: null,
-      biography: '十字若望（John of the Cross），西班牙加尔默罗会修士，基督教神秘主义的巅峰人物。与德兰合作推动加尔默罗会改革，因此被保守派囚禁在托莱多一间狭小牢房中九个月——在黑暗和饥饿中写下了基督教最伟大的神秘主义诗歌《心灵的暗夜》。其核心教导"暗夜"——灵魂必须经历感官和精神的彻底剥夺（黑暗）才能走向与神的光明合一。著《攀登加尔默罗山》系统阐述灵魂净化之路。1926年被封为教会博士。',
+      biography: '十字若望（John of the Cross），西班牙加尔默罗会修士，基督文化神秘主义的巅峰人物。与德兰合作推动加尔默罗会改革，因此被保守派囚禁在托莱多一间狭小牢房中九个月——在黑暗和饥饿中写下了基督文化最伟大的神秘主义诗歌《心灵的暗夜》。其核心教导"暗夜"——灵魂必须经历感官和精神的彻底剥夺（黑暗）才能走向与神的光明合一。著《攀登加尔默罗山》系统阐述灵魂净化之路。1926年被封为教会博士。',
       coreTeaching: '心灵的暗夜——灵魂走向神必须经历双重暗夜：感官的暗夜（放下一切感官依附）和精神的暗夜（放下一切精神执着，甚至对灵性体验的执着）。"在暗夜中，走更安全的路。"虚空是通往圆满的唯一道路。',
-      achievements: '基督教神秘主义巅峰人物。在狱中写下《心灵的暗夜》为基督教灵修诗歌最高杰作。系统阐述灵魂净化理论。与德兰合作改革加尔默罗会。1926年封为教会博士。',
+      achievements: '基督文化神秘主义巅峰人物。在狱中写下《心灵的暗夜》为基督文化灵修诗歌最高杰作。系统阐述灵魂净化理论。与德兰合作改革加尔默罗会。1926年封为教会博士。',
       templeNames: [],
       koans: [
         { title: '暗夜', description: '"在一个暗夜里，怀着焦灼的爱情，我出去了——啊，幸运的命运！无人注意。"灵魂在暗夜中离开一切熟悉的事物，在黑暗中走向爱的合一。越黑暗，越接近光明。' },
       ],
       classicQuotes: ['在暗夜中，走更安全的路', '要到达你不知道的地方，你必须走你不知道的路', '在黄昏时分，我们将以爱被审判'],
       works: [
-        { title: '心灵的暗夜', description: '基督教灵修诗歌最高杰作' },
+        { title: '心灵的暗夜', description: '基督文化灵修诗歌最高杰作' },
         { title: '攀登加尔默罗山', description: '灵魂净化之系统论述' },
         { title: '灵歌', description: '灵魂与神之间的爱情诗' },
       ],
@@ -5242,9 +5242,9 @@ async function main() {
       name: '托马斯·默顿', nameEn: 'Thomas Merton', religionId: christianityId,
       dates: '1915-1968', title: '东西灵修桥梁·七重山', school: '神秘主义与灵修', generation: 5,
       teacherId: null,
-      biography: '托马斯·默顿（Thomas Merton），美国熙笃会修士，20世纪最具影响力的基督教灵修作家。出生于法国，成长于英国和美国。哥伦比亚大学毕业后过着波西米亚式生活。1941年进入肯塔基州客西马尼隐修院。著《七重山》（The Seven Storey Mountain）自传，讲述从世俗到修道的心灵旅程，成为畅销书。后期积极开展东西方灵性对话——深入研究禅宗、道教、苏菲主义，与铃木大拙、一行禅师等交流。1968年在曼谷参加东西方修道对话会议时意外触电去世。',
-      coreTeaching: '独处与沉默是认识自我和认识神的必经之路。基督教灵修传统与东方冥想传统有深刻的共鸣——默观祈祷与禅修指向同一个终极实在。社会正义是灵修生活的自然延伸——默顿积极反战、反核、支持民权运动。',
-      achievements: '20世纪最具影响力的基督教灵修作家。《七重山》为灵修文学畅销经典。东西方灵性对话的先驱——连接基督教与禅宗/道教/苏菲。积极参与反战和民权运动。',
+      biography: '托马斯·默顿（Thomas Merton），美国熙笃会修士，20世纪最具影响力的基督文化灵修作家。出生于法国，成长于英国和美国。哥伦比亚大学毕业后过着波西米亚式生活。1941年进入肯塔基州客西马尼隐修院。著《七重山》（The Seven Storey Mountain）自传，讲述从世俗到修道的心灵旅程，成为畅销书。后期积极开展东西方灵性对话——深入研究禅宗、道教文化、苏菲主义，与铃木大拙、一行禅师等交流。1968年在曼谷参加东西方修道对话会议时意外触电去世。',
+      coreTeaching: '独处与沉默是认识自我和认识神的必经之路。基督文化灵修传统与东方冥想传统有深刻的共鸣——默观祈祷与禅修指向同一个终极实在。社会正义是灵修生活的自然延伸——默顿积极反战、反核、支持民权运动。',
+      achievements: '20世纪最具影响力的基督文化灵修作家。《七重山》为灵修文学畅销经典。东西方灵性对话的先驱——连接基督文化与禅宗/道教文化/苏菲。积极参与反战和民权运动。',
       templeNames: [
         { name: '客西马尼修道院', nameEn: 'Abbey of Gethsemani', role: '默顿修道生活之地', location: '美国肯塔基州' },
       ],
@@ -5252,8 +5252,8 @@ async function main() {
       classicQuotes: ['在静默中，上帝不再是一个概念，而成为一种经验', '如果你想辨识灵性的人，找那个能够独处的人'],
       works: [
         { title: '七重山（The Seven Storey Mountain）', description: '从世俗到修道的心灵自传' },
-        { title: '默观的种子', description: '基督教默观祈祷入门' },
-        { title: '禅与灵鸟', description: '基督教与禅宗的对话' },
+        { title: '默观的种子', description: '基督文化默观祈祷入门' },
+        { title: '禅与灵鸟', description: '基督文化与禅宗的对话' },
       ],
       imageUrl: null,
     },
@@ -5265,8 +5265,8 @@ async function main() {
       name: '德蕾莎修女', nameEn: 'Mother Teresa', religionId: christianityId,
       dates: '1910-1997', title: '加尔各答圣人·穷人中最穷者的仆人', school: '近现代影响者', generation: 1,
       teacherId: null,
-      biography: '德蕾莎修女（Mother Teresa），原名阿格尼丝·冈贾·博雅丘（Agnes Gonxha Bojaxhiu），阿尔巴尼亚裔。1928年到印度传教。1946年在前往大吉岭的火车上获得"呼召中的呼召"——离开舒适的修道院，去服务"穷人中最穷者"。1950年创立仁爱传教修女会，在加尔各答贫民窟中照顾垂死者、弃婴、麻风病人。其修女会后扩展至全球130多个国家。1979年获诺贝尔和平奖。2016年被封圣。她的私人日记揭示了长达50年的"信仰暗夜"——在灵性枯竭中依然坚持服务。',
-      coreTeaching: '在最卑微的人身上看见基督的面容。"如果你不能养活一百个人，那就养活一个。"爱不是宏大的事业，而是用伟大的爱做微小的事。德蕾莎的"信仰暗夜"展示了——即使感受不到神的同在，信仰仍可以通过行动来表达。',
+      biography: '德蕾莎修女（Mother Teresa），原名阿格尼丝·冈贾·博雅丘（Agnes Gonxha Bojaxhiu），阿尔巴尼亚裔。1928年到印度传教。1946年在前往大吉岭的火车上获得"呼召中的呼召"——离开舒适的修道院，去服务"穷人中最穷者"。1950年创立仁爱传教修女会，在加尔各答贫民窟中照顾垂死者、弃婴、麻风病人。其修女会后扩展至全球130多个国家。1979年获诺贝尔和平奖。2016年被封圣。她的私人日记揭示了长达50年的"人文精神暗夜"——在灵性枯竭中依然坚持服务。',
+      coreTeaching: '在最卑微的人身上看见基督的面容。"如果你不能养活一百个人，那就养活一个。"爱不是宏大的事业，而是用伟大的爱做微小的事。德蕾莎的"人文精神暗夜"展示了——即使感受不到神的同在，人文精神仍可以通过行动来表达。',
       achievements: '创立仁爱传教修女会（全球130+国家）。1979年诺贝尔和平奖。2016年封圣。一生服务加尔各答最贫穷者。成为20世纪慈善和基督徒精神的象征。',
       templeNames: [
         { name: '仁爱传教修女会总部', nameEn: 'Missionaries of Charity Motherhouse', role: '德蕾莎修女之家', location: '印度加尔各答' },
@@ -5284,8 +5284,8 @@ async function main() {
       dates: '1906-1945', title: '殉道神学家·廉价恩典的批判者', school: '近现代影响者', generation: 2,
       teacherId: null,
       biography: '迪特里希·朋霍费尔（Dietrich Bonhoeffer），德国路德宗牧师和神学家。在纳粹德国兴起时，成为"认信教会"运动的核心人物，公开反对纳粹对教会的控制和对犹太人的迫害。尽管有机会留在安全的美国，1939年毅然返回德国——"如果我不在这个时刻与我的人民一同受苦，我就没有资格在战后参与重建。"参与刺杀希特勒的密谋，被盖世太保逮捕。1945年4月9日，在希特勒自杀前仅两周，在弗洛森堡集中营被处决。年仅39岁。',
-      coreTeaching: '廉价恩典vs重价恩典——"廉价恩典是教会的致命敌人"。不付代价的信仰是虚假的。基督徒必须在世界中承担责任——"信仰不是逃离世界的避难所，而是行动的起点。"当世界发生不义时，沉默和不作为就是同谋。',
-      achievements: '20世纪最具影响力的殉道神学家。公开反对纳粹。著《追随基督》论重价恩典。参与刺杀希特勒密谋。39岁在集中营殉道。其思想深刻影响战后基督教伦理和政治神学。',
+      coreTeaching: '廉价恩典vs重价恩典——"廉价恩典是教会的致命敌人"。不付代价的人文精神是虚假的。基督徒必须在世界中承担责任——"人文精神不是逃离世界的避难所，而是行动的起点。"当世界发生不义时，沉默和不作为就是同谋。',
+      achievements: '20世纪最具影响力的殉道神学家。公开反对纳粹。著《追随基督》论重价恩典。参与刺杀希特勒密谋。39岁在集中营殉道。其思想深刻影响战后基督文化伦理和政治神学。',
       templeNames: [
         { name: '弗洛森堡集中营', nameEn: 'Flossenbürg Concentration Camp', role: '朋霍费尔殉道之地', location: '德国弗洛森堡' },
       ],
@@ -5305,18 +5305,18 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: 'C.S.路易斯', nameEn: 'C.S. Lewis', religionId: christianityId,
-      dates: '1898-1963', title: '基督教护教大师·纳尼亚之父', school: '近现代影响者', generation: 3,
+      dates: '1898-1963', title: '基督文化护教大师·纳尼亚之父', school: '近现代影响者', generation: 3,
       teacherId: null,
-      biography: 'C.S.路易斯（Clive Staples Lewis），英国学者和作家，牛津大学和剑桥大学教授。青年时期为坚定的无神论者，1931年在与托尔金等朋友的长期对话中归信基督教。此后成为20世纪最有影响力的基督教护教作家。以清晰通俗的文笔向普通读者解释基督教信仰——《返璞归真》为最畅销的基督教护教著作。同时以儿童文学《纳尼亚传奇》七卷本闻名世界，以寓言方式传达基督教核心信息。',
-      coreTeaching: '基督教信仰是合理的——不是因为它让你感觉好，而是因为它是真的。"我信基督教，正如我相信太阳升起了——不仅因为我看见它，而是因为借着它我看见一切其他事物。"痛苦是神的扩音器——在舒适中人忽略神，在痛苦中人不得不面对终极问题。',
-      achievements: '20世纪最有影响力的基督教护教作家。《返璞归真》为最畅销的基督教入门书。《纳尼亚传奇》全球销量超1亿册。以通俗清晰的文笔让基督教信仰成为知识分子可以认真对待的选择。',
+      biography: 'C.S.路易斯（Clive Staples Lewis），英国学者和作家，牛津大学和剑桥大学教授。青年时期为坚定的无神论者，1931年在与托尔金等朋友的长期对话中归信基督文化。此后成为20世纪最有影响力的基督文化护教作家。以清晰通俗的文笔向普通读者解释基督文化人文精神——《返璞归真》为最畅销的基督文化护教著作。同时以儿童文学《纳尼亚传奇》七卷本闻名世界，以寓言方式传达基督文化核心信息。',
+      coreTeaching: '基督文化人文精神是合理的——不是因为它让你感觉好，而是因为它是真的。"我信基督文化，正如我相信太阳升起了——不仅因为我看见它，而是因为借着它我看见一切其他事物。"痛苦是神的扩音器——在舒适中人忽略神，在痛苦中人不得不面对终极问题。',
+      achievements: '20世纪最有影响力的基督文化护教作家。《返璞归真》为最畅销的基督文化入门书。《纳尼亚传奇》全球销量超1亿册。以通俗清晰的文笔让基督文化人文精神成为知识分子可以认真对待的选择。',
       templeNames: [],
       koans: [],
-      classicQuotes: ['我信基督教如同我相信太阳升起——因为借着它我看见一切', '痛苦是神的扩音器，用来唤醒一个聋了的世界', '你从未见过一个普通人——你交往的每一个人都是不朽的灵魂'],
+      classicQuotes: ['我信基督文化如同我相信太阳升起——因为借着它我看见一切', '痛苦是神的扩音器，用来唤醒一个聋了的世界', '你从未见过一个普通人——你交往的每一个人都是不朽的灵魂'],
       works: [
-        { title: '返璞归真（Mere Christianity）', description: '最畅销的基督教护教著作' },
+        { title: '返璞归真（Mere Christianity）', description: '最畅销的基督文化护教著作' },
         { title: '纳尼亚传奇', description: '七卷儿童文学经典，全球销量超1亿' },
-        { title: '痛苦的奥秘', description: '论苦难与信仰' },
+        { title: '痛苦的奥秘', description: '论苦难与人文精神' },
         { title: '魔鬼家书', description: '以魔鬼视角论述人性弱点' },
       ],
       imageUrl: null,
@@ -5328,7 +5328,7 @@ async function main() {
       name: '马丁·路德·金', nameEn: 'Martin Luther King Jr.', religionId: christianityId,
       dates: '1929-1968', title: '民权牧师·我有一个梦想', school: '近现代影响者', generation: 4,
       teacherId: null,
-      biography: '马丁·路德·金（Martin Luther King Jr.），美国浸信会牧师，民权运动领袖。受甘地非暴力思想和基督教登山宝训的双重启发，领导美国黑人民权运动。1955年领导蒙哥马利公交车抵制运动。1963年在华盛顿林肯纪念堂前发表"我有一个梦想"演讲，成为20世纪最伟大的演说之一。推动通过1964年《民权法案》和1965年《选举权法案》。1964年获诺贝尔和平奖（当时最年轻获奖者，35岁）。1968年在孟菲斯被暗杀，年仅39岁。',
+      biography: '马丁·路德·金（Martin Luther King Jr.），美国浸信会牧师，民权运动领袖。受甘地非暴力思想和基督文化登山宝训的双重启发，领导美国黑人民权运动。1955年领导蒙哥马利公交车抵制运动。1963年在华盛顿林肯纪念堂前发表"我有一个梦想"演讲，成为20世纪最伟大的演说之一。推动通过1964年《民权法案》和1965年《选举权法案》。1964年获诺贝尔和平奖（当时最年轻获奖者，35岁）。1968年在孟菲斯被暗杀，年仅39岁。',
       coreTeaching: '非暴力抵抗是基督徒对不义的最有力回应。"黑暗不能驱除黑暗，只有光明能做到；仇恨不能驱除仇恨，只有爱能做到。"正义是不可分割的——"任何地方的不义都是对所有地方正义的威胁。"',
       achievements: '美国民权运动领袖。"我有一个梦想"为20世纪最伟大演讲。推动《民权法案》《选举权法案》通过。1964年诺贝尔和平奖。以非暴力改变了美国和世界。',
       templeNames: [
@@ -5352,16 +5352,16 @@ async function main() {
       name: '若望保禄二世', nameEn: 'Pope John Paul II', religionId: christianityId,
       dates: '1920-2005', title: '旅行教宗·跨越边界', school: '近现代影响者', generation: 5,
       teacherId: null,
-      biography: '若望保禄二世（Pope John Paul II），原名卡罗尔·沃伊蒂瓦（Karol Wojtyła），波兰人，天主教第264任教宗（1978-2005）。第一位非意大利裔教宗（455年来）。任期内出访129个国家，行程超过110万公里，被称为"旅行教宗"。在冷战结束中扮演关键角色——支持波兰团结工会运动。推动宗教间对话——2000年首次访问清真寺，在犹太哭墙前祷告并放入忏悔信。为教会历史上的过错公开道歉。2014年封圣。',
-      coreTeaching: '不要害怕！打开门户迎接基督！人的尊严是不可侵犯的——任何政治体制都不能剥夺。宗教间对话是世界和平的基础。教宗就职弥撒上的第一句话"不要害怕"成为其教宗生涯的标志。',
-      achievements: '天主教第264任教宗。出访129国被称"旅行教宗"。在冷战结束中发挥关键作用。推动宗教间对话（首访清真寺/哭墙祷告）。为教会历史过错公开道歉。2014年封圣。',
+      biography: '若望保禄二世（Pope John Paul II），原名卡罗尔·沃伊蒂瓦（Karol Wojtyła），波兰人，天主教第264任教宗（1978-2005）。第一位非意大利裔教宗（455年来）。任期内出访129个国家，行程超过110万公里，被称为"旅行教宗"。在冷战结束中扮演关键角色——支持波兰团结工会运动。推动文化传统间对话——2000年首次访问清真寺，在犹太哭墙前祷告并放入忏悔信。为教会历史上的过错公开道歉。2014年封圣。',
+      coreTeaching: '不要害怕！打开门户迎接基督！人的尊严是不可侵犯的——任何政治体制都不能剥夺。文化传统间对话是世界和平的基础。教宗就职弥撒上的第一句话"不要害怕"成为其教宗生涯的标志。',
+      achievements: '天主教第264任教宗。出访129国被称"旅行教宗"。在冷战结束中发挥关键作用。推动文化传统间对话（首访清真寺/哭墙祷告）。为教会历史过错公开道歉。2014年封圣。',
       templeNames: [
         { name: '圣彼得大教堂', nameEn: "St. Peter's Basilica", role: '教宗座堂', location: '梵蒂冈' },
       ],
       koans: [],
       classicQuotes: ['不要害怕！打开门户迎接基督', '自由不是做你想做的事，而是有权做你应该做的事'],
       works: [
-        { title: '跨越希望的门槛', description: '以对话形式论述信仰、教会与世界' },
+        { title: '跨越希望的门槛', description: '以对话形式论述人文精神、教会与世界' },
       ],
       imageUrl: null,
     },
@@ -5372,9 +5372,9 @@ async function main() {
       name: '德斯蒙德·图图', nameEn: 'Desmond Tutu', religionId: christianityId,
       dates: '1931-2021', title: '和解大主教·彩虹国度', school: '近现代影响者', generation: 6,
       teacherId: null,
-      biography: '德斯蒙德·图图（Desmond Tutu），南非圣公会开普敦大主教，反种族隔离运动精神领袖。在种族隔离最黑暗的年代，以基督教非暴力原则呼吁和平与正义。1984年获诺贝尔和平奖。种族隔离结束后，主持真相与和解委员会（TRC）——以"恢复性正义"取代报复性正义，让施害者和受害者面对面，以真相和宽恕实现和解。提出"乌班图"（Ubuntu）哲学——"我是，因为我们是"。将南非称为"彩虹国度"。',
+      biography: '德斯蒙德·图图（Desmond Tutu），南非圣公会开普敦大主教，反种族隔离运动精神领袖。在种族隔离最黑暗的年代，以基督文化非暴力原则呼吁和平与正义。1984年获诺贝尔和平奖。种族隔离结束后，主持真相与和解委员会（TRC）——以"恢复性正义"取代报复性正义，让施害者和受害者面对面，以真相和宽恕实现和解。提出"乌班图"（Ubuntu）哲学——"我是，因为我们是"。将南非称为"彩虹国度"。',
       coreTeaching: '宽恕不是软弱，而是最终极的力量。没有宽恕就没有未来——但也没有没有正义的宽恕。"乌班图"——一个人的人性通过与他人的关系来实现。"我是，因为我们是。"上帝没有基督徒仆人——上帝有的是人类仆人。',
-      achievements: '南非反种族隔离运动精神领袖。1984年诺贝尔和平奖。主持真相与和解委员会开创"恢复性正义"。提出"彩虹国度"和"乌班图"理念。以基督教信仰推动种族和解。',
+      achievements: '南非反种族隔离运动精神领袖。1984年诺贝尔和平奖。主持真相与和解委员会开创"恢复性正义"。提出"彩虹国度"和"乌班图"理念。以基督文化人文精神推动种族和解。',
       templeNames: [
         { name: '圣乔治大教堂', nameEn: "St George's Cathedral", role: '图图大主教座堂', location: '南非开普敦' },
       ],
@@ -5391,7 +5391,7 @@ async function main() {
   const christianCount = 25; // 25 new + 3 updated
   console.log(`  ✓ ${christianCount} new Christian patriarchs created + 3 updated (5 traditions: Apostles/Fathers/Reformers/Mystics/Modern)`);
 
-  // ── 4n. 道教先贤 (Taoist Patriarchs/Masters) ──
+  // ── 4n. 道教文化先贤 (Taoist Patriarchs/Masters) ──
   console.log('  Creating Taoist patriarchs (4n)...');
 
   const taoismId = religionMap['taoism'];
@@ -5407,9 +5407,9 @@ async function main() {
           title: '太上老君·道德天尊·道家创始人',
           school: '老庄哲学',
           generation: 1,
-          biography: '老子，姓李名耳，字聃，春秋时期楚国苦县（今河南鹿邑）人，道家哲学创始人。曾任周朝守藏室之史（国家图书馆馆长），博览群书，学识渊博。孔子曾专程问礼于老子，归而叹曰："吾今日见老子，其犹龙邪！"晚年见周朝衰微，骑青牛西出函谷关。关令尹喜请其著书，遂写下《道德经》五千言。此书分道经、德经两篇，以"道"为核心概念，阐述了自然无为、柔弱胜刚强、反者道之动等深刻哲理。对中国哲学、宗教、政治、艺术产生了深远影响。后被道教尊为太上老君、道德天尊，为道教至高神祇之一。',
+          biography: '老子，姓李名耳，字聃，春秋时期楚国苦县（今河南鹿邑）人，道家哲学创始人。曾任周朝守藏室之史（国家图书馆馆长），博览群书，学识渊博。孔子曾专程问礼于老子，归而叹曰："吾今日见老子，其犹龙邪！"晚年见周朝衰微，骑青牛西出函谷关。关令尹喜请其著书，遂写下《道德经》五千言。此书分道经、德经两篇，以"道"为核心概念，阐述了自然无为、柔弱胜刚强、反者道之动等深刻哲理。对中国哲学、文化传统、政治、艺术产生了深远影响。后被道教文化尊为太上老君、道德天尊，为道教文化至高神祇之一。',
           coreTeaching: '道可道，非常道；名可名，非常名。无名天地之始，有名万物之母。上善若水，水善利万物而不争。无为而无不为——顺应自然规律，不妄为、不强求，反而能成就一切。反者道之动，弱者道之用——事物向对立面转化是道的运动规律，柔弱是道的作用方式。',
-          achievements: '著《道德经》五千言，为中国最重要的哲学经典之一。创立道家哲学体系，影响中国文明两千五百余年。被道教尊为教主、太上老君。"无为而治"思想影响了中国数千年的政治哲学。对全球哲学产生深远影响，《道德经》被翻译成70多种语言。',
+          achievements: '著《道德经》五千言，为中国最重要的哲学经典之一。创立道家哲学体系，影响中国文明两千五百余年。被道教文化尊为教主、太上老君。"无为而治"思想影响了中国数千年的政治哲学。对全球哲学产生深远影响，《道德经》被翻译成70多种语言。',
           templeNames: [
             { name: '太清宫', nameEn: 'Taiqing Palace', role: '老子出生地', location: '河南鹿邑' },
             { name: '楼观台', nameEn: 'Louguan Tai', role: '老子著道德经之地', location: '陕西周至' },
@@ -5447,22 +5447,22 @@ async function main() {
           title: '祖天师·正一真人·天师道创始人',
           school: '天师正一',
           generation: 1,
-          biography: '张道陵（34-156），字辅汉，沛国丰县（今江苏丰县）人，东汉人，道教创始人。本太学生，博通五经。汉明帝时举贤良方正直言极谏科。后弃官修道，先入北邙山、后入蜀中鹤鸣山。永和六年（141年），据传太上老君授以正一盟威之道、三天正法等经书剑印，命其为天师。张道陵在巴蜀地区创立五斗米道（天师道），以符箓驱鬼治病，发展信众。设二十四治（教区），建立道教最早的教团组织。道教尊为"祖天师""正一真人"。其后裔世袭天师之位，至今已传六十五代，是世界最长的世袭宗教家族。龙虎山至今为正一派祖庭。',
-          coreTeaching: '正一盟威之道——以正统道法驱邪扶正，建立人与天地鬼神的盟约秩序。奉道诫，为人治病：以三官手书（天官赦罪、地官赦罪、水官赦罪）为忏悔法门。清静无为为宗，佐以符箓科仪，建立道教最早的制度化宗教体系。',
-          achievements: '创立天师道（五斗米道），为道教最早的教团组织。设二十四治（教区），建立系统的道教行政管理体系。开创符箓派传统，影响道教发展近两千年。张天师家族世袭六十五代，为世界最长的世袭宗教家族。龙虎山正一派为道教两大派之一。',
+          biography: '张道陵（34-156），字辅汉，沛国丰县（今江苏丰县）人，东汉人，道教文化创始人。本太学生，博通五经。汉明帝时举贤良方正直言极谏科。后弃官修道，先入北邙山、后入蜀中鹤鸣山。永和六年（141年），据传太上老君授以正一盟威之道、三天正法等经书剑印，命其为天师。张道陵在巴蜀地区创立五斗米道（天师道），以符箓驱鬼治病，发展信众。设二十四治（教区），建立道教文化最早的教团组织。道教文化尊为"祖天师""正一真人"。其后裔世袭天师之位，至今已传六十五代，是世界最长的世袭文化传统家族。龙虎山至今为正一派祖庭。',
+          coreTeaching: '正一盟威之道——以正统道法驱邪扶正，建立人与天地鬼神的盟约秩序。奉道诫，为人治病：以三官手书（天官赦罪、地官赦罪、水官赦罪）为忏悔法门。清静无为为宗，佐以符箓科仪，建立道教文化最早的制度化文化传统体系。',
+          achievements: '创立天师道（五斗米道），为道教文化最早的教团组织。设二十四治（教区），建立系统的道教文化行政管理体系。开创符箓派传统，影响道教文化发展近两千年。张天师家族世袭六十五代，为世界最长的世袭文化传统家族。龙虎山正一派为道教文化两大派之一。',
           templeNames: [
             { name: '龙虎山天师府', nameEn: 'Longhu Mountain Celestial Master Mansion', role: '正一派祖庭', location: '江西鹰潭' },
             { name: '鹤鸣山', nameEn: 'Heming Mountain', role: '张道陵创教之地', location: '四川大邑' },
             { name: '青城山', nameEn: 'Qingcheng Mountain', role: '张天师传道处', location: '四川都江堰' },
           ],
           koans: [
-            { title: '鹤鸣山创教', description: '张道陵入蜀修道于鹤鸣山，感太上老君降临授道。以三天正法教化百姓，凡入道者纳五斗米，故称"五斗米道"。立二十四治分管信众，建立中国历史上第一个系统的道教组织。' },
-            { title: '降魔伏妖', description: '传说张道陵在蜀中降伏六天魔王，驱逐鬼众。以正一盟威之道制服群邪，使巴蜀百姓免受瘟疫灾害。体现了早期道教以宗教手段解决社会问题的特征。' },
-            { title: '三官手书', description: '张道陵创立三官手书忏悔法：病人书写三通，一置山上呈天官，一埋地下呈地官，一沉水中呈水官。通过忏悔罪过来治疗疾病，是道教最早的忏悔制度。' },
+            { title: '鹤鸣山创教', description: '张道陵入蜀修道于鹤鸣山，感太上老君降临授道。以三天正法教化百姓，凡入道者纳五斗米，故称"五斗米道"。立二十四治分管信众，建立中国历史上第一个系统的道教文化组织。' },
+            { title: '降魔伏妖', description: '传说张道陵在蜀中降伏六天魔王，驱逐鬼众。以正一盟威之道制服群邪，使巴蜀百姓免受瘟疫灾害。体现了早期道教文化以文化传统手段解决社会问题的特征。' },
+            { title: '三官手书', description: '张道陵创立三官手书忏悔法：病人书写三通，一置山上呈天官，一埋地下呈地官，一沉水中呈水官。通过忏悔罪过来治疗疾病，是道教文化最早的忏悔制度。' },
           ],
           classicQuotes: ['正一者，真一为宗', '道以虚无为体，以清静为用', '受道之人，初受质朴，后受盟威', '夫道者，虚无之至真也'],
           works: [
-            { title: '老子想尔注', description: '对《道德经》的注释，将道家哲学改造为道教神学，是道教最早的经典注释。' },
+            { title: '老子想尔注', description: '对《道德经》的注释，将道家哲学改造为道教文化神学，是道教文化最早的经典注释。' },
           ],
           imageUrl: null,
         },
@@ -5472,7 +5472,7 @@ async function main() {
           name: '张道陵', nameEn: 'Zhang Daoling', religionId: taoismId,
           dates: '34-156', title: '祖天师·正一真人', school: '天师正一', generation: 1,
           biography: '天师道创始人。', coreTeaching: '正一盟威之道。',
-          achievements: '道教创始人。', imageUrl: null,
+          achievements: '道教文化创始人。', imageUrl: null,
         },
       });
 
@@ -5487,9 +5487,9 @@ async function main() {
           title: '重阳真人·全真开宗祖师',
           school: '全真派',
           generation: 1,
-          biography: '王重阳（1112-1170），原名中孚，字允卿，后改名嚞，号重阳子。陕西咸阳刘蒋村人，金代道士。出身豪门，文武双全，早年应武举不第。大定年间，据传在甘河镇遇异人授以口诀，又在醴泉得《玉清内景真经》。遂弃家入终南山，穴居活死人墓修道数年。后焚庵东行，至山东宁海收马钰（马丹阳）、谭处端、刘处玄、丘处机、王处一、郝大通、孙不二为徒，号"全真七子"。创立全真道，倡导三教合一（儒释道）、性命双修、苦行修炼。全真道后成为中国道教两大主流之一，与正一派并立。',
+          biography: '王重阳（1112-1170），原名中孚，字允卿，后改名嚞，号重阳子。陕西咸阳刘蒋村人，金代道士。出身豪门，文武双全，早年应武举不第。大定年间，据传在甘河镇遇异人授以口诀，又在醴泉得《玉清内景真经》。遂弃家入终南山，穴居活死人墓修道数年。后焚庵东行，至山东宁海收马钰（马丹阳）、谭处端、刘处玄、丘处机、王处一、郝大通、孙不二为徒，号"全真七子"。创立全真道，倡导三教合一（儒释道）、性命双修、苦行修炼。全真道后成为中国道教文化两大主流之一，与正一派并立。',
           coreTeaching: '全真者，全其本真也。性命双修——先修性后修命，识心见性为第一要务。三教合一——儒之修身、释之明心、道之养生，三教本为一体。心中端正，无须装饰；行事光明，何惧黑暗。苦行炼心，去欲存真。',
-          achievements: '创立全真道，为道教两大主流之一。倡导三教合一，融合儒释道思想。培育全真七子，各创一派，光大门户。苦行修道之精神感召天下，门徒遍布北方。全真道至今传承不绝，北京白云观为全真祖庭。',
+          achievements: '创立全真道，为道教文化两大主流之一。倡导三教合一，融合儒释道思想。培育全真七子，各创一派，光大门户。苦行修道之精神感召天下，门徒遍布北方。全真道至今传承不绝，北京白云观为全真祖庭。',
           templeNames: [
             { name: '重阳宫', nameEn: 'Chongyang Palace', role: '全真道祖庭', location: '陕西户县' },
             { name: '活死人墓', nameEn: 'Tomb of the Living Dead', role: '王重阳修道之处', location: '陕西户县终南山' },
@@ -5553,7 +5553,7 @@ async function main() {
       school: '老庄哲学', generation: 2,
       biography: '列子，名御寇，郑国人，战国早期道家代表人物。据传能御风而行，为道家"至人"典范。其思想上承老子，下启庄子，主张贵虚。《庄子》中多次提及列子。今传《列子》八篇，虽经后人整理增补，但保存了大量先秦道家寓言和思想。以愚公移山、杞人忧天等寓言闻名后世。',
       coreTeaching: '贵虚——虚者无贵也，虚者不待人而自虚。御风而行——超脱世俗束缚，与自然和谐共处。万物皆出于机、皆入于机——万物的生灭变化自有其规律。',
-      achievements: '道家"贵虚"思想的代表人物。《列子》保存大量先秦寓言，如愚公移山、夸父追日、杞人忧天等。御风而行的传说影响道教飞升成仙思想。',
+      achievements: '道家"贵虚"思想的代表人物。《列子》保存大量先秦寓言，如愚公移山、夸父追日、杞人忧天等。御风而行的传说影响道教文化飞升成仙思想。',
       templeNames: [
         { name: '列子观', nameEn: 'Liezi Temple', role: '纪念列子之处', location: '河南郑州' },
       ],
@@ -5640,14 +5640,14 @@ async function main() {
       dates: '?-216',
       title: '系天师·第三代天师·汉宁太守',
       school: '天师正一', generation: 3,
-      biography: '张鲁（?-216），字公祺，张衡之子，天师道第三代天师。东汉末年割据汉中近三十年（191-215），建立政教合一的地方政权。实行宽惠政策：设义舍（免费客栈）、义米（免费粮食），不设狱吏，犯法者三赦而后刑。曹操征汉中，张鲁降。曹操封其为镇南将军、阆中侯。天师道因此从巴蜀传播至中原各地，为道教全国性发展奠定基础。',
-      coreTeaching: '以道治国——行宽惠之政，设义舍义米，体现道教济世精神。三赦之法——犯法者教化三次仍不改方罚，体现道教的慈悲观念。从地方割据到全国传播，展现道教的政治智慧。',
-      achievements: '割据汉中三十年，建立政教合一政权。设义舍、义米，实行道教理想社会的实践。降曹后天师道传播至全国，为道教大发展奠定基础。被后世道教尊为"系天师"。',
+      biography: '张鲁（?-216），字公祺，张衡之子，天师道第三代天师。东汉末年割据汉中近三十年（191-215），建立政教合一的地方政权。实行宽惠政策：设义舍（免费客栈）、义米（免费粮食），不设狱吏，犯法者三赦而后刑。曹操征汉中，张鲁降。曹操封其为镇南将军、阆中侯。天师道因此从巴蜀传播至中原各地，为道教文化全国性发展奠定基础。',
+      coreTeaching: '以道治国——行宽惠之政，设义舍义米，体现道教文化济世精神。三赦之法——犯法者教化三次仍不改方罚，体现道教文化的慈悲观念。从地方割据到全国传播，展现道教文化的政治智慧。',
+      achievements: '割据汉中三十年，建立政教合一政权。设义舍、义米，实行道教文化理想社会的实践。降曹后天师道传播至全国，为道教文化大发展奠定基础。被后世道教文化尊为"系天师"。',
       templeNames: [
         { name: '汉中天师府遗址', nameEn: 'Hanzhong Celestial Master Ruins', role: '张鲁政教合一政权所在地', location: '陕西汉中' },
       ],
       koans: [
-        { title: '义舍济民', description: '张鲁在汉中道路上设义舍，置义米义肉。行路之人可免费取用，但不得多取——取多则鬼会让人生病。以宗教约束实现社会济贫，是道教最早的社会福利实践。' },
+        { title: '义舍济民', description: '张鲁在汉中道路上设义舍，置义米义肉。行路之人可免费取用，但不得多取——取多则鬼会让人生病。以文化传统约束实现社会济贫，是道教文化最早的社会福利实践。' },
       ],
       classicQuotes: ['以道治民，宽而有制', '犯法者三赦而后刑'],
       works: [],
@@ -5661,16 +5661,16 @@ async function main() {
       dates: '365-448',
       title: '北天师道改革者·国师',
       school: '天师正一', generation: 4,
-      biography: '寇谦之（365-448），字辅真，上谷昌平（今北京昌平）人，北魏道士。自幼好道，入嵩山修炼三十余年。据传太上老君授以《云中音诵新科之戒》，命其"清整道教"。在北魏太武帝支持下进行道教改革：废除天师道中的房中术、取消租米钱税、建立道教科仪制度。使道教从民间宗教提升为官方认可的制度化宗教。太武帝因其影响而灭佛，史称"太武法难"。',
-      coreTeaching: '清整道教——去除道教中的迷信巫术，建立正规科仪制度。以礼度为首，以服食闭炼为本。道教须与儒学礼制结合，方能登堂入室、为国所用。',
-      achievements: '北天师道改革者，使道教制度化、规范化。废除天师道弊端，建立道教科仪体系。使道教成为北魏国教，提升了道教的社会地位。嵩山道教因此兴盛。',
+      biography: '寇谦之（365-448），字辅真，上谷昌平（今北京昌平）人，北魏道士。自幼好道，入嵩山修炼三十余年。据传太上老君授以《云中音诵新科之戒》，命其"清整道教文化"。在北魏太武帝支持下进行道教文化改革：废除天师道中的房中术、取消租米钱税、建立道教文化科仪制度。使道教文化从民间文化传统提升为官方认可的制度化文化传统。太武帝因其影响而灭佛，史称"太武法难"。',
+      coreTeaching: '清整道教文化——去除道教文化中的迷信巫术，建立正规科仪制度。以礼度为首，以服食闭炼为本。道教文化须与儒学礼制结合，方能登堂入室、为国所用。',
+      achievements: '北天师道改革者，使道教文化制度化、规范化。废除天师道弊端，建立道教文化科仪体系。使道教文化成为北魏国教，提升了道教文化的社会地位。嵩山道教文化因此兴盛。',
       templeNames: [
         { name: '嵩山中岳庙', nameEn: 'Zhongyue Temple', role: '寇谦之修道传法之地', location: '河南登封' },
       ],
       koans: [
-        { title: '清整道教', description: '寇谦之入嵩山修道三十年，感太上老君降授新科仪戒律，命其革除天师道旧弊。遂废房中术、除租米税、立科仪、倡礼度。使道教脱胎换骨，从民间信仰走向制度化宗教。' },
+        { title: '清整道教文化', description: '寇谦之入嵩山修道三十年，感太上老君降授新科仪戒律，命其革除天师道旧弊。遂废房中术、除租米税、立科仪、倡礼度。使道教文化脱胎换骨，从民间文化传统走向制度化文化传统。' },
       ],
-      classicQuotes: ['以礼度为首，以服食闭炼为本', '清整道教，除去三张伪法'],
+      classicQuotes: ['以礼度为首，以服食闭炼为本', '清整道教文化，除去三张伪法'],
       works: [],
       imageUrl: null,
     },
@@ -5682,15 +5682,15 @@ async function main() {
       dates: '239-374',
       title: '许天师·净明忠孝道祖',
       school: '天师正一', generation: 4,
-      biography: '许逊（239-374），字敬之，南昌人，东晋道士，净明道祖师。少年好道，后举孝廉任旌阳县令，治政清明，深受百姓爱戴，人称"许旌阳"。辞官后回南昌修道，传说斩蛟龙除水患，拯救百姓。晋宁康二年（374年）携全家四十二口拔宅飞升，鸡犬亦随之升天，成语"一人得道，鸡犬升天"即出于此。后世建万寿宫（西山万寿宫）纪念。净明道以"忠孝"为核心，融合儒道，为道教重要流派。',
+      biography: '许逊（239-374），字敬之，南昌人，东晋道士，净明道祖师。少年好道，后举孝廉任旌阳县令，治政清明，深受百姓爱戴，人称"许旌阳"。辞官后回南昌修道，传说斩蛟龙除水患，拯救百姓。晋宁康二年（374年）携全家四十二口拔宅飞升，鸡犬亦随之升天，成语"一人得道，鸡犬升天"即出于此。后世建万寿宫（西山万寿宫）纪念。净明道以"忠孝"为核心，融合儒道，为道教文化重要流派。',
       coreTeaching: '净明忠孝——修道以忠孝为本，净明为体。忠孝者，道之实际也。欲修仙道，先修人道。不忠不孝，虽有方术，终不能成。修道即是做一个忠于国家、孝于父母的好人。',
-      achievements: '净明忠孝道创立者，以儒家伦理改造道教修行。斩蛟除害的传说使其成为民间最受崇拜的道教神祇之一。万寿宫遍布全国，为江西人的精神纽带。"一人得道，鸡犬升天"成语的来源。',
+      achievements: '净明忠孝道创立者，以儒家伦理改造道教文化修行。斩蛟除害的传说使其成为民间最受崇拜的道教文化神祇之一。万寿宫遍布全国，为江西人的精神纽带。"一人得道，鸡犬升天"成语的来源。',
       templeNames: [
         { name: '西山万寿宫', nameEn: 'Xishan Wanshou Palace', role: '许真君飞升之地·净明道祖庭', location: '江西南昌' },
       ],
       koans: [
-        { title: '斩蛟除害', description: '传说鄱阳湖蛟龙为患，水灾频仍。许逊以道法斩杀蛟龙，解除水患，拯救万民。此后百姓感恩戴德，建庙祀之。体现了道教济世利民的精神。' },
-        { title: '拔宅飞升', description: '许逊修道有成，晋宁康二年携全家四十二口及鸡犬一起白日飞升。邻里望见其宅拔地而起，冉冉升天。此为道教"举家飞升"的典型故事。' },
+        { title: '斩蛟除害', description: '传说鄱阳湖蛟龙为患，水灾频仍。许逊以道法斩杀蛟龙，解除水患，拯救万民。此后百姓感恩戴德，建庙祀之。体现了道教文化济世利民的精神。' },
+        { title: '拔宅飞升', description: '许逊修道有成，晋宁康二年携全家四十二口及鸡犬一起白日飞升。邻里望见其宅拔地而起，冉冉升天。此为道教文化"举家飞升"的典型故事。' },
       ],
       classicQuotes: ['欲修仙道，先修人道', '忠孝者，道之实际也', '净明者，无幽不烛，纤尘不染'],
       works: [],
@@ -5706,18 +5706,18 @@ async function main() {
       dates: '252-334',
       title: '紫虚元君·上清派开宗祖师',
       school: '上清灵宝', generation: 1,
-      biography: '魏华存（252-334），字贤安，任城（今山东济宁）人，西晋女道士，上清派开宗祖师。出身官宦之家，自幼好道。嫁南阳刘幼彦为妻，生二子。后修道于衡山，据传感通真人降授《上清大洞真经》等经典。被尊为上清派第一代宗师、"紫虚元君"。魏华存是道教史上最重要的女性宗教家，上清经系因她而诞生，影响道教发展近千年。后世尊为南岳夫人。',
+      biography: '魏华存（252-334），字贤安，任城（今山东济宁）人，西晋女道士，上清派开宗祖师。出身官宦之家，自幼好道。嫁南阳刘幼彦为妻，生二子。后修道于衡山，据传感通真人降授《上清大洞真经》等经典。被尊为上清派第一代宗师、"紫虚元君"。魏华存是道教文化史上最重要的女性文化传统家，上清经系因她而诞生，影响道教文化发展近千年。后世尊为南岳夫人。',
       coreTeaching: '存思内观——通过冥想观想体内神灵，与天地真神沟通。上清经法以存思为核心修行方法，观想日月星辰在体内运转。心神合一，以道化形——修炼的终极目标是形神俱妙、与道合真。',
-      achievements: '上清派开宗祖师，道教史上最重要的女性宗教家。传授《上清大洞真经》等核心经典。开创存思内观的修行传统。被道教尊为紫虚元君、南岳夫人。',
+      achievements: '上清派开宗祖师，道教文化史上最重要的女性文化传统家。传授《上清大洞真经》等核心经典。开创存思内观的修行传统。被道教文化尊为紫虚元君、南岳夫人。',
       templeNames: [
         { name: '南岳黄庭观', nameEn: 'Huangting Taoist Temple', role: '魏华存修道之地', location: '湖南衡阳' },
       ],
       koans: [
-        { title: '真人降经', description: '魏华存虔诚修道，感动上界真人降临，授以《上清大洞真经》三十一卷及《黄庭经》。这些经典成为上清派的核心法典，也是整个道教内修传统的重要经典。' },
+        { title: '真人降经', description: '魏华存虔诚修道，感动上界真人降临，授以《上清大洞真经》三十一卷及《黄庭经》。这些经典成为上清派的核心法典，也是整个道教文化内修传统的重要经典。' },
       ],
       classicQuotes: ['一心精诚，存神内观', '形神俱妙，与道合真'],
       works: [
-        { title: '黄庭经(传授)', description: '《黄庭内景经》和《黄庭外景经》，道教内修的核心经典，论述体内神灵和存思修炼方法。' },
+        { title: '黄庭经(传授)', description: '《黄庭内景经》和《黄庭外景经》，道教文化内修的核心经典，论述体内神灵和存思修炼方法。' },
       ],
       imageUrl: null,
     },
@@ -5747,11 +5747,11 @@ async function main() {
     data: {
       name: '陆修静', nameEn: 'Lu Xiujing', religionId: taoismId,
       dates: '406-477',
-      title: '简寂先生·道教科仪大师',
+      title: '简寂先生·道教文化科仪大师',
       school: '上清灵宝', generation: 3,
-      biography: '陆修静（406-477），字元德，吴兴东迁（今浙江湖州）人，南朝宋著名道士。遍历名山，广收道书。宋明帝时入庐山修道，建简寂观。受命编纂道教经典，首创三洞分类法（洞真、洞玄、洞神），奠定道藏编纂体系。系统整理灵宝派科仪，制定斋醮仪式规范，使道教仪式从杂乱走向规范化。被称为"道教科仪的集大成者"。',
-      coreTeaching: '三洞分类——将道教经典分为洞真（上清）、洞玄（灵宝）、洞神（三皇）三大部类，建立道教经典的分类体系。斋醮科仪——制定系统的道教仪式规范，使祭祀、斋醮有章可循。',
-      achievements: '创立道教经典三洞分类法，为道藏编纂奠定基础。系统整理灵宝科仪，使道教仪式规范化。收集整理道教经书一千余卷。被后世尊为灵宝派重要宗师。',
+      biography: '陆修静（406-477），字元德，吴兴东迁（今浙江湖州）人，南朝宋著名道士。遍历名山，广收道书。宋明帝时入庐山修道，建简寂观。受命编纂道教文化经典，首创三洞分类法（洞真、洞玄、洞神），奠定道藏编纂体系。系统整理灵宝派科仪，制定斋醮仪式规范，使道教文化仪式从杂乱走向规范化。被称为"道教文化科仪的集大成者"。',
+      coreTeaching: '三洞分类——将道教文化经典分为洞真（上清）、洞玄（灵宝）、洞神（三皇）三大部类，建立道教文化经典的分类体系。斋醮科仪——制定系统的道教文化仪式规范，使祭祀、斋醮有章可循。',
+      achievements: '创立道教文化经典三洞分类法，为道藏编纂奠定基础。系统整理灵宝科仪，使道教文化仪式规范化。收集整理道教文化经书一千余卷。被后世尊为灵宝派重要宗师。',
       templeNames: [
         { name: '庐山简寂观', nameEn: 'Jianji Monastery', role: '陆修静修道著述之地', location: '江西庐山' },
       ],
@@ -5760,8 +5760,8 @@ async function main() {
       ],
       classicQuotes: ['三洞者，通玄达妙之总名也', '斋者，齐也，齐正身心，不令放逸'],
       works: [
-        { title: '三洞经书目录', description: '首次系统编纂道教经典目录，为道藏编纂奠定基础。' },
-        { title: '灵宝科仪', description: '系统整理灵宝派斋醮仪式，使道教仪式走向规范。' },
+        { title: '三洞经书目录', description: '首次系统编纂道教文化经典目录，为道藏编纂奠定基础。' },
+        { title: '灵宝科仪', description: '系统整理灵宝派斋醮仪式，使道教文化仪式走向规范。' },
       ],
       imageUrl: null,
     },
@@ -5774,8 +5774,8 @@ async function main() {
       title: '山中宰相·华阳隐居',
       school: '上清灵宝', generation: 4,
       biography: '陶弘景（456-536），字通明，自号华阳隐居，丹阳秣陵（今南京）人。南朝齐梁时期著名道士、医药学家、文学家。十岁读葛洪《神仙传》而立志修道。历任诸王侍读，后辞官隐居茅山，建华阳馆。梁武帝即位后常以书信问政于他，时人称"山中宰相"。整理杨羲、许谧上清经典，撰《真诰》二十卷。精通天文、历算、医药、本草，编《本草经集注》，为中国药学史的里程碑。茅山宗（上清派茅山支派）因他而大盛。',
-      coreTeaching: '上清存思与外丹炼制并重。修道不离世——虽隐居山林，仍心系天下。学问广博——道教修行不限于宗教，医药、天文、历算皆可入道。',
-      achievements: '整理上清经典，撰《真诰》二十卷，确立茅山宗地位。编《本草经集注》，为中国药学史里程碑。"山中宰相"之名传千古。使茅山成为道教圣地。精通多个学科，为道教文化百科式人物。',
+      coreTeaching: '上清存思与外丹炼制并重。修道不离世——虽隐居山林，仍心系天下。学问广博——道教文化修行不限于文化传统，医药、天文、历算皆可入道。',
+      achievements: '整理上清经典，撰《真诰》二十卷，确立茅山宗地位。编《本草经集注》，为中国药学史里程碑。"山中宰相"之名传千古。使茅山成为道教文化圣地。精通多个学科，为道教文化百科式人物。',
       templeNames: [
         { name: '茅山华阳洞', nameEn: 'Maoshan Huayang Cave', role: '陶弘景隐居修道之地', location: '江苏句容茅山' },
       ],
@@ -5798,9 +5798,9 @@ async function main() {
       dates: '647-735',
       title: '白云先生·道隐',
       school: '上清灵宝', generation: 5,
-      biography: '司马承祯（647-735），字子微，号白云先生，河内温县（今河南温县）人，唐代著名道士。师事上清派第十一代宗师潘师正，为上清派第十二代宗师。隐居天台山玉霄峰，修道四十余年。唐睿宗、玄宗先后召见，李白亦曾拜访。精通书法、篆刻，善于道教理论著述。其《坐忘论》系统阐述道教内修七个阶段，是道教修行理论的经典之作。',
+      biography: '司马承祯（647-735），字子微，号白云先生，河内温县（今河南温县）人，唐代著名道士。师事上清派第十一代宗师潘师正，为上清派第十二代宗师。隐居天台山玉霄峰，修道四十余年。唐睿宗、玄宗先后召见，李白亦曾拜访。精通书法、篆刻，善于道教文化理论著述。其《坐忘论》系统阐述道教文化内修七个阶段，是道教文化修行理论的经典之作。',
       coreTeaching: '坐忘七阶——敬信、断缘、收心、简事、真观、泰定、得道，循序渐进的修行次第。主静去欲，形如槁木，心如死灰。由外而内、由粗而细、由动而静，最终形神合道。',
-      achievements: '上清派第十二代宗师。著《坐忘论》，系统化道教修行理论。受三代唐帝礼遇，提升道教社会地位。精通书法篆刻，有"道门王羲之"之称。',
+      achievements: '上清派第十二代宗师。著《坐忘论》，系统化道教文化修行理论。受三代唐帝礼遇，提升道教文化社会地位。精通书法篆刻，有"道门王羲之"之称。',
       templeNames: [
         { name: '天台山桐柏宫', nameEn: 'Tongbai Palace', role: '司马承祯修道之地', location: '浙江天台' },
       ],
@@ -5809,8 +5809,8 @@ async function main() {
       ],
       classicQuotes: ['坐忘者，因存以息存，息存而忘', '心无所著，万境不能动', '道者，神异之物，灵而有性'],
       works: [
-        { title: '坐忘论', description: '阐述修道七个阶段：敬信、断缘、收心、简事、真观、泰定、得道。道教修行理论经典。' },
-        { title: '天隐子', description: '论述道教修炼方法，包括斋戒、安处、存想、坐忘、神解等。' },
+        { title: '坐忘论', description: '阐述修道七个阶段：敬信、断缘、收心、简事、真观、泰定、得道。道教文化修行理论经典。' },
+        { title: '天隐子', description: '论述道教文化修炼方法，包括斋戒、安处、存想、坐忘、神解等。' },
       ],
       imageUrl: null,
     },
@@ -5820,11 +5820,11 @@ async function main() {
     data: {
       name: '杜光庭', nameEn: 'Du Guangting', religionId: taoismId,
       dates: '850-933',
-      title: '广成先生·道教百科全书',
+      title: '广成先生·道教文化百科全书',
       school: '上清灵宝', generation: 6,
-      biography: '杜光庭（850-933），字宾至，处州缙云（今浙江缙云）人，晚唐五代著名道士、学者。少习儒学，后入天台山修道。历仕唐僖宗、前蜀王建、王衍三朝。博学多才，著述等身，涉及道教科仪、教理、传记、文学等各方面，被称为"道教百科全书式人物"。晚年隐居青城山，专事著述。其作品对后世道教发展影响深远。',
-      coreTeaching: '道教义理须与科仪实践并重。博采众长，融汇各派——不拘一宗一派，博采上清、灵宝、正一各派之长。以文弘道——著述是传道的重要方式。',
-      achievements: '著述百余种，为道教史上最多产的学者之一。编纂道教科仪集成，影响后世千年。文学创作亦佳，《虬髯客传》为唐传奇名篇。被称为道教百科全书式人物。',
+      biography: '杜光庭（850-933），字宾至，处州缙云（今浙江缙云）人，晚唐五代著名道士、学者。少习儒学，后入天台山修道。历仕唐僖宗、前蜀王建、王衍三朝。博学多才，著述等身，涉及道教文化科仪、教理、传记、文学等各方面，被称为"道教文化百科全书式人物"。晚年隐居青城山，专事著述。其作品对后世道教文化发展影响深远。',
+      coreTeaching: '道教文化义理须与科仪实践并重。博采众长，融汇各派——不拘一宗一派，博采上清、灵宝、正一各派之长。以文弘道——著述是传道的重要方式。',
+      achievements: '著述百余种，为道教文化史上最多产的学者之一。编纂道教文化科仪集成，影响后世千年。文学创作亦佳，《虬髯客传》为唐传奇名篇。被称为道教文化百科全书式人物。',
       templeNames: [
         { name: '青城山', nameEn: 'Qingcheng Mountain', role: '杜光庭晚年隐居著述之地', location: '四川都江堰' },
       ],
@@ -5832,7 +5832,7 @@ async function main() {
       classicQuotes: ['道之为物，居于太虚之先', '圣人之教，以道为宗'],
       works: [
         { title: '道德真经广圣义', description: '对《道德经》的系统注释，综合历代注家观点，为道经注释集大成之作。' },
-        { title: '广成集', description: '收录科仪、表章、诗文等，是了解唐代道教的重要文献。' },
+        { title: '广成集', description: '收录科仪、表章、诗文等，是了解唐代道教文化的重要文献。' },
       ],
       imageUrl: null,
     },
@@ -5854,7 +5854,7 @@ async function main() {
         { name: '烟霞洞', nameEn: 'Yanxia Cave', role: '马钰修道之处', location: '山东昆嵛山' },
       ],
       koans: [
-        { title: '弃家求道', description: '马钰家境富裕，王重阳以种种异行考验其道心。马钰终弃万贯家财，与妻子孙不二先后出家修道。夫妻皆成全真大师，在道教史上传为佳话。' },
+        { title: '弃家求道', description: '马钰家境富裕，王重阳以种种异行考验其道心。马钰终弃万贯家财，与妻子孙不二先后出家修道。夫妻皆成全真大师，在道教文化史上传为佳话。' },
       ],
       classicQuotes: ['修行只在日用间', '心清意静天堂路', '无为清净是真修'],
       works: [
@@ -5873,7 +5873,7 @@ async function main() {
       teacherId: wangChongyang.id,
       biography: '谭处端（1123-1185），字通正，号长真子，山东宁海人。全真七子之一，南无派创始人。原患风痹症半身不遂，闻王重阳之名前去求治，重阳以道法治愈其病。遂拜师修道，精勤不懈。主张以打坐存神为修行核心，创立南无派。',
       coreTeaching: '存神养气——以打坐冥想为核心修行方法。"南无"即皈依之意，一心皈依大道。修心为上，苦行辅之。',
-      achievements: '全真七子之一，创立南无派。以病入道，体现道教修行的疗愈力量。南无派传承至今。',
+      achievements: '全真七子之一，创立南无派。以病入道，体现道教文化修行的疗愈力量。南无派传承至今。',
       templeNames: [],
       koans: [
         { title: '病中悟道', description: '谭处端身患半身不遂多年，百药无效。闻王重阳来山东传道，抱病前往。重阳不施药饵，以道法点化其心。谭处端豁然开悟，病竟不治而愈。由此知身病不若心病，心通则百病消。' },
@@ -5893,9 +5893,9 @@ async function main() {
       title: '长春真人·龙门派祖·一言止杀',
       school: '全真派', generation: 2,
       teacherId: wangChongyang.id,
-      biography: '丘处机（1148-1227），字通密，号长春子，山东栖霞人。全真七子中影响最大者，龙门派创始人。19岁出家修道，在昆嵛山烟霞洞等处苦修多年。1219年，成吉思汗遣使征召，丘处机以73岁高龄率弟子西行三万里至大雪山（今阿富汗）觐见。丘处机劝成吉思汗"敬天爱民""减少杀戮"，成吉思汗深为折服，尊为"神仙"。此次西行被弟子李志常记录为《长春真人西游记》。蒙古赐其掌管天下道教，全真道因此大盛。龙门派后成为全真道最大支派。',
+      biography: '丘处机（1148-1227），字通密，号长春子，山东栖霞人。全真七子中影响最大者，龙门派创始人。19岁出家修道，在昆嵛山烟霞洞等处苦修多年。1219年，成吉思汗遣使征召，丘处机以73岁高龄率弟子西行三万里至大雪山（今阿富汗）觐见。丘处机劝成吉思汗"敬天爱民""减少杀戮"，成吉思汗深为折服，尊为"神仙"。此次西行被弟子李志常记录为《长春真人西游记》。蒙古赐其掌管天下道教文化，全真道因此大盛。龙门派后成为全真道最大支派。',
       coreTeaching: '清心寡欲，苦行修炼。一言止杀——以慈悲之心劝化帝王，减少战争杀戮。修道者当以天下苍生为念，不可独善其身。龙门心法以打坐功夫为根本。',
-      achievements: '全真七子中影响最大者。万里西行劝谏成吉思汗"减少杀戮"，救人无数。创立龙门派，为全真道最大支派。掌管天下道教，全真道因此大盛。《长春真人西游记》为中西交通史重要文献。',
+      achievements: '全真七子中影响最大者。万里西行劝谏成吉思汗"减少杀戮"，救人无数。创立龙门派，为全真道最大支派。掌管天下道教文化，全真道因此大盛。《长春真人西游记》为中西交通史重要文献。',
       templeNames: [
         { name: '北京白云观', nameEn: 'White Cloud Temple', role: '丘处机主持·龙门派祖庭', location: '北京' },
         { name: '栖霞太虚宫', nameEn: 'Taixu Palace', role: '丘处机故里道观', location: '山东栖霞' },
@@ -5906,7 +5906,7 @@ async function main() {
       ],
       classicQuotes: ['天道好生，止杀保民', '修道者当以天下苍生为念', '寡欲则身轻，清心则神爽', '学道之人，须要苦志'],
       works: [
-        { title: '摄生消息论', description: '论述四季养生方法，为道教养生经典。' },
+        { title: '摄生消息论', description: '论述四季养生方法，为道教文化养生经典。' },
         { title: '大丹直指', description: '论述内丹修炼方法。' },
       ],
       imageUrl: null,
@@ -5942,9 +5942,9 @@ async function main() {
       title: '清静散人·清静派祖·女丹始祖',
       school: '全真派', generation: 2,
       teacherId: wangChongyang.id,
-      biography: '孙不二（1119-1182），名富春，号不二，山东宁海人，马钰之妻。全真七子中唯一女性，清静派创始人。原为富家主妇，与丈夫马钰一同拜王重阳为师。为表修道决心，自毁容貌（以热油泼面），断绝世俗之念。独自前往洛阳修道六年，终成大道。开创女丹修炼法门，为道教女性修行提供了专门的理论体系。被后世尊为"坤道始祖"。',
+      biography: '孙不二（1119-1182），名富春，号不二，山东宁海人，马钰之妻。全真七子中唯一女性，清静派创始人。原为富家主妇，与丈夫马钰一同拜王重阳为师。为表修道决心，自毁容貌（以热油泼面），断绝世俗之念。独自前往洛阳修道六年，终成大道。开创女丹修炼法门，为道教文化女性修行提供了专门的理论体系。被后世尊为"坤道始祖"。',
       coreTeaching: '清静修炼——女性修道以清静为本。女丹修炼有别于男子——先炼形质（斩赤龙），后修性功。清静无为，柔弱守雌，正是道之根本。',
-      achievements: '全真七子唯一女性，道教最重要的女性宗师之一。创立清静派，开创女丹修炼法门。自毁容貌求道的决心为后世修道者楷模。为女性在道教中争得重要地位。',
+      achievements: '全真七子唯一女性，道教文化最重要的女性宗师之一。创立清静派，开创女丹修炼法门。自毁容貌求道的决心为后世修道者楷模。为女性在道教文化中争得重要地位。',
       templeNames: [
         { name: '洛阳风仙姑洞', nameEn: 'Feng Xiangu Cave', role: '孙不二修道之处', location: '河南洛阳' },
       ],
@@ -5953,7 +5953,7 @@ async function main() {
       ],
       classicQuotes: ['清静者，道之本也', '坤道柔顺，守雌抱一', '断却尘缘方见性'],
       works: [
-        { title: '孙不二元君法语', description: '论述女丹修炼方法和心得，为道教女丹经典。' },
+        { title: '孙不二元君法语', description: '论述女丹修炼方法和心得，为道教文化女丹经典。' },
       ],
       imageUrl: null,
     },
@@ -5987,18 +5987,18 @@ async function main() {
       dates: '283-343',
       title: '抱朴子·丹道先驱',
       school: '内丹养生', generation: 1,
-      biography: '葛洪（283-343），字稚川，自号抱朴子，丹阳句容（今江苏句容）人，东晋道士、炼丹家、医药学家。出身江南士族，少好道术，从祖父葛玄之弟子郑隐学道。博学多闻，著述宏富。其《抱朴子》内篇论神仙方药、鬼怪变化、养生延年、禳邪却祸，为道教理论的重要著作。精通炼丹术和医学，《肘后备急方》中记载的青蒿治疟疾，启发了屠呦呦发现青蒿素（2015年诺贝尔奖）。晚年入广东罗浮山修道炼丹。',
+      biography: '葛洪（283-343），字稚川，自号抱朴子，丹阳句容（今江苏句容）人，东晋道士、炼丹家、医药学家。出身江南士族，少好道术，从祖父葛玄之弟子郑隐学道。博学多闻，著述宏富。其《抱朴子》内篇论神仙方药、鬼怪变化、养生延年、禳邪却祸，为道教文化理论的重要著作。精通炼丹术和医学，《肘后备急方》中记载的青蒿治疟疾，启发了屠呦呦发现青蒿素（2015年诺贝尔奖）。晚年入广东罗浮山修道炼丹。',
       coreTeaching: '仙可学致——神仙不是天生的，凡人通过修炼可以成仙。以金丹大道为修炼核心。修仙须先积善行德，后炼金丹。外丹炼制与内在修行并重。兼修医术，济世利人。',
-      achievements: '著《抱朴子》，为道教理论体系的重要构建者。《肘后备急方》记载青蒿治疟疾，启发2015年诺贝尔奖。系统阐述金丹道理论。为道教"仙可学致"思想的理论代言人。',
+      achievements: '著《抱朴子》，为道教文化理论体系的重要构建者。《肘后备急方》记载青蒿治疟疾，启发2015年诺贝尔奖。系统阐述金丹道理论。为道教文化"仙可学致"思想的理论代言人。',
       templeNames: [
         { name: '罗浮山冲虚古观', nameEn: 'Chongxu Temple', role: '葛洪修道炼丹之地', location: '广东惠州' },
       ],
       koans: [
-        { title: '罗浮炼丹', description: '葛洪晚年携家入罗浮山，搭建丹房炼丹修道。山中岁月，一边炼丹求仙，一边著书立说。其弟子黄野人等随侍左右。罗浮山因此成为岭南道教圣地。' },
+        { title: '罗浮炼丹', description: '葛洪晚年携家入罗浮山，搭建丹房炼丹修道。山中岁月，一边炼丹求仙，一边著书立说。其弟子黄野人等随侍左右。罗浮山因此成为岭南道教文化圣地。' },
       ],
       classicQuotes: ['仙可学致，不死可得', '我命在我不在天', '志合者，不以山海为远', '人之所以死者，以其有身也'],
       works: [
-        { title: '抱朴子', description: '内篇二十卷论道教方术，外篇五十卷论社会人事。道教理论重要著作。' },
+        { title: '抱朴子', description: '内篇二十卷论道教文化方术，外篇五十卷论社会人事。道教文化理论重要著作。' },
         { title: '肘后备急方', description: '实用医方集，其中青蒿治疟记载启发了青蒿素的发现。' },
       ],
       imageUrl: null,
@@ -6011,9 +6011,9 @@ async function main() {
       dates: '796-?',
       title: '纯阳真人·八仙之首·剑仙',
       school: '内丹养生', generation: 2,
-      biography: '吕洞宾，名嵒（或岩），字洞宾，号纯阳子，河中府（今山西永济）人，唐代道士，八仙之一。传说两举进士不第，64岁时在长安酒肆遇钟离权，经"黄粱梦"点化悟道。后从钟离权学道，得金丹大道。传说精通剑术，好行侠仗义，游历天下度化有缘。全真道尊其为"纯阳祖师"，为全真五祖之一。在民间信仰中极为流行，各地纯阳宫遍布。吕洞宾形象融合了道士、剑客、诗人三重身份，是中国文化中最知名的道教人物之一。',
+      biography: '吕洞宾，名嵒（或岩），字洞宾，号纯阳子，河中府（今山西永济）人，唐代道士，八仙之一。传说两举进士不第，64岁时在长安酒肆遇钟离权，经"黄粱梦"点化悟道。后从钟离权学道，得金丹大道。传说精通剑术，好行侠仗义，游历天下度化有缘。全真道尊其为"纯阳祖师"，为全真五祖之一。在民间文化传统中极为流行，各地纯阳宫遍布。吕洞宾形象融合了道士、剑客、诗人三重身份，是中国文化中最知名的道教文化人物之一。',
       coreTeaching: '钟吕金丹道——以内丹修炼为核心，性命双修。先修命功（气），后修性功（神），最终形神俱妙。慈悲度世——修道有成须度化世人。一粒粟中藏世界，半升铛内煮山川。',
-      achievements: '八仙之首，中国最知名的道教人物。钟吕金丹道的传承者和推广者。全真五祖之一。民间吕祖信仰遍布天下，纯阳宫遍及各地。诗文传世，道教文学的代表。',
+      achievements: '八仙之首，中国最知名的道教文化人物。钟吕金丹道的传承者和推广者。全真五祖之一。民间吕祖文化传统遍布天下，纯阳宫遍及各地。诗文传世，道教文化文学的代表。',
       templeNames: [
         { name: '永乐纯阳宫', nameEn: 'Yongle Chunyang Palace', role: '吕祖传道之地', location: '山西芮城' },
         { name: '八仙宫', nameEn: 'Eight Immortals Palace', role: '吕洞宾度化之地', location: '陕西西安' },
@@ -6024,7 +6024,7 @@ async function main() {
       ],
       classicQuotes: ['一粒粟中藏世界，半升铛内煮山川', '朝游北海暮苍梧', '心平气和天地宽', '得道多助，施恩不图报'],
       works: [
-        { title: '吕祖全书', description: '收录吕洞宾诗文、丹法、度世故事等，为吕祖信仰的核心文献。' },
+        { title: '吕祖全书', description: '收录吕洞宾诗文、丹法、度世故事等，为吕祖文化传统的核心文献。' },
       ],
       imageUrl: null,
     },
@@ -6036,9 +6036,9 @@ async function main() {
       dates: '984-1082',
       title: '紫阳真人·南宗始祖',
       school: '内丹养生', generation: 3,
-      biography: '张伯端（984-1082），字平叔，号紫阳，天台（今浙江天台）人，北宋著名道士。一生坎坷，曾为幕僚，因事被谪流岭南。遇异人传授金丹大道，修炼有成。著《悟真篇》，以诗词阐述内丹修炼理论，为南宗丹法的奠基之作。主张先命后性——先修炼精气（命功），再修心性（性功），与全真派先性后命不同。被道教南宗尊为始祖，号"紫阳真人"。',
+      biography: '张伯端（984-1082），字平叔，号紫阳，天台（今浙江天台）人，北宋著名道士。一生坎坷，曾为幕僚，因事被谪流岭南。遇异人传授金丹大道，修炼有成。著《悟真篇》，以诗词阐述内丹修炼理论，为南宗丹法的奠基之作。主张先命后性——先修炼精气（命功），再修心性（性功），与全真派先性后命不同。被道教文化南宗尊为始祖，号"紫阳真人"。',
       coreTeaching: '先命后性——修炼应先从精气入手（命功），筑基有成后再修心性（性功）。药逢气类方成象，道在希夷合自然。内丹修炼的关键在于识得"真铅真汞"，以意导气，炼精化气、炼气化神、炼神还虚。',
-      achievements: '著《悟真篇》，为内丹学最重要的经典之一。开创道教南宗丹法体系。与北宗（全真道）并立，形成道教内丹南北二宗格局。享年近百岁，身体力行证明丹道养生之效。',
+      achievements: '著《悟真篇》，为内丹学最重要的经典之一。开创道教文化南宗丹法体系。与北宗（全真道）并立，形成道教文化内丹南北二宗格局。享年近百岁，身体力行证明丹道养生之效。',
       templeNames: [
         { name: '天台紫阳宫', nameEn: 'Ziyang Palace', role: '纪念张伯端', location: '浙江天台' },
       ],
@@ -6047,7 +6047,7 @@ async function main() {
       ],
       classicQuotes: ['药逢气类方成象，道在希夷合自然', '要知金液还丹法，须向家园下种栽', '不移一步到西天，端坐诸方在目前'],
       works: [
-        { title: '悟真篇', description: '以七言绝句、律诗和词的形式阐述内丹修炼，为道教南宗丹经之祖。' },
+        { title: '悟真篇', description: '以七言绝句、律诗和词的形式阐述内丹修炼，为道教文化南宗丹经之祖。' },
       ],
       imageUrl: null,
     },
@@ -6059,9 +6059,9 @@ async function main() {
       dates: '1134-1229',
       title: '紫清真人·南宗五祖之末·雷法宗师',
       school: '内丹养生', generation: 4,
-      biography: '白玉蟾（1134-1229），原名葛长庚，字如晦，号海琼子，祖籍福建闽清。南宋著名道士，道教南宗第五代传人（南五祖之末）。少年聪慧，博通经史。后入道修炼，游历天下名山。精通内丹、雷法、符箓、诗文书画，才华横溢。将南宗内丹学与雷法结合，创立了独特的修炼体系。在全国各地设立靖室传道，弟子遍布南方。诗文书画俱佳，为道教文艺的代表人物。',
+      biography: '白玉蟾（1134-1229），原名葛长庚，字如晦，号海琼子，祖籍福建闽清。南宋著名道士，道教文化南宗第五代传人（南五祖之末）。少年聪慧，博通经史。后入道修炼，游历天下名山。精通内丹、雷法、符箓、诗文书画，才华横溢。将南宗内丹学与雷法结合，创立了独特的修炼体系。在全国各地设立靖室传道，弟子遍布南方。诗文书画俱佳，为道教文化文艺的代表人物。',
       coreTeaching: '内丹与雷法并重——以内丹修炼为本，以雷法济世为用。精气神三宝合一，成就金丹大道。修道须文武兼备——内修丹道以证道果，外行雷法以济世利民。',
-      achievements: '南宗五祖之末，完成了南宗丹法的体系建设。将内丹与雷法结合，创立新的修炼体系。诗文书画俱佳，为道教文艺史的代表人物。在南方广设靖室，推动道教南宗传播。',
+      achievements: '南宗五祖之末，完成了南宗丹法的体系建设。将内丹与雷法结合，创立新的修炼体系。诗文书画俱佳，为道教文化文艺史的代表人物。在南方广设靖室，推动道教文化南宗传播。',
       templeNames: [
         { name: '武夷山止止庵', nameEn: 'Zhizhi Temple', role: '白玉蟾修道传法之地', location: '福建武夷山' },
       ],
@@ -6069,7 +6069,7 @@ async function main() {
       classicQuotes: ['静坐焚香万虑空', '白云黄鹤是知音', '一点灵光照大千'],
       works: [
         { title: '海琼白真人语录', description: '收录修道语录和丹法心得。' },
-        { title: '海琼玉蟾先生文集', description: '诗文集，展示道教文人的文学才华。' },
+        { title: '海琼玉蟾先生文集', description: '诗文集，展示道教文化文人的文学才华。' },
       ],
       imageUrl: null,
     },
@@ -6086,7 +6086,7 @@ async function main() {
       achievements: '武当内家拳（太极拳前身）创始人。将内丹修炼与武术完美结合。明朝诸帝寻访不遇，传奇色彩浓厚。太极拳传播全球，为世界非物质文化遗产。武当山因此成为武术圣地。',
       templeNames: [
         { name: '武当山遇真宫', nameEn: 'Yuzhen Palace', role: '张三丰修道之地', location: '湖北十堰' },
-        { name: '武当山紫霄宫', nameEn: 'Zixiao Palace', role: '武当道教核心宫观', location: '湖北十堰' },
+        { name: '武当山紫霄宫', nameEn: 'Zixiao Palace', role: '武当道教文化核心宫观', location: '湖北十堰' },
       ],
       koans: [
         { title: '观鹊蛇斗', description: '传说张三丰在武当山修道时，偶见喜鹊与蛇相斗。蛇以柔软之身闪避鹊的攻击，以缠绕之法克制鹊的啄击。张三丰由此悟出"以柔克刚"之理，创立了太极拳法。' },
@@ -6105,17 +6105,17 @@ async function main() {
     data: {
       name: '陈撄宁', nameEn: 'Chen Yingning', religionId: taoismId,
       dates: '1880-1969',
-      title: '仙学巨子·当代道教复兴者',
+      title: '仙学巨子·当代道教文化复兴者',
       school: '内丹养生', generation: 6,
-      biography: '陈撄宁（1880-1969），原名元善，字撄宁，安徽怀宁人。近现代最重要的道教学者和修炼家。幼年体弱多病，遂立志研究仙学以求健康长寿。遍访名山高道，精通内丹、医学、中药。提出"仙学"概念，主张将道教修炼从宗教信仰中剥离出来，以科学方法研究人体潜能。创办《扬善》《仙道月报》等刊物，推广道教养生文化。1957年当选中国道教协会副会长。被誉为"当代太上老君""仙学巨子"。',
-      coreTeaching: '仙学——将道教修炼科学化、系统化研究。不拘宗教形式，直接研究人体长生之道。修炼的核心是性命双修，以科学态度对待传统丹道。养生延年是每个人都可以实践的。',
-      achievements: '提出"仙学"概念，推动道教修炼的现代化研究。创办《扬善》《仙道月报》，推广道教文化。将传统丹道与现代科学思维结合。中国道教协会创始人之一。培养了一批道教研究和修炼人才。',
+      biography: '陈撄宁（1880-1969），原名元善，字撄宁，安徽怀宁人。近现代最重要的道教文化学者和修炼家。幼年体弱多病，遂立志研究仙学以求健康长寿。遍访名山高道，精通内丹、医学、中药。提出"仙学"概念，主张将道教文化修炼从文化传统人文精神中剥离出来，以科学方法研究人体潜能。创办《扬善》《仙道月报》等刊物，推广道教文化养生文化。1957年当选中国道教文化协会副会长。被誉为"当代太上老君""仙学巨子"。',
+      coreTeaching: '仙学——将道教文化修炼科学化、系统化研究。不拘文化传统形式，直接研究人体长生之道。修炼的核心是性命双修，以科学态度对待传统丹道。养生延年是每个人都可以实践的。',
+      achievements: '提出"仙学"概念，推动道教文化修炼的现代化研究。创办《扬善》《仙道月报》，推广道教文化。将传统丹道与现代科学思维结合。中国道教文化协会创始人之一。培养了一批道教文化研究和修炼人才。',
       templeNames: [],
       koans: [],
       classicQuotes: ['仙学者，以人类长生为研究对象之学术也', '我命在我不在天，还丹成金亿万年'],
       works: [
-        { title: '灵源大道歌白话注解', description: '以现代白话文注解道教经典，使古代丹经通俗易懂。' },
-        { title: '黄庭经讲义', description: '对道教内修经典《黄庭经》的系统讲解。' },
+        { title: '灵源大道歌白话注解', description: '以现代白话文注解道教文化经典，使古代丹经通俗易懂。' },
+        { title: '黄庭经讲义', description: '对道教文化内修经典《黄庭经》的系统讲解。' },
       ],
       imageUrl: null,
     },
@@ -6124,7 +6124,7 @@ async function main() {
   const taoistCount = 26; // 26 new + 3 updated
   console.log(`  ✓ ${taoistCount} new Taoist patriarchs created + 3 updated (5 traditions: Philosophy/Zhengyi/Shangqing-Lingbao/Quanzhen/Neidan)`);
 
-  // ── 4o. 儒教先贤 (Confucian Patriarchs/Sages) ──
+  // ── 4o. 儒家文化先贤 (Confucian Patriarchs/Sages) ──
   console.log('  Creating Confucian patriarchs (4o)...');
 
   const confucianismId = religionMap['confucianism'];
@@ -6410,7 +6410,7 @@ async function main() {
       name: '韩愈', nameEn: 'Han Yu', religionId: confucianismId,
       dates: '768-824', title: '文公·文起八代之衰·道统说',
       school: '汉唐经学', generation: 4,
-      biography: '韩愈（768-824），字退之，河南河阳（今河南孟州）人，唐代文学家、思想家。古文运动领袖，"唐宋八大家"之首。三岁丧父，由兄嫂抚养。科举及第后仕途坎坷，屡遭贬谪。最著名的贬谪为谏迎佛骨被贬潮州——《谏佛骨表》直斥佛教有害国家，被贬八千里。在潮州兴学化民，政绩卓著。韩愈最重要的思想贡献是提出"道统说"——尧舜禹汤文武周公孔孟的传道谱系，确立了儒学正统。苏轼评其"文起八代之衰，而道济天下之溺"。',
+      biography: '韩愈（768-824），字退之，河南河阳（今河南孟州）人，唐代文学家、思想家。古文运动领袖，"唐宋八大家"之首。三岁丧父，由兄嫂抚养。科举及第后仕途坎坷，屡遭贬谪。最著名的贬谪为谏迎佛骨被贬潮州——《谏佛骨表》直斥佛教文化有害国家，被贬八千里。在潮州兴学化民，政绩卓著。韩愈最重要的思想贡献是提出"道统说"——尧舜禹汤文武周公孔孟的传道谱系，确立了儒学正统。苏轼评其"文起八代之衰，而道济天下之溺"。',
       coreTeaching: '道统说——儒学有从尧舜到孟子的正统传承，中间断裂千年，由韩愈重新接续。原道——仁与义为定名，道与德为虚位。文以载道——文章应当承载道理。师道——古之学者必有师，师者传道授业解惑也。',
       achievements: '提出"道统说"，确立儒学正统传承观念。古文运动领袖，"唐宋八大家"之首。"文起八代之衰"，重振中国散文传统。《师说》《原道》《谏佛骨表》等千古名篇。谏迎佛骨表现了儒者的气节与担当。',
       templeNames: [{ name: '韩文公祠', nameEn: 'Han Yu Memorial', role: '韩愈在潮州的纪念祠', location: '广东潮州' }],
@@ -6644,7 +6644,7 @@ async function main() {
       koans: [],
       classicQuotes: ['体用不二', '万物莫不有翕辟', '返本开新'],
       works: [
-        { title: '新唯识论', description: '从批判佛教唯识学出发，建构新的本体论。现代新儒学的奠基之作。' },
+        { title: '新唯识论', description: '从批判佛教文化唯识学出发，建构新的本体论。现代新儒学的奠基之作。' },
         { title: '原儒', description: '阐述儒学本义，主张回归孔孟六经。' },
       ],
       imageUrl: null,
@@ -6753,7 +6753,7 @@ async function main() {
   const confucianCount = 25; // 25 new + 3 updated
   console.log(`  ✓ ${confucianCount} new Confucian patriarchs created + 3 updated (5 schools: Pre-Qin/Han-Tang/Song-Ming/Yangming/Modern)`);
 
-  // ── 4p. 印度教圣贤 (Hindu Patriarchs/Sages) ──
+  // ── 4p. 印度文化圣贤 (Hindu Patriarchs/Sages) ──
   console.log('  Creating Hindu patriarchs (4p)...');
 
   const hinduismId = religionMap['hinduism'];
@@ -6901,13 +6901,13 @@ async function main() {
       name: '罗摩克里希那', nameEn: 'Ramakrishna', religionId: hinduismId,
       dates: '1836-1886', title: '大神秘主义者·万教归一实证者',
       school: '近现代复兴', generation: 1,
-      biography: '罗摩克里希那（1836-1886），达克希涅什瓦尔迦梨女神庙祭司。亲身实修验证印度教、伊斯兰教和基督教灵性道路。近代印度教最伟大的神秘主义者。',
-      coreTeaching: '万教归一——所有宗教都是通向同一终极真理的不同道路。直接灵性体验高于经典知识。',
+      biography: '罗摩克里希那（1836-1886），达克希涅什瓦尔迦梨女神庙祭司。亲身实修验证印度文化、伊斯兰文化和基督文化灵性道路。近代印度文化最伟大的神秘主义者。',
+      coreTeaching: '万教归一——所有文化传统都是通向同一终极真理的不同道路。直接灵性体验高于经典知识。',
       templeNames: [
         { name: '达克希涅什瓦尔寺', nameEn: 'Dakshineswar Kali Temple', role: '罗摩克里希那修行圣地', location: '加尔各答' },
       ],
       koans: [],
-      classicQuotes: ['有多少信仰，就有多少通往神的道路', '上帝在每个人心中，只是大多数人不知道', '只要你有真诚的渴望，神必定显现'],
+      classicQuotes: ['有多少人文精神，就有多少通往神的道路', '上帝在每个人心中，只是大多数人不知道', '只要你有真诚的渴望，神必定显现'],
       works: [],
       imageUrl: null,
     },
@@ -6916,9 +6916,9 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '斯瓦米·维韦卡南达', nameEn: 'Swami Vivekananda', religionId: hinduismId,
-      dates: '1863-1902', title: '实用吠檀多倡导者·世界宗教大会演说家',
+      dates: '1863-1902', title: '实用吠檀多倡导者·世界文化传统大会演说家',
       school: '瑜伽修行', generation: 3, teacherId: ramakrishna.id,
-      biography: '维韦卡南达（1863-1902），罗摩克里希那最杰出弟子。1893年芝加哥世界宗教大会演讲震惊世界。创立罗摩克里希那修道会，提倡"实用吠檀多"。三十九岁英年早逝。',
+      biography: '维韦卡南达（1863-1902），罗摩克里希那最杰出弟子。1893年芝加哥世界文化传统大会演讲震惊世界。创立罗摩克里希那修道会，提倡"实用吠檀多"。三十九岁英年早逝。',
       coreTeaching: '实用吠檀多——每个灵魂都是潜在的神圣，通过四种瑜伽综合修行显现内在神圣。服务人类就是服务神。',
       templeNames: [
         { name: '贝卢尔修道院', nameEn: 'Belur Math', role: '罗摩克里希那修道会总部', location: '西孟加拉邦' },
@@ -6985,13 +6985,13 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '迦比尔', nameEn: 'Kabir', religionId: hinduismId,
-      dates: '1440-1518', title: '超越宗教界限的诗人圣者',
+      dates: '1440-1518', title: '超越文化传统界限的诗人圣者',
       school: '虔信运动', generation: 2, teacherId: ramananda.id,
-      biography: '迦比尔（1440-1518），瓦拉纳西穆斯林织工家庭出身。既批评印度教偶像崇拜也批评伊斯兰教形式主义。诗歌影响了锡克教圣典。',
+      biography: '迦比尔（1440-1518），瓦拉纳西穆斯林织工家庭出身。既批评印度文化偶像崇拜也批评伊斯兰文化形式主义。诗歌影响了锡克文化圣典。',
       coreTeaching: '神超越一切名号和形式——不在庙里也不在清真寺里，就在每个人心中。',
       templeNames: [],
       koans: [],
-      classicQuotes: ['我不是印度教徒，也不是穆斯林', '你在哪里寻找我？我就在你身旁', '织这块布的人，比世上任何织工都精细'],
+      classicQuotes: ['我不是印度文化徒，也不是穆斯林', '你在哪里寻找我？我就在你身旁', '织这块布的人，比世上任何织工都精细'],
       works: [],
       imageUrl: null,
     },
@@ -7171,7 +7171,7 @@ async function main() {
         { name: '圣蒂尼克坦', nameEn: 'Santiniketan', role: '泰戈尔创办的大学和文化中心', location: '西孟加拉邦' },
       ],
       koans: [],
-      classicQuotes: ['世界以痛吻我，我要报之以歌', '信仰是感知的鸟，在黎明还是黑暗时已经歌唱', '让我的爱像阳光一样包围着你，却给你光辉灿烂的自由'],
+      classicQuotes: ['世界以痛吻我，我要报之以歌', '人文精神是感知的鸟，在黎明还是黑暗时已经歌唱', '让我的爱像阳光一样包围着你，却给你光辉灿烂的自由'],
       works: [
         { title: '吉檀迦利', description: '103首散文诗，获诺贝尔文学奖' },
       ],
@@ -7218,7 +7218,7 @@ async function main() {
   const hinduCount = 26;
   console.log(`  ✓ ${hinduCount} new Hindu sages created + 2 updated (5 schools: Vedanta/Yoga/Bhakti/Darshana/Modern)`);
 
-  // ── 4q. 犹太教先贤 (Jewish Patriarchs) ──
+  // ── 4q. 犹太文化先贤 (Jewish Patriarchs) ──
   console.log('  Creating Jewish patriarchs (4q)...');
 
   const judaismId = religionMap['judaism'];
@@ -7231,9 +7231,9 @@ async function main() {
         data: {
           nameEn: 'Abraham', dates: '前2000年', title: '信心之父·三教共祖',
           school: '圣经先知', generation: 1,
-          biography: '亚伯拉罕（约前2000年），犹太教、基督教和伊斯兰教三大一神教的共同始祖。上帝呼召他离开吾珥前往迦南应许之地，与他立约：后裔多如天上星、海边沙。在百岁得子以撒后，经受献祭独子的终极考验，以绝对信心回应上帝。希伯伦麦比拉洞是他与撒拉的安息之所，至今为犹太教、伊斯兰教共同圣地。',
-          coreTeaching: '绝对信心——一神信仰的根基。上帝是唯一真神，与信仰者立约。信心不是理解，而是在未知中顺服行走。',
-          achievements: '一神信仰之父，三大宗教共祖。与上帝立约，开创以色列民族。',
+          biography: '亚伯拉罕（约前2000年），犹太文化、基督文化和伊斯兰文化三大一神教的共同始祖。上帝呼召他离开吾珥前往迦南应许之地，与他立约：后裔多如天上星、海边沙。在百岁得子以撒后，经受献祭独子的终极考验，以绝对信心回应上帝。希伯伦麦比拉洞是他与撒拉的安息之所，至今为犹太文化、伊斯兰文化共同圣地。',
+          coreTeaching: '绝对信心——一神人文精神的根基。上帝是唯一真神，与文化传统信奉者立约。信心不是理解，而是在未知中顺服行走。',
+          achievements: '一神人文精神之父，三大文化传统共祖。与上帝立约，开创以色列民族。',
           templeNames: [{ name: '麦比拉洞', nameEn: 'Cave of Machpelah', role: '列祖安息之地', location: '希伯伦' }],
           koans: [], classicQuotes: ['我虽是尘土炉灰，还敢对主说话', '亚伯拉罕信耶和华，耶和华就以此为他的义'],
           works: [], imageUrl: null,
@@ -7249,12 +7249,12 @@ async function main() {
         data: {
           nameEn: 'Moses', dates: '前1400年', title: '最伟大的先知·十诫颁布者',
           school: '圣经先知', generation: 2,
-          biography: '摩西（约前1400年），犹太民族最伟大的先知和立法者。出生于埃及被法老女儿收养，后蒙上帝召唤于燃烧荆棘旁，率领以色列人出埃及过红海。在西奈山上接受上帝亲授的十诫和妥拉，是犹太律法的奠基者。四十年旷野流浪中塑造了一个民族的信仰和律法体系，却未能亲入应许之地。被尊为"先知中最伟大者"。',
+          biography: '摩西（约前1400年），犹太民族最伟大的先知和立法者。出生于埃及被法老女儿收养，后蒙上帝召唤于燃烧荆棘旁，率领以色列人出埃及过红海。在西奈山上接受上帝亲授的十诫和妥拉，是犹太律法的奠基者。四十年旷野流浪中塑造了一个民族的人文精神和律法体系，却未能亲入应许之地。被尊为"先知中最伟大者"。',
           coreTeaching: '妥拉——上帝律法是生活的根基。十诫涵盖人与神、人与人的根本关系。律法不是束缚而是通向自由的道路。',
           achievements: '率领以色列人出埃及，接受十诫，著妥拉五经。犹太律法体系奠基者。',
           templeNames: [{ name: '西奈山', nameEn: 'Mount Sinai', role: '十诫颁布·神人会面之地', location: '西奈半岛' }],
           koans: [], classicQuotes: ['我是自有永有的', '以色列啊，你要听！耶和华我们的神是独一的主', '你要尽心、尽性、尽力爱耶和华你的神'],
-          works: [{ title: '妥拉五经', description: '创世记至申命记，犹太教根本经典' }],
+          works: [{ title: '妥拉五经', description: '创世记至申命记，犹太文化根本经典' }],
           imageUrl: null,
         },
       })
@@ -7281,9 +7281,9 @@ async function main() {
       name: '所罗门王', nameEn: 'King Solomon', religionId: judaismId,
       dates: '前990-前931', title: '智慧之王·圣殿建造者',
       school: '圣经先知', generation: 3,
-      biography: '所罗门（前990-前931），大卫之子，以色列最富有和最智慧的国王。向上帝求智慧而非财富，获赐超凡判断力。建造了辉煌的第一圣殿——耶路撒冷圣殿，成为犹太信仰的中心。著箴言、传道书和雅歌三卷圣经。在位期间以色列达到黄金时代，四方来朝。',
+      biography: '所罗门（前990-前931），大卫之子，以色列最富有和最智慧的国王。向上帝求智慧而非财富，获赐超凡判断力。建造了辉煌的第一圣殿——耶路撒冷圣殿，成为犹太人文精神的中心。著箴言、传道书和雅歌三卷圣经。在位期间以色列达到黄金时代，四方来朝。',
       coreTeaching: '智慧始于敬畏上帝。世间万事皆有定时，日光之下并无新事。虚空的虚空，唯有敬畏神、谨守诫命才是人的本分。',
-      templeNames: [{ name: '耶路撒冷第一圣殿', nameEn: 'First Temple of Jerusalem', role: '所罗门建造·犹太信仰中心', location: '耶路撒冷圣殿山' }],
+      templeNames: [{ name: '耶路撒冷第一圣殿', nameEn: 'First Temple of Jerusalem', role: '所罗门建造·犹太人文精神中心', location: '耶路撒冷圣殿山' }],
       koans: [], classicQuotes: ['敬畏耶和华是智慧的开端', '虚空的虚空，凡事都是虚空', '日光之下并无新事'],
       works: [{ title: '箴言', description: '智慧格言集' }, { title: '传道书', description: '人生哲理省思' }],
       imageUrl: null,
@@ -7310,7 +7310,7 @@ async function main() {
       name: '希勒尔', nameEn: 'Hillel the Elder', religionId: judaismId,
       dates: '前110-10', title: '口传律法大师·金律',
       school: '拉比传统', generation: 1,
-      biography: '希勒尔（前110-10），巴比伦出生后移居耶路撒冷，成为犹太史上最重要的拉比之一。他和沙迈构成了拉比犹太教的两大学派。希勒尔以温和谦逊著称，他的"金律"——"己所不欲勿施于人，这就是全部妥拉"——成为犹太伦理的核心。发展了七条解经原则，为口传律法奠定方法论基础。',
+      biography: '希勒尔（前110-10），巴比伦出生后移居耶路撒冷，成为犹太史上最重要的拉比之一。他和沙迈构成了拉比犹太文化的两大学派。希勒尔以温和谦逊著称，他的"金律"——"己所不欲勿施于人，这就是全部妥拉"——成为犹太伦理的核心。发展了七条解经原则，为口传律法奠定方法论基础。',
       coreTeaching: '金律——己所不欲勿施于人，这就是全部妥拉，其余都是注释。去学习吧！谦逊和耐心是通向智慧的门户。',
       templeNames: [], koans: [],
       classicQuotes: ['己所不欲勿施于人——这就是全部妥拉', '若我不为自己，谁为我？若我只为自己，我算什么？若不是现在，更待何时？', '不要与世隔绝，不要自信到老'],
@@ -7364,11 +7364,11 @@ async function main() {
       name: '迈蒙尼德', nameEn: 'Maimonides', religionId: judaismId,
       dates: '1138-1204', title: '中世纪最伟大犹太学者',
       school: '拉比传统', generation: 5,
-      biography: '迈蒙尼德（1138-1204），全名拉比摩西·本·迈蒙，出生于西班牙科尔多瓦，后流亡至开罗任苏丹御医。著《迷途指津》融合亚里士多德哲学与犹太神学，著《密释纳妥拉》系统化全部犹太律法为十四卷巨著。提出犹太教十三条信仰原则，至今是犹太正统信仰的标准表述。被誉为"从摩西到摩西，没有人像摩西"。',
-      coreTeaching: '理性与信仰并行不悖。上帝的存在可以通过理性论证，但上帝的本质超越人类理解。信仰十三条原则是犹太教的根基。',
+      biography: '迈蒙尼德（1138-1204），全名拉比摩西·本·迈蒙，出生于西班牙科尔多瓦，后流亡至开罗任苏丹御医。著《迷途指津》融合亚里士多德哲学与犹太神学，著《密释纳妥拉》系统化全部犹太律法为十四卷巨著。提出犹太文化十三条人文精神原则，至今是犹太正统人文精神的标准表述。被誉为"从摩西到摩西，没有人像摩西"。',
+      coreTeaching: '理性与人文精神并行不悖。上帝的存在可以通过理性论证，但上帝的本质超越人类理解。人文精神十三条原则是犹太文化的根基。',
       templeNames: [{ name: '迈蒙尼德墓', nameEn: 'Tomb of Maimonides', role: '中世纪最伟大犹太学者安息地', location: '提比里亚' }],
       koans: [], classicQuotes: ['从摩西到摩西，没有人像摩西', '给予的最高境界是帮助人自立', '人应当接受真理，不论它来自何处'],
-      works: [{ title: '迷途指津', description: '犹太哲学巨著，融合理性与信仰' }, { title: '密释纳妥拉', description: '犹太律法系统化，十四卷' }],
+      works: [{ title: '迷途指津', description: '犹太哲学巨著，融合理性与人文精神' }, { title: '密释纳妥拉', description: '犹太律法系统化，十四卷' }],
       imageUrl: null,
     },
   });
@@ -7382,7 +7382,7 @@ async function main() {
       school: '卡巴拉神秘主义', generation: 1,
       biography: '西蒙·巴尔·约海（2世纪），阿基瓦拉比最杰出的弟子。因批评罗马统治被判死刑，与儿子在山洞中隐居十三年，潜心研读妥拉神秘层面。传统认为他是《光辉之书》（佐哈尔）的作者或灵感来源。他的忌日拉格·巴奥梅尔成为犹太节日，每年数十万人涌至梅龙山他的墓前庆祝。',
       coreTeaching: '妥拉有四层含义：字面、暗示、诠释和奥秘。只读字面是穿着衣服看人。灵魂之光隐藏在经文的每一个字母中。',
-      templeNames: [{ name: '梅龙山墓', nameEn: 'Tomb on Mount Meron', role: '拉格巴奥梅尔朝圣地', location: '上加利利' }],
+      templeNames: [{ name: '梅龙山墓', nameEn: 'Tomb on Mount Meron', role: '拉格巴奥梅尔文化探访地', location: '上加利利' }],
       koans: [], classicQuotes: ['妥拉的每个字都有七十层含义', '世界因三十六位义人而存在', '光辉照耀一切，却只有纯净的眼睛能看见'],
       works: [], imageUrl: null,
     },
@@ -7393,7 +7393,7 @@ async function main() {
       name: '摩西·德·莱昂', nameEn: 'Moses de León', religionId: judaismId,
       dates: '1250-1305', title: '光辉之书整理者',
       school: '卡巴拉神秘主义', generation: 2,
-      biography: '摩西·德·莱昂（1250-1305），西班牙卡巴拉学者。他在13世纪晚期公开了《光辉之书》（佐哈尔），声称这是西蒙·巴尔·约海的古老著作。无论其作者争议，佐哈尔成为犹太神秘主义最重要的经典，与圣经、塔木德并列为犹太教三大文献。',
+      biography: '摩西·德·莱昂（1250-1305），西班牙卡巴拉学者。他在13世纪晚期公开了《光辉之书》（佐哈尔），声称这是西蒙·巴尔·约海的古老著作。无论其作者争议，佐哈尔成为犹太神秘主义最重要的经典，与圣经、塔木德并列为犹太文化三大文献。',
       coreTeaching: '上帝通过十个质点（Sefirot）展现自身。每个灵魂都包含神圣的火花，修行的目的是收集这些火花回归源头。',
       templeNames: [], koans: [],
       classicQuotes: ['隐藏的光在创世之初就被保存，给未来的义人', '每个灵魂在降世前都知道全部妥拉'],
@@ -7434,7 +7434,7 @@ async function main() {
       name: '亚伯拉罕·阿布拉菲亚', nameEn: 'Abraham Abulafia', religionId: judaismId,
       dates: '1240-1291', title: '预言卡巴拉·字母冥想',
       school: '卡巴拉神秘主义', generation: 4,
-      biography: '亚伯拉罕·阿布拉菲亚（1240-1291），西班牙裔卡巴拉学者，创立预言卡巴拉（Kabbalah Nevuit）。他发展了一套通过希伯来字母组合、呼吸控制和身体姿势达到神秘体验的冥想技术。曾试图面见教皇尼古拉三世以讨论宗教真理。他的方法在正统犹太教中颇具争议，但深刻影响了后世冥想传统。',
+      biography: '亚伯拉罕·阿布拉菲亚（1240-1291），西班牙裔卡巴拉学者，创立预言卡巴拉（Kabbalah Nevuit）。他发展了一套通过希伯来字母组合、呼吸控制和身体姿势达到神秘体验的冥想技术。曾试图面见教皇尼古拉三世以讨论文化传统真理。他的方法在正统犹太文化中颇具争议，但深刻影响了后世冥想传统。',
       coreTeaching: '通过希伯来字母的组合与置换冥想，灵魂可以超越肉体限制，达到预言状态。字母是宇宙的建构材料。',
       templeNames: [], koans: [],
       classicQuotes: ['字母是灵魂通往天堂的阶梯', '当心灵完全集中于神圣之名，预言之门自然打开'],
@@ -7492,7 +7492,7 @@ async function main() {
       school: '哈西迪运动', generation: 3, teacherId: dovBer.id,
       biography: '纳赫曼（1772-1810），巴尔·谢姆·托夫的曾孙，布雷斯洛夫哈西迪王朝创始人。以讲述深奥的童话故事传达神秘教义而闻名。教导"整个世界是一座很窄的桥，关键是不要害怕"。三十八岁死于肺结核，没有指定继承人。追随者至今没有活的拉比领袖，被称为"死去的哈西迪"。',
       coreTeaching: '信心的核心是在黑暗中仍然相信。与上帝的个人对话（Hitbodedut）——每天独处，用自己的话向上帝倾诉。永远不要绝望。',
-      templeNames: [{ name: '乌曼墓', nameEn: 'Uman Tomb', role: '纳赫曼安息地·新年朝圣', location: '乌克兰乌曼' }],
+      templeNames: [{ name: '乌曼墓', nameEn: 'Uman Tomb', role: '纳赫曼安息地·新年文化探访', location: '乌克兰乌曼' }],
       koans: [], classicQuotes: ['整个世界是一座很窄的桥，关键是完全不要害怕', '如果你相信可以破坏，就要相信可以修复', '即使在最黑暗的地方也有光明'],
       works: [{ title: '纳赫曼故事集', description: '以童话形式传达的深奥卡巴拉教义' }],
       imageUrl: null,
@@ -7519,11 +7519,11 @@ async function main() {
       name: '摩西·门德尔松', nameEn: 'Moses Mendelssohn', religionId: judaismId,
       dates: '1729-1786', title: '犹太启蒙运动之父',
       school: '近现代思想', generation: 1,
-      biography: '摩西·门德尔松（1729-1786），犹太启蒙运动（Haskalah）之父。出身贫穷，自学成才，成为柏林最受尊敬的哲学家之一。将妥拉翻译成德语，为犹太人融入欧洲社会打开大门。主张犹太教是理性宗教，可与现代文明兼容。他证明了一个人可以同时是虔诚的犹太人和现代知识分子。',
-      coreTeaching: '犹太教是理性宗教，与启蒙理性完全兼容。国家不应干预个人信仰。犹太人可以在保持信仰的同时参与现代文明。',
+      biography: '摩西·门德尔松（1729-1786），犹太启蒙运动（Haskalah）之父。出身贫穷，自学成才，成为柏林最受尊敬的哲学家之一。将妥拉翻译成德语，为犹太人融入欧洲社会打开大门。主张犹太文化是理性文化传统，可与现代文明兼容。他证明了一个人可以同时是虔诚的犹太人和现代知识分子。',
+      coreTeaching: '犹太文化是理性文化传统，与启蒙理性完全兼容。国家不应干预个人人文精神。犹太人可以在保持人文精神的同时参与现代文明。',
       templeNames: [], koans: [],
-      classicQuotes: ['国家没有权力以奖惩手段干预个人信仰', '犹太教不是教条而是实践的宗教'],
-      works: [{ title: '耶路撒冷', description: '犹太教与政治权力分离的哲学论证' }],
+      classicQuotes: ['国家没有权力以奖惩手段干预个人人文精神', '犹太文化不是教条而是实践的文化传统'],
+      works: [{ title: '耶路撒冷', description: '犹太文化与政治权力分离的哲学论证' }],
       imageUrl: null,
     },
   });
@@ -7559,13 +7559,13 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '约瑟夫·索洛维奇克', nameEn: 'Joseph Soloveitchik', religionId: judaismId,
-      dates: '1903-1993', title: '孤独的信仰之人',
+      dates: '1903-1993', title: '孤独的人文精神之人',
       school: '近现代思想', generation: 3,
-      biography: '索洛维奇克（1903-1993），被称为"拉夫"（The Rav），现代正统犹太教最具影响力的思想家。出身立陶宛拉比世家，在柏林获哲学博士。在波士顿叶史瓦大学执教近半世纪，培养了几代正统拉比。著《孤独的信仰之人》探讨现代人在信仰与世俗之间的孤独与张力。',
-      coreTeaching: '信仰之人注定孤独——他同时生活在两个世界。哈拉卡（犹太律法）不仅是规则，更是与上帝共同创造的过程。',
+      biography: '索洛维奇克（1903-1993），被称为"拉夫"（The Rav），现代正统犹太文化最具影响力的思想家。出身立陶宛拉比世家，在柏林获哲学博士。在波士顿叶史瓦大学执教近半世纪，培养了几代正统拉比。著《孤独的人文精神之人》探讨现代人在人文精神与世俗之间的孤独与张力。',
+      coreTeaching: '人文精神之人注定孤独——他同时生活在两个世界。哈拉卡（犹太律法）不仅是规则，更是与上帝共同创造的过程。',
       templeNames: [], koans: [],
-      classicQuotes: ['信仰之人是最孤独的人', '律法不是限制自由，而是赋予生命意义的框架'],
-      works: [{ title: '孤独的信仰之人', description: '现代信仰困境的经典探讨' }],
+      classicQuotes: ['人文精神之人是最孤独的人', '律法不是限制自由，而是赋予生命意义的框架'],
+      works: [{ title: '孤独的人文精神之人', description: '现代人文精神困境的经典探讨' }],
       imageUrl: null,
     },
   });
@@ -7587,7 +7587,7 @@ async function main() {
   const judaismCount = 23;
   console.log(`  ✓ ${judaismCount} new Jewish patriarchs created + 2 updated (5 schools: Biblical/Rabbinic/Kabbalah/Hasidism/Modern)`);
 
-  // ── 4r. 锡克教古鲁 (Sikh Gurus) ──
+  // ── 4r. 锡克文化古鲁 (Sikh Gurus) ──
   console.log('  Creating Sikh patriarchs (4r)...');
 
   const sikhismId = religionMap['sikhism'];
@@ -7598,26 +7598,26 @@ async function main() {
     ? await prisma.patriarch.update({
         where: { id: existingNanak.id },
         data: {
-          nameEn: 'Guru Nanak', dates: '1469-1539', title: '第一代古鲁·锡克教创始人',
+          nameEn: 'Guru Nanak', dates: '1469-1539', title: '第一代古鲁·锡克文化创始人',
           school: '前五代古鲁', generation: 1,
-          biography: '古鲁那纳克（1469-1539），锡克教创始人和第一代古鲁。出生于旁遮普拉合尔附近的塔尔万迪村。三十岁时在河中沐浴时失踪三天，归来后宣布"没有印度教徒，没有穆斯林——只有上帝的道路"。此后与穆斯林乐师马尔达那一起徒步行遍印度、西藏、阿拉伯和波斯，传播一神信仰和平等理念。晚年建立卡尔塔普尔社区，确立兰格尔（免费共食厨房）传统。',
-          coreTeaching: '一位上帝（Ik Onkar）——上帝唯一，无形无相，超越种姓和宗教分别。通过诵念神名（Nam Japna）、诚实劳动（Kirat Karni）和分享（Vand Chakna）实现灵性生活。',
-          achievements: '创立锡克教，打破种姓和宗教壁垒。建立兰格尔共食传统。五次远行传播真理。',
+          biography: '古鲁那纳克（1469-1539），锡克文化创始人和第一代古鲁。出生于旁遮普拉合尔附近的塔尔万迪村。三十岁时在河中沐浴时失踪三天，归来后宣布"没有印度文化徒，没有穆斯林——只有上帝的道路"。此后与穆斯林乐师马尔达那一起徒步行遍印度、西藏、阿拉伯和波斯，传播一神人文精神和平等理念。晚年建立卡尔塔普尔社区，确立兰格尔（免费共食厨房）传统。',
+          coreTeaching: '一位上帝（Ik Onkar）——上帝唯一，无形无相，超越种姓和文化传统分别。通过诵念神名（Nam Japna）、诚实劳动（Kirat Karni）和分享（Vand Chakna）实现灵性生活。',
+          achievements: '创立锡克文化，打破种姓和文化传统壁垒。建立兰格尔共食传统。五次远行传播真理。',
           templeNames: [{ name: '楠卡纳·萨希布', nameEn: 'Nankana Sahib', role: '古鲁那纳克诞生地', location: '巴基斯坦旁遮普省' }],
-          koans: [], classicQuotes: ['没有印度教徒，没有穆斯林，只有上帝的道路', '真理是最高的美德，但比真理更高的是真实地生活', '上帝是一，祂的名字是真理'],
-          works: [{ title: '贾普吉·萨希布', description: '晨祷经，锡克教最重要的经文' }],
+          koans: [], classicQuotes: ['没有印度文化徒，没有穆斯林，只有上帝的道路', '真理是最高的美德，但比真理更高的是真实地生活', '上帝是一，祂的名字是真理'],
+          works: [{ title: '贾普吉·萨希布', description: '晨祷经，锡克文化最重要的经文' }],
           imageUrl: null,
         },
       })
     : await prisma.patriarch.create({
         data: {
           name: '古鲁那纳克', nameEn: 'Guru Nanak', religionId: sikhismId,
-          dates: '1469-1539', title: '第一代古鲁·锡克教创始人',
+          dates: '1469-1539', title: '第一代古鲁·锡克文化创始人',
           school: '前五代古鲁', generation: 1,
-          biography: '古鲁那纳克（1469-1539），锡克教创始人和第一代古鲁。三十岁时宣布"没有印度教徒，没有穆斯林——只有上帝的道路"。徒步行遍印度、西藏、阿拉伯和波斯，传播一神信仰和平等理念。',
+          biography: '古鲁那纳克（1469-1539），锡克文化创始人和第一代古鲁。三十岁时宣布"没有印度文化徒，没有穆斯林——只有上帝的道路"。徒步行遍印度、西藏、阿拉伯和波斯，传播一神人文精神和平等理念。',
           coreTeaching: '一位上帝（Ik Onkar），通过诵念神名、诚实劳动和分享实现灵性生活。',
           templeNames: [{ name: '楠卡纳·萨希布', nameEn: 'Nankana Sahib', role: '古鲁那纳克诞生地', location: '巴基斯坦旁遮普省' }],
-          koans: [], classicQuotes: ['没有印度教徒，没有穆斯林，只有上帝的道路'],
+          koans: [], classicQuotes: ['没有印度文化徒，没有穆斯林，只有上帝的道路'],
           works: [{ title: '贾普吉·萨希布', description: '晨祷经' }], imageUrl: null,
         },
       });
@@ -7627,7 +7627,7 @@ async function main() {
       name: '古鲁安格德', nameEn: 'Guru Angad', religionId: sikhismId,
       dates: '1504-1552', title: '第二代古鲁·古木基文字创制者',
       school: '前五代古鲁', generation: 2, teacherId: guruNanak.id,
-      biography: '古鲁安格德（1504-1552），锡克教第二代古鲁。原名莱赫纳，因对那纳克的绝对奉献被选为继承人并更名"安格德"（你身体的一部分）。他标准化了古木基文字（Gurmukhi），使那纳克的教导得以准确记录和传播。推广体育锻炼，建立学校，发展兰格尔传统。',
+      biography: '古鲁安格德（1504-1552），锡克文化第二代古鲁。原名莱赫纳，因对那纳克的绝对奉献被选为继承人并更名"安格德"（你身体的一部分）。他标准化了古木基文字（Gurmukhi），使那纳克的教导得以准确记录和传播。推广体育锻炼，建立学校，发展兰格尔传统。',
       coreTeaching: '文字是保存真理的容器。古木基文字让每个人都能阅读古鲁的教导，打破婆罗门对梵文经典的垄断。',
       templeNames: [{ name: '卡德尔·萨希布', nameEn: 'Khadur Sahib', role: '第二代古鲁传道中心', location: '旁遮普邦' }],
       koans: [], classicQuotes: ['服从是通往灵性的最短道路', '身体是灵魂的田地，播种什么就收获什么'],
@@ -7653,9 +7653,9 @@ async function main() {
       name: '古鲁拉姆达斯', nameEn: 'Guru Ram Das', religionId: sikhismId,
       dates: '1534-1581', title: '第四代古鲁·阿姆利则建城者',
       school: '前五代古鲁', generation: 4, teacherId: guruAmarDas.id,
-      biography: '古鲁拉姆达斯（1534-1581），第四代古鲁，阿马达斯的女婿。他建立了阿姆利则城（"甘露之池"），成为锡克教的圣城。组建了马散德制度（传教使者网络），将锡克教传播到更广泛地区。创作了著名的婚礼赞歌"拉万"，至今用于所有锡克教婚礼。',
+      biography: '古鲁拉姆达斯（1534-1581），第四代古鲁，阿马达斯的女婿。他建立了阿姆利则城（"甘露之池"），成为锡克文化的圣城。组建了马散德制度（传教使者网络），将锡克文化传播到更广泛地区。创作了著名的婚礼赞歌"拉万"，至今用于所有锡克文化婚礼。',
       coreTeaching: '灵魂与上帝的结合如同婚礼——四圈绕行象征灵魂逐步走向与神合一。社区建设是灵性实践的基础。',
-      templeNames: [{ name: '阿姆利则', nameEn: 'Amritsar', role: '古鲁拉姆达斯建立·锡克教圣城', location: '旁遮普邦' }],
+      templeNames: [{ name: '阿姆利则', nameEn: 'Amritsar', role: '古鲁拉姆达斯建立·锡克文化圣城', location: '旁遮普邦' }],
       koans: [], classicQuotes: ['灵魂新娘绕着神圣之光行走四圈', '甘露之池净化所有前来者的灵魂'],
       works: [], imageUrl: null,
     },
@@ -7669,12 +7669,12 @@ async function main() {
         data: {
           nameEn: 'Guru Arjan', dates: '1563-1606', title: '第五代古鲁·阿迪格兰特编纂者',
           school: '前五代古鲁', generation: 5, teacherId: guruRamDas.id,
-          biography: '古鲁阿尔詹（1563-1606），第五代古鲁，拉姆达斯之子。编纂《阿迪格兰特》（最初的圣典），收录前四位古鲁及印度教、伊斯兰教圣人的诗篇，体现了锡克教的包容精神。建造了金庙（哈尔曼迪尔·萨希布），四面开门象征向一切人开放。因拒绝删除圣典中被莫卧儿皇帝认为亵渎的内容，被坐在滚烫铁板上五天后殉道，成为锡克教第一位殉道者。',
-          coreTeaching: '真理超越宗教界限——圣典收录印穆圣人诗篇证明上帝的教导不受宗教限制。金庙四面开门象征向所有人敞开。',
-          achievements: '编纂阿迪格兰特·建造金庙·锡克教第一位殉道者',
-          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib (Golden Temple)', role: '锡克教最神圣的殿堂', location: '阿姆利则' }],
+          biography: '古鲁阿尔詹（1563-1606），第五代古鲁，拉姆达斯之子。编纂《阿迪格兰特》（最初的圣典），收录前四位古鲁及印度文化、伊斯兰文化圣人的诗篇，体现了锡克文化的包容精神。建造了金庙（哈尔曼迪尔·萨希布），四面开门象征向一切人开放。因拒绝删除圣典中被莫卧儿皇帝认为亵渎的内容，被坐在滚烫铁板上五天后殉道，成为锡克文化第一位殉道者。',
+          coreTeaching: '真理超越文化传统界限——圣典收录印穆圣人诗篇证明上帝的教导不受文化传统限制。金庙四面开门象征向所有人敞开。',
+          achievements: '编纂阿迪格兰特·建造金庙·锡克文化第一位殉道者',
+          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib (Golden Temple)', role: '锡克文化最神圣的殿堂', location: '阿姆利则' }],
           koans: [], classicQuotes: ['甜蜜是你的意志，主啊，我只祈求你名的恩赐', '当痛苦来临时，不要怨恨——一切都是上帝的旨意'],
-          works: [{ title: '阿迪格兰特', description: '锡克教原始圣典编纂，后扩展为古鲁格兰特·萨希布' }],
+          works: [{ title: '阿迪格兰特', description: '锡克文化原始圣典编纂，后扩展为古鲁格兰特·萨希布' }],
           imageUrl: null,
         },
       })
@@ -7683,9 +7683,9 @@ async function main() {
           name: '古鲁阿尔詹', nameEn: 'Guru Arjan', religionId: sikhismId,
           dates: '1563-1606', title: '第五代古鲁·阿迪格兰特编纂者',
           school: '前五代古鲁', generation: 5, teacherId: guruRamDas.id,
-          biography: '古鲁阿尔詹（1563-1606），编纂阿迪格兰特，建造金庙，锡克教第一位殉道者。',
-          coreTeaching: '真理超越宗教界限。',
-          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib', role: '锡克教最神圣殿堂', location: '阿姆利则' }],
+          biography: '古鲁阿尔詹（1563-1606），编纂阿迪格兰特，建造金庙，锡克文化第一位殉道者。',
+          coreTeaching: '真理超越文化传统界限。',
+          templeNames: [{ name: '金庙', nameEn: 'Harmandir Sahib', role: '锡克文化最神圣殿堂', location: '阿姆利则' }],
           koans: [], classicQuotes: ['甜蜜是你的意志'], works: [], imageUrl: null,
         },
       });
@@ -7697,9 +7697,9 @@ async function main() {
       name: '古鲁哈戈宾德', nameEn: 'Guru Hargobind', religionId: sikhismId,
       dates: '1595-1644', title: '第六代古鲁·米里与皮里双剑',
       school: '后五代古鲁', generation: 6, teacherId: guruArjan.id,
-      biography: '古鲁哈戈宾德（1595-1644），第六代古鲁，阿尔詹殉道时年仅十一岁。他佩戴两把剑——米里（世俗权力）和皮里（灵性权力），标志着锡克教从纯粹灵修转向武装自卫。建立了阿卡尔塔赫特（永恒王座），成为锡克教政治权威的象征。多次与莫卧儿帝国交战，保卫了信仰自由。',
+      biography: '古鲁哈戈宾德（1595-1644），第六代古鲁，阿尔詹殉道时年仅十一岁。他佩戴两把剑——米里（世俗权力）和皮里（灵性权力），标志着锡克文化从纯粹灵修转向武装自卫。建立了阿卡尔塔赫特（永恒王座），成为锡克文化政治权威的象征。多次与莫卧儿帝国交战，保卫了人文精神自由。',
       coreTeaching: '灵性与世俗不可分离——真正的圣人同时是战士。面对暴政时武装自卫是正义的，保护弱者是宗教义务。',
-      templeNames: [{ name: '阿卡尔塔赫特', nameEn: 'Akal Takht', role: '永恒王座·锡克教最高政治权威', location: '阿姆利则' }],
+      templeNames: [{ name: '阿卡尔塔赫特', nameEn: 'Akal Takht', role: '永恒王座·锡克文化最高政治权威', location: '阿姆利则' }],
       koans: [], classicQuotes: ['一手握玫瑰，一手握剑', '真正的勇士保护弱者'],
       works: [], imageUrl: null,
     },
@@ -7723,7 +7723,7 @@ async function main() {
       name: '古鲁哈尔·克里尚', nameEn: 'Guru Har Krishan', religionId: sikhismId,
       dates: '1656-1664', title: '第八代古鲁·最年幼的圣者',
       school: '后五代古鲁', generation: 8, teacherId: guruHarRai.id,
-      biography: '古鲁哈尔·克里尚（1656-1664），五岁即位为第八代古鲁，锡克教历史上最年幼的古鲁。虽然年幼，但展现出非凡的灵性智慧和慈悲。在德里天花瘟疫期间不顾自身安危照顾病人，最终自己也感染天花，八岁殉世。临终指示"巴巴·巴卡莱"（继承者在巴卡拉村），引导找到下一任古鲁。',
+      biography: '古鲁哈尔·克里尚（1656-1664），五岁即位为第八代古鲁，锡克文化历史上最年幼的古鲁。虽然年幼，但展现出非凡的灵性智慧和慈悲。在德里天花瘟疫期间不顾自身安危照顾病人，最终自己也感染天花，八岁殉世。临终指示"巴巴·巴卡莱"（继承者在巴卡拉村），引导找到下一任古鲁。',
       coreTeaching: '真正的伟大不在年龄而在灵性。以身作则服务众生，即使牺牲自己也在所不惜。',
       templeNames: [{ name: '班格拉·萨希布', nameEn: 'Bangla Sahib', role: '第八代古鲁救济天花患者之地', location: '德里' }],
       koans: [], classicQuotes: ['巴巴·巴卡莱——继承者在巴卡拉'],
@@ -7736,10 +7736,10 @@ async function main() {
       name: '古鲁特格·巴哈杜尔', nameEn: 'Guru Tegh Bahadur', religionId: sikhismId,
       dates: '1621-1675', title: '第九代古鲁·印度之盾',
       school: '后五代古鲁', generation: 9, teacherId: guruHarKrishan.id,
-      biography: '古鲁特格·巴哈杜尔（1621-1675），第九代古鲁。当莫卧儿皇帝奥朗则布强迫克什米尔婆罗门改信伊斯兰教时，古鲁挺身而出保护他们的信仰自由——虽然他们的信仰与锡克教不同。他被带到德里，在拒绝改信后被公开处决。他的牺牲不是为了自己的信仰，而是为了他人信仰自由的权利，被誉为"印度之盾"（Hind di Chadar）。',
-      coreTeaching: '为他人的信仰自由而牺牲是最崇高的行为。不畏惧也不使人恐惧——这是真正的圣者。',
+      biography: '古鲁特格·巴哈杜尔（1621-1675），第九代古鲁。当莫卧儿皇帝奥朗则布强迫克什米尔婆罗门改信伊斯兰文化时，古鲁挺身而出保护他们的人文精神自由——虽然他们的人文精神与锡克文化不同。他被带到德里，在拒绝改信后被公开处决。他的牺牲不是为了自己的人文精神，而是为了他人人文精神自由的权利，被誉为"印度之盾"（Hind di Chadar）。',
+      coreTeaching: '为他人的人文精神自由而牺牲是最崇高的行为。不畏惧也不使人恐惧——这是真正的圣者。',
       templeNames: [{ name: '锡斯甘杰', nameEn: 'Sis Ganj Sahib', role: '第九代古鲁殉道地', location: '德里' }],
-      koans: [], classicQuotes: ['不畏惧也不使人恐惧——这是智者之道', '他为保护他人的信仰献出了生命'],
+      koans: [], classicQuotes: ['不畏惧也不使人恐惧——这是智者之道', '他为保护他人的人文精神献出了生命'],
       works: [], imageUrl: null,
     },
   });
@@ -7749,8 +7749,8 @@ async function main() {
       name: '古鲁戈宾德·辛格', nameEn: 'Guru Gobind Singh', religionId: sikhismId,
       dates: '1666-1708', title: '第十代古鲁·卡尔萨创建者',
       school: '后五代古鲁', generation: 10, teacherId: guruTeghBahadur.id,
-      biography: '古鲁戈宾德·辛格（1666-1708），锡克教第十代也是最后一位人间古鲁。1699年在拜萨基节创建卡尔萨（纯净之军），确立锡克教五K标志：长发（Kesh）、梳子（Kangha）、钢手环（Kara）、短剑（Kirpan）和短裤（Kachera）。他的四个儿子全部为信仰牺牲。临终前宣布不再有人间古鲁，将古鲁地位永久授予《古鲁格兰特·萨希布》——锡克教圣典本身成为永恒的古鲁。',
-      coreTeaching: '卡尔萨——每个锡克教徒都是圣战士，佩戴五K标志。圣典是永恒的古鲁。当一切和平手段用尽时，拔剑而战是正义的。',
+      biography: '古鲁戈宾德·辛格（1666-1708），锡克文化第十代也是最后一位人间古鲁。1699年在拜萨基节创建卡尔萨（纯净之军），确立锡克文化五K标志：长发（Kesh）、梳子（Kangha）、钢手环（Kara）、短剑（Kirpan）和短裤（Kachera）。他的四个儿子全部为人文精神牺牲。临终前宣布不再有人间古鲁，将古鲁地位永久授予《古鲁格兰特·萨希布》——锡克文化圣典本身成为永恒的古鲁。',
+      coreTeaching: '卡尔萨——每个锡克文化徒都是圣战士，佩戴五K标志。圣典是永恒的古鲁。当一切和平手段用尽时，拔剑而战是正义的。',
       achievements: '创建卡尔萨·确立五K标志·完成古鲁格兰特·萨希布·将古鲁地位授予圣典',
       templeNames: [{ name: '阿南德普尔·萨希布', nameEn: 'Anandpur Sahib', role: '卡尔萨创建之地', location: '旁遮普邦' }],
       koans: [], classicQuotes: ['当一切和平手段用尽时，拔剑而战是正义的', '认识整个人类为一个种族', '我将麻雀变成苍鹰，将豺狼变成雄狮'],
@@ -7766,8 +7766,8 @@ async function main() {
       name: '巴巴·迪普·辛格', nameEn: 'Baba Deep Singh', religionId: sikhismId,
       dates: '1682-1757', title: '殉道战士·头颅持剑者',
       school: '殉道英雄', generation: 1,
-      biography: '巴巴·迪普·辛格（1682-1757），锡克教最传奇的殉道战士。当阿富汗入侵者亵渎金庙时，他率军反击，发誓收复圣地。战斗中被砍首，传说他一手托起自己的头颅，一手挥剑继续战斗直至抵达金庙前倒下。他的故事成为锡克教不屈精神的永恒象征。',
-      coreTeaching: '保卫信仰圣地是最神圣的义务。身体可以倒下，但信念永远站立。',
+      biography: '巴巴·迪普·辛格（1682-1757），锡克文化最传奇的殉道战士。当阿富汗入侵者亵渎金庙时，他率军反击，发誓收复圣地。战斗中被砍首，传说他一手托起自己的头颅，一手挥剑继续战斗直至抵达金庙前倒下。他的故事成为锡克文化不屈精神的永恒象征。',
+      coreTeaching: '保卫人文精神圣地是最神圣的义务。身体可以倒下，但信念永远站立。',
       templeNames: [], koans: [],
       classicQuotes: ['我发誓——即使头颅落地，也要到达金庙'],
       works: [], imageUrl: null,
@@ -7779,10 +7779,10 @@ async function main() {
       name: '班达·辛格·巴哈杜尔', nameEn: 'Banda Singh Bahadur', religionId: sikhismId,
       dates: '1670-1716', title: '第一位锡克将领',
       school: '殉道英雄', generation: 1,
-      biography: '班达·辛格·巴哈杜尔（1670-1716），原为印度教苦行僧，被古鲁戈宾德·辛格感召改信锡克教并委以军事重任。建立了第一个锡克政权，攻克了处决第九代古鲁的城市锡尔欣德。推行土地改革，将土地分给农民。最终被莫卧儿俘获，在拒绝改信后与七百名追随者一起殉道。',
-      coreTeaching: '社会正义是信仰的实践。土地属于耕种它的人。为公义而战斗和牺牲是最高的侍奉。',
+      biography: '班达·辛格·巴哈杜尔（1670-1716），原为印度文化苦行僧，被古鲁戈宾德·辛格感召改信锡克文化并委以军事重任。建立了第一个锡克政权，攻克了处决第九代古鲁的城市锡尔欣德。推行土地改革，将土地分给农民。最终被莫卧儿俘获，在拒绝改信后与七百名追随者一起殉道。',
+      coreTeaching: '社会正义是人文精神的实践。土地属于耕种它的人。为公义而战斗和牺牲是最高的侍奉。',
       templeNames: [], koans: [],
-      classicQuotes: ['信仰给我勇气，正义给我方向'],
+      classicQuotes: ['人文精神给我勇气，正义给我方向'],
       works: [], imageUrl: null,
     },
   });
@@ -7792,10 +7792,10 @@ async function main() {
       name: '巴伊·马尼·辛格', nameEn: 'Bhai Mani Singh', religionId: sikhismId,
       dates: '1644-1734', title: '经典学者·殉教圣贤',
       school: '殉道英雄', generation: 2,
-      biography: '巴伊·马尼·辛格（1644-1734），锡克教最重要的经典学者之一。整理和编辑了《古鲁格兰特·萨希布》和《达萨姆格兰特》。担任金庙首席祭司多年。九十岁高龄因拒绝缴纳莫卧儿帝国强加的宗教税而被逮捕，被逐个关节肢解处死，成为锡克教殉道典范。',
-      coreTeaching: '经典的保存和传承是神圣使命。信仰不可被金钱赎买，真理不可被暴力压服。',
+      biography: '巴伊·马尼·辛格（1644-1734），锡克文化最重要的经典学者之一。整理和编辑了《古鲁格兰特·萨希布》和《达萨姆格兰特》。担任金庙首席祭司多年。九十岁高龄因拒绝缴纳莫卧儿帝国强加的文化传统税而被逮捕，被逐个关节肢解处死，成为锡克文化殉道典范。',
+      coreTeaching: '经典的保存和传承是神圣使命。人文精神不可被金钱赎买，真理不可被暴力压服。',
       templeNames: [], koans: [],
-      classicQuotes: ['你可以砍断我的身体，但不能砍断我的信仰'],
+      classicQuotes: ['你可以砍断我的身体，但不能砍断我的人文精神'],
       works: [], imageUrl: null,
     },
   });
@@ -7805,10 +7805,10 @@ async function main() {
       name: '巴伊·塔鲁·辛格', nameEn: 'Bhai Taru Singh', religionId: sikhismId,
       dates: '1720-1745', title: '头发殉道者',
       school: '殉道英雄', generation: 2,
-      biography: '巴伊·塔鲁·辛格（1720-1745），年仅二十五岁的锡克教殉道者。因秘密资助锡克教抵抗运动被捕。莫卧儿总督命令他剪掉头发改信伊斯兰教。他宁死不从，头皮连同头发被活活剥离。锡克教信仰中头发是上帝的礼物，他用生命捍卫了这一信念。',
-      coreTeaching: '头发是上帝的礼物和信仰的标志。宁死不辱信仰——身体的痛苦是暂时的，灵魂的尊严是永恒的。',
+      biography: '巴伊·塔鲁·辛格（1720-1745），年仅二十五岁的锡克文化殉道者。因秘密资助锡克文化抵抗运动被捕。莫卧儿总督命令他剪掉头发改信伊斯兰文化。他宁死不从，头皮连同头发被活活剥离。锡克文化人文精神中头发是上帝的礼物，他用生命捍卫了这一信念。',
+      coreTeaching: '头发是上帝的礼物和人文精神的标志。宁死不辱人文精神——身体的痛苦是暂时的，灵魂的尊严是永恒的。',
       templeNames: [], koans: [],
-      classicQuotes: ['你可以取走我的头皮，但不能取走我的信仰'],
+      classicQuotes: ['你可以取走我的头皮，但不能取走我的人文精神'],
       works: [], imageUrl: null,
     },
   });
@@ -7818,9 +7818,9 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '巴伊·古尔达斯', nameEn: 'Bhai Gurdas', religionId: sikhismId,
-      dates: '1551-1636', title: '锡克教第一学者·经文钥匙',
+      dates: '1551-1636', title: '锡克文化第一学者·经文钥匙',
       school: '学者圣人', generation: 1,
-      biography: '巴伊·古尔达斯（1551-1636），锡克教最重要的学者和诗人。他是古鲁阿尔詹编纂《阿迪格兰特》的首席抄写员。他自己的诗歌被古鲁阿尔詹称为"古鲁格兰特·萨希布的钥匙"——是理解圣典的最佳注释。著有40首瓦尔诗（ballads）和556首卡比特诗。',
+      biography: '巴伊·古尔达斯（1551-1636），锡克文化最重要的学者和诗人。他是古鲁阿尔詹编纂《阿迪格兰特》的首席抄写员。他自己的诗歌被古鲁阿尔詹称为"古鲁格兰特·萨希布的钥匙"——是理解圣典的最佳注释。著有40首瓦尔诗（ballads）和556首卡比特诗。',
       coreTeaching: '理解经典需要钥匙——虔诚的研读和灵性体验缺一不可。诗歌是传达神圣真理最美的形式。',
       templeNames: [], koans: [],
       classicQuotes: ['古鲁的话语如同灯塔照亮黑暗的海洋', '理解来自于虔诚，虔诚来自于实践'],
@@ -7834,7 +7834,7 @@ async function main() {
       name: '巴巴·布达·吉', nameEn: 'Baba Buddha Ji', religionId: sikhismId,
       dates: '1506-1631', title: '五代古鲁加冕者·125岁圣者',
       school: '学者圣人', generation: 1,
-      biography: '巴巴·布达·吉（1506-1631），锡克教早期最受尊崇的圣者。从古鲁那纳克到古鲁哈戈宾德，他亲自为五位古鲁主持了继位典礼。因少年时被那纳克称赞"像老人一样智慧"而得名"布达"（老者）。活到125岁，横跨了锡克教前六位古鲁的时代。',
+      biography: '巴巴·布达·吉（1506-1631），锡克文化早期最受尊崇的圣者。从古鲁那纳克到古鲁哈戈宾德，他亲自为五位古鲁主持了继位典礼。因少年时被那纳克称赞"像老人一样智慧"而得名"布达"（老者）。活到125岁，横跨了锡克文化前六位古鲁的时代。',
       coreTeaching: '服务古鲁是最高的灵性修行。长寿是上帝对忠诚仆人的恩赐。见证和传承比个人成就更重要。',
       templeNames: [], koans: [],
       classicQuotes: ['我一生只做了一件事——服务古鲁'],
@@ -7847,8 +7847,8 @@ async function main() {
       name: '巴伊·马尔达那', nameEn: 'Bhai Mardana', religionId: sikhismId,
       dates: '1459-1534', title: '那纳克至友·拉巴布琴师',
       school: '学者圣人', generation: 2,
-      biography: '巴伊·马尔达那（1459-1534），穆斯林音乐家，古鲁那纳克最亲密的同伴和随行者。当那纳克开始传道之旅时，马尔达那作为拉巴布琴师为他伴奏圣歌，一同跋涉数万里。他们的友谊跨越了宗教和种姓的界限，体现了锡克教"无分别"的核心精神。那纳克的许多赞歌标注"调：马尔达那拉巴布"。',
-      coreTeaching: '音乐是通向神圣的桥梁。真正的友谊超越宗教和种姓。以音乐侍奉上帝是最美的祈祷。',
+      biography: '巴伊·马尔达那（1459-1534），穆斯林音乐家，古鲁那纳克最亲密的同伴和随行者。当那纳克开始传道之旅时，马尔达那作为拉巴布琴师为他伴奏圣歌，一同跋涉数万里。他们的友谊跨越了文化传统和种姓的界限，体现了锡克文化"无分别"的核心精神。那纳克的许多赞歌标注"调：马尔达那拉巴布"。',
+      coreTeaching: '音乐是通向神圣的桥梁。真正的友谊超越文化传统和种姓。以音乐侍奉上帝是最美的祈祷。',
       templeNames: [], koans: [],
       classicQuotes: ['马尔达那，弹奏吧——上帝在聆听', '音乐让灵魂飞翔到上帝脚下'],
       works: [], imageUrl: null,
@@ -7860,8 +7860,8 @@ async function main() {
       name: '巴伊·南德·拉尔', nameEn: 'Bhai Nand Lal', religionId: sikhismId,
       dates: '1633-1713', title: '波斯语诗人·宫廷学者',
       school: '学者圣人', generation: 2,
-      biography: '巴伊·南德·拉尔（1633-1713），锡克教最伟大的波斯语诗人，古鲁戈宾德·辛格宫廷中的杰出学者。曾在莫卧儿宫廷任职，后被戈宾德·辛格的灵性魅力吸引而成为其亲密弟子。他的波斯语和旁遮普语诗歌被视为锡克教重要的补充经典。',
-      coreTeaching: '诗歌是灵性表达的最高形式。古鲁的面容是冥想的最好对象。波斯语的优雅可以承载锡克教的真理。',
+      biography: '巴伊·南德·拉尔（1633-1713），锡克文化最伟大的波斯语诗人，古鲁戈宾德·辛格宫廷中的杰出学者。曾在莫卧儿宫廷任职，后被戈宾德·辛格的灵性魅力吸引而成为其亲密弟子。他的波斯语和旁遮普语诗歌被视为锡克文化重要的补充经典。',
+      coreTeaching: '诗歌是灵性表达的最高形式。古鲁的面容是冥想的最好对象。波斯语的优雅可以承载锡克文化的真理。',
       templeNames: [], koans: [],
       classicQuotes: ['古鲁的面容是我冥想的对象', '在古鲁的花园中，每朵花都散发真理的芬芳'],
       works: [{ title: '迪万-依-古鲁·戈宾德·辛格', description: '赞颂第十代古鲁的波斯语诗集' }],
@@ -7876,10 +7876,10 @@ async function main() {
       name: '马哈拉贾·兰吉特·辛格', nameEn: 'Maharaja Ranjit Singh', religionId: sikhismId,
       dates: '1780-1839', title: '锡克帝国之狮',
       school: '近现代领袖', generation: 1,
-      biography: '马哈拉贾·兰吉特·辛格（1780-1839），被称为"旁遮普之狮"。从十二岁的少年首领崛起，统一了各锡克教米斯尔（小王国），建立了从阿富汗边境到西藏的锡克帝国。他以大理石和黄金重建了金庙，使其成为今日的辉煌面貌。他的治理以宗教宽容著称——军队和政府中印度教徒、穆斯林和欧洲人都有重要职位。',
-      coreTeaching: '锡克教的力量在于团结和宗教宽容。治国以正义为本，军事强大不是为了征服而是保护。',
+      biography: '马哈拉贾·兰吉特·辛格（1780-1839），被称为"旁遮普之狮"。从十二岁的少年首领崛起，统一了各锡克文化米斯尔（小王国），建立了从阿富汗边境到西藏的锡克帝国。他以大理石和黄金重建了金庙，使其成为今日的辉煌面貌。他的治理以文化传统宽容著称——军队和政府中印度文化徒、穆斯林和欧洲人都有重要职位。',
+      coreTeaching: '锡克文化的力量在于团结和文化传统宽容。治国以正义为本，军事强大不是为了征服而是保护。',
       templeNames: [], koans: [],
-      classicQuotes: ['上帝希望我以公正对待所有宗教', '旁遮普的荣耀属于它的人民'],
+      classicQuotes: ['上帝希望我以公正对待所有文化传统', '旁遮普的荣耀属于它的人民'],
       works: [], imageUrl: null,
     },
   });
@@ -7889,8 +7889,8 @@ async function main() {
       name: '巴巴·卡拉克·辛格', nameEn: 'Baba Kharak Singh', religionId: sikhismId,
       dates: '1868-1963', title: '独立运动领袖',
       school: '近现代领袖', generation: 2,
-      biography: '巴巴·卡拉克·辛格（1868-1963），锡克教独立运动领袖，SGPC（锡克古尔德瓦拉管理委员会）首任主席。领导了古尔德瓦拉改革运动，将锡克教圣地从腐败的祭司阶层手中收回交由社区管理。多次入狱，是甘地之外印度独立运动中最重要的锡克教领袖。',
-      coreTeaching: '圣地应由信仰社区管理，不是任何个人的私产。锡克教的政治参与是信仰实践的一部分。',
+      biography: '巴巴·卡拉克·辛格（1868-1963），锡克文化独立运动领袖，SGPC（锡克古尔德瓦拉管理委员会）首任主席。领导了古尔德瓦拉改革运动，将锡克文化圣地从腐败的祭司阶层手中收回交由社区管理。多次入狱，是甘地之外印度独立运动中最重要的锡克文化领袖。',
+      coreTeaching: '圣地应由人文精神社区管理，不是任何个人的私产。锡克文化的政治参与是人文精神实践的一部分。',
       templeNames: [], koans: [],
       classicQuotes: ['古鲁的殿堂属于古鲁的子民'],
       works: [], imageUrl: null,
@@ -7902,11 +7902,11 @@ async function main() {
       name: '巴伊·维尔·辛格', nameEn: 'Bhai Vir Singh', religionId: sikhismId,
       dates: '1872-1957', title: '旁遮普文学之父',
       school: '近现代领袖', generation: 2,
-      biography: '巴伊·维尔·辛格（1872-1957），被誉为"旁遮普文学之父"和锡克教文艺复兴的灵魂人物。他的小说、诗歌和学术著作唤醒了锡克教的文化认同。创办了锡克教第一家出版社和报纸。注释古鲁格兰特·萨希布，使普通锡克教徒能够理解圣典的深层含义。',
-      coreTeaching: '文学和教育是信仰复兴的根基。用现代语言重新讲述古鲁的故事，让每一代人都能感受信仰的活力。',
+      biography: '巴伊·维尔·辛格（1872-1957），被誉为"旁遮普文学之父"和锡克文化文艺复兴的灵魂人物。他的小说、诗歌和学术著作唤醒了锡克文化的文化认同。创办了锡克文化第一家出版社和报纸。注释古鲁格兰特·萨希布，使普通锡克文化徒能够理解圣典的深层含义。',
+      coreTeaching: '文学和教育是人文精神复兴的根基。用现代语言重新讲述古鲁的故事，让每一代人都能感受人文精神的活力。',
       templeNames: [], koans: [],
       classicQuotes: ['笔是最锋利的剑', '让古鲁的话语活在每一代人的语言中'],
-      works: [{ title: '苏丹娜', description: '锡克教第一部旁遮普语小说' }, { title: '古鲁格兰特注释', description: '让普通信徒理解圣典' }],
+      works: [{ title: '苏丹娜', description: '锡克文化第一部旁遮普语小说' }, { title: '古鲁格兰特注释', description: '让普通信徒理解圣典' }],
       imageUrl: null,
     },
   });
@@ -7914,7 +7914,7 @@ async function main() {
   const sikhCount = 20;
   console.log(`  ✓ ${sikhCount} new Sikh gurus/figures created + 2 updated (5 schools: First5Gurus/Last5Gurus/Martyrs/Scholars/Modern)`);
 
-  // ── 4s. 神道教神灵与思想家 (Shinto Kami & Theologians) ──
+  // ── 4s. 神道文化神灵与思想家 (Shinto Kami & Theologians) ──
   console.log('  Creating Shinto patriarchs (4s)...');
 
   const shintoId = religionMap['shinto'];
@@ -7945,7 +7945,7 @@ async function main() {
       dates: '神话时代', title: '创世父神·国生之神',
       school: '天津神', generation: 1,
       biography: '伊邪那岐，日本神话中的创世父神。与妹妹伊邪那美共同站在天浮桥上，以天沼矛搅动混沌之海，滴落的盐水凝结成最初的岛屿。二神结合生出日本列岛和众多神灵。妻子死后追入黄泉国，见其腐烂之身后逃回阳世。在日向橘小户的阿波岐原净身时，从左眼生天照、右眼生月读、鼻中生须佐之男。',
-      coreTeaching: '创造源于阴阳二神的结合。死与生的界限不可逾越。禊祓（净身洗罪）是神道教最根本的仪式——污秽可以被清水洗净。',
+      coreTeaching: '创造源于阴阳二神的结合。死与生的界限不可逾越。禊祓（净身洗罪）是神道文化最根本的仪式——污秽可以被清水洗净。',
       templeNames: [{ name: '多贺大社', nameEn: 'Taga Taisha', role: '伊邪那岐主祭神社', location: '�的贺县' }, { name: '淡路�的�的宫', nameEn: 'Izanagi Jingu', role: '国生神话发源地', location: '淡路岛' }],
       koans: [], classicQuotes: ['生与死的境界不可混淆', '以清水洗去一切污秽——禊祓之始'],
       works: [], imageUrl: null,
@@ -8024,7 +8024,7 @@ async function main() {
       name: '宇迦之御魂神', nameEn: 'Uka no Mitama', religionId: shintoId,
       dates: '神话时代', title: '稻荷神·五谷丰穰',
       school: '国津神', generation: 2,
-      biography: '宇迦之御魂神，稻荷神的主祭神，掌管稻米和五谷丰收。"宇迦"即食物之意。伏见稻荷大社是全日本三万余座稻荷神社的总本宫，千本�的居是其标志性景观。狐狸是稻荷神的使者，因狐狸守护稻田免受鼠害。随着时代变迁，稻荷信仰从农业丰收扩展到商业繁荣和诸愿成就，成为日本最广泛的民间信仰。',
+      biography: '宇迦之御魂神，稻荷神的主祭神，掌管稻米和五谷丰收。"宇迦"即食物之意。伏见稻荷大社是全日本三万余座稻荷神社的总本宫，千本�的居是其标志性景观。狐狸是稻荷神的使者，因狐狸守护稻田免受鼠害。随着时代变迁，稻荷人文精神从农业丰收扩展到商业繁荣和诸愿成就，成为日本最广泛的民间文化传统。',
       coreTeaching: '感恩食物——每一粒米都蕴含神圣。丰收来自于与自然的和谐共处。勤劳和感恩是获得繁荣的根本。',
       templeNames: [{ name: '伏见稻荷大社', nameEn: 'Fushimi Inari Taisha', role: '全日本稻荷神社总本宫·千本鸟居', location: '京都' }],
       koans: [], classicQuotes: ['一粒米中有七位神灵', '感恩之心召唤丰收'],
@@ -8079,7 +8079,7 @@ async function main() {
       dates: '7世纪', title: '伏见稻荷大社创建者',
       school: '神社创建者', generation: 2,
       biography: '秦氏族，日本古代有力的渡来系氏族，据传源自秦朝遗民。奈良时代在山城国深草建立伏见稻荷大社（711年），供奉稻荷神以祈求丰收。秦氏精于养蚕和机织，带来大陆先进技术。他们创建的伏见稻荷大社后来成为全日本三万余座稻荷神社的总本宫，千本鸟居闻名世界。',
-      coreTeaching: '技术与信仰并行。渡来人带来新文化，稻荷信仰将农业生产与神灵感恩结合，形成日本最深入民间的信仰形态。',
+      coreTeaching: '技术与人文精神并行。渡来人带来新文化，稻荷人文精神将农业生产与神灵感恩结合，形成日本最深入民间的人文精神形态。',
       templeNames: [{ name: '伏见稻荷大社', nameEn: 'Fushimi Inari Taisha', role: '秦氏创建·稲荷総本宮', location: '京都市伏见区' }],
       koans: [], classicQuotes: ['稻荷山上鸟居千座，通向神圣的道路不止一条'],
       works: [], imageUrl: null,
@@ -8133,8 +8133,8 @@ async function main() {
       name: '度会行忠', nameEn: 'Watarai Yukitada', religionId: shintoId,
       dates: '13世纪', title: '伊势神道·外宫神学创始人',
       school: '神道思想家', generation: 1,
-      biography: '度会行忠（13世纪），伊势神宫外宫的祠官家族成员。他创立了伊势神道（度会神道），主张外宮祭神丰受大神的地位等于甚至高于内宫的天照大神。这是日本第一次从佛教中独立出来的纯粹神道理论体系。他强调"清净"作为神道的本质，将神道从佛教的附庸地位中解放出来。',
-      coreTeaching: '清净是神道的本质——身体的清净、心灵的清净、行为的清净。神道有自身独立的理论体系，不是佛教的附属。',
+      biography: '度会行忠（13世纪），伊势神宫外宫的祠官家族成员。他创立了伊势神道（度会神道），主张外宮祭神丰受大神的地位等于甚至高于内宫的天照大神。这是日本第一次从佛教文化中独立出来的纯粹神道理论体系。他强调"清净"作为神道的本质，将神道从佛教文化的附庸地位中解放出来。',
+      coreTeaching: '清净是神道的本质——身体的清净、心灵的清净、行为的清净。神道有自身独立的理论体系，不是佛教文化的附属。',
       templeNames: [{ name: '伊势外宫', nameEn: 'Ise Outer Shrine (Geku)', role: '度会氏世代奉仕之地', location: '三重县伊势市' }],
       koans: [], classicQuotes: ['清净是神道之本', '神之道，清明正直'],
       works: [{ title: '类聚神祇本源', description: '伊势神道理论根本著作' }],
@@ -8147,11 +8147,11 @@ async function main() {
       name: '吉田兼倶', nameEn: 'Yoshida Kanetomo', religionId: shintoId,
       dates: '1435-1511', title: '吉田神道·唯一神道创始人',
       school: '神道思想家', generation: 2,
-      biography: '吉田兼倶（1435-1511），吉田神社神官，创立了"唯一神道"（吉田神道）。他颠覆了本地垂迹说，主张佛菩萨反而是日本神灵的化身。在应仁之乱后的混乱中获得朝廷支持，使吉田神道成为室町时代最有影响力的神道体系。他建立了神道教的独立教义、仪式和组织体系。',
-      coreTeaching: '唯一神道——万物的根源是神道，佛教和儒教都源于神道。神灵是本源，佛菩萨是末流。日本是神之国。',
+      biography: '吉田兼倶（1435-1511），吉田神社神官，创立了"唯一神道"（吉田神道）。他颠覆了本地垂迹说，主张佛菩萨反而是日本神灵的化身。在应仁之乱后的混乱中获得朝廷支持，使吉田神道成为室町时代最有影响力的神道体系。他建立了神道文化的独立教义、仪式和组织体系。',
+      coreTeaching: '唯一神道——万物的根源是神道，佛教文化和儒家文化都源于神道。神灵是本源，佛菩萨是末流。日本是神之国。',
       templeNames: [{ name: '吉田神社', nameEn: 'Yoshida Shrine', role: '吉田神道总本社', location: '京都市左京区' }],
       koans: [], classicQuotes: ['神道是万道之根源', '神在万物之先，万物在神之中'],
-      works: [{ title: '唯一神道名法要集', description: '吉田神道教义体系' }],
+      works: [{ title: '唯一神道名法要集', description: '吉田神道文化义体系' }],
       imageUrl: null,
     },
   });
@@ -8161,7 +8161,7 @@ async function main() {
       name: '贺茂真渕', nameEn: 'Kamo no Mabuchi', religionId: shintoId,
       dates: '1697-1769', title: '国学先驱·万叶回归',
       school: '神道思想家', generation: 3,
-      biography: '贺茂真渕（1697-1769），国学运动先驱。他主张回归万叶集时代日本人的"真心"（まごころ）和"高く直き心"，认为中国思想（儒学和佛教）扭曲了日本的本来精神。通过对万叶集的深入研究，他展示了古代日本人质朴、勇武而纯真的精神世界。他的学说为后来本居宣长的国学大成奠定了基础。',
+      biography: '贺茂真渕（1697-1769），国学运动先驱。他主张回归万叶集时代日本人的"真心"（まごころ）和"高く直き心"，认为中国思想（儒学和佛教文化）扭曲了日本的本来精神。通过对万叶集的深入研究，他展示了古代日本人质朴、勇武而纯真的精神世界。他的学说为后来本居宣长的国学大成奠定了基础。',
       coreTeaching: '回归日本古代的"真心"——万叶集的质朴和直率就是日本精神的本来面目。中国思想是后来添加的外来物。',
       templeNames: [], koans: [],
       classicQuotes: ['日本古代的道，高而直——不需要中国的教导', '万叶集中有日本真正的心'],
@@ -8232,7 +8232,7 @@ async function main() {
       name: '川手文治郎', nameEn: 'Kawate Bunjiro', religionId: shintoId,
       dates: '1814-1883', title: '金光教教祖·天地金乃神',
       school: '教派神道', generation: 2,
-      biography: '川手文治郎（1814-1883），金光教教祖。冈山农民出身，四十二岁时体验到与"天地金乃神"的直接对话。他打破了传统金神信仰中的恐惧和禁忌，将金神从可怕的方位凶神转化为慈悲的宇宙本神。他的传道方式是"取次"——坐在社殿中作为人与神之间的中介，倾听信徒的烦恼并传达神的回应。',
+      biography: '川手文治郎（1814-1883），金光教教祖。冈山农民出身，四十二岁时体验到与"天地金乃神"的直接对话。他打破了传统金神人文精神中的恐惧和禁忌，将金神从可怕的方位凶神转化为慈悲的宇宙本神。他的传道方式是"取次"——坐在社殿中作为人与神之间的中介，倾听信徒的烦恼并传达神的回应。',
       coreTeaching: '神与人是相互依存的——"神让人活，人让神灵"。取次（中介）——神与人之间需要真诚的沟通渠道。一切迷信和恐惧皆非真神之意。',
       templeNames: [{ name: '金光教本部', nameEn: 'Konkokyo Headquarters', role: '教祖取次之地', location: '冈山县浅口市' }],
       koans: [], classicQuotes: ['神让人活，人让神灵', '不要怕金神——神是慈悲的'],
@@ -8259,11 +8259,11 @@ async function main() {
       name: '出口王仁三郎', nameEn: 'Deguchi Onisaburo', religionId: shintoId,
       dates: '1871-1948', title: '大本教圣师·霊界物語',
       school: '教派神道', generation: 3, teacherId: deguchiNao.id,
-      biography: '出口王仁三郎（1871-1948），大本教圣师，出口直的女婿。他将出口直的素朴信仰发展为宏大的宇宙观和神学体系。口述八十一卷《霊界物語》——日本近代最庞大的宗教文学作品。推动世界宗教统一运动，主张万教归一。两次被日本政府镇压（大本事件），建筑被炸毁。他的弟子创立了世界救世教、生长之家等新兴宗教。',
-      coreTeaching: '万教归一——所有宗教都是同一真理的不同表达。灵界与现界相互影响。艺术（陶艺、书画）是灵性修行的形式。',
+      biography: '出口王仁三郎（1871-1948），大本教圣师，出口直的女婿。他将出口直的素朴人文精神发展为宏大的宇宙观和神学体系。口述八十一卷《霊界物語》——日本近代最庞大的文化传统文学作品。推动世界文化传统统一运动，主张万教归一。两次被日本政府镇压（大本事件），建筑被炸毁。他的弟子创立了世界救世教、生长之家等新兴文化传统。',
+      coreTeaching: '万教归一——所有文化传统都是同一真理的不同表达。灵界与现界相互影响。艺术（陶艺、书画）是灵性修行的形式。',
       templeNames: [{ name: '龟冈大本教本部', nameEn: 'Oomoto Kameoka HQ', role: '圣师活动中心', location: '京都府亀岡市' }],
-      koans: [], classicQuotes: ['万教同根——一切宗教都通向同一个源头', '艺术即信仰，信仰即艺术'],
-      works: [{ title: '霊界物語', description: '八十一卷·日本近代最庞大的宗教文学' }],
+      koans: [], classicQuotes: ['万教同根——一切文化传统都通向同一个源头', '艺术即人文精神，人文精神即艺术'],
+      works: [{ title: '霊界物語', description: '八十一卷·日本近代最庞大的文化传统文学' }],
       imageUrl: null,
     },
   });
@@ -8271,7 +8271,7 @@ async function main() {
   const shintoCount = 24;
   console.log(`  ✓ ${shintoCount} new Shinto kami/figures created + 1 updated (5 schools: CelestialKami/EarthlyKami/ShrineFounders/Theologians/Sectarian)`);
 
-  // ── 4t. 藏传佛教大师 (Tibetan Buddhist Masters) ──
+  // ── 4t. 藏传文化大师 (Tibetan Buddhist Masters) ──
   console.log('  Creating Tibetan Buddhist patriarchs (4t)...');
 
   const tibetanBuddhismId = religionMap['tibetan-buddhism'];
@@ -8282,11 +8282,11 @@ async function main() {
     ? await prisma.patriarch.update({
         where: { id: existingPadma.id },
         data: {
-          nameEn: 'Padmasambhava', dates: '8世纪', title: '咕噜仁波切·藏传佛教开创者',
+          nameEn: 'Padmasambhava', dates: '8世纪', title: '咕噜仁波切·藏传文化开创者',
           school: '宁玛派', generation: 1,
-          biography: '莲花生大士（8世纪），藏文称"咕噜仁波切"（珍宝上师），藏传佛教的开创者。出生于乌仗那（今巴基斯坦斯瓦特河谷）的莲花中。受藏王赤松德赞迎请入藏，以密法降伏了阻碍佛法传播的本土神灵，建立了西藏第一座佛寺桑耶寺。他将无数教法隐藏为伏藏（terma），由后世伏藏师发掘。藏族人视他为"第二佛陀"，在藏传佛教中的地位仅次于释迦牟尼。',
+          biography: '莲花生大士（8世纪），藏文称"咕噜仁波切"（珍宝上师），藏传文化的开创者。出生于乌仗那（今巴基斯坦斯瓦特河谷）的莲花中。受藏王赤松德赞迎请入藏，以密法降伏了阻碍佛法传播的本土神灵，建立了西藏第一座佛寺桑耶寺。他将无数教法隐藏为伏藏（terma），由后世伏藏师发掘。藏族人视他为"第二佛陀"，在藏传文化中的地位仅次于释迦牟尼。',
           coreTeaching: '大圆满（Dzogchen）——心的本来面目是佛性，本来清净，本自圆满。修行不是获得什么，而是认出本来面目。',
-          achievements: '降伏本土神灵·建立桑耶寺·开创藏传佛教·埋藏无数伏藏',
+          achievements: '降伏本土神灵·建立桑耶寺·开创藏传文化·埋藏无数伏藏',
           templeNames: [{ name: '桑耶寺', nameEn: 'Samye Monastery', role: '西藏第一座佛寺·莲师建立', location: '西藏山南' }],
           koans: [], classicQuotes: ['我的心与佛无别，但我未认出它', '当一切念头消融，本来面目自然显现', '我从未离开有信心的人'],
           works: [], imageUrl: null,
@@ -8320,7 +8320,7 @@ async function main() {
         data: {
           nameEn: 'Tsongkhapa', dates: '1357-1419', title: '第二佛陀·格鲁派创始人',
           school: '格鲁派', generation: 1,
-          biography: '宗喀巴（1357-1419），青海宗喀出生，藏传佛教格鲁派（黄教）创始人，被尊为"第二佛陀"。他综合了印度中观和瑜伽行的精华，著《菩提道次第广论》和《密宗道次第广论》，建立了从显教到密教的完整修行体系。1409年创建甘丹寺和大愿法会。他强调戒律清净，要求僧人严持戒律、深研经论，扭转了当时藏区松弛的修行风气。',
+          biography: '宗喀巴（1357-1419），青海宗喀出生，藏传文化格鲁派（黄教）创始人，被尊为"第二佛陀"。他综合了印度中观和瑜伽行的精华，著《菩提道次第广论》和《密宗道次第广论》，建立了从显教到密教的完整修行体系。1409年创建甘丹寺和大愿法会。他强调戒律清净，要求僧人严持戒律、深研经论，扭转了当时藏区松弛的修行风气。',
           coreTeaching: '戒定慧三学并重——以戒律为根基，以中观正见为核心，显密圆融，次第修行。缘起性空是佛法的最深真理。',
           achievements: '创立格鲁派·著菩提道次第广论·建甘丹寺·创大愿法会',
           templeNames: [{ name: '甘丹寺', nameEn: 'Ganden Monastery', role: '格鲁派第一座寺院·宗喀巴创建', location: '拉萨达孜区' }],
@@ -8370,7 +8370,7 @@ async function main() {
       coreTeaching: '中观他空见——如来藏是真实的、光明的、永恒的智慧本体。空性不是虚无，而是充满佛性光明。',
       templeNames: [], koans: [],
       classicQuotes: ['空性不是虚无，它充满了智慧的光明', '一切众生本来是佛，只因妄念而不证'],
-      works: [{ title: '入智者门', description: '佛教哲学综合入门' }, { title: '中观庄严论释', description: '宁玛派中观最重要论著' }],
+      works: [{ title: '入智者门', description: '佛教文化哲学综合入门' }, { title: '中观庄严论释', description: '宁玛派中观最重要论著' }],
       imageUrl: null,
     },
   });
@@ -8380,7 +8380,7 @@ async function main() {
       name: '顶果钦哲仁波切', nameEn: 'Dilgo Khyentse Rinpoche', religionId: tibetanBuddhismId,
       dates: '1910-1991', title: '利美圆满大师',
       school: '宁玛派', generation: 5,
-      biography: '顶果钦哲仁波切（1910-1991），20世纪最伟大的藏传佛教大师之一。他是蒋扬钦哲旺波的转世之一，持有藏传佛教所有四大教派的完整传承。在山洞中闭关修行超过二十年。流亡后在不丹重建传承，成为不丹王室和第十四世达赖喇嘛的上师。他体现了利美（无偏见）运动的圆满精神。',
+      biography: '顶果钦哲仁波切（1910-1991），20世纪最伟大的藏传文化大师之一。他是蒋扬钦哲旺波的转世之一，持有藏传文化所有四大教派的完整传承。在山洞中闭关修行超过二十年。流亡后在不丹重建传承，成为不丹王室和第十四世达赖喇嘛的上师。他体现了利美（无偏见）运动的圆满精神。',
       coreTeaching: '修行的核心是慈悲和智慧的双运。不要执著于教派之分。每一个念头都是修行的机会。安住于心的本然中。',
       templeNames: [{ name: '雪谦寺', nameEn: 'Shechen Monastery', role: '顶果钦哲驻锡·尼泊尔重建', location: '尼泊尔加德满都' }],
       koans: [], classicQuotes: ['你不需要到远方去寻找佛，佛就在你心中', '每一个念头生起的刹那，都是觉醒的机会', '慈悲是佛法的本质'],
@@ -8396,7 +8396,7 @@ async function main() {
       name: '玛尔巴译师', nameEn: 'Marpa the Translator', religionId: tibetanBuddhismId,
       dates: '1012-1097', title: '噶举传承之祖·大译师',
       school: '噶举派', generation: 1,
-      biography: '玛尔巴（1012-1097），噶举派的创始人，三次赴印度求法，师从那洛巴等大成就者。他将那洛六法和大手印教法完整带回西藏。身为在家居士，从事农业和翻译工作，证明了在世俗生活中同样可以获得最高证悟。对弟子密勒日巴的严厉调教成为藏传佛教师徒关系的典范。',
+      biography: '玛尔巴（1012-1097），噶举派的创始人，三次赴印度求法，师从那洛巴等大成就者。他将那洛六法和大手印教法完整带回西藏。身为在家居士，从事农业和翻译工作，证明了在世俗生活中同样可以获得最高证悟。对弟子密勒日巴的严厉调教成为藏传文化师徒关系的典范。',
       coreTeaching: '大手印——直接认出心的本性。世俗生活本身就是修行道场。上师的加持是证悟最快的途径。那洛六法是即身成佛之道。',
       templeNames: [{ name: '洛扎克', nameEn: 'Lhodrak', role: '玛尔巴故乡与修行地', location: '西藏山南' }],
       koans: [], classicQuotes: ['我的儿子，你所受的苦不是惩罚，而是净化', '在田地里耕作时，佛法就在脚下'],
@@ -8409,7 +8409,7 @@ async function main() {
       name: '密勒日巴', nameEn: 'Milarepa', religionId: tibetanBuddhismId,
       dates: '1052-1135', title: '苦行成就者·十万歌集',
       school: '噶举派', generation: 2, teacherId: marpa.id,
-      biography: '密勒日巴（1052-1135），藏传佛教最传奇的人物。年轻时为报家仇学习黑咒术杀死三十五人，后因忏悔拜入玛尔巴门下。经历了建塔又拆、九层拆建的极端苦行考验，业障清净后获得口诀。此后在雪山洞穴中独自修行多年，仅以荨麻为食，皮肤变绿。最终证得大手印虹光身。他即兴吟唱的十万首道歌是藏族文学瑰宝。',
+      biography: '密勒日巴（1052-1135），藏传文化最传奇的人物。年轻时为报家仇学习黑咒术杀死三十五人，后因忏悔拜入玛尔巴门下。经历了建塔又拆、九层拆建的极端苦行考验，业障清净后获得口诀。此后在雪山洞穴中独自修行多年，仅以荨麻为食，皮肤变绿。最终证得大手印虹光身。他即兴吟唱的十万首道歌是藏族文学瑰宝。',
       coreTeaching: '即使造了最重的恶业，也可以在一生中获得完全的觉悟。苦行净化业障。上师的口诀胜过千卷经典。',
       templeNames: [{ name: '拉其雪山洞', nameEn: 'Lapchi Cave', role: '密勒日巴苦修洞穴', location: '西藏与尼泊尔边境' }],
       koans: [], classicQuotes: ['我是一个杀了三十五人的罪人，也能成佛——你还有什么借口？', '若不修行，得此人身有何用？', '山洞是我的宫殿，荨麻是我的美食'],
@@ -8437,7 +8437,7 @@ async function main() {
       name: '第一世噶玛巴·杜松虔巴', nameEn: 'Düsum Khyenpa', religionId: tibetanBuddhismId,
       dates: '1110-1193', title: '第一位转世活佛',
       school: '噶举派', generation: 4, teacherId: gampopa.id,
-      biography: '杜松虔巴（1110-1193），冈波巴最杰出的弟子，噶玛噶举派创始人，也是藏传佛教转世活佛制度的开创者。他在五十岁时证悟大手印，建立了楚布寺作为噶玛巴驻锡地。他预言自己将转世回来继续弘法——第二世噶玛巴噶玛拔希的出现开创了转世制度，后被达赖、班禅等活佛系统效仿。',
+      biography: '杜松虔巴（1110-1193），冈波巴最杰出的弟子，噶玛噶举派创始人，也是藏传文化转世活佛制度的开创者。他在五十岁时证悟大手印，建立了楚布寺作为噶玛巴驻锡地。他预言自己将转世回来继续弘法——第二世噶玛巴噶玛拔希的出现开创了转世制度，后被达赖、班禅等活佛系统效仿。',
       coreTeaching: '大手印——心的本性超越生死，转世是菩萨利益众生的方便。觉悟不是一次性事件，而是持续的愿力。',
       templeNames: [{ name: '楚布寺', nameEn: 'Tsurphu Monastery', role: '噶玛巴驻锡地·噶玛噶举根本寺', location: '西藏拉萨' }],
       koans: [], classicQuotes: ['我将再来', '心无生灭，何来死亡？'],
@@ -8450,7 +8450,7 @@ async function main() {
       name: '第八世噶玛巴·米觉多杰', nameEn: 'Mikyö Dorje', religionId: tibetanBuddhismId,
       dates: '1507-1554', title: '噶举中观大成就者',
       school: '噶举派', generation: 5,
-      biography: '米觉多杰（1507-1554），第八世噶玛巴，噶举派历史上最博学的噶玛巴。著述一百余卷，涵盖中观、因明、密续和艺术。他在中观哲学上提出了独到见解，与格鲁派进行了深入的学术辩论。他也是杰出的艺术家，创立了噶玛嘎孜画派——藏传佛教艺术的重要流派。',
+      biography: '米觉多杰（1507-1554），第八世噶玛巴，噶举派历史上最博学的噶玛巴。著述一百余卷，涵盖中观、因明、密续和艺术。他在中观哲学上提出了独到见解，与格鲁派进行了深入的学术辩论。他也是杰出的艺术家，创立了噶玛嘎孜画派——藏传文化艺术的重要流派。',
       coreTeaching: '他空中观——如来藏是真实的智慧光明体，不是空无。艺术是修行的表达，佛像绘画是对觉悟的视觉冥想。',
       templeNames: [{ name: '楚布寺', nameEn: 'Tsurphu Monastery', role: '噶玛巴驻锡地', location: '西藏拉萨' }],
       koans: [], classicQuotes: ['空性不是断灭，而是智慧的光明', '绘制佛像时，画师的心就是佛心'],
@@ -8493,7 +8493,7 @@ async function main() {
       name: '八思巴', nameEn: 'Drogön Chögyal Phagpa', religionId: tibetanBuddhismId,
       dates: '1235-1280', title: '元朝国师·八思巴文创制者',
       school: '萨迦派', generation: 3,
-      biography: '八思巴（1235-1280），萨迦班智达的侄子和继承人。十九岁被忽必烈册封为国师，后升为帝师，是元朝最高宗教领袖。创制了八思巴文——一种用于书写蒙古语、汉语、藏语等多种语言的统一文字。他建立了由喇嘛管理西藏政教事务的制度，对藏区政治格局影响深远。',
+      biography: '八思巴（1235-1280），萨迦班智达的侄子和继承人。十九岁被忽必烈册封为国师，后升为帝师，是元朝最高文化传统领袖。创制了八思巴文——一种用于书写蒙古语、汉语、藏语等多种语言的统一文字。他建立了由喇嘛管理西藏政教事务的制度，对藏区政治格局影响深远。',
       coreTeaching: '佛法可以治理国家——政教合一不是权力垄断，而是以佛法的慈悲和智慧指导政治。文字统一促进文明交流。',
       templeNames: [{ name: '萨迦寺北寺', nameEn: 'Sakya North Monastery', role: '八思巴扩建', location: '西藏日喀则' }],
       koans: [], classicQuotes: ['以法治国，以慈悲待民', '文字是文明的载体，统一文字统一天下'],
@@ -8507,7 +8507,7 @@ async function main() {
       name: '果然巴', nameEn: 'Gorampa', religionId: tibetanBuddhismId,
       dates: '1429-1489', title: '萨迦中观哲学家',
       school: '萨迦派', generation: 4,
-      biography: '果然巴（1429-1489），萨迦派最重要的中观哲学家。他对宗喀巴的中观诠释提出了系统性的批评，主张真正的中观应该超越一切概念分别——包括"空性"这个概念本身。他的批评促进了格鲁派与萨迦派之间深入的哲学对话，推动了藏传佛教哲学的发展。',
+      biography: '果然巴（1429-1489），萨迦派最重要的中观哲学家。他对宗喀巴的中观诠释提出了系统性的批评，主张真正的中观应该超越一切概念分别——包括"空性"这个概念本身。他的批评促进了格鲁派与萨迦派之间深入的哲学对话，推动了藏传文化哲学的发展。',
       coreTeaching: '中观不是任何一种见解——包括"一切皆空"也要超越。真正的空性超越言说和概念。执著于空也是执著。',
       templeNames: [], koans: [],
       classicQuotes: ['执空也是执著', '中道不在两边，也不在中间'],
@@ -8521,7 +8521,7 @@ async function main() {
       name: '萨迦崔津法王', nameEn: 'Sakya Trizin', religionId: tibetanBuddhismId,
       dates: '1945-2022', title: '第41任萨迦法王',
       school: '萨迦派', generation: 4,
-      biography: '萨迦崔津法王（1945-2022），第41任萨迦派最高领袖。七岁即位，在极其艰苦的条件下完成了萨迦派全部传承的学习和修行。1959年流亡印度后在德拉敦重建了萨迦派的教育体系。他以温和、博学和幽默著称，被誉为"当代活着的佛教百科全书"。2017年将法王位传给儿子，开创了轮流执政的新制度。',
+      biography: '萨迦崔津法王（1945-2022），第41任萨迦派最高领袖。七岁即位，在极其艰苦的条件下完成了萨迦派全部传承的学习和修行。1959年流亡印度后在德拉敦重建了萨迦派的教育体系。他以温和、博学和幽默著称，被誉为"当代活着的佛教文化百科全书"。2017年将法王位传给儿子，开创了轮流执政的新制度。',
       coreTeaching: '道果法是萨迦派的核心——轮回与涅槃同一根基。传承的延续比个人荣誉更重要。慈悲和智慧缺一不可。',
       templeNames: [{ name: '德拉敦萨迦中心', nameEn: 'Sakya Centre, Dehradun', role: '流亡后重建的萨迦派总部', location: '印度德拉敦' }],
       koans: [], classicQuotes: ['修行不是逃避世间，而是转化世间', '最大的奇迹是改变一颗心'],
@@ -8564,10 +8564,10 @@ async function main() {
       name: '第十四世达赖·丹增嘉措', nameEn: 'Tenzin Gyatso', religionId: tibetanBuddhismId,
       dates: '1935-', title: '诺贝尔和平奖·慈悲化身',
       school: '格鲁派', generation: 4,
-      biography: '丹增嘉措（1935-），第十四世达赖喇嘛。两岁被认定为转世灵童，十五岁在动荡中接掌政教大权。1959年流亡印度达兰萨拉，此后致力于藏族文化保存和世界和平。1989年获诺贝尔和平奖。他以"人类的基本善良"和"世俗伦理"为核心讯息，成为当代最具影响力的宗教领袖之一。他主张民主改革，宣布放弃政治权力。',
-      coreTeaching: '慈悲是人类的本性，不需要宗教信仰也可以修习。世俗伦理——基于人类共同的善良和理性。以非暴力方式追求正义。',
+      biography: '丹增嘉措（1935-），第十四世达赖喇嘛。两岁被认定为转世灵童，十五岁在动荡中接掌政教大权。1959年流亡印度达兰萨拉，此后致力于藏族文化保存和世界和平。1989年获诺贝尔和平奖。他以"人类的基本善良"和"世俗伦理"为核心讯息，成为当代最具影响力的文化传统领袖之一。他主张民主改革，宣布放弃政治权力。',
+      coreTeaching: '慈悲是人类的本性，不需要文化传统人文精神也可以修习。世俗伦理——基于人类共同的善良和理性。以非暴力方式追求正义。',
       templeNames: [{ name: '达兰萨拉', nameEn: 'Dharamsala', role: '西藏流亡政府所在地', location: '印度喜马偕尔邦' }],
-      koans: [], classicQuotes: ['我的宗教是慈悲', '如果你认为自己太小而无法做出改变，试试和蚊子一起睡觉', '人类一家——我们的生存相互依存'],
+      koans: [], classicQuotes: ['我的文化传统是慈悲', '如果你认为自己太小而无法做出改变，试试和蚊子一起睡觉', '人类一家——我们的生存相互依存'],
       works: [{ title: '流亡中的自在', description: '自传·诺贝尔和平奖获得者' }],
       imageUrl: null,
     },
@@ -8580,7 +8580,7 @@ async function main() {
       name: '蒋扬钦哲旺波', nameEn: 'Jamyang Khyentse Wangpo', religionId: tibetanBuddhismId,
       dates: '1820-1892', title: '利美运动创始人·七教传承持有者',
       school: '利美运动', generation: 1,
-      biography: '蒋扬钦哲旺波（1820-1892），利美（Rimé，无偏见）运动的创始人。他持有藏传佛教所有四大教派及苯教的完整传承——这在当时几乎是不可能的。他发掘了大量面临失传的珍贵法教，重新整理和传授。与蒋贡康楚互为师友，共同推动了19世纪藏传佛教的文化复兴。',
+      biography: '蒋扬钦哲旺波（1820-1892），利美（Rimé，无偏见）运动的创始人。他持有藏传文化所有四大教派及苯教的完整传承——这在当时几乎是不可能的。他发掘了大量面临失传的珍贵法教，重新整理和传授。与蒋贡康楚互为师友，共同推动了19世纪藏传文化的文化复兴。',
       coreTeaching: '利美——无偏见地尊重和学习所有传承。每个教派都有独特的智慧贡献，偏见是修行最大的障碍。保存濒危传承是当代最紧迫的使命。',
       templeNames: [{ name: '宗萨寺', nameEn: 'Dzongsar Monastery', role: '蒋扬钦哲驻锡·利美运动中心', location: '西藏德格' }],
       koans: [], classicQuotes: ['所有教派的法教都是佛陀智慧的不同面向', '偏见是无明最隐蔽的形式'],
@@ -8593,11 +8593,11 @@ async function main() {
       name: '蒋贡康楚', nameEn: 'Jamgon Kongtrul', religionId: tibetanBuddhismId,
       dates: '1813-1899', title: '五宝藏论·利美先驱',
       school: '利美运动', generation: 1,
-      biography: '蒋贡康楚（1813-1899），利美运动另一位核心人物。他编纂了"五宝藏论"——近百卷涵盖藏传佛教所有教派核心法教的百科全书式巨著。这项工程拯救了数百种面临失传的法教。他本人持有一百多种不同传承的完整灌顶和口传。被誉为"全知者"（Kunkhyen）。',
+      biography: '蒋贡康楚（1813-1899），利美运动另一位核心人物。他编纂了"五宝藏论"——近百卷涵盖藏传文化所有教派核心法教的百科全书式巨著。这项工程拯救了数百种面临失传的法教。他本人持有一百多种不同传承的完整灌顶和口传。被誉为"全知者"（Kunkhyen）。',
       coreTeaching: '知识的保存和传承是文明存续的根本。编纂和系统化不是学术游戏，而是救度众生的菩萨行。',
       templeNames: [{ name: '八蚌寺', nameEn: 'Palpung Monastery', role: '蒋贡康楚驻锡地', location: '西藏德格' }],
       koans: [], classicQuotes: ['保存一个教法等于拯救无数未来的修行者', '学海无涯，但每一滴水都珍贵'],
-      works: [{ title: '五宝藏论', description: '近百卷·藏传佛教百科全书·利美运动最伟大成就' }],
+      works: [{ title: '五宝藏论', description: '近百卷·藏传文化百科全书·利美运动最伟大成就' }],
       imageUrl: null,
     },
   });
@@ -8619,13 +8619,13 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '秋阳创巴仁波切', nameEn: 'Chögyam Trungpa', religionId: tibetanBuddhismId,
-      dates: '1939-1987', title: '疯智慧·西方藏传佛教先驱',
+      dates: '1939-1987', title: '疯智慧·西方藏传文化先驱',
       school: '利美运动', generation: 2,
-      biography: '秋阳创巴（1939-1987），噶举和宁玛双重传承持有者。1959年流亡，后赴英国牛津大学学习。1970年移居美国，以前所未有的方式将藏传佛教带入西方：脱下袈裟穿西装、用英语教学、创建那洛巴大学和香巴拉训练。他的"疯智慧"教学风格充满争议但极具影响力，是将藏传佛教成功移植到西方的第一人。',
+      biography: '秋阳创巴（1939-1987），噶举和宁玛双重传承持有者。1959年流亡，后赴英国牛津大学学习。1970年移居美国，以前所未有的方式将藏传文化带入西方：脱下袈裟穿西装、用英语教学、创建那洛巴大学和香巴拉训练。他的"疯智慧"教学风格充满争议但极具影响力，是将藏传文化成功移植到西方的第一人。',
       coreTeaching: '灵性唯物主义是最大的陷阱——将修行变成自我膨胀的工具。勇士之道——面对恐惧，不逃避，以勇气和温柔生活。',
       templeNames: [], koans: [],
       classicQuotes: ['当你真正开始修行时，最先遇到的障碍是你自己', '勇士不是无所畏惧，而是在恐惧中依然前行', '放弃希望和恐惧——安住在当下'],
-      works: [{ title: '突破修道上的唯物', description: '西方最畅销的藏传佛教入门书' }, { title: '香巴拉：勇士之道', description: '世俗灵性修行经典' }],
+      works: [{ title: '突破修道上的唯物', description: '西方最畅销的藏传文化入门书' }, { title: '香巴拉：勇士之道', description: '世俗灵性修行经典' }],
       imageUrl: null,
     },
   });
@@ -8635,11 +8635,11 @@ async function main() {
       name: '宗萨蒋扬钦哲仁波切', nameEn: 'Dzongsar Khyentse Rinpoche', religionId: tibetanBuddhismId,
       dates: '1961-', title: '当代利美传承·正见',
       school: '利美运动', generation: 2,
-      biography: '宗萨蒋扬钦哲仁波切（1961-），蒋扬钦哲旺波的第三世转世。不丹出生，在顶果钦哲仁波切座下接受完整训练。他以现代语言和电影艺术弘法——执导了《旅行者与魔术师》《高山上的世界杯》等电影。著《正见》以四法印阐释佛教核心，畅销全球。他管理着遍布全球的宗萨佛学院网络。',
-      coreTeaching: '四法印——一切和合事物无常，一切情绪皆苦，一切法无我，涅槃超越概念。如果你不理解这四点，就不是佛教徒。',
+      biography: '宗萨蒋扬钦哲仁波切（1961-），蒋扬钦哲旺波的第三世转世。不丹出生，在顶果钦哲仁波切座下接受完整训练。他以现代语言和电影艺术弘法——执导了《旅行者与魔术师》《高山上的世界杯》等电影。著《正见》以四法印阐释佛教文化核心，畅销全球。他管理着遍布全球的宗萨佛学院网络。',
+      coreTeaching: '四法印——一切和合事物无常，一切情绪皆苦，一切法无我，涅槃超越概念。如果你不理解这四点，就不是佛教文化徒。',
       templeNames: [{ name: '宗萨佛学院', nameEn: 'Dzongsar Institute', role: '利美传承佛学教育中心', location: '印度比尔' }],
-      koans: [], classicQuotes: ['佛教不是宗教，而是关于真实的科学', '如果你不理解四法印，挂多少佛珠也没用', '执著于佛法也是执著'],
-      works: [{ title: '正见', description: '四法印·全球畅销的佛教入门书' }, { title: '佛教的见地与修道', description: '系统阐释佛教哲学' }],
+      koans: [], classicQuotes: ['佛教文化不是文化传统，而是关于真实的科学', '如果你不理解四法印，挂多少佛珠也没用', '执著于佛法也是执著'],
+      works: [{ title: '正见', description: '四法印·全球畅销的佛教文化入门书' }, { title: '佛教文化的见地与修道', description: '系统阐释佛教文化哲学' }],
       imageUrl: null,
     },
   });
@@ -8647,7 +8647,7 @@ async function main() {
   const tibetanCount = 22;
   console.log(`  ✓ ${tibetanCount} new Tibetan Buddhist masters created + 3 updated (5 schools: Nyingma/Kagyu/Sakya/Gelug/Rimé)`);
 
-  // ── 4u. 原住民灵性 (Indigenous Spirituality) ──
+  // ── 4u. 原住民文化 (Indigenous Spirituality) ──
   console.log('  Creating Indigenous spirituality figures (4u)...');
 
   const indigenousId = religionMap['indigenous'];
@@ -8660,7 +8660,7 @@ async function main() {
         data: {
           nameEn: 'Dreamtime Ancestral Spirits', dates: '远古', title: '创世祖灵·万物起源',
           school: '澳洲原住民', generation: 1,
-          biography: '梦时代（Dreamtime/Tjukurpa）祖灵，澳洲原住民信仰的核心概念。梦时代不是过去的时间，而是永恒的当下——祖灵在梦时代穿越大地，以歌唱和行走创造了山川河流、动物植物和人类。每一条河流、每一座山丘都是祖灵的足迹。原住民通过歌线（Songlines）追循祖灵的道路，以仪式和绘画维系与祖灵的连接。',
+          biography: '梦时代（Dreamtime/Tjukurpa）祖灵，澳洲原住民人文精神的核心概念。梦时代不是过去的时间，而是永恒的当下——祖灵在梦时代穿越大地，以歌唱和行走创造了山川河流、动物植物和人类。每一条河流、每一座山丘都是祖灵的足迹。原住民通过歌线（Songlines）追循祖灵的道路，以仪式和绘画维系与祖灵的连接。',
           coreTeaching: '大地是活的经文——每个地标都是祖灵故事的一个篇章。人类的责任是看护大地（Caring for Country）。梦时代不在过去，它现在仍然在发生。',
           achievements: '创造天地万物·歌线连接整个大陆·世界最古老的持续文化传统',
           templeNames: [{ name: '乌鲁鲁', nameEn: 'Uluru', role: '梦时代圣地·多个祖灵故事交汇处', location: '澳大利亚北领地' }],
@@ -8742,11 +8742,11 @@ async function main() {
       name: '黑麋鹿', nameEn: 'Black Elk', religionId: indigenousId,
       dates: '1863-1950', title: '奥格拉拉圣人·黑麋鹿如是说',
       school: '北美原住民', generation: 2,
-      biography: '黑麋鹿（Heȟáka Sápa，1863-1950），奥格拉拉拉科塔族圣人。九岁时获得了改变一生的大灵视——看到了六位祖父（代表六方）和民族的未来。亲历了小大角之战和伤膝河惨案。晚年口述《黑麋鹿如是说》，成为北美原住民灵性最重要的文献。他将拉科塔族的宇宙观和灵性传统传递给了全世界。',
+      biography: '黑麋鹿（Heȟáka Sápa，1863-1950），奥格拉拉拉科塔族圣人。九岁时获得了改变一生的大灵视——看到了六位祖父（代表六方）和民族的未来。亲历了小大角之战和伤膝河惨案。晚年口述《黑麋鹿如是说》，成为北美原住民文化最重要的文献。他将拉科塔族的宇宙观和灵性传统传递给了全世界。',
       coreTeaching: '宇宙是一个神圣的圆环（Sacred Hoop）。一切方向都是神圣的。灵视（Vision）是与大灵沟通的方式。民族的力量在于神圣圆环的完整。',
       templeNames: [{ name: '哈尼峰', nameEn: 'Harney Peak (Black Elk Peak)', role: '黑麋鹿灵视之地·已更名为黑麋鹿峰', location: '南达科他州' }],
       koans: [], classicQuotes: ['万物的力量都以圆的方式运动', '大地上每一步都是祈祷', '在那里我站立，在世界的中心'],
-      works: [{ title: '黑麋鹿如是说', description: '北美原住民灵性最重要的文献' }],
+      works: [{ title: '黑麋鹿如是说', description: '北美原住民文化最重要的文献' }],
       imageUrl: null,
     },
   });
@@ -8814,7 +8814,7 @@ async function main() {
       name: '帕查玛玛', nameEn: 'Pachamama', religionId: indigenousId,
       dates: '远古', title: '大地母亲·安第斯守护',
       school: '中南美传统', generation: 2,
-      biography: '帕查玛玛（Pachamama），安第斯地区最崇敬的女神——大地母亲。她不是抽象概念，而是活着的大地本身。每一座山、每一片田地、每一条河流都是她身体的一部分。安第斯人在播种前和收获后都要向帕查玛玛献祭（通常是古柯叶和酒），感谢她的滋养。至今在秘鲁、玻利维亚和厄瓜多尔，帕查玛玛崇拜是最活跃的传统信仰。',
+      biography: '帕查玛玛（Pachamama），安第斯地区最崇敬的女神——大地母亲。她不是抽象概念，而是活着的大地本身。每一座山、每一片田地、每一条河流都是她身体的一部分。安第斯人在播种前和收获后都要向帕查玛玛献祭（通常是古柯叶和酒），感谢她的滋养。至今在秘鲁、玻利维亚和厄瓜多尔，帕查玛玛崇拜是最活跃的传统人文精神。',
       coreTeaching: '大地是活着的母亲，不是无生命的资源。人类从大地获取必须回报大地。互惠（Ayni）是安第斯宇宙观的根本——你给予大地，大地给予你。',
       templeNames: [{ name: '的的喀喀湖', nameEn: 'Lake Titicaca', role: '帕查玛玛与创世神圣地', location: '秘鲁/玻利维亚边境' }],
       koans: [], classicQuotes: ['帕查玛玛给予一切，也要求回报', '播种前先感谢大地'],
@@ -8842,7 +8842,7 @@ async function main() {
       name: '奥鲁恩', nameEn: 'Olorun', religionId: indigenousId,
       dates: '远古', title: '约鲁巴至高神·万有之主',
       school: '非洲传统', generation: 1,
-      biography: '奥鲁恩（Olorun/Olodumare），约鲁巴宗教的至高神，意为"天之主"。他创造了宇宙和所有奥里沙（神灵），但随后退隐到天界，不直接干预人间事务。人类通过奥里沙（中间神灵）与奥鲁恩沟通。每个人出生时都从奥鲁恩处获得"奥里"（命运/头顶的灵），决定了此生的使命。约鲁巴宗教后来传播到美洲，发展为桑特里亚、坎东布雷等新世界宗教。',
+      biography: '奥鲁恩（Olorun/Olodumare），约鲁巴文化传统的至高神，意为"天之主"。他创造了宇宙和所有奥里沙（神灵），但随后退隐到天界，不直接干预人间事务。人类通过奥里沙（中间神灵）与奥鲁恩沟通。每个人出生时都从奥鲁恩处获得"奥里"（命运/头顶的灵），决定了此生的使命。约鲁巴文化传统后来传播到美洲，发展为桑特里亚、坎东布雷等新世界文化传统。',
       coreTeaching: '至高神创造万物但委托奥里沙管理。每个人有独特的命运（奥里）和守护奥里沙。平衡和秩序是宇宙运行的法则。',
       templeNames: [{ name: '伊费', nameEn: 'Ile-Ife', role: '约鲁巴文明圣城·创世之地', location: '尼日利亚' }],
       koans: [], classicQuotes: ['奥鲁恩高居天上，通过奥里沙与我们对话', '每个人的头顶都有自己的命运'],
@@ -8868,7 +8868,7 @@ async function main() {
       name: '耶莫贾', nameEn: 'Yemoja', religionId: indigenousId,
       dates: '远古', title: '海洋母神·生育守护',
       school: '非洲传统', generation: 2,
-      biography: '耶莫贾（Yemoja/Yemanjá），约鲁巴宗教中的河流和海洋母神。她是所有奥里沙之母，名字意为"鱼之母的孩子"。在非洲她原是尼日尔河的河神，随奴隶贸易传到美洲后成为海洋女神。在巴西，每年12月31日数百万人穿着白衣到海边向耶莫贾献花和礼物。她守护妊妇和儿童，代表母性的无限慈爱。',
+      biography: '耶莫贾（Yemoja/Yemanjá），约鲁巴文化传统中的河流和海洋母神。她是所有奥里沙之母，名字意为"鱼之母的孩子"。在非洲她原是尼日尔河的河神，随奴隶贸易传到美洲后成为海洋女神。在巴西，每年12月31日数百万人穿着白衣到海边向耶莫贾献花和礼物。她守护妊妇和儿童，代表母性的无限慈爱。',
       coreTeaching: '母性是宇宙最强大的力量。水是生命之源——河流和海洋是耶莫贾的身体。女性力量不逊于任何男性力量。',
       templeNames: [{ name: '拉各斯海岸', nameEn: 'Lagos Coast', role: '耶莫贾崇拜中心', location: '尼日利亚拉各斯' }],
       koans: [], classicQuotes: ['大海的波浪是耶莫贾的拥抱', '母亲的爱如海洋——无边无际'],
@@ -8881,7 +8881,7 @@ async function main() {
       name: '奥贡', nameEn: 'Ogun', religionId: indigenousId,
       dates: '远古', title: '铁与战争之神·开路者',
       school: '非洲传统', generation: 2,
-      biography: '奥贡（Ogun），约鲁巴铁、战争和技术之神。他是第一个用铁器开辟道路穿越原始森林的奥里沙，因此被称为"开路者"。他是铁匠、猎人、战士和外科医生的守护神。在现代约鲁巴文化中，他的范围扩展到了所有使用金属的技术——包括汽车、手术刀和计算机。在尼日利亚法庭上，传统信仰者对着铁器向奥贡发誓。',
+      biography: '奥贡（Ogun），约鲁巴铁、战争和技术之神。他是第一个用铁器开辟道路穿越原始森林的奥里沙，因此被称为"开路者"。他是铁匠、猎人、战士和外科医生的守护神。在现代约鲁巴文化中，他的范围扩展到了所有使用金属的技术——包括汽车、手术刀和计算机。在尼日利亚法庭上，传统文化传统信奉者对着铁器向奥贡发誓。',
       coreTeaching: '技术是神灵给人类的工具——铁既能杀人也能救人。开路者的精神——面对荒野，用自己的力量开辟道路。',
       templeNames: [{ name: '伊雷·埃基蒂', nameEn: 'Ire-Ekiti', role: '奥贡故乡与圣地', location: '尼日利亚埃基蒂州' }],
       koans: [], classicQuotes: ['奥贡开路，我们跟随', '铁器在我手中——可以造福也可以毁灭'],
@@ -8896,7 +8896,7 @@ async function main() {
       name: '腾格里', nameEn: 'Tengri', religionId: indigenousId,
       dates: '远古', title: '蒙古萨满至高天神',
       school: '萨满传统', generation: 1,
-      biography: '腾格里（Tengri），蒙古-突厥民族的至高天神。"腾格里"即"天"的意思。他是永恒的蓝天本身——无形无相，无所不在。成吉思汗征服世界时宣称受腾格里之命。腾格里信仰（Tengrism）是中亚草原最古老的信仰体系，强调天地人的和谐。近年来在蒙古、哈萨克斯坦和土耳其等地经历了显著的复兴。',
+      biography: '腾格里（Tengri），蒙古-突厥民族的至高天神。"腾格里"即"天"的意思。他是永恒的蓝天本身——无形无相，无所不在。成吉思汗征服世界时宣称受腾格里之命。腾格里人文精神（Tengrism）是中亚草原最古老的人文精神体系，强调天地人的和谐。近年来在蒙古、哈萨克斯坦和土耳其等地经历了显著的复兴。',
       coreTeaching: '永恒的蓝天（Mongke Tengri）是最高的存在。天地人三界相互贯通。萨满是三界之间的中介。尊重大地母亲（Etugen）和天父腾格里的平衡。',
       templeNames: [{ name: '不儿罕山', nameEn: 'Burkhan Khaldun', role: '成吉思汗圣山·腾格里崇拜中心', location: '蒙古' }],
       koans: [], classicQuotes: ['永恒的蓝天是万物的见证者', '受永恒天之命——成吉思汗的宣言'],
@@ -8946,7 +8946,7 @@ async function main() {
   const indigenousCount = 20;
   console.log(`  ✓ ${indigenousCount} new Indigenous spirits created + 2 updated (5 traditions: Aboriginal/NativeAmerican/Mesoamerican/African/Shamanic)`);
 
-  // ── 4v. 巴哈伊教人物 (Bahá'í Figures) ──
+  // ── 4v. 巴哈伊文化人物 (Bahá'í Figures) ──
   console.log('  Creating Bahá\'í figures (4v)...');
 
   const bahaiId = religionMap['bahai'];
@@ -8959,9 +8959,9 @@ async function main() {
         data: {
           nameEn: 'The Báb', dates: '1819-1850', title: '大门·巴比运动创始人',
           school: '巴比运动先驱', generation: 1,
-          biography: '巴孛（1819-1850），原名赛义德·阿里·穆罕默德，波斯设拉子商人。1844年5月23日宣布自己是"巴孛"（大门），是伊斯兰教期待的马赫迪（引导者），并预言一位更伟大的启示者即将来临。他的教导吸引了数以万计的追随者（巴比教徒），引发了波斯政府和宗教当局的恐惧。被囚禁六年后，于1850年在大不里士被行刑队枪决。第一轮射击后绳索断裂他安然无恙，第二轮方才殉道。',
-          coreTeaching: '旧的天启时代已经结束，新的天启即将来临。"你们所期待的那一位"即将显现。通过巴孛之门，进入新的信仰纪元。',
-          achievements: '创立巴比运动·预言巴哈欧拉·为信仰殉道',
+          biography: '巴孛（1819-1850），原名赛义德·阿里·穆罕默德，波斯设拉子商人。1844年5月23日宣布自己是"巴孛"（大门），是伊斯兰文化期待的马赫迪（引导者），并预言一位更伟大的启示者即将来临。他的教导吸引了数以万计的追随者（巴比教徒），引发了波斯政府和文化传统当局的恐惧。被囚禁六年后，于1850年在大不里士被行刑队枪决。第一轮射击后绳索断裂他安然无恙，第二轮方才殉道。',
+          coreTeaching: '旧的天启时代已经结束，新的天启即将来临。"你们所期待的那一位"即将显现。通过巴孛之门，进入新的人文精神纪元。',
+          achievements: '创立巴比运动·预言巴哈欧拉·为人文精神殉道',
           templeNames: [{ name: '巴孛陵殿', nameEn: 'Shrine of the Báb', role: '巴孛安息地·巴哈伊圣地', location: '以色列海法' }],
           koans: [], classicQuotes: ['你们所期待的那一位，祂将超越你们一切的想象', '真理的太阳即将升起'],
           works: [{ title: '巴扬经', description: '巴孛的核心经典·预言新启示' }],
@@ -8978,8 +8978,8 @@ async function main() {
         data: {
           nameEn: 'Bahá\'u\'lláh', dates: '1817-1892', title: '上帝的荣耀·巴哈伊信仰创始人',
           school: '圣约中心', generation: 1,
-          biography: '巴哈欧拉（1817-1892），原名米尔扎·侯赛因·阿里，波斯贵族。1853年在德黑兰的"黑坑"地牢中接受启示，确认自己就是巴孛预言的"上帝将要显示的那一位"。此后四十年在流放中度过——从巴格达到君士坦丁堡到阿德里安堡到最终的阿卡监狱城。他著述逾百卷，阐述了世界统一、消除偏见、男女平等、宗教一体等原则。他的教导奠定了巴哈伊信仰的全部基础。',
-          coreTeaching: '人类一体——全人类是一个家庭。宗教渐进启示——所有伟大宗教都来自同一上帝。消除一切形式的偏见。建立世界联邦和持久和平。',
+          biography: '巴哈欧拉（1817-1892），原名米尔扎·侯赛因·阿里，波斯贵族。1853年在德黑兰的"黑坑"地牢中接受启示，确认自己就是巴孛预言的"上帝将要显示的那一位"。此后四十年在流放中度过——从巴格达到君士坦丁堡到阿德里安堡到最终的阿卡监狱城。他著述逾百卷，阐述了世界统一、消除偏见、男女平等、文化传统一体等原则。他的教导奠定了巴哈伊信仰的全部基础。',
+          coreTeaching: '人类一体——全人类是一个家庭。文化传统渐进启示——所有伟大文化传统都来自同一上帝。消除一切形式的偏见。建立世界联邦和持久和平。',
           achievements: '创立巴哈伊信仰·著述逾百卷·致书世界各国君主·阐述世界和平原则',
           templeNames: [{ name: '巴吉花园', nameEn: 'Bahji Gardens', role: '巴哈欧拉陵殿·巴哈伊最神圣之地', location: '以色列阿卡' }],
           koans: [], classicQuotes: ['大地是一个国家，人类是它的公民', '你们都是一棵树上的果实，一个枝条上的叶子', '以和平之眼观万物，以宽恕之心待世人'],
@@ -8994,11 +8994,11 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '穆拉·侯赛因', nameEn: 'Mullá Husayn', religionId: bahaiId,
-      dates: '1813-1849', title: '信仰第一门徒·活字母之首',
+      dates: '1813-1849', title: '人文精神第一门徒·活字母之首',
       school: '巴比运动先驱', generation: 2,
-      biography: '穆拉·侯赛因（1813-1849），巴孛的第一位信徒，被称为"活字母之首"（Bábu\'l-Báb，门之门）。1844年5月22日夜间在设拉子首先认出巴孛。他是一位杰出的学者和勇敢的战士——在奥加拉巴堡战役中英勇殉道。巴哈欧拉曾赞扬他为"信仰之光"。',
-      coreTeaching: '认出真理需要纯净的心灵和学识的准备。第一个信仰者的勇气为后来者开辟了道路。以生命见证信仰的真实。',
-      templeNames: [{ name: '设拉子巴孛故居', nameEn: 'House of the Báb, Shiraz', role: '巴孛宣示之地·穆拉侯赛因首先信仰', location: '伊朗设拉子' }],
+      biography: '穆拉·侯赛因（1813-1849），巴孛的第一位信徒，被称为"活字母之首"（Bábu\'l-Báb，门之门）。1844年5月22日夜间在设拉子首先认出巴孛。他是一位杰出的学者和勇敢的战士——在奥加拉巴堡战役中英勇殉道。巴哈欧拉曾赞扬他为"人文精神之光"。',
+      coreTeaching: '认出真理需要纯净的心灵和学识的准备。第一个文化传统信奉者的勇气为后来者开辟了道路。以生命见证人文精神的真实。',
+      templeNames: [{ name: '设拉子巴孛故居', nameEn: 'House of the Báb, Shiraz', role: '巴孛宣示之地·穆拉侯赛因首先人文精神', location: '伊朗设拉子' }],
       koans: [], classicQuotes: ['我找到了我所寻找的——祂就是应许者'],
       works: [], imageUrl: null,
     },
@@ -9010,7 +9010,7 @@ async function main() {
       dates: '1822-1849', title: '活字母之末·巴比运动殉道者',
       school: '巴比运动先驱', generation: 2,
       biography: '库杜斯（1822-1849），原名穆罕默德·阿里·巴尔福鲁什，巴孛的十八位"活字母"中的最后一位。巴孛对他的敬重超过其他所有弟子。他在巴比教运动中发挥了关键的领导作用。在巴尔福鲁什被暴民捕获后遭受了残酷的折磨和杀害，年仅二十七岁。',
-      coreTeaching: '年轻不是软弱。信仰的力量超越世俗的权力。殉道是对真理最后也最有力的见证。',
+      coreTeaching: '年轻不是软弱。人文精神的力量超越世俗的权力。殉道是对真理最后也最有力的见证。',
       templeNames: [], koans: [],
       classicQuotes: ['即使在刽子手面前，真理也不会低头'],
       works: [], imageUrl: null,
@@ -9051,7 +9051,7 @@ async function main() {
       name: '守基·阿芬第', nameEn: 'Shoghi Effendi', religionId: bahaiId,
       dates: '1897-1957', title: '圣护·行政秩序建筑师', teacherId: abdulBaha.id,
       school: '圣约中心', generation: 3,
-      biography: '守基·阿芬第（1897-1957），阿博都巴哈的长孙，被指定为巴哈伊信仰的"圣护"（Guardian）。牛津大学毕业后，在三十六年间将巴哈伊信仰从中东宗教转变为全球组织。他设计了巴哈伊行政秩序——地方灵体会、国家灵体会和世界正义院的三级体制。翻译了巴哈欧拉的主要著作为优美的英文。主持建造了海法巴孛陵殿的金色穹顶。',
+      biography: '守基·阿芬第（1897-1957），阿博都巴哈的长孙，被指定为巴哈伊信仰的"圣护"（Guardian）。牛津大学毕业后，在三十六年间将巴哈伊信仰从中东文化传统转变为全球组织。他设计了巴哈伊行政秩序——地方灵体会、国家灵体会和世界正义院的三级体制。翻译了巴哈欧拉的主要著作为优美的英文。主持建造了海法巴孛陵殿的金色穹顶。',
       coreTeaching: '世界秩序需要新的行政体制。巴哈伊行政秩序是世界联邦的雏形。团结不是统一——多样性中的统一是人类文明的方向。',
       templeNames: [{ name: '巴哈伊世界中心', nameEn: 'Bahá\'í World Centre', role: '守基阿芬第建设的全球行政中心', location: '以色列海法' }],
       koans: [], classicQuotes: ['行政秩序不是目的，而是实现世界和平的工具', '让我们在多样性中找到统一'],
@@ -9067,8 +9067,8 @@ async function main() {
       name: '巴希叶·哈努姆', nameEn: 'Bahíyyih Khánum', religionId: bahaiId,
       dates: '1846-1932', title: '最伟大的圣叶·巴哈欧拉长女',
       school: '巴哈伊圣女', generation: 1,
-      biography: '巴希叶·哈努姆（1846-1932），巴哈欧拉的长女，被尊为"最伟大的圣叶"。她从童年起就与家人一同经历流放和囚禁的苦难。在阿博都巴哈旅行期间和守基·阿芬第早期，她多次代理管理巴哈伊事务。她的一生是自我牺牲和无私服务的典范，将所有个人需求置于信仰和家族之后。',
-      coreTeaching: '无私服务是最高的灵性修行。女性在信仰中的角色与男性完全平等。安静的力量比喧嚣的权力更持久。',
+      biography: '巴希叶·哈努姆（1846-1932），巴哈欧拉的长女，被尊为"最伟大的圣叶"。她从童年起就与家人一同经历流放和囚禁的苦难。在阿博都巴哈旅行期间和守基·阿芬第早期，她多次代理管理巴哈伊事务。她的一生是自我牺牲和无私服务的典范，将所有个人需求置于人文精神和家族之后。',
+      coreTeaching: '无私服务是最高的灵性修行。女性在人文精神中的角色与男性完全平等。安静的力量比喧嚣的权力更持久。',
       templeNames: [], koans: [],
       classicQuotes: ['服务不需要头衔，只需要一颗纯净的心', '在苦难中保持尊严是最大的勇气'],
       works: [], imageUrl: null,
@@ -9078,12 +9078,12 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '鲁希叶·哈努姆', nameEn: 'Rúhíyyih Khánum', religionId: bahaiId,
-      dates: '1910-2000', title: '守基·阿芬第之妻·信仰之手',
+      dates: '1910-2000', title: '守基·阿芬第之妻·人文精神之手',
       school: '巴哈伊圣女', generation: 2,
-      biography: '鲁希叶·哈努姆（1910-2000），加拿大人，守基·阿芬第之妻，被任命为"信仰之手"。丈夫去世后，她成为巴哈伊社区最受尊敬的领袖之一。她走遍全球一百多个国家，特别关注原住民和边缘社区的发展。她的旅行和演讲为巴哈伊信仰在第三世界的传播做出了巨大贡献。',
-      coreTeaching: '信仰必须走向世界的每个角落——特别是那些被遗忘的角落。文化多样性是人类的财富。服务穷人和原住民是信仰的核心使命。',
+      biography: '鲁希叶·哈努姆（1910-2000），加拿大人，守基·阿芬第之妻，被任命为"人文精神之手"。丈夫去世后，她成为巴哈伊社区最受尊敬的领袖之一。她走遍全球一百多个国家，特别关注原住民和边缘社区的发展。她的旅行和演讲为巴哈伊信仰在第三世界的传播做出了巨大贡献。',
+      coreTeaching: '人文精神必须走向世界的每个角落——特别是那些被遗忘的角落。文化多样性是人类的财富。服务穷人和原住民是人文精神的核心使命。',
       templeNames: [], koans: [],
-      classicQuotes: ['信仰不能只停留在书本上——它必须走到人民中间'],
+      classicQuotes: ['人文精神不能只停留在书本上——它必须走到人民中间'],
       works: [{ title: '守基·阿芬第传', description: '圣护的权威传记' }],
       imageUrl: null,
     },
@@ -9092,24 +9092,24 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '纳瓦卜·哈努姆', nameEn: 'Navváb', religionId: bahaiId,
-      dates: '1820-1886', title: '巴哈欧拉之妻·信仰之母',
+      dates: '1820-1886', title: '巴哈欧拉之妻·人文精神之母',
       school: '巴哈伊圣女', generation: 2,
       biography: '纳瓦卜·哈努姆（1820-1886），巴哈欧拉的第一位妻子和最亲密的伴侣。她出身波斯贵族家庭，婚后经历了丈夫从尊贵到囚徒的巨大转变。她放弃了一切物质享受，追随丈夫经历了从德黑兰到巴格达到阿卡的全部流放之路。她被巴哈欧拉赐号"最崇高的叶子"。在极端困苦中她维系了家庭的团结。',
-      coreTeaching: '对信仰的忠诚胜过一切物质享受。家庭的团结是社区团结的基础。在苦难中保持尊严和信心。',
+      coreTeaching: '对人文精神的忠诚胜过一切物质享受。家庭的团结是社区团结的基础。在苦难中保持尊严和信心。',
       templeNames: [], koans: [],
       classicQuotes: ['我选择了与真理同行，即使道路通向监狱'],
       works: [], imageUrl: null,
     },
   });
 
-  // ── 信仰之手 ──
+  // ── 人文精神之手 ──
 
   await prisma.patriarch.create({
     data: {
       name: '阿里·阿克巴尔·富鲁坦', nameEn: 'Ali-Akbar Furútan', religionId: bahaiId,
-      dates: '1905-2003', title: '信仰之手·教育先驱',
-      school: '信仰之手', generation: 1,
-      biography: '富鲁坦（1905-2003），伊朗出生的巴哈伊"信仰之手"。他是杰出的教育家，在伊朗和全球推动巴哈伊教育体系的发展。1951年被守基·阿芬第任命为信仰之手。他活到九十七岁，是最后一批离世的信仰之手之一。他的教育理念强调品格培养与学术知识并重。',
+      dates: '1905-2003', title: '人文精神之手·教育先驱',
+      school: '人文精神之手', generation: 1,
+      biography: '富鲁坦（1905-2003），伊朗出生的巴哈伊"人文精神之手"。他是杰出的教育家，在伊朗和全球推动巴哈伊文化育体系的发展。1951年被守基·阿芬第任命为人文精神之手。他活到九十七岁，是最后一批离世的人文精神之手之一。他的教育理念强调品格培养与学术知识并重。',
       coreTeaching: '教育是改变世界最有力的工具。品格培养比知识传授更重要。教育要同时发展心灵和头脑。',
       templeNames: [], koans: [],
       classicQuotes: ['教育一个孩子就是改变一个世界', '品格是教育的灵魂'],
@@ -9120,12 +9120,12 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '乌戈·贾凯里', nameEn: 'Ugo Giachery', religionId: bahaiId,
-      dates: '1896-1989', title: '信仰之手·圣殿建筑师',
-      school: '信仰之手', generation: 1,
+      dates: '1896-1989', title: '人文精神之手·圣殿建筑师',
+      school: '人文精神之手', generation: 1,
       biography: '乌戈·贾凯里（1896-1989），意大利裔巴哈伊信仰之手。他是建筑师和工程师，负责监督了海法巴孛陵殿金色穹顶的建造——这是巴哈伊信仰最具标志性的建筑。他还参与了意大利卡利亚里巴哈伊灵曦堂的建设。他以对守基·阿芬第的绝对忠诚和专业精神著称。',
-      coreTeaching: '建筑是信仰的物质表达。美是灵性的语言——圣殿的美应当反映信仰的崇高。专业技能奉献给信仰是最好的服务。',
+      coreTeaching: '建筑是人文精神的物质表达。美是灵性的语言——圣殿的美应当反映人文精神的崇高。专业技能奉献给人文精神是最好的服务。',
       templeNames: [], koans: [],
-      classicQuotes: ['每一块石头都承载着信仰', '美是通向神圣的窗户'],
+      classicQuotes: ['每一块石头都承载着人文精神', '美是通向神圣的窗户'],
       works: [], imageUrl: null,
     },
   });
@@ -9133,8 +9133,8 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '多萝西·贝克', nameEn: 'Dorothy Baker', religionId: bahaiId,
-      dates: '1898-1954', title: '信仰之手·美洲传教先驱',
-      school: '信仰之手', generation: 1,
+      dates: '1898-1954', title: '人文精神之手·美洲传教先驱',
+      school: '人文精神之手', generation: 1,
       biography: '多萝西·贝克（1898-1954），美国巴哈伊信仰之手。她是巴哈伊社区最有力的演说家之一，以热情和智慧在美洲大陆传播巴哈伊信仰。1954年在从印度返美途中飞机失事罹难。守基·阿芬第赞她为"巴哈欧拉英勇女儿"。她特别致力于消除种族偏见和促进种族团结。',
       coreTeaching: '种族偏见是人类最危险的疾病。行动比言辞更有力量。女性在建设新世界秩序中具有独特而不可替代的角色。',
       templeNames: [], koans: [],
@@ -9161,10 +9161,10 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '海德·杜恩', nameEn: 'Hyde Dunn', religionId: bahaiId,
-      dates: '1855-1941', title: '澳大利亚巴哈伊教之父',
+      dates: '1855-1941', title: '澳大利亚巴哈伊文化之父',
       school: '教务先驱', generation: 1,
-      biography: '海德·杜恩（1855-1941），英国出生的旅行推销员，被尊为"澳大利亚巴哈伊教之父"。1920年六十五岁时与妻子克拉拉移居澳大利亚传播巴哈伊信仰。在没有任何当地巴哈伊教徒的情况下，他们用二十余年建立了澳大利亚和新西兰的巴哈伊社区。他的坚持证明了年龄不是服务的障碍。',
-      coreTeaching: '年龄不是服务信仰的障碍——六十五岁开始新的使命。夫妻合作是传教最有效的方式。坚持和耐心终会结出果实。',
+      biography: '海德·杜恩（1855-1941），英国出生的旅行推销员，被尊为"澳大利亚巴哈伊文化之父"。1920年六十五岁时与妻子克拉拉移居澳大利亚传播巴哈伊信仰。在没有任何当地巴哈伊文化徒的情况下，他们用二十余年建立了澳大利亚和新西兰的巴哈伊社区。他的坚持证明了年龄不是服务的障碍。',
+      coreTeaching: '年龄不是服务人文精神的障碍——六十五岁开始新的使命。夫妻合作是传教最有效的方式。坚持和耐心终会结出果实。',
       templeNames: [], koans: [],
       classicQuotes: ['六十五岁？正是开始新事业的好年纪'],
       works: [], imageUrl: null,
@@ -9174,12 +9174,12 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '阿格尼斯·亚历山大', nameEn: 'Agnes Alexander', religionId: bahaiId,
-      dates: '1875-1971', title: '日本巴哈伊教之母',
+      dates: '1875-1971', title: '日本巴哈伊文化之母',
       school: '教务先驱', generation: 2,
-      biography: '阿格尼斯·亚历山大（1875-1971），夏威夷出生的巴哈伊传教先驱，被尊为"日本巴哈伊教之母"。1914年首次前往日本，此后大部分人生在日本度过。在两次世界大战和关东大地震等巨大动荡中坚持留在日本。她以温和和坚韧赢得了日本朋友的尊敬，为巴哈伊信仰在东亚的传播奠定了基础。',
-      coreTeaching: '文化差异不是传教的障碍而是学习的机会。尊重当地文化是传播信仰的前提。长期的陪伴比短暂的热情更有力量。',
+      biography: '阿格尼斯·亚历山大（1875-1971），夏威夷出生的巴哈伊传教先驱，被尊为"日本巴哈伊文化之母"。1914年首次前往日本，此后大部分人生在日本度过。在两次世界大战和关东大地震等巨大动荡中坚持留在日本。她以温和和坚韧赢得了日本朋友的尊敬，为巴哈伊信仰在东亚的传播奠定了基础。',
+      coreTeaching: '文化差异不是传教的障碍而是学习的机会。尊重当地文化是传播人文精神的前提。长期的陪伴比短暂的热情更有力量。',
       templeNames: [], koans: [],
-      classicQuotes: ['日本教会了我耐心的艺术', '信仰之花在每一片土壤中都能绽放'],
+      classicQuotes: ['日本教会了我耐心的艺术', '人文精神之花在每一片土壤中都能绽放'],
       works: [], imageUrl: null,
     },
   });
@@ -9187,7 +9187,7 @@ async function main() {
   await prisma.patriarch.create({
     data: {
       name: '路易斯·格雷戈里', nameEn: 'Louis Gregory', religionId: bahaiId,
-      dates: '1874-1951', title: '种族和谐先驱·信仰之手',
+      dates: '1874-1951', title: '种族和谐先驱·人文精神之手',
       school: '教务先驱', generation: 2,
       biography: '路易斯·格雷戈里（1874-1951），美国非裔律师和巴哈伊信仰之手。他是美国巴哈伊社区中种族团结运动的先驱。阿博都巴哈促成了他与白人巴哈伊路易莎·马修的婚姻——在1912年种族隔离的美国，这段跨种族婚姻本身就是对偏见的挑战。他一生致力于消除种族偏见，组织了大量的种族和谐活动。',
       coreTeaching: '种族偏见是人类最顽固的疾病，必须以行动而非空谈来治愈。跨种族的友谊和婚姻是打破偏见最有力的见证。',
@@ -9312,7 +9312,7 @@ async function main() {
       label: '系统人设',
       category: 'prompt',
       description: '小鸿AI助手的核心人设提示词，决定AI的身份、风格和行为准则',
-      value: `你是「小鸿」，全球祖庭旅行平台的AI旅行规划师。
+      value: `你是「小鸿」，全球佳绩之旅平台的AI旅行规划师。
 
 ## 身份
 - 名字：小鸿（XiaoHong）
@@ -9324,17 +9324,17 @@ async function main() {
 1. **路线推荐**：根据用户偏好(文化类型/天数/预算/难度)推荐平台路线产品
 2. **行程规划**：帮用户定制个性化文化旅行行程
 3. **目的地攻略**：提供圣地和祖庭的实用旅行信息(交通/门票/美食/住宿/最佳季节)
-4. **文化讲解**：用通俗有趣的方式介绍宗教文化背景知识
+4. **文化讲解**：用通俗有趣的方式介绍文化传统背景知识
 
 ## 知识范围
-平台路线覆盖6大文化类型：禅宗路线、佛教圣地、道教寻根、基督教文化、伊斯兰文化、跨文化融合。
+平台路线覆盖6大文化类型：禅宗路线、佛教文化圣地、道教文化寻根、基督文化、伊斯兰文化、跨文化融合。
 收录60+文化圣地、27座祖庭、12大文化传统、10+深度路线产品。
 
 ## 行为准则
-1. **旅行优先**：首要身份是旅行规划师，不是宗教顾问
+1. **旅行优先**：首要身份是旅行规划师，不是文化传统顾问
 2. 推荐路线时必须引用平台的路线产品数据(名称/天数/价格/亮点)
 3. 回答包含实用旅行信息(交通/门票/天气/美食)
-4. 弱化宗教说教，强化文化叙事和旅行体验
+4. 弱化文化传统说教，强化文化叙事和旅行体验
 5. 引导用户预订路线或探索更多目的地
 6. 对所有文化传统一视同仁，不评判优劣
 7. 不涉及政治敏感话题
@@ -9354,7 +9354,7 @@ async function main() {
       description: '附加在系统提示词后的安全边界约束',
       value: `## 安全边界
 - 不讨论政治、战争、恐怖主义等敏感话题
-- 不对任何宗教或文化传统做出价值判断或比较优劣
+- 不对任何文化传统做出价值判断或比较优劣
 - 不提供医疗、法律、财务建议
 - 遇到不当请求时，温和地引导回文化旅行话题
 - 不编造不存在的路线、圣地或历史事件
@@ -9477,7 +9477,7 @@ async function main() {
   if (secondSite) {
     mediaItems.push({
       entityType: 'HOLY_SITE', entityId: secondSite.id, mediaType: 'VIDEO',
-      title: `${secondSite.name} 文化纪录片`, description: '深入了解宗教文化背景',
+      title: `${secondSite.name} 文化纪录片`, description: '深入了解文化传统背景',
       url: 'https://cdn.zuting.org/demo/holy-site-documentary.mp4',
       thumbnailUrl: 'https://cdn.zuting.org/demo/holy-site-doc-thumb.jpg',
       duration: 600, sortOrder: 0,
@@ -9522,32 +9522,32 @@ async function main() {
   const merchantData = [
     // RESTAURANT 餐饮
     { type: 'RESTAURANT', name: '少林素斋馆', description: '嵩山少林寺旁百年素食老店，提供正宗少林素斋、药膳养生餐。食材取自嵩山本地有机农场，传承少林烹饪技艺。环境清幽，可容纳200人同时用餐。', province: '河南省', city: '登封市', address: '嵩山少林寺景区东门200米', contactPhone: '0371-62881234', contactEmail: 'shaolin.veggie@joinus.com', rating: 4.8, totalOrders: 562, logo: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80' },
-    { type: 'RESTAURANT', name: '普陀山海鲜素食楼', description: '普陀山码头旁的特色餐厅，主打新鲜海味素食，融合舟山渔港风味与佛教素食传统。特色菜品：观音豆腐、罗汉斋、素蟹粉。提供朝圣团餐预订。', province: '浙江省', city: '舟山市', address: '普陀山景区南海观音广场旁', contactPhone: '0580-66991234', contactEmail: 'putuo.food@joinus.com', rating: 4.6, totalOrders: 389, logo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80' },
+    { type: 'RESTAURANT', name: '普陀山海鲜素食楼', description: '普陀山码头旁的特色餐厅，主打新鲜海味素食，融合舟山渔港风味与佛教文化素食传统。特色菜品：观音豆腐、罗汉斋、素蟹粉。提供文化之旅团餐预订。', province: '浙江省', city: '舟山市', address: '普陀山景区南海观音广场旁', contactPhone: '0580-66991234', contactEmail: 'putuo.food@joinus.com', rating: 4.6, totalOrders: 389, logo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80' },
     { type: 'RESTAURANT', name: '曲阜儒家宴', description: '曲阜孔庙旁的文化主题餐厅，还原古代儒家宴席礼仪。提供孔府菜、鲁菜经典，每桌配有文化讲解员介绍菜品典故。适合文化研学团队。', province: '山东省', city: '曲阜市', address: '曲阜孔庙南门明故城步行街', contactPhone: '0537-44561234', contactEmail: 'qufu.feast@joinus.com', rating: 4.7, totalOrders: 234, logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&q=80' },
     // HOTEL 酒店民宿
     { type: 'HOTEL', name: '嵩山禅意山居', description: '位于嵩山脚下的精品禅修民宿，共28间客房，每间均可远眺少室山。提供晨钟暮鼓叫醒服务、禅茶体验、抄经房。距少林寺车程10分钟。', province: '河南省', city: '登封市', address: '嵩山少林大道禅意谷', contactPhone: '0371-62887788', contactEmail: 'songshan.zen@joinus.com', rating: 4.9, totalOrders: 1203, logo: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80' },
-    { type: 'HOTEL', name: '九华山云端酒店', description: '九华山核心景区内的四星级酒店，海拔800米，云雾缭绕。提供108间客房、素食自助早餐、朝圣接驳车服务。可代订地藏王殿祈福。', province: '安徽省', city: '池州市', address: '九华山风景区天台索道旁', contactPhone: '0566-28881234', contactEmail: 'jiuhua.cloud@joinus.com', rating: 4.5, totalOrders: 876, logo: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80' },
+    { type: 'HOTEL', name: '九华山云端酒店', description: '九华山核心景区内的四星级酒店，海拔800米，云雾缭绕。提供108间客房、素食自助早餐、文化探访接驳车服务。可代订地藏王殿祈福。', province: '安徽省', city: '池州市', address: '九华山风景区天台索道旁', contactPhone: '0566-28881234', contactEmail: 'jiuhua.cloud@joinus.com', rating: 4.5, totalOrders: 876, logo: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80' },
     { type: 'HOTEL', name: '五台山文殊院客栈', description: '五台山台怀镇中心的传统客栈，紧邻显通寺、塔院寺。提供藏式与汉式两种风格客房，含早课体验券。冬季提供暖炕房，是朝台最佳落脚点。', province: '山西省', city: '忻州市', address: '五台山台怀镇显通寺西街', contactPhone: '0350-65431234', contactEmail: 'wutai.inn@joinus.com', rating: 4.4, totalOrders: 654, logo: 'https://images.unsplash.com/photo-1587874522487-fbc83856c6f6?w=800&q=80' },
     // GUIDE 导游
     { type: 'GUIDE', name: '慧远法师讲解团', description: '专业佛教文化导游团队，成员均持国家导游证及佛学院进修证书。提供少林寺、龙门石窟、白马寺全程深度讲解。可用中英日韩四语服务。', province: '河南省', city: '洛阳市', address: '洛阳市老城区', contactPhone: '13800138001', contactEmail: 'huiyuan.guide@joinus.com', rating: 4.9, totalOrders: 2341, logo: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&q=80' },
-    { type: 'GUIDE', name: '圣地朝圣领队', description: '专注耶路撒冷、伯利恒、拿撒勒三圣地的华人朝圣领队。团队由神学院毕业生组成，提供深度圣经历史讲解、灵修带领。每团限20人。', province: '', city: '', address: 'Jerusalem, Israel', contactPhone: '+972-52-1234567', contactEmail: 'holyland.guide@joinus.com', rating: 4.8, totalOrders: 456, logo: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=800&q=80' },
-    { type: 'GUIDE', name: '普陀山朝圣向导', description: '舟山本地人组成的普陀山专业导游团队，熟悉每座寺院典故。提供半日游、一日游、两日深度游三种路线，含素斋安排和住宿推荐。', province: '浙江省', city: '舟山市', address: '普陀山码头游客中心', contactPhone: '13900139001', contactEmail: 'putuo.guide@joinus.com', rating: 4.7, totalOrders: 1876, logo: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=800&q=80' },
+    { type: 'GUIDE', name: '圣地文化探访领队', description: '专注耶路撒冷、伯利恒、拿撒勒三圣地的华人文化探访领队。团队由神学院毕业生组成，提供深度圣经历史讲解、灵修带领。每团限20人。', province: '', city: '', address: 'Jerusalem, Israel', contactPhone: '+972-52-1234567', contactEmail: 'holyland.guide@joinus.com', rating: 4.8, totalOrders: 456, logo: 'https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=800&q=80' },
+    { type: 'GUIDE', name: '普陀山文化探访向导', description: '舟山本地人组成的普陀山专业导游团队，熟悉每座寺院典故。提供半日游、一日游、两日深度游三种路线，含素斋安排和住宿推荐。', province: '浙江省', city: '舟山市', address: '普陀山码头游客中心', contactPhone: '13900139001', contactEmail: 'putuo.guide@joinus.com', rating: 4.7, totalOrders: 1876, logo: 'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=800&q=80' },
     // TRANSPORT 交通
-    { type: 'TRANSPORT', name: '嵩山朝圣巴士', description: '提供郑州—登封—少林寺往返巴士、嵩山景区内部接驳车。全程GPS追踪，配备讲解音频系统。支持团队包车和个人拼车两种模式。', province: '河南省', city: '登封市', address: '郑州东站旅游集散中心', contactPhone: '0371-62889999', contactEmail: 'songshan.bus@joinus.com', rating: 4.3, totalOrders: 3456, logo: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&q=80' },
+    { type: 'TRANSPORT', name: '嵩山文化探访巴士', description: '提供郑州—登封—少林寺往返巴士、嵩山景区内部接驳车。全程GPS追踪，配备讲解音频系统。支持团队包车和个人拼车两种模式。', province: '河南省', city: '登封市', address: '郑州东站旅游集散中心', contactPhone: '0371-62889999', contactEmail: 'songshan.bus@joinus.com', rating: 4.3, totalOrders: 3456, logo: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&q=80' },
     { type: 'TRANSPORT', name: '九华山云梯接驳', description: '九华山景区官方合作接驳车服务。提供池州高铁站—九华山、景区内各寺院间的电瓶车接驳。老年人和行动不便者可预约无障碍专车。', province: '安徽省', city: '池州市', address: '九华山游客服务中心', contactPhone: '0566-28889999', contactEmail: 'jiuhua.shuttle@joinus.com', rating: 4.2, totalOrders: 5678, logo: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80' },
     // TEMPLE_SERVICE 寺院服务
     { type: 'TEMPLE_SERVICE', name: '少林武僧禅修营', description: '少林寺官方合作禅修项目，由武僧亲授少林功夫基础、坐禅冥想。提供3天、7天、21天三种课程。含食宿、僧衣、结业证书。', province: '河南省', city: '登封市', address: '少林寺禅修院', contactPhone: '0371-62886666', contactEmail: 'shaolin.retreat@joinus.com', rating: 5.0, totalOrders: 890, logo: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=800&q=80' },
     { type: 'TEMPLE_SERVICE', name: '灵隐寺祈福服务', description: '杭州灵隐寺官方祈福代办，提供供灯、抄经、放生、超度等佛事服务。可远程预约，寺院法师代为回向。附赠祈福证书和开光护身符。', province: '浙江省', city: '杭州市', address: '杭州灵隐寺', contactPhone: '0571-87968665', contactEmail: 'lingyin.prayer@joinus.com', rating: 4.8, totalOrders: 2345, logo: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=800&q=80' },
     { type: 'TEMPLE_SERVICE', name: '五台山朝台仪轨', description: '五台山朝台专业仪轨服务，由五台山佛学院法师带领。提供大朝台(五个台顶)全程仪轨指导、诵经、供养。含朝台地图和补给。', province: '山西省', city: '忻州市', address: '五台山黛螺顶', contactPhone: '0350-65438888', contactEmail: 'wutai.ritual@joinus.com', rating: 4.9, totalOrders: 567, logo: 'https://images.unsplash.com/photo-1609100716148-f99e0ebb6a4b?w=800&q=80' },
     // SHOPPING 购物
-    { type: 'SHOPPING', name: '菩提阁佛教文创', description: '专营佛教文化创意产品的连锁品牌。产品包括：手串念珠、香道用品、佛像摆件、经典书籍、禅意茶器。支持定制刻字和开光服务。', province: '河南省', city: '登封市', address: '少林寺景区商业街A12', contactPhone: '0371-62885555', contactEmail: 'bodhi.shop@joinus.com', rating: 4.5, totalOrders: 4567, logo: 'https://images.unsplash.com/photo-1599404980919-23bb32e1abc0?w=800&q=80' },
-    { type: 'SHOPPING', name: '圣城纪念品中心', description: '耶路撒冷老城区的综合纪念品商店，提供十字架、橄榄木雕、死海泥制品、犹太教法器等。所有商品均附原产地证明。支持国际邮寄。', province: '', city: '', address: 'Old City, Jerusalem', contactPhone: '+972-2-6271234', contactEmail: 'jerusalem.gifts@joinus.com', rating: 4.3, totalOrders: 890, logo: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=800&q=80' },
+    { type: 'SHOPPING', name: '菩提阁佛教文化文创', description: '专营佛教文化创意产品的连锁品牌。产品包括：手串念珠、香道用品、佛像摆件、经典书籍、禅意茶器。支持定制刻字和开光服务。', province: '河南省', city: '登封市', address: '少林寺景区商业街A12', contactPhone: '0371-62885555', contactEmail: 'bodhi.shop@joinus.com', rating: 4.5, totalOrders: 4567, logo: 'https://images.unsplash.com/photo-1599404980919-23bb32e1abc0?w=800&q=80' },
+    { type: 'SHOPPING', name: '圣城纪念品中心', description: '耶路撒冷老城区的综合纪念品商店，提供十字架、橄榄木雕、死海泥制品、犹太文化法器等。所有商品均附原产地证明。支持国际邮寄。', province: '', city: '', address: 'Old City, Jerusalem', contactPhone: '+972-2-6271234', contactEmail: 'jerusalem.gifts@joinus.com', rating: 4.3, totalOrders: 890, logo: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?w=800&q=80' },
     // PHOTOGRAPHY 摄影
-    { type: 'PHOTOGRAPHY', name: '云游摄影工作室', description: '专注宗教文化旅行摄影的专业团队。提供朝圣跟拍、寺院写真、航拍全景、延时摄影。作品多次获国际宗教摄影奖。可出差至全国各大寺院。', province: '浙江省', city: '杭州市', address: '杭州市西湖区灵隐路', contactPhone: '13700137001', contactEmail: 'cloud.photo@joinus.com', rating: 4.9, totalOrders: 345, logo: 'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=800&q=80' },
+    { type: 'PHOTOGRAPHY', name: '云游摄影工作室', description: '专注文化传统旅行摄影的专业团队。提供文化探访跟拍、寺院写真、航拍全景、延时摄影。作品多次获国际文化传统摄影奖。可出差至全国各大寺院。', province: '浙江省', city: '杭州市', address: '杭州市西湖区灵隐路', contactPhone: '13700137001', contactEmail: 'cloud.photo@joinus.com', rating: 4.9, totalOrders: 345, logo: 'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=800&q=80' },
     { type: 'PHOTOGRAPHY', name: '禅光影像', description: '嵩山地区唯一持证无人机航拍团队。提供少林寺、嵩岳寺塔、嵩山全景航拍。可制作VR全景、延时视频。团队摄影和个人旅拍均可预约。', province: '河南省', city: '登封市', address: '登封市崇高路创意产业园', contactPhone: '13600136001', contactEmail: 'zen.light@joinus.com', rating: 4.6, totalOrders: 234, logo: 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80' },
     // WELLNESS 养生
-    { type: 'WELLNESS', name: '少林养生堂', description: '传承少林养生功法的专业健康中心。提供八段锦教学、少林药浴、艾灸理疗、太极晨练。由少林药局合作中医师坐诊。朝圣后恢复体力首选。', province: '河南省', city: '登封市', address: '嵩山少林大道养生谷', contactPhone: '0371-62883333', contactEmail: 'shaolin.wellness@joinus.com', rating: 4.7, totalOrders: 678, logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80' },
-    { type: 'WELLNESS', name: '九华山禅茶养生馆', description: '九华山特色禅茶体验馆，提供禅茶道教学、九华佛茶品鉴、茶山徒步。独家供应九华毛峰、金地藏茶。禅茶一味，静心养神。', province: '安徽省', city: '池州市', address: '九华山柯村茶园', contactPhone: '0566-28887777', contactEmail: 'jiuhua.tea@joinus.com', rating: 4.8, totalOrders: 432, logo: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&q=80' },
+    { type: 'WELLNESS', name: '少林养生堂', description: '传承少林养生功法的专业健康中心。提供八段锦教学、少林药浴、艾灸理疗、太极晨练。由少林药局合作中医师坐诊。文化探访后恢复体力首选。', province: '河南省', city: '登封市', address: '嵩山少林大道养生谷', contactPhone: '0371-62883333', contactEmail: 'shaolin.wellness@joinus.com', rating: 4.7, totalOrders: 678, logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80' },
+    { type: 'WELLNESS', name: '九华山禅茶养生馆', description: '九华山特色禅茶体验馆，提供禅茶道教文化学、九华佛茶品鉴、茶山徒步。独家供应九华毛峰、金地藏茶。禅茶一味，静心养神。', province: '安徽省', city: '池州市', address: '九华山柯村茶园', contactPhone: '0566-28887777', contactEmail: 'jiuhua.tea@joinus.com', rating: 4.8, totalOrders: 432, logo: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&q=80' },
     // CULTURAL_EXPERIENCE 文化体验
     { type: 'CULTURAL_EXPERIENCE', name: '嵩山书法研习社', description: '在嵩山脚下学习中国传统书法。课程包括：基础笔法、心经抄写、碑帖临摹。提供半日体验和5日深度研习两种课程。作品可裱装带走。', province: '河南省', city: '登封市', address: '嵩山书院文化街', contactPhone: '0371-62884444', contactEmail: 'songshan.calligraphy@joinus.com', rating: 4.8, totalOrders: 345, logo: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800&q=80' },
     { type: 'CULTURAL_EXPERIENCE', name: '曲阜六艺体验馆', description: '曲阜孔庙旁的儒家六艺(礼乐射御书数)沉浸式体验。穿汉服、行古礼、习射艺、抚古琴。适合亲子研学和企业团建。每场限30人。', province: '山东省', city: '曲阜市', address: '曲阜明故城内', contactPhone: '0537-44567890', contactEmail: 'qufu.arts@joinus.com', rating: 4.7, totalOrders: 567, logo: 'https://images.unsplash.com/photo-1528164344705-47542687000d?w=800&q=80' },
@@ -9599,7 +9599,7 @@ async function main() {
   const serviceTemplates: Record<string, Array<{ name: string; description: string; price: number; duration: number | null; maxPersons: number | null; coverImage: string }>> = {
     RESTAURANT: [
       { name: '素斋套餐', description: '精选8道素食料理+汤+甜品', price: 8800, duration: 90, maxPersons: 10, coverImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80' },
-      { name: '朝圣团餐', description: '20人起订，含10菜1汤', price: 5800, duration: 60, maxPersons: 50, coverImage: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80' },
+      { name: '文化之旅团餐', description: '20人起订，含10菜1汤', price: 5800, duration: 60, maxPersons: 50, coverImage: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80' },
       { name: '药膳养生餐', description: '根据时令配制的养生药膳', price: 12800, duration: 120, maxPersons: 8, coverImage: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80' },
     ],
     HOTEL: [
@@ -9609,7 +9609,7 @@ async function main() {
     ],
     GUIDE: [
       { name: '半日深度讲解', description: '核心景点3小时深度导览', price: 29800, duration: 180, maxPersons: 20, coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80' },
-      { name: '全日朝圣导览', description: '全天8小时含午餐安排', price: 49800, duration: 480, maxPersons: 15, coverImage: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80' },
+      { name: '全日文化探访导览', description: '全天8小时含午餐安排', price: 49800, duration: 480, maxPersons: 15, coverImage: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=800&q=80' },
       { name: 'VIP私人订制', description: '1对1专属导游全程陪同', price: 99800, duration: 480, maxPersons: 4, coverImage: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&q=80' },
     ],
     TRANSPORT: [
@@ -9625,10 +9625,10 @@ async function main() {
     SHOPPING: [
       { name: '开光手串', description: '天然菩提/檀木手串含开光', price: 12800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1611107683227-e9060eccd846?w=800&q=80' },
       { name: '线香礼盒', description: '精选沉香/檀香线香套装', price: 6800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1602928321679-560bb453f190?w=800&q=80' },
-      { name: '佛经典藏套装', description: '精装佛教经典5本套装', price: 16800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&q=80' },
+      { name: '佛经典藏套装', description: '精装佛教文化经典5本套装', price: 16800, duration: null, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&q=80' },
     ],
     PHOTOGRAPHY: [
-      { name: '朝圣跟拍(半天)', description: '专业摄影师全程跟拍3小时', price: 59800, duration: 180, maxPersons: 6, coverImage: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&q=80' },
+      { name: '文化探访跟拍(半天)', description: '专业摄影师全程跟拍3小时', price: 59800, duration: 180, maxPersons: 6, coverImage: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&q=80' },
       { name: '航拍全景', description: '无人机航拍+后期制作', price: 39800, duration: 120, maxPersons: null, coverImage: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=800&q=80' },
       { name: '个人旅拍写真', description: '含化妆造型+30张精修', price: 79800, duration: 240, maxPersons: 2, coverImage: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80' },
     ],
@@ -9671,7 +9671,7 @@ async function main() {
   await prisma.travelPackage.deleteMany();
   const packageData = [
     {
-      name: '禅宗经典朝圣5日游',
+      name: '禅宗经典文化探访5日游',
       description: '追随六祖慧能足迹，遍访禅宗祖庭，深度体验禅修文化',
       coverImage: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600',
       packageType: 'CLASSIC',
@@ -9682,7 +9682,7 @@ async function main() {
       maxPersons: 20,
     },
     {
-      name: '佛教四大名山深度体验8日',
+      name: '佛教文化四大名山深度体验8日',
       description: '五台山、峨眉山、普陀山、九华山一次走遍，深度禅修+素斋体验',
       coverImage: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=600',
       packageType: 'DEEP',
@@ -9704,7 +9704,7 @@ async function main() {
       maxPersons: 8,
     },
     {
-      name: '道教名山自由行3日',
+      name: '道教文化名山自由行3日',
       description: '武当山/龙虎山任选，含住宿+门票，行程自由安排',
       coverImage: 'https://images.unsplash.com/photo-1537531383496-f4749be1d49a?w=600',
       packageType: 'FREE',
@@ -9715,8 +9715,8 @@ async function main() {
       maxPersons: 30,
     },
     {
-      name: '基督教圣地巡礼团7日',
-      description: '耶路撒冷+伯利恒+拿撒勒，专业宗教学者随团讲解',
+      name: '基督文化圣地巡礼团7日',
+      description: '耶路撒冷+伯利恒+拿撒勒，专业文化传统学者随团讲解',
       coverImage: 'https://images.unsplash.com/photo-1547483238-2cbf881a559f?w=600',
       packageType: 'GROUP',
       basePrice: 880000,
@@ -9726,8 +9726,8 @@ async function main() {
       maxPersons: 25,
     },
     {
-      name: '恒河圣城经典朝圣6日',
-      description: '瓦拉纳西+菩提伽耶+鹿野苑，感受印度教与佛教的千年交融',
+      name: '恒河圣城经典文化探访6日',
+      description: '瓦拉纳西+菩提伽耶+鹿野苑，感受印度文化与佛教文化的千年交融',
       coverImage: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600',
       packageType: 'CLASSIC',
       basePrice: 458000,
@@ -9747,8 +9747,8 @@ async function main() {
   console.log('Creating team culture themes & cases...');
   const themesData = [
     {
-      slug: 'tongxin', title: '同心之旅', subtitle: '让团队在朝圣中凝聚',
-      description: '通过共同朝圣、共修仪式与团体禅行，让组织成员在天地祖庭面前回到同一颗初心，凝聚团队共识。',
+      slug: 'tongxin', title: '同心之旅', subtitle: '让团队在文化探访中凝聚',
+      description: '通过共同文化探访、共修仪式与团体禅行，让组织成员在天地祖庭面前回到同一颗初心，凝聚团队共识。',
       color: '#D4A855', icon: '☯', coverUrl: 'https://images.unsplash.com/photo-1545569310-25c4e8eb7eb1?w=1200',
       keywords: ['凝聚', '共识', '同行'], holySites: ['shaolin-temple', 'wudang-mountain'], routes: [],
       rituals: [
@@ -9793,7 +9793,7 @@ async function main() {
     },
     {
       slug: 'cibei', title: '慈悲之旅', subtitle: '让公益成为团队基因',
-      description: '把团建变成公益。施食、放生、捐书、助学，在朝圣中沉淀团队的慈悲底色。',
+      description: '把团建变成公益。施食、放生、捐书、助学，在文化探访中沉淀团队的慈悲底色。',
       color: '#10B981', icon: '✧', coverUrl: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200',
       keywords: ['慈悲', '公益', '回馈'], holySites: ['lumbini'], routes: [],
       rituals: [
@@ -9827,7 +9827,7 @@ async function main() {
       slug: 'case-tech-tongxin-2025', teamName: '某互联网公司技术中台 50 人团队',
       orgType: 'ENTERPRISE' as const, industry: '互联网',
       themeId: tongxin?.id, headcount: 50,
-      story: '在连续加班半年后，技术中台团队来到少林寺与武当山，进行了为期 4 天的"同心之旅"。从晨钟到暮鼓，从齐诵祖训到同行登山，团队在朝圣的每一步中重新找到工作之外的连接。回到岗位后，技术债清理速度提升 40%，离职率下降明显。',
+      story: '在连续加班半年后，技术中台团队来到少林寺与武当山，进行了为期 4 天的"同心之旅"。从晨钟到暮鼓，从齐诵祖训到同行登山，团队在文化探访的每一步中重新找到工作之外的连接。回到岗位后，技术债清理速度提升 40%，离职率下降明显。',
       highlights: ['团队凝聚显著提升', '离职率下降', '协作效率 +40%'],
       photos: ['https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800'],
       testimonial: '这是我做过最有意义的团建。— 技术总监',

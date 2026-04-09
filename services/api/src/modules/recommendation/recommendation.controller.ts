@@ -61,10 +61,10 @@ export class RecommendationController {
   @ApiOperation({
     summary: 'Popular items',
     description:
-      '获取热门推荐内容，按评价数量和平均评分排序。可按宗教筛选。\n\n' +
-      'Popular items ordered by review count and average rating. Optionally filter by religion.',
+      '获取热门推荐内容，按评价数量和平均评分排序。可按文化传统筛选。\n\n' +
+      'Popular items ordered by review count and average rating. Optionally filter by cultural tradition.',
   })
-  @ApiQuery({ name: 'religion', required: false, description: 'Religion ID filter (宗教ID过滤)' })
+  @ApiQuery({ name: 'religion', required: false, description: 'Religion ID filter (文化传统ID过滤)' })
   @ApiQuery({ name: 'limit', required: false, description: 'Max results (最大返回数)', type: Number })
   @ApiResponse({ status: 200, description: 'Popular items list / 热门推荐' })
   getPopular(

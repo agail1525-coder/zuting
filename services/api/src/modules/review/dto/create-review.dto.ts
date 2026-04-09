@@ -29,7 +29,7 @@ export class CreateReviewDto {
   @Max(5)
   rating: number;
 
-  @ApiPropertyOptional({ description: '评价内容', example: '非常棒的朝圣体验！' })
+  @ApiPropertyOptional({ description: '评价内容', example: '非常棒的文化之旅体验！' })
   @IsOptional()
   @IsString()
   content?: string;

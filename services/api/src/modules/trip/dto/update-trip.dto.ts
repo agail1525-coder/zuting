@@ -4,7 +4,7 @@ import { IsString, IsOptional, IsDateString, IsInt, Min, MaxLength } from 'class
 export class UpdateTripDto {
   @ApiPropertyOptional({
     description: 'Updated trip title. / 更新行程标题',
-    example: '丝绸之路佛教圣地朝圣',
+    example: '丝绸之路佛教文化圣地之旅',
     maxLength: 200,
   })
   @IsOptional()

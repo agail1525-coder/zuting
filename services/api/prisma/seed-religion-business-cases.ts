@@ -1,5 +1,5 @@
 /**
- * 12大信仰商业实践 — 深度案例种子数据
+ * 12大文化传统商业实践 — 深度案例种子数据
  * 标杆企业案例 / 商业大师语录 / 实践方法论 / 研究数据 / 推荐书单
  * 目标受众: CEO / 高管 / 企业文化建设者
  */
@@ -50,7 +50,7 @@ export interface ReligionBusinessCasesData {
 export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> = {
 
   // ═══════════════════════════════════════════════════
-  // 佛教 Buddhism
+  // 佛教文化 Buddhism
   // ═══════════════════════════════════════════════════
   buddhism: {
     cases: [
@@ -58,7 +58,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '京瓷 (Kyocera)',
         founder: '稻盛和夫',
         industry: '电子陶瓷 / 通信',
-        story: '稻盛和夫27岁创办京瓷，以佛教"利他"哲学为核心经营理念。他提出"敬天爱人"的企业使命，将佛教六波罗蜜融入经营十二条。在石油危机中，京瓷是极少数不裁员的企业——"员工是同修伙伴，不是成本项"。78岁时受邀拯救破产的日航，仅用一年就创造了日航史上最高利润。',
+        story: '稻盛和夫27岁创办京瓷，以佛教文化"利他"哲学为核心经营理念。他提出"敬天爱人"的企业使命，将佛教文化六波罗蜜融入经营十二条。在石油危机中，京瓷是极少数不裁员的企业——"员工是同修伙伴，不是成本项"。78岁时受邀拯救破产的日航，仅用一年就创造了日航史上最高利润。',
         achievements: ['缔造京瓷+KDDI两家世界500强', '78岁拯救日航，一年扭亏为盈', '阿米巴经营法影响全球10万+企业', '个人资产全部捐赠，创办稻盛塾'],
         faithPrinciple: '六波罗蜜(布施·持戒·忍辱·精进·禅定·般若)是经营者修行的六个维度',
       },
@@ -74,7 +74,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Google (Alphabet)',
         founder: '陈一鸣 (Chade-Meng Tan)',
         industry: '互联网 / 科技',
-        story: 'Google第107号员工陈一鸣创建了"搜索你内心的关键字"(Search Inside Yourself, SIY)项目，将正念冥想引入科技巨头。SIY融合佛教正念、神经科学和情商理论，帮助工程师管理压力和提升创造力。项目成功后独立为非营利组织，已培训全球50个国家数万名企业领导者。',
+        story: 'Google第107号员工陈一鸣创建了"搜索你内心的关键字"(Search Inside Yourself, SIY)项目，将正念冥想引入科技巨头。SIY融合佛教文化正念、神经科学和情商理论，帮助工程师管理压力和提升创造力。项目成功后独立为非营利组织，已培训全球50个国家数万名企业领导者。',
         achievements: ['SIY项目覆盖50+国家', 'Google内部最受欢迎的员工课程', '催生了硅谷正念运动', '出版同名畅销书，翻译成30+种语言'],
         faithPrinciple: '正念(Mindfulness)——在每个当下保持清醒觉察，不被情绪和惯性驱动',
       },
@@ -100,7 +100,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: '稻盛和夫',
         title: '京瓷创始人 / 日航拯救者 / 经营之圣',
         quote: '所谓经营，就是日复一日地修行。将工作当作修行的道场，全心全意投入其中，灵魂自然会被磨炼得更加纯粹。',
-        context: '稻盛和夫将佛教修行与经营管理完美融合，提出"以心为本"的经营哲学，影响了一代亚洲企业家。',
+        context: '稻盛和夫将佛教文化修行与经营管理完美融合，提出"以心为本"的经营哲学，影响了一代亚洲企业家。',
       },
       {
         master: '史蒂夫·乔布斯',
@@ -112,7 +112,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: '一行禅师',
         title: '越南禅宗大师 / 正念运动之父',
         quote: '当企业家以正念经营企业时，每一个商业决策都成为修行——不是为了击败竞争者，而是为了服务众生。',
-        context: '一行禅师在西方推广"入世佛教"(Engaged Buddhism)，启发了无数企业家将正念融入商业实践。',
+        context: '一行禅师在西方推广"入世佛教文化"(Engaged Buddhism)，启发了无数企业家将正念融入商业实践。',
       },
     ],
     practices: [
@@ -136,7 +136,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       },
       {
         name: '无常敏捷法',
-        description: '基于佛教"无常"观的组织敏捷方法。核心认知：一切计划都会变，执着不变才是最大风险。实践：季度战略以"假设"而非"目标"表述，每月重新审视假设有效性，快速调整不沉没。',
+        description: '基于佛教文化"无常"观的组织敏捷方法。核心认知：一切计划都会变，执着不变才是最大风险。实践：季度战略以"假设"而非"目标"表述，每月重新审视假设有效性，快速调整不沉没。',
         companies: ['Google', 'Spotify', 'Netflix'],
         outcome: '组织适应力提升，减少"战略性沉没成本"',
       },
@@ -162,7 +162,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '活法',
         author: '稻盛和夫',
-        description: '经营之圣的人生哲学。将佛教六波罗蜜与企业经营完美融合，阐述"以心为本"的经营原理，为全球企业家提供心灵与商业的双重修行指南。',
+        description: '经营之圣的人生哲学。将佛教文化六波罗蜜与企业经营完美融合，阐述"以心为本"的经营原理，为全球企业家提供心灵与商业的双重修行指南。',
       },
       {
         title: '搜索你内心的关键字',
@@ -178,7 +178,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 道教 Taoism
+  // 道教文化 Taoism
   // ═══════════════════════════════════════════════════
   taoism: {
     cases: [
@@ -298,7 +298,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 儒教 Confucianism
+  // 儒家文化 Confucianism
   // ═══════════════════════════════════════════════════
   confucianism: {
     cases: [
@@ -418,7 +418,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 基督教 Christianity
+  // 基督文化 Christianity
   // ═══════════════════════════════════════════════════
   christianity: {
     cases: [
@@ -426,7 +426,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '沃尔玛 (Walmart)',
         founder: '山姆·沃尔顿',
         industry: '零售',
-        story: '山姆·沃尔顿是虔诚的长老会基督徒，每周日参加礼拜从不间断。他将基督教"仆人精神"(Servant Leadership)注入沃尔玛文化——管理者的角色是服务员工，员工的角色是服务顾客。他每天凌晨4:30起床，亲自巡店，认为"领导者的谦卑是组织力量的源泉"。即使成为世界首富，他依然开着旧皮卡、在小镇理发店理发。',
+        story: '山姆·沃尔顿是虔诚的长老会基督徒，每周日参加礼拜从不间断。他将基督文化"仆人精神"(Servant Leadership)注入沃尔玛文化——管理者的角色是服务员工，员工的角色是服务顾客。他每天凌晨4:30起床，亲自巡店，认为"领导者的谦卑是组织力量的源泉"。即使成为世界首富，他依然开着旧皮卡、在小镇理发店理发。',
         achievements: ['全球最大零售企业，年营收超6000亿美元', '仆人领导力文化成为零售业标杆', '美国最大私营雇主(230万员工)', '将"天天低价"变为服务穷人的使命'],
         faithPrinciple: '仆人领导力——"谁愿为首，就必作众人的仆人"(马可福音10:44)',
       },
@@ -434,7 +434,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '万豪国际 (Marriott)',
         founder: 'J.W. Marriott Sr.',
         industry: '酒店 / 餐饮',
-        story: '万豪家族是虔诚的摩门教(后期圣徒)信徒。创始人J.W. Marriott将"照顾好员工，员工就会照顾好客人"奉为信条——这是基督教"爱邻如己"的商业化表达。万豪是最早提供员工培训、医疗保险和退休计划的酒店企业之一。J.W. Marriott Jr.延续父亲理念，将万豪发展为全球最大酒店集团。',
+        story: '万豪家族是虔诚的摩门教(后期圣徒)信徒。创始人J.W. Marriott将"照顾好员工，员工就会照顾好客人"奉为信条——这是基督文化"爱邻如己"的商业化表达。万豪是最早提供员工培训、医疗保险和退休计划的酒店企业之一。J.W. Marriott Jr.延续父亲理念，将万豪发展为全球最大酒店集团。',
         achievements: ['全球最大酒店集团(8,700+家酒店)', '连续25年入选"最佳雇主100强"', '员工满意度持续行业领先', '"以人为本"文化成为酒店业标杆'],
         faithPrinciple: '爱邻如己——"你要爱邻舍如同自己"(马太福音22:39)，员工就是最近的邻舍',
       },
@@ -460,19 +460,19 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: '山姆·沃尔顿',
         title: '沃尔玛创始人 / 仆人领导力践行者',
         quote: '领导力不是关于你有多少权力，而是你服务了多少人。最好的领导者是那些让别人感到自己很重要的人。',
-        context: '山姆·沃尔顿将基督教仆人领导力从教会带入商业，改变了美国零售业的管理范式。',
+        context: '山姆·沃尔顿将基督文化仆人领导力从教会带入商业，改变了美国零售业的管理范式。',
       },
       {
         master: '霍华德·舒尔茨',
         title: '星巴克前CEO / 社会企业家',
         quote: '利润是必要的，但它不是存在的全部理由。企业的灵魂在于它如何对待每一个人——员工、顾客和社区。',
-        context: '舒尔茨虽为犹太裔但深受基督教"爱邻如己"影响，将星巴克打造为"第三空间"的社区概念。',
+        context: '舒尔茨虽为犹太裔但深受基督文化"爱邻如己"影响，将星巴克打造为"第三空间"的社区概念。',
       },
       {
         master: '吉姆·柯林斯',
         title: '管理学大师 / 《从优秀到卓越》作者',
         quote: '第五级领导者的核心特质是谦逊——不是软弱的谦逊，而是将个人自我服从于更大使命的坚定谦逊。',
-        context: '柯林斯在研究卓越企业时发现，最成功的CEO往往具有"仆人式谦逊"的特质——这与基督教领导力哲学高度一致。',
+        context: '柯林斯在研究卓越企业时发现，最成功的CEO往往具有"仆人式谦逊"的特质——这与基督文化领导力哲学高度一致。',
       },
     ],
     practices: [
@@ -505,7 +505,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '从优秀到卓越：第五级领导力研究',
         source: 'Jim Collins / Good to Great, Stanford Research',
-        finding: '对1,435家企业11年的追踪研究发现：实现从"优秀到卓越"跨越的企业，CEO无一例外具备"第五级领导力"——个人谦逊+专业意志的结合，这与基督教"仆人领导力"高度吻合。',
+        finding: '对1,435家企业11年的追踪研究发现：实现从"优秀到卓越"跨越的企业，CEO无一例外具备"第五级领导力"——个人谦逊+专业意志的结合，这与基督文化"仆人领导力"高度吻合。',
       },
       {
         title: '仆人领导力对组织绩效的实证研究',
@@ -532,13 +532,13 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '基督徒企业家',
         author: 'Henry Kaestner & William Norvell',
-        description: '探讨信仰如何塑造商业实践——从招聘到文化，从战略到社会责任。收录了数十位基督徒CEO的真实案例，展现信仰驱动的商业力量。',
+        description: '探讨文化智慧如何塑造商业实践——从招聘到文化，从战略到社会责任。收录了数十位基督徒CEO的真实案例，展现文化智慧驱动的商业力量。',
       },
     ],
   },
 
   // ═══════════════════════════════════════════════════
-  // 伊斯兰教 Islam
+  // 伊斯兰文化 Islam
   // ═══════════════════════════════════════════════════
   islam: {
     cases: [
@@ -546,7 +546,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '阿联酋航空 (Emirates)',
         founder: '迪拜皇室',
         industry: '航空运输',
-        story: '阿联酋航空以伊斯兰"卓越"(Ihsan)理念经营——"做任何事都要像真主在看着你一样"。这种精神贯穿于每一个细节：从头等舱的私人套间到经济舱的贴心服务，Emirates追求的不只是商业成功，而是"在真主面前做到最好"。公司尊重伊斯兰教义，提供清真餐食、机上祈祷服务、朝觐方向指示。',
+        story: '阿联酋航空以伊斯兰"卓越"(Ihsan)理念经营——"做任何事都要像真主在看着你一样"。这种精神贯穿于每一个细节：从头等舱的私人套间到经济舱的贴心服务，Emirates追求的不只是商业成功，而是"在真主面前做到最好"。公司尊重伊斯兰文化义，提供清真餐食、机上祈祷服务、朝觐方向指示。',
         achievements: ['全球最佳航空公司之一', '年营收超过300亿美元', '将迪拜打造为全球航空枢纽', 'A380超大型客机最大运营商'],
         faithPrinciple: 'Ihsan(卓越)——以最高标准做事，因为真主在看着每一个细节',
       },
@@ -554,7 +554,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Al Baraka银行集团',
         founder: 'Saleh Kamel',
         industry: '伊斯兰金融',
-        story: 'Al Baraka是全球最大的伊斯兰银行之一，严格遵守伊斯兰教法(Sharia)经营。核心原则：禁止利息(Riba)、禁止投机(Gharar)、利润与风险共担(Mudarabah)。伊斯兰金融的独特之处在于：银行与客户是合伙关系而非债务关系——贷款变为投资，利息变为利润分享，风险共担而非转嫁。',
+        story: 'Al Baraka是全球最大的伊斯兰银行之一，严格遵守伊斯兰文化法(Sharia)经营。核心原则：禁止利息(Riba)、禁止投机(Gharar)、利润与风险共担(Mudarabah)。伊斯兰金融的独特之处在于：银行与客户是合伙关系而非债务关系——贷款变为投资，利息变为利润分享，风险共担而非转嫁。',
         achievements: ['在17个国家设有分支机构', '管理资产超过280亿美元', '伊斯兰金融创新的先驱', '2008年金融危机中表现远优于传统银行'],
         faithPrinciple: '禁息共担——利润必须建立在真实交易和风险共担之上，禁止空转套利',
       },
@@ -562,7 +562,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '全球清真产业联盟',
         founder: '多国清真认证机构',
         industry: '清真产业 / 认证',
-        story: '全球清真(Halal)产业已达3.2万亿美元规模，从食品到化妆品、从金融到旅游。清真产业的核心不仅是"合规"，更是一套完整的质量体系——从原材料采购到生产工艺到供应链透明度，清真认证的严格程度甚至超过许多国际食品安全标准。这个由信仰驱动的产业正在成为全球最大的质量认证生态系统。',
+        story: '全球清真(Halal)产业已达3.2万亿美元规模，从食品到化妆品、从金融到旅游。清真产业的核心不仅是"合规"，更是一套完整的质量体系——从原材料采购到生产工艺到供应链透明度，清真认证的严格程度甚至超过许多国际食品安全标准。这个由文化智慧驱动的产业正在成为全球最大的质量认证生态系统。',
         achievements: ['全球清真产业规模达3.2万亿美元', '覆盖食品/金融/旅游/时尚等领域', '清真认证标准已被非穆斯林国家采纳', '年增长率超15%，全球增长最快的消费市场'],
         faithPrinciple: 'Halal(合法)与Tayyib(纯良)——不仅要合规合法，更要对人、对环境、对社会都是"好"的',
       },
@@ -578,9 +578,9 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
     masterQuotes: [
       {
         master: '先知穆罕默德',
-        title: '伊斯兰教先知',
+        title: '伊斯兰文化先知',
         quote: '诚实的商人将在末日与先知、真诚者和殉道者同列。',
-        context: '伊斯兰教将诚实经商视为高尚的修行，商人在伊斯兰社会中享有崇高地位。',
+        context: '伊斯兰文化将诚实经商视为高尚的修行，商人在伊斯兰社会中享有崇高地位。',
       },
       {
         master: '穆罕默德·尤努斯',
@@ -592,7 +592,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: 'Dallah Al-Baraka创始人 Saleh Kamel',
         title: '伊斯兰金融之父之一',
         quote: '伊斯兰金融的本质不是"不收利息"，而是建立一种更公正的经济关系——利润共享、风险共担、真实交易、社会责任。',
-        context: 'Saleh Kamel推动伊斯兰金融从小众信仰实践发展为全球3万亿美元的金融体系。',
+        context: 'Saleh Kamel推动伊斯兰金融从小众文化实践发展为全球3万亿美元的金融体系。',
       },
     ],
     practices: [
@@ -604,9 +604,9 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       },
       {
         name: '天课CSR模型',
-        description: '天课(Zakat)是伊斯兰五功之一——将净资产的2.5%用于公益。企业版天课CSR模型：每年将利润的2.5%+用于社会公益(教育/医疗/扶贫)，不是可选的"企业社会责任"，而是强制性的"企业宗教义务"。',
+        description: '天课(Zakat)是伊斯兰五功之一——将净资产的2.5%用于公益。企业版天课CSR模型：每年将利润的2.5%+用于社会公益(教育/医疗/扶贫)，不是可选的"企业社会责任"，而是强制性的"企业文化义务"。',
         companies: ['Al Baraka银行', '安纳多卢集团', '马来西亚伊斯兰企业'],
-        outcome: '企业公益从"做好事"变为"信仰义务"，确保持续性和占利润的合理比例',
+        outcome: '企业公益从"做好事"变为"文化义务"，确保持续性和占利润的合理比例',
       },
       {
         name: '禁息风控法',
@@ -658,7 +658,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 印度教 Hinduism
+  // 印度文化 Hinduism
   // ═══════════════════════════════════════════════════
   hinduism: {
     cases: [
@@ -666,7 +666,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '塔塔集团 (Tata Group)',
         founder: 'Jamsetji Tata / Ratan Tata',
         industry: '钢铁 / 汽车 / IT / 综合',
-        story: '塔塔集团是印度最大且最受尊敬的企业集团，核心经营哲学建立在印度教"Dharma"(达摩/正法)之上。创始人Jamsetji Tata在1868年立下誓言："在社区繁荣之前，企业不应繁荣。"塔塔集团66%的股份由公益信托持有——这意味着集团大部分利润自动流向教育、医疗、科研等社会事业。Ratan Tata更将此传统发扬光大，推出全球最便宜的汽车Tata Nano，只为让普通印度家庭也能拥有安全出行工具。',
+        story: '塔塔集团是印度最大且最受尊敬的企业集团，核心经营哲学建立在印度文化"Dharma"(达摩/正法)之上。创始人Jamsetji Tata在1868年立下誓言："在社区繁荣之前，企业不应繁荣。"塔塔集团66%的股份由公益信托持有——这意味着集团大部分利润自动流向教育、医疗、科研等社会事业。Ratan Tata更将此传统发扬光大，推出全球最便宜的汽车Tata Nano，只为让普通印度家庭也能拥有安全出行工具。',
         achievements: ['印度最大企业集团(年营收1500亿美元)', '66%股份归公益信托，利润服务社会', '创办印度理工学院(IIT)等顶级学府', 'Ratan Tata被誉为"印度良心"'],
         faithPrinciple: 'Dharma(达摩)——企业的正法是服务社会，利润只是副产品',
       },
@@ -674,7 +674,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Infosys',
         founder: 'N.R. Narayana Murthy',
         industry: 'IT服务 / 软件',
-        story: 'Infosys联合创始人穆尔蒂被誉为"印度的IT良心"。他以印度教"Satya"(真理)和"Ahimsa"(非暴力)为经营原则——绝不行贿、绝不逃税、绝不欺骗客户。在印度这个以"关系文化"著称的商业环境中，穆尔蒂坚持"规则面前人人平等"，将Infosys打造为印度治理最透明的企业。他将大部分财富捐赠给教育和医疗。',
+        story: 'Infosys联合创始人穆尔蒂被誉为"印度的IT良心"。他以印度文化"Satya"(真理)和"Ahimsa"(非暴力)为经营原则——绝不行贿、绝不逃税、绝不欺骗客户。在印度这个以"关系文化"著称的商业环境中，穆尔蒂坚持"规则面前人人平等"，将Infosys打造为印度治理最透明的企业。他将大部分财富捐赠给教育和医疗。',
         achievements: ['印度IT外包行业的开创者', '纳斯达克上市的首家印度企业之一', '被评为全球最具道德的企业之一', '穆尔蒂捐赠超50亿美元'],
         faithPrinciple: 'Satya(真理)——在一切商业决策中坚持真理，即使短期代价巨大',
       },
@@ -682,7 +682,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Wipro',
         founder: 'Azim Premji',
         industry: 'IT服务 / 软件',
-        story: 'Azim Premji(虽为穆斯林，但深受印度教"Seva"精神影响)将Wipro从一家食用油公司转型为全球IT巨头。他以"朴素创新"(Jugaad)闻名——不追求华丽的办公室和高管特权，坚持经济舱出行、简朴办公。Premji将总资产的67%(约210亿美元)捐赠给教育事业，是亚洲最大的慈善捐赠者。',
+        story: 'Azim Premji(虽为穆斯林，但深受印度文化"Seva"精神影响)将Wipro从一家食用油公司转型为全球IT巨头。他以"朴素创新"(Jugaad)闻名——不追求华丽的办公室和高管特权，坚持经济舱出行、简朴办公。Premji将总资产的67%(约210亿美元)捐赠给教育事业，是亚洲最大的慈善捐赠者。',
         achievements: ['全球第三大IT服务公司', '捐赠210亿美元，亚洲最大慈善家', '以"朴素创新"闻名于世界商界', '改变了印度IT行业的全球地位'],
         faithPrinciple: 'Aparigraha(不贪)——不过度积聚财富，多余的应回馈社会',
       },
@@ -690,7 +690,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '印度CEO现象',
         founder: '多位印度裔CEO',
         industry: '科技 / 金融 / 咨询',
-        story: '全球500强中有超过30%的科技公司CEO是印度裔：Google的Sundar Pichai、Microsoft的Satya Nadella、Adobe的Shantanu Narayen、IBM的Arvind Krishna。研究表明，印度教文化中的"Karma Yoga"(业力瑜伽——无执着地全身心投入工作)和"Guru-Shishya"(师徒传统——深度学习和传承)是印度培养CEO的文化密码。',
+        story: '全球500强中有超过30%的科技公司CEO是印度裔：Google的Sundar Pichai、Microsoft的Satya Nadella、Adobe的Shantanu Narayen、IBM的Arvind Krishna。研究表明，印度文化中的"Karma Yoga"(业力瑜伽——无执着地全身心投入工作)和"Guru-Shishya"(师徒传统——深度学习和传承)是印度培养CEO的文化密码。',
         achievements: ['全球500强科技企业中30%+CEO为印度裔', 'Google/Microsoft/Adobe/IBM等由印度裔CEO领导', '印度管理学院(IIM)成为全球CEO摇篮', '印度裔CEO群体改变了硅谷的文化多样性'],
         faithPrinciple: 'Karma Yoga(业力瑜伽)——将工作本身视为修行，不执着于结果，全身心投入当下',
       },
@@ -706,21 +706,21 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: 'Azim Premji',
         title: 'Wipro创始人 / 亚洲最大慈善家',
         quote: '我给予的越多，得到的就越多。这不是慈善，这是宇宙的法则——你播种什么就收获什么。',
-        context: 'Premji将印度教"Karma"(因果)法则应用于慈善事业，捐赠210亿美元仍觉"不够"。',
+        context: 'Premji将印度文化"Karma"(因果)法则应用于慈善事业，捐赠210亿美元仍觉"不够"。',
       },
       {
         master: '维韦卡南达',
-        title: '印度哲学家 / 印度教复兴者',
+        title: '印度哲学家 / 印度文化复兴者',
         quote: '所有力量都在你内心。你能做任何事和一切事。不要相信你是软弱的。站起来，认识到你内在的神性。',
-        context: '维韦卡南达将印度教"内在神性"(Atman)概念带向世界，启发了无数企业家相信自身潜能。',
+        context: '维韦卡南达将印度文化"内在神性"(Atman)概念带向世界，启发了无数企业家相信自身潜能。',
       },
     ],
     practices: [
       {
         name: '达摩使命定义法',
-        description: '用印度教"Dharma"(达摩/使命)概念定义企业存在的根本意义。核心问题：这家企业存在的"天命"是什么？如果消失了，世界会缺少什么？使命不是"赚钱"，而是企业对社会的独特贡献。定义后，每个战略决策都要回答："这符合我们的Dharma吗？"',
+        description: '用印度文化"Dharma"(达摩/使命)概念定义企业存在的根本意义。核心问题：这家企业存在的"天命"是什么？如果消失了，世界会缺少什么？使命不是"赚钱"，而是企业对社会的独特贡献。定义后，每个战略决策都要回答："这符合我们的Dharma吗？"',
         companies: ['塔塔集团', 'Infosys', 'Wipro'],
-        outcome: '企业使命从"空洞口号"变为"真实信仰"，组织凝聚力和社会认同度显著提升',
+        outcome: '企业使命从"空洞口号"变为"真实文化信念"，组织凝聚力和社会认同度显著提升',
       },
       {
         name: '业力KPI体系',
@@ -762,7 +762,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '薄伽梵歌与领导力',
         author: 'Debashis Chatterjee',
-        description: '将印度教最重要的经典《薄伽梵歌》中的智慧应用于现代领导力。核心主题：如何在不确定性中做出正确决策、如何在行动中保持内心平静、如何以使命驱动替代利益驱动。',
+        description: '将印度文化最重要的经典《薄伽梵歌》中的智慧应用于现代领导力。核心主题：如何在不确定性中做出正确决策、如何在行动中保持内心平静、如何以使命驱动替代利益驱动。',
       },
       {
         title: '从印度看管理',
@@ -778,7 +778,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 犹太教 Judaism
+  // 犹太文化 Judaism
   // ═══════════════════════════════════════════════════
   judaism: {
     cases: [
@@ -786,15 +786,15 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '高盛集团 (Goldman Sachs)',
         founder: 'Marcus Goldman',
         industry: '投资银行 / 金融',
-        story: '高盛由德裔犹太移民Marcus Goldman于1869年创立。犹太教对"学习"(Talmud Torah)和"辩论"(Chavruta)的极度重视，塑造了高盛独特的"智力竞争"文化——合伙人会议中的激烈辩论不是冲突而是传统。高盛的14条经营原则中，"客户利益第一""团队至上""卓越标准"都能追溯到犹太教商业伦理。',
+        story: '高盛由德裔犹太移民Marcus Goldman于1869年创立。犹太文化对"学习"(Talmud Torah)和"辩论"(Chavruta)的极度重视，塑造了高盛独特的"智力竞争"文化——合伙人会议中的激烈辩论不是冲突而是传统。高盛的14条经营原则中，"客户利益第一""团队至上""卓越标准"都能追溯到犹太文化商业伦理。',
         achievements: ['全球最具影响力的投资银行', '培养了无数政商界领袖', '合伙人文化成为华尔街标杆', '"智力竞争"文化驱动的持续创新'],
-        faithPrinciple: 'Talmud Torah(终身学习)——学习是犹太人最高的宗教义务，也是商业竞争力的源泉',
+        faithPrinciple: 'Talmud Torah(终身学习)——学习是犹太人最高的文化义务，也是商业竞争力的源泉',
       },
       {
         company: '彭博 (Bloomberg)',
         founder: 'Michael Bloomberg',
         industry: '金融数据 / 媒体',
-        story: 'Michael Bloomberg将犹太教"Tikkun Olam"(修复世界)的理念融入商业和公益。彭博终端改变了全球金融信息的获取方式，而Bloomberg Philanthropies则投入超过170亿美元用于公共健康、教育、环境和政府创新。Bloomberg曾说："赚钱的能力是上帝给的天赋，用钱来修复世界是我们的责任。"',
+        story: 'Michael Bloomberg将犹太文化"Tikkun Olam"(修复世界)的理念融入商业和公益。彭博终端改变了全球金融信息的获取方式，而Bloomberg Philanthropies则投入超过170亿美元用于公共健康、教育、环境和政府创新。Bloomberg曾说："赚钱的能力是上帝给的天赋，用钱来修复世界是我们的责任。"',
         achievements: ['全球最大金融数据终端(325,000+用户)', '个人捐赠超过170亿美元', '担任纽约市长12年', '彭博慈善基金会全球影响力巨大'],
         faithPrinciple: 'Tikkun Olam(修复世界)——每个人都有责任让世界变得比自己发现时更好',
       },
@@ -810,7 +810,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '星巴克 (Starbucks)',
         founder: '霍华德·舒尔茨',
         industry: '咖啡连锁 / 零售',
-        story: '舒尔茨生长在纽约布鲁克林的犹太工人家庭，父亲因工伤失去工作和医疗保险的经历深刻影响了他。他将犹太教"尊重每个人的尊严"(Kavod)融入星巴克文化——星巴克是美国第一家为兼职员工提供全面医保和股票期权的企业。"每个人都值得被有尊严地对待"是舒尔茨从犹太传统中汲取的核心信念。',
+        story: '舒尔茨生长在纽约布鲁克林的犹太工人家庭，父亲因工伤失去工作和医疗保险的经历深刻影响了他。他将犹太文化"尊重每个人的尊严"(Kavod)融入星巴克文化——星巴克是美国第一家为兼职员工提供全面医保和股票期权的企业。"每个人都值得被有尊严地对待"是舒尔茨从犹太传统中汲取的核心信念。',
         achievements: ['全球最大连锁咖啡品牌(36,000+家店)', '首家为兼职员工提供医保和股权的企业', '"第三空间"概念改变了全球咖啡文化', '员工被称为"伙伴"而非"雇员"'],
         faithPrinciple: 'Kavod(尊严)——每个人，无论职位高低，都值得被有尊严地对待和重视',
       },
@@ -826,11 +826,11 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: '霍华德·舒尔茨',
         title: '星巴克创始人 / 社会企业倡导者',
         quote: '当你心存善意时，当你为比自己更大的事情工作时，不可能的事情就会变为可能。',
-        context: '舒尔茨将犹太教"修复世界"的使命融入商业——星巴克不只卖咖啡，更是在创造人与人之间的连接。',
+        context: '舒尔茨将犹太文化"修复世界"的使命融入商业——星巴克不只卖咖啡，更是在创造人与人之间的连接。',
       },
       {
         master: '塔木德箴言',
-        title: '犹太教口传律法经典',
+        title: '犹太文化口传律法经典',
         quote: '一个人不应该说"当我有闲暇时就学习"——也许你永远不会有闲暇。',
         context: '塔木德中充满了关于时间管理、财务智慧和人际关系的实用箴言，被许多企业家视为"最古老的商业教科书"。',
       },
@@ -838,19 +838,19 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
     practices: [
       {
         name: '塔木德辩论法',
-        description: '犹太教学习传统"Chavruta"(学伴辩论)——两人一组对同一问题进行深度辩论，不求达成一致而求深化理解。应用于商业：每个重大决策必须有正式的"反方辩护人"(Devil\'s Advocate)。鼓励异议不是冲突，而是通往更好决策的必经之路。',
+        description: '犹太文化学习传统"Chavruta"(学伴辩论)——两人一组对同一问题进行深度辩论，不求达成一致而求深化理解。应用于商业：每个重大决策必须有正式的"反方辩护人"(Devil\'s Advocate)。鼓励异议不是冲突，而是通往更好决策的必经之路。',
         companies: ['高盛', 'Intel', 'Google'],
         outcome: '减少群体思维，提高决策质量，培养批判性思维文化',
       },
       {
         name: '安息日战略',
-        description: '犹太教安息日(Shabbat)——每周六完全停止工作，休息、反思、与家人共处。企业版安息日：每季度/每年设定"战略安息日"——停下日常运营思维，退后一步审视大局。在加速的世界中，"刻意停下来"往往能看到"一直跑"看不到的东西。',
+        description: '犹太文化安息日(Shabbat)——每周六完全停止工作，休息、反思、与家人共处。企业版安息日：每季度/每年设定"战略安息日"——停下日常运营思维，退后一步审视大局。在加速的世界中，"刻意停下来"往往能看到"一直跑"看不到的东西。',
         companies: ['Chick-fil-A(周日歇业)', 'Basecamp(每年8月休假)', '以色列科技公司'],
         outcome: '战略清晰度提升，避免"忙而无效"的经营陷阱，领导者身心恢复',
       },
       {
         name: '契约伙伴制',
-        description: '犹太教"Brit"(契约)概念——上帝与以色列人之间的双向承诺。应用于商业关系：与客户、供应商、员工建立"契约式"伙伴关系，而非单纯的交易关系。契约意味着长期承诺、互相信任、共同成长。违约等同于背叛信仰。',
+        description: '犹太文化"Brit"(契约)概念——上帝与以色列人之间的双向承诺。应用于商业关系：与客户、供应商、员工建立"契约式"伙伴关系，而非单纯的交易关系。契约意味着长期承诺、互相信任、共同成长。违约等同于背叛文化信念。',
         companies: ['高盛', '彭博', '以色列创业生态'],
         outcome: '商业关系的深度和持久度显著提升，交易成本降低',
       },
@@ -865,12 +865,12 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '创业的国度：以色列创新奇迹',
         source: 'Dan Senor & Saul Singer / Multiple Academic Studies',
-        finding: '以色列人均创业公司数量全球第一，人均风投金额全球第一。研究认为核心因素包括：犹太教的"质疑文化"(Chutzpah)、军队中的扁平化组织经验、流散历史带来的韧性和全球网络。',
+        finding: '以色列人均创业公司数量全球第一，人均风投金额全球第一。研究认为核心因素包括：犹太文化的"质疑文化"(Chutzpah)、军队中的扁平化组织经验、流散历史带来的韧性和全球网络。',
       },
       {
-        title: '犹太教育与企业家精神的关联',
+        title: '犹太文化育与企业家精神的关联',
         source: 'Babson College Entrepreneurship Research, 2022',
-        finding: '犹太教育中的"提问优先于回答""辩论优先于服从""实践优先于理论"三大特征，与创业所需的批判性思维、创新能力和执行力高度匹配，解释了犹太人在全球企业家中的突出比例。',
+        finding: '犹太文化育中的"提问优先于回答""辩论优先于服从""实践优先于理论"三大特征，与创业所需的批判性思维、创新能力和执行力高度匹配，解释了犹太人在全球企业家中的突出比例。',
       },
       {
         title: '塔木德商业伦理与现代ESG对标',
@@ -882,7 +882,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '塔木德商训',
         author: '沈思远 (编译)',
-        description: '从犹太教口传律法中提炼的商业智慧。涵盖财务管理、谈判艺术、人际关系、时间管理等主题，被誉为"最古老的MBA教科书"。',
+        description: '从犹太文化口传律法中提炼的商业智慧。涵盖财务管理、谈判艺术、人际关系、时间管理等主题，被誉为"最古老的MBA教科书"。',
       },
       {
         title: '只有偏执狂才能生存',
@@ -898,7 +898,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 锡克教 Sikhism
+  // 锡克文化 Sikhism
   // ═══════════════════════════════════════════════════
   sikhism: {
     cases: [
@@ -906,7 +906,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '英国锡克企业家群体',
         founder: '多位锡克裔企业家',
         industry: '零售 / 物流 / 制造',
-        story: '锡克教徒仅占全球人口0.4%，但在英国商界的影响力远超其人口比例。据统计，英国锡克裔企业家拥有的企业市值超过720亿英镑。锡克教核心价值"Kirat Karni"(诚实劳动)和"Vand Chakko"(分享所得)塑造了一个独特的商业群体——不仅追求个人成功，更将成功视为服务社区的工具。',
+        story: '锡克教徒仅占全球人口0.4%，但在英国商界的影响力远超其人口比例。据统计，英国锡克裔企业家拥有的企业市值超过720亿英镑。锡克文化核心价值"Kirat Karni"(诚实劳动)和"Vand Chakko"(分享所得)塑造了一个独特的商业群体——不仅追求个人成功，更将成功视为服务社区的工具。',
         achievements: ['英国锡克裔企业市值超720亿英镑', '锡克裔在英国百万富翁中占比远超人口比例', '从零售到科技到制造的全行业渗透', '社区内部的信任网络大幅降低商业成本'],
         faithPrinciple: 'Kirat Karni(诚实劳动)——只有通过诚实劳动获得的财富才是有尊严的',
       },
@@ -914,37 +914,37 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'eBay / Omidyar Network',
         founder: 'Pierre Omidyar',
         industry: '电商 / 慈善投资',
-        story: '虽然Pierre Omidyar并非锡克教徒，但他的核心合伙人和eBay早期团队中有深受锡克教"Seva"(无私服务)影响的成员。Omidyar Network基金会的理念——"每个人都有力量改变世界"——与锡克教"人人平等"(Ek Onkar)高度一致。eBay平台本身就是"让普通人也能平等参与全球贸易"的实践。',
+        story: '虽然Pierre Omidyar并非锡克教徒，但他的核心合伙人和eBay早期团队中有深受锡克文化"Seva"(无私服务)影响的成员。Omidyar Network基金会的理念——"每个人都有力量改变世界"——与锡克文化"人人平等"(Ek Onkar)高度一致。eBay平台本身就是"让普通人也能平等参与全球贸易"的实践。',
         achievements: ['创建全球最大的C2C电商平台', 'Omidyar Network投资超10亿美元社会创新', 'eBay让数百万普通人成为全球卖家', '慈善投资模式影响了新一代社会企业家'],
         faithPrinciple: 'Ek Onkar(一切平等)——在商业中消除等级壁垒，让每个人都有平等的参与机会',
       },
       {
-        company: '锡克教兰加尔(Langar)社区厨房模式',
+        company: '锡克文化兰加尔(Langar)社区厨房模式',
         founder: '古鲁那纳克',
         industry: '社区餐饮 / 社会企业',
-        story: '锡克教的"兰加尔"(Langar)是世界上最大的免费社区餐饮系统——每天全球锡克教寺庙(Gurdwara)免费为数千万人提供餐食，不分宗教、种族、阶层。金庙(Golden Temple)每天免费供餐10万+人。这不是慈善，而是锡克教的核心教义实践。许多社会企业家从兰加尔模式中获得灵感，创建了可持续的免费/低价餐饮服务。',
+        story: '锡克文化的"兰加尔"(Langar)是世界上最大的免费社区餐饮系统——每天全球锡克教寺庙(Gurdwara)免费为数千万人提供餐食，不分文化、种族、阶层。金庙(Golden Temple)每天免费供餐10万+人。这不是慈善，而是锡克文化的核心教义实践。许多社会企业家从兰加尔模式中获得灵感，创建了可持续的免费/低价餐饮服务。',
         achievements: ['每天全球免费供餐数千万人', '500年持续运营的超大规模社区服务', '金庙每天供餐10万+人', '启发了全球多个社区厨房和社会企业'],
-        faithPrinciple: 'Vand Chakko(分享所得)——将你拥有的与他人分享，是信仰的核心实践',
+        faithPrinciple: 'Vand Chakko(分享所得)——将你拥有的与他人分享，是文化的核心实践',
       },
     ],
     masterQuotes: [
       {
         master: '古鲁那纳克',
-        title: '锡克教创始人',
+        title: '锡克文化创始人',
         quote: '不劳动而获得的财富，如同无根之树。诚实地赚取，慷慨地分享——这才是真正的虔诚。',
         context: '古鲁那纳克明确肯定商业和劳动的神圣性，同时要求财富必须与社区分享。',
       },
       {
-        master: '锡克教商业领袖群体',
+        master: '锡克文化商业领袖群体',
         title: '英国锡克企业家协会',
         quote: '我们不是为自己工作，而是为整个社区工作。每一份成功都是上帝的恩赐，回馈社区是我们的义务，不是选择。',
-        context: '锡克教企业家群体以社区为中心的商业文化，创造了独特的信任经济和互助网络。',
+        context: '锡克文化企业家群体以社区为中心的商业文化，创造了独特的信任经济和互助网络。',
       },
     ],
     practices: [
       {
         name: '兰加尔平等制',
-        description: '模仿锡克教兰加尔(免费社区餐厅)的平等原则——在企业中消除等级壁垒。具体实践：CEO与实习生在同一个食堂吃同样的饭，所有会议中每个人的发言权平等，新员工可以直接向CEO提问。形式上的平等慢慢内化为文化上的平等。',
+        description: '模仿锡克文化兰加尔(免费社区餐厅)的平等原则——在企业中消除等级壁垒。具体实践：CEO与实习生在同一个食堂吃同样的饭，所有会议中每个人的发言权平等，新员工可以直接向CEO提问。形式上的平等慢慢内化为文化上的平等。',
         companies: ['锡克裔企业', 'Google(免费食堂)', 'Zappos'],
         outcome: '组织层级感降低，信息流动更自由，创新想法更容易从基层涌现',
       },
@@ -956,7 +956,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       },
       {
         name: '社区共富模式',
-        description: '锡克教"Dasvandh"(十一奉献——将收入的10%回馈社区)的企业版：企业将利润的10%+投入社区建设(教育/就业/基础设施)。不是通过外部CSR部门，而是将社区投资作为企业战略的核心组成部分。',
+        description: '锡克文化"Dasvandh"(十一奉献——将收入的10%回馈社区)的企业版：企业将利润的10%+投入社区建设(教育/就业/基础设施)。不是通过外部CSR部门，而是将社区投资作为企业战略的核心组成部分。',
         companies: ['锡克裔企业社区', '英国锡克商会', '金庙管理委员会'],
         outcome: '企业与社区形成正向循环——社区繁荣带来更好的人才和市场，企业又反哺社区',
       },
@@ -965,30 +965,30 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '锡克移民企业家精神研究',
         source: 'University of Birmingham / British Sikh Report, 2023',
-        finding: '英国锡克裔社区的企业创办率是全国平均水平的3倍。研究认为核心因素包括：宗教义务驱动的勤劳精神(Kirat Karni)、社区信任网络降低的交易成本、兰加尔文化培养的团队协作能力。',
+        finding: '英国锡克裔社区的企业创办率是全国平均水平的3倍。研究认为核心因素包括：文化义务驱动的勤劳精神(Kirat Karni)、社区信任网络降低的交易成本、兰加尔文化培养的团队协作能力。',
       },
       {
-        title: '信任经济：锡克教社区商业网络分析',
+        title: '信任经济：锡克文化社区商业网络分析',
         source: 'London School of Economics, 2022',
-        finding: '锡克教社区内部的商业借贷违约率不到2%(传统银行为8-12%)。高信任度来自三个因素：宗教社区的声誉约束、兰加尔文化建立的面对面社交网络、"Vand Chakko"(分享)教义带来的互惠期望。',
+        finding: '锡克文化社区内部的商业借贷违约率不到2%(传统银行为8-12%)。高信任度来自三个因素：文化社区的声誉约束、兰加尔文化建立的面对面社交网络、"Vand Chakko"(分享)教义带来的互惠期望。',
       },
     ],
     books: [
       {
-        title: '锡克教商业伦理',
+        title: '锡克文化商业伦理',
         author: 'Jagbir Jhutti-Johal',
-        description: '系统阐述锡克教"三大支柱"(Naam Japna/Kirat Karni/Vand Chakko)如何塑造独特的商业伦理体系——勤劳、诚实、分享如何共同构建可持续的商业生态。',
+        description: '系统阐述锡克文化"三大支柱"(Naam Japna/Kirat Karni/Vand Chakko)如何塑造独特的商业伦理体系——勤劳、诚实、分享如何共同构建可持续的商业生态。',
       },
       {
         title: '社区经济学',
         author: 'Edgar S. Cahn',
-        description: '探讨以社区为中心的经济模式。锡克教兰加尔是本书的重要案例——展示了"互惠经济"如何在传统市场经济之外创造巨大的社会价值。',
+        description: '探讨以社区为中心的经济模式。锡克文化兰加尔是本书的重要案例——展示了"互惠经济"如何在传统市场经济之外创造巨大的社会价值。',
       },
     ],
   },
 
   // ═══════════════════════════════════════════════════
-  // 神道教 Shinto
+  // 神道文化 Shinto
   // ═══════════════════════════════════════════════════
   shinto: {
     cases: [
@@ -996,7 +996,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '金刚组 (Kongō Gumi)',
         founder: '金刚重光',
         industry: '建筑 / 寺庙修缮',
-        story: '金刚组创立于公元578年，是世界上现存最长寿的企业(1,448年)。核心哲学源自神道教"守护"精神——每一代工匠都是"神社的守护者"。1,400多年来只做一件事：修缮和建造寺庙。金刚组的传承秘诀在于"匠人精神"——每个细节都必须达到"神级"标准，因为"工作就是供奉神明"。',
+        story: '金刚组创立于公元578年，是世界上现存最长寿的企业(1,448年)。核心哲学源自神道文化"守护"精神——每一代工匠都是"神社的守护者"。1,400多年来只做一件事：修缮和建造寺庙。金刚组的传承秘诀在于"匠人精神"——每个细节都必须达到"神级"标准，因为"工作就是供奉神明"。',
         achievements: ['世界最长寿企业(578年-至今)', '1,400+年专注寺庙建筑', '经历了日本所有重大历史变迁', '匠人技艺代代口传心授'],
         faithPrinciple: '神道"守护"——工匠不是在工作，是在守护神明的居所',
       },
@@ -1004,7 +1004,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '丰田汽车 (Toyota)',
         founder: '丰田佐吉 / 丰田喜一郎',
         industry: '汽车制造',
-        story: '丰田的5S管理法(整理·整顿·清扫·清洁·素养)源于神道教"禊"(Misogi，净化仪式)的精神——在开始任何工作之前，先让环境和心灵都达到"清净"状态。丰田工厂的整洁程度令全球参观者震惊，因为在丰田文化中，脏乱不仅是效率问题，更是对"工作之神"的不敬。',
+        story: '丰田的5S管理法(整理·整顿·清扫·清洁·素养)源于神道文化"禊"(Misogi，净化仪式)的精神——在开始任何工作之前，先让环境和心灵都达到"清净"状态。丰田工厂的整洁程度令全球参观者震惊，因为在丰田文化中，脏乱不仅是效率问题，更是对"工作之神"的不敬。',
         achievements: ['5S管理法被全球制造业采用', '精益生产(Lean)改变了全球制造模式', '全球销量最大的汽车制造商', '持续改善(Kaizen)文化成为管理学经典'],
         faithPrinciple: '禊(净化)——工作场所的整洁是对工作之神的敬意，清净产生效率',
       },
@@ -1012,7 +1012,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '索尼 (Sony)',
         founder: '盛田昭夫 / 井深大',
         industry: '电子 / 娱乐',
-        story: '索尼的品牌精神"Tamashii"(魂)源自神道教的灵魂概念——每个产品都应该有灵魂。盛田昭夫相信，真正的创新不是技术上的突破，而是为产品注入"魂"——让使用者能感受到创造者的情感和执念。从Walkman到PlayStation，索尼的每个标志性产品都带有这种"魂"的基因。',
+        story: '索尼的品牌精神"Tamashii"(魂)源自神道文化的灵魂概念——每个产品都应该有灵魂。盛田昭夫相信，真正的创新不是技术上的突破，而是为产品注入"魂"——让使用者能感受到创造者的情感和执念。从Walkman到PlayStation，索尼的每个标志性产品都带有这种"魂"的基因。',
         achievements: ['Walkman改变了人类听音乐的方式', 'PlayStation成为全球最成功的游戏主机', '索尼电影和音乐版图横跨全球', '将"Tamashii"精神注入消费电子'],
         faithPrinciple: '魂(Tamashii)——产品不是冷冰冰的机器，而是承载创造者灵魂的器物',
       },
@@ -1020,7 +1020,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '无印良品 (MUJI)',
         founder: '堤清二 / 田中一光',
         industry: '零售 / 生活用品',
-        story: '无印良品的"素之美"哲学深植神道教"素"的美学——神道教认为最美的状态是"无饰"，即万物的本来面目。MUJI坚持去掉一切不必要的装饰、品牌标识和多余设计，让产品回归"素"的本质。这种"无印"(没有品牌)反而成为了世界上最有辨识度的品牌之一。',
+        story: '无印良品的"素之美"哲学深植神道文化"素"的美学——神道文化认为最美的状态是"无饰"，即万物的本来面目。MUJI坚持去掉一切不必要的装饰、品牌标识和多余设计，让产品回归"素"的本质。这种"无印"(没有品牌)反而成为了世界上最有辨识度的品牌之一。',
         achievements: ['全球最具辨识度的"无品牌"品牌', '"素之美"设计哲学影响全球设计界', '在32个国家开设1000+家门店', '证明了"去装饰"也能创造商业成功'],
         faithPrinciple: '素(素朴)——去掉一切虚饰，让事物回归本来的美',
       },
@@ -1030,43 +1030,43 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: '松下幸之助',
         title: '松下电器创始人 / 经营之神',
         quote: '每天早晨我到工厂的第一件事是拜神龛。不是求保佑，而是提醒自己——今天的工作是为社会服务的神圣使命。',
-        context: '松下幸之助将神道教"万物有灵"的信仰融入经营，认为企业是服务社会的"圣器"。',
+        context: '松下幸之助将神道文化"万物有灵"的文化智慧融入经营，认为企业是服务社会的"圣器"。',
       },
       {
         master: '盛田昭夫',
         title: '索尼创始人 / 日本战后企业家先驱',
         quote: '好的产品应该有灵魂(魂)。如果连创造它的人都没有被它感动，又如何能感动使用者？',
-        context: '盛田昭夫将神道教"万物有灵"应用于产品开发——每个产品都应该承载创造者的灵魂和情感。',
+        context: '盛田昭夫将神道文化"万物有灵"应用于产品开发——每个产品都应该承载创造者的灵魂和情感。',
       },
       {
         master: '柳井正',
         title: '优衣库创始人 / Fast Retailing CEO',
         quote: '改变服装，改变常识，改变世界。做到极致的简单，本身就是最难的创新。',
-        context: '柳井正的经营哲学融合了神道教"素朴"美学和"改善"精神——在最基本的事物中追求极致。',
+        context: '柳井正的经营哲学融合了神道文化"素朴"美学和"改善"精神——在最基本的事物中追求极致。',
       },
     ],
     practices: [
       {
         name: '匠人5S法',
-        description: '将神道教"净化"仪式系统化为工作场所管理方法：整理(Seiri)—去除不需要的/整顿(Seiton)—物归其位/清扫(Seiso)—保持洁净/清洁(Seiketsu)—标准化/素养(Shitsuke)—内化为习惯。5S不仅是管理工具，更是"以清净心做清净事"的精神修行。',
+        description: '将神道文化"净化"仪式系统化为工作场所管理方法：整理(Seiri)—去除不需要的/整顿(Seiton)—物归其位/清扫(Seiso)—保持洁净/清洁(Seiketsu)—标准化/素养(Shitsuke)—内化为习惯。5S不仅是管理工具，更是"以清净心做清净事"的精神修行。',
         companies: ['丰田', '本田', '日本制造业全行业'],
         outcome: '工作效率提升30%+，工伤事故率显著降低，产品质量显著提升',
       },
       {
         name: '清净办公',
-        description: '神道教"清净"概念应用于办公环境：每天开工前5分钟全员清扫(不是保洁的事)，办公桌面只保留当前任务相关物品，离开时恢复桌面原状。核心信念："混乱的环境产生混乱的思维，清净的环境产生清净的决策。"',
+        description: '神道文化"清净"概念应用于办公环境：每天开工前5分钟全员清扫(不是保洁的事)，办公桌面只保留当前任务相关物品，离开时恢复桌面原状。核心信念："混乱的环境产生混乱的思维，清净的环境产生清净的决策。"',
         companies: ['丰田', '无印良品', '日本办公室文化'],
         outcome: '员工注意力和专注度提升，会议效率改善，创造性思维增强',
       },
       {
         name: '感恩晨会',
-        description: '源自神道教"感谢"仪式的企业晨会实践：每天开工时全员进行5分钟感恩分享——感谢客户的信任、同事的协助、供应商的付出。不是形式主义，而是神道教"万物皆有恩"信仰的日常实践。',
+        description: '源自神道文化"感谢"仪式的企业晨会实践：每天开工时全员进行5分钟感恩分享——感谢客户的信任、同事的协助、供应商的付出。不是形式主义，而是神道文化"万物皆有恩"文化智慧的日常实践。',
         companies: ['日本中小企业(普遍)', '松下', '日航'],
         outcome: '组织氛围从"竞争"转向"感恩"，团队凝聚力和客户导向意识增强',
       },
       {
         name: '和之谈判术',
-        description: '神道教"和"(Wa，和谐)精神在商业谈判中的应用：不追求"赢"，追求"和"。谈判目标不是最大化己方利益，而是找到双方都能接受的"和点"。核心原则：不让对方"失面子"、给对方"台阶下"、建立长期"和"的关系。',
+        description: '神道文化"和"(Wa，和谐)精神在商业谈判中的应用：不追求"赢"，追求"和"。谈判目标不是最大化己方利益，而是找到双方都能接受的"和点"。核心原则：不让对方"失面子"、给对方"台阶下"、建立长期"和"的关系。',
         companies: ['日本企业(普遍)', '丰田供应链谈判', '日本对外贸易'],
         outcome: '商业关系更持久稳定，谈判破裂率低，供应链伙伴关系深度更强',
       },
@@ -1075,7 +1075,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '日本百年企业的生存密码',
         source: '帝国数据银行 / 日本经济产业省, 2023',
-        finding: '日本拥有33,000+家百年企业(全球最多)，其中10家超过1000年。研究发现这些长寿企业的共同特征：专注本业(87%)、重视匠人精神(91%)、强调感恩文化(78%)、保持谦逊(83%)——这些特征与神道教价值观高度一致。',
+        finding: '日本拥有33,000+家百年企业(全球最多)，其中10家超过1000年。研究发现这些长寿企业的共同特征：专注本业(87%)、重视匠人精神(91%)、强调感恩文化(78%)、保持谦逊(83%)——这些特征与神道文化价值观高度一致。',
       },
       {
         title: '匠人精神与产品质量的量化关系',
@@ -1097,18 +1097,18 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '丰田模式',
         author: 'Jeffrey Liker',
-        description: '全球畅销的精益管理经典。深入解析丰田14条管理原则，揭示5S、Kaizen、Just-in-Time等管理创新背后的文化根基——神道教的清净、敬畏和持续改善精神。',
+        description: '全球畅销的精益管理经典。深入解析丰田14条管理原则，揭示5S、Kaizen、Just-in-Time等管理创新背后的文化根基——神道文化的清净、敬畏和持续改善精神。',
       },
       {
         title: '无印良品世界观',
         author: '松井忠三',
-        description: '无印良品前CEO解读MUJI哲学——为什么"没有品牌"成为了最强品牌？为什么"去装饰"反而最有美感？神道教"素朴"美学如何在商业世界中创造独特竞争力。',
+        description: '无印良品前CEO解读MUJI哲学——为什么"没有品牌"成为了最强品牌？为什么"去装饰"反而最有美感？神道文化"素朴"美学如何在商业世界中创造独特竞争力。',
       },
     ],
   },
 
   // ═══════════════════════════════════════════════════
-  // 藏传佛教 Tibetan Buddhism
+  // 藏传文化 Tibetan Buddhism
   // ═══════════════════════════════════════════════════
   'tibetan-buddhism': {
     cases: [
@@ -1116,7 +1116,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Salesforce',
         founder: 'Marc Benioff (马克·贝尼奥夫)',
         industry: '云计算 / CRM',
-        story: 'Benioff在创办Salesforce前深受达赖喇嘛影响，将藏传佛教"慈悲"(Compassion)哲学融入企业DNA。他创造了"1-1-1模式"——将1%的股权、1%的产品、1%的员工时间用于公益。这个模式被200+家企业采纳，成为"慈悲资本主义"的标杆。Benioff说："商业是改善世界状态的最大平台。"',
+        story: 'Benioff在创办Salesforce前深受达赖喇嘛影响，将藏传文化"慈悲"(Compassion)哲学融入企业DNA。他创造了"1-1-1模式"——将1%的股权、1%的产品、1%的员工时间用于公益。这个模式被200+家企业采纳，成为"慈悲资本主义"的标杆。Benioff说："商业是改善世界状态的最大平台。"',
         achievements: ['全球CRM市场份额第一', '1-1-1慈善模式被200+家企业采用', '年公益投入超过5亿美元', '福布斯"全球最具创新力公司"榜首'],
         faithPrinciple: '慈悲(Compassion)——将对所有生命的关怀融入商业的每一个决策',
       },
@@ -1124,7 +1124,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Bridgewater Associates',
         founder: 'Ray Dalio (瑞·达利欧)',
         industry: '对冲基金 / 资产管理',
-        story: '达利欧是全球最大对冲基金的创始人，每天冥想20分钟是他保持40年的习惯。他将藏传佛教"观察自心"的修行融入Bridgewater的"极度透明"文化——所有会议录音，所有决策逻辑公开，所有人可以挑战任何人。他的《原则》一书直接源于冥想中获得的洞察。',
+        story: '达利欧是全球最大对冲基金的创始人，每天冥想20分钟是他保持40年的习惯。他将藏传文化"观察自心"的修行融入Bridgewater的"极度透明"文化——所有会议录音，所有决策逻辑公开，所有人可以挑战任何人。他的《原则》一书直接源于冥想中获得的洞察。',
         achievements: ['管理资产超1500亿美元', '《原则》全球畅销4000万册', '"极度透明"文化被商学院研究', '40年复合回报率业界顶尖'],
         faithPrinciple: '内观(Vipassana)——通过观察自心来理解现实，而非被情绪和偏见遮蔽',
       },
@@ -1140,7 +1140,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
     masterQuotes: [
       {
         master: '达赖喇嘛',
-        title: '藏传佛教精神领袖',
+        title: '藏传文化精神领袖',
         quote: '如果你认为自己太渺小而无法产生影响，那就试试和一只蚊子睡一晚——你会知道个体的力量有多大。',
         context: '达赖喇嘛在多次全球商业论坛上呼吁"慈悲经济学"——以慈悲心而非贪婪心驱动的经济体系。',
       },
@@ -1160,7 +1160,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
     practices: [
       {
         name: '慈悲利益相关者法',
-        description: '将藏传佛教"慈悲"概念扩展到所有利益相关者：员工(提供有意义的工作和成长机会)、客户(真正解决问题而非制造需求)、社区(积极回馈)、环境(减少负面影响)、股东(创造可持续价值)。每个商业决策前问："这个决定对所有生命的净影响是正面还是负面？"',
+        description: '将藏传文化"慈悲"概念扩展到所有利益相关者：员工(提供有意义的工作和成长机会)、客户(真正解决问题而非制造需求)、社区(积极回馈)、环境(减少负面影响)、股东(创造可持续价值)。每个商业决策前问："这个决定对所有生命的净影响是正面还是负面？"',
         companies: ['Salesforce', 'Patagonia', 'LinkedIn'],
         outcome: '企业从"股东至上"升级为"众生至上"，品牌信任度和长期价值显著提升',
       },
@@ -1172,7 +1172,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       },
       {
         name: '转化逆境法',
-        description: '藏传佛教"转化烦恼为菩提"的商业应用——将每一个危机、失败、挫折视为成长的机会。具体实践：危机发生后第一步不是"怎么解决"而是"这教会了我们什么"。建立组织级的"逆境转化"记录库。',
+        description: '藏传文化"转化烦恼为菩提"的商业应用——将每一个危机、失败、挫折视为成长的机会。具体实践：危机发生后第一步不是"怎么解决"而是"这教会了我们什么"。建立组织级的"逆境转化"记录库。',
         companies: ['Bridgewater', 'Microsoft (Satya Nadella)', 'Salesforce'],
         outcome: '组织从"恐惧失败"转变为"拥抱失败"，学习速度和韧性显著提升',
       },
@@ -1214,13 +1214,13 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       {
         title: '开悟的商业',
         author: 'Fred Kofman',
-        description: 'LinkedIn副总裁的管理哲学。融合藏传佛教修行与商业管理，阐述如何在企业中实践"正念""慈悲""智慧"三大品质，创建真正有意义的组织。',
+        description: 'LinkedIn副总裁的管理哲学。融合藏传文化修行与商业管理，阐述如何在企业中实践"正念""慈悲""智慧"三大品质，创建真正有意义的组织。',
       },
     ],
   },
 
   // ═══════════════════════════════════════════════════
-  // 原住民灵性 Indigenous Spirituality
+  // 原住民文化 Indigenous Spirituality
   // ═══════════════════════════════════════════════════
   indigenous: {
     cases: [
@@ -1228,7 +1228,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: 'Patagonia',
         founder: 'Yvon Chouinard (伊冯·乔伊纳德)',
         industry: '户外服装 / 环保企业',
-        story: '2022年，Patagonia创始人做出了商业史上最震撼的决定——将价值30亿美元的公司100%捐赠给地球。"地球是我们唯一的股东。"这一理念深受原住民灵性的影响——在原住民世界观中，土地不属于人，人属于土地。Patagonia从创立之初就将环保写入DNA：修补衣服而非制造新的、用有机棉花、将1%营收捐给环保。',
+        story: '2022年，Patagonia创始人做出了商业史上最震撼的决定——将价值30亿美元的公司100%捐赠给地球。"地球是我们唯一的股东。"这一理念深受原住民文化的影响——在原住民世界观中，土地不属于人，人属于土地。Patagonia从创立之初就将环保写入DNA：修补衣服而非制造新的、用有机棉花、将1%营收捐给环保。',
         achievements: ['将整家公司(价值30亿美元)捐给地球', '全球最受尊敬的环保企业品牌', '"地球税"——1%营收用于环保', 'B Corp运动的先驱和标杆'],
         faithPrinciple: '万物互联——人类不是自然的主人，而是自然的一部分，对大地有守护责任',
       },
@@ -1262,7 +1262,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         master: 'Yvon Chouinard',
         title: 'Patagonia创始人 / 地球的守护者',
         quote: '地球是我们唯一的股东。我们不是在拯救地球，而是在学习如何不再伤害她。商业要么是问题的一部分，要么是解决方案的一部分——没有中间地带。',
-        context: 'Chouinard将原住民"大地母亲"的信仰转化为商业实践，创造了"地球优先"的企业模式。',
+        context: 'Chouinard将原住民"大地母亲"的文化智慧转化为商业实践，创造了"地球优先"的企业模式。',
       },
       {
         master: 'Ray Anderson',
@@ -1340,7 +1340,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
   },
 
   // ═══════════════════════════════════════════════════
-  // 巴哈伊教 Bahai
+  // 巴哈伊文化 Bahai
   // ═══════════════════════════════════════════════════
   bahai: {
     cases: [
@@ -1348,7 +1348,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '联合国磋商模式',
         founder: '巴哈伊国际社团',
         industry: '国际治理 / 社会发展',
-        story: '巴哈伊教对联合国的影响远超其信徒规模。巴哈伊"磋商"(Consultation)决策模式——基于真理追求而非权力博弈的集体决策——被联合国多个机构采纳。巴哈伊国际社团在联合国具有咨商地位，在可持续发展、性别平等、教育等领域持续贡献。磋商的核心原则："个人意见一旦提出，就属于集体，而非个人。"',
+        story: '巴哈伊文化对联合国的影响远超其信徒规模。巴哈伊"磋商"(Consultation)决策模式——基于真理追求而非权力博弈的集体决策——被联合国多个机构采纳。巴哈伊国际社团在联合国具有咨商地位，在可持续发展、性别平等、教育等领域持续贡献。磋商的核心原则："个人意见一旦提出，就属于集体，而非个人。"',
         achievements: ['巴哈伊磋商模式被联合国多个机构采纳', '在全球190+个国家建立社区', '对可持续发展目标(SDGs)有重要贡献', '"超越国界"的全球治理思维的先行者'],
         faithPrinciple: '磋商(Consultation)——真理通过多元观点的碰撞而浮现，不是通过权力博弈',
       },
@@ -1356,7 +1356,7 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '巴哈伊启发的社会企业群',
         founder: '全球巴哈伊社区',
         industry: '教育 / 社区发展 / 农业',
-        story: '巴哈伊教在全球推动数以千计的社区发展项目——识字教育、农业技术培训、品格教育。这些项目的共同特征是"赋能而非施舍"：不是从外部给予资源，而是帮助社区建立自身能力。巴哈伊的FUNDAEC项目(哥伦比亚)帮助数万农村青年获得教育和创业技能，成为联合国推荐的社区发展范例。',
+        story: '巴哈伊文化在全球推动数以千计的社区发展项目——识字教育、农业技术培训、品格教育。这些项目的共同特征是"赋能而非施舍"：不是从外部给予资源，而是帮助社区建立自身能力。巴哈伊的FUNDAEC项目(哥伦比亚)帮助数万农村青年获得教育和创业技能，成为联合国推荐的社区发展范例。',
         achievements: ['全球数千个社区发展项目', 'FUNDAEC项目惠及数万哥伦比亚青年', '被联合国推荐为社区发展范例', '"赋能"模式被多个发展机构采纳'],
         faithPrinciple: '赋能(Empowerment)——不是给人鱼，而是教人造鱼竿，并帮助他们建造鱼塘',
       },
@@ -1364,21 +1364,21 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
         company: '多元融合企业',
         founder: '巴哈伊商业网络',
         industry: '多元行业',
-        story: '巴哈伊教强调"多样性中的统一"(Unity in Diversity)，这一原则在全球化企业中日益重要。巴哈伊裔企业家和受巴哈伊影响的企业，在多元文化管理方面有天然优势——他们的信仰就要求拥抱不同种族、文化和背景的人。全球多家科技公司的多元化项目都参考了巴哈伊的"磋商+多元"模式。',
-        achievements: ['多元文化管理的思想先驱', '"磋商+多元"模式被科技企业参考', '全球性信仰社区提供天然的跨文化网络', '在多元化和包容性(DEI)领域有深厚实践'],
+        story: '巴哈伊文化强调"多样性中的统一"(Unity in Diversity)，这一原则在全球化企业中日益重要。巴哈伊裔企业家和受巴哈伊影响的企业，在多元文化管理方面有天然优势——他们的文化理念就要求拥抱不同种族、文化和背景的人。全球多家科技公司的多元化项目都参考了巴哈伊的"磋商+多元"模式。',
+        achievements: ['多元文化管理的思想先驱', '"磋商+多元"模式被科技企业参考', '全球性文化社区提供天然的跨文化网络', '在多元化和包容性(DEI)领域有深厚实践'],
         faithPrinciple: '多样性中的统一——多元不是威胁，而是力量的源泉；统一不是同质化，而是和谐协作',
       },
     ],
     masterQuotes: [
       {
         master: '阿博都-巴哈',
-        title: '巴哈伊教圣护',
+        title: '巴哈伊文化圣护',
         quote: '商业在精神上是崇高的——当它服务于人类的福祉和文明的进步时。真正的商业精神是：我交易，故我服务。',
         context: '阿博都-巴哈明确肯定商业的精神价值，认为诚实的商业活动等同于修行。',
       },
       {
         master: '巴哈欧拉',
-        title: '巴哈伊教创始人',
+        title: '巴哈伊文化创始人',
         quote: '地球只有一个，人类都是其公民。不要以陌生人的眼光看待彼此——你们都是同一棵树上的果实，同一枝干上的叶子。',
         context: '巴哈欧拉150年前就提出"全球公民"概念，这一理念对全球化商业和跨文化管理有深远启示。',
       },
@@ -1398,13 +1398,13 @@ export const RELIGION_BUSINESS_CASES: Record<string, ReligionBusinessCasesData> 
       },
       {
         name: '科教统一创新',
-        description: '巴哈伊教强调"科学与宗教的和谐"——这对企业的启示是：理性(数据)与直觉(文化)不是对立的，而是互补的。决策既需要数据分析(科学)也需要价值判断(灵性)。一个好的战略既是可量化的也是有灵魂的。',
-        companies: ['巴哈伊教育项目', '社会创新企业', 'STEM+人文企业'],
+        description: '巴哈伊文化强调"科学与文化的和谐"——这对企业的启示是：理性(数据)与直觉(文化)不是对立的，而是互补的。决策既需要数据分析(科学)也需要价值判断(灵性)。一个好的战略既是可量化的也是有灵魂的。',
+        companies: ['巴哈伊文化育项目', '社会创新企业', 'STEM+人文企业'],
         outcome: '避免"纯数据主义"或"纯直觉主义"的决策偏差，找到理性与人文的平衡',
       },
       {
         name: '全球视野战略',
-        description: '巴哈伊教"全球公民"意识的商业应用：企业战略不应局限于"本国市场"或"区域利益"，而应从全球视野出发——"我们能为人类整体做什么？"这不是理想主义，而是全球化时代的战略必需。',
+        description: '巴哈伊文化"全球公民"意识的商业应用：企业战略不应局限于"本国市场"或"区域利益"，而应从全球视野出发——"我们能为人类整体做什么？"这不是理想主义，而是全球化时代的战略必需。',
         companies: ['联合国全球契约企业', '全球B Corp网络', '国际社会企业'],
         outcome: '企业从"区域思维"升级为"全球思维"，在全球化中找到更大的市场和意义',
       },

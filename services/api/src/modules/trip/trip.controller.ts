@@ -66,8 +66,8 @@ export class TripController {
   @ApiOperation({
     summary: 'Create a new trip',
     description:
-      '创建新的朝圣行程，初始状态为 DRAFT。需要指定用户ID、标题，可选出发/结束日期和预算。\n\n' +
-      'Create a new pilgrimage trip with initial status DRAFT. Requires user ID and title; optionally include dates, budget, and group size.',
+      '创建新的文化之旅行程，初始状态为 DRAFT。需要指定用户ID、标题，可选出发/结束日期和预算。\n\n' +
+      'Create a new cultural journey trip with initial status DRAFT. Requires user ID and title; optionally include dates, budget, and group size.',
   })
   @ApiBody({ type: CreateTripDto })
   @ApiResponse({
@@ -77,7 +77,7 @@ export class TripController {
       type: 'object',
       properties: {
         id: { type: 'string', example: 'clx3trip0001ab12cd34ef56' },
-        title: { type: 'string', example: '佛教四大圣地朝圣之旅' },
+        title: { type: 'string', example: '佛教文化四大圣地文化之旅' },
         status: { type: 'string', example: 'DRAFT' },
         userId: { type: 'string' },
         createdAt: { type: 'string', format: 'date-time' },

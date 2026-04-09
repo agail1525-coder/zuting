@@ -73,7 +73,7 @@ export class AuthController {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clx1abc2d0000ab12cd34ef56' },
-            nickname: { type: 'string', example: '朝圣者' },
+            nickname: { type: 'string', example: '文化旅行者' },
             phone: { type: 'string', example: '13800138000' },
             email: { type: 'string', example: 'pilgrim@zuting.com' },
           },
@@ -109,7 +109,7 @@ export class AuthController {
           type: 'object',
           properties: {
             id: { type: 'string', example: 'clx1abc2d0000ab12cd34ef56' },
-            nickname: { type: 'string', example: '朝圣者' },
+            nickname: { type: 'string', example: '文化旅行者' },
             role: { type: 'string', example: 'USER' },
           },
         },
@@ -179,7 +179,7 @@ export class AuthController {
       type: 'object',
       properties: {
         id: { type: 'string', example: 'clx1abc2d0000ab12cd34ef56' },
-        nickname: { type: 'string', example: '朝圣者' },
+        nickname: { type: 'string', example: '文化旅行者' },
         phone: { type: 'string', example: '13800138000' },
         email: { type: 'string', example: 'pilgrim@zuting.com' },
         role: { type: 'string', enum: ['USER', 'ADMIN', 'GUIDE'], example: 'USER' },

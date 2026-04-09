@@ -10,7 +10,7 @@ import {
 export class UpdateJournalDto {
   @ApiPropertyOptional({
     description: 'Updated title. Max 200 characters. / 更新标题，最多200字符',
-    example: '菩提伽耶朝圣记（修订版）',
+    example: '菩提伽耶文化探访记（修订版）',
     maxLength: 200,
   })
   @IsOptional()

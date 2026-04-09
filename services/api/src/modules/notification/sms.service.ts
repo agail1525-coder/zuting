@@ -18,7 +18,7 @@ export class SmsService {
     this.provider = this.config.get<string>('SMS_PROVIDER', 'aliyun');
     this.accessKeyId = this.config.get<string>('ALIYUN_ACCESS_KEY', '');
     this.accessSecret = this.config.get<string>('ALIYUN_SECRET', '');
-    this.signName = this.config.get<string>('ALIYUN_SMS_SIGN', '祖庭之旅');
+    this.signName = this.config.get<string>('ALIYUN_SMS_SIGN', '佳绩之旅');
     this.templateCode = this.config.get<string>(
       'ALIYUN_SMS_TEMPLATE',
       'SMS_123456',

@@ -1,5 +1,5 @@
 // ── Holy Sites Data (300+) ─────────────────────────────
-// 全球祖庭旅行平台 — 12大信仰真实地理覆盖
+// 佳绩之旅平台 — 12大文化传统真实地理覆盖
 // 格式: name, nameEn, religionSlug, country, soundEffect, lat, lng, utcOffset, description (经文 —— 来源\n中文解读)
 
 export interface HolySiteData {
@@ -15,7 +15,7 @@ export interface HolySiteData {
 }
 
 export const holySites: HolySiteData[] = [
-  // ═══════════════════════ 佛教 Buddhism (30) ═══════════════════════
+  // ═══════════════════════ 佛教文化 Buddhism (30) ═══════════════════════
   { name: '菩提伽耶', nameEn: 'Bodh Gaya', religionSlug: 'buddhism', country: '印度', soundEffect: 'singing_bowl', latitude: 24.696, longitude: 84.991, utcOffset: 5.5, description: '诸恶莫作，众善奉行，自净其意 —— 《法句经》\n不做坏事，多行善事，净化心灵' },
   { name: '布达拉宫', nameEn: 'Potala Palace', religionSlug: 'buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 29.656, longitude: 91.117, utcOffset: 8, description: '色即是空，空即是色 —— 《心经》\n万物表象与本质相互依存' },
   { name: '吴哥窟', nameEn: 'Angkor Wat', religionSlug: 'buddhism', country: '柬埔寨', soundEffect: 'singing_bowl', latitude: 13.412, longitude: 103.867, utcOffset: 7, description: '千里之行，始于足下之觉知 —— 巴利经典\n觉知当下的每一步' },
@@ -29,12 +29,12 @@ export const holySites: HolySiteData[] = [
   { name: '峨眉山', nameEn: 'Mount Emei', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 29.520, longitude: 103.484, utcOffset: 8, description: '普贤行愿，遍及十方 —— 《华严经·普贤行愿品》\n普贤菩萨的大行大愿，遍满虚空' },
   { name: '普陀山', nameEn: 'Mount Putuo', religionSlug: 'buddhism', country: '中国', soundEffect: 'ocean_waves', latitude: 30.005, longitude: 122.387, utcOffset: 8, description: '千处祈求千处应，苦海常作度人舟 —— 观音赞\n观音慈悲，有求必应，常渡众生苦海' },
   { name: '九华山', nameEn: 'Mount Jiuhua', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 30.483, longitude: 117.808, utcOffset: 8, description: '地狱不空，誓不成佛 —— 地藏菩萨本愿\n众生未度尽，誓不证菩提' },
-  { name: '白马寺', nameEn: 'White Horse Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 34.722, longitude: 112.595, utcOffset: 8, description: '佛法东传，肇始于此 —— 中国佛教祖庭\n中土第一古刹，汉传佛教发源地' },
+  { name: '白马寺', nameEn: 'White Horse Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 34.722, longitude: 112.595, utcOffset: 8, description: '佛法东传，肇始于此 —— 中国佛教文化祖庭\n中土第一古刹，汉传佛教文化发源地' },
   { name: '寒山寺', nameEn: 'Hanshan Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 31.317, longitude: 120.566, utcOffset: 8, description: '姑苏城外寒山寺，夜半钟声到客船 —— 张继《枫桥夜泊》\n寒山一钟，唤醒千年迷梦' },
   { name: '南华禅寺', nameEn: 'Nanhua Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 24.785, longitude: 113.665, utcOffset: 8, description: '菩提本无树，明镜亦非台 —— 六祖慧能\n本性清净，不立一法' },
   { name: '塔普伦寺', nameEn: 'Ta Prohm', religionSlug: 'buddhism', country: '柬埔寨', soundEffect: 'singing_bowl', latitude: 13.435, longitude: 103.889, utcOffset: 7, description: '诸行无常，是生灭法 —— 《大般涅槃经》\n树根缠石，正示万法无常之相' },
   { name: '玉佛寺', nameEn: 'Wat Phra Kaew', religionSlug: 'buddhism', country: '泰国', soundEffect: 'singing_bowl', latitude: 13.751, longitude: 100.493, utcOffset: 7, description: '心是一切善法之根本 —— 《本生经》\n万善由心生，护心如护宝' },
-  { name: '佛牙寺', nameEn: 'Temple of the Tooth', religionSlug: 'buddhism', country: '斯里兰卡', soundEffect: 'singing_bowl', latitude: 7.294, longitude: 80.641, utcOffset: 5.5, description: '佛在心中，不在远求 —— 南传佛教\n佛性自具，不假外求' },
+  { name: '佛牙寺', nameEn: 'Temple of the Tooth', religionSlug: 'buddhism', country: '斯里兰卡', soundEffect: 'singing_bowl', latitude: 7.294, longitude: 80.641, utcOffset: 5.5, description: '佛在心中，不在远求 —— 南传佛教文化\n佛性自具，不假外求' },
   { name: '海印寺', nameEn: 'Haeinsa', religionSlug: 'buddhism', country: '韩国', soundEffect: 'temple_bell', latitude: 35.801, longitude: 128.098, utcOffset: 9, description: '海印三昧，万法具足 —— 《华严经》\n如大海映现万物，心中本具一切' },
   { name: '通度寺', nameEn: 'Tongdosa', religionSlug: 'buddhism', country: '韩国', soundEffect: 'temple_bell', latitude: 35.487, longitude: 129.064, utcOffset: 9, description: '戒为无上菩提本 —— 《华严经》\n戒律是觉悟的根基' },
   { name: '松广寺', nameEn: 'Songgwangsa', religionSlug: 'buddhism', country: '韩国', soundEffect: 'temple_bell', latitude: 35.001, longitude: 127.279, utcOffset: 9, description: '僧伽和合，正法久住 —— 韩国曹溪宗\n僧团和合，正法长存' },
@@ -47,7 +47,7 @@ export const holySites: HolySiteData[] = [
   { name: '高野山', nameEn: 'Mount Koya', religionSlug: 'buddhism', country: '日本', soundEffect: 'temple_bell', latitude: 34.214, longitude: 135.583, utcOffset: 9, description: '即身成佛，三密相应 —— 空海《即身成佛义》\n身口意三密，当下成佛' },
   { name: '比睿山延历寺', nameEn: 'Enryakuji', religionSlug: 'buddhism', country: '日本', soundEffect: 'temple_bell', latitude: 35.070, longitude: 135.841, utcOffset: 9, description: '一隅を照らす —— 最澄大师\n照亮自己所在的角落，便是国宝' },
 
-  // ═══════════════════════ 道教 Taoism (25) ═══════════════════════
+  // ═══════════════════════ 道教文化 Taoism (25) ═══════════════════════
   { name: '武当山', nameEn: 'Mount Wudang', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 32.400, longitude: 111.004, utcOffset: 8, description: '道可道，非常道；名可名，非常名 —— 《道德经》第一章\n真正的道理超越语言的表达' },
   { name: '青城山', nameEn: 'Mount Qingcheng', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 30.898, longitude: 103.573, utcOffset: 8, description: '上善若水，水善利万物而不争 —— 《道德经》第八章\n最高的善如水一般，滋养万物不争名利' },
   { name: '龙虎山', nameEn: 'Mount Longhu', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 28.082, longitude: 116.968, utcOffset: 8, description: '人法地，地法天，天法道，道法自然 —— 《道德经》第二十五章\n人效法大地，最终归于自然' },
@@ -58,7 +58,7 @@ export const holySites: HolySiteData[] = [
   { name: '泰山', nameEn: 'Mount Tai', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 36.256, longitude: 117.101, utcOffset: 8, description: '泰山不让土壤，故能成其大 —— 李斯《谏逐客书》\n泰山不拒细土，所以能够高大' },
   { name: '嵩山', nameEn: 'Mount Song', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 34.493, longitude: 112.939, utcOffset: 8, description: '中岳嵩高，太室少室 —— 《史记·封禅书》\n中岳屹立中央，承天接地' },
   { name: '恒山', nameEn: 'Mount Heng (North)', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 39.681, longitude: 113.736, utcOffset: 8, description: '北岳玄武，镇守朔方 —— 五岳传统\n北方水气凝聚，玄武主静守一' },
-  { name: '三清山', nameEn: 'Mount Sanqing', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 28.911, longitude: 118.064, utcOffset: 8, description: '三清者，玉清、上清、太清也 —— 道教《云笈七签》\n三清乃道之三化，至高无极' },
+  { name: '三清山', nameEn: 'Mount Sanqing', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 28.911, longitude: 118.064, utcOffset: 8, description: '三清者，玉清、上清、太清也 —— 道教文化《云笈七签》\n三清乃道之三化，至高无极' },
   { name: '齐云山', nameEn: 'Mount Qiyun', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 29.811, longitude: 118.043, utcOffset: 8, description: '一日清闲一日仙 —— 全真道训\n身心一日清净，便是一日神仙' },
   { name: '终南山', nameEn: 'Mount Zhongnan', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 33.997, longitude: 108.940, utcOffset: 8, description: '隐于市朝亦是隐 —— 终南隐士传统\n大隐于山，真隐于心' },
   { name: '崆峒山', nameEn: 'Mount Kongtong', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 35.535, longitude: 106.534, utcOffset: 8, description: '黄帝问道于广成子 —— 《庄子·在宥》\n至道之精，窈窈冥冥' },
@@ -67,14 +67,14 @@ export const holySites: HolySiteData[] = [
   { name: '玄妙观', nameEn: 'Xuanmiao Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 31.318, longitude: 120.620, utcOffset: 8, description: '玄之又玄，众妙之门 —— 《道德经》第一章\n深奥又深奥，是一切奥妙的门户' },
   { name: '天师府', nameEn: 'Celestial Master Mansion', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 28.106, longitude: 116.973, utcOffset: 8, description: '正一盟威，济世度人 —— 张道陵正一道\n以正法盟威，普度众生' },
   { name: '永乐宫', nameEn: 'Yongle Palace', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 34.871, longitude: 110.460, utcOffset: 8, description: '吕洞宾度世，纯阳真人 —— 全真道祖庭\n纯阳之气，化育群生' },
-  { name: '八仙宫', nameEn: 'Baxian Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 34.272, longitude: 108.971, utcOffset: 8, description: '八仙过海，各显神通 —— 道教典故\n各凭本心修证，殊途同归' },
+  { name: '八仙宫', nameEn: 'Baxian Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 34.272, longitude: 108.971, utcOffset: 8, description: '八仙过海，各显神通 —— 道教文化典故\n各凭本心修证，殊途同归' },
   { name: '黄大仙祠', nameEn: 'Wong Tai Sin Temple', religionSlug: 'taoism', country: '中国香港', soundEffect: 'wind_chimes', latitude: 22.342, longitude: 114.193, utcOffset: 8, description: '有求必应，普济劝善 —— 黄大仙训\n慈悲普济，劝人向善' },
-  { name: '青羊宫', nameEn: 'Qingyang Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 30.659, longitude: 104.046, utcOffset: 8, description: '老君青羊化身处 —— 道教传说\n太上感应，化育蜀中' },
+  { name: '青羊宫', nameEn: 'Qingyang Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 30.659, longitude: 104.046, utcOffset: 8, description: '老君青羊化身处 —— 道教文化传说\n太上感应，化育蜀中' },
   { name: '楼观台', nameEn: 'Louguantai', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 34.054, longitude: 108.343, utcOffset: 8, description: '老子说经台，道德五千言 —— 楼观传说\n紫气东来，道德开宗' },
   { name: '王屋山', nameEn: 'Mount Wangwu', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 35.198, longitude: 112.319, utcOffset: 8, description: '愚公移山，毋意必固我 —— 《列子·汤问》\n至诚不息，则金石为开' },
   { name: '罗浮山', nameEn: 'Mount Luofu', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 23.299, longitude: 114.063, utcOffset: 8, description: '葛洪炼丹处，岭南第一山 —— 抱朴子传\n外修内炼，内外兼修' },
 
-  // ═══════════════════════ 基督教 Christianity (35) ═══════════════════════
+  // ═══════════════════════ 基督文化 Christianity (35) ═══════════════════════
   { name: '梵蒂冈圣彼得大教堂', nameEn: "St. Peter's Basilica", religionSlug: 'christianity', country: '梵蒂冈', soundEffect: 'pipe_organ', latitude: 41.902, longitude: 12.454, utcOffset: 1, description: 'God is love, and whoever abides in love abides in God —— 1 John 4:16\n神就是爱，住在爱里面的就是住在神里面' },
   { name: '圣家堂', nameEn: 'Sagrada Familia', religionSlug: 'christianity', country: '西班牙', soundEffect: 'choir_hymn', latitude: 41.404, longitude: 2.175, utcOffset: 1, description: 'Faith is the substance of things hoped for —— Hebrews 11:1\n信就是所望之事的实底，未见之事的确据' },
   { name: '巴黎圣母院', nameEn: 'Notre-Dame', religionSlug: 'christianity', country: '法国', soundEffect: 'pipe_organ', latitude: 48.853, longitude: 2.350, utcOffset: 1, description: 'Love is patient, love is kind —— 1 Corinthians 13:4\n爱是恒久忍耐，又有恩慈' },
@@ -93,8 +93,8 @@ export const holySites: HolySiteData[] = [
   { name: '布拉格圣维特大教堂', nameEn: "St. Vitus Cathedral", religionSlug: 'christianity', country: '捷克', soundEffect: 'pipe_organ', latitude: 50.090, longitude: 14.401, utcOffset: 1, description: 'Lord, teach us to pray —— Luke 11:1\n主，教导我们祷告' },
   { name: '维也纳圣斯蒂芬大教堂', nameEn: "St. Stephen's Cathedral Vienna", religionSlug: 'christianity', country: '奥地利', soundEffect: 'pipe_organ', latitude: 48.208, longitude: 16.373, utcOffset: 1, description: 'My grace is sufficient for you —— 2 Corinthians 12:9\n我的恩典够你用的' },
   { name: '蒙特塞拉特修道院', nameEn: 'Montserrat Monastery', religionSlug: 'christianity', country: '西班牙', soundEffect: 'choir_hymn', latitude: 41.591, longitude: 1.838, utcOffset: 1, description: 'Come to me, all who labor and are heavy laden —— Matthew 11:28\n凡劳苦担重担的人，到我这里来' },
-  { name: '卢尔德圣母朝圣地', nameEn: 'Sanctuary of Lourdes', religionSlug: 'christianity', country: '法国', soundEffect: 'choir_hymn', latitude: 43.097, longitude: -0.057, utcOffset: 1, description: 'I am the Immaculate Conception —— Bernadette Vision\n我是无染原罪者' },
-  { name: '法蒂玛圣母朝圣地', nameEn: 'Sanctuary of Fátima', religionSlug: 'christianity', country: '葡萄牙', soundEffect: 'choir_hymn', latitude: 39.632, longitude: -8.671, utcOffset: 0, description: 'Pray the Rosary every day —— Our Lady of Fátima\n每日祈祷玫瑰经，便能得到平安' },
+  { name: '卢尔德圣母文化探访地', nameEn: 'Sanctuary of Lourdes', religionSlug: 'christianity', country: '法国', soundEffect: 'choir_hymn', latitude: 43.097, longitude: -0.057, utcOffset: 1, description: 'I am the Immaculate Conception —— Bernadette Vision\n我是无染原罪者' },
+  { name: '法蒂玛圣母文化探访地', nameEn: 'Sanctuary of Fátima', religionSlug: 'christianity', country: '葡萄牙', soundEffect: 'choir_hymn', latitude: 39.632, longitude: -8.671, utcOffset: 0, description: 'Pray the Rosary every day —— Our Lady of Fátima\n每日祈祷玫瑰经，便能得到平安' },
   { name: '圣地亚哥-德孔波斯特拉大教堂', nameEn: 'Santiago de Compostela', religionSlug: 'christianity', country: '西班牙', soundEffect: 'pipe_organ', latitude: 42.881, longitude: -8.545, utcOffset: 1, description: 'I am the way, the truth, and the life —— John 14:6\n我就是道路、真理、生命' },
   { name: '都柏林圣帕特里克大教堂', nameEn: "St. Patrick's Cathedral Dublin", religionSlug: 'christianity', country: '爱尔兰', soundEffect: 'pipe_organ', latitude: 53.339, longitude: -6.271, utcOffset: 0, description: 'Christ with me, Christ before me, Christ behind me —— St. Patrick\n基督与我同在，前后左右皆有基督' },
   { name: '华盛顿国家大教堂', nameEn: 'Washington National Cathedral', religionSlug: 'christianity', country: '美国', soundEffect: 'pipe_organ', latitude: 38.930, longitude: -77.071, utcOffset: -5, description: 'Blessed are the peacemakers —— Matthew 5:9\n使人和睦的人有福了' },
@@ -111,7 +111,7 @@ export const holySites: HolySiteData[] = [
   { name: '伯利恒圣诞教堂', nameEn: 'Church of the Nativity', religionSlug: 'christianity', country: '巴勒斯坦', soundEffect: 'choir_hymn', latitude: 31.704, longitude: 35.207, utcOffset: 2, description: 'For unto us a child is born —— Isaiah 9:6\n因有一婴孩为我们而生' },
   { name: '加利利变像山', nameEn: 'Mount Tabor', religionSlug: 'christianity', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.687, longitude: 35.391, utcOffset: 2, description: 'This is my beloved Son, listen to him —— Mark 9:7\n这是我的爱子，你们要听他' },
 
-  // ═══════════════════════ 伊斯兰教 Islam (30) ═══════════════════════
+  // ═══════════════════════ 伊斯兰文化 Islam (30) ═══════════════════════
   { name: '麦加禁寺', nameEn: 'Masjid al-Haram', religionSlug: 'islam', country: '沙特阿拉伯', soundEffect: 'adhan_call', latitude: 21.423, longitude: 39.826, utcOffset: 3, description: 'Bismillah ir-Rahman ir-Rahim —— 《古兰经》开端章\n奉至仁至慈的真主之名' },
   { name: '麦地那先知寺', nameEn: "Prophet's Mosque", religionSlug: 'islam', country: '沙特阿拉伯', soundEffect: 'adhan_call', latitude: 24.468, longitude: 39.611, utcOffset: 3, description: 'إن مع العسر يسرا —— 《古兰经》94:6\n困难之后必有容易' },
   { name: '阿尔罕布拉宫', nameEn: 'Alhambra', religionSlug: 'islam', country: '西班牙', soundEffect: 'adhan_call', latitude: 37.177, longitude: -3.590, utcOffset: 1, description: 'Lā ghāliba illā Allāh —— 阿尔罕布拉宫铭文\n唯有真主是胜利者' },
@@ -137,45 +137,45 @@ export const holySites: HolySiteData[] = [
   { name: '达卡星星清真寺', nameEn: 'Star Mosque', religionSlug: 'islam', country: '孟加拉', soundEffect: 'adhan_call', latitude: 23.715, longitude: 90.404, utcOffset: 6, description: 'هُوَ الَّذِي خَلَقَ لَكُم مَّا فِي الْأَرْضِ جَمِيعًا —— 《古兰经》2:29\n他为你们而创造大地上的一切事物' },
   { name: '马来西亚国家清真寺', nameEn: 'Masjid Negara', religionSlug: 'islam', country: '马来西亚', soundEffect: 'adhan_call', latitude: 3.142, longitude: 101.692, utcOffset: 8, description: 'وَتَوَكَّلْ عَلَى اللَّهِ —— 《古兰经》33:3\n你应当托靠真主' },
   { name: '奥马尔·阿里·赛义夫丁清真寺', nameEn: 'Omar Ali Saifuddien Mosque', religionSlug: 'islam', country: '文莱', soundEffect: 'adhan_call', latitude: 4.890, longitude: 114.943, utcOffset: 8, description: 'لَا إِلَٰهَ إِلَّا اللَّهُ —— 清真言\n万物非主，唯有真主' },
-  { name: '伊斯蒂赫拉尔清真寺', nameEn: 'Istiqlal Mosque', religionSlug: 'islam', country: '印度尼西亚', soundEffect: 'adhan_call', latitude: -6.170, longitude: 106.831, utcOffset: 7, description: 'إِنَّ الدِّينَ عِندَ اللَّهِ الْإِسْلَامُ —— 《古兰经》3:19\n真主所喜悦的宗教，确是伊斯兰教' },
+  { name: '伊斯蒂赫拉尔清真寺', nameEn: 'Istiqlal Mosque', religionSlug: 'islam', country: '印度尼西亚', soundEffect: 'adhan_call', latitude: -6.170, longitude: 106.831, utcOffset: 7, description: 'إِنَّ الدِّينَ عِندَ اللَّهِ الْإِسْلَامُ —— 《古兰经》3:19\n真主所喜悦的文化传统，确是伊斯兰文化' },
   { name: '西安化觉巷清真大寺', nameEn: 'Great Mosque of Xi\'an', religionSlug: 'islam', country: '中国', soundEffect: 'adhan_call', latitude: 34.265, longitude: 108.940, utcOffset: 8, description: '清真至诚，敬主为本 —— 中国伊斯兰传统\n清净廉洁，至诚奉主' },
   { name: '艾提尕尔清真寺', nameEn: 'Id Kah Mosque', religionSlug: 'islam', country: '中国', soundEffect: 'adhan_call', latitude: 39.473, longitude: 75.989, utcOffset: 8, description: 'وَاعْتَصِمُوا بِحَبْلِ اللَّهِ —— 《古兰经》3:103\n你们当全体坚持真主的绳索' },
   { name: '伊本·图伦清真寺', nameEn: 'Mosque of Ibn Tulun', religionSlug: 'islam', country: '埃及', soundEffect: 'adhan_call', latitude: 30.029, longitude: 31.250, utcOffset: 2, description: 'وَالصَّابِرِينَ فِي الْبَأْسَاءِ وَالضَّرَّاءِ —— 《古兰经》2:177\n在艰难困苦中坚忍者，他们是诚实的' },
-  { name: '约旦河西岸亚布拉欣清真寺', nameEn: 'Ibrahimi Mosque', religionSlug: 'islam', country: '巴勒斯坦', soundEffect: 'adhan_call', latitude: 31.524, longitude: 35.110, utcOffset: 2, description: 'مِلَّةَ أَبِيكُمْ إِبْرَاهِيمَ —— 《古兰经》22:78\n你们应当遵循你们的祖先易卜拉欣的宗教' },
+  { name: '约旦河西岸亚布拉欣清真寺', nameEn: 'Ibrahimi Mosque', religionSlug: 'islam', country: '巴勒斯坦', soundEffect: 'adhan_call', latitude: 31.524, longitude: 35.110, utcOffset: 2, description: 'مِلَّةَ أَبِيكُمْ إِبْرَاهِيمَ —— 《古兰经》22:78\n你们应当遵循你们的祖先易卜拉欣的文化传统' },
 
-  // ═══════════════════════ 印度教 Hinduism (30) ═══════════════════════
+  // ═══════════════════════ 印度文化 Hinduism (30) ═══════════════════════
   { name: '瓦拉纳西恒河', nameEn: 'Varanasi Ganges', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 25.311, longitude: 83.011, utcOffset: 5.5, description: 'योगस्थ: कुरु कर्माणि —— 《薄伽梵歌》2:48\n安住于瑜伽中行动——做事不执着于结果' },
   { name: '巴厘岛母庙', nameEn: 'Besakih Temple', religionSlug: 'hinduism', country: '印度尼西亚', soundEffect: 'sitar_drone', latitude: -8.374, longitude: 115.451, utcOffset: 8, description: 'Tat tvam asi —— 《歌者奥义书》\n你就是那个——万物本质相同' },
   { name: '科纳克太阳神庙', nameEn: 'Konark Sun Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 19.888, longitude: 86.095, utcOffset: 5.5, description: 'Aham Brahmāsmi —— 《大森林奥义书》\n我即是梵——个体灵魂与宇宙本源合一' },
   { name: '尼泊尔帕斯帕提纳', nameEn: 'Pashupatinath', religionSlug: 'hinduism', country: '尼泊尔', soundEffect: 'sitar_drone', latitude: 27.711, longitude: 85.349, utcOffset: 5.75, description: 'Vasudhaiva Kutumbakam —— 《大奥义书》\n世界是一个大家庭' },
-  { name: '吴哥窟印度教', nameEn: 'Angkor Wat Hindu', religionSlug: 'hinduism', country: '柬埔寨', soundEffect: 'sitar_drone', latitude: 13.412, longitude: 103.867, utcOffset: 7, description: 'Satyam eva jayate —— 《蒙查羯奥义书》\n唯有真理必胜' },
-  { name: '阿克萨达姆神庙', nameEn: 'Akshardham', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 28.613, longitude: 77.278, utcOffset: 5.5, description: 'Lokah Samastah Sukhino Bhavantu —— 印度教祈祷文\n愿一切众生幸福安康' },
-  { name: '蒂鲁马拉文卡塔什瓦拉神庙', nameEn: 'Tirumala Venkateswara', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 13.683, longitude: 79.347, utcOffset: 5.5, description: 'Govinda Hari Govinda —— 印度教圣歌\n呼唤毗湿奴之名，得永恒安宁' },
+  { name: '吴哥窟印度文化', nameEn: 'Angkor Wat Hindu', religionSlug: 'hinduism', country: '柬埔寨', soundEffect: 'sitar_drone', latitude: 13.412, longitude: 103.867, utcOffset: 7, description: 'Satyam eva jayate —— 《蒙查羯奥义书》\n唯有真理必胜' },
+  { name: '阿克萨达姆神庙', nameEn: 'Akshardham', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 28.613, longitude: 77.278, utcOffset: 5.5, description: 'Lokah Samastah Sukhino Bhavantu —— 印度文化祈祷文\n愿一切众生幸福安康' },
+  { name: '蒂鲁马拉文卡塔什瓦拉神庙', nameEn: 'Tirumala Venkateswara', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 13.683, longitude: 79.347, utcOffset: 5.5, description: 'Govinda Hari Govinda —— 印度文化圣歌\n呼唤毗湿奴之名，得永恒安宁' },
   { name: '米纳克希神庙', nameEn: 'Meenakshi Amman Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 9.919, longitude: 78.119, utcOffset: 5.5, description: 'Devi is the source of all —— 《女神颂》\n女神乃万有之源' },
   { name: '坎奇普拉姆凯拉撒那塔', nameEn: 'Kailasanathar Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 12.842, longitude: 79.701, utcOffset: 5.5, description: 'Om Namah Shivaya —— 湿婆真言\n顶礼湿婆——众生归一' },
   { name: '埃洛拉凯拉撒石窟', nameEn: 'Kailasa Temple Ellora', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 20.024, longitude: 75.179, utcOffset: 5.5, description: 'Yatra naryastu pujyante ramante tatra devata —— 《摩奴法论》\n敬重女性的地方，神灵欢喜' },
   { name: '拉梅什瓦拉姆神庙', nameEn: 'Rameshwaram Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 9.288, longitude: 79.317, utcOffset: 5.5, description: 'Sarvam Khalvidam Brahma —— 《歌者奥义书》\n一切皆是梵' },
   { name: '德瓦尔卡蒂神庙', nameEn: 'Dwarkadhish Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 22.238, longitude: 68.967, utcOffset: 5.5, description: 'Yada Yada Hi Dharmasya —— 《薄伽梵歌》4:7\n每当正法衰微，我便降临人间' },
   { name: '普里贾格纳神庙', nameEn: 'Jagannath Temple Puri', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 19.805, longitude: 85.818, utcOffset: 5.5, description: 'Krishna is the supreme reality —— 《薄伽梵往世书》\n克里希那即至高实在' },
-  { name: '哈里德瓦', nameEn: 'Haridwar', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 29.946, longitude: 78.164, utcOffset: 5.5, description: 'गंगा माता की जय —— 印度教祈祷\n恒河母亲万岁' },
+  { name: '哈里德瓦', nameEn: 'Haridwar', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 29.946, longitude: 78.164, utcOffset: 5.5, description: 'गंगा माता की जय —— 印度文化祈祷\n恒河母亲万岁' },
   { name: '瑞诗凯诗', nameEn: 'Rishikesh', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 30.087, longitude: 78.267, utcOffset: 5.5, description: 'Yoga is the journey of the self, through the self, to the self —— 《薄伽梵歌》\n瑜伽是从自我出发，通过自我，回归自我的旅程' },
   { name: '马图拉', nameEn: 'Mathura', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 27.492, longitude: 77.673, utcOffset: 5.5, description: 'Govinda Bolo Hari Gopal Bolo —— 克里希那圣歌\n呼唤戈文达之名，烦恼皆消' },
   { name: '沃林达文', nameEn: 'Vrindavan', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 27.580, longitude: 77.700, utcOffset: 5.5, description: 'Radhe Radhe —— 沃林达文圣咒\n顶礼罗陀——爱与奉献的化身' },
-  { name: '阿约提亚', nameEn: 'Ayodhya', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 26.799, longitude: 82.204, utcOffset: 5.5, description: 'Jai Shri Ram —— 印度教问候\n荣耀归于罗摩' },
+  { name: '阿约提亚', nameEn: 'Ayodhya', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 26.799, longitude: 82.204, utcOffset: 5.5, description: 'Jai Shri Ram —— 印度文化问候\n荣耀归于罗摩' },
   { name: '凯达尔纳特', nameEn: 'Kedarnath', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 30.735, longitude: 79.067, utcOffset: 5.5, description: 'Har Har Mahadev —— 湿婆颂\n伟大的湿婆，吉祥的源泉' },
   { name: '巴德里纳特', nameEn: 'Badrinath', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 30.745, longitude: 79.493, utcOffset: 5.5, description: 'Jai Badri Vishal —— 巴德里纳特颂\n荣耀归于巴德里之主' },
   { name: '加尔各答卡莉庙', nameEn: 'Kalighat Kali Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 22.520, longitude: 88.342, utcOffset: 5.5, description: 'Ya Devi Sarvabhuteshu —— 《女神赞颂》\n女神驻于一切众生之中' },
   { name: '巴厘岛乌鲁瓦图神庙', nameEn: 'Uluwatu Temple', religionSlug: 'hinduism', country: '印度尼西亚', soundEffect: 'sitar_drone', latitude: -8.829, longitude: 115.085, utcOffset: 8, description: 'Tri Hita Karana —— 巴厘岛哲学\n人与神、人与人、人与自然三种和谐' },
   { name: '巴厘岛布撒基母庙', nameEn: 'Pura Tirta Empul', religionSlug: 'hinduism', country: '印度尼西亚', soundEffect: 'sitar_drone', latitude: -8.415, longitude: 115.315, utcOffset: 8, description: '圣水净身，洗涤业障 —— 巴厘岛传统\n圣水沐浴，身心皆净' },
-  { name: '普兰巴南神庙', nameEn: 'Prambanan', religionSlug: 'hinduism', country: '印度尼西亚', soundEffect: 'sitar_drone', latitude: -7.752, longitude: 110.491, utcOffset: 7, description: 'Shiva, Brahma, Vishnu —— 印度教三相神\n三相一体，宇宙创造、维持、毁灭之神' },
+  { name: '普兰巴南神庙', nameEn: 'Prambanan', religionSlug: 'hinduism', country: '印度尼西亚', soundEffect: 'sitar_drone', latitude: -7.752, longitude: 110.491, utcOffset: 7, description: 'Shiva, Brahma, Vishnu —— 印度文化三相神\n三相一体，宇宙创造、维持、毁灭之神' },
   { name: '毛里求斯大盆地', nameEn: 'Ganga Talao', religionSlug: 'hinduism', country: '毛里求斯', soundEffect: 'sitar_drone', latitude: -20.421, longitude: 57.493, utcOffset: 4, description: 'Om Namo Narayanaya —— 那罗延真言\n顶礼那罗延——宇宙的维护者' },
-  { name: '阿姆利则杜加庙', nameEn: 'Durgiana Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 31.626, longitude: 74.864, utcOffset: 5.5, description: 'Sarve Bhavantu Sukhinah —— 印度教祈祷\n愿众生皆得安乐' },
+  { name: '阿姆利则杜加庙', nameEn: 'Durgiana Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 31.626, longitude: 74.864, utcOffset: 5.5, description: 'Sarve Bhavantu Sukhinah —— 印度文化祈祷\n愿众生皆得安乐' },
   { name: '索玛纳特神庙', nameEn: 'Somnath Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 20.888, longitude: 70.401, utcOffset: 5.5, description: 'Asato Ma Sad Gamaya —— 《大林间奥义书》\n引领我从虚妄走向真实' },
   { name: '萨巴里马拉', nameEn: 'Sabarimala', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 9.435, longitude: 77.082, utcOffset: 5.5, description: 'Tat Tvam Asi —— 萨巴里马拉箴言\n你就是那真理本身' },
   { name: '维鲁帕克沙神庙', nameEn: 'Virupaksha Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 15.335, longitude: 76.456, utcOffset: 5.5, description: 'Dharmo rakshati rakshitah —— 《摩奴法论》\n你护持正法，正法护持你' },
   { name: '布巴内斯瓦尔林伽罗加神庙', nameEn: 'Lingaraja Temple', religionSlug: 'hinduism', country: '印度', soundEffect: 'sitar_drone', latitude: 20.238, longitude: 85.834, utcOffset: 5.5, description: 'Shivoham Shivoham —— 商羯罗\n我即是湿婆，至福本性' },
 
-  // ═══════════════════════ 犹太教 Judaism (20) ═══════════════════════
+  // ═══════════════════════ 犹太文化 Judaism (20) ═══════════════════════
   { name: '耶路撒冷哭墙', nameEn: 'Western Wall', religionSlug: 'judaism', country: '以色列', soundEffect: 'shofar_horn', latitude: 31.777, longitude: 35.234, utcOffset: 2, description: 'Shema Yisrael Adonai Eloheinu Adonai Echad —— 《申命记》6:4\n以色列啊，你要听！耶和华我们的神是独一的主' },
   { name: '马萨达要塞', nameEn: 'Masada', religionSlug: 'judaism', country: '以色列', soundEffect: 'shofar_horn', latitude: 31.316, longitude: 35.354, utcOffset: 2, description: 'Tzedek tzedek tirdof —— 《申命记》16:20\n公义，公义，你要追求' },
   { name: '死海古卷洞', nameEn: 'Dead Sea Scrolls Caves', religionSlug: 'judaism', country: '以色列', soundEffect: 'shofar_horn', latitude: 31.741, longitude: 35.459, utcOffset: 2, description: "V'ahavta l'reacha kamocha —— 《利未记》19:18\n爱人如己" },
@@ -197,7 +197,7 @@ export const holySites: HolySiteData[] = [
   { name: '摩洛哥伊本·丹南会堂', nameEn: 'Ibn Danan Synagogue', religionSlug: 'judaism', country: '摩洛哥', soundEffect: 'shofar_horn', latitude: 34.064, longitude: -4.984, utcOffset: 1, description: 'Ahavat Yisrael —— 犹太传统\n爱以色列即爱所有同胞' },
   { name: '拉宾纪念广场会堂', nameEn: 'Beit Daniel', religionSlug: 'judaism', country: '以色列', soundEffect: 'shofar_horn', latitude: 32.092, longitude: 34.776, utcOffset: 2, description: 'Im tirtzu ein zo agada —— 西奥多·赫茨尔\n你若有意志，便不只是梦' },
 
-  // ═══════════════════════ 儒教 Confucianism (20) ═══════════════════════
+  // ═══════════════════════ 儒家文化 Confucianism (20) ═══════════════════════
   { name: '曲阜孔庙', nameEn: 'Confucius Temple', religionSlug: 'confucianism', country: '中国', soundEffect: 'temple_bell', latitude: 35.597, longitude: 116.986, utcOffset: 8, description: '己所不欲，勿施于人 —— 《论语·卫灵公》\n自己不想要的，不要强加给别人' },
   { name: '岳麓书院', nameEn: 'Yuelu Academy', religionSlug: 'confucianism', country: '中国', soundEffect: 'guqin_pluck', latitude: 28.186, longitude: 112.948, utcOffset: 8, description: '学而不思则罔，思而不学则殆 —— 《论语·为政》\n只学不思就迷惘，只思不学就危险' },
   { name: '白鹿洞书院', nameEn: 'Bailudong Academy', religionSlug: 'confucianism', country: '中国', soundEffect: 'guqin_pluck', latitude: 29.226, longitude: 115.992, utcOffset: 8, description: '三人行，必有我师焉 —— 《论语·述而》\n三人同行，其中必有我可以学习的人' },
@@ -219,30 +219,30 @@ export const holySites: HolySiteData[] = [
   { name: '紫阳书院', nameEn: 'Ziyang Academy', religionSlug: 'confucianism', country: '中国', soundEffect: 'guqin_pluck', latitude: 29.875, longitude: 118.435, utcOffset: 8, description: '存天理，灭人欲 —— 朱熹\n存养天理，克治私欲' },
   { name: '漳州府文庙', nameEn: 'Zhangzhou Confucius Temple', religionSlug: 'confucianism', country: '中国', soundEffect: 'temple_bell', latitude: 24.512, longitude: 117.647, utcOffset: 8, description: '仁者爱人，礼者敬人 —— 《孟子》\n仁的本质是爱人，礼的本质是敬人' },
 
-  // ═══════════════════════ 锡克教 Sikhism (20) ═══════════════════════
+  // ═══════════════════════ 锡克文化 Sikhism (20) ═══════════════════════
   { name: '阿姆利则金庙', nameEn: 'Golden Temple', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.620, longitude: 74.877, utcOffset: 5.5, description: 'Ik Onkar — There is One God —— 《古鲁·格兰特·萨希卜》\n万物同源——只有一个创造者' },
-  { name: '邦格拉萨希卜', nameEn: 'Gurdwara Bangla Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 28.626, longitude: 77.209, utcOffset: 5.5, description: 'Kirat Karo, Naam Japo, Vand Chhako —— 锡克教三大支柱\n诚实劳作，冥想神名，与人分享' },
+  { name: '邦格拉萨希卜', nameEn: 'Gurdwara Bangla Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 28.626, longitude: 77.209, utcOffset: 5.5, description: 'Kirat Karo, Naam Japo, Vand Chhako —— 锡克文化三大支柱\n诚实劳作，冥想神名，与人分享' },
   { name: '哈尔曼迪尔萨希卜', nameEn: 'Harmandir Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.620, longitude: 74.877, utcOffset: 5.5, description: 'Recognize the whole human race as one —— 古鲁·戈宾德·辛格\n视全人类为一体' },
   { name: '阿南德普尔萨希卜', nameEn: 'Anandpur Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.234, longitude: 76.501, utcOffset: 5.5, description: 'Khalsa Panth —— 古鲁·戈宾德·辛格\n纯净的团体——勇气与正义的化身' },
-  { name: '塔兰塔兰萨希卜', nameEn: 'Gurdwara Tarn Taran Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.451, longitude: 74.929, utcOffset: 5.5, description: 'Sat Naam —— 锡克教真言\n真实之名——梵我的本质' },
-  { name: '宗迪亚拉古鲁德瓦拉', nameEn: 'Gurdwara Jandiala', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.561, longitude: 75.025, utcOffset: 5.5, description: 'Seva is the highest dharma —— 锡克教教义\n服务他人是最高的法' },
-  { name: '哈兹尔萨希卜', nameEn: 'Hazur Sahib Nanded', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 19.151, longitude: 77.314, utcOffset: 5.5, description: 'Waheguru Ji Ka Khalsa —— 锡克教问候\n神的纯洁子民，胜利属于神' },
-  { name: '帕特那萨希卜', nameEn: 'Takht Sri Patna Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 25.616, longitude: 85.206, utcOffset: 5.5, description: 'Naam Japo —— 锡克教教导\n常念神之圣名，心得安宁' },
+  { name: '塔兰塔兰萨希卜', nameEn: 'Gurdwara Tarn Taran Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.451, longitude: 74.929, utcOffset: 5.5, description: 'Sat Naam —— 锡克文化真言\n真实之名——梵我的本质' },
+  { name: '宗迪亚拉古鲁德瓦拉', nameEn: 'Gurdwara Jandiala', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.561, longitude: 75.025, utcOffset: 5.5, description: 'Seva is the highest dharma —— 锡克文化教义\n服务他人是最高的法' },
+  { name: '哈兹尔萨希卜', nameEn: 'Hazur Sahib Nanded', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 19.151, longitude: 77.314, utcOffset: 5.5, description: 'Waheguru Ji Ka Khalsa —— 锡克文化问候\n神的纯洁子民，胜利属于神' },
+  { name: '帕特那萨希卜', nameEn: 'Takht Sri Patna Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 25.616, longitude: 85.206, utcOffset: 5.5, description: 'Naam Japo —— 锡克文化教导\n常念神之圣名，心得安宁' },
   { name: '杜克巴杰尼古鲁德瓦拉', nameEn: 'Gurdwara Dukh Bhanjani', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 31.620, longitude: 74.877, utcOffset: 5.5, description: 'Dukh daru sukh rog bhayaa —— Guru Nanak\n苦难是良药，舒适反成病' },
   { name: '南德德胡尔萨希卜', nameEn: 'Takht Sri Damdama Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 29.972, longitude: 75.057, utcOffset: 5.5, description: 'Guru Granth Sahib is the eternal Guru —— Sikh tradition\n圣典即永恒的导师' },
-  { name: '芝加哥锡克教中心', nameEn: 'Sikh Religious Society Chicago', religionSlug: 'sikhism', country: '美国', soundEffect: 'choir_hymn', latitude: 42.115, longitude: -88.034, utcOffset: -6, description: 'Service to humanity is service to God —— 锡克教传统\n服务人类即服务神' },
-  { name: '多伦多大锡克教中心', nameEn: 'Ontario Khalsa Darbar', religionSlug: 'sikhism', country: '加拿大', soundEffect: 'choir_hymn', latitude: 43.745, longitude: -79.706, utcOffset: -5, description: 'Equality of all humanity —— 古鲁那纳克\n人类一律平等' },
+  { name: '芝加哥锡克文化中心', nameEn: 'Sikh Religious Society Chicago', religionSlug: 'sikhism', country: '美国', soundEffect: 'choir_hymn', latitude: 42.115, longitude: -88.034, utcOffset: -6, description: 'Service to humanity is service to God —— 锡克文化传统\n服务人类即服务神' },
+  { name: '多伦多大锡克文化中心', nameEn: 'Ontario Khalsa Darbar', religionSlug: 'sikhism', country: '加拿大', soundEffect: 'choir_hymn', latitude: 43.745, longitude: -79.706, utcOffset: -5, description: 'Equality of all humanity —— 古鲁那纳克\n人类一律平等' },
   { name: '温哥华罗斯街锡克庙', nameEn: 'Ross Street Gurdwara', religionSlug: 'sikhism', country: '加拿大', soundEffect: 'choir_hymn', latitude: 49.219, longitude: -123.105, utcOffset: -8, description: 'Truth is high, but higher still is truthful living —— 古鲁那纳克\n真理至高，但更高的是按真理生活' },
   { name: '伦敦索霍路锡克庙', nameEn: 'Sri Guru Singh Sabha London', religionSlug: 'sikhism', country: '英国', soundEffect: 'choir_hymn', latitude: 51.510, longitude: -0.376, utcOffset: 0, description: 'There is no Hindu, no Muslim —— 古鲁那纳克\n超越一切宗派，唯一的人类' },
-  { name: '伯明翰锡克庙', nameEn: 'Guru Nanak Nishkam Sevak Jatha', religionSlug: 'sikhism', country: '英国', soundEffect: 'choir_hymn', latitude: 52.490, longitude: -1.880, utcOffset: 0, description: 'Vand Chhako —— 锡克教传统\n与他人分享所拥有的' },
-  { name: '新加坡中央锡克庙', nameEn: 'Central Sikh Temple Singapore', religionSlug: 'sikhism', country: '新加坡', soundEffect: 'choir_hymn', latitude: 1.318, longitude: 103.857, utcOffset: 8, description: 'Naam Japna —— 锡克教教导\n冥想神名，心灵得净' },
-  { name: '曼谷锡克庙', nameEn: 'Gurdwara Siri Guru Singh Sabha', religionSlug: 'sikhism', country: '泰国', soundEffect: 'choir_hymn', latitude: 13.748, longitude: 100.501, utcOffset: 7, description: 'Sarbat da Bhala —— 锡克教祈祷\n愿一切众生幸福' },
+  { name: '伯明翰锡克庙', nameEn: 'Guru Nanak Nishkam Sevak Jatha', religionSlug: 'sikhism', country: '英国', soundEffect: 'choir_hymn', latitude: 52.490, longitude: -1.880, utcOffset: 0, description: 'Vand Chhako —— 锡克文化传统\n与他人分享所拥有的' },
+  { name: '新加坡中央锡克庙', nameEn: 'Central Sikh Temple Singapore', religionSlug: 'sikhism', country: '新加坡', soundEffect: 'choir_hymn', latitude: 1.318, longitude: 103.857, utcOffset: 8, description: 'Naam Japna —— 锡克文化教导\n冥想神名，心灵得净' },
+  { name: '曼谷锡克庙', nameEn: 'Gurdwara Siri Guru Singh Sabha', religionSlug: 'sikhism', country: '泰国', soundEffect: 'choir_hymn', latitude: 13.748, longitude: 100.501, utcOffset: 7, description: 'Sarbat da Bhala —— 锡克文化祈祷\n愿一切众生幸福' },
   { name: '迪拜锡克庙', nameEn: 'Guru Nanak Darbar Dubai', religionSlug: 'sikhism', country: '阿联酋', soundEffect: 'choir_hymn', latitude: 25.135, longitude: 55.387, utcOffset: 4, description: 'One Universal Creator God —— 古鲁那纳克\n唯一的宇宙造物主' },
-  { name: '巴林锡克教中心', nameEn: 'Bahrain Sikh Centre', religionSlug: 'sikhism', country: '巴林', soundEffect: 'choir_hymn', latitude: 26.221, longitude: 50.583, utcOffset: 3, description: 'Chardi Kala —— 锡克教精神\n永远昂扬的精神' },
-  { name: '柯达拉特之井', nameEn: 'Gurdwara Sis Ganj Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 28.656, longitude: 77.230, utcOffset: 5.5, description: 'Tegh Bahadur shed his blood for religious freedom —— 锡克教史\n古鲁特格巴哈杜尔为信仰自由而殉道' },
+  { name: '巴林锡克文化中心', nameEn: 'Bahrain Sikh Centre', religionSlug: 'sikhism', country: '巴林', soundEffect: 'choir_hymn', latitude: 26.221, longitude: 50.583, utcOffset: 3, description: 'Chardi Kala —— 锡克文化精神\n永远昂扬的精神' },
+  { name: '柯达拉特之井', nameEn: 'Gurdwara Sis Ganj Sahib', religionSlug: 'sikhism', country: '印度', soundEffect: 'choir_hymn', latitude: 28.656, longitude: 77.230, utcOffset: 5.5, description: 'Tegh Bahadur shed his blood for religious freedom —— 锡克文化史\n古鲁特格巴哈杜尔为人文精神自由而殉道' },
 
-  // ═══════════════════════ 神道教 Shinto (25) ═══════════════════════
-  { name: '伊势神宫', nameEn: 'Ise Grand Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 34.455, longitude: 136.726, utcOffset: 9, description: '神は人の敬により威を増す —— 神道教训\n神因人的敬意而增辉——敬畏之心使世界光明' },
+  // ═══════════════════════ 神道文化 Shinto (25) ═══════════════════════
+  { name: '伊势神宫', nameEn: 'Ise Grand Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 34.455, longitude: 136.726, utcOffset: 9, description: '神は人の敬により威を増す —— 神道文化训\n神因人的敬意而增辉——敬畏之心使世界光明' },
   { name: '严岛神社', nameEn: 'Itsukushima Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 34.296, longitude: 132.320, utcOffset: 9, description: '清き明き直き心 —— 神道四德\n清净、光明、正直之心' },
   { name: '伏见稻荷大社', nameEn: 'Fushimi Inari', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 34.967, longitude: 135.773, utcOffset: 9, description: '森羅万象に神が宿る —— 神道万物有灵\n万物之中皆有神灵——敬畏每一个存在' },
   { name: '明治神宫', nameEn: 'Meiji Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.676, longitude: 139.699, utcOffset: 9, description: '和を以て貴しとなす —— 《日本书纪》\n以和为贵——和谐是最珍贵的价值' },
@@ -250,13 +250,13 @@ export const holySites: HolySiteData[] = [
   { name: '春日大社', nameEn: 'Kasuga Taisha', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 34.682, longitude: 135.848, utcOffset: 9, description: '神鹿守护，灯笼万盏 —— 春日传统\n神灵护佑，光明永续' },
   { name: '靖国神社', nameEn: 'Yasukuni Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 35.694, longitude: 139.744, utcOffset: 9, description: '英霊を祀る —— 靖国神社\n祭祀殁者，慰其英灵' },
   { name: '平安神宫', nameEn: 'Heian Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.016, longitude: 135.783, utcOffset: 9, description: '平安京の鎮守 —— 平安神宫\n护佑平安京千年文脉' },
-  { name: '鹤冈八幡宫', nameEn: 'Tsurugaoka Hachimangu', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 35.326, longitude: 139.557, utcOffset: 9, description: '武運長久 —— 八幡神信仰\n武运长久，护卫国土' },
+  { name: '鹤冈八幡宫', nameEn: 'Tsurugaoka Hachimangu', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 35.326, longitude: 139.557, utcOffset: 9, description: '武運長久 —— 八幡神人文精神\n武运长久，护卫国土' },
   { name: '日光东照宫', nameEn: 'Nikko Toshogu', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 36.758, longitude: 139.599, utcOffset: 9, description: '見ざる聞かざる言わざる —— 三猿教训\n非礼勿视，非礼勿听，非礼勿言' },
   { name: '大神神社', nameEn: 'Omiwa Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 34.529, longitude: 135.853, utcOffset: 9, description: '山をご神体とする —— 大神神社\n以三轮山本身为神体——自然即神' },
   { name: '住吉大社', nameEn: 'Sumiyoshi Taisha', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 34.612, longitude: 135.493, utcOffset: 9, description: '海の守護神 —— 住吉三神\n航海守护神，护佑往返' },
   { name: '石清水八幡宫', nameEn: 'Iwashimizu Hachimangu', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 34.880, longitude: 135.700, utcOffset: 9, description: '清水如鏡，映人本心 —— 石清水神训\n清水映心，自照本性' },
   { name: '热田神宫', nameEn: 'Atsuta Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.128, longitude: 136.909, utcOffset: 9, description: '草薙剣を祀る —— 热田神宫\n供奉草薙剑——神器三种之一' },
-  { name: '宇佐神宫', nameEn: 'Usa Jingu', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 33.526, longitude: 131.376, utcOffset: 9, description: '八幡信仰の総本宮 —— 宇佐神宫\n八幡信仰的总本社' },
+  { name: '宇佐神宫', nameEn: 'Usa Jingu', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 33.526, longitude: 131.376, utcOffset: 9, description: '八幡人文精神の総本宮 —— 宇佐神宫\n八幡人文精神的总本社' },
   { name: '宗像大社', nameEn: 'Munakata Taisha', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 33.832, longitude: 130.515, utcOffset: 9, description: '海路安全，航海守护 —— 宗像三女神\n海上女神，护佑航程' },
   { name: '三岛大社', nameEn: 'Mishima Taisha', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 35.122, longitude: 138.918, utcOffset: 9, description: '山の神，海の神 —— 三岛大明神\n山海皆神，万物同尊' },
   { name: '香取神宫', nameEn: 'Katori Jingu', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.881, longitude: 140.527, utcOffset: 9, description: '武芸の神 —— 香取神宫\n武艺之神——剑道之祖' },
@@ -266,12 +266,12 @@ export const holySites: HolySiteData[] = [
   { name: '熊野三山', nameEn: 'Kumano Sanzan', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 33.836, longitude: 135.770, utcOffset: 9, description: '熊野詣 —— 熊野古道\n朝拜熊野，洗涤身心' },
   { name: '贵船神社', nameEn: 'Kifune Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.121, longitude: 135.762, utcOffset: 9, description: '水を司る神 —— 贵船明神\n水之神——生命之源' },
   { name: '上贺茂神社', nameEn: 'Kamigamo Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'taiko_drum', latitude: 35.060, longitude: 135.753, utcOffset: 9, description: '京都最古の社 —— 上贺茂神社\n京都最古老的神社' },
-  { name: '下鸭神社', nameEn: 'Shimogamo Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.039, longitude: 135.773, utcOffset: 9, description: '糺の森に鎮座 —— 下鸭神社\n糺之森中神居，自然信仰之原点' },
+  { name: '下鸭神社', nameEn: 'Shimogamo Shrine', religionSlug: 'shinto', country: '日本', soundEffect: 'wind_chimes', latitude: 35.039, longitude: 135.773, utcOffset: 9, description: '糺の森に鎮座 —— 下鸭神社\n糺之森中神居，自然人文精神之原点' },
 
-  // ═══════════════════════ 藏传佛教 Tibetan Buddhism (25) ═══════════════════════
+  // ═══════════════════════ 藏传文化 Tibetan Buddhism (25) ═══════════════════════
   { name: '拉萨大昭寺', nameEn: 'Jokhang Temple', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 29.653, longitude: 91.131, utcOffset: 8, description: '嗡嘛呢叭咪吽 —— 六字真言\n莲花中的珍宝——慈悲与智慧合一' },
   { name: '甘丹寺', nameEn: 'Ganden Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 29.870, longitude: 91.518, utcOffset: 8, description: '若欲知佛性，当观时节因缘 —— 宗喀巴大师\n要了解真理，要观察因缘时节' },
-  { name: '色达喇荣五明佛学院', nameEn: 'Larung Gar', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 32.266, longitude: 100.591, utcOffset: 8, description: '自利利他，悲智双运 —— 藏传佛教教义\n利益自己也利益他人，悲悯与智慧并行' },
+  { name: '色达喇荣五明佛学院', nameEn: 'Larung Gar', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 32.266, longitude: 100.591, utcOffset: 8, description: '自利利他，悲智双运 —— 藏传文化教义\n利益自己也利益他人，悲悯与智慧并行' },
   { name: '不丹虎穴寺', nameEn: "Tiger's Nest", religionSlug: 'tibetan-buddhism', country: '不丹', soundEffect: 'singing_bowl', latitude: 27.492, longitude: 89.363, utcOffset: 6, description: '幸福不在于拥有多少，而在于放下多少 —— 不丹智慧\n幸福源于放下执着' },
   { name: '扎什伦布寺', nameEn: 'Tashilhunpo Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 29.267, longitude: 88.875, utcOffset: 8, description: '吉祥须弥，班禅道场 —— 扎什伦布寺\n班禅大师驻锡圣地' },
   { name: '哲蚌寺', nameEn: 'Drepung Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 29.677, longitude: 91.043, utcOffset: 8, description: '聚米成山，僧海如云 —— 哲蚌寺\n格鲁派最大寺庙，僧伽聚集' },
@@ -285,50 +285,50 @@ export const holySites: HolySiteData[] = [
   { name: '青海瞿昙寺', nameEn: 'Qutan Temple', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 36.345, longitude: 102.193, utcOffset: 8, description: '高原小故宫 —— 瞿昙寺\n汉藏建筑融合，文化交汇' },
   { name: '青海夏琼寺', nameEn: 'Xiaqiong Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 36.038, longitude: 101.958, utcOffset: 8, description: '宗喀巴出家寺 —— 夏琼寺\n大师启蒙之地' },
   { name: '甘南郎木寺', nameEn: 'Langmu Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 34.090, longitude: 102.643, utcOffset: 8, description: '小瑞士，安多明珠 —— 郎木寺\n两省交界，藏汉相融' },
-  { name: '云南松赞林寺', nameEn: 'Songzanlin Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 27.870, longitude: 99.708, utcOffset: 8, description: '小布达拉宫 —— 松赞林寺\n云南藏传佛教中心' },
+  { name: '云南松赞林寺', nameEn: 'Songzanlin Monastery', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 27.870, longitude: 99.708, utcOffset: 8, description: '小布达拉宫 —— 松赞林寺\n云南藏传文化中心' },
   { name: '德格印经院', nameEn: 'Derge Parkhang', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 31.808, longitude: 98.580, utcOffset: 8, description: '雪域文化宝库 —— 德格印经院\n藏文典籍最大保存地' },
   { name: '冈仁波齐神山', nameEn: 'Mount Kailash', religionSlug: 'tibetan-buddhism', country: '中国', soundEffect: 'singing_bowl', latitude: 31.067, longitude: 81.312, utcOffset: 8, description: '宇宙中心，神山之王 —— 冈仁波齐\n转山一圈，洗净一生罪业' },
   { name: '博达哈大佛塔', nameEn: 'Boudhanath Stupa', religionSlug: 'tibetan-buddhism', country: '尼泊尔', soundEffect: 'singing_bowl', latitude: 27.721, longitude: 85.362, utcOffset: 5.75, description: '佛眼遍观十方 —— 博达哈大佛塔\n慈眼视众生，福聚海无量' },
   { name: '斯瓦扬布纳特', nameEn: 'Swayambhunath', religionSlug: 'tibetan-buddhism', country: '尼泊尔', soundEffect: 'singing_bowl', latitude: 27.715, longitude: 85.290, utcOffset: 5.75, description: '猴庙——自显之佛 —— 斯瓦扬布纳特\n佛性自现，无需外求' },
   { name: '加德满都玛哈伽加塔', nameEn: 'Maha Buddha Temple', religionSlug: 'tibetan-buddhism', country: '尼泊尔', soundEffect: 'singing_bowl', latitude: 27.674, longitude: 85.422, utcOffset: 5.75, description: '佛门慈悲，普济众生 —— 玛哈伽加塔\n佛光普照尼泊尔山谷' },
   { name: '黑密斯寺', nameEn: 'Hemis Monastery', religionSlug: 'tibetan-buddhism', country: '印度', soundEffect: 'singing_bowl', latitude: 33.913, longitude: 77.704, utcOffset: 5.5, description: '拉达克最大寺院 —— 黑密斯寺\n小西藏的密法重镇' },
-  { name: '蒙古甘丹寺', nameEn: 'Gandantegchinlen Monastery', religionSlug: 'tibetan-buddhism', country: '蒙古', soundEffect: 'singing_bowl', latitude: 47.923, longitude: 106.894, utcOffset: 8, description: '完全喜悦的大寺 —— 蒙古甘丹寺\n蒙古佛教中心，传承延续' },
-  { name: '不丹普那卡宗', nameEn: 'Punakha Dzong', religionSlug: 'tibetan-buddhism', country: '不丹', soundEffect: 'singing_bowl', latitude: 27.589, longitude: 89.864, utcOffset: 6, description: '宗教与政治合一 —— 不丹宗堡\n佛法与王权同源' },
+  { name: '蒙古甘丹寺', nameEn: 'Gandantegchinlen Monastery', religionSlug: 'tibetan-buddhism', country: '蒙古', soundEffect: 'singing_bowl', latitude: 47.923, longitude: 106.894, utcOffset: 8, description: '完全喜悦的大寺 —— 蒙古甘丹寺\n蒙古佛教文化中心，传承延续' },
+  { name: '不丹普那卡宗', nameEn: 'Punakha Dzong', religionSlug: 'tibetan-buddhism', country: '不丹', soundEffect: 'singing_bowl', latitude: 27.589, longitude: 89.864, utcOffset: 6, description: '文化传统与政治合一 —— 不丹宗堡\n佛法与王权同源' },
 
-  // ═══════════════════════ 原住民灵性 Indigenous (20) ═══════════════════════
+  // ═══════════════════════ 原住民文化 Indigenous (20) ═══════════════════════
   { name: '乌鲁鲁巨石', nameEn: 'Uluru', religionSlug: 'indigenous', country: '澳大利亚', soundEffect: 'didgeridoo', latitude: -25.345, longitude: 131.037, utcOffset: 9.5, description: 'We are all visitors to this time, this place —— 澳大利亚原住民谚语\n我们都是这个时空的过客——珍惜当下' },
   { name: '马丘比丘', nameEn: 'Machu Picchu', religionSlug: 'indigenous', country: '秘鲁', soundEffect: 'didgeridoo', latitude: -13.163, longitude: -72.545, utcOffset: -5, description: 'Ama sua, ama llulla, ama quella —— 印加帝国三戒律\n不偷窃，不说谎，不懒惰' },
   { name: '巨石阵', nameEn: 'Stonehenge', religionSlug: 'indigenous', country: '英国', soundEffect: 'ocean_waves', latitude: 51.179, longitude: -1.826, utcOffset: 0, description: 'The earth does not belong to us; we belong to the earth —— 西雅图酋长\n大地不属于我们，我们属于大地' },
   { name: '奇琴伊察', nameEn: 'Chichen Itza', religionSlug: 'indigenous', country: '墨西哥', soundEffect: 'didgeridoo', latitude: 20.683, longitude: -88.569, utcOffset: -6, description: "In Lak'ech Ala K'in —— 玛雅问候语\n我是另一个你——你我本是一体" },
   { name: '提瓦纳库', nameEn: 'Tiwanaku', religionSlug: 'indigenous', country: '玻利维亚', soundEffect: 'didgeridoo', latitude: -16.555, longitude: -68.673, utcOffset: -4, description: 'Pachamama——大地母亲 —— 安第斯传统\n敬畏养育万物的大地之母' },
-  { name: '科帕卡瓦纳', nameEn: 'Copacabana', religionSlug: 'indigenous', country: '玻利维亚', soundEffect: 'didgeridoo', latitude: -16.166, longitude: -69.085, utcOffset: -4, description: 'Inti——太阳神 —— 安第斯信仰\n太阳是生命之源，光明之父' },
+  { name: '科帕卡瓦纳', nameEn: 'Copacabana', religionSlug: 'indigenous', country: '玻利维亚', soundEffect: 'didgeridoo', latitude: -16.166, longitude: -69.085, utcOffset: -4, description: 'Inti——太阳神 —— 安第斯人文精神\n太阳是生命之源，光明之父' },
   { name: '特奥蒂瓦坎', nameEn: 'Teotihuacan', religionSlug: 'indigenous', country: '墨西哥', soundEffect: 'didgeridoo', latitude: 19.692, longitude: -98.844, utcOffset: -6, description: '诸神之城 —— 特奥蒂瓦坎\n人在此处化为神' },
   { name: '帕伦克', nameEn: 'Palenque', religionSlug: 'indigenous', country: '墨西哥', soundEffect: 'didgeridoo', latitude: 17.484, longitude: -92.046, utcOffset: -6, description: '玛雅星辰之书 —— 帕伦克石碑\n万物有时，循环不息' },
-  { name: '乌斯马尔', nameEn: 'Uxmal', religionSlug: 'indigenous', country: '墨西哥', soundEffect: 'didgeridoo', latitude: 20.359, longitude: -89.772, utcOffset: -6, description: '雨神恰克之城 —— 玛雅信仰\n甘霖滋养万物，敬神如待己' },
+  { name: '乌斯马尔', nameEn: 'Uxmal', religionSlug: 'indigenous', country: '墨西哥', soundEffect: 'didgeridoo', latitude: 20.359, longitude: -89.772, utcOffset: -6, description: '雨神恰克之城 —— 玛雅人文精神\n甘霖滋养万物，敬神如待己' },
   { name: '蒂卡尔', nameEn: 'Tikal', religionSlug: 'indigenous', country: '危地马拉', soundEffect: 'didgeridoo', latitude: 17.222, longitude: -89.624, utcOffset: -6, description: '丛林中的星空之城 —— 蒂卡尔\n仰望星空，知我何来' },
   { name: '因加皮尔卡', nameEn: 'Ingapirca', religionSlug: 'indigenous', country: '厄瓜多尔', soundEffect: 'didgeridoo', latitude: -2.546, longitude: -78.873, utcOffset: -5, description: 'Sumak Kawsay——美好生活 —— 厄瓜多尔克丘亚\n身心和谐，与自然共生' },
   { name: '埃尔多拉多湖', nameEn: 'Lake Guatavita', religionSlug: 'indigenous', country: '哥伦比亚', soundEffect: 'didgeridoo', latitude: 4.974, longitude: -73.781, utcOffset: -5, description: '黄金之国，灵魂之水 —— 穆伊斯卡传说\n湖中藏神，水中有道' },
   { name: '纳米布红岩', nameEn: 'Spitzkoppe', religionSlug: 'indigenous', country: '纳米比亚', soundEffect: 'didgeridoo', latitude: -21.829, longitude: 15.193, utcOffset: 2, description: 'San Bushmen wisdom —— 桑族祖训\n大地养育，万物相依' },
   { name: '大津巴布韦', nameEn: 'Great Zimbabwe', religionSlug: 'indigenous', country: '津巴布韦', soundEffect: 'didgeridoo', latitude: -20.272, longitude: 30.934, utcOffset: 2, description: 'Ubuntu——我因你而存在 —— 班图哲学\n人之所以为人，是因为他人' },
-  { name: '蒂罗亚毛利圣山', nameEn: 'Tongariro', religionSlug: 'indigenous', country: '新西兰', soundEffect: 'didgeridoo', latitude: -39.135, longitude: 175.642, utcOffset: 12, description: 'Whakapapa——血脉相连 —— 毛利信仰\n每个生命都连接着祖先与后代' },
+  { name: '蒂罗亚毛利圣山', nameEn: 'Tongariro', religionSlug: 'indigenous', country: '新西兰', soundEffect: 'didgeridoo', latitude: -39.135, longitude: 175.642, utcOffset: 12, description: 'Whakapapa——血脉相连 —— 毛利人文精神\n每个生命都连接着祖先与后代' },
   { name: '夏威夷莫纳克亚', nameEn: 'Mauna Kea', religionSlug: 'indigenous', country: '美国', soundEffect: 'ocean_waves', latitude: 19.821, longitude: -155.469, utcOffset: -10, description: 'Aloha——爱与和平的呼吸 —— 夏威夷传统\n爱是宇宙的本质' },
   { name: '科罗拉多四角地', nameEn: 'Four Corners', religionSlug: 'indigenous', country: '美国', soundEffect: 'didgeridoo', latitude: 36.999, longitude: -109.045, utcOffset: -7, description: 'Walking in Beauty —— 纳瓦霍祈祷\n以美而行，以和谐而生' },
-  { name: '哈依达瓜埃', nameEn: 'Haida Gwaii', religionSlug: 'indigenous', country: '加拿大', soundEffect: 'ocean_waves', latitude: 53.000, longitude: -132.000, utcOffset: -8, description: 'Yahguudang——尊重万物 —— 海达族信仰\n尊重是生命的根本态度' },
+  { name: '哈依达瓜埃', nameEn: 'Haida Gwaii', religionSlug: 'indigenous', country: '加拿大', soundEffect: 'ocean_waves', latitude: 53.000, longitude: -132.000, utcOffset: -8, description: 'Yahguudang——尊重万物 —— 海达族人文精神\n尊重是生命的根本态度' },
   { name: '塞内加尔圣木林', nameEn: 'Sacred Forests of Casamance', religionSlug: 'indigenous', country: '塞内加尔', soundEffect: 'didgeridoo', latitude: 12.583, longitude: -16.267, utcOffset: 0, description: '祖灵居所 —— 西非原住民\n圣林即圣堂，树即神明' },
   { name: '北极圈萨米鼓圣地', nameEn: 'Sami Sacred Sieidi', religionSlug: 'indigenous', country: '挪威', soundEffect: 'wind_chimes', latitude: 69.649, longitude: 18.956, utcOffset: 1, description: 'Sieidi——人与神之桥 —— 萨米传统\n圣石承载世代记忆' },
 
-  // ═══════════════════════ 巴哈伊教 Bahai (20) ═══════════════════════
+  // ═══════════════════════ 巴哈伊文化 Bahai (20) ═══════════════════════
   { name: '海法空中花园', nameEn: 'Bahai Gardens Haifa', religionSlug: 'bahai', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.810, longitude: 34.987, utcOffset: 2, description: 'The earth is but one country, and mankind its citizens —— 巴哈欧拉\n大地只是一个国家，人类都是其公民' },
   { name: '新德里莲花寺', nameEn: 'Lotus Temple', religionSlug: 'bahai', country: '印度', soundEffect: 'choir_hymn', latitude: 28.554, longitude: 77.259, utcOffset: 5.5, description: 'Let your vision be world-embracing —— 巴哈欧拉\n让你的目光拥抱整个世界' },
   { name: '威尔梅特灵曦堂', nameEn: 'Wilmette Temple', religionSlug: 'bahai', country: '美国', soundEffect: 'choir_hymn', latitude: 42.075, longitude: -87.683, utcOffset: -6, description: 'So powerful is the light of unity that it can illuminate the whole earth —— 巴哈欧拉\n团结之光如此强大，足以照亮整个大地' },
   { name: '巴哈欧拉陵园', nameEn: 'Shrine of Bahaullah', religionSlug: 'bahai', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.943, longitude: 35.092, utcOffset: 2, description: 'O son of being! Love me, that I may love thee —— 巴哈欧拉《隐言经》\n爱我吧，我才能爱你' },
   { name: '巴孛陵园', nameEn: 'Shrine of the Bab', religionSlug: 'bahai', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.815, longitude: 34.987, utcOffset: 2, description: 'Verily, I am God, no God is there but Me —— 巴孛\n我即神圣，万有归一' },
   { name: '悉尼灵曦堂', nameEn: 'Sydney Bahai House', religionSlug: 'bahai', country: '澳大利亚', soundEffect: 'choir_hymn', latitude: -33.711, longitude: 151.119, utcOffset: 10, description: 'The world is one country, mankind its citizens —— 巴哈欧拉\n世界是一个国家，人类是它的公民' },
-  { name: '法兰克福灵曦堂', nameEn: 'Frankfurt Bahai Temple', religionSlug: 'bahai', country: '德国', soundEffect: 'choir_hymn', latitude: 50.180, longitude: 8.610, utcOffset: 1, description: 'Religion must unite all hearts —— 阿博都巴哈\n宗教必须联合一切心灵' },
+  { name: '法兰克福灵曦堂', nameEn: 'Frankfurt Bahai Temple', religionSlug: 'bahai', country: '德国', soundEffect: 'choir_hymn', latitude: 50.180, longitude: 8.610, utcOffset: 1, description: 'Religion must unite all hearts —— 阿博都巴哈\n文化传统必须联合一切心灵' },
   { name: '巴拿马灵曦堂', nameEn: 'Panama Bahai Temple', religionSlug: 'bahai', country: '巴拿马', soundEffect: 'choir_hymn', latitude: 9.067, longitude: -79.481, utcOffset: -5, description: 'Be ye lamps unto yourselves —— 巴哈欧拉\n你们要做自己的明灯' },
-  { name: '乌干达灵曦堂', nameEn: 'Kampala Bahai Temple', religionSlug: 'bahai', country: '乌干达', soundEffect: 'choir_hymn', latitude: 0.355, longitude: 32.621, utcOffset: 3, description: 'The earth is one home, mankind its inhabitants —— 巴哈伊教义\n大地是一个家，人类皆为家人' },
+  { name: '乌干达灵曦堂', nameEn: 'Kampala Bahai Temple', religionSlug: 'bahai', country: '乌干达', soundEffect: 'choir_hymn', latitude: 0.355, longitude: 32.621, utcOffset: 3, description: 'The earth is one home, mankind its inhabitants —— 巴哈伊文化义\n大地是一个家，人类皆为家人' },
   { name: '圣地亚哥灵曦堂', nameEn: 'Santiago Bahai Temple', religionSlug: 'bahai', country: '智利', soundEffect: 'choir_hymn', latitude: -33.351, longitude: -70.546, utcOffset: -4, description: 'Light of unity envelops the earth —— 巴哈伊\n团结之光普照大地' },
-  { name: '萨摩亚灵曦堂', nameEn: 'Samoa Bahai Temple', religionSlug: 'bahai', country: '萨摩亚', soundEffect: 'choir_hymn', latitude: -13.876, longitude: -171.785, utcOffset: 13, description: 'Consort with all religions in friendship —— 巴哈欧拉\n以友善之心与一切宗教交往' },
+  { name: '萨摩亚灵曦堂', nameEn: 'Samoa Bahai Temple', religionSlug: 'bahai', country: '萨摩亚', soundEffect: 'choir_hymn', latitude: -13.876, longitude: -171.785, utcOffset: 13, description: 'Consort with all religions in friendship —— 巴哈欧拉\n以友善之心与一切文化传统交往' },
   { name: '阿卡巴比花园', nameEn: 'Mansion of Bahji', religionSlug: 'bahai', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.943, longitude: 35.092, utcOffset: 2, description: 'O Son of Spirit! My first counsel is this: possess a pure heart —— 《隐言经》\n圣子啊，我对你的第一个忠告是：保持纯洁的心' },
   { name: '世界公义院', nameEn: 'Universal House of Justice', religionSlug: 'bahai', country: '以色列', soundEffect: 'choir_hymn', latitude: 32.812, longitude: 34.987, utcOffset: 2, description: '正义之治，世界归一 —— 巴哈伊行政中枢\n以正义建立人类的合一' },
   { name: '设拉子巴孛诞生地', nameEn: 'House of the Bab', religionSlug: 'bahai', country: '伊朗', soundEffect: 'choir_hymn', latitude: 29.617, longitude: 52.532, utcOffset: 3.5, description: '光的诞生 —— 巴孛诞生地\n新启示从此地开始' },

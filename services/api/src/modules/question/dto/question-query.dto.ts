@@ -38,7 +38,7 @@ export class QuestionQueryDto {
 
   @ApiPropertyOptional({
     description: 'Filter by tag. / 按标签筛选',
-    example: '朝圣',
+    example: '文化之旅',
   })
   @IsOptional()
   @IsString()

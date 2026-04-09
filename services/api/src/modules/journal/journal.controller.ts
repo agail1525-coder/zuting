@@ -32,10 +32,10 @@ export class JournalController {
   @Post()
   @ApiBearerAuth('bearer')
   @ApiOperation({
-    summary: 'Create a pilgrimage journal entry',
+    summary: 'Create a cultural journey journal entry',
     description:
-      '创建一篇新的朝圣日志。可关联行程和圣地，支持图片上传、心情记录和公开/私密设置。\n\n' +
-      'Create a new pilgrimage journal entry. Can be linked to a trip and holy site. Supports image uploads, mood tracking, and public/private visibility.',
+      '创建一篇新的文化之旅日志。可关联行程和圣地，支持图片上传、心情记录和公开/私密设置。\n\n' +
+      'Create a new cultural journey journal entry. Can be linked to a trip and holy site. Supports image uploads, mood tracking, and public/private visibility.',
   })
   @ApiBody({ type: CreateJournalDto })
   @ApiResponse({
@@ -45,7 +45,7 @@ export class JournalController {
       type: 'object',
       properties: {
         id: { type: 'string', example: 'clx5jrn0001ab12cd34ef56' },
-        title: { type: 'string', example: '菩提伽耶朝圣记' },
+        title: { type: 'string', example: '菩提伽耶文化探访记' },
         content: { type: 'string' },
         mood: { type: 'string', example: '震撼' },
         isPublic: { type: 'boolean', example: false },
@@ -67,7 +67,7 @@ export class JournalController {
   @ApiOperation({
     summary: 'List journal entries with filters and pagination',
     description:
-      '获取朝圣日志列表。公开接口可浏览公开日志；支持按用户、行程、公开状态筛选和分页。\n\n' +
+      '获取文化之旅日志列表。公开接口可浏览公开日志；支持按用户、行程、公开状态筛选和分页。\n\n' +
       'Retrieve journal entries. Public endpoint for browsing public journals. Supports filtering by user, trip, public status, and pagination.',
   })
   @ApiQuery({

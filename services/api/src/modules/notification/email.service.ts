@@ -45,10 +45,10 @@ export class EmailService {
 
   /** Send verification code email */
   async sendVerificationCode(email: string, code: string): Promise<void> {
-    const subject = '【祖庭之旅】验证码 / Verification Code';
+    const subject = '【佳绩之旅】验证码 / Verification Code';
     const html = `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #D4A855;">祖庭之旅 · Zuting</h2>
+        <h2 style="color: #D4A855;">佳绩之旅 · Joinus</h2>
         <p>您好！您的验证码是：</p>
         <p>Your verification code is:</p>
         <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #D4A855; margin: 24px 0; text-align: center;">
@@ -63,10 +63,10 @@ export class EmailService {
 
   /** Send password reset email */
   async sendPasswordReset(email: string, code: string): Promise<void> {
-    const subject = '【祖庭之旅】重置密码 / Password Reset';
+    const subject = '【佳绩之旅】重置密码 / Password Reset';
     const html = `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #D4A855;">祖庭之旅 · Zuting</h2>
+        <h2 style="color: #D4A855;">佳绩之旅 · Joinus</h2>
         <p>您正在重置密码，验证码如下：</p>
         <p>You are resetting your password. Your code is:</p>
         <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #D4A855; margin: 24px 0; text-align: center;">
@@ -95,10 +95,10 @@ export class EmailService {
         ? `¥${(orderDetails.amount / 100).toFixed(2)}`
         : `$${(orderDetails.amount / 100).toFixed(2)}`;
 
-    const subject = '【祖庭之旅】订单确认 / Order Confirmation';
+    const subject = '【佳绩之旅】订单确认 / Order Confirmation';
     const html = `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #D4A855;">祖庭之旅 · Zuting</h2>
+        <h2 style="color: #D4A855;">佳绩之旅 · Joinus</h2>
         <p>感谢您的订单！以下是您的订单详情：</p>
         <p>Thank you for your order! Here are the details:</p>
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">

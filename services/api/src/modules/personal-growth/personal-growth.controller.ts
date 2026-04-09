@@ -19,7 +19,7 @@ export class PersonalGrowthController {
 
   @Get('themes')
   @Public()
-  @ApiOperation({ summary: '个人成长主题包列表 / Personal growth themes' })
+  @ApiOperation({ summary: '个人圆满主题包列表 / Personal fulfillment themes' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'pageSize', required: false, type: Number })
   listThemes(@Query('page') page?: string, @Query('pageSize') pageSize?: string) {

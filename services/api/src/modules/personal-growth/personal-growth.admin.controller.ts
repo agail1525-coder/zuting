@@ -60,7 +60,7 @@ export class PersonalGrowthAdminController {
   }
 
   @Get('stats')
-  @ApiOperation({ summary: '个人成长统计 (Admin)' })
+  @ApiOperation({ summary: '个人圆满统计 (Admin)' })
   stats() {
     return this.service.adminStats();
   }

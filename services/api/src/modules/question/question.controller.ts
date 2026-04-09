@@ -59,8 +59,8 @@ export class QuestionController {
   @ApiOperation({
     summary: 'Ask a new question',
     description:
-      '发布一个新问题，可关联宗教实体（圣地/祖庭等）并添加标签。\n\n' +
-      'Post a new question. Optionally link to a religious entity (holy site, temple, etc.) and add tags.',
+      '发布一个新问题，可关联文化实体（圣地/祖庭等）并添加标签。\n\n' +
+      'Post a new question. Optionally link to a cultural entity (holy site, temple, etc.) and add tags.',
   })
   @ApiBody({ type: CreateQuestionDto })
   @ApiResponse({ status: 201, description: 'Question created successfully. / 问题创建成功。' })

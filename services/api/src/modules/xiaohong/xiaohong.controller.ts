@@ -59,7 +59,7 @@ export class XiaohongController {
     name: 'message',
     required: true,
     description: '用户消息',
-    example: '佛教有哪些圣地？',
+    example: '佛教文化有哪些圣地？',
   })
   @ApiQuery({
     name: 'conversationId',

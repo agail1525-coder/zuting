@@ -172,8 +172,8 @@ export class SearchController {
   @ApiOperation({
     summary: 'Global search across all content types',
     description:
-      '全局搜索所有内容类型（宗教、圣地、祖庭、祖师、祖训、印），支持关键词搜索、类型过滤、信仰过滤、国家过滤和排序。\n\n' +
-      'Search across all content types (religions, holy sites, temples, patriarchs, teachings, seals) with keyword, type, religion, country filters and sorting.',
+      '全局搜索所有内容类型（文化传统、圣地、祖庭、祖师、祖训、印），支持关键词搜索、类型过滤、文化传统过滤、国家过滤和排序。\n\n' +
+      'Search across all content types (cultural traditions, holy sites, temples, patriarchs, teachings, seals) with keyword, type, cultural tradition, country filters and sorting.',
   })
   @ApiResponse({
     status: 200,

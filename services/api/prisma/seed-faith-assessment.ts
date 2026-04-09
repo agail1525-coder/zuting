@@ -1,5 +1,5 @@
 /**
- * seed-faith-assessment.ts — 信仰力评估题库 60题 (20概念 × 3模式)
+ * seed-faith-assessment.ts — 佳绩力评估题库 60题 (20概念 × 3模式)
  * 独立执行: npx tsx prisma/seed-faith-assessment.ts
  */
 import { PrismaClient } from '@prisma/client';
@@ -272,7 +272,7 @@ const QUESTIONS: QuestionConcept[] = [
     sortOrder: 8,
     modes: {
       PERSONAL: {
-        questionText: '当个人成长(如学一门新技能)进展缓慢时，您的态度是？',
+        questionText: '当个人圆满(如学一门新技能)进展缓慢时，您的态度是？',
         options: [
           { key: 'A', text: '相信积累的力量，每天进步一点就是成功', score: 25, crossScores: { AWARENESS: 2 } },
           { key: 'B', text: '会寻找更高效的方法，但不会轻易放弃', score: 18, crossScores: { VISION: 2 } },

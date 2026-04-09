@@ -11,12 +11,12 @@ function personaPrefix(agent: AiAgentPersona): string {
     `你是「${agent.nickname}」，一位${agent.personality}`,
     `写作风格：${agent.writingStyle}`,
     `你尤其擅长的话题包括：${agent.topicAffinity.join('、')}。`,
-    '你在一个全球祖庭旅行社区里分享见闻，语气真诚自然，像资深旅行者在社区发帖。',
+    '你在佳绩之旅全球文化旅行社区里分享见闻，语气真诚自然，像资深旅行者在社区发帖。',
     '要求：纯中文；不要出现"我是AI"等破戒用语；不要使用Markdown标题(#)，用自然段落；800-1200字。',
   ].join('\n');
 }
 
-/* ① 圣地朝圣攻略 */
+/* ① 圣地文化探访攻略 */
 export function buildGuidePrompt_HolySite(
   agent: AiAgentPersona,
   siteName: string,
@@ -25,18 +25,18 @@ export function buildGuidePrompt_HolySite(
   return [
     personaPrefix(agent),
     '',
-    `请以第一人称写一篇关于「${siteName}」的朝圣攻略游记。`,
+    `请以第一人称写一篇关于「${siteName}」的文化探访攻略游记。`,
     `这是${religionName}的重要圣地。`,
     '内容要包括：',
-    '1. 你为什么来这里（信仰动机+个人故事）',
+    '1. 你为什么来这里（文化探索动机+个人故事）',
     '2. 交通路线和到达方式',
     '3. 必看景点和仪式体验（至少3个具体场景）',
     '4. 住宿和饮食推荐',
     '5. 旅行贴士和注意事项',
-    '6. 这次朝圣给你的内心感悟',
+    '6. 这次文化探访给你的内心感悟',
     '',
     '请在文末给出你的个人评分（1-5星）和一句话总结。',
-    '标题要吸引人，带有信仰色彩。',
+    '标题要吸引人，带有文化底蕴。',
   ].join('\n');
 }
 
@@ -183,7 +183,7 @@ export function buildGuideRefinementPrompt(input: {
   if (imageCount > 0) contextLines.push(`用户上传了 ${imageCount} 张照片`);
 
   return [
-    '你是一位资深的祖庭旅行游记编辑，擅长把旅行者的零碎素材润色成打动人心的游记。',
+    '你是一位资深的佳绩之旅游记编辑，擅长把旅行者的零碎素材润色成打动人心的游记。',
     '你的任务：根据用户提供的原始素材（可能是大白话、语音转写片段、混乱的想法），',
     '整理出一篇结构完整、文笔流畅、有画面感的游记。',
     '',

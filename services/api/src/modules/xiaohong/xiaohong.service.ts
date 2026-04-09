@@ -27,20 +27,20 @@ interface LLMMessage {
 /** 小鸿的性格语录，用于规则引擎降级模式 */
 const GREETINGS: Record<ChatIntent, string[]> = {
   [ChatIntent.RELIGION_INFO]: [
-    '让我为你介绍这个伟大的信仰传统。',
-    '每一种信仰都是人类灵性探索的珍贵结晶。',
+    '让我为你介绍这个伟大的文化传统。',
+    '每一种文化传统都是人类智慧探索的珍贵结晶。',
   ],
   [ChatIntent.HOLY_SITE_INFO]: [
-    '这些圣地承载着千年的信仰力量。',
+    '这些圣地承载着千年的文化力量。',
     '走进圣地，就是走进人类灵魂最深处的渴望。',
   ],
   [ChatIntent.TEMPLE_INFO]: [
-    '祖庭是信仰的根，是传承的源。',
+    '祖庭是文化的根，是传承的源。',
     '每一座祖庭都有说不完的故事。',
   ],
   [ChatIntent.PATRIARCH_INFO]: [
-    '祖师们以生命诠释了信仰的真谛。',
-    '了解祖师，就是了解信仰的灵魂。',
+    '祖师们以生命诠释了文化智慧的真谛。',
+    '了解祖师，就是了解文化传统的灵魂。',
   ],
   [ChatIntent.TEACHING_INFO]: [
     '祖训是千年智慧的结晶，字字珠玑。',
@@ -67,8 +67,8 @@ const GREETINGS: Record<ChatIntent, string[]> = {
     '静下心来，让我们一起感受内在的宁静。',
   ],
   [ChatIntent.GENERAL]: [
-    '你好！我是小鸿，你的AI旅行规划师。想去哪里探索文化之旅？',
-    '你好！小鸿在这里，随时为你规划精彩的文化旅行路线。',
+    '你好！我是小鸿，你的佳绩之旅AI规划师。想去哪里探索文化之旅？',
+    '你好！小鸿在这里，随时为你规划精彩的佳绩之旅路线。',
   ],
 };
 
@@ -211,7 +211,7 @@ export class XiaohongService {
     switch (intent) {
       case ChatIntent.RELIGION_INFO: {
         if (Array.isArray(data)) {
-          return `\n\n## 平台收录的12大信仰\n${(data as Religion[]).map((r) => `- ${r.name}（${r.nameEn}）`).join('\n')}`;
+          return `\n\n## 平台收录的12大文化传统\n${(data as Religion[]).map((r) => `- ${r.name}（${r.nameEn}）`).join('\n')}`;
         }
         const r = data as ReligionWithRelations;
         let text = `\n\n## ${r.name}（${r.nameEn}）详细信息`;
@@ -326,7 +326,7 @@ export class XiaohongService {
   }
 
   private async buildSystemPrompt(intent: ChatIntent, ragContext: string): Promise<string> {
-    const systemPrompt = await this.aiConfig.getOrDefault('system_prompt', '你是小鸿，全球祖庭旅行平台的AI助手。');
+    const systemPrompt = await this.aiConfig.getOrDefault('system_prompt', '你是小鸿，佳绩之旅平台的AI助手。');
     const safetyPrompt = await this.aiConfig.getOrDefault('safety_prompt', '');
     let fullPrompt = systemPrompt;
     if (safetyPrompt) fullPrompt += `\n\n${safetyPrompt}`;
@@ -532,7 +532,7 @@ export class XiaohongService {
     const g = GREETINGS[intent][Math.floor(Math.random() * GREETINGS[intent].length)];
     switch (intent) {
       case ChatIntent.RELIGION_INFO: {
-        if (Array.isArray(data)) return `${g}\n\n平台涵盖12大信仰：${(data as Religion[]).map((r) => r.name).join('、')}。\n\n你想深入了解哪一个？`;
+        if (Array.isArray(data)) return `${g}\n\n平台涵盖12大文化传统：${(data as Religion[]).map((r) => r.name).join('、')}。\n\n你想深入了解哪一个？`;
         const r = data as ReligionWithRelations;
         let t = `${g}\n\n**${r.name}（${r.nameEn}）**\n`;
         if (r.holySites?.length) t += `\n📍 圣地：${r.holySites.map((s) => `${s.name}（${s.country}）`).join('、')}`;
@@ -571,9 +571,9 @@ export class XiaohongService {
         for (const s of (data as Seal[]).slice(0, 6)) t += `\n**第${s.id}印·${s.name}**（${sn[s.series]}）\n诗偈：${s.poem.substring(0, 60)}...\n`;
         return t;
       }
-      case ChatIntent.TRIP_PLANNING: return `${g}\n\n我可以帮你规划：\n🕉️ 佛教巡礼\n✝️ 基督教之旅\n☪️ 伊斯兰朝觐\n☯️ 道教探访\n🕎 跨宗融合\n\n你对哪个信仰最感兴趣？`;
+      case ChatIntent.TRIP_PLANNING: return `${g}\n\n我可以帮你规划：\n🕉️ 佛教文化巡礼\n✝️ 基督文化之旅\n☪️ 伊斯兰文化探访\n☯️ 道教文化探访\n🕎 跨文化融合\n\n你对哪个文化传统最感兴趣？`;
       case ChatIntent.PRACTICE_GUIDE: return `${g}\n\n推荐修行：\n🧘 静坐冥想\n📿 持名念佛\n📖 经典诵读\n🚶 行禅\n💡 三十印修炼\n\n你想从哪种开始？`;
-      default: return `${g}\n\n我可以帮你：\n• 🌍 了解12大信仰\n• 📍 探索60个圣地\n• 🏛️ 认识27座祖庭\n• 📖 品味39条祖训\n• 🔮 修炼三十印\n• ✈️ 规划朝圣路线\n\n请问你想了解什么？`;
+      default: return `${g}\n\n我可以帮你：\n• 🌍 了解12大文化传统\n• 📍 探索60个圣地\n• 🏛️ 认识27座祖庭\n• 📖 品味39条祖训\n• 🔮 修炼三十印\n• ✈️ 规划文化之旅路线\n\n请问你想了解什么？`;
     }
   }
 
@@ -585,10 +585,10 @@ export class XiaohongService {
     const raw = await this.aiConfig.get('suggestions');
     if (raw) { try { return JSON.parse(raw); } catch { /* ignore */ } }
     return [
-      { text: '推荐一个朝圣路线', category: '路线推荐' },
-      { text: '佛教有哪些圣地？', category: '知识问答' },
+      { text: '推荐一个文化之旅路线', category: '路线推荐' },
+      { text: '佛教文化有哪些圣地？', category: '知识问答' },
       { text: '三十印修炼如何开始？', category: '修行指导' },
-      { text: '介绍道教祖庭', category: '知识问答' },
+      { text: '介绍道教文化祖庭', category: '知识问答' },
     ];
   }
 

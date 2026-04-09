@@ -10,7 +10,7 @@ import {
  * 用户提交的"粗素材"，由AI整理成游记草稿
  * - rawNotes: 大白话文本（可以是语音转写+手写混合）
  * - imageUrls: 已通过 /api/uploads/image 上传完成的图片URL
- * - entityType/entityId: 可选关联到具体圣地/祖庭/宗教
+ * - entityType/entityId: 可选关联到具体圣地/祖庭/文化传统
  */
 export class AiDraftGuideDto {
   @ApiProperty({

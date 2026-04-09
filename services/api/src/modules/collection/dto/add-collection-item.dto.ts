@@ -22,7 +22,7 @@ export class AddCollectionItemDto {
 
   @ApiPropertyOptional({
     description: 'Personal note for this item. Max 300 characters. / 该收藏项的个人备注，最多300字符',
-    example: '2026年春节朝圣时必去',
+    example: '2026年春节文化之旅时必去',
     maxLength: 300,
   })
   @IsOptional()

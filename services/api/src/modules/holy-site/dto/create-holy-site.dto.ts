@@ -89,7 +89,7 @@ export class CreateHolySiteDto {
   soundEffect?: string;
 
   @ApiProperty({
-    description: 'ID of the associated religion. / 关联宗教ID',
+    description: 'ID of the associated religion. / 关联文化传统ID',
     example: 'clx1abc2d0000ab12cd34ef56',
   })
   @IsString()

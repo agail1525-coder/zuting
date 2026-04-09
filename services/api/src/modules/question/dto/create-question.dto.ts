@@ -9,7 +9,7 @@ import {
 export class CreateQuestionDto {
   @ApiProperty({
     description: 'Question title. Max 200 characters. / 问题标题，最多200字符',
-    example: '菩提伽耶最佳朝圣时间是什么时候？',
+    example: '菩提伽耶最佳文化探访时间是什么时候？',
     maxLength: 200,
   })
   @IsString()
@@ -18,7 +18,7 @@ export class CreateQuestionDto {
 
   @ApiProperty({
     description: 'Detailed question content. / 问题详细内容',
-    example: '我计划前往菩提伽耶朝圣，想了解一下最佳的朝圣季节和注意事项。',
+    example: '我计划前往菩提伽耶文化探访，想了解一下最佳的探访季节和注意事项。',
   })
   @IsString()
   content: string;
@@ -42,7 +42,7 @@ export class CreateQuestionDto {
   @ApiPropertyOptional({
     description: 'Tags for categorizing the question. / 问题标签',
     type: [String],
-    example: ['朝圣', '佛教', '印度'],
+    example: ['文化之旅', '佛教文化', '印度'],
   })
   @IsOptional()
   @IsArray()

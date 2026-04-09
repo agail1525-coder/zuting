@@ -26,13 +26,13 @@ export class HolySiteController {
   @ApiOperation({
     summary: 'Get all holy sites',
     description:
-      '获取所有圣地列表，可按宗教ID筛选。每个圣地包含GPS坐标、UTC偏移和描述。\n\n' +
-      'Retrieve all holy sites. Optionally filter by religion ID. Each site includes GPS coordinates, UTC offset, and description.',
+      '获取所有圣地列表，可按文化传统ID筛选。每个圣地包含GPS坐标、UTC偏移和描述。\n\n' +
+      'Retrieve all holy sites. Optionally filter by cultural tradition ID. Each site includes GPS coordinates, UTC offset, and description.',
   })
   @ApiQuery({
     name: 'religionId',
     required: false,
-    description: 'Filter by religion ID. / 按宗教ID筛选',
+    description: 'Filter by religion ID. / 按文化传统ID筛选',
     example: 'clx1abc2d0000ab12cd34ef56',
   })
   @ApiResponse({
@@ -68,8 +68,8 @@ export class HolySiteController {
   @ApiOperation({
     summary: 'Get holy site detail by ID',
     description:
-      '获取指定圣地的详细信息，包含关联的宗教信息。\n\n' +
-      'Retrieve detailed information for a specific holy site, including its associated religion.',
+      '获取指定圣地的详细信息，包含关联的文化传统信息。\n\n' +
+      'Retrieve detailed information for a specific holy site, including its associated cultural tradition.',
   })
   @ApiParam({
     name: 'id',
@@ -106,8 +106,8 @@ export class HolySiteController {
   @ApiOperation({
     summary: 'Create a new holy site (admin)',
     description:
-      '创建新圣地记录，需提供GPS坐标和关联宗教ID。仅管理员可操作。\n\n' +
-      'Create a new holy site record with GPS coordinates and associated religion ID. Admin role required.',
+      '创建新圣地记录，需提供GPS坐标和关联文化传统ID。仅管理员可操作。\n\n' +
+      'Create a new holy site record with GPS coordinates and associated cultural tradition ID. Admin role required.',
   })
   @ApiBody({ type: CreateHolySiteDto })
   @ApiResponse({ status: 201, description: 'Holy site created successfully. / 圣地创建成功。' })

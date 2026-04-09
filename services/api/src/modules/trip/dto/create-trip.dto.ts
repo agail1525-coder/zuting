@@ -11,7 +11,7 @@ import {
 export class CreateTripDto {
   @ApiProperty({
     description: 'Trip title / name for display. / 行程标题/显示名称',
-    example: '佛教四大圣地朝圣之旅',
+    example: '佛教文化四大圣地文化之旅',
     maxLength: 200,
   })
   @IsString()

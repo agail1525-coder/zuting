@@ -306,7 +306,7 @@ export class FaithAssessmentService {
           amount: points,
           source: 'FAITH_ASSESSMENT',
           sourceId: assessmentId,
-          description: `信仰力评估完成 (${levelName})`,
+          description: `佳绩力评估完成 (${levelName})`,
         },
       }),
       this.prisma.membership.update({
