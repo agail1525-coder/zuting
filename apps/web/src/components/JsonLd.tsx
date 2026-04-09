@@ -7,12 +7,12 @@ export function OrganizationJsonLd() {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
-    name: "祖庭之旅 - Global Ancestral Temple Travel",
-    alternateName: "全球祖庭旅行平台",
+    name: "佳绩之旅 - Global Ancestral Temple Travel",
+    alternateName: "全球文化旅行平台",
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     description:
-      "帮助100万人走祖庭，建立全球宗教文化和平使者网络。Helping 1 million people walk the ancestral temples, building a global network of religious and cultural peace ambassadors.",
+      "探索人类文明，创造人生佳绩。建立全球文化和平使者网络。Explore human civilization, achieve life milestones. Building a global network of cultural peace ambassadors.",
     foundingDate: "2024",
     contactPoint: {
       "@type": "ContactPoint",
@@ -62,15 +62,15 @@ export function WebSiteJsonLd() {
   const websiteData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "祖庭之旅",
-    alternateName: "Global Ancestral Temple Travel Platform",
+    name: "佳绩之旅",
+    alternateName: "Global Cultural Travel Platform",
     url: BASE_URL,
     inLanguage: ["zh-CN", "en"],
     description:
-      "全球宗教文化朝圣旅行平台，涵盖12大信仰、60圣地、27祖庭、28祖师、39祖训、30印。",
+      "全球文化之旅旅行平台，涵盖12大文化传统、60圣地、27祖庭、28祖师、39祖训、30印。",
     publisher: {
       "@type": "Organization",
-      name: "祖庭之旅",
+      name: "佳绩之旅",
       url: BASE_URL,
     },
   };
@@ -121,7 +121,7 @@ export default function RootJsonLd() {
       <BreadcrumbJsonLd
         items={[
           { name: "首页", url: "/" },
-          { name: "十二大信仰", url: "/religions" },
+          { name: "十二大文化传统", url: "/religions" },
           { name: "圣地", url: "/holy-sites" },
           { name: "祖庭", url: "/temples" },
           { name: "祖师", url: "/patriarchs" },

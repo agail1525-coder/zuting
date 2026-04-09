@@ -3,22 +3,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n";
 
-const ONBOARDING_KEY = "zuting-onboarding-done";
-const PREFS_KEY = "zuting-religion-preferences";
+const ONBOARDING_KEY = "jiaji-onboarding-done";
+const PREFS_KEY = "jiaji-culture-preferences";
 
 const RELIGION_OPTIONS = [
-  { slug: "buddhism", name: "佛教", nameEn: "Buddhism", symbol: "☸" },
-  { slug: "taoism", name: "道教", nameEn: "Taoism", symbol: "☯" },
-  { slug: "christianity", name: "基督教", nameEn: "Christianity", symbol: "✝" },
-  { slug: "islam", name: "伊斯兰教", nameEn: "Islam", symbol: "☪" },
-  { slug: "hinduism", name: "印度教", nameEn: "Hinduism", symbol: "🕉" },
-  { slug: "judaism", name: "犹太教", nameEn: "Judaism", symbol: "✡" },
-  { slug: "confucianism", name: "儒教", nameEn: "Confucianism", symbol: "仁" },
-  { slug: "sikhism", name: "锡克教", nameEn: "Sikhism", symbol: "🪯" },
-  { slug: "shintoism", name: "神道教", nameEn: "Shintoism", symbol: "⛩" },
-  { slug: "tibetan-buddhism", name: "藏传佛教", nameEn: "Tibetan Buddhism", symbol: "🙏" },
-  { slug: "indigenous-spirituality", name: "原住民灵性", nameEn: "Indigenous", symbol: "🌿" },
-  { slug: "bahai", name: "巴哈伊教", nameEn: "Baha'i", symbol: "✴" },
+  { slug: "buddhism", name: "佛教文化", nameEn: "Buddhism", symbol: "☸" },
+  { slug: "taoism", name: "道教文化", nameEn: "Taoism", symbol: "☯" },
+  { slug: "christianity", name: "基督文化", nameEn: "Christianity", symbol: "✝" },
+  { slug: "islam", name: "伊斯兰文化", nameEn: "Islam", symbol: "☪" },
+  { slug: "hinduism", name: "印度文化", nameEn: "Hinduism", symbol: "🕉" },
+  { slug: "judaism", name: "犹太文化", nameEn: "Judaism", symbol: "✡" },
+  { slug: "confucianism", name: "儒家文化", nameEn: "Confucianism", symbol: "仁" },
+  { slug: "sikhism", name: "锡克文化", nameEn: "Sikhism", symbol: "🪯" },
+  { slug: "shintoism", name: "神道文化", nameEn: "Shintoism", symbol: "⛩" },
+  { slug: "tibetan-buddhism", name: "藏传文化", nameEn: "Tibetan Buddhism", symbol: "🙏" },
+  { slug: "indigenous-spirituality", name: "原住民文化", nameEn: "Indigenous", symbol: "🌿" },
+  { slug: "bahai", name: "巴哈伊文化", nameEn: "Baha'i", symbol: "✴" },
 ];
 
 export default function OnboardingModal() {
@@ -68,24 +68,24 @@ export default function OnboardingModal() {
     <div key="welcome" className="text-center px-4">
       <div className="text-7xl mb-6">🏛</div>
       <h2 className="text-3xl md:text-4xl font-serif font-bold text-gradient-gold mb-4">
-        {isZh ? "欢迎来到全球祖庭" : "Welcome to Zuting"}
+        {isZh ? "欢迎来到佳绩之旅" : "Welcome to Jiaji"}
       </h2>
       <p className="text-temple-300 text-lg leading-relaxed max-w-md mx-auto mb-2">
         {isZh
-          ? "探索12大信仰、60处圣地、27座祖庭，踏上一段心灵朝圣之旅。"
-          : "Explore 12 faiths, 60 holy sites, 27 ancestral temples. Begin your spiritual pilgrimage."}
+          ? "探索12大文化传统、60处圣地、27座祖庭，踏上一段文化之旅。"
+          : "Explore 12 cultural traditions, 60 holy sites, 27 ancestral temples. Begin your cultural journey."}
       </p>
       <p className="text-temple-500 text-sm">
         {isZh
-          ? "帮助100万人走祖庭，建立全球宗教文化和平使者网络"
-          : "Helping 1 million people walk the ancestral temples"}
+          ? "探索人类文明，创造人生佳绩"
+          : "Explore human civilization, achieve life milestones"}
       </p>
     </div>,
 
     // Slide 1: Choose interests
     <div key="interests" className="px-4">
       <h2 className="text-2xl md:text-3xl font-serif font-bold text-gradient-gold mb-2 text-center">
-        {isZh ? "选择您感兴趣的信仰" : "Choose Your Interests"}
+        {isZh ? "选择您感兴趣的文化传统" : "Choose Your Interests"}
       </h2>
       <p className="text-temple-400 text-center mb-6 text-sm">
         {isZh ? "我们将为您推荐相关圣地和内容" : "We'll recommend relevant sites and content"}
@@ -125,8 +125,8 @@ export default function OnboardingModal() {
       </h2>
       <p className="text-temple-300 text-lg leading-relaxed max-w-md mx-auto mb-6">
         {isZh
-          ? "浏览全球圣地地图、规划朝圣行程、与小鸿AI聊天，或阅读古老的祖训智慧。"
-          : "Browse the global map, plan pilgrimages, chat with XiaoHong AI, or read ancient wisdom."}
+          ? "浏览全球圣地地图、规划文化之旅行程、与小鸿AI聊天，或阅读古老的祖训智慧。"
+          : "Browse the global map, plan cultural journeys, chat with XiaoHong AI, or read ancient wisdom."}
       </p>
       <div className="flex flex-wrap justify-center gap-4 text-sm text-temple-400">
         <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function OnboardingModal() {
         </div>
         <div className="flex items-center gap-2">
           <span className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">📖</span>
-          <span>{isZh ? "朝圣日志" : "Journal"}</span>
+          <span>{isZh ? "旅行日志" : "Journal"}</span>
         </div>
       </div>
     </div>,
