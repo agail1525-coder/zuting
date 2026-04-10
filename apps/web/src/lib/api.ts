@@ -548,7 +548,7 @@ async function fetchAuthed<T>(
 
   const { timeoutMs = 15_000, ...fetchOptions } = options;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const timeout = setTimeout(() => controller.abort("请求超时，请重试"), timeoutMs);
 
   try {
     const res = await fetch(`${API_BASE}${url}`, {
@@ -2509,7 +2509,7 @@ export interface AnswerFeedbackResponse {
   totalQuestions: number;
 }
 export const fetchTodayQuiz = () =>
-  fetchAuthed<ZenQuizResponse>("/api/cultivation/zen-quiz/today");
+  fetchAuthed<ZenQuizResponse>("/api/cultivation/zen-quiz/today", { timeoutMs: 120000 });
 export const submitQuizAnswer = (data: { quizId: string; questionIndex: number; answer: string }) =>
   fetchAuthed<AnswerFeedbackResponse>("/api/cultivation/zen-quiz/answer", {
     method: "POST",

@@ -38,7 +38,10 @@ export default function ZenQuizPage() {
         );
         if (firstUnanswered >= 0) setCurrentIdx(firstUnanswered);
       })
-      .catch((e) => setError(e.message))
+      .catch((e) => {
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(msg.includes("abort") ? "AI出题超时，请刷新页面重试" : msg);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -97,8 +100,10 @@ export default function ZenQuizPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center text-amber-200/60">
-        正在准备今日禅修考核...
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-amber-200/60 gap-3">
+        <div className="text-4xl animate-pulse">🪷</div>
+        <p>禅师正在为你准备今日考核...</p>
+        <p className="text-xs text-amber-200/30">AI出题中，首次加载可能需要30-60秒</p>
       </div>
     );
   }
