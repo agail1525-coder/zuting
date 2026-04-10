@@ -8,6 +8,9 @@ import { FulfillmentService } from './fulfillment.service';
 import { FulfillmentController } from './fulfillment.controller';
 import { ZenQuizService } from './zen-quiz.service';
 import { ZenQuizController } from './zen-quiz.controller';
+import { ScriptureService } from './scripture.service';
+import { ScriptureController } from './scripture.controller';
+import { ScriptureLearningService } from './scripture-learning.service';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
@@ -16,8 +19,15 @@ import { ZenQuizController } from './zen-quiz.controller';
     CultivationAdminController,
     FulfillmentController,
     ZenQuizController,
+    ScriptureController,
   ],
-  providers: [CultivationAccessService, FulfillmentService, ZenQuizService],
-  exports: [CultivationAccessService, FulfillmentService],
+  providers: [
+    CultivationAccessService,
+    FulfillmentService,
+    ZenQuizService,
+    ScriptureService,
+    ScriptureLearningService,
+  ],
+  exports: [CultivationAccessService, FulfillmentService, ScriptureService],
 })
 export class CultivationModule {}

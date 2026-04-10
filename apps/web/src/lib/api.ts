@@ -2600,3 +2600,136 @@ export const fetchLiveDharmaSchedule = (date?: string) =>
   fetchAuthed<DharmaLiveSession[]>(
     `/api/cultivation/live-dharma/schedule${date ? `?date=${date}` : ""}`,
   );
+
+// ── M38 经论大系统 ─────────────────────────────
+export interface ScriptureCategory {
+  id: string;
+  slug: string;
+  name: string;
+  nameEn: string | null;
+  ring: number;
+  tradition: string;
+  parentId: string | null;
+  icon: string | null;
+  color: string | null;
+  description: string | null;
+  children: ScriptureCategory[];
+  _count: { scriptures: number };
+}
+
+export interface ScriptureItem {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string | null;
+  author: string | null;
+  era: string | null;
+  tradition: string;
+  ring: number;
+  summary: string;
+  difficulty: number;
+  oxStageMin: number;
+  oxStageMax: number;
+  tags: string[];
+  viewCount: number;
+  chapterCount: number;
+  category: { slug: string; name: string; icon: string | null; color: string | null } | null;
+}
+
+export interface ScriptureDetail extends ScriptureItem {
+  significance: string | null;
+  coverUrl: string | null;
+  readingMins: number | null;
+  relatedIds: string[];
+  chapters: { chapterNo: number; title: string; subtitle: string | null }[];
+  related: { slug: string; title: string; author: string | null; tradition: string; ring: number }[];
+  insights: ScriptureInsight[];
+}
+
+export interface ScriptureChapterDetail {
+  scripture: { title: string; slug: string; chapterCount: number };
+  chapter: {
+    id: string;
+    chapterNo: number;
+    title: string;
+    subtitle: string | null;
+    originalText: string;
+    commentary: string | null;
+    keyQuotes: { quote: string; explanation: string }[] | null;
+    practiceHint: string | null;
+  };
+}
+
+export interface ScriptureInsight {
+  id: string;
+  scriptureId: string;
+  chapterNo: number | null;
+  insightType: string;
+  content: string;
+  tradition: string;
+  oxStage: number | null;
+  quality: number;
+  createdAt: string;
+  scripture?: { slug: string; title: string; tradition: string };
+}
+
+export interface ScriptureGraphData {
+  nodes: {
+    id: string;
+    type: 'category' | 'scripture';
+    slug: string;
+    label: string;
+    ring: number;
+    tradition: string;
+    parentId: string | null;
+    icon: string | null;
+    color: string | null;
+  }[];
+  edges: { source: string; target: string; type: string }[];
+}
+
+export const fetchScriptureCategories = () =>
+  fetchAuthed<ScriptureCategory[]>("/api/cultivation/scriptures/categories");
+
+export const fetchScriptureGraph = () =>
+  fetchAuthed<ScriptureGraphData>("/api/cultivation/scriptures/graph");
+
+export const fetchScriptureRecommended = () =>
+  fetchAuthed<ScriptureItem[]>("/api/cultivation/scriptures/recommended");
+
+export const fetchScriptureInsights = (params?: {
+  scriptureSlug?: string; tradition?: string; oxStage?: number; insightType?: string; page?: number;
+}) => {
+  const q = new URLSearchParams();
+  if (params?.scriptureSlug) q.set("scriptureSlug", params.scriptureSlug);
+  if (params?.tradition) q.set("tradition", params.tradition);
+  if (params?.oxStage) q.set("oxStage", String(params.oxStage));
+  if (params?.insightType) q.set("insightType", params.insightType);
+  if (params?.page) q.set("page", String(params.page));
+  return fetchAuthed<{ items: ScriptureInsight[]; total: number; page: number; pageSize: number }>(
+    `/api/cultivation/scriptures/insights?${q}`,
+  );
+};
+
+export const fetchScriptures = (params?: {
+  ring?: number; tradition?: string; categorySlug?: string; search?: string; page?: number;
+}) => {
+  const q = new URLSearchParams();
+  if (params?.ring) q.set("ring", String(params.ring));
+  if (params?.tradition) q.set("tradition", params.tradition);
+  if (params?.categorySlug) q.set("categorySlug", params.categorySlug);
+  if (params?.search) q.set("search", params.search);
+  if (params?.page) q.set("page", String(params.page));
+  return fetchAuthed<{ items: ScriptureItem[]; total: number; page: number; pageSize: number }>(
+    `/api/cultivation/scriptures?${q}`,
+  );
+};
+
+export const fetchScriptureDetail = (slug: string) =>
+  fetchAuthed<ScriptureDetail>(`/api/cultivation/scriptures/${slug}`);
+
+export const fetchScriptureChapter = (slug: string, chapterNo: number) =>
+  fetchAuthed<ScriptureChapterDetail>(`/api/cultivation/scriptures/${slug}/chapters/${chapterNo}`);
+
+export const recordScriptureView = (slug: string) =>
+  fetchAuthed<void>(`/api/cultivation/scriptures/${slug}/view`, { method: "POST" });

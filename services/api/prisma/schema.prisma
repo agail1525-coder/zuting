@@ -1838,3 +1838,97 @@ model UserDeepModuleProgress {
   @@unique([userId, moduleCode])
   @@index([userId])
 }
+
+// ── M38 经论大系统 ─────────────────────────────────────
+
+model ScriptureCategory {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  nameEn      String?
+  ring        Int                        // 1=禅宗核心, 2=佛教宗派, 3=其他传统
+  tradition   String                     // ZEN, BUDDHISM, TAOISM, etc.
+  parentId    String?
+  parent      ScriptureCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children    ScriptureCategory[] @relation("CategoryTree")
+  icon        String?
+  color       String?
+  description String?   @db.Text
+  sortOrder   Int       @default(0)
+  scriptures  Scripture[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([ring, tradition])
+  @@index([parentId])
+}
+
+model Scripture {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  titleEn       String?
+  author        String?
+  era           String?
+  categoryId    String
+  category      ScriptureCategory @relation(fields: [categoryId], references: [id])
+  tradition     String
+  ring          Int
+  summary       String    @db.Text
+  significance  String?   @db.Text
+  coverUrl      String?
+  chapterCount  Int       @default(0)
+  readingMins   Int?
+  difficulty    Int       @default(1)     // 1-5
+  oxStageMin    Int       @default(1)
+  oxStageMax    Int       @default(10)
+  relatedIds    String[]
+  tags          String[]
+  isPublished   Boolean   @default(true)
+  viewCount     Int       @default(0)
+  sortOrder     Int       @default(0)
+  chapters      ScriptureChapter[]
+  insights      ScriptureInsight[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([tradition, ring])
+  @@index([isPublished, sortOrder])
+}
+
+model ScriptureChapter {
+  id           String   @id @default(cuid())
+  scriptureId  String
+  scripture    Scripture @relation(fields: [scriptureId], references: [id], onDelete: Cascade)
+  chapterNo    Int
+  title        String
+  subtitle     String?
+  originalText String   @db.Text
+  commentary   String?  @db.Text
+  keyQuotes    Json?                     // [{quote, explanation}]
+  practiceHint String?  @db.Text
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([scriptureId, chapterNo])
+  @@index([scriptureId])
+}
+
+model ScriptureInsight {
+  id           String   @id @default(cuid())
+  scriptureId  String
+  scripture    Scripture @relation(fields: [scriptureId], references: [id], onDelete: Cascade)
+  chapterNo    Int?
+  insightType  String                    // DAILY_STUDY|CROSS_REF|PRACTICE_GUIDE|QUIZ_MATERIAL
+  content      String   @db.Text
+  tradition    String
+  oxStage      Int?
+  quality      Int      @default(0)
+  usedCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([scriptureId, insightType])
+  @@index([tradition, oxStage])
+}
