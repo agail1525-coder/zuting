@@ -29,16 +29,29 @@ export default function ScripturesPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // Helper: fetch all pages of scriptures (pageSize=50, max 10 pages safety)
+  const fetchAllScriptures = async (params?: Parameters<typeof fetchScriptures>[0]) => {
+    const all: ScriptureItem[] = [];
+    for (let p = 1; p <= 10; p++) {
+      const res = await fetchScriptures({ ...params, page: p });
+      const items = Array.isArray(res) ? res : res?.items ?? [];
+      all.push(...items);
+      const total = Array.isArray(res) ? items.length : res?.total ?? 0;
+      if (all.length >= total || items.length === 0) break;
+    }
+    return all;
+  };
+
   useEffect(() => {
     Promise.all([
       fetchScriptureCategories(),
       fetchScriptureRecommended(),
-      fetchScriptures({ page: 1 }),
+      fetchAllScriptures(),
     ])
       .then(([cats, rec, list]) => {
         setCategories(cats);
         setRecommended(Array.isArray(rec) ? rec : []);
-        setAllItems(Array.isArray(list) ? list : list?.items ?? []);
+        setAllItems(list);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -115,8 +128,13 @@ export default function ScripturesPage() {
             愿财双圆 · 经论大系统
           </span>
         </h1>
+        {allItems.length > 0 && (
+          <p className="text-sm text-amber-400/70 mb-1">
+            收录 <span className="font-bold text-amber-300">{allItems.length}</span> 部经论 · 十二大文化传统
+          </p>
+        )}
         <p className="text-amber-200/60 max-w-xl mx-auto">
-          起大愿 · 发大财 · 布施众生 — 以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大信仰传统为全景
+          以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大信仰传统为全景
         </p>
       </div>
 
@@ -267,13 +285,9 @@ export default function ScripturesPage() {
               onClick={() => {
                 setActiveRing(ring);
                 if (ring === 0) {
-                  fetchScriptures({ page: 1 }).then((r) =>
-                    setAllItems(Array.isArray(r) ? r : r?.items ?? []),
-                  );
+                  fetchAllScriptures().then(setAllItems);
                 } else {
-                  fetchScriptures({ ring, page: 1 }).then((r) =>
-                    setAllItems(Array.isArray(r) ? r : r?.items ?? []),
-                  );
+                  fetchAllScriptures({ ring }).then(setAllItems);
                 }
               }}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
