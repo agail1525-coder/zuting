@@ -188,6 +188,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding faith-assessment (M36)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-faith-assessment.ts 2>&1 | tail -10")
 
+    # Seed cultivation (M37)
+    print("  Seeding cultivation (M37)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-cultivation.ts 2>&1 | tail -10")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''

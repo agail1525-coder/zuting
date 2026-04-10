@@ -36,7 +36,7 @@ const { Text } = Typography;
 
 const menuItems = [
   { key: '/', icon: <DashboardOutlined />, label: '仪表盘' },
-  { key: '/religions', icon: <GlobalOutlined />, label: '信仰管理' },
+  { key: '/religions', icon: <GlobalOutlined />, label: '文化传统管理' },
   { key: '/holy-sites', icon: <EnvironmentOutlined />, label: '圣地管理' },
   { key: '/temples', icon: <BankOutlined />, label: '祖庭管理' },
   { key: '/patriarchs', icon: <UserOutlined />, label: '祖师管理' },
@@ -48,7 +48,7 @@ const menuItems = [
   { key: '/trips', icon: <CarOutlined />, label: '行程管理' },
   { key: '/orders', icon: <ShoppingCartOutlined />, label: '订单管理' },
   { key: '/coupons', icon: <GiftOutlined />, label: '优惠券管理' },
-  { key: '/journals', icon: <FileTextOutlined />, label: '朝圣日记' },
+  { key: '/journals', icon: <FileTextOutlined />, label: '文化之旅日记' },
   { key: '/reviews', icon: <StarOutlined />, label: '评价管理' },
   { key: '/community', icon: <ReadOutlined />, label: '社区管理' },
   { key: '/promotions', icon: <GiftOutlined />, label: '促销管理' },
@@ -56,6 +56,7 @@ const menuItems = [
   { key: '/prices', icon: <DollarOutlined />, label: '价格管理' },
   { key: '/merchants', icon: <ShopOutlined />, label: '商家管理' },
   { key: '/team-culture', icon: <TeamOutlined />, label: '团队文化' },
+  { key: '/cultivation', icon: <SafetyCertificateOutlined />, label: '修行圈管理' },
   { key: '/users', icon: <TeamOutlined />, label: '用户管理' },
   { key: '/moderation', icon: <SafetyCertificateOutlined />, label: '内容审核' },
   { type: 'divider' as const },
@@ -69,7 +70,7 @@ const menuItems = [
 
 const breadcrumbMap: Record<string, string> = {
   '/': '仪表盘',
-  '/religions': '信仰管理',
+  '/religions': '文化传统管理',
   '/holy-sites': '圣地管理',
   '/temples': '祖庭管理',
   '/patriarchs': '祖师管理',
@@ -80,7 +81,7 @@ const breadcrumbMap: Record<string, string> = {
   '/trips': '行程管理',
   '/orders': '订单管理',
   '/coupons': '优惠券管理',
-  '/journals': '朝圣日记',
+  '/journals': '文化之旅日记',
   '/reviews': '评价管理',
   '/community': '社区管理',
   '/promotions': '促销管理',
@@ -88,6 +89,7 @@ const breadcrumbMap: Record<string, string> = {
   '/prices': '价格管理',
   '/merchants': '商家管理',
   '/team-culture': '团队文化',
+  '/cultivation': '修行圈管理',
   '/users': '用户管理',
   '/moderation': '内容审核',
   '/media': '多媒体管理',

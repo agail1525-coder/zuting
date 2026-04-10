@@ -1291,3 +1291,65 @@ export async function fetchTeamCases(): Promise<TeamCase[]> {
   const res = await request<{ items: TeamCase[] }>('/team-culture/cases')
   return Array.isArray(res?.items) ? res.items : []
 }
+
+// ── Cultivation 修行圈 (M37) ──────────────────────────
+
+export type CultivationRole = 'NONE' | 'SEEKER' | 'PRACTITIONER' | 'MENTOR' | 'MASTER'
+export type Realm = 'AWAKENING' | 'CLARIFYING' | 'SEEING' | 'ATTAINING' | 'INTEGRATING' | 'RETURNING' | 'GIVING_BACK'
+
+export interface CultivationMineResponse {
+  hasAccess: boolean
+  role: CultivationRole
+  expiresAt: string | null
+  application: { id: string; status: string; rejectionReason: string | null; createdAt: string } | null
+}
+
+export interface CompassResponse {
+  journey: {
+    primaryTradition: string
+    currentRealm: Realm
+    oxStage: number
+    streakDays: number
+    karmaPoints: number
+  }
+  currentSymbol: { symbolName: string; originalText: string; source: string } | null
+  todaySteps: { id: string; title: string; kind: string; completed: boolean }[]
+  streakDays: number
+}
+
+export interface OxPathResponse {
+  currentStage: number
+  stages: { stage: number; unlocked: boolean; current: boolean }[]
+}
+
+export function fetchCultivationMine() {
+  return request<CultivationMineResponse>('/cultivation/apply/mine')
+}
+
+export function submitCultivationApplication(data: { motivation: string; experience?: string; primaryTradition?: string }) {
+  return postRequest<unknown>('/cultivation/apply', data)
+}
+
+export function redeemCultivationInvite(code: string) {
+  return postRequest<{ ok: boolean; role: string }>('/cultivation/invite/redeem', { code })
+}
+
+export function fetchCompass() {
+  return request<CompassResponse>('/cultivation/compass')
+}
+
+export function fetchOxPath() {
+  return request<OxPathResponse>('/cultivation/ox-path')
+}
+
+export function advanceOxStage() {
+  return postRequest<unknown>('/cultivation/ox-path/advance')
+}
+
+export function submitSealPractice(data: { sealId: string; session: string; audioListenedSec: number; reflection?: string }) {
+  return postRequest<unknown>('/cultivation/daily-seal/practice', data)
+}
+
+export function fetchThreeLives() {
+  return request<{ personalGoal: string | null; familyGoal: string | null; businessGoal: string | null; reviewedAt: string | null }>('/cultivation/three-lives')
+}

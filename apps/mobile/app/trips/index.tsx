@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
-import { api, type Trip, type TripStatus } from '../../src/lib/api';
+import { api, type Trip, type TripStatus, type CultivationMineResponse } from '../../src/lib/api';
 import { useAuth } from '../../src/lib/auth-context';
 import { useTranslation } from '../../src/lib/i18n';
 
@@ -60,6 +60,17 @@ export default function TripsScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cultivation, setCultivation] = useState<CultivationMineResponse | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    api
+      .getCultivationMine()
+      .then(setCultivation)
+      .catch(() =>
+        setCultivation({ hasAccess: false, role: 'NONE', expiresAt: null, application: null }),
+      );
+  }, [user]);
 
   const fetchTrips = useCallback(async () => {
     if (!user) return;
@@ -217,6 +228,40 @@ export default function TripsScreen() {
           </Pressable>
         ))}
       </ScrollView>
+
+      {/* 修行圈 Gateway Card */}
+      {cultivation && (
+        <Pressable
+          style={styles.cultivationCard}
+          onPress={() =>
+            router.push(
+              cultivation.hasAccess
+                ? ('/trips/cultivation' as any)
+                : ('/trips/cultivation/apply' as any),
+            )
+          }
+        >
+          <Text style={styles.cultivationIcon}>☸</Text>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={styles.cultivationTitle}>圆满之路</Text>
+              {cultivation.hasAccess && (
+                <View style={styles.cultivationBadge}>
+                  <Text style={styles.cultivationBadgeText}>{cultivation.role}</Text>
+                </View>
+              )}
+            </View>
+            <Text style={styles.cultivationDesc} numberOfLines={1}>
+              {cultivation.hasAccess
+                ? '禅宗主线·12文化融通·七境界修行'
+                : cultivation.application?.status === 'PENDING'
+                ? '申请审核中...'
+                : '申请加入修行圈'}
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#D4A855" />
+        </Pressable>
+      )}
 
       {/* Loading state */}
       {loading ? (
@@ -620,4 +665,28 @@ const styles = StyleSheet.create({
     backgroundColor: colors.goldDark,
     transform: [{ scale: 0.95 }],
   },
+  cultivationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.sm,
+    padding: spacing.md,
+    borderRadius: borderRadius.lg,
+    backgroundColor: '#1a1410',
+    borderWidth: 1,
+    borderColor: 'rgba(212,168,85,0.3)',
+  },
+  cultivationIcon: { fontSize: 28 },
+  cultivationTitle: { color: '#D4A855', fontWeight: '700', fontSize: fontSize.md },
+  cultivationDesc: { color: 'rgba(212,168,85,0.6)', fontSize: fontSize.xs, marginTop: 2 },
+  cultivationBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    backgroundColor: 'rgba(212,168,85,0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,168,85,0.3)',
+  },
+  cultivationBadgeText: { color: '#D4A855', fontSize: 10, fontWeight: '600' },
 });

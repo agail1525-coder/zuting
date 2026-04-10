@@ -2303,3 +2303,237 @@ export async function fetchMediaByEntity(entityType: string, entityId: string): 
 export async function fetchMediaDetail(id: string): Promise<MediaContent> {
   return fetchJson<MediaContent>(`/api/media/${id}`);
 }
+
+// ======== Cultivation 修行圈 (M37) ========
+
+export type CultivationRole = "NONE" | "SEEKER" | "PRACTITIONER" | "MENTOR" | "MASTER";
+export type Realm =
+  | "AWAKENING"
+  | "CLARIFYING"
+  | "SEEING"
+  | "ATTAINING"
+  | "INTEGRATING"
+  | "RETURNING"
+  | "GIVING_BACK";
+
+export interface CultivationApplication {
+  id: string;
+  userId: string;
+  motivation: string;
+  experience: string | null;
+  primaryTradition: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  rejectionReason: string | null;
+  createdAt: string;
+}
+
+export interface CultivationMineResponse {
+  hasAccess: boolean;
+  role: CultivationRole;
+  expiresAt: string | null;
+  application: CultivationApplication | null;
+}
+
+export interface FulfillmentJourney {
+  id: string;
+  userId: string;
+  primaryTradition: string;
+  blendTraditions: string[];
+  currentRealm: Realm;
+  oxStage: number;
+  streakDays: number;
+  lastSealAt: string | null;
+  karmaPoints: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CompassResponse {
+  journey: FulfillmentJourney;
+  currentSymbol: { symbolName: string; originalText: string; source: string } | null;
+  todaySteps: { id: string; title: string; kind: string; completed: boolean }[];
+  streakDays: number;
+}
+
+export interface OxPathResponse {
+  currentStage: number;
+  stages: { stage: number; unlocked: boolean; current: boolean }[];
+}
+
+export interface DailySealResponse {
+  session: string;
+  practice: {
+    id: string;
+    sealId: string;
+    audioListenedSec: number;
+    reflection: string | null;
+    status: string;
+  } | null;
+  recommendedSealId: string;
+  tradition: string;
+}
+
+export interface WisdomQuery {
+  id: string;
+  question: string;
+  answers: { tradition: string; masterName: string; answer: string; status: string }[];
+  chosenTrads: string[];
+  synthesized: string | null;
+  createdAt: string;
+}
+
+export interface KarmaEvent {
+  id: string;
+  title: string;
+  body: string;
+  eventAt: string;
+  visibility: string;
+  aiRealmTag: string | null;
+  aiCauseTag: string | null;
+  aiEffectTag: string | null;
+  aiAdvice: string | null;
+  createdAt: string;
+}
+
+export interface ThreeLifeVision {
+  id: string;
+  personalGoal: string | null;
+  familyGoal: string | null;
+  businessGoal: string | null;
+  reviewedAt: string | null;
+}
+
+export interface DharmaLiveSession {
+  id: string;
+  topic: string;
+  masterName: string;
+  masterType: string;
+  tradition: string;
+  startAt: string;
+  durationMin: number;
+  streamUrl: string | null;
+  status: string;
+}
+
+// Access / apply
+export const fetchCultivationMine = () =>
+  fetchAuthed<CultivationMineResponse>("/api/cultivation/apply/mine");
+
+export const submitCultivationApplication = (data: {
+  motivation: string;
+  experience?: string;
+  primaryTradition?: string;
+}) =>
+  fetchAuthed<CultivationApplication>("/api/cultivation/apply", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+export const redeemCultivationInvite = (code: string) =>
+  fetchAuthed<{ ok: true; role: CultivationRole }>("/api/cultivation/invite/redeem", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  });
+
+// A1 Journey / Compass
+export const fetchJourney = () => fetchAuthed<FulfillmentJourney>("/api/cultivation/journey/me");
+export const startJourney = (data: { primaryTradition?: string; blendTraditions?: string[] }) =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/journey/start", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const setTradition = (data: { primaryTradition: string; blendTraditions?: string[] }) =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/journey/tradition", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const fetchCompass = () => fetchAuthed<CompassResponse>("/api/cultivation/compass");
+
+// A2 Ox Path
+export const fetchOxPath = () => fetchAuthed<OxPathResponse>("/api/cultivation/ox-path");
+export const advanceOxStage = () =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/ox-path/advance", { method: "POST" });
+
+// A3 Daily Seal
+export const fetchTodaySeal = (session: "MORNING" | "EVENING" = "MORNING") =>
+  fetchAuthed<DailySealResponse>(`/api/cultivation/daily-seal/today?session=${session}`);
+export const submitSealPractice = (data: {
+  sealId: string;
+  session: "MORNING" | "EVENING";
+  audioListenedSec: number;
+  reflection?: string;
+}) =>
+  fetchAuthed("/api/cultivation/daily-seal/practice", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const fetchSealStreak = () =>
+  fetchAuthed<{ streakDays: number; lastSealAt: string | null; karmaPoints: number }>(
+    "/api/cultivation/daily-seal/streak",
+  );
+
+// A4 Wisdom
+export const submitWisdomQuery = (data: { question: string; traditions?: string[] }) =>
+  fetchAuthed<WisdomQuery>("/api/cultivation/wisdom/query", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const synthesizeWisdom = (data: { queryId: string; chosenTraditions: string[] }) =>
+  fetchAuthed<WisdomQuery>("/api/cultivation/wisdom/synthesize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const fetchWisdomHistory = (page = 1, pageSize = 20) =>
+  fetchAuthed<{ items: WisdomQuery[]; total: number; page: number; pageSize: number }>(
+    `/api/cultivation/wisdom/history?page=${page}&pageSize=${pageSize}`,
+  );
+
+// A5 Karma
+export const createKarmaEvent = (data: {
+  title: string;
+  body: string;
+  eventAt: string;
+  visibility?: "PRIVATE" | "FRIENDS" | "PUBLIC";
+}) =>
+  fetchAuthed<KarmaEvent>("/api/cultivation/karma/event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const fetchKarmaTimeline = (page = 1, pageSize = 20) =>
+  fetchAuthed<{ items: KarmaEvent[]; total: number; page: number; pageSize: number }>(
+    `/api/cultivation/karma/timeline?page=${page}&pageSize=${pageSize}`,
+  );
+export const fetchKarmaEvent = (id: string) =>
+  fetchAuthed<KarmaEvent>(`/api/cultivation/karma/event/${id}`);
+export const deleteKarmaEvent = (id: string) =>
+  fetchAuthed(`/api/cultivation/karma/event/${id}`, { method: "DELETE" });
+
+// A6 Three Lives
+export const fetchThreeLives = () =>
+  fetchAuthed<ThreeLifeVision>("/api/cultivation/three-lives");
+export const updateThreeLives = (data: {
+  personalGoal?: string;
+  familyGoal?: string;
+  businessGoal?: string;
+}) =>
+  fetchAuthed<ThreeLifeVision>("/api/cultivation/three-lives", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+// A7 Live Dharma
+export const fetchLiveDharmaSchedule = (date?: string) =>
+  fetchAuthed<DharmaLiveSession[]>(
+    `/api/cultivation/live-dharma/schedule${date ? `?date=${date}` : ""}`,
+  );

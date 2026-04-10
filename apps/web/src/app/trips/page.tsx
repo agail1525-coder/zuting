@@ -6,7 +6,13 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
-import { fetchTrips, type Trip, type TripStatus } from "@/lib/api";
+import {
+  fetchTrips,
+  fetchCultivationMine,
+  type Trip,
+  type TripStatus,
+  type CultivationMineResponse,
+} from "@/lib/api";
 
 /* ── Constants ────────────────────────────────────────────── */
 
@@ -113,6 +119,7 @@ export default function TripsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear());
   const [calendarMonth, setCalendarMonth] = useState(() => new Date().getMonth());
+  const [cultivation, setCultivation] = useState<CultivationMineResponse | null>(null);
 
   /* ── Derived data ── */
 
@@ -206,6 +213,9 @@ export default function TripsPage() {
   useEffect(() => {
     if (!user) return;
     loadTrips();
+    fetchCultivationMine()
+      .then(setCultivation)
+      .catch(() => setCultivation({ hasAccess: false, role: "NONE", expiresAt: null, application: null }));
   }, [user, loadTrips]);
 
   /* ── Auth guard ── */
@@ -340,6 +350,53 @@ export default function TripsPage() {
             </Link>
           </div>
         </div>
+
+        {/* ═══════ 修行圈 Gateway Card (M37) ═══════ */}
+        {cultivation && (
+          <div className="mb-6 rounded-2xl overflow-hidden border border-amber-200/60 bg-gradient-to-br from-[#1a1410] via-[#2a1f15] to-[#1a1410] text-white shadow-lg">
+            <div className="p-6 flex items-start gap-5">
+              <div className="shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/30">
+                ☸
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-lg font-bold text-amber-100">圆满之路 · 修行圈</h3>
+                  {cultivation.hasAccess && (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                      {cultivation.role}
+                    </span>
+                  )}
+                </div>
+                <p className="text-amber-100/70 text-sm leading-relaxed mb-3">
+                  {cultivation.hasAccess
+                    ? "禅宗为主线 · 12文化融通 · 七境界×十牛图，开启你的圆满日修。"
+                    : cultivation.application?.status === "PENDING"
+                    ? "你的申请正在审核中，通过后即可开启修行系统。"
+                    : cultivation.application?.status === "REJECTED"
+                    ? "上次申请未通过，可在 30 天后重新提交。"
+                    : "需要管理员授权或导师邀请才能进入。提交申请或使用邀请码开启你的圆满之路。"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {cultivation.hasAccess ? (
+                    <Link
+                      href="/trips/cultivation"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all"
+                    >
+                      进入修行罗盘 →
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/trips/cultivation/apply"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-white text-sm font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all"
+                    >
+                      {cultivation.application?.status === "PENDING" ? "查看申请进度" : "申请 / 兑换邀请码"}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Module Inspiration Banner */}
         {activeModule !== "all" && (

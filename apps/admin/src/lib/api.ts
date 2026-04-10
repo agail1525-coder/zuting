@@ -440,3 +440,60 @@ export async function getDashboardStats() {
     ]);
   return { religions, holySites, temples, patriarchs, teachings, seals };
 }
+
+// ---- Cultivation 修行圈 (M37) ----
+
+export interface CultivationApplication {
+  id: string;
+  userId: string;
+  motivation: string;
+  experience: string | null;
+  primaryTradition: string | null;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  rejectionReason: string | null;
+  createdAt: string;
+  user?: { id: string; name: string; email: string };
+}
+
+export interface CultivationApplicationsResponse {
+  items: CultivationApplication[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export const getCultivationApplications = (
+  page = 1,
+  pageSize = 20,
+  status?: string,
+): Promise<CultivationApplicationsResponse> => {
+  const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+  if (status) params.set('status', status);
+  return fetchJson<CultivationApplicationsResponse>(`/admin/cultivation/applications?${params}`);
+};
+
+export const approveCultivationApplication = (id: string, note?: string) =>
+  fetchJson<CultivationApplication>(`/admin/cultivation/applications/${id}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({ note }),
+  });
+
+export const rejectCultivationApplication = (id: string, reason: string) =>
+  fetchJson<CultivationApplication>(`/admin/cultivation/applications/${id}/reject`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+
+export const grantCultivationAccess = (userId: string, role: string, expiresInDays?: number) =>
+  fetchJson<unknown>('/admin/cultivation/grant', {
+    method: 'POST',
+    body: JSON.stringify({ userId, role, expiresInDays }),
+  });
+
+export const revokeCultivationAccess = (userId: string, reason: string) =>
+  fetchJson<unknown>('/admin/cultivation/revoke', {
+    method: 'POST',
+    body: JSON.stringify({ userId, reason }),
+  });

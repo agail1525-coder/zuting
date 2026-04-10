@@ -473,7 +473,156 @@ export const api = {
       // silent fail — non-critical analytics
     }
   },
+
+  // ── Cultivation 修行圈 (M37) ──────────────────────────
+  getCultivationMine: async (): Promise<CultivationMineResponse> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/apply/mine`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  submitCultivationApplication: (data: {
+    motivation: string;
+    experience?: string;
+    primaryTradition?: string;
+  }) => requestMutate<CultivationApplication>('/cultivation/apply', 'POST', data),
+
+  redeemCultivationInvite: (code: string) =>
+    requestMutate<{ ok: true; role: string }>('/cultivation/invite/redeem', 'POST', { code }),
+
+  getJourney: async (): Promise<FulfillmentJourney> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/journey/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  getCompass: async (): Promise<CompassResponse> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/compass`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  getOxPath: async (): Promise<OxPathResponse> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/ox-path`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  advanceOxStage: () =>
+    requestMutate<FulfillmentJourney>('/cultivation/ox-path/advance', 'POST', {}),
+
+  getTodaySeal: async (session: 'MORNING' | 'EVENING' = 'MORNING'): Promise<DailySealResponse> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/daily-seal/today?session=${session}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  submitSealPractice: (data: {
+    sealId: string;
+    session: 'MORNING' | 'EVENING';
+    audioListenedSec: number;
+    reflection?: string;
+  }) => requestMutate('/cultivation/daily-seal/practice', 'POST', data),
+
+  getThreeLives: async (): Promise<ThreeLifeVision> => {
+    const token = await getAccessToken();
+    if (!token) throw new Error('Not authenticated');
+    const res = await fetch(`${BASE_URL}/cultivation/three-lives`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    return res.json();
+  },
+
+  updateThreeLives: (data: {
+    personalGoal?: string;
+    familyGoal?: string;
+    businessGoal?: string;
+  }) => requestMutate<ThreeLifeVision>('/cultivation/three-lives', 'PUT', data),
 };
+
+export type CultivationRole = 'NONE' | 'SEEKER' | 'PRACTITIONER' | 'MENTOR' | 'MASTER';
+export type Realm =
+  | 'AWAKENING'
+  | 'CLARIFYING'
+  | 'SEEING'
+  | 'ATTAINING'
+  | 'INTEGRATING'
+  | 'RETURNING'
+  | 'GIVING_BACK';
+
+export interface CultivationApplication {
+  id: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  motivation: string;
+  rejectionReason: string | null;
+  createdAt: string;
+}
+
+export interface CultivationMineResponse {
+  hasAccess: boolean;
+  role: CultivationRole;
+  expiresAt: string | null;
+  application: CultivationApplication | null;
+}
+
+export interface FulfillmentJourney {
+  id: string;
+  primaryTradition: string;
+  blendTraditions: string[];
+  currentRealm: Realm;
+  oxStage: number;
+  streakDays: number;
+  lastSealAt: string | null;
+  karmaPoints: number;
+}
+
+export interface CompassResponse {
+  journey: FulfillmentJourney;
+  currentSymbol: { symbolName: string; originalText: string; source: string } | null;
+  todaySteps: { id: string; title: string; kind: string; completed: boolean }[];
+  streakDays: number;
+}
+
+export interface OxPathResponse {
+  currentStage: number;
+  stages: { stage: number; unlocked: boolean; current: boolean }[];
+}
+
+export interface DailySealResponse {
+  session: string;
+  practice: { sealId: string; audioListenedSec: number; reflection: string | null; status: string } | null;
+  recommendedSealId: string;
+  tradition: string;
+}
+
+export interface ThreeLifeVision {
+  id: string;
+  personalGoal: string | null;
+  familyGoal: string | null;
+  businessGoal: string | null;
+  reviewedAt: string | null;
+}
 
 export interface Journal {
   id: string;

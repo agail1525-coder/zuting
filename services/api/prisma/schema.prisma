@@ -50,6 +50,16 @@ model User {
   guides          Guide[]
   ownedTeams      Team[]          @relation("TeamOwner")
   teamMemberships TeamMember[]
+
+  // ── M37 修行系统 ──
+  cultivationAccess     Boolean         @default(false)
+  cultivationRole       CultivationRole @default(NONE)
+  cultivationGrantedBy  String?
+  cultivationGrantedAt  DateTime?
+  cultivationExpiresAt  DateTime?
+  cultivationApplications CultivationApplication[]
+  cultivationInvitesIssued CultivationInviteCode[] @relation("InviteIssuer")
+  fulfillmentJourney    FulfillmentJourney?
 }
 
 model Session {
@@ -1577,4 +1587,231 @@ model FaithAssessment {
   @@index([userId, completedAt])
   @@index([sessionId])
   @@index([mode])
+}
+
+// ========== M37 圆满之路修行系统 ==========
+
+enum CultivationRole {
+  NONE
+  SEEKER
+  PRACTITIONER
+  MENTOR
+  MASTER
+}
+
+enum Realm {
+  AWAKENING
+  CLARIFYING
+  SEEING
+  ATTAINING
+  INTEGRATING
+  RETURNING
+  GIVING_BACK
+}
+
+model CultivationApplication {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  motivation   String    @db.Text
+  tradition    String?
+  experience   String?   @db.Text
+  source       String    @default("MANUAL") // MANUAL|INVITE|PAID
+  inviteCodeId String?
+  status       String    @default("PENDING") // PENDING|APPROVED|REJECTED|AUTO_APPROVED
+  reviewedBy   String?
+  reviewNote   String?   @db.Text
+  submittedAt  DateTime  @default(now())
+  reviewedAt   DateTime?
+
+  @@index([status, submittedAt])
+  @@index([userId])
+}
+
+model CultivationInviteCode {
+  id         String    @id @default(cuid())
+  code       String    @unique @default(cuid())
+  issuerId   String
+  issuer     User      @relation("InviteIssuer", fields: [issuerId], references: [id], onDelete: Cascade)
+  assigneeId String?
+  note       String?
+  usedAt     DateTime?
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+
+  @@index([issuerId])
+  @@index([code])
+}
+
+model CultivationAccessAudit {
+  id         String           @id @default(cuid())
+  userId     String
+  action     String           // GRANT|REVOKE|UPGRADE|DOWNGRADE|EXPIRE
+  fromRole   CultivationRole?
+  toRole     CultivationRole?
+  operatorId String?
+  reason     String?          @db.Text
+  createdAt  DateTime         @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model FulfillmentJourney {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentRealm     Realm     @default(AWAKENING)
+  oxStage          Int       @default(1) // 1-10
+  primaryTradition String    @default("ZEN")
+  blendTraditions  String[]
+  mandalaState     Json?
+  karmaPoints      Int       @default(0)
+  streakDays       Int       @default(0)
+  lastSealAt       DateTime?
+  realmScoreSnap   Json?
+  startedAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  sealPractices DailySealPractice[]
+  wisdomQueries WisdomQuery[]
+  karmaEvents   KarmaEvent[]
+}
+
+model DailySealPractice {
+  id               String             @id @default(cuid())
+  journeyId        String
+  journey          FulfillmentJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  sealId           String
+  tradition        String
+  practiceDate     DateTime           @db.Date
+  session          String             @default("MORNING") // MORNING|EVENING
+  audioListenedSec Int                @default(0)
+  reflection       String?            @db.Text
+  status           String             @default("PENDING") // PENDING|DONE|SKIPPED
+  createdAt        DateTime           @default(now())
+
+  @@unique([journeyId, practiceDate, session])
+  @@index([journeyId, practiceDate])
+}
+
+model WisdomQuery {
+  id           String             @id @default(cuid())
+  journeyId    String
+  journey      FulfillmentJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  question     String             @db.Text
+  answers      Json               // [{tradition, masterName, answer, citations, status}]
+  chosenTrads  String[]
+  synthesized  String?            @db.Text
+  createdAt    DateTime           @default(now())
+
+  @@index([journeyId, createdAt])
+}
+
+model KarmaEvent {
+  id          String             @id @default(cuid())
+  journeyId   String
+  journey     FulfillmentJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  title       String
+  body        String             @db.Text
+  eventAt     DateTime
+  aiRealmTag  Realm?
+  aiCauseTag  String?
+  aiEffectTag String?
+  aiAdvice    String?            @db.Text
+  aiConfidence Float?
+  visibility  String             @default("PRIVATE") // PRIVATE|FRIENDS|PUBLIC
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([journeyId, eventAt])
+}
+
+model ThreeLifeVision {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  personalGoal  String?   @db.Text
+  familyGoal    String?   @db.Text
+  businessGoal  String?   @db.Text
+  alignedThemes Json?
+  aiAdvice      String?   @db.Text
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model DharmaLiveSession {
+  id            String    @id @default(cuid())
+  masterType    String    // REAL|AI_AVATAR
+  masterName    String
+  masterUserId  String?
+  tradition     String
+  topic         String
+  description   String?   @db.Text
+  startAt       DateTime
+  durationMin   Int
+  streamUrl     String?
+  replayUrl     String?
+  coverUrl      String?
+  status        String    @default("SCHEDULED") // SCHEDULED|LIVE|ENDED|CANCELLED
+  attendeeCount Int       @default(0)
+  donationTotal Decimal   @default(0) @db.Decimal(10, 2)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([status, startAt])
+  @@index([tradition, startAt])
+}
+
+model OxCultureMapping {
+  id               String  @id @default(cuid())
+  realmId          Int     // 1-7
+  oxStage          Int     // 1-10
+  tradition        String  // ZEN|TAOISM|...
+  symbolName       String
+  symbolNameNative String?
+  originalText     String  @db.Text
+  source           String
+  explanation      String  @db.Text
+  imageUrl         String?
+  hasDeepModule    Boolean @default(false)
+  deepModuleCode   String?
+  reviewStatus     String  @default("DRAFT") // DRAFT|REVIEW|APPROVED
+  reviewedBy       String?
+  sortOrder        Int     @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([realmId, tradition])
+  @@index([tradition, realmId])
+}
+
+model CultivationDeepModule {
+  id               String   @id @default(cuid())
+  code             String   @unique // DM-01..DM-12
+  name             String
+  tradition        String
+  applicableRealms Int[]
+  durationDays     Int
+  description      String   @db.Text
+  contentJson      Json?
+  unlockBy         String   @default("AUTO_ON_BLEND") // AUTO_ON_BLEND|MANUAL|PURCHASE
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  progresses UserDeepModuleProgress[]
+}
+
+model UserDeepModuleProgress {
+  id          String                @id @default(cuid())
+  userId      String
+  moduleCode  String
+  module      CultivationDeepModule @relation(fields: [moduleCode], references: [code])
+  currentDay  Int                   @default(1)
+  status      String                @default("IN_PROGRESS") // IN_PROGRESS|COMPLETED|PAUSED
+  startedAt   DateTime              @default(now())
+  completedAt DateTime?
+
+  @@unique([userId, moduleCode])
+  @@index([userId])
 }

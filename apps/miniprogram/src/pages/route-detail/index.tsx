@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { Route, ItineraryDay, fetchRouteBySlug } from '../../lib/api'
-import { useTranslation } from '@/lib/i18n'
+import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 export default function RouteDetailPage() {

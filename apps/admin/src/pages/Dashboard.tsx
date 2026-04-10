@@ -229,7 +229,7 @@ export default function Dashboard() {
 
   // Overview bar chart data
   const overviewData = [
-    { name: '信仰', count: s.religions.length, fill: CHART_COLORS[0] },
+    { name: '文化传统', count: s.religions.length, fill: CHART_COLORS[0] },
     { name: '圣地', count: s.holySites.length, fill: CHART_COLORS[1] },
     { name: '祖庭', count: s.temples.length, fill: CHART_COLORS[2] },
     { name: '祖师', count: s.patriarchs.length, fill: CHART_COLORS[3] },
@@ -266,7 +266,7 @@ export default function Dashboard() {
 
   const kpiCards = [
     {
-      title: '信仰体系',
+      title: '文化传统',
       value: s.religions.length,
       icon: <GlobalOutlined style={{ fontSize: 28, color: '#D4A855' }} />,
       color: '#D4A855',
@@ -665,7 +665,7 @@ export default function Dashboard() {
       {/* Charts row 2 */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
-          <Card title="各信仰圣地与祖庭分布" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+          <Card title="各文化传统圣地与祖庭分布" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={religionDistData}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
-import { fetchTrips, Trip } from '../../lib/api'
+import { fetchTrips, fetchCultivationMine, Trip, CultivationMineResponse } from '../../lib/api'
 import { isLoggedIn } from '../../lib/auth'
 import { useTranslation } from '../../lib/i18n'
 import './index.scss'
@@ -56,9 +56,13 @@ export default function TripsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [cultivation, setCultivation] = useState<CultivationMineResponse | null>(null)
 
   useDidShow(() => {
     setAuthed(isLoggedIn())
+    fetchCultivationMine()
+      .then(setCultivation)
+      .catch(() => setCultivation({ hasAccess: false, role: 'NONE', expiresAt: null, application: null }))
   })
 
   useEffect(() => {
@@ -140,6 +144,45 @@ export default function TripsPage() {
           <Text style={{ display: 'block', fontSize: '22rpx', color: '#94a3b8', marginTop: '4rpx' }}>{t('trips.statusCompleted')}</Text>
         </View>
       </View>
+
+      {/* 修行圈 Gateway */}
+      {cultivation && (
+        <View
+          onClick={() => Taro.navigateTo({
+            url: cultivation.hasAccess
+              ? '/pages/cultivation/index'
+              : '/pages/cultivation/apply'
+          })}
+          style={{
+            margin: '16rpx 32rpx',
+            padding: '24rpx 28rpx',
+            background: 'linear-gradient(135deg, #1a1410 0%, #2a1f15 100%)',
+            borderRadius: '20rpx',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: '20rpx',
+            border: '1rpx solid rgba(212,168,85,0.3)',
+          }}
+        >
+          <Text style={{ fontSize: '44rpx' }}>☸</Text>
+          <View style={{ flex: 1 }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10rpx' }}>
+              <Text style={{ color: '#D4A855', fontWeight: 'bold', fontSize: '30rpx' }}>圆满之路</Text>
+              {cultivation.hasAccess && (
+                <Text style={{ fontSize: '20rpx', color: '#D4A855', background: 'rgba(212,168,85,0.15)', padding: '2rpx 10rpx', borderRadius: '10rpx' }}>
+                  {cultivation.role}
+                </Text>
+              )}
+            </View>
+            <Text style={{ color: 'rgba(212,168,85,0.5)', fontSize: '24rpx', marginTop: '4rpx' }}>
+              {cultivation.hasAccess ? '禅宗主线·12文化融通·七境界修行' :
+                cultivation.application?.status === 'PENDING' ? '申请审核中...' : '申请加入修行圈'}
+            </Text>
+          </View>
+          <Text style={{ color: 'rgba(212,168,85,0.4)', fontSize: '28rpx' }}>›</Text>
+        </View>
+      )}
 
       {/* Status Filter */}
       <ScrollView className='status-tabs' scrollX>

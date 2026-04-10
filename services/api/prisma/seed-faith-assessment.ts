@@ -1,5 +1,5 @@
 /**
- * seed-faith-assessment.ts — 佳绩力评估题库 60题 (20概念 × 3模式)
+ * seed-faith-assessment.ts — 信仰力评估题库 60题 (20概念 × 3模式)
  * 独立执行: npx tsx prisma/seed-faith-assessment.ts
  */
 import { PrismaClient } from '@prisma/client';

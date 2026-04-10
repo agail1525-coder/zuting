@@ -157,7 +157,7 @@ export default function JournalsPage() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
-          朝圣日记
+          文化之旅日记
         </Title>
         <Space>
           <Input

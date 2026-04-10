@@ -32,6 +32,7 @@ const AnalyticsDashboardPage = lazy(() => import('./pages/AnalyticsDashboardPage
 const ChatMonitorPage = lazy(() => import('./pages/ChatMonitorPage'));
 const MediaPage = lazy(() => import('./pages/MediaPage'));
 const TeamCultureManagePage = lazy(() => import('./pages/TeamCultureManagePage'));
+const CultivationManagePage = lazy(() => import('./pages/CultivationManagePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="chat-monitor" element={<ChatMonitorPage />} />
           <Route path="media" element={<MediaPage />} />
           <Route path="team-culture" element={<TeamCultureManagePage />} />
+          <Route path="cultivation" element={<CultivationManagePage />} />
         </Route>
       </Routes>
     </Suspense>

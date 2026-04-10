@@ -314,7 +314,7 @@ export default function AIConfigPage() {
               { max: 200, message: '最多200字' },
             ]}
           >
-            <Input placeholder="例如：推荐一个朝圣路线" />
+            <Input placeholder="例如：推荐一个文化之旅路线" />
           </Form.Item>
           <Form.Item
             name="category"

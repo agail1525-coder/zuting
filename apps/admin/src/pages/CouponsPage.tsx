@@ -345,7 +345,7 @@ export default function CouponsPage() {
             <Input placeholder="如: SPRING2026" style={{ textTransform: 'uppercase' }} disabled={!!editing} />
           </Form.Item>
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
-            <Input placeholder="如: 春季朝圣优惠" />
+            <Input placeholder="如: 春季文化之旅优惠" />
           </Form.Item>
           <Space style={{ width: '100%' }} size="large">
             <Form.Item name="type" label="类型" rules={[{ required: true, message: '请选择类型' }]} initialValue="FIXED">

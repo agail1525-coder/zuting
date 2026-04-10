@@ -19,7 +19,7 @@ export default function TemplesPage() {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getReligions().then(setReligions).catch(() => message.error('信仰列表加载失败'));
+    getReligions().then(setReligions).catch(() => message.error('文化传统列表加载失败'));
   }, []);
 
   const load = () => {
@@ -135,7 +135,7 @@ export default function TemplesPage() {
           : <span style={{ color: '#999' }}>未设置</span>,
     },
     {
-      title: '所属信仰',
+      title: '所属文化',
       dataIndex: 'religionId',
       key: 'religionId',
       render: (id: string) => {
@@ -178,10 +178,10 @@ export default function TemplesPage() {
           祖庭管理
         </Title>
         <Space>
-          <span style={{ color: '#999' }}>按信仰筛选:</span>
+          <span style={{ color: '#999' }}>按文化传统筛选:</span>
           <Select
             allowClear
-            placeholder="全部信仰"
+            placeholder="全部文化传统"
             style={{ width: 180 }}
             onChange={(v) => setReligionFilter(v)}
             options={religions.map((r) => ({
@@ -247,9 +247,9 @@ export default function TemplesPage() {
               <InputNumber style={{ width: '100%' }} step={0.000001} precision={6} placeholder="例: 112.9372" min={-180} max={180} />
             </Form.Item>
           </Space>
-          <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>
+          <Form.Item name="religionId" label="所属文化传统" rules={[{ required: true, message: '请选择文化传统' }]}>
             <Select
-              placeholder="选择信仰"
+              placeholder="选择文化传统"
               options={religions.map((r) => ({
                 value: r.id,
                 label: r.name || r.slug,

@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 const { Title } = Typography;
 
 const ROLE_MAP: Record<string, { color: string; label: string }> = {
-  PILGRIM: { color: 'blue', label: '朝圣者' },
+  PILGRIM: { color: 'blue', label: '探访者' },
   GUIDE: { color: 'green', label: '导游' },
   AMBASSADOR: { color: 'purple', label: '大使' },
   ADMIN: { color: 'gold', label: '管理员' },
@@ -20,7 +20,7 @@ const ROLE_MAP: Record<string, { color: string; label: string }> = {
 
 const ROLE_OPTIONS = [
   { value: '', label: '全部角色' },
-  { value: 'PILGRIM', label: '朝圣者' },
+  { value: 'PILGRIM', label: '探访者' },
   { value: 'GUIDE', label: '导游' },
   { value: 'AMBASSADOR', label: '大使' },
   { value: 'ADMIN', label: '管理员' },

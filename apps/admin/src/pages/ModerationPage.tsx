@@ -43,7 +43,7 @@ const reasonLabels: Record<string, string> = {
   INAPPROPRIATE: '不当内容',
   OFFENSIVE: '冒犯性内容',
   SPAM: '垃圾信息',
-  RELIGIOUS_SENSITIVE: '宗教敏感',
+  RELIGIOUS_SENSITIVE: '文化敏感',
 };
 
 const targetTypeLabels: Record<string, { text: string; color: string }> = {

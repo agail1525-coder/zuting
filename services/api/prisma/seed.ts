@@ -1062,7 +1062,7 @@ const routes: RouteData[] = [
     difficulty: RouteDifficulty.EASY,
     duration: 5, nights: 4,
     highlights: ['圣墓教堂', '苦路十四站', '哭墙', '橄榄山'],
-    description: '深入耶路撒冷老城，走访基督文化、犹太文化、伊斯兰文化三大文化传统的神圣之地。从苦路十四站到圣墓教堂，从哭墙到圆顶清真寺，感受这座永恒之城的千年历史与佳绩力量。',
+    description: '深入耶路撒冷老城，走访基督文化、犹太文化、伊斯兰文化三大文化传统的神圣之地。从苦路十四站到圣墓教堂，从哭墙到圆顶清真寺，感受这座永恒之城的千年历史与信仰力量。',
     itinerary: [
       { day: 1, title: '抵达特拉维夫→耶路撒冷', activities: ['接机', '橄榄山远眺圣城', '客西马尼园'], meals: ['晚餐'], accommodation: '耶路撒冷老城酒店' },
       { day: 2, title: '耶路撒冷老城·基督文化区', activities: ['苦路十四站', '圣墓教堂', '最后晚餐厅'], meals: ['全餐'], accommodation: '耶路撒冷' },

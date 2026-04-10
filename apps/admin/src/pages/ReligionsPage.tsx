@@ -147,7 +147,7 @@ export default function ReligionsPage() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
-          信仰管理
+          文化传统管理
         </Title>
         <Space>
           <Input
@@ -177,7 +177,7 @@ export default function ReligionsPage() {
 
       {/* Detail Modal */}
       <Modal
-        title="信仰详情"
+        title="文化传统详情"
         open={!!detail}
         onCancel={() => setDetail(null)}
         footer={null}
@@ -200,7 +200,7 @@ export default function ReligionsPage() {
 
       {/* Create/Edit Modal */}
       <Modal
-        title={editing ? '编辑信仰' : '新增信仰'}
+        title={editing ? '编辑文化传统' : '新增文化传统'}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={handleSubmit}
@@ -211,7 +211,7 @@ export default function ReligionsPage() {
       >
         <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
           <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
-            <Input placeholder="例: 佛教" />
+            <Input placeholder="例: 佛教文化" />
           </Form.Item>
           <Form.Item name="nameEn" label="英文名" rules={[{ required: true, message: '请输入英文名' }]}>
             <Input placeholder="例: Buddhism" />

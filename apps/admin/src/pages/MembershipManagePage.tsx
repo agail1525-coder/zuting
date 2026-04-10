@@ -766,7 +766,7 @@ function PackagesTab() {
               <Form.Item label="类型" name="type" rules={[{ required: true }]}>
                 <Select
                   options={[
-                    { value: '朝圣之旅', label: '朝圣之旅' },
+                    { value: '文化之旅', label: '文化之旅' },
                     { value: '文化探索', label: '文化探索' },
                     { value: '家庭套餐', label: '家庭套餐' },
                     { value: '定制团', label: '定制团' },

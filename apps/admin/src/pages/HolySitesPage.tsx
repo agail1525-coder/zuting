@@ -19,7 +19,7 @@ export default function HolySitesPage() {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    getReligions().then(setReligions).catch(() => message.error('信仰列表加载失败'));
+    getReligions().then(setReligions).catch(() => message.error('文化传统列表加载失败'));
   }, []);
 
   const load = () => {
@@ -131,7 +131,7 @@ export default function HolySitesPage() {
       render: (v: number) => v?.toFixed(4) ?? '-',
     },
     {
-      title: '所属信仰',
+      title: '所属文化',
       dataIndex: 'religionId',
       key: 'religionId',
       render: (id: string) => {
@@ -169,10 +169,10 @@ export default function HolySitesPage() {
           圣地管理
         </Title>
         <Space>
-          <span style={{ color: '#999' }}>按信仰筛选:</span>
+          <span style={{ color: '#999' }}>按文化传统筛选:</span>
           <Select
             allowClear
-            placeholder="全部信仰"
+            placeholder="全部文化传统"
             style={{ width: 180 }}
             onChange={(v) => setReligionFilter(v)}
             options={religions.map((r) => ({
@@ -235,9 +235,9 @@ export default function HolySitesPage() {
           <Form.Item name="imageUrl" label="图片URL" rules={[{ type: 'url', message: '请输入有效的URL' }]}>
             <Input placeholder="https://..." />
           </Form.Item>
-          <Form.Item name="religionId" label="所属信仰" rules={[{ required: true, message: '请选择信仰' }]}>
+          <Form.Item name="religionId" label="所属文化传统" rules={[{ required: true, message: '请选择文化传统' }]}>
             <Select
-              placeholder="选择信仰"
+              placeholder="选择文化传统"
               options={religions.map((r) => ({
                 value: r.id,
                 label: r.name || r.slug,
