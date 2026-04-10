@@ -122,12 +122,12 @@ export class FulfillmentService {
     if (journey.oxStage >= 10) {
       throw new BadRequestException('已到圆融境');
     }
-    // 简化条件: 至少 21 天连击
-    if (journey.streakDays < 21) {
+    if (journey.quizPassedStreak < 21) {
       throw new ForbiddenException({
         code: 'ADVANCE_LOCKED',
-        message: '尚未满足晋阶条件 (21 天连击)',
-        currentStreak: journey.streakDays,
+        message: `尚未满足晋阶条件：需连续通过 21 天禅修考核 (当前 ${journey.quizPassedStreak} 天)`,
+        currentStreak: journey.quizPassedStreak,
+        required: 21,
       });
     }
     const newStage = journey.oxStage + 1;

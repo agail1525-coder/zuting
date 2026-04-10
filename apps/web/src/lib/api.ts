@@ -2465,6 +2465,64 @@ export const fetchOxPath = () => fetchAuthed<OxPathResponse>("/api/cultivation/o
 export const advanceOxStage = () =>
   fetchAuthed<FulfillmentJourney>("/api/cultivation/ox-path/advance", { method: "POST" });
 
+// A2.1 Zen Quiz (AI禅修考核)
+export interface ZenQuizQuestion {
+  index: number;
+  question: string;
+  questionType: string;
+  stageName: string;
+}
+export interface ZenQuizAnswer {
+  index: number;
+  userAnswer: string;
+  aiScore: number;
+  aiFeedback: string;
+  encouragement: string;
+  passed: boolean;
+}
+export interface ZenQuizResponse {
+  id: string;
+  quizDate: string;
+  oxStage: number;
+  questions: ZenQuizQuestion[];
+  answers: ZenQuizAnswer[] | null;
+  totalQuestions: number;
+  answeredCount: number;
+  passedCount: number;
+  status: "IN_PROGRESS" | "PASSED" | "FAILED";
+}
+export interface QuizProgressResponse {
+  quizPassedStreak: number;
+  lastQuizPassedAt: string | null;
+  todayStatus: string;
+  daysToAdvancement: number;
+  oxStage: number;
+}
+export interface AnswerFeedbackResponse {
+  passed: boolean;
+  score: number;
+  feedback: string;
+  encouragement: string;
+  quizStatus: string;
+  answeredCount: number;
+  passedCount: number;
+  totalQuestions: number;
+}
+export const fetchTodayQuiz = () =>
+  fetchAuthed<ZenQuizResponse>("/api/cultivation/zen-quiz/today");
+export const submitQuizAnswer = (data: { quizId: string; questionIndex: number; answer: string }) =>
+  fetchAuthed<AnswerFeedbackResponse>("/api/cultivation/zen-quiz/answer", {
+    method: "POST",
+    body: JSON.stringify(data),
+    timeoutMs: 60000,
+  });
+export const fetchQuizProgress = () =>
+  fetchAuthed<QuizProgressResponse>("/api/cultivation/zen-quiz/progress");
+export const fetchQuizHistory = (page = 1, pageSize = 20) =>
+  fetchAuthed<{ items: ZenQuizResponse[]; total: number }>(
+    `/api/cultivation/zen-quiz/history?page=${page}&pageSize=${pageSize}`
+  );
+
 // A3 Daily Seal
 export const fetchTodaySeal = (session: "MORNING" | "EVENING" = "MORNING") =>
   fetchAuthed<DailySealResponse>(`/api/cultivation/daily-seal/today?session=${session}`);

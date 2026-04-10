@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchOxPath, advanceOxStage, type OxPathResponse } from "@/lib/api";
+import Link from "next/link";
+import { fetchOxPath, advanceOxStage, fetchQuizProgress, type OxPathResponse, type QuizProgressResponse } from "@/lib/api";
 
 const STAGE_NAMES = [
   "寻牛", "见迹", "见牛", "得牛", "牧牛",
@@ -23,10 +24,14 @@ const STAGE_DESC = [
 
 export default function OxPathPage() {
   const [data, setData] = useState<OxPathResponse | null>(null);
+  const [quizProgress, setQuizProgress] = useState<QuizProgressResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [advancing, setAdvancing] = useState(false);
 
-  const load = () => fetchOxPath().then(setData).catch((e) => setError(e.message));
+  const load = () => {
+    fetchOxPath().then(setData).catch((e) => setError(e.message));
+    fetchQuizProgress().then(setQuizProgress).catch(() => {});
+  };
 
   useEffect(() => {
     load();
@@ -57,6 +62,54 @@ export default function OxPathPage() {
       {error && (
         <div className="rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-rose-200 text-sm">
           {error}
+        </div>
+      )}
+
+      {/* 今日禅修考核 */}
+      {quizProgress && (
+        <div className="rounded-2xl border border-amber-700/50 bg-gradient-to-r from-amber-900/30 to-amber-950/30 p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-amber-100 flex items-center gap-2">
+              <span className="text-xl">🪷</span> 每日禅修考核
+            </h3>
+            <span className="text-xs px-2 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300">
+              {quizProgress.todayStatus === "PASSED"
+                ? "今日已通过"
+                : quizProgress.todayStatus === "FAILED"
+                ? "今日未通过"
+                : quizProgress.todayStatus === "IN_PROGRESS"
+                ? "答题中..."
+                : "未开始"}
+            </span>
+          </div>
+          <div className="mb-3">
+            <div className="flex items-center justify-between text-sm mb-1">
+              <span className="text-amber-200/60">
+                连续通过 {quizProgress.quizPassedStreak} / 21 天
+              </span>
+              <span className="text-amber-300 font-bold">
+                {quizProgress.daysToAdvancement > 0
+                  ? `还需 ${quizProgress.daysToAdvancement} 天`
+                  : "可以晋阶！"}
+              </span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-amber-950/50 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all"
+                style={{ width: `${Math.min(100, (quizProgress.quizPassedStreak / 21) * 100)}%` }}
+              />
+            </div>
+          </div>
+          <Link
+            href="/trips/cultivation/ox-path/quiz"
+            className="block text-center py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold hover:shadow-lg hover:shadow-amber-500/30 transition-all"
+          >
+            {quizProgress.todayStatus === "NOT_STARTED"
+              ? "开始今日修行"
+              : quizProgress.todayStatus === "IN_PROGRESS"
+              ? "继续修行"
+              : "查看今日结果"}
+          </Link>
         </div>
       )}
 
@@ -103,7 +156,10 @@ export default function OxPathPage() {
       </div>
 
       <div className="rounded-2xl border border-amber-900/50 bg-amber-950/20 p-6 text-center">
-        <p className="text-amber-100/70 text-sm mb-3">满足 21 天连击即可申请晋阶</p>
+        <p className="text-amber-100/70 text-sm mb-3">
+          连续通过 21 天禅修考核即可申请晋阶
+          {quizProgress ? ` (当前 ${quizProgress.quizPassedStreak}/21)` : ""}
+        </p>
         <button
           onClick={onAdvance}
           disabled={advancing || data.currentStage >= 10}

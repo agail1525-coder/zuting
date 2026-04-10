@@ -1668,6 +1668,8 @@ model FulfillmentJourney {
   karmaPoints      Int       @default(0)
   streakDays       Int       @default(0)
   lastSealAt       DateTime?
+  quizPassedStreak Int       @default(0)    // 连续通过禅修考核天数
+  lastQuizPassedAt DateTime?                // 上次通过考核日期
   realmScoreSnap   Json?
   startedAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -1675,6 +1677,7 @@ model FulfillmentJourney {
   sealPractices DailySealPractice[]
   wisdomQueries WisdomQuery[]
   karmaEvents   KarmaEvent[]
+  dailyQuizzes  DailyPracticeQuiz[]
 }
 
 model DailySealPractice {
@@ -1692,6 +1695,26 @@ model DailySealPractice {
 
   @@unique([journeyId, practiceDate, session])
   @@index([journeyId, practiceDate])
+}
+
+model DailyPracticeQuiz {
+  id             String             @id @default(cuid())
+  journeyId      String
+  journey        FulfillmentJourney @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  quizDate       DateTime           @db.Date
+  oxStage        Int
+  questions      Json               // [{index, question, questionType, referencePoints, stageName}]
+  answers        Json?              // [{index, userAnswer, aiScore, aiFeedback, passed}]
+  totalQuestions  Int               @default(10)
+  answeredCount   Int               @default(0)
+  passedCount     Int               @default(0)
+  status         String             @default("IN_PROGRESS") // IN_PROGRESS | PASSED | FAILED
+  completedAt    DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([journeyId, quizDate])
+  @@index([journeyId, status])
 }
 
 model WisdomQuery {
