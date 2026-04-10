@@ -82,8 +82,8 @@ export default function ScripturesPage() {
 
   return (
     <div className="space-y-8">
-      {/* Rotating ring keyframes — named to avoid conflict with Tailwind's spin */}
-      <style jsx global>{`
+      {/* Rotating ring keyframes — plain <style> for App Router compatibility */}
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes scripture-ring-cw {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
@@ -101,15 +101,12 @@ export default function ScripturesPage() {
         .scripture-ring-outer:hover,
         .scripture-ring-mid:hover,
         .scripture-ring-inner:hover { animation-play-state: paused; }
-        .scripture-ring-outer:hover ~ * .scripture-ring-outer-counter,
-        .scripture-ring-mid:hover ~ * .scripture-ring-mid-counter,
-        .scripture-ring-inner:hover ~ * .scripture-ring-inner-counter { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) {
           .scripture-ring-outer, .scripture-ring-outer-counter,
           .scripture-ring-mid, .scripture-ring-mid-counter,
           .scripture-ring-inner, .scripture-ring-inner-counter { animation: none; }
         }
-      `}</style>
+      ` }} />
 
       {/* Header */}
       <div className="text-center">
