@@ -82,111 +82,159 @@ export default function ScripturesPage() {
 
   return (
     <div className="space-y-8">
+      {/* Rotating ring keyframes — named to avoid conflict with Tailwind's spin */}
+      <style jsx global>{`
+        @keyframes scripture-ring-cw {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes scripture-ring-ccw {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(-360deg); }
+        }
+        .scripture-ring-outer { animation: scripture-ring-cw 120s linear infinite; }
+        .scripture-ring-outer-counter { animation: scripture-ring-ccw 120s linear infinite; }
+        .scripture-ring-mid   { animation: scripture-ring-ccw 80s linear infinite; }
+        .scripture-ring-mid-counter { animation: scripture-ring-cw 80s linear infinite; }
+        .scripture-ring-inner { animation: scripture-ring-cw 50s linear infinite; }
+        .scripture-ring-inner-counter { animation: scripture-ring-ccw 50s linear infinite; }
+        .scripture-ring-outer:hover,
+        .scripture-ring-mid:hover,
+        .scripture-ring-inner:hover { animation-play-state: paused; }
+        .scripture-ring-outer:hover ~ * .scripture-ring-outer-counter,
+        .scripture-ring-mid:hover ~ * .scripture-ring-mid-counter,
+        .scripture-ring-inner:hover ~ * .scripture-ring-inner-counter { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .scripture-ring-outer, .scripture-ring-outer-counter,
+          .scripture-ring-mid, .scripture-ring-mid-counter,
+          .scripture-ring-inner, .scripture-ring-inner-counter { animation: none; }
+        }
+      `}</style>
+
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-amber-100 mb-2">经论大系统</h1>
+        <h1 className="text-3xl font-bold text-amber-100 mb-2">
+          <span className="bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
+            愿财双圆 · 经论大系统
+          </span>
+        </h1>
         <p className="text-amber-200/60 max-w-xl mx-auto">
-          人类璀璨文化的结晶 — 以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大信仰传统为全景
+          起大愿 · 发大财 · 布施众生 — 以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大信仰传统为全景
         </p>
       </div>
 
-      {/* ── Knowledge Graph: Concentric Rings ── */}
+      {/* ── Knowledge Graph: Concentric Rings (Rotating) ── */}
       <div className="relative mx-auto" style={{ maxWidth: 600 }}>
         <div className="relative aspect-square">
+          {/* Ambient glow pulse */}
+          <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-amber-500/5 via-transparent to-purple-500/5 blur-2xl pointer-events-none" />
+
           {/* Ring 3 (outer) */}
-          <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 bg-purple-500/5 flex items-center justify-center">
-            <div className="absolute inset-0 p-3">
-              {ringGroups[3]?.map((cat, i) => {
-                const total = ringGroups[3].length;
-                const angle = (i / total) * 360 - 90;
-                const r = 46;
-                const x = 50 + r * Math.cos((angle * Math.PI) / 180);
-                const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 group"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                    title={cat.name}
+          <div className="absolute inset-0 rounded-full border-2 border-purple-500/30 bg-purple-500/5" />
+          <div className="absolute inset-0 p-3 scripture-ring-outer" style={{ transformOrigin: "50% 50%" }}>
+            {ringGroups[3]?.map((cat, i) => {
+              const total = ringGroups[3].length;
+              const angle = (i / total) * 360 - 90;
+              const r = 46;
+              const x = 50 + r * Math.cos((angle * Math.PI) / 180);
+              const y = 50 + r * Math.sin((angle * Math.PI) / 180);
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                  title={cat.name}
+                >
+                  <div
+                    className="scripture-ring-outer-counter flex flex-col items-center"
+                    style={{ transformOrigin: "50% 50%" }}
                   >
                     <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-sm sm:text-base group-hover:bg-purple-500/40 group-hover:scale-110 transition-all cursor-pointer">
                       {cat.icon || TRADITION_ICONS[cat.tradition] || "📚"}
                     </div>
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 mt-0.5 text-[9px] sm:text-[10px] text-purple-300/70 whitespace-nowrap group-hover:text-purple-200">
+                    <span className="mt-0.5 text-[9px] sm:text-[10px] text-purple-300/70 whitespace-nowrap group-hover:text-purple-200">
                       {cat.name.replace("经典", "")}
                     </span>
-                  </Link>
-                );
-              })}
-            </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Ring 2 (middle) */}
-          <div className="absolute inset-[18%] rounded-full border-2 border-cyan-500/30 bg-cyan-500/5">
-            <div className="absolute inset-0">
-              {ringGroups[2]?.map((cat, i) => {
-                const total = ringGroups[2].length;
-                const angle = (i / total) * 360 - 90;
-                const r = 42;
-                const x = 50 + r * Math.cos((angle * Math.PI) / 180);
-                const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 group"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                    title={cat.name}
+          <div className="absolute inset-[18%] rounded-full border-2 border-cyan-500/30 bg-cyan-500/5" />
+          <div className="absolute inset-[18%] scripture-ring-mid" style={{ transformOrigin: "50% 50%" }}>
+            {ringGroups[2]?.map((cat, i) => {
+              const total = ringGroups[2].length;
+              const angle = (i / total) * 360 - 90;
+              const r = 42;
+              const x = 50 + r * Math.cos((angle * Math.PI) / 180);
+              const y = 50 + r * Math.sin((angle * Math.PI) / 180);
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                  title={cat.name}
+                >
+                  <div
+                    className="scripture-ring-mid-counter flex flex-col items-center"
+                    style={{ transformOrigin: "50% 50%" }}
                   >
                     <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sm sm:text-lg group-hover:bg-cyan-500/40 group-hover:scale-110 transition-all cursor-pointer">
                       {cat.icon || "☸"}
                     </div>
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 mt-0.5 text-[9px] sm:text-[10px] text-cyan-300/70 whitespace-nowrap group-hover:text-cyan-200">
+                    <span className="mt-0.5 text-[9px] sm:text-[10px] text-cyan-300/70 whitespace-nowrap group-hover:text-cyan-200">
                       {cat.name.replace("经典", "")}
                     </span>
-                  </Link>
-                );
-              })}
-            </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Ring 1 (inner) — Zen core */}
-          <div className="absolute inset-[36%] rounded-full border-2 border-amber-500/50 bg-amber-500/10">
-            <div className="absolute inset-0">
-              {ringGroups[1]?.map((cat, i) => {
-                const total = ringGroups[1].length;
-                const angle = (i / total) * 360 - 90;
-                const r = 38;
-                const x = 50 + r * Math.cos((angle * Math.PI) / 180);
-                const y = 50 + r * Math.sin((angle * Math.PI) / 180);
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 group"
-                    style={{ left: `${x}%`, top: `${y}%` }}
-                    title={cat.name}
+          <div className="absolute inset-[36%] rounded-full border-2 border-amber-500/50 bg-amber-500/10" />
+          <div className="absolute inset-[36%] scripture-ring-inner" style={{ transformOrigin: "50% 50%" }}>
+            {ringGroups[1]?.map((cat, i) => {
+              const total = ringGroups[1].length;
+              const angle = (i / total) * 360 - 90;
+              const r = 38;
+              const x = 50 + r * Math.cos((angle * Math.PI) / 180);
+              const y = 50 + r * Math.sin((angle * Math.PI) / 180);
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/trips/cultivation/scriptures?cat=${cat.slug}`}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                  title={cat.name}
+                >
+                  <div
+                    className="scripture-ring-inner-counter flex flex-col items-center"
+                    style={{ transformOrigin: "50% 50%" }}
                   >
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-base sm:text-xl group-hover:bg-amber-500/40 group-hover:scale-110 transition-all cursor-pointer shadow-lg shadow-amber-500/10">
                       {cat.icon || "🪷"}
                     </div>
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 mt-0.5 text-[10px] sm:text-xs text-amber-300/80 whitespace-nowrap font-medium group-hover:text-amber-200">
+                    <span className="mt-0.5 text-[10px] sm:text-xs text-amber-300/80 whitespace-nowrap font-medium group-hover:text-amber-200">
                       {cat.name}
                     </span>
-                  </Link>
-                );
-              })}
-            </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Center — Platform Sutra */}
+          {/* Center — Platform Sutra (pulsing, 愿财双圆) */}
           <Link
             href="/trips/cultivation/scriptures/platform-sutra"
-            className="absolute inset-[44%] rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 shadow-xl shadow-amber-500/30 flex flex-col items-center justify-center text-center hover:scale-105 transition-transform cursor-pointer z-10"
+            className="absolute inset-[44%] rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 shadow-xl shadow-amber-500/40 flex flex-col items-center justify-center text-center hover:scale-110 transition-transform cursor-pointer z-10 animate-pulse"
           >
             <span className="text-2xl sm:text-3xl">🪷</span>
-            <span className="text-[10px] sm:text-xs font-bold text-amber-950 leading-tight mt-0.5">六祖坛经</span>
+            <span className="text-[10px] sm:text-xs font-bold text-amber-950 leading-tight mt-0.5">愿财双圆</span>
           </Link>
         </div>
 
