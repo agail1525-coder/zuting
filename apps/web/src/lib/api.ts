@@ -561,7 +561,12 @@ async function fetchAuthed<T>(
       },
     });
     if (!res.ok) {
-      throw new Error(`API error: ${res.status} ${res.statusText}`);
+      let msg = `API error: ${res.status}`;
+      try {
+        const body = await res.json();
+        if (body?.message) msg = typeof body.message === 'string' ? body.message : JSON.stringify(body.message);
+      } catch {}
+      throw new Error(msg);
     }
     return res.json();
   } finally {
