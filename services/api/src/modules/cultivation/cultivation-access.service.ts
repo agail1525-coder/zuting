@@ -88,13 +88,20 @@ export class CultivationAccessService {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {
+        role: true,
         cultivationAccess: true,
         cultivationRole: true,
         cultivationGrantedAt: true,
         cultivationExpiresAt: true,
       },
     });
-    return { application, currentAccess: user };
+    const isAdmin = user?.role === 'ADMIN';
+    return {
+      hasAccess: isAdmin || !!user?.cultivationAccess,
+      role: user?.cultivationRole ?? (isAdmin ? 'MASTER' : 'NONE'),
+      expiresAt: user?.cultivationExpiresAt ?? null,
+      application,
+    };
   }
 
   async redeemInvite(userId: string, dto: RedeemInviteDto) {

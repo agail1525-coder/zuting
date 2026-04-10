@@ -18,6 +18,10 @@ export class CultivationAccessGuard implements CanActivate {
     if (!user) {
       throw new UnauthorizedException('需要登录');
     }
+    // ADMIN 自动放行
+    if (user.role === 'ADMIN') {
+      return true;
+    }
     if (!user.cultivationAccess) {
       throw new ForbiddenException({
         code: 'CULTIVATION_REQUIRED',
