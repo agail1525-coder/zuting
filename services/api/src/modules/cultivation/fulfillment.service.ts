@@ -15,6 +15,9 @@ import {
   UpdateThreeLifeVisionDto,
   WisdomQueryDto,
 } from './dto/fulfillment.dto';
+import { WisdomService } from './wisdom/wisdom.service';
+import { DEFAULT_WISDOM_TRADITIONS, getMaster } from './wisdom/masters.constants';
+import type { MasterAnswer, DebateTurn } from './wisdom/master-prompt.builder';
 
 const REALM_ORDER: Realm[] = [
   'AWAKENING',
@@ -36,7 +39,10 @@ const sanitize = (s?: string | null) =>
 
 @Injectable()
 export class FulfillmentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly wisdomService: WisdomService,
+  ) {}
 
   // ── A1 罗盘 / Journey ──────────────────────────────────
 
@@ -236,23 +242,48 @@ export class FulfillmentService {
 
   async createWisdomQuery(userId: string, dto: WisdomQueryDto) {
     const journey = await this.getOrCreateJourney(userId);
-    const traditions =
+    const question = sanitize(dto.question)!;
+
+    // 解析 traditions: 用户指定 → journey 配置 → 默认 6 位
+    let traditions: string[] =
       dto.traditions && dto.traditions.length > 0
         ? dto.traditions
-        : [journey.primaryTradition, ...journey.blendTraditions];
-    // Wave 1: 占位答案; Wave 2 接小鸿 LLM
-    const answers = traditions.map((t) => ({
-      tradition: t,
-      masterName: this.masterName(t),
-      answer: `[${t} 视角的答案占位 — Wave 2 接入小鸿 LLM]`,
-      citations: [],
-      status: 'PLACEHOLDER',
-    }));
+        : [journey.primaryTradition, ...journey.blendTraditions].filter(Boolean);
+    if (traditions.length === 0) {
+      traditions = [...DEFAULT_WISDOM_TRADITIONS];
+    }
+    // 去重 + 过滤未知 + 3-12 边界
+    traditions = Array.from(new Set(traditions)).filter((t) => !!getMaster(t));
+    if (traditions.length < 3) {
+      for (const fallback of DEFAULT_WISDOM_TRADITIONS) {
+        if (!traditions.includes(fallback)) traditions.push(fallback);
+        if (traditions.length >= 3) break;
+      }
+    }
+    if (traditions.length > 12) traditions = traditions.slice(0, 12);
+
+    // 并行调用每位大师；单宗失败不影响整体
+    const settled = await Promise.allSettled(
+      traditions.map((t) => this.wisdomService.answerAsMaster(t, question)),
+    );
+    const answers: MasterAnswer[] = settled.map((r, idx) => {
+      if (r.status === 'fulfilled') return r.value;
+      const t = traditions[idx];
+      return {
+        tradition: t,
+        masterName: this.masterName(t),
+        answer: '此刻大师沉默不语，请稍后再问。',
+        citations: [],
+        keyPoints: [],
+        status: 'FAILED',
+      };
+    });
+
     return this.prisma.wisdomQuery.create({
       data: {
         journeyId: journey.id,
-        question: sanitize(dto.question)!,
-        answers,
+        question,
+        answers: answers as any,
         chosenTrads: [],
       },
     });
@@ -267,12 +298,88 @@ export class FulfillmentService {
     if (query.journeyId !== journey.id) {
       throw new ForbiddenException('IDOR: 不能融合他人的问答');
     }
+
+    const chosen = new Set(dto.chosenTraditions);
+    const rawAnswers = Array.isArray(query.answers) ? (query.answers as any[]) : [];
+    const picked = rawAnswers
+      .filter((a) => a && chosen.has(a.tradition) && a.status === 'OK')
+      .map((a) => ({
+        tradition: String(a.tradition),
+        masterName: String(a.masterName ?? ''),
+        answer: String(a.answer ?? ''),
+      }));
+
+    const synthesis = await this.wisdomService.synthesize(query.question, picked);
+
     return this.prisma.wisdomQuery.update({
       where: { id: dto.queryId },
       data: {
         chosenTrads: dto.chosenTraditions,
-        synthesized: '[融合答案 — Wave 2 接入小鸿]',
+        synthesized: JSON.stringify(synthesis),
       },
+    });
+  }
+
+  async runDebate(userId: string, queryId: string, rounds: number = 3) {
+    const journey = await this.getOrCreateJourney(userId);
+    const query = await this.prisma.wisdomQuery.findUnique({ where: { id: queryId } });
+    if (!query) throw new NotFoundException('问答不存在');
+    if (query.journeyId !== journey.id) {
+      throw new ForbiddenException('IDOR: 不能启动他人的圆桌');
+    }
+
+    const rawAnswers = Array.isArray(query.answers) ? (query.answers as any[]) : [];
+    const masters = rawAnswers
+      .filter((a) => a && a.status === 'OK' && getMaster(a.tradition))
+      .map((a) => ({
+        tradition: String(a.tradition),
+        masterName: String(a.masterName ?? ''),
+      }));
+    if (masters.length < 2) {
+      throw new BadRequestException('至少需要 2 位答复成功的大师才能开启圆桌');
+    }
+
+    const maxRounds = Math.min(Math.max(rounds, 1), 3);
+    // round 0: 以首轮答案作为初始上下文
+    let lastTurnMap = new Map<string, string>(
+      rawAnswers
+        .filter((a) => a && a.status === 'OK')
+        .map((a) => [String(a.tradition), String(a.answer ?? '')]),
+    );
+
+    const roundsOut: Array<{ round: number; turns: DebateTurn[] }> = [];
+    for (let r = 1; r <= maxRounds; r++) {
+      const settled = await Promise.allSettled(
+        masters.map((m) => {
+          const others = masters
+            .filter((o) => o.tradition !== m.tradition)
+            .map((o) => ({
+              masterName: o.masterName,
+              tradition: o.tradition,
+              text: lastTurnMap.get(o.tradition) ?? '',
+            }));
+          return this.wisdomService.debateAsMaster(m.tradition, query.question, r, others);
+        }),
+      );
+      const turns: DebateTurn[] = settled.map((s, i) =>
+        s.status === 'fulfilled'
+          ? s.value
+          : {
+              tradition: masters[i].tradition,
+              masterName: masters[i].masterName,
+              response: '此轮大师默然。',
+              citations: [],
+              repliesTo: [],
+            },
+      );
+      roundsOut.push({ round: r, turns });
+      lastTurnMap = new Map(turns.map((t) => [t.tradition, t.response]));
+    }
+
+    const debate = { rounds: roundsOut };
+    return this.prisma.wisdomQuery.update({
+      where: { id: queryId },
+      data: { debate: debate as any },
     });
   }
 

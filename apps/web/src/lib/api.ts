@@ -2380,12 +2380,43 @@ export interface DailySealResponse {
   tradition: string;
 }
 
+export interface WisdomCitation {
+  scriptureSlug: string;
+  title: string;
+  quote: string;
+}
+export interface WisdomMasterAnswer {
+  tradition: string;
+  masterName: string;
+  answer: string;
+  citations: WisdomCitation[];
+  keyPoints: string[];
+  status: "OK" | "FAILED" | string;
+}
+export interface WisdomDebateTurn {
+  tradition: string;
+  masterName: string;
+  response: string;
+  citations: WisdomCitation[];
+  repliesTo: string[];
+}
+export interface WisdomDebate {
+  rounds: { round: number; turns: WisdomDebateTurn[] }[];
+  moderatorNotes?: string[];
+}
+export interface WisdomSynthesis {
+  convergence: string[];
+  divergence: { tradition: string; stance: string; reason: string }[];
+  integration: string;
+  practice: string;
+}
 export interface WisdomQuery {
   id: string;
   question: string;
-  answers: { tradition: string; masterName: string; answer: string; status: string }[];
+  answers: WisdomMasterAnswer[];
   chosenTrads: string[];
   synthesized: string | null;
+  debate?: WisdomDebate | null;
   createdAt: string;
 }
 
@@ -2585,6 +2616,26 @@ export const fetchWisdomHistory = (page = 1, pageSize = 20) =>
   fetchAuthed<{ items: WisdomQuery[]; total: number; page: number; pageSize: number }>(
     `/api/cultivation/wisdom/history?page=${page}&pageSize=${pageSize}`,
   );
+export const startWisdomDebate = (queryId: string, rounds = 3) =>
+  fetchAuthed<WisdomQuery>(`/api/cultivation/wisdom/${queryId}/debate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rounds }),
+  });
+export const WISDOM_TRADITIONS: { code: string; label: string; emoji: string }[] = [
+  { code: "ZEN", label: "禅宗 · 惠能", emoji: "🪷" },
+  { code: "TAOISM", label: "道家 · 老子", emoji: "☯" },
+  { code: "CONFUCIANISM", label: "儒家 · 孔子", emoji: "📖" },
+  { code: "CHRISTIANITY", label: "基督 · 耶稣", emoji: "✝" },
+  { code: "ISLAM", label: "伊斯兰 · 穆罕默德", emoji: "☪" },
+  { code: "HINDUISM", label: "印度 · 商羯罗", emoji: "🕉" },
+  { code: "JUDAISM", label: "犹太 · 摩西", emoji: "✡" },
+  { code: "SIKHISM", label: "锡克 · 那纳克", emoji: "🪯" },
+  { code: "TIBETAN", label: "藏传 · 莲花生", emoji: "🏔" },
+  { code: "SHINTO", label: "神道 · 天照大神", emoji: "⛩" },
+  { code: "INDIGENOUS", label: "原住民 · 部落长老", emoji: "🌿" },
+  { code: "BAHAI", label: "巴哈伊 · 巴哈欧拉", emoji: "✴" },
+];
 
 // A5 Karma — 小鸿觉门深度介入
 export const coachKarmaDraft = (data: { roughNotes: string; intent?: string }) =>

@@ -14,6 +14,7 @@ import { ScriptureLearningService } from './scripture-learning.service';
 import { PkbService } from './pkb.service';
 import { PkbController } from './pkb.controller';
 import { KarmaService } from './karma.service';
+import { WisdomService } from './wisdom/wisdom.service';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
@@ -33,7 +34,8 @@ import { KarmaService } from './karma.service';
     ScriptureLearningService,
     PkbService,
     KarmaService,
+    WisdomService,
   ],
-  exports: [CultivationAccessService, FulfillmentService, ScriptureService, PkbService, KarmaService],
+  exports: [CultivationAccessService, FulfillmentService, ScriptureService, PkbService, KarmaService, WisdomService],
 })
 export class CultivationModule {}

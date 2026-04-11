@@ -20,6 +20,7 @@ import { KarmaService } from './karma.service';
 import {
   CoachKarmaDto,
   CreateKarmaEventDto,
+  DebateDto,
   SetTraditionDto,
   StartJourneyDto,
   SubmitSealPracticeDto,
@@ -130,6 +131,17 @@ export class FulfillmentController {
     @Body() dto: SynthesizeDto,
   ) {
     return this.service.synthesize(userId, dto);
+  }
+
+  @Post('wisdom/:id/debate')
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
+  @ApiOperation({ summary: '启动大师圆桌 (3 轮，5/h)' })
+  debate(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+    @Body() dto: DebateDto,
+  ) {
+    return this.service.runDebate(userId, id, dto.rounds ?? 3);
   }
 
   @Get('wisdom/history')

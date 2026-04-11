@@ -93,6 +93,14 @@ export class SynthesizeDto {
   chosenTraditions!: string[];
 }
 
+export class DebateDto {
+  @ApiPropertyOptional({ default: 3, minimum: 1, maximum: 3 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  rounds?: number;
+}
+
 export class CreateKarmaEventDto {
   @ApiProperty({ maxLength: 200 })
   @IsString()

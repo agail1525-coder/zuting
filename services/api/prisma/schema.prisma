@@ -1725,6 +1725,7 @@ model WisdomQuery {
   answers      Json               // [{tradition, masterName, answer, citations, status}]
   chosenTrads  String[]
   synthesized  String?            @db.Text
+  debate       Json?              // { rounds: [{round, turns: [{tradition, masterName, response, citations, repliesTo}]}], moderatorNotes? }
   createdAt    DateTime           @default(now())
 
   @@index([journeyId, createdAt])
