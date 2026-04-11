@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
@@ -24,8 +25,8 @@ export class ListEntriesDto {
   @ApiPropertyOptional({ enum: ENTRY_KIND }) @IsOptional() @IsEnum(ENTRY_KIND) kind?: string;
   @ApiPropertyOptional({ enum: CATEGORY }) @IsOptional() @IsEnum(CATEGORY) category?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(50) tag?: string;
-  @ApiPropertyOptional() @IsOptional() @IsInt() @Min(1) page?: number;
-  @ApiPropertyOptional() @IsOptional() @IsInt() @Min(1) @Max(50) pageSize?: number;
+  @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() @Min(1) page?: number;
+  @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(50) pageSize?: number;
 }
 
 export class CreateEntryDto {
