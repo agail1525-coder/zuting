@@ -114,11 +114,6 @@ export default function ScripturesPage() {
         .scripture-ring-outer:hover,
         .scripture-ring-mid:hover,
         .scripture-ring-inner:hover { animation-play-state: paused; }
-        @media (prefers-reduced-motion: reduce) {
-          .scripture-ring-outer, .scripture-ring-outer-counter,
-          .scripture-ring-mid, .scripture-ring-mid-counter,
-          .scripture-ring-inner, .scripture-ring-inner-counter { animation: none; }
-        }
       ` }} />
 
       {/* Header */}
