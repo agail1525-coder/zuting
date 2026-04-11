@@ -2648,17 +2648,20 @@ export const fetchSealStreak = () =>
   );
 
 // A4 Wisdom
+// 注: 12 大师并行 LLM 调用耗时 60-150s，须覆盖 fetchAuthed 默认 15s 超时
 export const submitWisdomQuery = (data: { question: string; traditions?: string[] }) =>
   fetchAuthed<WisdomQuery>("/api/cultivation/wisdom/query", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    timeoutMs: 180_000,
   });
 export const synthesizeWisdom = (data: { queryId: string; chosenTraditions: string[] }) =>
   fetchAuthed<WisdomQuery>("/api/cultivation/wisdom/synthesize", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    timeoutMs: 180_000,
   });
 export const fetchWisdomHistory = (page = 1, pageSize = 20) =>
   fetchAuthed<{ items: WisdomQuery[]; total: number; page: number; pageSize: number }>(
@@ -2669,6 +2672,7 @@ export const startWisdomDebate = (queryId: string, rounds = 3) =>
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ rounds }),
+    timeoutMs: 420_000,
   });
 export const WISDOM_TRADITIONS: { code: string; label: string; emoji: string }[] = [
   { code: "ZEN", label: "禅宗 · 惠能", emoji: "🪷" },
