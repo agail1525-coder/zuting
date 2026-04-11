@@ -13,6 +13,7 @@ import {
   logDailyPracticeSlot,
   updateDailyPracticeSchedule,
   type CoachSlotResponse,
+  type DailyPracticeLog,
   type DailyPracticeSlot,
   type DailyPracticeTimeline,
   type LiturgyTemplate,
@@ -90,7 +91,7 @@ export default function DailyPracticePage() {
   }, [load]);
 
   const logMap = useMemo(() => {
-    const m = new Map<string, (typeof timeline.todayLogs)[number]>();
+    const m = new Map<string, DailyPracticeLog>();
     if (timeline) for (const l of timeline.todayLogs) if (l.slotId) m.set(l.slotId, l);
     return m;
   }, [timeline]);
