@@ -1,11 +1,15 @@
 import {
   BadRequestException,
+  forwardRef,
   ForbiddenException,
+  Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CultivationRole, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { DailyPracticeService } from './daily-practice.service';
 import {
   GenerateInviteDto,
   GrantAccessDto,
@@ -34,7 +38,21 @@ const ROLE_RANK: Record<string, number> = {
 
 @Injectable()
 export class CultivationAccessService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(CultivationAccessService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => DailyPracticeService))
+    private readonly dailyPractice: DailyPracticeService,
+  ) {}
+
+  private autoInitPractice(userId: string) {
+    this.dailyPractice
+      .getOrInitPractice(userId)
+      .catch((err) =>
+        this.logger.warn(`auto-init daily practice failed: ${(err as Error).message}`),
+      );
+  }
 
   // ── 用户端 ────────────────────────────────────────────────
 
@@ -166,6 +184,9 @@ export class CultivationAccessService {
         },
       });
       return application;
+    }).then((result) => {
+      this.autoInitPractice(userId);
+      return result;
     });
   }
 
@@ -285,6 +306,9 @@ export class CultivationAccessService {
         },
       });
       return updated;
+    }).then((result) => {
+      this.autoInitPractice(app.userId);
+      return result;
     });
   }
 

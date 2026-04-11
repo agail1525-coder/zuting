@@ -2723,6 +2723,164 @@ export const fetchKarmaEvent = (id: string) =>
 export const deleteKarmaEvent = (id: string) =>
   fetchAuthed(`/api/cultivation/karma/event/${id}`, { method: "DELETE" });
 
+// A7 Daily Practice — 每日功课 (M40)
+export type DailyPracticeSlot = {
+  id: string;
+  time: string;
+  durationMin: number;
+  kind: string;
+  title: string;
+  description?: string | null;
+  templateId?: string | null;
+  scriptureSlug?: string | null;
+  repetitions?: number | null;
+  sourceRef?: string | null;
+  sortOrder: number;
+};
+export type DailyPracticeLog = {
+  id: string;
+  slotId: string | null;
+  practiceDate: string;
+  completedAt: string;
+  durationSec: number;
+  repetitionsDone: number | null;
+  reflection: string | null;
+  status: string;
+  aiEncouragement: string | null;
+};
+export type DailyPracticeTimeline = {
+  practice: {
+    id: string;
+    tradition: string;
+    wakeTime: string;
+    sleepTime: string;
+    reminderEnabled: boolean;
+    reminderLeadMin: number;
+    disclaimer: string;
+  };
+  slots: DailyPracticeSlot[];
+  todayLogs: DailyPracticeLog[];
+  currentSlot: DailyPracticeSlot | null;
+  nextSlot: DailyPracticeSlot | null;
+};
+export type LiturgyStep = {
+  id: string;
+  templateId: string;
+  sortOrder: number;
+  kind: string;
+  title: string;
+  description?: string | null;
+  scriptureSlug?: string | null;
+  defaultRepetitions?: number | null;
+  defaultDurationMin?: number | null;
+  source?: string | null;
+  optional: boolean;
+};
+export type LiturgyTemplate = {
+  id: string;
+  slug: string;
+  tradition: string;
+  session: string;
+  title: string;
+  subtitle?: string | null;
+  description?: string | null;
+  source: string;
+  disclaimer?: string | null;
+  suggestedDurationMin?: number | null;
+  isOfficial: boolean;
+  sortOrder: number;
+  steps: LiturgyStep[];
+};
+export type CoachSlotResponse = {
+  intro: string;
+  stepGuidance: Array<{ text: string; sec: number }>;
+  dedicationText: string;
+  reflectionQuestion: string;
+  source: "llm" | "fallback";
+};
+
+export const getDailyPracticeTimeline = (date?: string) =>
+  fetchAuthed<DailyPracticeTimeline>(
+    `/api/cultivation/daily-practice/me${date ? `?date=${encodeURIComponent(date)}` : ""}`,
+  );
+export const updateDailyPracticeSchedule = (data: {
+  wakeTime?: string;
+  sleepTime?: string;
+  reminderEnabled?: boolean;
+  reminderLeadMin?: number;
+}) =>
+  fetchAuthed("/api/cultivation/daily-practice/schedule", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export type UpsertSlotPayload = {
+  time: string;
+  durationMin: number;
+  kind: string;
+  title: string;
+  description?: string;
+  templateId?: string;
+  scriptureSlug?: string;
+  repetitions?: number;
+  sourceRef?: string;
+  sortOrder?: number;
+};
+export const createDailyPracticeSlot = (data: UpsertSlotPayload) =>
+  fetchAuthed<DailyPracticeSlot>("/api/cultivation/daily-practice/slot", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const updateDailyPracticeSlot = (id: string, data: UpsertSlotPayload) =>
+  fetchAuthed<DailyPracticeSlot>(`/api/cultivation/daily-practice/slot/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const deleteDailyPracticeSlot = (id: string) =>
+  fetchAuthed(`/api/cultivation/daily-practice/slot/${id}`, { method: "DELETE" });
+export const logDailyPracticeSlot = (
+  id: string,
+  data: { durationSec: number; repetitionsDone?: number; reflection?: string; status?: string },
+) =>
+  fetchAuthed<DailyPracticeLog>(`/api/cultivation/daily-practice/slot/${id}/log`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const listLiturgyTemplates = (params?: { tradition?: string; session?: string }) => {
+  const q = new URLSearchParams();
+  if (params?.tradition) q.set("tradition", params.tradition);
+  if (params?.session) q.set("session", params.session);
+  const qs = q.toString();
+  return fetchAuthed<LiturgyTemplate[]>(
+    `/api/cultivation/daily-practice/liturgy-templates${qs ? `?${qs}` : ""}`,
+  );
+};
+export const applyLiturgyTemplate = (data: {
+  templateId: string;
+  session: string;
+  startTime?: string;
+}) =>
+  fetchAuthed<DailyPracticeSlot>("/api/cultivation/daily-practice/apply-template", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const coachDailyPracticeSlot = (id: string) =>
+  fetchAuthed<CoachSlotResponse>(`/api/cultivation/daily-practice/slot/${id}/coach`, {
+    method: "POST",
+    timeoutMs: 150_000,
+  });
+export const getDailyPracticeStreak = () =>
+  fetchAuthed<{
+    streakDays: number;
+    lastPracticeAt: string | null;
+    karmaPoints: number;
+    totalLogs: number;
+  }>("/api/cultivation/daily-practice/streak");
+
 // A6 Three Lives
 export const fetchThreeLives = () =>
   fetchAuthed<ThreeLifeVision>("/api/cultivation/three-lives");

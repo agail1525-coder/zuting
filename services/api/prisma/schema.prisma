@@ -1678,6 +1678,7 @@ model FulfillmentJourney {
   wisdomQueries WisdomQuery[]
   karmaEvents   KarmaEvent[]
   dailyQuizzes  DailyPracticeQuiz[]
+  dailyPractice DailyPractice?
 }
 
 model DailySealPractice {
@@ -1715,6 +1716,100 @@ model DailyPracticeQuiz {
 
   @@unique([journeyId, quizDate])
   @@index([journeyId, status])
+}
+
+// ── M40 每日功课 · 24h 时间轴 + 12 传统礼仪 ────────────────────────────
+
+model LiturgyTemplate {
+  id                   String        @id @default(cuid())
+  slug                 String        @unique
+  tradition            String
+  session              String        // MORNING|EVENING|MIDDAY|NIGHT|CUSTOM
+  title                String
+  subtitle             String?
+  description          String?       @db.Text
+  source               String        // 出处引用, 必填
+  disclaimer           String?       @db.Text
+  suggestedDurationMin Int?
+  isOfficial           Boolean       @default(true)
+  sortOrder            Int           @default(0)
+  steps                LiturgyStep[]
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([tradition, session])
+}
+
+model LiturgyStep {
+  id                 String          @id @default(cuid())
+  templateId         String
+  template           LiturgyTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  sortOrder          Int
+  kind               String          // CHANTING|RECITATION|PROSTRATION|MEDITATION|PRAYER|DEDICATION|REFLECTION|PURIFICATION|CUSTOM
+  title              String
+  description        String?         @db.Text
+  scriptureSlug      String?
+  defaultRepetitions Int?
+  defaultDurationMin Int?
+  source             String?
+  optional           Boolean         @default(false)
+
+  @@index([templateId, sortOrder])
+}
+
+model DailyPractice {
+  id              String              @id @default(cuid())
+  journeyId       String              @unique
+  journey         FulfillmentJourney  @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  tradition       String
+  wakeTime        String              @default("05:30")
+  sleepTime       String              @default("22:00")
+  reminderEnabled Boolean             @default(true)
+  reminderLeadMin Int                 @default(15)
+  onboardedAt     DateTime            @default(now())
+  lastSyncAt      DateTime?
+  slots           DailyPracticeSlot[]
+  logs            DailyPracticeLog[]
+}
+
+model DailyPracticeSlot {
+  id            String           @id @default(cuid())
+  practiceId    String
+  practice      DailyPractice    @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  time          String           // "05:30"
+  durationMin   Int
+  kind          String           // MORNING_LITURGY|EVENING_LITURGY|NOON_CHANT|SITTING|SCRIPTURE_READ|PRAYER|DEDICATION|CUSTOM|SEAL_PRACTICE
+  title         String
+  description   String?          @db.Text
+  templateId    String?
+  scriptureSlug String?
+  repetitions   Int?
+  sourceRef     String?
+  isActive      Boolean          @default(true)
+  sortOrder     Int              @default(0)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  logs          DailyPracticeLog[]
+
+  @@index([practiceId, time])
+}
+
+model DailyPracticeLog {
+  id              String             @id @default(cuid())
+  practiceId      String
+  practice        DailyPractice      @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  slotId          String?
+  slot            DailyPracticeSlot? @relation(fields: [slotId], references: [id], onDelete: SetNull)
+  practiceDate    DateTime           @db.Date
+  completedAt     DateTime           @default(now())
+  durationSec     Int                @default(0)
+  repetitionsDone Int?
+  reflection      String?            @db.Text
+  status          String             @default("DONE") // DONE|PARTIAL|SKIPPED
+  aiEncouragement String?            @db.Text
+
+  @@unique([practiceId, slotId, practiceDate])
+  @@index([practiceId, practiceDate])
 }
 
 model WisdomQuery {

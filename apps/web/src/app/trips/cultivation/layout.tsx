@@ -9,7 +9,7 @@ import { fetchCultivationMine, type CultivationMineResponse } from "@/lib/api";
 const NAV_ITEMS: { href: string; label: string; icon: string }[] = [
   { href: "/trips/cultivation", label: "罗盘", icon: "☸" },
   { href: "/trips/cultivation/ox-path", label: "十牛图", icon: "🐂" },
-  { href: "/trips/cultivation/daily-seal", label: "每日印", icon: "🪷" },
+  { href: "/trips/cultivation/daily-practice", label: "每日功课", icon: "🪷" },
   { href: "/trips/cultivation/wisdom", label: "融通", icon: "💬" },
   { href: "/trips/cultivation/karma", label: "因缘", icon: "📖" },
   { href: "/trips/cultivation/three-lives", label: "修行库", icon: "🏠" },

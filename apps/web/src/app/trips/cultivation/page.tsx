@@ -92,7 +92,7 @@ export default function CultivationCompassPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
           { href: "/trips/cultivation/ox-path", label: "十牛图路径", icon: "🐂", desc: "十阶进度" },
-          { href: "/trips/cultivation/daily-seal", label: "每日一印", icon: "🪷", desc: "晨晚课打卡" },
+          { href: "/trips/cultivation/daily-practice", label: "每日功课", icon: "🪷", desc: "24h 时间轴 · 12 传统礼仪" },
           { href: "/trips/cultivation/wisdom", label: "智慧融通", icon: "💬", desc: "12 文化问答" },
           { href: "/trips/cultivation/karma", label: "因缘日志", icon: "📖", desc: "AI 标注" },
           { href: "/trips/cultivation/three-lives", label: "修行库", icon: "🏠", desc: "三生愿景·小鸿引经据典" },

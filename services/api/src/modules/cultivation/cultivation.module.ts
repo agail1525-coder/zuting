@@ -15,6 +15,8 @@ import { PkbService } from './pkb.service';
 import { PkbController } from './pkb.controller';
 import { KarmaService } from './karma.service';
 import { WisdomService } from './wisdom/wisdom.service';
+import { DailyPracticeService } from './daily-practice.service';
+import { DailyPracticeController } from './daily-practice.controller';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
@@ -25,6 +27,7 @@ import { WisdomService } from './wisdom/wisdom.service';
     ZenQuizController,
     ScriptureController,
     PkbController,
+    DailyPracticeController,
   ],
   providers: [
     CultivationAccessService,
@@ -35,7 +38,16 @@ import { WisdomService } from './wisdom/wisdom.service';
     PkbService,
     KarmaService,
     WisdomService,
+    DailyPracticeService,
   ],
-  exports: [CultivationAccessService, FulfillmentService, ScriptureService, PkbService, KarmaService, WisdomService],
+  exports: [
+    CultivationAccessService,
+    FulfillmentService,
+    ScriptureService,
+    PkbService,
+    KarmaService,
+    WisdomService,
+    DailyPracticeService,
+  ],
 })
 export class CultivationModule {}
