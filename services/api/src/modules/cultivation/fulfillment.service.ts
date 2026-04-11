@@ -18,6 +18,24 @@ import {
 import { WisdomService } from './wisdom/wisdom.service';
 import { DEFAULT_WISDOM_TRADITIONS, getMaster } from './wisdom/masters.constants';
 import type { MasterAnswer, DebateTurn } from './wisdom/master-prompt.builder';
+import { FIVE_HOUSES, getZenHouse, ZEN_HOUSE_CODES } from './ox-path/five-houses.constants';
+
+const OX_STAGE_NAMES = [
+  '寻牛', '见迹', '见牛', '得牛', '牧牛',
+  '骑牛归家', '忘牛存人', '人牛俱忘', '返本还源', '入廛垂手',
+];
+const OX_STAGE_DESC = [
+  '心猿意马，初心觅道',
+  '略见踪迹，信心初生',
+  '亲见本性，欣喜非常',
+  '得遇真心，犹须调伏',
+  '调伏渐熟，习气渐消',
+  '心牛合一，自在归家',
+  '牛去人在，能所未泯',
+  '人牛俱忘，能所双绝',
+  '返本还源，无修无证',
+  '和光同尘，垂手入廛',
+];
 
 const REALM_ORDER: Realm[] = [
   'AWAKENING',
@@ -113,14 +131,54 @@ export class FulfillmentService {
 
   async getOxPath(userId: string) {
     const journey = await this.getOrCreateJourney(userId);
+    const house = getZenHouse(journey.zenHouse);
     return {
       currentStage: journey.oxStage,
+      zenHouse: journey.zenHouse,
+      house: house
+        ? {
+            code: house.code,
+            name: house.name,
+            founder: house.founder,
+            motto: house.motto,
+            introStyle: house.introStyle,
+            color: house.color,
+            emoji: house.emoji,
+            signatureKoans: house.signatureKoans,
+          }
+        : null,
       stages: Array.from({ length: 10 }, (_, i) => ({
         stage: i + 1,
+        name: OX_STAGE_NAMES[i],
+        description: house ? house.stageTones[i] : OX_STAGE_DESC[i],
         unlocked: i + 1 <= journey.oxStage,
         current: i + 1 === journey.oxStage,
       })),
     };
+  }
+
+  async setZenHouse(userId: string, zenHouse: string | null) {
+    if (zenHouse && !ZEN_HOUSE_CODES.includes(zenHouse)) {
+      throw new BadRequestException('无效的宗风代码');
+    }
+    await this.getOrCreateJourney(userId);
+    return this.prisma.fulfillmentJourney.update({
+      where: { userId },
+      data: { zenHouse: zenHouse ?? null },
+    });
+  }
+
+  listZenHouses() {
+    return Object.values(FIVE_HOUSES).map((h) => ({
+      code: h.code,
+      name: h.name,
+      founder: h.founder,
+      foundedEra: h.foundedEra,
+      motto: h.motto,
+      introStyle: h.introStyle,
+      color: h.color,
+      emoji: h.emoji,
+    }));
   }
 
   async advanceOxStage(userId: string) {

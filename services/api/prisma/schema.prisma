@@ -1671,6 +1671,13 @@ model FulfillmentJourney {
   quizPassedStreak Int       @default(0)    // 连续通过禅修考核天数
   lastQuizPassedAt DateTime?                // 上次通过考核日期
   realmScoreSnap   Json?
+  currentSealId    Int?      @default(1)   // ZEN 用户当前印证中的印 id (1..30)
+  currentSealDay   Int?      @default(0)   // 当前印已印证天数 (0..21)
+  sealStartedAt    DateTime?                // 当前印起始日期
+  zenHouse         String?                  // 一花五叶宗风: LINJI|CAODONG|GUIYANG|YUNMEN|FAYAN (null=通宗)
+  bhumiStage       Int       @default(0)   // 菩萨十地: 0=未解锁, 1-10
+  bhumiUnlockedAt  DateTime?                // 进入菩萨道的时间
+  bhumiVowsDone    Json?                    // { "1": [{vowType,evidenceId,doneAt,reflection}], ... }
   startedAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
@@ -1807,9 +1814,32 @@ model DailyPracticeLog {
   reflection      String?            @db.Text
   status          String             @default("DONE") // DONE|PARTIAL|SKIPPED
   aiEncouragement String?            @db.Text
+  tags            String[]           @default([])
+  sealId          Int?
+  sealDayNum      Int?               // 1..21
 
   @@unique([practiceId, slotId, practiceDate])
   @@index([practiceId, practiceDate])
+}
+
+model CulturalFestival {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  tradition   String
+  name        String
+  nameEn      String?
+  calendar    String   // SOLAR | LUNAR | ISLAMIC_HIJRI | HEBREW | TIBETAN | COMPUTED | FIXED_WEEK
+  month       Int
+  day         Int
+  description String   @db.Text
+  source      String
+  color       String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([tradition])
+  @@index([month, day])
 }
 
 model WisdomQuery {

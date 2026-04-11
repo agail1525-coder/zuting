@@ -17,6 +17,9 @@ import { KarmaService } from './karma.service';
 import { WisdomService } from './wisdom/wisdom.service';
 import { DailyPracticeService } from './daily-practice.service';
 import { DailyPracticeController } from './daily-practice.controller';
+import { FestivalService } from './festival.service';
+import { BhumiPathService } from './bhumi-path/bhumi-path.service';
+import { BhumiPathController } from './bhumi-path/bhumi-path.controller';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
@@ -28,10 +31,12 @@ import { DailyPracticeController } from './daily-practice.controller';
     ScriptureController,
     PkbController,
     DailyPracticeController,
+    BhumiPathController,
   ],
   providers: [
     CultivationAccessService,
     FulfillmentService,
+    BhumiPathService,
     ZenQuizService,
     ScriptureService,
     ScriptureLearningService,
@@ -39,6 +44,7 @@ import { DailyPracticeController } from './daily-practice.controller';
     KarmaService,
     WisdomService,
     DailyPracticeService,
+    FestivalService,
   ],
   exports: [
     CultivationAccessService,

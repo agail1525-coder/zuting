@@ -2410,9 +2410,68 @@ export interface CompassResponse {
   streakDays: number;
 }
 
+export interface ZenHouseMeta {
+  code: string;
+  name: string;
+  founder: string;
+  foundedEra?: string;
+  motto: string;
+  introStyle: string;
+  color: string;
+  emoji: string;
+  signatureKoans?: string[];
+}
+
+export interface OxStageDetail {
+  stage: number;
+  name: string;
+  description: string;
+  unlocked: boolean;
+  current: boolean;
+}
+
 export interface OxPathResponse {
   currentStage: number;
-  stages: { stage: number; unlocked: boolean; current: boolean }[];
+  zenHouse: string | null;
+  house: ZenHouseMeta | null;
+  stages: OxStageDetail[];
+}
+
+export interface BhumiVowDetail {
+  type: string;
+  title: string;
+  description: string;
+  target: number;
+  reflectionMin: number;
+  done: number;
+  completed: boolean;
+}
+
+export interface BhumiStageDetail {
+  no: number;
+  name: string;
+  sanskrit: string;
+  paramita: string;
+  paramitaEn: string;
+  focus: string;
+  gateVow: string;
+  emoji: string;
+  scriptureSlugs: string[];
+  recommendedSiteTradition: string;
+  vows: BhumiVowDetail[];
+  completed: boolean;
+  current: boolean;
+  locked: boolean;
+  canAdvance: boolean;
+}
+
+export interface BhumiPathResponse {
+  unlocked: boolean;
+  currentBhumi: number;
+  unlockedAt: string | null;
+  oxStage: number;
+  total: number;
+  stages: BhumiStageDetail[];
 }
 
 export interface DailySealResponse {
@@ -2569,6 +2628,37 @@ export const fetchCompass = () => fetchAuthed<CompassResponse>("/api/cultivation
 export const fetchOxPath = () => fetchAuthed<OxPathResponse>("/api/cultivation/ox-path");
 export const advanceOxStage = () =>
   fetchAuthed<FulfillmentJourney>("/api/cultivation/ox-path/advance", { method: "POST" });
+export const fetchZenHouses = () =>
+  fetchAuthed<Array<Omit<ZenHouseMeta, "signatureKoans"> & { foundedEra: string }>>("/api/cultivation/ox-path/zen-houses");
+export const setZenHouse = (zenHouse: string | null) =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/ox-path/zen-house", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ zenHouse }),
+  });
+
+// A2b Bhumi Path (菩萨十地)
+export const fetchBhumiPath = () => fetchAuthed<BhumiPathResponse>("/api/cultivation/bhumi-path");
+export const fetchBhumiGate = () =>
+  fetchAuthed<{ eligible: boolean; reason: string; oxStage: number; oxRequired: number }>(
+    "/api/cultivation/bhumi-path/gate",
+  );
+export const unlockBhumi = () =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/bhumi-path/unlock", { method: "POST" });
+export const submitBhumiVow = (data: {
+  bhumiStage: number;
+  vowType: string;
+  evidenceId?: string;
+  reflection?: string;
+  count?: number;
+}) =>
+  fetchAuthed<BhumiPathResponse>("/api/cultivation/bhumi-path/submit-vow", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+export const advanceBhumi = () =>
+  fetchAuthed<FulfillmentJourney>("/api/cultivation/bhumi-path/advance", { method: "POST" });
 
 // A2.1 Zen Quiz (AI禅修考核)
 export interface ZenQuizQuestion {
@@ -2747,6 +2837,40 @@ export type DailyPracticeLog = {
   reflection: string | null;
   status: string;
   aiEncouragement: string | null;
+  tags: string[];
+  sealId: number | null;
+  sealDayNum: number | null;
+};
+export type CulturalFestival = {
+  id: string;
+  slug: string;
+  tradition: string;
+  name: string;
+  nameEn: string | null;
+  calendar: string;
+  month: number;
+  day: number;
+  description: string;
+  source: string;
+  color: string | null;
+  icon: string | null;
+};
+export type SealInfo = {
+  id: number;
+  name: string;
+  series: string;
+  poem: string;
+  essence: string;
+  practice: string;
+  vow: string;
+  color: string | null;
+};
+export type SealProgress = {
+  seal: SealInfo | null;
+  day: number;
+  total: number;
+  todayDone: boolean;
+  graduated?: boolean;
 };
 export type DailyPracticeTimeline = {
   practice: {
@@ -2762,6 +2886,8 @@ export type DailyPracticeTimeline = {
   todayLogs: DailyPracticeLog[];
   currentSlot: DailyPracticeSlot | null;
   nextSlot: DailyPracticeSlot | null;
+  festivals: CulturalFestival[];
+  sealProgress: SealProgress | null;
 };
 export type LiturgyStep = {
   id: string;
@@ -2842,13 +2968,35 @@ export const deleteDailyPracticeSlot = (id: string) =>
   fetchAuthed(`/api/cultivation/daily-practice/slot/${id}`, { method: "DELETE" });
 export const logDailyPracticeSlot = (
   id: string,
-  data: { durationSec: number; repetitionsDone?: number; reflection?: string; status?: string },
+  data: {
+    durationSec: number;
+    repetitionsDone?: number;
+    reflection?: string;
+    status?: string;
+    tags?: string[];
+    skipSealCredit?: boolean;
+  },
 ) =>
   fetchAuthed<DailyPracticeLog>(`/api/cultivation/daily-practice/slot/${id}/log`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+export const listFestivalsByDate = (date: string, tradition?: string) => {
+  const q = new URLSearchParams({ date });
+  if (tradition) q.set("tradition", tradition);
+  return fetchAuthed<CulturalFestival[]>(
+    `/api/cultivation/daily-practice/festivals?${q.toString()}`,
+  );
+};
+export const listAllFestivals = (tradition?: string) =>
+  fetchAuthed<CulturalFestival[]>(
+    `/api/cultivation/daily-practice/festivals/all${tradition ? `?tradition=${tradition}` : ""}`,
+  );
+export const getFestival = (slug: string) =>
+  fetchAuthed<CulturalFestival>(`/api/cultivation/daily-practice/festivals/${slug}`);
+export const getSealProgress = () =>
+  fetchAuthed<SealProgress>("/api/cultivation/daily-practice/seal-progress");
 export const listLiturgyTemplates = (params?: { tradition?: string; session?: string }) => {
   const q = new URLSearchParams();
   if (params?.tradition) q.set("tradition", params.tradition);

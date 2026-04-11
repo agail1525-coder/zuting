@@ -49,6 +49,15 @@ export class SetTraditionDto {
   blendTraditions?: string[];
 }
 
+const ZEN_HOUSES = ['LINJI', 'CAODONG', 'GUIYANG', 'YUNMEN', 'FAYAN'];
+
+export class SetZenHouseDto {
+  @ApiPropertyOptional({ enum: ZEN_HOUSES, nullable: true })
+  @IsOptional()
+  @IsString()
+  zenHouse?: string | null;
+}
+
 export class SubmitSealPracticeDto {
   @ApiProperty()
   @IsString()

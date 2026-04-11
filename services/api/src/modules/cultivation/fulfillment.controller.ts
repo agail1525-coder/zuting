@@ -22,6 +22,7 @@ import {
   CreateKarmaEventDto,
   DebateDto,
   SetTraditionDto,
+  SetZenHouseDto,
   StartJourneyDto,
   SubmitSealPracticeDto,
   SynthesizeDto,
@@ -83,6 +84,21 @@ export class FulfillmentController {
   @ApiOperation({ summary: '晋阶 (需满足条件)' })
   advance(@CurrentUser('id') userId: string) {
     return this.service.advanceOxStage(userId);
+  }
+
+  @Get('ox-path/zen-houses')
+  @ApiOperation({ summary: '一花五叶五家列表' })
+  listZenHouses() {
+    return this.service.listZenHouses();
+  }
+
+  @Post('ox-path/zen-house')
+  @ApiOperation({ summary: '选择 / 切换宗风 (null=通宗)' })
+  setZenHouse(
+    @CurrentUser('id') userId: string,
+    @Body() dto: SetZenHouseDto,
+  ) {
+    return this.service.setZenHouse(userId, dto.zenHouse ?? null);
   }
 
   // ── A3 每日一印 ────────────────────────────────────────
