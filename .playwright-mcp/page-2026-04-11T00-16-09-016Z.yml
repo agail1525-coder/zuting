@@ -1,0 +1,113 @@
+- generic [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "Joinus 佳绩之旅" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Joinus
+        - generic [ref=e8]: 佳绩之旅
+      - navigation "Main navigation" [ref=e9]:
+        - link "目的地" [ref=e10] [cursor=pointer]:
+          - /url: /holy-sites
+        - link "旅途配套" [ref=e11] [cursor=pointer]:
+          - /url: /merchants
+        - link "价格工具" [ref=e12] [cursor=pointer]:
+          - /url: /prices
+        - link "地图" [ref=e13] [cursor=pointer]:
+          - /url: /map
+        - link "文化百科" [ref=e14] [cursor=pointer]:
+          - /url: /religions
+        - link "社区" [ref=e15] [cursor=pointer]:
+          - /url: /community
+        - link "AI规划师" [ref=e16] [cursor=pointer]:
+          - /url: /chat
+        - button "圆满之路 ▾" [ref=e18]:
+          - text: 圆满之路
+          - generic [ref=e19]: ▾
+        - link "我的行程" [ref=e20] [cursor=pointer]:
+          - /url: /trips
+      - generic [ref=e21]:
+        - link "Search" [ref=e22] [cursor=pointer]:
+          - /url: /search
+          - img [ref=e23]
+        - link "Messages" [ref=e25] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e26]
+        - button "中文" [ref=e29]
+        - link "登录" [ref=e30] [cursor=pointer]:
+          - /url: /login
+          - generic [ref=e31]: 登录
+  - main [ref=e32]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - img [ref=e42]
+        - heading "帮助100万人走祖庭" [level=1] [ref=e44]
+        - paragraph [ref=e45]: 探索全球60+文化圣地，体验千年智慧之旅
+      - generic [ref=e48]: 网站建设中，即将上线
+      - generic [ref=e49]:
+        - paragraph [ref=e50]: 输入访问密码预览网站
+        - generic [ref=e51]:
+          - textbox "请输入访问密码" [active] [ref=e52]
+          - button "进入" [ref=e53]
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - img [ref=e56]
+          - text: 12大文化传统
+        - generic [ref=e58]:
+          - img [ref=e59]
+          - text: 60+文化圣地
+        - generic [ref=e61]:
+          - img [ref=e62]
+          - text: AI旅行规划
+        - generic [ref=e64]:
+          - img [ref=e65]
+          - text: 专业路线策划
+      - paragraph [ref=e67]: © 2026 Joinus.com · 全球文化旅行平台
+  - contentinfo [ref=e68]:
+    - generic [ref=e69]:
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: Joinus
+            - generic [ref=e74]: "|"
+            - generic [ref=e75]: 探索人类文明，创造人生佳绩
+          - paragraph [ref=e76]: 加入我们，探索世界
+        - generic [ref=e77]:
+          - heading "探索" [level=3] [ref=e78]
+          - generic [ref=e79]:
+            - link "目的地" [ref=e80] [cursor=pointer]:
+              - /url: /holy-sites
+            - link "文化百科" [ref=e81] [cursor=pointer]:
+              - /url: /religions
+            - link "AI助手" [ref=e82] [cursor=pointer]:
+              - /url: /chat
+            - link "地图" [ref=e83] [cursor=pointer]:
+              - /url: /map
+        - generic [ref=e84]:
+          - heading "支持" [level=3] [ref=e85]
+          - generic [ref=e86]:
+            - link "关于我们" [ref=e87] [cursor=pointer]:
+              - /url: /about
+            - link "用户协议" [ref=e88] [cursor=pointer]:
+              - /url: /terms
+            - link "隐私政策" [ref=e89] [cursor=pointer]:
+              - /url: /privacy
+        - generic [ref=e90]:
+          - heading "联系我们" [level=3] [ref=e91]
+          - generic [ref=e92]:
+            - generic [ref=e93]: support@joinus.com
+            - generic [ref=e94]:
+              - generic [ref=e95] [cursor=pointer]: 微
+              - generic [ref=e96] [cursor=pointer]: 博
+              - generic [ref=e97] [cursor=pointer]: X
+      - generic [ref=e99]:
+        - paragraph [ref=e100]: © 2026 Joinus.com. 版权所有.
+        - paragraph [ref=e101]: 备案审核中
+  - dialog "Cookie consent" [ref=e102]:
+    - generic [ref=e103]:
+      - paragraph [ref=e104]: We use cookies to enhance your experience. Essential cookies are required for the site to function. Optional cookies help us improve our services. 我们使用Cookie来提升您的体验。必要Cookie用于网站正常运行，可选Cookie帮助我们改进服务。
+      - generic [ref=e105]:
+        - button "Necessary Only" [ref=e106]
+        - button "Accept All" [ref=e107]
+  - alert [ref=e108]
