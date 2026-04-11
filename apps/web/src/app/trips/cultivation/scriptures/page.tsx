@@ -105,12 +105,12 @@ export default function ScripturesPage() {
           from { transform: rotate(0deg); }
           to   { transform: rotate(-360deg); }
         }
-        .scripture-ring-outer { animation: scripture-ring-cw 240s linear infinite; }
-        .scripture-ring-outer-counter { animation: scripture-ring-ccw 240s linear infinite; }
-        .scripture-ring-mid   { animation: scripture-ring-ccw 160s linear infinite; }
-        .scripture-ring-mid-counter { animation: scripture-ring-cw 160s linear infinite; }
-        .scripture-ring-inner { animation: scripture-ring-cw 100s linear infinite; }
-        .scripture-ring-inner-counter { animation: scripture-ring-ccw 100s linear infinite; }
+        .scripture-ring-outer { animation: scripture-ring-cw 90s linear infinite; }
+        .scripture-ring-outer-counter { animation: scripture-ring-ccw 90s linear infinite; }
+        .scripture-ring-mid   { animation: scripture-ring-ccw 60s linear infinite; }
+        .scripture-ring-mid-counter { animation: scripture-ring-cw 60s linear infinite; }
+        .scripture-ring-inner { animation: scripture-ring-cw 40s linear infinite; }
+        .scripture-ring-inner-counter { animation: scripture-ring-ccw 40s linear infinite; }
         .scripture-ring-outer:hover,
         .scripture-ring-mid:hover,
         .scripture-ring-inner:hover { animation-play-state: paused; }
