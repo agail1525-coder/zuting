@@ -2847,3 +2847,11 @@ export const sharePkbEntry = (id: string, dto: { title?: string; summary?: strin
     `/api/pkb/me/entries/${id}/share`,
     { method: "POST", body: JSON.stringify(dto) },
   );
+
+export const draftPkbVow = (dto: { category: "PERSONAL" | "FAMILY" | "CAREER"; keywords?: string[]; currentDraft?: string; hint?: string }) =>
+  fetchAuthed<{
+    vow: string;
+    rationale: string;
+    referenceScriptures: Array<{ slug: string; title: string }>;
+    source: "llm" | "fallback";
+  }>(`/api/pkb/me/vows/draft`, { method: "POST", body: JSON.stringify(dto), timeoutMs: 150_000 });

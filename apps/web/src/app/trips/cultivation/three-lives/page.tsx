@@ -9,6 +9,7 @@ import {
   fetchPkbRecommendations,
   updatePkbRecommendation,
   sharePkbEntry,
+  draftPkbVow,
   type PkbOverview,
   type PkbEntry,
   type PkbRecommendation,
@@ -127,6 +128,124 @@ function PkbHeroStats({ pkb }: { pkb: PkbOverview["pkb"] }) {
 
 // ── 愿景 Tab ─────────────────────────────────
 
+type VowCat = "PERSONAL" | "FAMILY" | "CAREER";
+
+const VOW_GUIDE_TAGS: Record<VowCat, string[]> = {
+  PERSONAL: ["觉察心念", "定力", "健康长寿", "心性修养", "读书求知", "情绪自在", "独处静心", "诚实无欺", "勇气与担当", "慈悲柔软"],
+  FAMILY: ["高质量陪伴", "倾听家人", "亲密关系", "教养子女", "孝敬父母", "家风传承", "情感联结", "共同成长", "化解冲突", "仪式感"],
+  CAREER: ["服务众生", "创造价值", "长期主义", "诚信经营", "团队幸福", "客户至上", "布施利他", "格局与远见", "专业精进", "财富正念"],
+};
+
+const VOW_META: Record<VowCat, { icon: string; label: string; color: string; placeholder: string }> = {
+  PERSONAL: { icon: "🧘", label: "个人圆满", color: "from-indigo-500 to-indigo-700", placeholder: "我想成为怎样的人？心性、修为、健康…" },
+  FAMILY: { icon: "👨‍👩‍👧", label: "家庭幸福", color: "from-rose-500 to-rose-700", placeholder: "我想给家人怎样的生活？亲密关系、传承…" },
+  CAREER: { icon: "🏢", label: "事业兴旺", color: "from-emerald-500 to-emerald-700", placeholder: "我想为众生创造什么价值？事业、布施…" },
+};
+
+function VowCard({
+  category,
+  value,
+  onChange,
+}: {
+  category: VowCat;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const meta = VOW_META[category];
+  const [selected, setSelected] = useState<string[]>([]);
+  const [drafting, setDrafting] = useState(false);
+  const [draftMsg, setDraftMsg] = useState<string | null>(null);
+
+  const toggleTag = (tag: string) => {
+    setSelected((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+  };
+
+  const onDraft = async () => {
+    setDrafting(true);
+    setDraftMsg(null);
+    try {
+      const res = await draftPkbVow({
+        category,
+        keywords: selected,
+        currentDraft: value || undefined,
+      });
+      onChange(res.vow);
+      setDraftMsg(
+        res.source === "llm"
+          ? `✨ 小鸿已为你起草 — ${res.rationale}`
+          : `⚠️ ${res.rationale}`,
+      );
+    } catch (e) {
+      setDraftMsg(e instanceof Error ? e.message : "起草失败");
+    } finally {
+      setDrafting(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-amber-900/50 bg-amber-950/20 p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${meta.color} flex items-center justify-center text-2xl shadow-lg`}>
+          {meta.icon}
+        </div>
+        <div className="flex-1">
+          <h2 className="text-lg font-bold text-amber-100">{meta.label}</h2>
+          <div className="text-xs text-amber-200/50">选择关键词 → 小鸿帮你起草</div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mb-3">
+        {VOW_GUIDE_TAGS[category].map((tag) => (
+          <button
+            key={tag}
+            onClick={() => toggleTag(tag)}
+            className={`px-3 py-1 rounded-full text-xs border transition-all ${
+              selected.includes(tag)
+                ? "bg-amber-500 border-amber-500 text-white shadow-sm"
+                : "border-amber-900/50 text-amber-200/70 hover:border-amber-500"
+            }`}
+          >
+            #{tag}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between mb-2">
+        <button
+          onClick={onDraft}
+          disabled={drafting}
+          className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold hover:shadow-lg hover:shadow-indigo-500/30 transition-all disabled:opacity-50"
+        >
+          {drafting ? "小鸿思考中…" : selected.length > 0 ? `🔮 让小鸿基于 ${selected.length} 个关键词起草` : "🔮 让小鸿帮我起草"}
+        </button>
+        {value && (
+          <button
+            onClick={() => onChange("")}
+            className="text-xs text-amber-300/50 hover:text-amber-200"
+          >
+            清空
+          </button>
+        )}
+      </div>
+
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        rows={5}
+        maxLength={2000}
+        placeholder={meta.placeholder}
+        className="w-full rounded-xl bg-amber-950/40 border border-amber-900/50 px-4 py-3 text-amber-50 placeholder-amber-100/30 focus:outline-none focus:border-amber-500"
+      />
+      <div className="flex justify-between items-center mt-1">
+        <div className="text-xs text-amber-200/50">
+          {draftMsg ?? "💡 点击关键词组合你的方向，小鸿会为你起草一段可编辑的愿景"}
+        </div>
+        <div className="text-xs text-amber-100/30">{value.length} / 2000</div>
+      </div>
+    </div>
+  );
+}
+
 function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => void }) {
   const pkb = overview.pkb;
   const [personalVow, setPersonalVow] = useState(pkb.personalVow ?? "");
@@ -149,46 +268,36 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
     }
   };
 
-  const fields = [
-    { key: "personal", icon: "🧘", label: "个人圆满", value: personalVow, setter: setPersonalVow, color: "from-indigo-500 to-indigo-700", placeholder: "我想成为怎样的人？心性、修为、健康…" },
-    { key: "family", icon: "👨‍👩‍👧", label: "家庭幸福", value: familyVow, setter: setFamilyVow, color: "from-rose-500 to-rose-700", placeholder: "我想给家人怎样的生活？亲密关系、传承…" },
-    { key: "career", icon: "🏢", label: "事业兴旺", value: careerVow, setter: setCareerVow, color: "from-emerald-500 to-emerald-700", placeholder: "我想为众生创造什么价值？事业、布施…" },
-  ];
-
   const vowRecs = overview.activeRecs.filter((r) => ["PERSONAL", "FAMILY", "CAREER"].includes(r.category));
 
   return (
     <div className="space-y-5">
-      {fields.map((f) => (
-        <div key={f.key} className="rounded-2xl border border-amber-900/50 bg-amber-950/20 p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center text-2xl shadow-lg`}>{f.icon}</div>
-            <h2 className="text-lg font-bold text-amber-100">{f.label}</h2>
+      <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/5 p-4 flex items-start gap-3">
+        <div className="text-2xl">🔮</div>
+        <div className="flex-1">
+          <div className="text-sm font-semibold text-indigo-200">小鸿主导觉门 · AI 方便法门</div>
+          <div className="text-xs text-indigo-100/60 mt-1">
+            选择你最在意的关键词，让小鸿为你起草一段诚恳可践行的愿景文字 — 你可以随时编辑或让小鸿重新起草。
           </div>
-          <textarea
-            value={f.value}
-            onChange={(e) => f.setter(e.target.value)}
-            rows={4}
-            maxLength={2000}
-            placeholder={f.placeholder}
-            className="w-full rounded-xl bg-amber-950/40 border border-amber-900/50 px-4 py-3 text-amber-50 placeholder-amber-100/30 focus:outline-none focus:border-amber-500"
-          />
-          <div className="text-right text-xs text-amber-100/30 mt-1">{f.value.length} / 2000</div>
         </div>
-      ))}
+      </div>
+
+      <VowCard category="PERSONAL" value={personalVow} onChange={setPersonalVow} />
+      <VowCard category="FAMILY" value={familyVow} onChange={setFamilyVow} />
+      <VowCard category="CAREER" value={careerVow} onChange={setCareerVow} />
 
       <button
         onClick={onSave}
         disabled={saving}
         className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-50"
       >
-        {saving ? "保存中…" : "保存三生愿景"}
+        {saving ? "保存中…" : "保存三生愿景 → 触发小鸿经论推荐"}
       </button>
       {msg && <div className="text-sm text-amber-200/70 text-center">{msg}</div>}
 
       {vowRecs.length > 0 && (
         <div className="rounded-2xl border border-amber-900/40 bg-amber-950/10 p-5 space-y-3">
-          <div className="text-sm font-semibold text-amber-100">小鸿为你挑选的经论</div>
+          <div className="text-sm font-semibold text-amber-100">📖 小鸿为你挑选的经论</div>
           {vowRecs.slice(0, 6).map((r) => (
             <div key={r.id} className="rounded-lg bg-amber-950/30 border border-amber-900/30 p-3">
               <div className="text-xs text-amber-200/50">{CATEGORY_LABEL[r.category]}</div>

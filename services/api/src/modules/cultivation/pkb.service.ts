@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   CreateEntryDto,
+  DraftVowDto,
   ListEntriesDto,
   ShareEntryDto,
   StruggleDto,
@@ -270,6 +271,117 @@ export class PkbService {
       dailyPractice: reply.dailyPractice,
       citedScriptures: citedRefs,
     };
+  }
+
+  // ── 觉门: 小鸿主导愿景起草 ─────────────────────
+
+  async draftVow(userId: string, dto: DraftVowDto) {
+    const pkb = await this.getOrCreatePkb(userId);
+    const categoryLabel = dto.category === 'PERSONAL' ? '个人圆满' : dto.category === 'FAMILY' ? '家庭幸福' : '事业兴旺';
+    const keywordsText = (dto.keywords ?? []).join('、');
+
+    // 关键词 → 检索经论上下文 (2 条)
+    const scriptureHint = await this.searchScriptures(
+      `${categoryLabel} ${keywordsText} ${dto.hint ?? ''}`.trim(),
+      2,
+    );
+
+    if (!this.isLLMEnabled) {
+      return {
+        vow: this.fallbackVowTemplate(dto.category, dto.keywords ?? [], dto.hint),
+        rationale: '小鸿降级模式 — 使用默认模板',
+        referenceScriptures: scriptureHint.map((s) => ({ slug: s.slug, title: s.title })),
+        source: 'fallback' as const,
+      };
+    }
+
+    const otherVows = [
+      pkb.personalVow && dto.category !== 'PERSONAL' ? `个人: ${pkb.personalVow}` : '',
+      pkb.familyVow && dto.category !== 'FAMILY' ? `家庭: ${pkb.familyVow}` : '',
+      pkb.careerVow && dto.category !== 'CAREER' ? `事业: ${pkb.careerVow}` : '',
+    ].filter(Boolean).join('\n') || '尚未填写';
+
+    const systemPrompt = `你是小鸿，佳绩之旅的修行导师。请为用户起草一条【${categoryLabel}】的修行愿景。
+严格以 JSON 格式输出，不要任何 markdown 或额外文本。结构:
+{
+  "vow": "一段 80-200 字、诚恳、具体、可践行的愿景文字，第一人称",
+  "rationale": "为什么这样起草的一句话说明 (30字内)"
+}
+要求:
+- 结合用户已有其他愿景的语气保持一致
+- 融入下方关键词和经论意象
+- 避免宗教传教用语，使用文化智慧视角
+- 落地可感，禁止空洞口号`;
+
+    const userPrompt = [
+      `[维度] ${categoryLabel}`,
+      `[用户关键词] ${keywordsText || '（用户未选）'}`,
+      dto.hint ? `[用户补充] ${dto.hint}` : '',
+      dto.currentDraft ? `[用户已有草稿 — 请在此基础上润色]\n${dto.currentDraft}` : '',
+      `[用户其他愿景参考]\n${otherVows}`,
+      `[十牛图阶段] ${pkb.currentOxStage}/10`,
+      scriptureHint.length > 0
+        ? `[可借鉴经论]\n${scriptureHint.map((s, i) => `${i + 1}. 《${s.title}》 — ${s.summary?.slice(0, 80) ?? ''}`).join('\n')}`
+        : '',
+    ].filter(Boolean).join('\n\n');
+
+    try {
+      const response = await fetch(`${this.llmBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.llmApiKey ? { Authorization: `Bearer ${this.llmApiKey}` } : {}),
+        },
+        body: JSON.stringify({
+          model: this.llmModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          max_tokens: 800,
+          temperature: 0.7,
+          stream: false,
+          chat_template_kwargs: { enable_thinking: false },
+        }),
+        signal: AbortSignal.timeout(120_000),
+      });
+      if (!response.ok) throw new Error(`LLM ${response.status}`);
+      const data = (await response.json()) as any;
+      const content: string = data?.choices?.[0]?.message?.content ?? '';
+      const parsed = this.tryParseJson(content);
+      if (!parsed || typeof parsed.vow !== 'string') {
+        return {
+          vow: this.fallbackVowTemplate(dto.category, dto.keywords ?? [], dto.hint),
+          rationale: '小鸿输出格式异常，回退模板',
+          referenceScriptures: scriptureHint.map((s) => ({ slug: s.slug, title: s.title })),
+          source: 'fallback' as const,
+        };
+      }
+      return {
+        vow: parsed.vow,
+        rationale: typeof parsed.rationale === 'string' ? parsed.rationale : '',
+        referenceScriptures: scriptureHint.map((s) => ({ slug: s.slug, title: s.title })),
+        source: 'llm' as const,
+      };
+    } catch (err) {
+      this.logger.warn(`draftVow LLM failed: ${(err as Error).message}`);
+      return {
+        vow: this.fallbackVowTemplate(dto.category, dto.keywords ?? [], dto.hint),
+        rationale: '小鸿暂时不在，使用默认模板',
+        referenceScriptures: scriptureHint.map((s) => ({ slug: s.slug, title: s.title })),
+        source: 'fallback' as const,
+      };
+    }
+  }
+
+  private fallbackVowTemplate(category: 'PERSONAL' | 'FAMILY' | 'CAREER', keywords: string[], hint?: string): string {
+    const kw = keywords.join('、') || '觉察与慈悲';
+    const base: Record<typeof category, string> = {
+      PERSONAL: `我愿在日常中持续觉察自己的心念与习气，围绕「${kw}」深入修行。每一次情绪起落都是练心的机会，让定力与智慧并行增长，成为一个内心笃定、行事温和的人。`,
+      FAMILY: `我愿以「${kw}」为家庭的共同底色，用耐心与在场陪伴家人成长。在每一次相处中看见对方的渴望与不易，让家成为彼此能真实做自己的港湾。`,
+      CAREER: `我愿以「${kw}」为事业的根本，认真服务每一位同事、客户与众生。不以短期得失论英雄，而以价值创造与布施精神，让企业成为承载众人福祉的平台。`,
+    };
+    return hint ? `${base[category]}\n\n${hint}` : base[category];
   }
 
   // ── W3 小鸿深度介入: LLM JSON 回复 ─────────────────

@@ -14,6 +14,7 @@ import {
 const ENTRY_KIND = ['CHAT', 'INSIGHT', 'REFLECTION', 'VOW_UPDATE', 'SCRIPTURE_NOTE'] as const;
 const CATEGORY = ['PERSONAL', 'FAMILY', 'CAREER', 'DAILY_STRUGGLE', 'GENERAL'] as const;
 const REC_STATUS = ['PENDING', 'READ', 'PRACTICING', 'DONE', 'DISMISSED'] as const;
+const VOW_CAT = ['PERSONAL', 'FAMILY', 'CAREER'] as const;
 
 export class UpdateVowsDto {
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(2000) personalVow?: string;
@@ -53,6 +54,13 @@ export class StruggleDto {
 
 export class UpdateRecommendationDto {
   @ApiProperty({ enum: REC_STATUS }) @IsEnum(REC_STATUS) status!: string;
+}
+
+export class DraftVowDto {
+  @ApiProperty({ enum: VOW_CAT }) @IsEnum(VOW_CAT) category!: 'PERSONAL' | 'FAMILY' | 'CAREER';
+  @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) keywords?: string[];
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(500) currentDraft?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(200) hint?: string;
 }
 
 export class ShareEntryDto {

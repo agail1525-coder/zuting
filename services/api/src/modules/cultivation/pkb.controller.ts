@@ -16,6 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PkbService } from './pkb.service';
 import {
   CreateEntryDto,
+  DraftVowDto,
   ListEntriesDto,
   ShareEntryDto,
   StruggleDto,
@@ -41,6 +42,12 @@ export class PkbController {
   @ApiOperation({ summary: '更新三生愿景 (个人/家庭/事业) → 自动推荐经论' })
   updateVows(@CurrentUser('id') userId: string, @Body() dto: UpdateVowsDto) {
     return this.service.updateVows(userId, dto);
+  }
+
+  @Post('me/vows/draft')
+  @ApiOperation({ summary: '让小鸿 AI 主导起草一条愿景 (觉门)' })
+  draftVow(@CurrentUser('id') userId: string, @Body() dto: DraftVowDto) {
+    return this.service.draftVow(userId, dto);
   }
 
   @Get('me/entries')
