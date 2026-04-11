@@ -29,11 +29,11 @@ export default function ScripturesPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Helper: fetch all pages of scriptures (pageSize=50, max 10 pages safety)
+  // Helper: fetch all pages of scriptures (pageSize=50, max 20 pages safety = 1000 cap)
   const fetchAllScriptures = async (params?: Parameters<typeof fetchScriptures>[0]) => {
     const all: ScriptureItem[] = [];
-    for (let p = 1; p <= 10; p++) {
-      const res = await fetchScriptures({ ...params, page: p });
+    for (let p = 1; p <= 20; p++) {
+      const res = await fetchScriptures({ ...params, page: p, pageSize: 50 });
       const items = Array.isArray(res) ? res : res?.items ?? [];
       all.push(...items);
       const total = Array.isArray(res) ? items.length : res?.total ?? 0;

@@ -2712,7 +2712,7 @@ export const fetchScriptureInsights = (params?: {
 };
 
 export const fetchScriptures = (params?: {
-  ring?: number; tradition?: string; categorySlug?: string; search?: string; page?: number;
+  ring?: number; tradition?: string; categorySlug?: string; search?: string; page?: number; pageSize?: number;
 }) => {
   const q = new URLSearchParams();
   if (params?.ring) q.set("ring", String(params.ring));
@@ -2720,6 +2720,7 @@ export const fetchScriptures = (params?: {
   if (params?.categorySlug) q.set("categorySlug", params.categorySlug);
   if (params?.search) q.set("search", params.search);
   if (params?.page) q.set("page", String(params.page));
+  if (params?.pageSize) q.set("pageSize", String(params.pageSize));
   return fetchAuthed<{ items: ScriptureItem[]; total: number; page: number; pageSize: number }>(
     `/api/cultivation/scriptures?${q}`,
   );
