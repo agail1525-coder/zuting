@@ -57,7 +57,8 @@ export default defineAppConfig({
     'pages/terms/index',
     'pages/team-culture/index',
     'pages/cultivation/index',
-    'pages/cultivation/apply'
+    'pages/cultivation/apply',
+    'pages/pkb/index'
   ],
   tabBar: {
     color: '#9CA3AF',

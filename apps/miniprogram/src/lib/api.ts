@@ -1353,3 +1353,63 @@ export function submitSealPractice(data: { sealId: string; session: string; audi
 export function fetchThreeLives() {
   return request<{ personalGoal: string | null; familyGoal: string | null; businessGoal: string | null; reviewedAt: string | null }>('/cultivation/three-lives')
 }
+
+// ═══════════════════════════════════════════════
+// M39 PKB 修行库 (Mini Program)
+// ═══════════════════════════════════════════════
+
+async function pkbRequest<T>(path: string, method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', data?: any): Promise<T> {
+  const url = `${BASE_URL}${path}`
+  const token = getAccessToken()
+  const header: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (token) header['Authorization'] = `Bearer ${token}`
+  const res = await Taro.request({ url, method, data, header })
+  if (res.statusCode >= 200 && res.statusCode < 300) return res.data as T
+  throw new Error(`API Error: ${res.statusCode}`)
+}
+
+export type PkbCategoryMini = 'PERSONAL' | 'FAMILY' | 'CAREER' | 'DAILY_STRUGGLE' | 'GENERAL'
+
+export interface PkbEntryMini {
+  id: string
+  kind: string
+  category: PkbCategoryMini
+  title: string
+  content: string
+  mood: string | null
+  createdAt: string
+}
+
+export interface PkbOverviewMini {
+  pkb: {
+    personalVow: string | null
+    familyVow: string | null
+    careerVow: string | null
+    currentOxStage: number
+    entryCount: number
+    insightCount: number
+  }
+  recentEntries: PkbEntryMini[]
+  activeRecs: Array<{ id: string; category: PkbCategoryMini; title: string; reason: string; scriptureSlug: string | null }>
+}
+
+export function fetchPkbOverview() {
+  return pkbRequest<PkbOverviewMini>('/pkb/me', 'GET')
+}
+
+export function updatePkbVows(dto: { personalVow?: string; familyVow?: string; careerVow?: string }) {
+  return pkbRequest('/pkb/me/vows', 'PUT', dto)
+}
+
+export function submitPkbStruggle(dto: { message: string; category?: PkbCategoryMini }) {
+  return pkbRequest<{
+    entry: PkbEntryMini
+    reply: string
+    dailyPractice: string
+    citedScriptures: Array<{ slug: string; title: string; tradition: string | null }>
+  }>('/pkb/me/struggle', 'POST', dto)
+}
+
+export function fetchPkbEntriesMini() {
+  return pkbRequest<{ items: PkbEntryMini[]; total: number }>('/pkb/me/entries?pageSize=30', 'GET')
+}

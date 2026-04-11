@@ -1932,3 +1932,97 @@ model ScriptureInsight {
   @@index([scriptureId, insightType])
   @@index([tradition, oxStage])
 }
+
+// ─── M39 PKB 修行库 (Personal Knowledge Base) ────────────────────
+
+enum PkbEntryKind {
+  CHAT
+  INSIGHT
+  REFLECTION
+  VOW_UPDATE
+  SCRIPTURE_NOTE
+}
+
+enum PkbCategory {
+  PERSONAL
+  FAMILY
+  CAREER
+  DAILY_STRUGGLE
+  GENERAL
+}
+
+enum PkbRecommendationStatus {
+  PENDING
+  READ
+  PRACTICING
+  DONE
+  DISMISSED
+}
+
+model UserPkb {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  personalVow     String?   @db.Text
+  familyVow       String?   @db.Text
+  careerVow       String?   @db.Text
+  vowUpdatedAt    DateTime?
+  currentOxStage  Int       @default(1)
+  dominantRings   Int[]     @default([])
+  topTraditions   String[]  @default([])
+  struggleTags    String[]  @default([])
+  insightCount    Int       @default(0)
+  entryCount      Int       @default(0)
+  lastActiveAt    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  entries         PkbEntry[]
+  recommendations PkbRecommendation[]
+
+  @@index([userId])
+}
+
+model PkbEntry {
+  id                 String        @id @default(cuid())
+  pkbId              String
+  pkb                UserPkb       @relation(fields: [pkbId], references: [id], onDelete: Cascade)
+  kind               PkbEntryKind
+  category           PkbCategory   @default(GENERAL)
+  title              String
+  content            String        @db.Text
+  xiaohongSessionId  String?
+  userMessage        String?       @db.Text
+  xiaohongReply      String?       @db.Text
+  citedScriptureIds  String[]      @default([])
+  citedChapterRefs   Json?         // [{slug, chapterNo, quote}]
+  tags               String[]      @default([])
+  mood               String?
+  isShared           Boolean       @default(false)
+  sharedGuideId      String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([pkbId, createdAt])
+  @@index([pkbId, category])
+  @@index([pkbId, kind])
+}
+
+model PkbRecommendation {
+  id          String                  @id @default(cuid())
+  pkbId       String
+  pkb         UserPkb                 @relation(fields: [pkbId], references: [id], onDelete: Cascade)
+  category    PkbCategory
+  title       String
+  reason      String                  @db.Text
+  scriptureId String?
+  scriptureSlug String?
+  chapterNo   Int?
+  priority    Int                     @default(5)
+  status      PkbRecommendationStatus @default(PENDING)
+  expiresAt   DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@index([pkbId, status])
+  @@index([pkbId, createdAt])
+}

@@ -1554,3 +1554,67 @@ export async function fetchTeamCases(): Promise<TeamCase[]> {
 export async function submitTeamInquiry(input: TeamInquiryInput): Promise<{ id: string }> {
   return requestMutate<{ id: string }>('/team-culture/inquiries', 'POST', input as unknown as Record<string, unknown>);
 }
+
+// ═══════════════════════════════════════════════
+// M39 PKB 修行库
+// ═══════════════════════════════════════════════
+
+export type PkbCategory = 'PERSONAL' | 'FAMILY' | 'CAREER' | 'DAILY_STRUGGLE' | 'GENERAL';
+
+export interface PkbEntryMobile {
+  id: string;
+  kind: string;
+  category: PkbCategory;
+  title: string;
+  content: string;
+  mood: string | null;
+  isShared: boolean;
+  citedChapterRefs: Array<{ title?: string; tradition?: string | null; summary?: string | null }> | null;
+  createdAt: string;
+}
+
+export interface PkbRecommendationMobile {
+  id: string;
+  category: PkbCategory;
+  title: string;
+  reason: string;
+  scriptureSlug: string | null;
+  priority: number;
+  status: string;
+}
+
+export interface PkbOverviewMobile {
+  pkb: {
+    id: string;
+    personalVow: string | null;
+    familyVow: string | null;
+    careerVow: string | null;
+    currentOxStage: number;
+    entryCount: number;
+    insightCount: number;
+    lastActiveAt: string | null;
+  };
+  recentEntries: PkbEntryMobile[];
+  activeRecs: PkbRecommendationMobile[];
+}
+
+export async function fetchPkbOverview(): Promise<PkbOverviewMobile> {
+  return fetchAuthed('/pkb/me', { method: 'GET' });
+}
+
+export async function updatePkbVows(dto: { personalVow?: string; familyVow?: string; careerVow?: string }) {
+  return fetchAuthed('/pkb/me/vows', { method: 'PUT', body: JSON.stringify(dto) });
+}
+
+export async function submitPkbStruggle(dto: { message: string; category?: PkbCategory; tags?: string[] }): Promise<{
+  entry: PkbEntryMobile;
+  reply: string;
+  dailyPractice: string;
+  citedScriptures: Array<{ slug: string; title: string; tradition: string | null; summary?: string | null }>;
+}> {
+  return fetchAuthed('/pkb/me/struggle', { method: 'POST', body: JSON.stringify(dto) });
+}
+
+export async function fetchPkbEntriesMobile(): Promise<{ items: PkbEntryMobile[]; total: number }> {
+  return fetchAuthed('/pkb/me/entries?pageSize=30', { method: 'GET' });
+}

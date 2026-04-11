@@ -11,6 +11,8 @@ import { ZenQuizController } from './zen-quiz.controller';
 import { ScriptureService } from './scripture.service';
 import { ScriptureController } from './scripture.controller';
 import { ScriptureLearningService } from './scripture-learning.service';
+import { PkbService } from './pkb.service';
+import { PkbController } from './pkb.controller';
 
 @Module({
   imports: [PrismaModule, ConfigModule],
@@ -20,6 +22,7 @@ import { ScriptureLearningService } from './scripture-learning.service';
     FulfillmentController,
     ZenQuizController,
     ScriptureController,
+    PkbController,
   ],
   providers: [
     CultivationAccessService,
@@ -27,7 +30,8 @@ import { ScriptureLearningService } from './scripture-learning.service';
     ZenQuizService,
     ScriptureService,
     ScriptureLearningService,
+    PkbService,
   ],
-  exports: [CultivationAccessService, FulfillmentService, ScriptureService],
+  exports: [CultivationAccessService, FulfillmentService, ScriptureService, PkbService],
 })
 export class CultivationModule {}

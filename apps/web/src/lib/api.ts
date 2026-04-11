@@ -2734,3 +2734,116 @@ export const fetchScriptureChapter = (slug: string, chapterNo: number) =>
 
 export const recordScriptureView = (slug: string) =>
   fetchAuthed<void>(`/api/cultivation/scriptures/${slug}/view`, { method: "POST" });
+
+// ═══════════════════════════════════════════════
+// M39 PKB 修行库 API
+// ═══════════════════════════════════════════════
+
+export type PkbEntryKind = "CHAT" | "INSIGHT" | "REFLECTION" | "VOW_UPDATE" | "SCRIPTURE_NOTE";
+export type PkbCategory = "PERSONAL" | "FAMILY" | "CAREER" | "DAILY_STRUGGLE" | "GENERAL";
+export type PkbRecommendationStatus = "PENDING" | "READ" | "PRACTICING" | "DONE" | "DISMISSED";
+
+export interface UserPkb {
+  id: string;
+  userId: string;
+  personalVow: string | null;
+  familyVow: string | null;
+  careerVow: string | null;
+  vowUpdatedAt: string | null;
+  currentOxStage: number;
+  dominantRings: number[];
+  topTraditions: string[];
+  struggleTags: string[];
+  insightCount: number;
+  entryCount: number;
+  lastActiveAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PkbEntry {
+  id: string;
+  pkbId: string;
+  kind: PkbEntryKind;
+  category: PkbCategory;
+  title: string;
+  content: string;
+  xiaohongSessionId: string | null;
+  userMessage: string | null;
+  xiaohongReply: string | null;
+  citedScriptureIds: string[];
+  citedChapterRefs: Array<{ slug?: string; title?: string; author?: string | null; tradition?: string | null; summary?: string | null }> | null;
+  tags: string[];
+  mood: string | null;
+  isShared: boolean;
+  sharedGuideId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PkbRecommendation {
+  id: string;
+  pkbId: string;
+  category: PkbCategory;
+  title: string;
+  reason: string;
+  scriptureId: string | null;
+  scriptureSlug: string | null;
+  chapterNo: number | null;
+  priority: number;
+  status: PkbRecommendationStatus;
+  expiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PkbOverview {
+  pkb: UserPkb & { entryCount: number };
+  recentEntries: PkbEntry[];
+  activeRecs: PkbRecommendation[];
+}
+
+export const fetchPkbOverview = () => fetchAuthed<PkbOverview>(`/api/pkb/me`);
+
+export const updatePkbVows = (dto: { personalVow?: string; familyVow?: string; careerVow?: string }) =>
+  fetchAuthed<UserPkb>(`/api/pkb/me/vows`, { method: "PUT", body: JSON.stringify(dto) });
+
+export const fetchPkbEntries = (params?: { kind?: PkbEntryKind; category?: PkbCategory; tag?: string; page?: number; pageSize?: number }) => {
+  const q = new URLSearchParams();
+  if (params?.kind) q.set("kind", params.kind);
+  if (params?.category) q.set("category", params.category);
+  if (params?.tag) q.set("tag", params.tag);
+  if (params?.page) q.set("page", String(params.page));
+  if (params?.pageSize) q.set("pageSize", String(params.pageSize));
+  const suffix = q.toString() ? `?${q.toString()}` : "";
+  return fetchAuthed<{ items: PkbEntry[]; total: number; page: number; pageSize: number }>(`/api/pkb/me/entries${suffix}`);
+};
+
+export const createPkbEntry = (dto: { kind: PkbEntryKind; category?: PkbCategory; title: string; content: string; tags?: string[]; mood?: string }) =>
+  fetchAuthed<PkbEntry>(`/api/pkb/me/entries`, { method: "POST", body: JSON.stringify(dto) });
+
+export const updatePkbEntry = (id: string, dto: { title?: string; content?: string; tags?: string[]; mood?: string }) =>
+  fetchAuthed<PkbEntry>(`/api/pkb/me/entries/${id}`, { method: "PATCH", body: JSON.stringify(dto) });
+
+export const deletePkbEntry = (id: string) =>
+  fetchAuthed<{ deleted: boolean }>(`/api/pkb/me/entries/${id}`, { method: "DELETE" });
+
+export const submitPkbStruggle = (dto: { message: string; category?: PkbCategory; tags?: string[] }) =>
+  fetchAuthed<{
+    entry: PkbEntry;
+    reply: string;
+    dailyPractice: string;
+    citedScriptures: Array<{ slug: string; title: string; author: string | null; tradition: string | null; summary: string | null | undefined }>;
+  }>(`/api/pkb/me/struggle`, { method: "POST", body: JSON.stringify(dto), timeoutMs: 200_000 });
+
+export const fetchPkbRecommendations = () =>
+  fetchAuthed<PkbRecommendation[]>(`/api/pkb/me/recommendations`);
+
+export const updatePkbRecommendation = (id: string, status: PkbRecommendationStatus) =>
+  fetchAuthed<PkbRecommendation>(`/api/pkb/me/recommendations/${id}`, { method: "PATCH", body: JSON.stringify({ status }) });
+
+export const sharePkbEntry = (id: string, dto: { title?: string; summary?: string }) =>
+  fetchAuthed<{ entry: PkbEntry; shareDraft: { title: string; summary: string; content: string; tags: string[] } }>(
+    `/api/pkb/me/entries/${id}/share`,
+    { method: "POST", body: JSON.stringify(dto) },
+  );
