@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
+  IsArray,
   IsBoolean,
   IsInt,
   IsOptional,
@@ -127,6 +129,19 @@ export class LogSlotDto {
   @IsString()
   @MaxLength(20)
   status?: string;
+
+  @ApiPropertyOptional({ type: [String], example: ['清净', '欢喜'] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @IsString({ each: true })
+  @MaxLength(24, { each: true })
+  tags?: string[];
+
+  @ApiPropertyOptional({ description: '若为 true, 本次打卡不计入三十印印证' })
+  @IsOptional()
+  @IsBoolean()
+  skipSealCredit?: boolean;
 }
 
 export class ApplyTemplateDto {

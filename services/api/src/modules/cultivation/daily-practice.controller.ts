@@ -15,6 +15,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CultivationAccessGuard } from './guards/cultivation-access.guard';
 import { DailyPracticeService } from './daily-practice.service';
+import { FestivalService } from './festival.service';
 import {
   ApplyTemplateDto,
   LogSlotDto,
@@ -27,7 +28,10 @@ import {
 @UseGuards(JwtAuthGuard, CultivationAccessGuard)
 @Controller('cultivation/daily-practice')
 export class DailyPracticeController {
-  constructor(private readonly service: DailyPracticeService) {}
+  constructor(
+    private readonly service: DailyPracticeService,
+    private readonly festivals: FestivalService,
+  ) {}
 
   @Get('me')
   @ApiOperation({ summary: '获取本人每日功课时间轴' })
@@ -117,5 +121,35 @@ export class DailyPracticeController {
   @ApiOperation({ summary: '连续打卡统计' })
   streak(@CurrentUser('id') userId: string) {
     return this.service.getStreak(userId);
+  }
+
+  @Get('festivals')
+  @ApiOperation({ summary: '查询指定日期命中的公历圣日' })
+  @ApiQuery({ name: 'date', required: true, example: '2026-04-08' })
+  @ApiQuery({ name: 'tradition', required: false })
+  listFestivals(
+    @Query('date') date: string,
+    @Query('tradition') tradition?: string,
+  ) {
+    return this.festivals.listByDate(date, tradition);
+  }
+
+  @Get('festivals/all')
+  @ApiOperation({ summary: '全量文化圣日列表 (含农历/伊斯兰历)' })
+  @ApiQuery({ name: 'tradition', required: false })
+  allFestivals(@Query('tradition') tradition?: string) {
+    return this.festivals.listAll(tradition);
+  }
+
+  @Get('festivals/:slug')
+  @ApiOperation({ summary: '文化圣日详情' })
+  getFestival(@Param('slug') slug: string) {
+    return this.festivals.getBySlug(slug);
+  }
+
+  @Get('seal-progress')
+  @ApiOperation({ summary: '禅宗三十印印证进度 (仅 ZEN 用户)' })
+  sealProgress(@CurrentUser('id') userId: string) {
+    return this.service.getSealProgress(userId);
   }
 }

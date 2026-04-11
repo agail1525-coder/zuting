@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
+import { FestivalService } from './festival.service';
 import {
   ApplyTemplateDto,
   LogSlotDto,
@@ -50,6 +51,7 @@ export class DailyPracticeService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
+    private readonly festivals: FestivalService,
   ) {
     this.llmBaseUrl = this.config.get<string>('LLM_BASE_URL', '');
     this.llmApiKey = this.config.get<string>('LLM_API_KEY', '');
@@ -119,6 +121,14 @@ export class DailyPracticeService {
       if (m <= nowMin && m + s.durationMin >= nowMin) currentSlot = s;
       if (m > nowMin && !nextSlot) nextSlot = s;
     }
+    const dateOnly = date.toISOString().slice(0, 10);
+    const festivals = await this.festivals
+      .listByDate(dateOnly, practice.tradition)
+      .catch(() => []);
+    const sealProgress =
+      practice.tradition === 'ZEN'
+        ? await this.getSealProgress(userId, date).catch(() => null)
+        : null;
     return {
       practice: {
         id: practice.id,
@@ -133,6 +143,70 @@ export class DailyPracticeService {
       todayLogs,
       currentSlot,
       nextSlot,
+      festivals,
+      sealProgress,
+    };
+  }
+
+  // ── 三十印印证进度 (仅 ZEN) ─────────────────────
+
+  async getSealProgress(userId: string, onDate?: Date) {
+    const journey = await this.getOrCreateJourney(userId);
+    if (journey.primaryTradition !== 'ZEN') {
+      return null;
+    }
+    const day = journey.currentSealDay ?? 0;
+    const total = 21;
+    const sealId = journey.currentSealId ?? 1;
+    if (sealId > 30) {
+      return {
+        seal: null,
+        day: 0,
+        total,
+        todayDone: false,
+        graduated: true,
+      };
+    }
+    const seal = await this.prisma.seal.findUnique({ where: { id: sealId } });
+    if (!seal) {
+      return {
+        seal: null,
+        day,
+        total,
+        todayDone: false,
+        graduated: false,
+      };
+    }
+    const checkDate = onDate ? new Date(onDate) : new Date();
+    checkDate.setHours(0, 0, 0, 0);
+    const practice = await this.prisma.dailyPractice.findFirst({
+      where: { journeyId: journey.id },
+      select: { id: true },
+    });
+    const todayDone = practice
+      ? (await this.prisma.dailyPracticeLog.count({
+          where: {
+            practiceId: practice.id,
+            practiceDate: checkDate,
+            sealId: { not: null },
+          },
+        })) > 0
+      : false;
+    return {
+      seal: {
+        id: seal.id,
+        name: seal.name,
+        series: seal.series,
+        poem: seal.poem,
+        essence: seal.essence,
+        practice: seal.practice,
+        vow: seal.vow,
+        color: seal.color,
+      },
+      day,
+      total,
+      todayDone,
+      graduated: false,
     };
   }
 
@@ -222,6 +296,64 @@ export class DailyPracticeService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    const cleanTags = Array.isArray(dto.tags)
+      ? dto.tags
+          .map((t) => String(t ?? '').trim().slice(0, 24))
+          .filter((t) => t.length > 0)
+          .slice(0, 10)
+      : [];
+
+    // 三十印印证: 仅 ZEN 主修, 且感悟 ≥ 10 字, 且用户未明确跳过
+    const journey = await this.prisma.fulfillmentJourney.findFirst({
+      where: { userId },
+    });
+    const isZen = journey?.primaryTradition === 'ZEN';
+    const reflectionText = (dto.reflection ?? '').trim();
+    const eligibleForSeal =
+      isZen && !dto.skipSealCredit && reflectionText.length >= 10 && journey;
+
+    let sealIdForLog: number | null = null;
+    let sealDayNumForLog: number | null = null;
+    if (eligibleForSeal && journey) {
+      const curSealId = journey.currentSealId ?? 1;
+      const curSealDay = journey.currentSealDay ?? 0;
+      if (curSealId <= 30) {
+        const alreadySealedToday = await this.prisma.dailyPracticeLog.findFirst({
+          where: {
+            practiceId: practice.id,
+            practiceDate: today,
+            sealId: { not: null },
+          },
+        });
+        if (!alreadySealedToday) {
+          const nextDay = curSealDay + 1;
+          if (nextDay >= 21) {
+            // 本印圆满, 推进到下一印
+            sealIdForLog = curSealId;
+            sealDayNumForLog = 21;
+            await this.prisma.fulfillmentJourney.update({
+              where: { id: journey.id },
+              data: {
+                currentSealId: curSealId + 1,
+                currentSealDay: 0,
+                sealStartedAt: new Date(),
+              },
+            });
+          } else {
+            sealIdForLog = curSealId;
+            sealDayNumForLog = nextDay;
+            await this.prisma.fulfillmentJourney.update({
+              where: { id: journey.id },
+              data: {
+                currentSealDay: nextDay,
+                sealStartedAt: journey.sealStartedAt ?? new Date(),
+              },
+            });
+          }
+        }
+      }
+    }
+
     const log = await this.prisma.dailyPracticeLog.upsert({
       where: {
         practiceId_slotId_practiceDate: {
@@ -238,33 +370,36 @@ export class DailyPracticeService {
         repetitionsDone: dto.repetitionsDone,
         reflection: sanitize(dto.reflection),
         status: dto.status ?? 'DONE',
+        tags: cleanTags,
+        sealId: sealIdForLog,
+        sealDayNum: sealDayNumForLog,
       },
       update: {
         durationSec: dto.durationSec,
         repetitionsDone: dto.repetitionsDone,
         reflection: sanitize(dto.reflection),
         status: dto.status ?? 'DONE',
+        tags: cleanTags,
+        ...(sealIdForLog !== null ? { sealId: sealIdForLog, sealDayNum: sealDayNumForLog } : {}),
       },
     });
 
     // 顺带更新 journey streak (复用旧 lastSealAt 字段为统一打卡时间)
-    const journey = await this.prisma.fulfillmentJourney.findUnique({
-      where: { id: (practice as any).journeyId },
-    });
-    if (journey) {
+    const streakJourney = journey;
+    if (streakJourney) {
       const isNewDay =
-        !journey.lastSealAt ||
-        new Date(journey.lastSealAt).setHours(0, 0, 0, 0) !== today.getTime();
+        !streakJourney.lastSealAt ||
+        new Date(streakJourney.lastSealAt).setHours(0, 0, 0, 0) !== today.getTime();
       if (isNewDay) {
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         const wasYesterday =
-          journey.lastSealAt &&
-          new Date(journey.lastSealAt).setHours(0, 0, 0, 0) === yesterday.getTime();
+          streakJourney.lastSealAt &&
+          new Date(streakJourney.lastSealAt).setHours(0, 0, 0, 0) === yesterday.getTime();
         await this.prisma.fulfillmentJourney.update({
-          where: { id: journey.id },
+          where: { id: streakJourney.id },
           data: {
-            streakDays: wasYesterday ? journey.streakDays + 1 : 1,
+            streakDays: wasYesterday ? streakJourney.streakDays + 1 : 1,
             lastSealAt: new Date(),
             karmaPoints: { increment: 5 },
           },
