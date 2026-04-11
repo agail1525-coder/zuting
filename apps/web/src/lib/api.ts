@@ -538,6 +538,37 @@ export interface NotificationListResponse {
   limit: number;
 }
 
+let refreshInflight: Promise<string | null> | null = null;
+
+async function refreshAccessToken(): Promise<string | null> {
+  if (refreshInflight) return refreshInflight;
+  const { getRefreshToken, setTokens, clearTokens } = await import("./auth");
+  const refresh = getRefreshToken();
+  if (!refresh) return null;
+  refreshInflight = (async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: refresh }),
+      });
+      if (!res.ok) {
+        clearTokens();
+        return null;
+      }
+      const data = (await res.json()) as { accessToken: string; refreshToken: string };
+      setTokens(data.accessToken, data.refreshToken);
+      return data.accessToken;
+    } catch {
+      clearTokens();
+      return null;
+    } finally {
+      refreshInflight = null;
+    }
+  })();
+  return refreshInflight;
+}
+
 async function fetchAuthed<T>(
   url: string,
   options: RequestInit & { timeoutMs?: number } = {}
@@ -547,31 +578,48 @@ async function fetchAuthed<T>(
   if (!token) throw new Error("Not authenticated");
 
   const { timeoutMs = 15_000, ...fetchOptions } = options;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort("请求超时，请重试"), timeoutMs);
 
-  try {
-    const res = await fetch(`${API_BASE}${url}`, {
-      ...fetchOptions,
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        ...fetchOptions.headers,
-      },
-    });
-    if (!res.ok) {
-      let msg = `API error: ${res.status}`;
-      try {
-        const body = await res.json();
-        if (body?.message) msg = typeof body.message === 'string' ? body.message : JSON.stringify(body.message);
-      } catch {}
-      throw new Error(msg);
+  const doFetch = async (bearer: string) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort("请求超时，请重试"), timeoutMs);
+    try {
+      return await fetch(`${API_BASE}${url}`, {
+        ...fetchOptions,
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${bearer}`,
+          ...fetchOptions.headers,
+        },
+      });
+    } finally {
+      clearTimeout(timeout);
     }
-    return res.json();
-  } finally {
-    clearTimeout(timeout);
+  };
+
+  let res = await doFetch(token);
+
+  if (res.status === 401) {
+    const fresh = await refreshAccessToken();
+    if (!fresh) {
+      if (typeof window !== "undefined") {
+        const next = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.href = `/login?next=${next}`;
+      }
+      throw new Error("Session expired");
+    }
+    res = await doFetch(fresh);
   }
+
+  if (!res.ok) {
+    let msg = `API error: ${res.status}`;
+    try {
+      const body = await res.json();
+      if (body?.message) msg = typeof body.message === 'string' ? body.message : JSON.stringify(body.message);
+    } catch {}
+    throw new Error(msg);
+  }
+  return res.json();
 }
 
 async function fetchOptionalAuth<T>(
