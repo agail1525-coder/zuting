@@ -2389,6 +2389,20 @@ export interface WisdomQuery {
   createdAt: string;
 }
 
+export type KarmaCausalNode = {
+  type: "CAUSE" | "EVENT" | "EFFECT" | "INSIGHT" | string;
+  text: string;
+  weight?: number;
+};
+
+export type KarmaTraditionInsight = {
+  tradition: string;
+  scriptureTitle: string;
+  scriptureSlug?: string;
+  quote: string;
+  guidance: string;
+};
+
 export interface KarmaEvent {
   id: string;
   title: string;
@@ -2399,7 +2413,19 @@ export interface KarmaEvent {
   aiCauseTag: string | null;
   aiEffectTag: string | null;
   aiAdvice: string | null;
+  aiConfidence?: number | null;
+  aiCausalChain?: KarmaCausalNode[] | null;
+  aiTraditionInsights?: KarmaTraditionInsight[] | null;
   createdAt: string;
+}
+
+export interface KarmaCoachResponse {
+  suggestedTitle: string;
+  structuredBody: string;
+  guidingQuestions: string[];
+  causeHint?: string;
+  effectHint?: string;
+  source: "llm" | "fallback";
 }
 
 export interface ThreeLifeVision {
@@ -2560,7 +2586,14 @@ export const fetchWisdomHistory = (page = 1, pageSize = 20) =>
     `/api/cultivation/wisdom/history?page=${page}&pageSize=${pageSize}`,
   );
 
-// A5 Karma
+// A5 Karma — 小鸿觉门深度介入
+export const coachKarmaDraft = (data: { roughNotes: string; intent?: string }) =>
+  fetchAuthed<KarmaCoachResponse>("/api/cultivation/karma/coach", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    timeoutMs: 150_000,
+  });
 export const createKarmaEvent = (data: {
   title: string;
   body: string;
@@ -2571,6 +2604,12 @@ export const createKarmaEvent = (data: {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    timeoutMs: 210_000,
+  });
+export const reanalyzeKarmaEvent = (id: string) =>
+  fetchAuthed<KarmaEvent>(`/api/cultivation/karma/event/${id}/reanalyze`, {
+    method: "POST",
+    timeoutMs: 210_000,
   });
 export const fetchKarmaTimeline = (page = 1, pageSize = 20) =>
   fetchAuthed<{ items: KarmaEvent[]; total: number; page: number; pageSize: number }>(

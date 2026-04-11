@@ -16,7 +16,9 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CultivationAccessGuard } from './guards/cultivation-access.guard';
 import { FulfillmentService } from './fulfillment.service';
+import { KarmaService } from './karma.service';
 import {
+  CoachKarmaDto,
   CreateKarmaEventDto,
   SetTraditionDto,
   StartJourneyDto,
@@ -31,7 +33,10 @@ import {
 @UseGuards(JwtAuthGuard, CultivationAccessGuard)
 @Controller('cultivation')
 export class FulfillmentController {
-  constructor(private readonly service: FulfillmentService) {}
+  constructor(
+    private readonly service: FulfillmentService,
+    private readonly karma: KarmaService,
+  ) {}
 
   // ── A1 罗盘 / Journey ──────────────────────────────────
 
@@ -142,15 +147,33 @@ export class FulfillmentController {
     );
   }
 
-  // ── A5 因缘日志 ────────────────────────────────────────
+  // ── A5 因缘日志 (小鸿觉门深度介入) ─────────────────────
+
+  @Post('karma/coach')
+  @ApiOperation({ summary: '写前引导 — 小鸿帮用户把零散想法理成结构化草稿' })
+  coachKarma(
+    @CurrentUser('id') userId: string,
+    @Body() dto: CoachKarmaDto,
+  ) {
+    return this.karma.coachKarmaDraft(userId, dto);
+  }
 
   @Post('karma/event')
-  @ApiOperation({ summary: '记录因缘事件 (AI 自动标注 — Wave 2 接入)' })
+  @ApiOperation({ summary: '记录因缘事件 (保存即触发小鸿多维度深度分析)' })
   createKarma(
     @CurrentUser('id') userId: string,
     @Body() dto: CreateKarmaEventDto,
   ) {
-    return this.service.createKarmaEvent(userId, dto);
+    return this.karma.createKarmaEvent(userId, dto);
+  }
+
+  @Post('karma/event/:id/reanalyze')
+  @ApiOperation({ summary: '重新分析 — 触发小鸿重新生成因果链与 12 传统引用' })
+  reanalyzeKarma(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+  ) {
+    return this.karma.reanalyzeKarma(userId, id);
   }
 
   @Get('karma/timeline')
@@ -161,7 +184,7 @@ export class FulfillmentController {
     @Query('page') page = '1',
     @Query('pageSize') pageSize = '20',
   ) {
-    return this.service.listKarmaTimeline(
+    return this.karma.listKarmaTimeline(
       userId,
       parseInt(page, 10),
       parseInt(pageSize, 10),
@@ -173,7 +196,7 @@ export class FulfillmentController {
     @CurrentUser('id') userId: string,
     @Param('id') id: string,
   ) {
-    return this.service.getKarmaEvent(userId, id);
+    return this.karma.getKarmaEvent(userId, id);
   }
 
   @Delete('karma/event/:id')
@@ -181,7 +204,7 @@ export class FulfillmentController {
     @CurrentUser('id') userId: string,
     @Param('id') id: string,
   ) {
-    return this.service.deleteKarmaEvent(userId, id);
+    return this.karma.deleteKarmaEvent(userId, id);
   }
 
   // ── A6 三生愿景 ────────────────────────────────────────

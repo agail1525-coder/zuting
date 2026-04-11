@@ -114,6 +114,19 @@ export class CreateKarmaEventDto {
   visibility?: string;
 }
 
+export class CoachKarmaDto {
+  @ApiProperty({ maxLength: 5000, description: '用户零散想法/情绪/事件线索' })
+  @IsString()
+  @MaxLength(5000)
+  roughNotes!: string;
+
+  @ApiPropertyOptional({ maxLength: 50, description: '意图: 反思/决策/情绪/感悟/争吵/喜悦' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  intent?: string;
+}
+
 export class UpdateThreeLifeVisionDto {
   @ApiPropertyOptional({ maxLength: 1000 })
   @IsOptional()

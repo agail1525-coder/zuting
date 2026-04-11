@@ -1742,6 +1742,8 @@ model KarmaEvent {
   aiEffectTag String?
   aiAdvice    String?            @db.Text
   aiConfidence Float?
+  aiCausalChain       Json?      // [{type:"CAUSE"|"EVENT"|"EFFECT"|"INSIGHT", text, weight?}]
+  aiTraditionInsights Json?      // [{tradition, scriptureTitle, scriptureSlug?, quote, guidance}]
   visibility  String             @default("PRIVATE") // PRIVATE|FRIENDS|PUBLIC
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
