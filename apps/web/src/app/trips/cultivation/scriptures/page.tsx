@@ -10,7 +10,7 @@ import {
   type ScriptureItem,
 } from "@/lib/api";
 
-const RING_LABELS = ["", "禅宗核心", "佛教宗派", "信仰传统"];
+const RING_LABELS = ["", "禅宗核心", "佛教宗派", "文化传统"];
 const RING_COLORS = ["", "from-amber-400 to-yellow-600", "from-cyan-400 to-blue-600", "from-purple-400 to-pink-600"];
 const RING_BORDERS = ["", "border-amber-500/60", "border-cyan-500/50", "border-purple-500/50"];
 const RING_BG = ["", "bg-amber-500/10", "bg-cyan-500/10", "bg-purple-500/10"];
@@ -129,7 +129,7 @@ export default function ScripturesPage() {
           </p>
         )}
         <p className="text-amber-200/60 max-w-xl mx-auto">
-          以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大信仰传统为全景
+          以禅宗一花五叶为核心，佛教八大宗派为脉络，十二大文化传统为全景
         </p>
       </div>
 
