@@ -3,7 +3,8 @@ import {
   Table, Card, Tag, Space, Button, Tabs, Select, message,
   Popconfirm, Typography, Row, Col,
 } from 'antd';
-import { EyeOutlined, StopOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EyeOutlined, StopOutlined, DeleteOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title } = Typography;
@@ -97,6 +98,7 @@ const Q_STATUS_LABEL: Record<Question['status'], string> = {
 // ─── Guides Tab ───────────────────────────────────────────────────────────────
 
 function GuidesTab() {
+  const navigate = useNavigate();
   const [data, setData] = useState<Guide[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -211,6 +213,14 @@ function GuidesTab() {
         <Space size="small">
           <Button
             size="small"
+            type="link"
+            icon={<ExperimentOutlined />}
+            onClick={() => navigate(`/guides/${record.id}`)}
+          >
+            Studio
+          </Button>
+          <Button
+            size="small"
             icon={<EyeOutlined />}
             onClick={() => window.open(`/guides/${record.id}`, '_blank')}
           >
@@ -287,6 +297,7 @@ function GuidesTab() {
 // ─── Questions Tab ────────────────────────────────────────────────────────────
 
 function QuestionsTab() {
+  const navigate = useNavigate();
   const [data, setData] = useState<Question[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -388,6 +399,14 @@ function QuestionsTab() {
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
+          <Button
+            size="small"
+            type="link"
+            icon={<ExperimentOutlined />}
+            onClick={() => navigate(`/questions/${record.id}`)}
+          >
+            Studio
+          </Button>
           <Button
             size="small"
             icon={<EyeOutlined />}

@@ -252,6 +252,26 @@ export const patchPromotion = (id: string, data: Record<string, unknown>) =>
     body: JSON.stringify(data),
   });
 
+// ===== Guide / Question (Community) =====
+
+export const getGuideDetail = (id: string) =>
+  request<Record<string, unknown>>(`/guides/${id}`);
+
+export const patchGuide = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/guides/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
+export const getQuestionDetail = (id: string) =>
+  request<Record<string, unknown>>(`/questions/${id}`);
+
+export const patchQuestion = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/questions/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
 // ===== Media Library =====
 
 export const listMedia = (params: {
