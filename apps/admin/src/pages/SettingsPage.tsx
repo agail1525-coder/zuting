@@ -4,6 +4,7 @@ import {
   SettingOutlined, ApartmentOutlined, AuditOutlined, RobotOutlined,
   HeartOutlined, DatabaseOutlined, BookOutlined,
 } from '@ant-design/icons';
+import TwoFactorCard from '../components/settings/TwoFactorCard';
 
 const { Title, Paragraph } = Typography;
 
@@ -31,6 +32,8 @@ export default function SettingsPage() {
         message="佳绩之旅 · JOINUS.COM 管理后台 M40"
         description="基于 Vite + React 19 + Ant Design 5 + Recharts，43 个 Admin 页，支持 Studio 深度编辑、AI 辅助、审计追踪。"
       />
+
+      <div style={{ marginBottom: 16 }}><TwoFactorCard /></div>
 
       <Card title="系统信息" size="small" style={{ marginBottom: 16 }}>
         <Descriptions column={3} bordered size="small">

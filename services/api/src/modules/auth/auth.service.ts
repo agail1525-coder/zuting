@@ -14,6 +14,7 @@ import { RedisService } from '../redis/redis.service';
 import { RegisterDto, LoginDto, UpdateProfileDto } from './dto/auth.dto';
 import { WechatOAuthStrategy } from './strategies/wechat.strategy';
 import { GoogleOAuthStrategy } from './strategies/google.strategy';
+import { generateTotpSecret, totpVerify, otpauthUri } from './totp.util';
 
 /** Redis key prefixes */
 const REFRESH_TOKEN_PREFIX = 'auth:refresh:';       // auth:refresh:{userId}
@@ -90,6 +91,19 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
+    // 双因素认证校验 (仅对已启用 2FA 的用户)
+    if (user.otpEnabled && user.otpSecret) {
+      if (!dto.otpCode) {
+        throw new UnauthorizedException({
+          code: 'OTP_REQUIRED',
+          message: 'OTP_REQUIRED',
+        });
+      }
+      if (!totpVerify(user.otpSecret, dto.otpCode)) {
+        throw new UnauthorizedException('Invalid 2FA code');
+      }
+    }
+
     // Update last login
     await this.prisma.user.update({
       where: { id: user.id },
@@ -97,6 +111,57 @@ export class AuthService {
     });
 
     return this.generateTokens(user.id, user.role);
+  }
+
+  /** 开始 2FA 绑定流程：生成 secret + otpauth URI,尚未启用直到 verify */
+  async setup2FA(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, nickname: true, otpEnabled: true },
+    });
+    if (!user) throw new UnauthorizedException('User not found');
+    if (user.otpEnabled) throw new BadRequestException('2FA 已启用,请先解绑');
+    const secret = generateTotpSecret();
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { otpSecret: secret, otpEnabled: false },
+    });
+    const label = user.email || user.nickname || userId;
+    return {
+      secret,
+      otpauthUri: otpauthUri(secret, label),
+      hint: '用 Google Authenticator / Authy 扫码,再提交 6 位验证码以激活',
+    };
+  }
+
+  /** 提交 6 位验证码激活 2FA */
+  async verify2FA(userId: string, code: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { otpSecret: true, otpEnabled: true },
+    });
+    if (!user || !user.otpSecret) throw new BadRequestException('未初始化 2FA,请先调用 setup');
+    if (!totpVerify(user.otpSecret, code)) throw new UnauthorizedException('验证码错误');
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { otpEnabled: true, otpVerifiedAt: new Date() },
+    });
+    return { ok: true, enabled: true };
+  }
+
+  /** 关闭 2FA(需要当前有效验证码) */
+  async disable2FA(userId: string, code: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { otpSecret: true, otpEnabled: true },
+    });
+    if (!user?.otpEnabled || !user.otpSecret) throw new BadRequestException('未启用 2FA');
+    if (!totpVerify(user.otpSecret, code)) throw new UnauthorizedException('验证码错误');
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { otpEnabled: false, otpSecret: null, otpVerifiedAt: null },
+    });
+    return { ok: true, enabled: false };
   }
 
   /** Refresh access token using refresh token (validated against Redis) */

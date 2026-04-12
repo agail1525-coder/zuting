@@ -25,6 +25,11 @@ model User {
   emailVerified   Boolean   @default(false)
   phoneVerified   Boolean   @default(false)
   lastLoginAt     DateTime?
+
+  // ── M40 管理后台 双因素认证 ──
+  otpSecret       String?
+  otpEnabled      Boolean   @default(false)
+  otpVerifiedAt   DateTime?
   isAiAgent       Boolean   @default(false)
   isActive        Boolean   @default(true)
   createdAt    DateTime  @default(now())

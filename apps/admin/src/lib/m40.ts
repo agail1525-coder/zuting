@@ -390,6 +390,21 @@ export const listAuditLogs = (params: {
 export const getResourceHistory = (resource: string, id: string) =>
   request<AuditLog[]>(`/admin/audit-logs/${resource}/${id}`);
 
+// ===== 2FA =====
+
+export const setup2FA = () =>
+  request<{ secret: string; otpauthUri: string; hint: string }>('/auth/2fa/setup', { method: 'POST' });
+
+export const verify2FA = (code: string) =>
+  request<{ ok: boolean; enabled: boolean }>('/auth/2fa/verify', {
+    method: 'POST', body: JSON.stringify({ code }),
+  });
+
+export const disable2FA = (code: string) =>
+  request<{ ok: boolean; enabled: boolean }>('/auth/2fa/disable', {
+    method: 'POST', body: JSON.stringify({ code }),
+  });
+
 // ===== AI Gateway =====
 
 export type SupportedLang = 'zh' | 'en' | 'ja' | 'ko' | 'th' | 'hi' | 'ar';

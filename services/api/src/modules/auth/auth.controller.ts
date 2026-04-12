@@ -33,6 +33,7 @@ import {
   VerifyCodeDto,
   ResetPasswordDto,
   UpdateProfileDto,
+  TwoFactorCodeDto,
 } from './dto/auth.dto';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -191,6 +192,29 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized — valid JWT required. / 未授权——需要有效的JWT。' })
   getProfile(@CurrentUser('id') userId: string) {
     return this.authService.getProfile(userId);
+  }
+
+  // ── M40 双因素认证 (TOTP, RFC 6238) ──
+
+  @Post('2fa/setup')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '开启 2FA 绑定流程,返回 secret 与 otpauth URI' })
+  setup2FA(@CurrentUser('id') userId: string) {
+    return this.authService.setup2FA(userId);
+  }
+
+  @Post('2fa/verify')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '提交验证码激活 2FA' })
+  verify2FA(@CurrentUser('id') userId: string, @Body() dto: TwoFactorCodeDto) {
+    return this.authService.verify2FA(userId, dto.code);
+  }
+
+  @Post('2fa/disable')
+  @ApiBearerAuth('bearer')
+  @ApiOperation({ summary: '关闭 2FA(需提供当前验证码)' })
+  disable2FA(@CurrentUser('id') userId: string, @Body() dto: TwoFactorCodeDto) {
+    return this.authService.disable2FA(userId, dto.code);
   }
 
   @Patch('profile')

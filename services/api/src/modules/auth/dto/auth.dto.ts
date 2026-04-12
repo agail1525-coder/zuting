@@ -68,6 +68,20 @@ export class LoginDto {
   })
   @IsString()
   password: string;
+
+  @ApiPropertyOptional({
+    description: '双因素验证码 (若账户启用 2FA 则必填). / 6-digit 2FA code (required if user has 2FA enabled)',
+    example: '123456',
+  })
+  @IsOptional()
+  @IsString()
+  otpCode?: string;
+}
+
+export class TwoFactorCodeDto {
+  @ApiProperty({ description: '6位 TOTP 验证码', example: '123456' })
+  @IsString()
+  code!: string;
 }
 
 export class RefreshTokenDto {
