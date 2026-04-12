@@ -241,6 +241,17 @@ export const patchCoupon = (id: string, data: Record<string, unknown>) =>
     body: JSON.stringify(data),
   });
 
+// ===== Promotion =====
+
+export const getPromotionDetail = (id: string) =>
+  request<Record<string, unknown>>(`/promotions/${id}`);
+
+export const patchPromotion = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/promotions/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
 // ===== Media Library =====
 
 export const listMedia = (params: {

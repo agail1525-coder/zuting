@@ -42,6 +42,7 @@ const TeachingStudioPage = lazy(() => import('./pages/TeachingStudioPage'));
 const ScriptureStudioPage = lazy(() => import('./pages/ScriptureStudioPage'));
 const RouteStudioPage = lazy(() => import('./pages/RouteStudioPage'));
 const CouponStudioPage = lazy(() => import('./pages/CouponStudioPage'));
+const PromotionStudioPage = lazy(() => import('./pages/PromotionStudioPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -102,6 +103,7 @@ export default function App() {
           <Route path="scriptures/:id" element={<ScriptureStudioPage />} />
           <Route path="routes/:id" element={<RouteStudioPage />} />
           <Route path="coupons/:id" element={<CouponStudioPage />} />
+          <Route path="promotions/:id" element={<PromotionStudioPage />} />
         </Route>
       </Routes>
     </Suspense>

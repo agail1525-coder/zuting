@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Tabs, Table, Button, Modal, Form, Input, InputNumber, Select,
   DatePicker, Tag, Space, message, Popconfirm, Typography, Card,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined, EditOutlined, StopOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, StopOutlined, DeleteOutlined, ExperimentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -129,6 +130,7 @@ const COUPON_STATUS_LABEL: Record<CouponStatus, string> = {
 // ─── Promotions Tab ───────────────────────────────────────────────────────────
 
 function PromotionsTab() {
+  const navigate = useNavigate();
   const [data, setData] = useState<Promotion[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -322,10 +324,18 @@ function PromotionsTab() {
           <Button
             type="link"
             size="small"
+            icon={<ExperimentOutlined />}
+            onClick={() => navigate(`/promotions/${record.id}`)}
+          >
+            Studio
+          </Button>
+          <Button
+            type="link"
+            size="small"
             icon={<EditOutlined />}
             onClick={() => openEdit(record)}
           >
-            编辑
+            快编
           </Button>
           {record.status === 'ACTIVE' && (
             <Popconfirm
