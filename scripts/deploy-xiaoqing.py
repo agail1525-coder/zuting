@@ -200,6 +200,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding scriptures v11-v29 (M38 经论大系统)...")
     run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-scriptures-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -3; done")
 
+    # Seed destinations v2+ (目的地++ 真实目的地增量补丁, idempotent find-then-create)
+    print("  Seeding destinations v2+ (目的地++)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-destinations-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -5; done")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
