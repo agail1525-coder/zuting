@@ -2396,10 +2396,14 @@ export interface FulfillmentJourney {
   blendTraditions: string[];
   currentRealm: Realm;
   oxStage: number;
+  quizPassedStreak?: number;
+  zenHouse?: string | null;
+  bhumiStage?: number;
+  bhumiUnlockedAt?: string | null;
   streakDays: number;
   lastSealAt: string | null;
   karmaPoints: number;
-  createdAt: string;
+  createdAt?: string;
   updatedAt: string;
 }
 

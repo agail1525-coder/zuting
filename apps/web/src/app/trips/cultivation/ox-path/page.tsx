@@ -13,6 +13,12 @@ import {
   type QuizProgressResponse,
   type ZenHouseMeta,
 } from "@/lib/api";
+import { toast } from "@/lib/toast";
+
+const OX_STAGE_NAMES = [
+  "寻牛", "见迹", "见牛", "得牛", "牧牛",
+  "骑牛归家", "忘牛存人", "人牛俱忘", "返本还源", "入廛垂手",
+];
 
 type HouseListItem = Omit<ZenHouseMeta, "signatureKoans"> & { foundedEra: string };
 
@@ -40,10 +46,15 @@ export default function OxPathPage() {
     setAdvancing(true);
     setError(null);
     try {
-      await advanceOxStage();
+      const updated = await advanceOxStage();
       await load();
+      const newStage = updated?.oxStage ?? null;
+      const stageName = newStage && newStage >= 1 && newStage <= 10 ? OX_STAGE_NAMES[newStage - 1] : "新境";
+      toast.success(`恭喜晋阶 · 第 ${newStage ?? "?"} 牛「${stageName}」`, 4000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "晋阶失败");
+      const msg = e instanceof Error ? e.message : "晋阶失败";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setAdvancing(false);
     }
@@ -55,14 +66,33 @@ export default function OxPathPage() {
     try {
       await setZenHouse(code);
       await load();
+      toast.success(code ? "宗风已切换" : "已回归通用禅路");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "切换宗风失败");
+      const msg = e instanceof Error ? e.message : "切换宗风失败";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSwitching(false);
     }
   };
 
-  if (!data) return <div className="text-amber-200/60 py-20 text-center">加载中...</div>;
+  if (!data) {
+    if (error) {
+      return (
+        <div className="py-20 text-center space-y-3">
+          <div className="text-4xl">⚠️</div>
+          <p className="text-red-300/90 text-sm">{error}</p>
+          <button
+            onClick={load}
+            className="px-4 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-200 text-sm hover:bg-amber-500/30"
+          >
+            重新加载
+          </button>
+        </div>
+      );
+    }
+    return <div className="text-amber-200/60 py-20 text-center">加载中...</div>;
+  }
 
   const house = data.house;
   const houseColor = house?.color || "#D4A855";

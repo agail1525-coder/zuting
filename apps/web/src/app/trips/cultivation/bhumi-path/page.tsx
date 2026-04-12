@@ -12,6 +12,7 @@ import {
   type BhumiStageDetail,
   type BhumiVowDetail,
 } from "@/lib/api";
+import { toast } from "@/lib/toast";
 
 const BHUMI_GREEN = "#38A676";
 const BHUMI_GREEN_DARK = "#1f5a42";
@@ -41,8 +42,11 @@ export default function BhumiPathPage() {
     try {
       await unlockBhumi();
       await load();
+      toast.success("发菩提心 · 入欢喜地", 4000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "发心失败");
+      const msg = e instanceof Error ? e.message : "发心失败";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -52,7 +56,9 @@ export default function BhumiPathPage() {
     const key = `${bhumiStage}-${vow.type}`;
     const reflection = vowDrafts[key] ?? "";
     if (vow.reflectionMin > 0 && reflection.trim().length < vow.reflectionMin) {
-      setError(`${vow.title} 需要至少 ${vow.reflectionMin} 字反思 (当前 ${reflection.trim().length})`);
+      const msg = `${vow.title} 需要至少 ${vow.reflectionMin} 字反思 (当前 ${reflection.trim().length})`;
+      setError(msg);
+      toast.warning(msg);
       return;
     }
     setBusy(true);
@@ -66,8 +72,11 @@ export default function BhumiPathPage() {
       });
       setData(updated);
       setVowDrafts((d) => ({ ...d, [key]: "" }));
+      toast.success("愿已纳受 · 大地为证");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "提交大愿失败");
+      const msg = e instanceof Error ? e.message : "提交大愿失败";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -77,11 +86,13 @@ export default function BhumiPathPage() {
     setBusy(true);
     setError(null);
     try {
-      await advanceBhumi();
+      const updated = await advanceBhumi();
       await load();
+      toast.success(`证入第 ${updated?.bhumiStage ?? "?"} 地`, 4000);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "证入下一地失败";
       setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -138,7 +149,23 @@ export default function BhumiPathPage() {
     );
   }
 
-  if (!data) return <div className="text-emerald-200/60 py-20 text-center">加载中...</div>;
+  if (!data) {
+    if (error) {
+      return (
+        <div className="py-20 text-center space-y-3">
+          <div className="text-4xl">⚠️</div>
+          <p className="text-red-300/90 text-sm">{error}</p>
+          <button
+            onClick={load}
+            className="px-4 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 text-sm hover:bg-emerald-500/30"
+          >
+            重新加载
+          </button>
+        </div>
+      );
+    }
+    return <div className="text-emerald-200/60 py-20 text-center">加载中...</div>;
+  }
 
   // Gate 已开但未发心
   if (data.currentBhumi === 0) {
