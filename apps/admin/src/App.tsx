@@ -50,6 +50,12 @@ const ThemesOverviewPage = lazy(() => import('./pages/ThemesOverviewPage'));
 const PromptLabPage = lazy(() => import('./pages/PromptLabPage'));
 const AiTracesPage = lazy(() => import('./pages/AiTracesPage'));
 const AdminRolesPage = lazy(() => import('./pages/AdminRolesPage'));
+const NotificationBroadcastPage = lazy(() => import('./pages/NotificationBroadcastPage'));
+const RecommendationDashboardPage = lazy(() => import('./pages/RecommendationDashboardPage'));
+const SharePosterPage = lazy(() => import('./pages/SharePosterPage'));
+const AiCommunityMonitorPage = lazy(() => import('./pages/AiCommunityMonitorPage'));
+const SystemHealthPage = lazy(() => import('./pages/SystemHealthPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -117,6 +123,12 @@ export default function App() {
           <Route path="prompt-lab" element={<PromptLabPage />} />
           <Route path="ai-traces" element={<AiTracesPage />} />
           <Route path="admin-roles" element={<AdminRolesPage />} />
+          <Route path="notification-broadcast" element={<NotificationBroadcastPage />} />
+          <Route path="recommendation" element={<RecommendationDashboardPage />} />
+          <Route path="share-poster" element={<SharePosterPage />} />
+          <Route path="ai-community-monitor" element={<AiCommunityMonitorPage />} />
+          <Route path="system-health" element={<SystemHealthPage />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />
           <Route path="personal-growth/themes/:slug" element={<ThemeStudioPage kind="personal-growth" />} />
           <Route path="family-harmony/themes/:slug" element={<ThemeStudioPage kind="family-harmony" />} />

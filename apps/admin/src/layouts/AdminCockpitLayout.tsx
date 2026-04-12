@@ -34,6 +34,7 @@ import {
   SettingOutlined,
   HeartOutlined,
   ApartmentOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import { logout } from '../lib/auth';
 import CommandPalette from '../components/command/CommandPalette';
@@ -108,6 +109,7 @@ const menuItems = [
       { key: '/ai-config', icon: <RobotOutlined />, label: 'AI 助手配置' },
       { key: '/prompt-lab', icon: <ThunderboltOutlined />, label: 'Prompt 实验室' },
       { key: '/ai-traces', icon: <ThunderboltOutlined />, label: 'AI 操作追踪' },
+      { key: '/ai-community-monitor', icon: <RobotOutlined />, label: 'AI 社区监控' },
     ],
   },
 
@@ -119,6 +121,9 @@ const menuItems = [
       { key: '/analytics', icon: <BarChartOutlined />, label: '数据分析' },
       { key: '/search-stats', icon: <SearchOutlined />, label: '搜索统计' },
       { key: '/i18n-share', icon: <TranslationOutlined />, label: '国际化&分享' },
+      { key: '/recommendation', icon: <BarChartOutlined />, label: '推荐看板' },
+      { key: '/share-poster', icon: <TranslationOutlined />, label: '分享&海报' },
+      { key: '/notification-broadcast', icon: <MessageOutlined />, label: '通知广播' },
     ],
   },
 
@@ -130,6 +135,8 @@ const menuItems = [
       { key: '/users', icon: <TeamOutlined />, label: '用户' },
       { key: '/admin-roles', icon: <ApartmentOutlined />, label: '角色权限' },
       { key: '/audit', icon: <AuditOutlined />, label: '审计日志' },
+      { key: '/system-health', icon: <DatabaseOutlined />, label: '系统健康' },
+      { key: '/settings', icon: <SettingOutlined />, label: '系统设置' },
     ],
   },
 ];
@@ -162,6 +169,12 @@ const breadcrumbMap: Record<string, string> = {
   '/ai-config': 'AI 助手配置',
   '/prompt-lab': 'Prompt 实验室',
   '/ai-traces': 'AI 操作追踪',
+  '/ai-community-monitor': 'AI 社区监控',
+  '/recommendation': '推荐看板',
+  '/share-poster': '分享&海报',
+  '/notification-broadcast': '通知广播',
+  '/system-health': '系统健康',
+  '/settings': '系统设置',
   '/themes': '主题包总览',
   '/analytics': '数据分析',
   '/search-stats': '搜索统计',

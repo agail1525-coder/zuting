@@ -447,6 +447,38 @@ export const listAiTraces = (params: {
 export const approveAiTrace = (id: string) =>
   request<AiTrace>(`/admin/ai/traces/${id}/approve`, { method: 'POST' });
 
+// ===== Ops (Notification / Recommendation / Share / Health) =====
+
+export const sendBroadcast = (data: { userIds: string[]; title: string; content: string; link?: string }) =>
+  request<{ sent: number }>('/notifications/send', { method: 'POST', body: JSON.stringify(data) });
+
+export const listPopularRecommendations = (params: { entityType?: string; limit?: number } = {}) => {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
+  });
+  return request<Record<string, unknown>[] | { items: Record<string, unknown>[] }>(
+    `/recommendations/popular?${qs.toString()}`,
+  );
+};
+
+export const getShareStats = (params: { entityType?: string; entityId?: string } = {}) => {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
+  });
+  return request<Record<string, unknown>>(`/shares/stats?${qs.toString()}`);
+};
+
+export const getPopularShares = (limit = 20) =>
+  request<Record<string, unknown>[] | { items: Record<string, unknown>[] }>(
+    `/shares/popular?limit=${limit}`,
+  );
+
+export const getHealthStatus = () => request<Record<string, unknown>>('/health');
+export const getHealthReady = () => request<Record<string, unknown>>('/health/ready');
+export const getHealthInfo = () => request<Record<string, unknown>>('/health/info');
+
 // ===== Roles =====
 
 export const listAdminRoles = () => request<AdminRoleRecord[]>('/admin/roles');
