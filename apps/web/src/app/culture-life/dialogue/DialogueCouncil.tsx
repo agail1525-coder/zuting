@@ -35,35 +35,14 @@ export default function DialogueCouncil() {
       const res = await fetch(`${API_BASE}/api/culture-life/dialogue`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ context }),
+        body: JSON.stringify({ situation: context }),
       });
-      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let currentSlug: string | null = null;
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const events = buffer.split("\n\n");
-        buffer = events.pop() ?? "";
-        for (const ev of events) {
-          const lines = ev.split("\n");
-          const eventLine = lines.find((l) => l.startsWith("event:"))?.slice(6).trim();
-          const dataLine = lines.find((l) => l.startsWith("data:"))?.slice(5).trim();
-          if (!dataLine) continue;
-          try {
-            const data = JSON.parse(dataLine);
-            if (eventLine === "speaker") {
-              currentSlug = data.religionSlug;
-            } else if (eventLine === "token" && currentSlug) {
-              setTurns((prev) => [...prev, { religionSlug: currentSlug!, text: data.text }]);
-            }
-          } catch {}
-        }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (Array.isArray(data?.turns) && data.turns.length > 0) {
+        setTurns(data.turns);
+      } else {
+        setErr(data?.note ?? "W5 Wave 将接入 Qwen3.5-35B 生成真实 12 智者回应");
       }
     } catch (e: any) {
       setErr(e?.message ?? "对话失败");

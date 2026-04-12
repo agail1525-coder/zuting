@@ -1,8 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 
 const CACHE_TTL = 3600;
+const MAX_TAKE = 200;
+
 const K = {
   questions: 'culture-life:questions',
   questionMatrix: (code: string) => `culture-life:question:${code}`,
@@ -15,23 +17,32 @@ const RELIGION_SELECT = { id: true, name: true, nameEn: true, slug: true, color:
 
 @Injectable()
 export class CultureLifeService {
+  private readonly logger = new Logger(CultureLifeService.name);
+
   constructor(private prisma: PrismaService, private redis: RedisService) {}
 
   private async cached<T>(key: string, loader: () => Promise<T>): Promise<T> {
     try {
       const hit = await this.redis.getJSON<T>(key);
       if (hit) return hit;
-    } catch {}
+    } catch (e) {
+      this.logger.warn(`Redis GET failed for ${key}: ${(e as Error).message}`);
+    }
     const data = await loader();
     try {
       await this.redis.setJSON(key, data, CACHE_TTL);
-    } catch {}
+    } catch (e) {
+      this.logger.warn(`Redis SET failed for ${key}: ${(e as Error).message}`);
+    }
     return data;
   }
 
   async listQuestions() {
     return this.cached(K.questions, async () => {
-      const items = await this.prisma.lifeQuestion.findMany({ orderBy: { sortOrder: 'asc' } });
+      const items = await this.prisma.lifeQuestion.findMany({
+        orderBy: { sortOrder: 'asc' },
+        take: MAX_TAKE,
+      });
       return { items, total: items.length };
     });
   }
@@ -42,6 +53,7 @@ export class CultureLifeService {
         where: { code: code as any },
         include: {
           perspectives: {
+            take: MAX_TAKE,
             include: { religion: { select: RELIGION_SELECT } },
           },
         },
@@ -61,8 +73,12 @@ export class CultureLifeService {
       const perspectives = await this.prisma.lifeQuestionPerspective.findMany({
         where: { religionId: religion.id },
         include: { question: true },
+        take: MAX_TAKE,
       });
-      const stageGuides = await this.prisma.lifeStageGuide.findMany({ where: { religionId: religion.id } });
+      const stageGuides = await this.prisma.lifeStageGuide.findMany({
+        where: { religionId: religion.id },
+        take: MAX_TAKE,
+      });
       return { religion, perspectives, stageGuides };
     });
   }
@@ -71,6 +87,7 @@ export class CultureLifeService {
     return this.cached(K.stages, async () => {
       const items = await this.prisma.lifeStageGuide.findMany({
         include: { religion: { select: RELIGION_SELECT } },
+        take: MAX_TAKE,
       });
       return { items, total: items.length };
     });
@@ -81,6 +98,7 @@ export class CultureLifeService {
       const items = await this.prisma.lifeStageGuide.findMany({
         where: { stage: stage as any },
         include: { religion: { select: RELIGION_SELECT } },
+        take: MAX_TAKE,
       });
       return { stage, items, total: items.length };
     });
@@ -90,7 +108,8 @@ export class CultureLifeService {
     return {
       situation,
       questionCode: questionCode ?? null,
-      note: 'AI 圆桌对话 SSE 将在 W5 集成（xiaohong/Qwen3.5-35B 多角色编排）',
+      turns: [] as Array<{ religionSlug: string; text: string }>,
+      note: 'AI 圆桌对话 SSE 将在 W5 接入 Qwen3.5-35B 多角色编排。当前为占位响应。',
     };
   }
 }
