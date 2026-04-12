@@ -42,11 +42,15 @@ export class OtpRequiredError extends Error {
   constructor() { super('OTP_REQUIRED'); this.name = 'OtpRequiredError'; }
 }
 
-export async function login(email: string, password: string, otpCode?: string) {
+export async function login(identifier: string, password: string, otpCode?: string) {
+  const isPhone = /^1\d{10}$/.test(identifier.trim());
+  const body = isPhone
+    ? { phone: identifier.trim(), password, otpCode }
+    : { email: identifier.trim(), password, otpCode };
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, otpCode }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));

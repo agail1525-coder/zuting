@@ -9,11 +9,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [otpRequired, setOtpRequired] = useState(false);
 
-  const onFinish = async (values: { email: string; password: string; otpCode?: string; remember?: boolean }) => {
+  const onFinish = async (values: { identifier: string; password: string; otpCode?: string; remember?: boolean }) => {
     setLoading(true);
     try {
-      await login(values.email, values.password, values.otpCode);
-      setRememberedEmail(values.remember ? values.email : null);
+      await login(values.identifier, values.password, values.otpCode);
+      setRememberedEmail(values.remember ? values.identifier : null);
       window.location.href = '/';
     } catch (err: unknown) {
       if (err instanceof OtpRequiredError) {
@@ -66,10 +66,22 @@ export default function LoginPage() {
           onFinish={onFinish}
           layout="vertical"
           size="large"
-          initialValues={{ email: getRememberedEmail() ?? '', remember: !!getRememberedEmail() }}
+          initialValues={{ identifier: getRememberedEmail() ?? '', remember: !!getRememberedEmail() }}
         >
-          <Form.Item name="email" rules={[{ required: true, type: 'email', message: '请输入邮箱' }]}>
-            <Input prefix={<MailOutlined />} placeholder="管理员邮箱" autoComplete="email" />
+          <Form.Item
+            name="identifier"
+            rules={[{
+              required: true,
+              validator: (_, v: string) => {
+                if (!v) return Promise.reject(new Error('请输入邮箱或手机号'));
+                const s = v.trim();
+                if (/^1\d{10}$/.test(s)) return Promise.resolve();
+                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) return Promise.resolve();
+                return Promise.reject(new Error('请输入有效的邮箱或11位手机号'));
+              },
+            }]}
+          >
+            <Input prefix={<MailOutlined />} placeholder="邮箱 或 11位手机号" autoComplete="username" />
           </Form.Item>
           <Form.Item name="password" rules={[{ required: true, min: 6, message: '密码至少6位' }]}>
             <Input.Password prefix={<LockOutlined />} placeholder="密码" autoComplete="current-password" />
