@@ -192,6 +192,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding cultivation (M37)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-cultivation.ts 2>&1 | tail -10")
 
+    # Seed culture-life (M40 文化与生命)
+    print("  Seeding culture-life (M40)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-culture-life.ts 2>&1 | tail -10")
+
     # Seed scriptures v11-v29 (M38 经论++ incremental rounds, idempotent upsert)
     print("  Seeding scriptures v11-v29 (M38 经论大系统)...")
     run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-scriptures-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -3; done")

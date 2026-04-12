@@ -53,6 +53,7 @@ import { AdminAuditModule } from './modules/admin-audit/admin-audit.module';
 import { AdminAiModule } from './modules/admin-ai/admin-ai.module';
 import { AdminMediaModule } from './modules/admin-media/admin-media.module';
 import { AdminRoleModule } from './modules/admin-role/admin-role.module';
+import { CultureLifeModule } from './modules/culture-life/culture-life.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -111,6 +112,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     AdminAiModule,
     AdminMediaModule,
     AdminRoleModule,
+    CultureLifeModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

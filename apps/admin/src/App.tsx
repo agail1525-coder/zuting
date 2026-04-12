@@ -36,6 +36,7 @@ const MediaLibraryPage = lazy(() => import('./pages/MediaLibraryPage'));
 const AuditLogPage = lazy(() => import('./pages/AuditLogPage'));
 const TeamCultureManagePage = lazy(() => import('./pages/TeamCultureManagePage'));
 const CultivationManagePage = lazy(() => import('./pages/CultivationManagePage'));
+const CultureLifeManagePage = lazy(() => import('./pages/CultureLifeManagePage'));
 const HolySiteStudioPage = lazy(() => import('./pages/HolySiteStudioPage'));
 const TempleStudioPage = lazy(() => import('./pages/TempleStudioPage'));
 const PatriarchStudioPage = lazy(() => import('./pages/PatriarchStudioPage'));
@@ -126,6 +127,7 @@ export default function App() {
           <Route path="audit" element={<AuditLogPage />} />
           <Route path="team-culture" element={<TeamCultureManagePage />} />
           <Route path="cultivation" element={<CultivationManagePage />} />
+          <Route path="culture-life" element={<CultureLifeManagePage />} />
           <Route path="holy-sites/:id" element={<HolySiteStudioPage />} />
           <Route path="temples/:id" element={<TempleStudioPage />} />
           <Route path="patriarchs/:id" element={<PatriarchStudioPage />} />

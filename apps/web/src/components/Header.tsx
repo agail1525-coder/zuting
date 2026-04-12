@@ -14,6 +14,7 @@ const navLinks = [
   { key: "nav.prices", href: "/prices", highlight: false },
   { key: "nav.map", href: "/map", highlight: false },
   { key: "nav.wiki", href: "/religions", highlight: false },
+  { key: "nav.cultureLife", href: "/culture-life", highlight: false },
   { key: "nav.community", href: "/community", highlight: false },
   { key: "nav.aiPlanner", href: "/chat", highlight: true },
   { key: "nav.faithPractice", href: "/faith-assessment", highlight: true, dropdown: [

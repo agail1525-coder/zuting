@@ -135,6 +135,10 @@ model Religion {
   patriarchs Patriarch[]
   teachings  Teaching[]
   routes     Route[]
+
+  // M40 文化与生命
+  lifePerspectives LifeQuestionPerspective[]
+  lifeStageGuides  LifeStageGuide[]
 }
 
 model HolySite {
@@ -2280,3 +2284,83 @@ model AdminRole {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+
+// ─── M40 文化与生命 (Culture & Life) ──────────────────────────────
+enum LifeQuestionCategory {
+  ORIGIN_PURPOSE
+  SUFFERING
+  LOVE_RELATIONSHIP
+  WEALTH_DESIRE
+  FREEDOM_FATE
+  DEATH_TRANSCENDENCE
+  SIN_REDEMPTION
+  KNOWLEDGE
+  SELF_OTHER
+  TIME_ETERNITY
+  BODY_SOUL
+  LEGACY_IMMORTALITY
+}
+
+enum LifeStage {
+  BIRTH
+  GROWTH
+  MARRIAGE
+  CAREER
+  MIDLIFE
+  AGING
+  DEATH
+}
+
+model LifeQuestion {
+  id                 String               @id @default(cuid())
+  code               LifeQuestionCategory @unique
+  title              String
+  titleEn            String
+  question           String               @db.Text
+  philosophicalDepth String               @db.Text
+  sortOrder          Int                  @default(0)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  perspectives LifeQuestionPerspective[]
+}
+
+model LifeQuestionPerspective {
+  id            String   @id @default(cuid())
+  questionId    String
+  religionId    String
+  corePosition  String   @db.Text
+  elaboration   String   @db.Text
+  scriptureRefs Json     @default("[]")
+  masterQuotes  Json     @default("[]")
+  practiceGuide String?  @db.Text
+  aiReflection  String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  question LifeQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  religion Religion     @relation(fields: [religionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, religionId])
+  @@index([religionId])
+}
+
+model LifeStageGuide {
+  id           String    @id @default(cuid())
+  religionId   String
+  stage        LifeStage
+  title        String
+  keyWisdom    String    @db.Text
+  rituals      Json      @default("[]")
+  challenges   Json      @default("[]")
+  scriptureRef String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  religion Religion @relation(fields: [religionId], references: [id], onDelete: Cascade)
+
+  @@unique([religionId, stage])
+  @@index([stage])
+}
+
