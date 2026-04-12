@@ -95,4 +95,21 @@ export class CreateHolySiteDto {
   @IsString()
   @IsNotEmpty()
   religionId: string;
+
+  // M40 扩展字段
+
+  @ApiPropertyOptional({ description: 'Image gallery [{url, caption, sortOrder}]' })
+  @IsOptional()
+  gallery?: { url: string; caption?: string; sortOrder?: number }[];
+
+  @ApiPropertyOptional({ description: '360° panorama URL' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  panoUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Audio guides [{url, lang, title}]' })
+  @IsOptional()
+  audioGuides?: { url: string; lang?: string; title?: string }[];
+
 }

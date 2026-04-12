@@ -73,4 +73,12 @@ export class CreatePatriarchDto {
   @ApiProperty()
   @IsString()
   religionId: string;
+
+  @ApiPropertyOptional({ description: 'Image gallery [{url, caption, sortOrder}]' })
+  @IsOptional()
+  gallery?: { url: string; caption?: string; sortOrder?: number }[];
+
+  @ApiPropertyOptional({ description: 'Lineage tree [{name, relation, era}]' })
+  @IsOptional()
+  lineage?: { name: string; relation?: string; era?: string }[];
 }

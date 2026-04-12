@@ -46,4 +46,12 @@ export class CreateTempleDto {
   @ApiProperty()
   @IsString()
   religionId: string;
+
+  @ApiPropertyOptional({ description: 'Image gallery [{url, caption, sortOrder}]' })
+  @IsOptional()
+  gallery?: { url: string; caption?: string; sortOrder?: number }[];
+
+  @ApiPropertyOptional({ description: 'Historical abbots [{name, era, contribution}]' })
+  @IsOptional()
+  historicalAbbots?: { name: string; era?: string; contribution?: string }[];
 }
