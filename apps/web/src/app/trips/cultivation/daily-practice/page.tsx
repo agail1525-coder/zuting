@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import {
   applyLiturgyTemplate,
@@ -112,9 +113,7 @@ function shiftDate(dateStr: string, delta: number): string {
 type TabKey = "today" | "schedule" | "templates";
 
 export default function DailyPracticePage() {
-  const [timeline, setTimeline] = useState<DailyPracticeTimeline | null>(null);
-  const [streak, setStreak] = useState<{ streakDays: number; karmaPoints: number; totalLogs: number } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabKey>("today");
   const [selectedSlot, setSelectedSlot] = useState<DailyPracticeSlot | null>(null);
@@ -137,36 +136,54 @@ export default function DailyPracticePage() {
   const [selectedDate, setSelectedDate] = useState<string>(todayStr());
   const [festivalOpen, setFestivalOpen] = useState<CulturalFestival | null>(null);
 
-  const loadFor = useCallback(async (dateArg: string) => {
-    setError(null);
-    try {
-      const [tl, st] = await Promise.all([
-        getDailyPracticeTimeline(dateArg),
-        getDailyPracticeStreak().catch(() => null),
-      ]);
-      setTimeline(tl);
-      if (st) setStreak({ streakDays: st.streakDays, karmaPoints: st.karmaPoints, totalLogs: st.totalLogs });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "加载失败");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const load = useCallback(() => loadFor(selectedDate), [loadFor, selectedDate]);
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["cultivation", "daily-practice", "timeline", selectedDate],
+        queryFn: () => getDailyPracticeTimeline(selectedDate),
+        staleTime: 60 * 1000,
+      },
+      {
+        queryKey: ["cultivation", "daily-practice", "streak"],
+        queryFn: getDailyPracticeStreak,
+        staleTime: 5 * 60 * 1000,
+      },
+    ],
+  });
+  const timelineQuery = results[0] as {
+    data?: DailyPracticeTimeline;
+    isLoading: boolean;
+    error: unknown;
+  };
+  const streakQuery = results[1] as {
+    data?: { streakDays: number; karmaPoints: number; totalLogs: number };
+  };
+  const timeline = timelineQuery.data ?? null;
+  const streak = streakQuery.data
+    ? {
+        streakDays: streakQuery.data.streakDays,
+        karmaPoints: streakQuery.data.karmaPoints,
+        totalLogs: streakQuery.data.totalLogs,
+      }
+    : null;
+  const loading = timelineQuery.isLoading && !timeline;
 
   useEffect(() => {
-    load();
-  }, [load]);
+    if (timelineQuery.error) {
+      setError(timelineQuery.error instanceof Error ? timelineQuery.error.message : "加载失败");
+    } else {
+      setError(null);
+    }
+  }, [timelineQuery.error]);
 
-  const changeDate = useCallback(
-    (d: string) => {
-      setSelectedDate(d);
-      setLoading(true);
-      loadFor(d);
-    },
-    [loadFor],
+  const load = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ["cultivation", "daily-practice"] }),
+    [queryClient],
   );
+
+  const changeDate = useCallback((d: string) => {
+    setSelectedDate(d);
+  }, []);
 
   const logMap = useMemo(() => {
     const m = new Map<string, DailyPracticeLog>();
@@ -819,16 +836,15 @@ function TemplatesView({
   onApplied: () => void;
 }) {
   const [tradition, setTradition] = useState(currentTradition);
-  const [templates, setTemplates] = useState<LiturgyTemplate[]>([]);
-  const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState<string | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    listLiturgyTemplates({ tradition })
-      .then((res) => setTemplates(res))
-      .finally(() => setLoading(false));
-  }, [tradition]);
+  const templatesQuery = useQuery({
+    queryKey: ["cultivation", "liturgy-templates", tradition],
+    queryFn: () => listLiturgyTemplates({ tradition }),
+    staleTime: 10 * 60 * 1000,
+  });
+  const templates: LiturgyTemplate[] = templatesQuery.data ?? [];
+  const loading = templatesQuery.isLoading;
 
   const onApply = async (t: LiturgyTemplate) => {
     if (!confirm(`将「${t.title}」应用为${t.session === "MORNING" ? "早课" : t.session === "EVENING" ? "晚课" : "功课"}? 该时段现有 slot 会被替换。`)) return;
