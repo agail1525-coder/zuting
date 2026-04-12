@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchOxPath,
   advanceOxStage,
@@ -9,8 +10,6 @@ import {
   fetchZenHouses,
   setZenHouse,
   fetchBhumiGate,
-  type OxPathResponse,
-  type QuizProgressResponse,
   type ZenHouseMeta,
 } from "@/lib/api";
 import { toast } from "@/lib/toast";
@@ -18,33 +17,53 @@ import { useTranslation } from "@/lib/i18n";
 
 type HouseListItem = Omit<ZenHouseMeta, "signatureKoans"> & { foundedEra: string };
 
+const FIVE_MIN = 5 * 60 * 1000;
+const ONE_MIN = 60 * 1000;
+const ONE_HOUR = 60 * 60 * 1000;
+
 export default function OxPathPage() {
   const { t } = useTranslation();
-  const [data, setData] = useState<OxPathResponse | null>(null);
-  const [quizProgress, setQuizProgress] = useState<QuizProgressResponse | null>(null);
-  const [houses, setHouses] = useState<HouseListItem[]>([]);
-  const [gate, setGate] = useState<{ eligible: boolean; reason: string } | null>(null);
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [advancing, setAdvancing] = useState(false);
   const [switching, setSwitching] = useState(false);
 
-  const load = () => {
-    fetchOxPath().then(setData).catch((e) => setError(e.message));
-    fetchQuizProgress().then(setQuizProgress).catch(() => {});
-    fetchBhumiGate().then((g) => setGate({ eligible: g.eligible, reason: g.reason })).catch(() => {});
-  };
+  const oxPathQuery = useQuery({
+    queryKey: ["cultivation", "ox-path"],
+    queryFn: fetchOxPath,
+    staleTime: FIVE_MIN,
+  });
+  const quizQuery = useQuery({
+    queryKey: ["cultivation", "quiz-progress"],
+    queryFn: fetchQuizProgress,
+    staleTime: ONE_MIN,
+  });
+  const gateQuery = useQuery({
+    queryKey: ["cultivation", "bhumi-gate"],
+    queryFn: fetchBhumiGate,
+    staleTime: FIVE_MIN,
+  });
+  const housesQuery = useQuery({
+    queryKey: ["cultivation", "zen-houses"],
+    queryFn: fetchZenHouses,
+    staleTime: ONE_HOUR,
+  });
 
-  useEffect(() => {
-    load();
-    fetchZenHouses().then(setHouses).catch(() => {});
-  }, []);
+  const data = oxPathQuery.data ?? null;
+  const quizProgress = quizQuery.data ?? null;
+  const gate = gateQuery.data ? { eligible: gateQuery.data.eligible, reason: gateQuery.data.reason } : null;
+  const houses: HouseListItem[] = (housesQuery.data ?? []) as HouseListItem[];
+
+  const invalidateOxPath = () => {
+    queryClient.invalidateQueries({ queryKey: ["cultivation"] });
+  };
 
   const onAdvance = async () => {
     setAdvancing(true);
     setError(null);
     try {
       const updated = await advanceOxStage();
-      await load();
+      invalidateOxPath();
       const newStage = updated?.oxStage ?? null;
       const stageName = newStage && newStage >= 1 && newStage <= 10 ? t(`cultivation.oxStages.${newStage}`) : "新境";
       toast.success(`恭喜晋阶 · 第 ${newStage ?? "?"} 牛「${stageName}」`, 4000);
@@ -62,7 +81,7 @@ export default function OxPathPage() {
     setError(null);
     try {
       await setZenHouse(code);
-      await load();
+      invalidateOxPath();
       toast.success(code ? "宗风已切换" : "已回归通用禅路");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "切换宗风失败";
@@ -74,13 +93,14 @@ export default function OxPathPage() {
   };
 
   if (!data) {
-    if (error) {
+    if (oxPathQuery.error || error) {
+      const msg = error ?? (oxPathQuery.error instanceof Error ? oxPathQuery.error.message : "加载失败");
       return (
         <div className="py-20 text-center space-y-3">
           <div className="text-4xl">⚠️</div>
-          <p className="text-red-300/90 text-sm">{error}</p>
+          <p className="text-red-300/90 text-sm">{msg}</p>
           <button
-            onClick={load}
+            onClick={() => oxPathQuery.refetch()}
             className="px-4 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-200 text-sm hover:bg-amber-500/30"
           >
             重新加载

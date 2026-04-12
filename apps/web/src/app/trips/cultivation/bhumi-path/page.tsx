@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchBhumiPath,
   fetchBhumiGate,
   unlockBhumi,
   submitBhumiVow,
   advanceBhumi,
-  type BhumiPathResponse,
   type BhumiStageDetail,
   type BhumiVowDetail,
 } from "@/lib/api";
@@ -16,32 +16,40 @@ import { toast } from "@/lib/toast";
 
 const BHUMI_GREEN = "#38A676";
 const BHUMI_GREEN_DARK = "#1f5a42";
+const FIVE_MIN = 5 * 60 * 1000;
 
 export default function BhumiPathPage() {
-  const [data, setData] = useState<BhumiPathResponse | null>(null);
-  const [gate, setGate] = useState<{ eligible: boolean; reason: string; oxStage: number; oxRequired: number } | null>(
-    null,
-  );
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [expandedBhumi, setExpandedBhumi] = useState<number | null>(null);
   const [vowDrafts, setVowDrafts] = useState<Record<string, string>>({});
 
-  const load = () => {
-    fetchBhumiGate().then(setGate).catch(() => {});
-    fetchBhumiPath().then(setData).catch((e) => setError(e.message));
-  };
+  const gateQuery = useQuery({
+    queryKey: ["cultivation", "bhumi-gate"],
+    queryFn: fetchBhumiGate,
+    staleTime: FIVE_MIN,
+  });
+  const pathQuery = useQuery({
+    queryKey: ["cultivation", "bhumi-path"],
+    queryFn: fetchBhumiPath,
+    staleTime: FIVE_MIN,
+    enabled: gateQuery.data?.eligible !== false,
+  });
 
-  useEffect(() => {
-    load();
-  }, []);
+  const data = pathQuery.data ?? null;
+  const gate = gateQuery.data ?? null;
+
+  const invalidateBhumi = () => {
+    queryClient.invalidateQueries({ queryKey: ["cultivation"] });
+  };
 
   const onUnlock = async () => {
     setBusy(true);
     setError(null);
     try {
       await unlockBhumi();
-      await load();
+      invalidateBhumi();
       toast.success("发菩提心 · 入欢喜地", 4000);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "发心失败";
@@ -70,7 +78,8 @@ export default function BhumiPathPage() {
         reflection: reflection || undefined,
         count: 1,
       });
-      setData(updated);
+      queryClient.setQueryData(["cultivation", "bhumi-path"], updated);
+      queryClient.invalidateQueries({ queryKey: ["cultivation"] });
       setVowDrafts((d) => ({ ...d, [key]: "" }));
       toast.success("愿已纳受 · 大地为证");
     } catch (e) {
@@ -87,7 +96,7 @@ export default function BhumiPathPage() {
     setError(null);
     try {
       const updated = await advanceBhumi();
-      await load();
+      invalidateBhumi();
       toast.success(`证入第 ${updated?.bhumiStage ?? "?"} 地`, 4000);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "证入下一地失败";
@@ -156,7 +165,7 @@ export default function BhumiPathPage() {
           <div className="text-4xl">⚠️</div>
           <p className="text-red-300/90 text-sm">{error}</p>
           <button
-            onClick={load}
+            onClick={() => pathQuery.refetch()}
             className="px-4 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 text-sm hover:bg-emerald-500/30"
           >
             重新加载
