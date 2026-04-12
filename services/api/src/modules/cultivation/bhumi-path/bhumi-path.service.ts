@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { TEN_BHUMI, getBhumi, BHUMI_TOTAL, VowSource } from './ten-bhumi.constants';
 
@@ -173,9 +173,13 @@ export class BhumiPathService {
       });
     }
 
-    return this.prisma.fulfillmentJourney.update({
-      where: { userId },
+    const result = await this.prisma.fulfillmentJourney.updateMany({
+      where: { id: journey.id, bhumiStage: journey.bhumiStage },
       data: { bhumiStage: journey.bhumiStage + 1 },
     });
+    if (result.count === 0) {
+      throw new ConflictException('地位已被其他会话更新,请刷新后重试');
+    }
+    return this.prisma.fulfillmentJourney.findUniqueOrThrow({ where: { userId } });
   }
 }

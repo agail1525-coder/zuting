@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -196,10 +197,14 @@ export class FulfillmentService {
     }
     const newStage = journey.oxStage + 1;
     const newRealm = this.oxToRealm(newStage);
-    return this.prisma.fulfillmentJourney.update({
-      where: { userId },
+    const result = await this.prisma.fulfillmentJourney.updateMany({
+      where: { id: journey.id, oxStage: journey.oxStage },
       data: { oxStage: newStage, currentRealm: newRealm },
     });
+    if (result.count === 0) {
+      throw new ConflictException('晋阶已被其他会话更新,请刷新后重试');
+    }
+    return this.prisma.fulfillmentJourney.findUniqueOrThrow({ where: { userId } });
   }
 
   private oxToRealm(stage: number): Realm {
