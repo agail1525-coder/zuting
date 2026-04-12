@@ -14,15 +14,12 @@ import {
   type ZenHouseMeta,
 } from "@/lib/api";
 import { toast } from "@/lib/toast";
-
-const OX_STAGE_NAMES = [
-  "寻牛", "见迹", "见牛", "得牛", "牧牛",
-  "骑牛归家", "忘牛存人", "人牛俱忘", "返本还源", "入廛垂手",
-];
+import { useTranslation } from "@/lib/i18n";
 
 type HouseListItem = Omit<ZenHouseMeta, "signatureKoans"> & { foundedEra: string };
 
 export default function OxPathPage() {
+  const { t } = useTranslation();
   const [data, setData] = useState<OxPathResponse | null>(null);
   const [quizProgress, setQuizProgress] = useState<QuizProgressResponse | null>(null);
   const [houses, setHouses] = useState<HouseListItem[]>([]);
@@ -49,7 +46,7 @@ export default function OxPathPage() {
       const updated = await advanceOxStage();
       await load();
       const newStage = updated?.oxStage ?? null;
-      const stageName = newStage && newStage >= 1 && newStage <= 10 ? OX_STAGE_NAMES[newStage - 1] : "新境";
+      const stageName = newStage && newStage >= 1 && newStage <= 10 ? t(`cultivation.oxStages.${newStage}`) : "新境";
       toast.success(`恭喜晋阶 · 第 ${newStage ?? "?"} 牛「${stageName}」`, 4000);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "晋阶失败";
