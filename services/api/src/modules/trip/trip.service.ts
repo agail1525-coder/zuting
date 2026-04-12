@@ -75,18 +75,23 @@ export class TripService {
   /** List trips with optional filters (R-68 IDOR-safe: anonymous/non-owner only see public-status trips) */
   async findAll(params: {
     currentUserId?: string;
+    currentUserRole?: string;
     userId?: string;
     status?: TripStatus;
     page?: number;
     limit?: number;
   }) {
-    const { currentUserId, userId, status, page = 1, limit = 20 } = params;
+    const { currentUserId, currentUserRole, userId, status, page = 1, limit = 20 } = params;
     const take = Math.min(limit, 100);
     const where: Prisma.TripWhereInput = {};
+    const isAdmin = currentUserRole === 'ADMIN';
 
     const isOwnerQuery = currentUserId != null && userId != null && userId === currentUserId;
 
-    if (isOwnerQuery) {
+    if (isAdmin) {
+      // Admin: see all trips, optionally filtered by userId
+      if (userId) where.userId = userId;
+    } else if (isOwnerQuery) {
       // Owner querying their own trips — no visibility restriction
       where.userId = currentUserId;
     } else if (userId != null && currentUserId != null) {

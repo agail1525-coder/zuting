@@ -140,9 +140,11 @@ export class TripController {
   findAll(
     @Query() query: TripQueryDto,
     @CurrentUser('id') currentUserId?: string,
+    @CurrentUser('role') currentUserRole?: string,
   ) {
     return this.tripService.findAll({
       currentUserId,
+      currentUserRole,
       userId: query.userId,
       status: query.status as TripStatus,
       page: query.page,
