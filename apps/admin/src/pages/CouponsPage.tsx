@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Table, Card, Typography, Tag, Button, Space, Modal, Form,
   Input, InputNumber, Select, DatePicker, Popconfirm, message, Switch, Row, Col,
 } from 'antd';
-import { PlusOutlined, EditOutlined, StopOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, StopOutlined, SearchOutlined, ExperimentOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getCoupons, createCoupon, updateCoupon, deactivateCoupon } from '../lib/api';
 import type { Coupon, CreateCouponDto } from '../types';
@@ -16,6 +17,7 @@ type StatusFilter = 'ALL' | 'ACTIVE' | 'INACTIVE' | 'EXPIRED';
 type TypeFilter = 'ALL' | 'FIXED' | 'PERCENT';
 
 export default function CouponsPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<Coupon[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -234,11 +236,14 @@ export default function CouponsPage() {
     {
       title: '操作',
       key: 'actions',
-      width: 160,
+      width: 220,
       render: (_: unknown, record: Coupon) => (
         <Space>
+          <Button type="link" size="small" icon={<ExperimentOutlined />} onClick={() => navigate(`/coupons/${record.id}`)}>
+            Studio
+          </Button>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
-            编辑
+            快编
           </Button>
           {record.isActive && (
             <Popconfirm

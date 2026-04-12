@@ -219,6 +219,28 @@ export const createScripture = (data: Partial<ScriptureRecord> & { slug: string;
 export const deleteScripture = (id: string) =>
   request<{ id: string }>(`/admin/scriptures/${id}`, { method: 'DELETE' });
 
+// ===== Route =====
+
+export const getRouteDetail = (id: string) =>
+  request<Record<string, unknown>>(`/routes/${id}`);
+
+export const patchRoute = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/routes/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
+// ===== Coupon =====
+
+export const getCouponDetail = (id: string) =>
+  request<Record<string, unknown>>(`/coupons/${id}`);
+
+export const patchCoupon = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/coupons/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
 // ===== Media Library =====
 
 export const listMedia = (params: {

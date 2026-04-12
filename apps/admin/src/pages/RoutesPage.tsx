@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Table, Card, Typography, Tag, Button, Space, message, Popconfirm, Select,
   Modal, Form, Input, InputNumber, Divider, Empty,
 } from 'antd';
 import {
   PlusOutlined, DeleteOutlined, ReloadOutlined, EditOutlined,
-  NodeIndexOutlined, MinusCircleOutlined,
+  NodeIndexOutlined, MinusCircleOutlined, ExperimentOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getRoutes, createRoute, updateRoute, deleteRoute, getHolySites, replaceRouteSites } from '../lib/api';
@@ -65,6 +66,7 @@ interface SiteRow {
 }
 
 export default function RoutesPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<AdminRoute[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -318,10 +320,11 @@ export default function RoutesPage() {
     },
     {
       title: '操作',
-      width: 160,
+      width: 220,
       render: (_: unknown, record) => (
         <Space>
-          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
+          <Button type="link" size="small" icon={<ExperimentOutlined />} onClick={() => navigate(`/routes/${record.id}`)}>Studio</Button>
+          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} title="快编" />
           <Button type="link" size="small" icon={<NodeIndexOutlined />} onClick={() => openSitesEditor(record)} title="编排站点" />
           <Popconfirm title="确认删除?" onConfirm={() => handleDelete(record.id)}>
             <Button type="link" danger icon={<DeleteOutlined />} size="small" />
