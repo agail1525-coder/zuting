@@ -39,6 +39,7 @@ import {
 import { logout, getCurrentUserRole } from '../lib/auth';
 import { filterMenu } from '../lib/menuAcl';
 import CommandPalette from '../components/command/CommandPalette';
+import { useIdleLogout } from '../hooks/useIdleLogout';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -190,6 +191,7 @@ export default function AdminCockpitLayout() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  useIdleLogout();
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
