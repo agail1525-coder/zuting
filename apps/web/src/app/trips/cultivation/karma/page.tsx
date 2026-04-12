@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   coachKarmaDraft,
   createKarmaEvent,
@@ -57,7 +58,15 @@ const NODE_LABEL: Record<string, { label: string; color: string }> = {
 type Step = "idle" | "rough" | "draft" | "analyzed";
 
 export default function KarmaPage() {
-  const [items, setItems] = useState<KarmaEvent[]>([]);
+  const queryClient = useQueryClient();
+  const timelineQuery = useQuery({
+    queryKey: ["cultivation", "karma", "timeline", 1, 50],
+    queryFn: () => fetchKarmaTimeline(1, 50),
+    staleTime: 60 * 1000,
+  });
+  const items: KarmaEvent[] = Array.isArray(timelineQuery.data?.items)
+    ? (timelineQuery.data!.items as KarmaEvent[])
+    : [];
   const [step, setStep] = useState<Step>("idle");
 
   // Step: rough
@@ -82,13 +91,7 @@ export default function KarmaPage() {
   const [reanalyzing, setReanalyzing] = useState<string | null>(null);
 
   const load = () =>
-    fetchKarmaTimeline(1, 50)
-      .then((r) => setItems(Array.isArray(r?.items) ? r.items : []))
-      .catch(() => {});
-
-  useEffect(() => {
-    load();
-  }, []);
+    queryClient.invalidateQueries({ queryKey: ["cultivation", "karma"] });
 
   const resetForm = () => {
     setStep("idle");
@@ -162,7 +165,13 @@ export default function KarmaPage() {
     setReanalyzing(id);
     try {
       const updated = await reanalyzeKarmaEvent(id);
-      setItems((prev) => prev.map((it) => (it.id === id ? updated : it)));
+      queryClient.setQueryData<{ items: KarmaEvent[] } | undefined>(
+        ["cultivation", "karma", "timeline", 1, 50],
+        (prev) =>
+          prev
+            ? { ...prev, items: prev.items.map((it) => (it.id === id ? updated : it)) }
+            : prev,
+      );
       if (justSaved?.id === id) setJustSaved(updated);
     } catch (e) {
       alert(e instanceof Error ? e.message : "重新分析失败");

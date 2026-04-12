@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchPkbOverview,
   updatePkbVows,
@@ -36,32 +37,26 @@ const STATUS_LABEL: Record<PkbRecommendationStatus, string> = {
 };
 
 export default function CultivationPkbPage() {
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("vows");
-  const [overview, setOverview] = useState<PkbOverview | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
-    try {
-      const data = await fetchPkbOverview();
-      setOverview(data);
-      setError(null);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "加载失败");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const overviewQuery = useQuery({
+    queryKey: ["cultivation", "pkb", "overview"],
+    queryFn: fetchPkbOverview,
+    staleTime: 5 * 60 * 1000,
+  });
+  const overview = overviewQuery.data ?? null;
+  const refresh = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ["cultivation", "pkb"] }),
+    [queryClient],
+  );
 
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
-
-  if (loading) {
+  if (overviewQuery.isLoading && !overview) {
     return <div className="text-amber-200/60 py-20 text-center">加载修行库中…</div>;
   }
-  if (error && !overview) {
-    return <div className="text-rose-300 py-20 text-center">{error}</div>;
+  if (overviewQuery.error && !overview) {
+    const msg = overviewQuery.error instanceof Error ? overviewQuery.error.message : "加载失败";
+    return <div className="text-rose-300 py-20 text-center">{msg}</div>;
   }
   if (!overview) return null;
 
@@ -435,23 +430,32 @@ function StruggleTab({ onSubmitted }: { onSubmitted: () => void }) {
 // ── 日志 Tab ─────────────────────────────────
 
 function JournalTab() {
-  const [items, setItems] = useState<PkbEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<PkbCategory | "ALL">("ALL");
 
-  useEffect(() => {
-    setLoading(true);
-    fetchPkbEntries({ category: filter === "ALL" ? undefined : filter, pageSize: 30 })
-      .then((res) => setItems(res.items))
-      .catch((e) => setErr(e instanceof Error ? e.message : "加载失败"))
-      .finally(() => setLoading(false));
-  }, [filter]);
+  const entriesQuery = useQuery({
+    queryKey: ["cultivation", "pkb", "entries", filter],
+    queryFn: () =>
+      fetchPkbEntries({
+        category: filter === "ALL" ? undefined : filter,
+        pageSize: 30,
+      }),
+    staleTime: 60 * 1000,
+  });
+  const items: PkbEntry[] = entriesQuery.data?.items ?? [];
+  const loading = entriesQuery.isLoading;
+  const err = entriesQuery.error instanceof Error ? entriesQuery.error.message : null;
 
   const onShare = async (id: string) => {
     try {
       await sharePkbEntry(id, {});
-      setItems((prev) => prev.map((e) => (e.id === id ? { ...e, isShared: true } : e)));
+      queryClient.setQueryData<{ items: PkbEntry[] } | undefined>(
+        ["cultivation", "pkb", "entries", filter],
+        (prev) =>
+          prev
+            ? { ...prev, items: prev.items.map((e) => (e.id === id ? { ...e, isShared: true } : e)) }
+            : prev,
+      );
       alert("已标记为可分享");
     } catch (e) {
       alert(e instanceof Error ? e.message : "分享失败");
@@ -515,27 +519,19 @@ function JournalTab() {
 // ── 推荐 Tab ─────────────────────────────────
 
 function RecsTab({ onChanged }: { onChanged: () => void }) {
-  const [recs, setRecs] = useState<PkbRecommendation[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await fetchPkbRecommendations();
-      setRecs(data);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
+  const queryClient = useQueryClient();
+  const recsQuery = useQuery({
+    queryKey: ["cultivation", "pkb", "recs"],
+    queryFn: fetchPkbRecommendations,
+    staleTime: 60 * 1000,
+  });
+  const recs: PkbRecommendation[] = recsQuery.data ?? [];
+  const loading = recsQuery.isLoading;
 
   const update = async (id: string, status: PkbRecommendationStatus) => {
     try {
       await updatePkbRecommendation(id, status);
-      await load();
+      await queryClient.invalidateQueries({ queryKey: ["cultivation", "pkb"] });
       onChanged();
     } catch (e) {
       alert(e instanceof Error ? e.message : "更新失败");
