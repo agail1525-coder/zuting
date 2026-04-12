@@ -205,8 +205,20 @@ LLM_API_KEY="zuoyelang2026"
     run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-destinations-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -5; done")
 
     # 目的地++ 图片兜底补丁 (必须在所有 seed-destinations-v*.ts 之后运行)
-    print("  Backfilling holy-site images (目的地++ images)...")
+    print("  Backfilling holy-site images (pool fallback)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-images.ts 2>&1 | tail -10")
+
+    # 目的地++ Wikipedia 真实图片替换 (覆盖 pool 图为 upload.wikimedia.org 真实图)
+    print("  Fetching real Wikipedia images for all sites...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-wiki-images.ts 2>&1 | tail -8")
+
+    # 目的地++ 老站点落地信息补全 (60 famous ADMIN sites)
+    print("  Enriching legacy ADMIN sites (hours/price/season/transport/tips)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-enrich-legacy.ts 2>&1 | tail -5")
+
+    # 目的地++ 按气候回填 bestSeason (v4/v5 数据对象遗漏)
+    print("  Backfilling bestSeason by country climate...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-backfill-season.ts 2>&1 | tail -5")
 
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
