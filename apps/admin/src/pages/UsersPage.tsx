@@ -178,7 +178,7 @@ export default function UsersPage() {
         <Button icon={<DownloadOutlined />} onClick={() => {
           exportCsv(`users-${Date.now()}`, data.map((u) => ({
             id: u.id,
-            name: u.name ?? u.nickname ?? '',
+            name: u.nickname ?? '',
             email: u.email ?? '',
             phone: u.phone ?? '',
             role: ROLE_MAP[u.role]?.label ?? u.role,

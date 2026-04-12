@@ -20,11 +20,11 @@ export interface GalleryItem {
 
 interface GalleryEditorProps {
   value?: GalleryItem[];
-  onChange: (items: GalleryItem[]) => void;
+  onChange?: (items: GalleryItem[]) => void;
   max?: number;
 }
 
-export default function GalleryEditor({ value = [], onChange, max = 30 }: GalleryEditorProps) {
+export default function GalleryEditor({ value = [], onChange = () => {}, max = 30 }: GalleryEditorProps) {
   const [open, setOpen] = useState(false);
 
   const addAsset = (asset: MediaAsset) => {

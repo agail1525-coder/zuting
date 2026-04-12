@@ -167,7 +167,7 @@ export default function OrdersPage() {
           exportCsv(`orders-${Date.now()}`, filteredData.map((o) => ({
             orderNo: o.orderNo || o.id,
             status: STATUS_MAP[o.status]?.label ?? o.status,
-            amount: o.totalAmount ?? 0,
+            amount: o.amount ?? 0,
             user: o.user?.name ?? o.userName ?? '',
             trip: o.trip?.title ?? o.tripTitle ?? '',
             createdAt: o.createdAt ? dayjs(o.createdAt).format('YYYY-MM-DD HH:mm') : '',

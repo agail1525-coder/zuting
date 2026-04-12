@@ -212,7 +212,7 @@ export default function ReligionStudioPage() {
       </Row>
 
       <Drawer open={auditOpen} title="变更历史" width={560} onClose={() => setAuditOpen(false)} destroyOnClose>
-        {raw.id && <AuditTimeline resource="religion" resourceId={String(raw.id)} />}
+        {raw.id ? <AuditTimeline resource="religion" resourceId={String(raw.id)} /> : null}
       </Drawer>
 
       <AiAssistantDrawer open={aiOpen} onClose={() => setAiOpen(false)} resource="religion"
