@@ -525,10 +525,10 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 ## 审查体系 — 项目++系统 (移植自作业郎18++体系)
 
 > **完整定义**: docs/protocols/11-项目++系统总索引.md
-> **技能文件**: docs/protocols/skills/ (10个++技能)
+> **技能文件**: docs/protocols/skills/ (12个++技能)
 > **统一骨架**: §0元数据 → §1角色 → §2作用域 → §3规则 → §4流程 → §5评分 → §6工具 → §7生命周期 → §8铁律 → §9联动
 
-### 10个++技能清单
+### 12个++技能清单
 ```
 #1  全审++ (FA) v2.0 — 顶层编排器，V1-V5+D6-D11共11维，并行Agent+级联审查 → hohoho/Y+/X+触发
 #2  项目++ (PJ)  — 标准文档生成器，PRD→DOC-XX+施工图+验收清单
@@ -540,6 +540,8 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 #8  飞轮++ (FW)  — 闭环验证，6维度(CRUD/状态机/交易/UGC/事件链/数据一致)
 #9  五全++ (FF)  — 五端一致性，5维度(API契约/类型共享/数据/功能/配置)
 #10 RRR         — 3分钟快速自检，8点速查(tsc/空壳/API/种子/Guard/空态/i18n/import)
+#11 经论++ (SCR) — 循环充实12传统经论，seed-scriptures-v{N}.ts递增补丁
+#12 自动测试++ (AT) — 真实全链路7旅程自动测试，5驱动×5断言×30铁律+Pit Registry自学习
 ```
 
 ### 全审执行流 (hohoho)
