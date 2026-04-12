@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useTranslation } from "@/lib/i18n";
-import { fetchTrip, type TripDetail, type TripStatus } from "@/lib/api";
+import { fetchTrip, transitionTrip, type TripDetail, type TripStatus } from "@/lib/api";
 import ReviewSection from "@/components/ReviewSection";
 import MobileNav from "@/components/MobileNav";
 
@@ -44,7 +44,7 @@ function formatDate(d: string | null, tbd: string): string {
 
 function formatBudget(n: number | null, tbd: string): string {
   if (n == null) return tbd;
-  return `¥${n.toLocaleString()}`;
+  return `¥${(n / 100).toLocaleString()}`;
 }
 
 export default function TripDetailPage() {
@@ -57,6 +57,21 @@ export default function TripDetailPage() {
   const [trip, setTrip] = useState<TripDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
+
+  const doTransition = async (action: string) => {
+    if (!trip || transitioning) return;
+    setTransitioning(true);
+    setError(null);
+    try {
+      const updated = await transitionTrip(trip.id, action);
+      setTrip(updated);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "状态变更失败");
+    } finally {
+      setTransitioning(false);
+    }
+  };
 
   // Auth gate
   useEffect(() => {
@@ -311,7 +326,47 @@ export default function TripDetailPage() {
       )}
 
       {/* Action CTAs based on status */}
+      {error && (
+        <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
+          {error}
+        </div>
+      )}
       <div className="mt-6 flex flex-wrap gap-3">
+        {trip.status === "DRAFT" && (
+          <button
+            type="button"
+            onClick={() => doTransition("start_planning")}
+            disabled={transitioning}
+            className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 text-sm disabled:opacity-60"
+          >
+            {transitioning ? "处理中..." : "开始规划 →"}
+          </button>
+        )}
+        {trip.status === "PLANNING" && (
+          <button
+            type="button"
+            onClick={() => doTransition("submit")}
+            disabled={transitioning}
+            className="px-6 py-3 bg-[#0066FF] text-white font-bold rounded-xl hover:bg-[#0052CC] transition-colors shadow-lg shadow-[#0066FF]/20 text-sm disabled:opacity-60"
+          >
+            {transitioning ? "处理中..." : "提交待审核 →"}
+          </button>
+        )}
+        {trip.status === "SUBMITTED" && (
+          <div className="px-6 py-3 bg-amber-50 border border-amber-200 text-amber-700 rounded-xl text-sm">
+            ⏳ 已提交，等待官方旅行官确认（通常24小时内）
+          </div>
+        )}
+        {(trip.status === "SUBMITTED" || trip.status === "CONFIRMED") && (
+          <button
+            type="button"
+            onClick={() => doTransition("user_cancel")}
+            disabled={transitioning}
+            className="px-6 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm disabled:opacity-60"
+          >
+            取消行程
+          </button>
+        )}
         {trip.status === "CONFIRMED" && (
           <Link
             href={`/trips/${id}/checkout`}
