@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   submitWisdomQuery,
   synthesizeWisdom,
@@ -46,25 +47,28 @@ function parseSynthesis(s: string | null): WisdomSynthesis | null {
 }
 
 export default function WisdomPage() {
+  const queryClient = useQueryClient();
   const [question, setQuestion] = useState("");
   const [selected, setSelected] = useState<string[]>(DEFAULT_SELECTED);
   const [current, setCurrent] = useState<WisdomQuery | null>(null);
   const [chosen, setChosen] = useState<string[]>([]);
-  const [history, setHistory] = useState<WisdomQuery[]>([]);
   const [loading, setLoading] = useState(false);
   const [debating, setDebating] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
-  const hint = dialecticHint(selected.length);
-  const synthesis = useMemo(() => parseSynthesis(current?.synthesized ?? null), [current]);
+  const historyQuery = useQuery({
+    queryKey: ["cultivation", "wisdom", "history", 1, 10],
+    queryFn: () => fetchWisdomHistory(1, 10),
+    staleTime: 60 * 1000,
+  });
+  const history: WisdomQuery[] = historyQuery.data?.items ?? [];
 
   const loadHistory = () =>
-    fetchWisdomHistory(1, 10).then((r) => setHistory(r.items)).catch(() => {});
+    queryClient.invalidateQueries({ queryKey: ["cultivation", "wisdom"] });
 
-  useEffect(() => {
-    loadHistory();
-  }, []);
+  const hint = dialecticHint(selected.length);
+  const synthesis = useMemo(() => parseSynthesis(current?.synthesized ?? null), [current]);
 
   const toggleTradition = (code: string) =>
     setSelected((prev) => {

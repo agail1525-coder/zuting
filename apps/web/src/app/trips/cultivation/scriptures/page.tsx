@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import {
   fetchScriptureCategories,
   fetchScriptures,
@@ -21,52 +22,59 @@ const TRADITION_ICONS: Record<string, string> = {
   SHINTO: "⛩", INDIGENOUS: "🌿", BAHAI: "✴",
 };
 
+const TEN_MIN = 10 * 60 * 1000;
+const ONE_HOUR = 60 * 60 * 1000;
+
+// Helper: fetch all pages of scriptures (pageSize=50, max 20 pages safety = 1000 cap)
+async function fetchAllScriptures(params?: Parameters<typeof fetchScriptures>[0]) {
+  const all: ScriptureItem[] = [];
+  for (let p = 1; p <= 20; p++) {
+    const res = await fetchScriptures({ ...params, page: p, pageSize: 50 });
+    const items = Array.isArray(res) ? res : res?.items ?? [];
+    all.push(...items);
+    const total = Array.isArray(res) ? items.length : res?.total ?? 0;
+    if (all.length >= total || items.length === 0) break;
+  }
+  return all;
+}
+
 export default function ScripturesPage() {
-  const [categories, setCategories] = useState<ScriptureCategory[]>([]);
-  const [recommended, setRecommended] = useState<ScriptureItem[]>([]);
-  const [allItems, setAllItems] = useState<ScriptureItem[]>([]);
   const [activeRing, setActiveRing] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  // Helper: fetch all pages of scriptures (pageSize=50, max 20 pages safety = 1000 cap)
-  const fetchAllScriptures = async (params?: Parameters<typeof fetchScriptures>[0]) => {
-    const all: ScriptureItem[] = [];
-    for (let p = 1; p <= 20; p++) {
-      const res = await fetchScriptures({ ...params, page: p, pageSize: 50 });
-      const items = Array.isArray(res) ? res : res?.items ?? [];
-      all.push(...items);
-      const total = Array.isArray(res) ? items.length : res?.total ?? 0;
-      if (all.length >= total || items.length === 0) break;
-    }
-    return all;
-  };
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetchScriptureCategories(),
-      fetchScriptureRecommended(),
-      fetchAllScriptures(),
-    ])
-      .then(([cats, rec, list]) => {
-        setCategories(cats);
-        setRecommended(Array.isArray(rec) ? rec : []);
-        setAllItems(list);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  // Search
-  useEffect(() => {
-    if (!search.trim()) return;
-    const t = setTimeout(() => {
-      fetchScriptures({ search: search.trim() }).then((r) =>
-        setAllItems(Array.isArray(r) ? r : r?.items ?? []),
-      );
-    }, 400);
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 400);
     return () => clearTimeout(t);
   }, [search]);
+
+  const categoriesQuery = useQuery({
+    queryKey: ["cultivation", "scripture", "categories"],
+    queryFn: fetchScriptureCategories,
+    staleTime: ONE_HOUR,
+  });
+  const recommendedQuery = useQuery({
+    queryKey: ["cultivation", "scripture", "recommended"],
+    queryFn: fetchScriptureRecommended,
+    staleTime: TEN_MIN,
+  });
+  const listQuery = useQuery({
+    queryKey: ["cultivation", "scripture", "list", activeRing, debouncedSearch],
+    queryFn: () => {
+      if (debouncedSearch) {
+        return fetchScriptures({ search: debouncedSearch }).then((r) =>
+          Array.isArray(r) ? r : r?.items ?? [],
+        );
+      }
+      return activeRing === 0 ? fetchAllScriptures() : fetchAllScriptures({ ring: activeRing });
+    },
+    staleTime: TEN_MIN,
+  });
+
+  const categories: ScriptureCategory[] = categoriesQuery.data ?? [];
+  const recommended: ScriptureItem[] = Array.isArray(recommendedQuery.data) ? recommendedQuery.data : [];
+  const allItems: ScriptureItem[] = listQuery.data ?? [];
+  const loading = categoriesQuery.isLoading || listQuery.isLoading;
 
   // Filtered by ring
   const filtered = useMemo(() => {
@@ -277,14 +285,7 @@ export default function ScripturesPage() {
           {[0, 1, 2, 3].map((ring) => (
             <button
               key={ring}
-              onClick={() => {
-                setActiveRing(ring);
-                if (ring === 0) {
-                  fetchAllScriptures().then(setAllItems);
-                } else {
-                  fetchAllScriptures({ ring }).then(setAllItems);
-                }
-              }}
+              onClick={() => setActiveRing(ring)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 activeRing === ring
                   ? "bg-amber-500/20 text-amber-200 border border-amber-400/40"
