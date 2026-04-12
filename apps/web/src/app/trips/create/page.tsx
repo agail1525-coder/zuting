@@ -340,13 +340,22 @@ export default function TripCreatePage() {
         note: finalNote || undefined,
       });
 
-      // Add selected sites sequentially
+      // Add selected sites sequentially — track failures to avoid silent 100% drop
+      let succeeded = 0;
+      const failures: string[] = [];
       for (let i = 0; i < selectedSiteIds.length; i++) {
         try {
           await addSiteToTrip(trip.id, selectedSiteIds[i], i);
-        } catch {
-          // Partial failure is OK — trip still created
+          succeeded += 1;
+        } catch (e) {
+          failures.push(`${selectedSiteIds[i]}: ${e instanceof Error ? e.message : 'unknown'}`);
         }
+      }
+      if (selectedSiteIds.length > 0 && succeeded === 0) {
+        console.error('[trips/create] all addSite calls failed', failures);
+        setError(`行程已创建但 ${selectedSiteIds.length} 个圣地全部添加失败，请在详情页手动添加`);
+      } else if (failures.length > 0) {
+        console.warn('[trips/create] partial addSite failure', { failed: failures.length, total: selectedSiteIds.length, failures });
       }
 
       toast.success(t("tripCreate.success"));

@@ -106,9 +106,9 @@ export default function ProfilePage() {
 
   const EXTRA_LINKS = [
     { icon: "🎫", label: t("nav.coupons") || "优惠券", href: "/coupons", desc: "查看可用优惠" },
-    { icon: "📦", label: t("profile.myOrders") || "我的订单", href: "/orders", desc: "订单管理" },
-    { icon: "❤️", label: t("profile.myCollections") || "我的收藏", href: "/collections", desc: "收藏的圣地路线" },
-    { icon: "💬", label: t("profile.messages") || "消息", href: "/messages", desc: "私信与通知" },
+    { icon: "📦", label: t("profile.myOrders"), href: "/orders", desc: t("profile.myOrdersDesc") },
+    { icon: "❤️", label: t("profile.myCollections"), href: "/collections", desc: t("profile.myCollectionsDesc") },
+    { icon: "💬", label: t("profile.messages"), href: "/messages", desc: t("profile.messagesDesc") },
   ];
 
   return (
