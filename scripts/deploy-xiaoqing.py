@@ -204,6 +204,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  Seeding destinations v2+ (目的地++)...")
     run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-destinations-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -5; done")
 
+    # 目的地++ 图片兜底补丁 (必须在所有 seed-destinations-v*.ts 之后运行)
+    print("  Backfilling holy-site images (目的地++ images)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-images.ts 2>&1 | tail -10")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
