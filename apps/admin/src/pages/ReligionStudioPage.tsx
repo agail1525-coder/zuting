@@ -12,6 +12,7 @@ import MediaPicker from '../components/media/MediaPicker';
 import AuditTimeline from '../components/audit/AuditTimeline';
 import AiAssistantDrawer from '../components/ai/AiAssistantDrawer';
 import { useUnsavedGuard } from '../hooks/useUnsavedGuard';
+import { useDraftAutosave, clearDraft } from '../hooks/useDraftAutosave';
 
 const { Title, Text } = Typography;
 
@@ -27,6 +28,7 @@ export default function ReligionStudioPage() {
   const [raw, setRaw] = useState<Record<string, unknown>>({});
   const [dirty, setDirty] = useState(false);
   useUnsavedGuard(dirty);
+  useDraftAutosave({ form, key: `religion:${slug ?? 'new'}`, enabled: !loading });
 
   const load = useCallback(async () => {
     if (!slug) return;
@@ -73,6 +75,7 @@ export default function ReligionStudioPage() {
       });
       message.success('保存成功');
       setDirty(false);
+      clearDraft(`religion:${slug ?? 'new'}`);
       load();
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
