@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table, Card, Typography, Tag, Modal, Descriptions, Button, Space, Form, Input, Popconfirm, message, Alert } from 'antd';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ExperimentOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useNavigate } from 'react-router-dom';
 import { getReligions, createReligion, updateReligion, deleteReligion } from '../lib/api';
 import type { Religion } from '../types';
 
@@ -17,6 +18,7 @@ export default function ReligionsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const load = () => {
     setLoading(true);
@@ -118,6 +120,9 @@ export default function ReligionsPage() {
         <Space>
           <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => setDetail(record)}>
             查看
+          </Button>
+          <Button type="link" size="small" icon={<ExperimentOutlined />} onClick={() => navigate(`/religions/${record.slug}`)}>
+            Studio
           </Button>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
             编辑

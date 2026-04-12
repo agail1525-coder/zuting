@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input, InputNumber, Popconfirm, message, Descriptions, Alert } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, ExperimentOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { useNavigate } from 'react-router-dom';
 import { getSeals, createSeal, updateSeal, deleteSeal } from '../lib/api';
 import type { CreateSealDto } from '../lib/api';
 import { SERIES_COLORS } from '../lib/theme';
@@ -50,6 +51,7 @@ export default function SealsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const load = () => {
     setLoading(true);
@@ -164,6 +166,9 @@ export default function SealsPage() {
         <Space>
           <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => setDetail(record)}>
             查看
+          </Button>
+          <Button type="link" size="small" icon={<ExperimentOutlined />} onClick={() => navigate(`/seals/${record.id}`)}>
+            Studio
           </Button>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
             编辑

@@ -56,6 +56,8 @@ const SharePosterPage = lazy(() => import('./pages/SharePosterPage'));
 const AiCommunityMonitorPage = lazy(() => import('./pages/AiCommunityMonitorPage'));
 const SystemHealthPage = lazy(() => import('./pages/SystemHealthPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const ReligionStudioPage = lazy(() => import('./pages/ReligionStudioPage'));
+const SealStudioPage = lazy(() => import('./pages/SealStudioPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -129,6 +131,8 @@ export default function App() {
           <Route path="ai-community-monitor" element={<AiCommunityMonitorPage />} />
           <Route path="system-health" element={<SystemHealthPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="religions/:slug" element={<ReligionStudioPage />} />
+          <Route path="seals/:id" element={<SealStudioPage />} />
           <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />
           <Route path="personal-growth/themes/:slug" element={<ThemeStudioPage kind="personal-growth" />} />
           <Route path="family-harmony/themes/:slug" element={<ThemeStudioPage kind="family-harmony" />} />

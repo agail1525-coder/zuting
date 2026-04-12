@@ -125,6 +125,24 @@ export interface AudioGuide {
   title?: string;
 }
 
+export const getReligionDetail = (slug: string) =>
+  request<Record<string, unknown>>(`/religions/${slug}`);
+
+export const patchReligion = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/religions/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
+export const getSealDetail = (id: string) =>
+  request<Record<string, unknown>>(`/seals/${id}`);
+
+export const patchSeal = (id: string, data: Record<string, unknown>) =>
+  request<Record<string, unknown>>(`/seals/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
 export const getHolySiteDetail = (id: string) =>
   request<Record<string, unknown>>(`/holy-sites/${id}`);
 
