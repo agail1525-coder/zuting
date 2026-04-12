@@ -15,7 +15,7 @@ const { Text } = Typography;
 export interface GalleryItem {
   url: string;
   caption?: string;
-  sortOrder: number;
+  sortOrder?: number;
 }
 
 interface GalleryEditorProps {

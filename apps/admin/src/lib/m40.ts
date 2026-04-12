@@ -161,6 +161,64 @@ export const patchTeaching = (id: string, data: Record<string, unknown>) =>
     body: JSON.stringify(data),
   });
 
+export interface ScriptureRecord {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn?: string | null;
+  author?: string | null;
+  era?: string | null;
+  categoryId: string;
+  tradition: string;
+  ring: number;
+  summary: string;
+  significance?: string | null;
+  coverUrl?: string | null;
+  chapterCount: number;
+  readingMins?: number | null;
+  difficulty: number;
+  oxStageMin: number;
+  oxStageMax: number;
+  relatedIds: string[];
+  tags: string[];
+  isPublished: boolean;
+  viewCount: number;
+  sortOrder: number;
+  category?: { id: string; name: string; slug: string } | null;
+  chapters?: Array<{ id: string; chapterNo: number; title: string; subtitle?: string | null }>;
+}
+
+export const listScriptures = (params: {
+  q?: string;
+  tradition?: string;
+  page?: number;
+  pageSize?: number;
+}) => {
+  const qs = new URLSearchParams();
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
+  });
+  return request<Paginated<ScriptureRecord>>(`/admin/scriptures?${qs.toString()}`);
+};
+
+export const getScriptureDetail = (id: string) =>
+  request<ScriptureRecord>(`/admin/scriptures/${id}`);
+
+export const patchScripture = (id: string, data: Partial<ScriptureRecord>) =>
+  request<ScriptureRecord>(`/admin/scriptures/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
+export const createScripture = (data: Partial<ScriptureRecord> & { slug: string; title: string }) =>
+  request<ScriptureRecord>(`/admin/scriptures`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const deleteScripture = (id: string) =>
+  request<{ id: string }>(`/admin/scriptures/${id}`, { method: 'DELETE' });
+
 // ===== Media Library =====
 
 export const listMedia = (params: {

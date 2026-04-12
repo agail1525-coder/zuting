@@ -6,14 +6,14 @@ import type { MediaAsset, MediaType } from '../../lib/m40';
 
 interface MediaPickerProps {
   value?: string;
-  onChange: (url: string) => void;
+  onChange?: (url: string) => void;
   allowTypes?: MediaType[];
   placeholder?: string;
 }
 
 export default function MediaPicker({
   value,
-  onChange,
+  onChange = () => {},
   allowTypes = ['IMAGE'],
   placeholder = '选择媒体或输入 URL',
 }: MediaPickerProps) {

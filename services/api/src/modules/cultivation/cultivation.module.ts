@@ -10,7 +10,9 @@ import { ZenQuizService } from './zen-quiz.service';
 import { ZenQuizController } from './zen-quiz.controller';
 import { ScriptureService } from './scripture.service';
 import { ScriptureController } from './scripture.controller';
+import { ScriptureAdminController } from './scripture-admin.controller';
 import { ScriptureLearningService } from './scripture-learning.service';
+import { AdminAuditModule } from '../admin-audit/admin-audit.module';
 import { PkbService } from './pkb.service';
 import { PkbController } from './pkb.controller';
 import { KarmaService } from './karma.service';
@@ -22,13 +24,14 @@ import { BhumiPathService } from './bhumi-path/bhumi-path.service';
 import { BhumiPathController } from './bhumi-path/bhumi-path.controller';
 
 @Module({
-  imports: [PrismaModule, ConfigModule],
+  imports: [PrismaModule, ConfigModule, AdminAuditModule],
   controllers: [
     CultivationAccessController,
     CultivationAdminController,
     FulfillmentController,
     ZenQuizController,
     ScriptureController,
+    ScriptureAdminController,
     PkbController,
     DailyPracticeController,
     BhumiPathController,

@@ -242,7 +242,7 @@ export default function PatriarchStudioPage() {
             <Space direction="vertical" size={4}>
               <Text type="secondary">ID: <Text code>{id}</Text></Text>
               <Text type="secondary">版本: v{String(raw.version ?? 1)}</Text>
-              {raw.lastEditedBy && <Text type="secondary">上次编辑: {String(raw.lastEditedBy)}</Text>}
+              {!!raw.lastEditedBy && <Text type="secondary">上次编辑: {String(raw.lastEditedBy)}</Text>}
             </Space>
           </Card>
         </Col>

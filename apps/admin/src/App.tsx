@@ -35,6 +35,11 @@ const MediaLibraryPage = lazy(() => import('./pages/MediaLibraryPage'));
 const AuditLogPage = lazy(() => import('./pages/AuditLogPage'));
 const TeamCultureManagePage = lazy(() => import('./pages/TeamCultureManagePage'));
 const CultivationManagePage = lazy(() => import('./pages/CultivationManagePage'));
+const HolySiteStudioPage = lazy(() => import('./pages/HolySiteStudioPage'));
+const TempleStudioPage = lazy(() => import('./pages/TempleStudioPage'));
+const PatriarchStudioPage = lazy(() => import('./pages/PatriarchStudioPage'));
+const TeachingStudioPage = lazy(() => import('./pages/TeachingStudioPage'));
+const ScriptureStudioPage = lazy(() => import('./pages/ScriptureStudioPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -88,6 +93,11 @@ export default function App() {
           <Route path="audit" element={<AuditLogPage />} />
           <Route path="team-culture" element={<TeamCultureManagePage />} />
           <Route path="cultivation" element={<CultivationManagePage />} />
+          <Route path="holy-sites/:id" element={<HolySiteStudioPage />} />
+          <Route path="temples/:id" element={<TempleStudioPage />} />
+          <Route path="patriarchs/:id" element={<PatriarchStudioPage />} />
+          <Route path="teachings/:id" element={<TeachingStudioPage />} />
+          <Route path="scriptures/:id" element={<ScriptureStudioPage />} />
         </Route>
       </Routes>
     </Suspense>

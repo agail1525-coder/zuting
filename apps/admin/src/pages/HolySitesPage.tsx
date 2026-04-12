@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Table, Card, Typography, Select, Space, Tag, Button, Modal, Form, Input, InputNumber, Popconfirm, message, Alert } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExperimentOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getHolySites, getReligions, createHolySite, updateHolySite, deleteHolySite } from '../lib/api';
 import type { HolySite, Religion } from '../types';
@@ -8,6 +9,7 @@ import type { HolySite, Religion } from '../types';
 const { Title } = Typography;
 
 export default function HolySitesPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<HolySite[]>([]);
   const [religions, setReligions] = useState<Religion[]>([]);
   const [loading, setLoading] = useState(true);
@@ -149,8 +151,11 @@ export default function HolySitesPage() {
       width: 160,
       render: (_: unknown, record: HolySite) => (
         <Space>
+          <Button type="link" size="small" icon={<ExperimentOutlined />} onClick={() => navigate(`/holy-sites/${record.id}`)}>
+            Studio
+          </Button>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
-            编辑
+            快编
           </Button>
           <Popconfirm title="确认删除?" onConfirm={() => handleDelete(record.id)} okText="确认" cancelText="取消">
             <Button type="link" size="small" danger icon={<DeleteOutlined />}>
