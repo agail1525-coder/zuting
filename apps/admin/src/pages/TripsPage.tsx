@@ -183,7 +183,7 @@ export default function TripsPage() {
 
   return (
     <>
-      <Title level={4} style={{ color: '#D4A855', marginBottom: 16 }}>
+      <Title level={4} style={{ marginBottom: 16 }}>
         行程管理
       </Title>
       <Card>

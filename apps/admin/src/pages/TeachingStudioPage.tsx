@@ -73,7 +73,7 @@ export default function TeachingStudioPage() {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/teachings')}>返回列表</Button>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>
+        <Title level={4} style={{ margin: 0 }}>
           祖训 Studio — {String(raw.name ?? '')}
         </Title>
       </Space>

@@ -47,7 +47,7 @@ export default function RecommendationDashboardPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>推荐看板</Title>
+      <Title level={4} style={{  }}>推荐看板</Title>
       <Paragraph type="secondary">基于浏览/评分/收藏的热门内容排行，辅助运营决策。</Paragraph>
 
       <Card

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#3264ff"/>
+  <text x="32" y="44" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="36" font-weight="700" text-anchor="middle" fill="#ffffff">J</text>
+  <circle cx="50" cy="16" r="5" fill="#D4A855"/>
+</svg>

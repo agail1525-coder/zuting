@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function gitSha(): string {
   try { return execSync('git rev-parse --short HEAD').toString().trim(); }
@@ -10,6 +14,11 @@ function gitSha(): string {
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: command === 'build' ? '/admin/' : '/',
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+    },
+  },
   define: {
     __BUILD_SHA__: JSON.stringify(gitSha()),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),

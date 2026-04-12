@@ -118,7 +118,7 @@ const KPI_CARDS: KpiConfig[] = [
   { key: 'users', title: '用户总数', icon: <UserOutlined />, color: '#1890FF' },
   { key: 'trips', title: '行程总数', icon: <CarOutlined />, color: '#52C41A' },
   { key: 'orders', title: '订单总数', icon: <ShoppingCartOutlined />, color: '#FAAD14' },
-  { key: 'revenue', title: '总收入 (CNY)', icon: <DollarOutlined />, color: '#D4A855', prefix: '¥' },
+  { key: 'revenue', title: '总收入 (CNY)', icon: <DollarOutlined />, prefix: '¥', color: '#3264ff' },
   { key: 'reviews', title: '评价总数', icon: <StarOutlined />, color: '#FF4D4F' },
   { key: 'guides', title: '导游数', icon: <TeamOutlined />, color: '#722ED1' },
   { key: 'merchants', title: '商家数', icon: <ShopOutlined />, color: '#13C2C2' },
@@ -255,7 +255,7 @@ export default function AnalyticsDashboardPage() {
       align: 'right',
       sorter: (a, b) => a.count - b.count,
       render: (v: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>
+        <span style={{ fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>
       ),
     },
   ];
@@ -278,7 +278,7 @@ export default function AnalyticsDashboardPage() {
     <div>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Title level={3} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={3} style={{ margin: 0 }}>
           <BarChartOutlined style={{ marginRight: 8 }} />
           数据分析 / Analytics Dashboard
         </Title>
@@ -323,11 +323,11 @@ export default function AnalyticsDashboardPage() {
       <Card
         title={
           <Space>
-            <BarChartOutlined style={{ color: '#D4A855' }} />
+            <BarChartOutlined style={{  }} />
             <Text strong>30天趋势 / 30-Day Trends</Text>
           </Space>
         }
-        styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+        
         style={{ marginBottom: 24 }}
       >
         {trends.length === 0 ? (
@@ -340,7 +340,7 @@ export default function AnalyticsDashboardPage() {
               <YAxis stroke="#999" fontSize={12} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#1f1f1f', border: '1px solid #333', borderRadius: 8 }}
-                labelStyle={{ color: '#D4A855' }}
+                labelStyle={{  }}
               />
               <Legend />
               <Line
@@ -379,11 +379,11 @@ export default function AnalyticsDashboardPage() {
       <Card
         title={
           <Space>
-            <BarChartOutlined style={{ color: '#D4A855' }} />
+            <BarChartOutlined style={{  }} />
             <Text strong>转化漏斗 / Conversion Funnel</Text>
           </Space>
         }
-        styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+        
         style={{ marginBottom: 24 }}
       >
         {funnel.length === 0 ? (
@@ -407,7 +407,7 @@ export default function AnalyticsDashboardPage() {
                 />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#1f1f1f', border: '1px solid #333', borderRadius: 8 }}
-                  labelStyle={{ color: '#D4A855' }}
+                  labelStyle={{  }}
                   formatter={(value: number) => [value.toLocaleString(), '人数']}
                 />
                 <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={36}>
@@ -443,11 +443,11 @@ export default function AnalyticsDashboardPage() {
       <Card
         title={
           <Space>
-            <StarOutlined style={{ color: '#D4A855' }} />
+            <StarOutlined style={{  }} />
             <Text strong>热门内容 TOP 10 / Top Content</Text>
           </Space>
         }
-        styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+        
       >
         {topContent.length === 0 ? (
           <Result title="暂无内容数据" />

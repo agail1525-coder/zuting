@@ -268,9 +268,8 @@ export default function Dashboard() {
     {
       title: '文化传统',
       value: s.religions.length,
-      icon: <GlobalOutlined style={{ fontSize: 28, color: '#D4A855' }} />,
-      color: '#D4A855',
-    },
+      icon: <GlobalOutlined style={{ fontSize: 28 }} />,
+      },
     {
       title: '圣地总数',
       value: s.holySites.length,
@@ -293,7 +292,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         仪表盘概览
       </Title>
 
@@ -318,15 +317,15 @@ export default function Dashboard() {
       {/* Charts row 1 */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} lg={14}>
-          <Card title="数据总览" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+          <Card title="数据总览" >
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={overviewData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e7ed" />
                 <XAxis dataKey="name" stroke="#999" />
                 <YAxis stroke="#999" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 }}
-                  labelStyle={{ color: '#D4A855' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e4e7ed', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  labelStyle={{  }}
                 />
                 <Bar dataKey="count" name="数量" radius={[6, 6, 0, 0]}>
                   {overviewData.map((entry, i) => (
@@ -338,7 +337,7 @@ export default function Dashboard() {
           </Card>
         </Col>
         <Col xs={24} lg={10}>
-          <Card title="三十印系列分布" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+          <Card title="三十印系列分布" >
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
@@ -359,7 +358,7 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e4e7ed', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                 />
                 <Legend />
               </PieChart>
@@ -379,7 +378,7 @@ export default function Dashboard() {
                 社区活跃度
               </span>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             <Row gutter={[16, 16]}>
               <Col span={12}>
@@ -402,7 +401,7 @@ export default function Dashboard() {
                 <Statistic
                   title={<span style={{ color: '#999' }}>今日新游记</span>}
                   value={communityStats.guidesToday}
-                  valueStyle={{ color: '#D4A855' }}
+                  valueStyle={{  }}
                 />
               </Col>
               <Col span={12}>
@@ -426,11 +425,11 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/community" style={{ color: '#D4A855', fontSize: 12 }}>
+              <a href="/community" style={{ fontSize: 12 }}>
                 社区管理
               </a>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             {communityStats.topGuides.length === 0 ? (
               <span style={{ color: '#666', fontSize: 13 }}>暂无游记数据</span>
@@ -463,7 +462,7 @@ export default function Dashboard() {
                     key: 'viewCount',
                     width: 80,
                     render: (v: number) => (
-                      <span style={{ color: '#D4A855', fontWeight: 600 }}>
+                      <span style={{ fontWeight: 600 }}>
                         {(v ?? 0).toLocaleString()}
                       </span>
                     ),
@@ -488,16 +487,16 @@ export default function Dashboard() {
           <Card
             title={
               <span>
-                <GiftOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                <GiftOutlined style={{ marginRight: 8 }} />
                 促销概览
               </span>
             }
             extra={
-              <a href="/promotions" style={{ color: '#D4A855', fontSize: 12 }}>
+              <a href="/promotions" style={{ fontSize: 12 }}>
                 促销管理
               </a>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={8}>
@@ -513,7 +512,7 @@ export default function Dashboard() {
                   title={<span style={{ color: '#999' }}>优惠券总数</span>}
                   value={promotionOverview.totalCoupons}
                   prefix={<GiftOutlined />}
-                  valueStyle={{ color: '#D4A855', fontWeight: 700 }}
+                  valueStyle={{ fontWeight: 700 }}
                 />
               </Col>
               <Col xs={24} sm={8}>
@@ -535,16 +534,16 @@ export default function Dashboard() {
           <Card
             title={
               <span>
-                <CrownOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                <CrownOutlined style={{ marginRight: 8 }} />
                 会员概览
               </span>
             }
             extra={
-              <a href="/membership" style={{ color: '#D4A855', fontSize: 12 }}>
+              <a href="/membership" style={{ fontSize: 12 }}>
                 会员管理
               </a>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={6}>
@@ -552,7 +551,7 @@ export default function Dashboard() {
                   title={<span style={{ color: '#999' }}>总会员数</span>}
                   value={membershipOverview.totalMembers}
                   prefix={<CrownOutlined />}
-                  valueStyle={{ color: '#D4A855', fontWeight: 700 }}
+                  valueStyle={{ fontWeight: 700 }}
                 />
               </Col>
               <Col xs={24} sm={6}>
@@ -595,11 +594,11 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/prices" style={{ color: '#D4A855', fontSize: 12 }}>
+              <a href="/prices" style={{ fontSize: 12 }}>
                 价格管理
               </a>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12}>
@@ -634,11 +633,11 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/i18n-share" style={{ color: '#D4A855', fontSize: 12 }}>
+              <a href="/i18n-share" style={{ fontSize: 12 }}>
                 详情管理
               </a>
             }
-            styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+            
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12}>
@@ -665,18 +664,18 @@ export default function Dashboard() {
       {/* Charts row 2 */}
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
-          <Card title="各文化传统圣地与祖庭分布" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+          <Card title="各文化传统圣地与祖庭分布" >
             <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={religionDistData}
                 layout="vertical"
                 margin={{ top: 10, right: 20, left: 60, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e7ed" />
                 <XAxis type="number" stroke="#999" />
                 <YAxis type="category" dataKey="name" stroke="#999" width={80} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e4e7ed', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                 />
                 <Legend />
                 <Bar dataKey="sites" name="圣地" fill="#D4A855" radius={[0, 4, 4, 0]} />
@@ -688,7 +687,7 @@ export default function Dashboard() {
         <Col xs={24} lg={10}>
           <Row gutter={[0, 16]}>
             <Col span={24}>
-              <Card title="更多统计" styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+              <Card title="更多统计" >
                 <Row gutter={16}>
                   <Col span={12}>
                     <Statistic
@@ -718,12 +717,12 @@ export default function Dashboard() {
                   </span>
                 }
                 extra={
-                  <a href="/search-stats" style={{ color: '#D4A855', fontSize: 12 }}>
+                  <a href="/search-stats" style={{ fontSize: 12 }}>
                     <SearchOutlined style={{ marginRight: 4 }} />
                     查看全部
                   </a>
                 }
-                styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+                
               >
                 {hotKeywords.length === 0 ? (
                   <span style={{ color: '#666', fontSize: 13 }}>暂无搜索数据</span>
@@ -737,7 +736,7 @@ export default function Dashboard() {
                         <List.Item
                           style={{ padding: '6px 0', borderBottom: '1px solid #1a1a1a' }}
                           extra={
-                            <span style={{ color: '#D4A855', fontWeight: 600, fontSize: 13 }}>
+                            <span style={{ fontWeight: 600, fontSize: 13 }}>
                               {(item.count ?? 0).toLocaleString()}
                             </span>
                           }
@@ -761,16 +760,16 @@ export default function Dashboard() {
               <Card
                 title={
                   <span>
-                    <StarOutlined style={{ color: '#D4A855', marginRight: 8 }} />
+                    <StarOutlined style={{ marginRight: 8 }} />
                     最新评价
                   </span>
                 }
                 extra={
-                  <a href="/reviews" style={{ color: '#D4A855', fontSize: 12 }}>
+                  <a href="/reviews" style={{ fontSize: 12 }}>
                     查看全部
                   </a>
                 }
-                styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+                
               >
                 {recentReviews.length === 0 ? (
                   <span style={{ color: '#666', fontSize: 13 }}>暂无评价数据</span>

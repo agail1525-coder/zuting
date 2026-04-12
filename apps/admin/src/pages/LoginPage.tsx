@@ -57,7 +57,7 @@ export default function LoginPage() {
         borderRadius: 12,
       }}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <Title level={3} style={{ color: '#D4A855', marginBottom: 4 }}>
+          <Title level={3} style={{ marginBottom: 4 }}>
             佳绩之旅 · 驾驶舱
           </Title>
           <Text style={{ color: '#94a3b8' }}>Admin Cockpit Login</Text>
@@ -100,7 +100,7 @@ export default function LoginPage() {
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox style={{ color: '#94a3b8' }}>记住邮箱</Checkbox>
               </Form.Item>
-              <AntLink onClick={forgotPassword} style={{ color: '#D4A855' }}>忘记密码?</AntLink>
+              <AntLink onClick={forgotPassword} style={{  }}>忘记密码?</AntLink>
             </Space>
           </Form.Item>
           <Form.Item style={{ marginBottom: 0 }}>

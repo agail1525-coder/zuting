@@ -88,7 +88,7 @@ export default function GuideStudioPage() {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/community')}>返回社区</Button>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>
+        <Title level={4} style={{ margin: 0 }}>
           攻略 Studio — {String(raw.title ?? '')}
         </Title>
         <Tag color={raw.status === 'PUBLISHED' ? 'green' : 'orange'}>{String(raw.status ?? '-')}</Tag>

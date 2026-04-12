@@ -60,7 +60,7 @@ export default function JournalsPage() {
       dataIndex: 'title',
       key: 'title',
       render: (text: string, record: Journal) => (
-        <a onClick={() => showDetail(record)} style={{ fontWeight: 600, color: '#D4A855' }}>
+        <a onClick={() => showDetail(record)} style={{ fontWeight: 600 }}>
           {text || '无标题'}
         </a>
       ),
@@ -156,7 +156,7 @@ export default function JournalsPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           文化之旅日记
         </Title>
         <Space>

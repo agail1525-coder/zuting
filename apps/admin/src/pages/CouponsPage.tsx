@@ -180,8 +180,8 @@ export default function CouponsPage() {
       sorter: (a: Coupon, b: Coupon) => a.value - b.value,
       render: (v: number, r: Coupon) =>
         r.type === 'PERCENT'
-          ? <span style={{ color: '#D4A855', fontWeight: 600 }}>{v}%</span>
-          : <span style={{ color: '#D4A855', fontWeight: 600 }}>¥{(v / 100).toFixed(2)}</span>,
+          ? <span style={{ fontWeight: 600 }}>{v}%</span>
+          : <span style={{ fontWeight: 600 }}>¥{(v / 100).toFixed(2)}</span>,
     },
     {
       title: '最低消费',
@@ -269,7 +269,7 @@ export default function CouponsPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           优惠券管理
         </Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>

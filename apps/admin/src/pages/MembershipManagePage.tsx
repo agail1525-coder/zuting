@@ -179,7 +179,7 @@ function MembersTab() {
       dataIndex: 'availablePoints',
       key: 'availablePoints',
       render: (v: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>
+        <span style={{ fontWeight: 600 }}>
           {(v ?? 0).toLocaleString()}
         </span>
       ),
@@ -331,7 +331,7 @@ function PointsShopTab() {
       dataIndex: 'pointsPrice',
       key: 'pointsPrice',
       render: (v: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()} 积分</span>
+        <span style={{ fontWeight: 600 }}>{(v ?? 0).toLocaleString()} 积分</span>
       ),
     },
     { title: '库存', dataIndex: 'stock', key: 'stock' },
@@ -669,7 +669,7 @@ function PackagesTab() {
       dataIndex: 'memberPrice',
       key: 'memberPrice',
       render: (v: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>
+        <span style={{ fontWeight: 600 }}>
           ¥{((v ?? 0) / 100).toFixed(0)}
         </span>
       ),
@@ -866,7 +866,7 @@ const TAB_ITEMS = [
 export default function MembershipManagePage() {
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         <CrownOutlined style={{ marginRight: 8 }} />
         会员管理
       </Title>

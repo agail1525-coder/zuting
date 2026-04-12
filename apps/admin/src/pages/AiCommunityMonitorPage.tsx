@@ -53,7 +53,7 @@ export default function AiCommunityMonitorPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}><RobotOutlined /> AI 社区监控</Title>
+      <Title level={4} style={{  }}><RobotOutlined /> AI 社区监控</Title>
       <Paragraph type="secondary">12 智能体自动发帖/回答/评论 CRON 监控，追踪 AI 社区活跃度。</Paragraph>
 
       <Row gutter={16} style={{ marginBottom: 16 }}>

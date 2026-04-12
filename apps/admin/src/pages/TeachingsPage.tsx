@@ -148,7 +148,7 @@ export default function TeachingsPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           祖训管理
         </Title>
         <Space>

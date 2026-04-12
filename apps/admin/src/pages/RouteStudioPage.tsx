@@ -100,7 +100,7 @@ export default function RouteStudioPage() {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/routes')}>返回列表</Button>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>
+        <Title level={4} style={{ margin: 0 }}>
           路线 Studio — {String(raw.title ?? '')}
         </Title>
         <Tag color={raw.status === 'PUBLISHED' ? 'green' : 'orange'}>{String(raw.status ?? '-')}</Tag>

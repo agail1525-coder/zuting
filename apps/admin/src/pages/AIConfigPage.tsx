@@ -274,7 +274,7 @@ export default function AIConfigPage() {
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           <RobotOutlined style={{ marginRight: 8 }} />
           小鸿 AI 助手配置中心
         </Title>
@@ -538,7 +538,7 @@ function PromptConfigTab({
         size="small"
         title={
           <span>
-            <RobotOutlined style={{ marginRight: 8, color: '#D4A855' }} />
+            <RobotOutlined style={{ marginRight: 8 }} />
             系统人设
           </span>
         }
@@ -640,7 +640,7 @@ function SuggestionsTab({
     <Card
       title={
         <span>
-          <BulbOutlined style={{ marginRight: 8, color: '#D4A855' }} />
+          <BulbOutlined style={{ marginRight: 8 }} />
           推荐问题列表
         </span>
       }
@@ -786,7 +786,7 @@ function ChatTestTab({
                 color: msg.role === 'user' ? '#000' : '#ccc',
                 border:
                   msg.role === 'assistant'
-                    ? '1px solid #2a2a2a'
+                    ? '1px solid #e4e7ed'
                     : 'none',
                 whiteSpace: 'pre-wrap',
               }}

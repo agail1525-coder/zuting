@@ -93,7 +93,7 @@ export default function ReligionStudioPage() {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/religions')}>返回列表</Button>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>
+        <Title level={4} style={{ margin: 0 }}>
           文化传统 Studio — {String(raw.name ?? '')}
         </Title>
         <Tag color={String(raw.color ?? 'default')}>{String(raw.symbol ?? '')}</Tag>

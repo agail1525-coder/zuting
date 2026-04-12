@@ -46,7 +46,7 @@ export default function PromptLabPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>Prompt 实验室</Title>
+      <Title level={4} style={{  }}>Prompt 实验室</Title>
       <Paragraph type="secondary">实时测试 Prompt，所有调用落库 AiOperationTrace 审计。</Paragraph>
 
       <Row gutter={24}>

@@ -39,7 +39,7 @@ export default function SharePosterPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>分享 & 海报</Title>
+      <Title level={4} style={{  }}>分享 & 海报</Title>
       <Paragraph type="secondary">社交分享数据中心，追踪传播效果。</Paragraph>
 
       <Row gutter={16} style={{ marginBottom: 16 }}>

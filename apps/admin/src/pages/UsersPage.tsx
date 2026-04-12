@@ -174,7 +174,7 @@ export default function UsersPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>用户管理</Title>
+        <Title level={4} style={{ margin: 0 }}>用户管理</Title>
         <Button icon={<DownloadOutlined />} onClick={() => {
           exportCsv(`users-${Date.now()}`, data.map((u) => ({
             id: u.id,

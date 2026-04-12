@@ -81,7 +81,7 @@ export default function CouponStudioPage() {
     <div>
       <Space style={{ marginBottom: 16 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/coupons')}>返回列表</Button>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>
+        <Title level={4} style={{ margin: 0 }}>
           优惠券 Studio — {String(raw.name ?? '')}
         </Title>
         <Tag color={raw.isActive ? 'green' : 'default'}>{raw.isActive ? '生效中' : '已停用'}</Tag>

@@ -128,7 +128,7 @@ export default function SealsPage() {
       dataIndex: 'name',
       key: 'name',
       render: (_: string, r: Seal) => (
-        <span style={{ fontWeight: 600, color: '#D4A855' }}>{r.name || '-'}</span>
+        <span style={{ fontWeight: 600 }}>{r.name || '-'}</span>
       ),
     },
     {
@@ -186,7 +186,7 @@ export default function SealsPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           曹溪愿命三十印
         </Title>
         <Space>

@@ -62,7 +62,7 @@ export default function SystemHealthPage() {
   return (
     <div>
       <Space style={{ marginBottom: 16 }}>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>系统健康</Title>
+        <Title level={4} style={{ margin: 0 }}>系统健康</Title>
         <Button icon={<ReloadOutlined />} loading={loading} onClick={load}>刷新</Button>
       </Space>
       <Paragraph type="secondary">API / DB / Redis 健康状态，每 30 秒自动刷新。</Paragraph>

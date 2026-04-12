@@ -100,7 +100,7 @@ export default function SearchStatsPage() {
       align: 'right',
       sorter: (a, b) => (a.count ?? 0) - (b.count ?? 0),
       render: (count: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>{(count ?? 0).toLocaleString()}</span>
+        <span style={{ fontWeight: 600 }}>{(count ?? 0).toLocaleString()}</span>
       ),
     },
   ];
@@ -121,7 +121,7 @@ export default function SearchStatsPage() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         搜索统计 / Search Statistics
       </Title>
 
@@ -133,9 +133,9 @@ export default function SearchStatsPage() {
               <Statistic
                 title={<span style={{ color: '#999' }}>热词总数</span>}
                 value={keywords.length}
-                valueStyle={{ color: '#D4A855', fontSize: 36, fontWeight: 700 }}
+                valueStyle={{ fontSize: 36, fontWeight: 700 }}
               />
-              <SearchOutlined style={{ fontSize: 28, color: '#D4A855' }} />
+              <SearchOutlined style={{ fontSize: 28 }} />
             </div>
           </Card>
         </Col>
@@ -169,15 +169,15 @@ export default function SearchStatsPage() {
       <Card
         title={
           <span>
-            <SearchOutlined style={{ marginRight: 8, color: '#D4A855' }} />
+            <SearchOutlined style={{ marginRight: 8 }} />
             热门搜索关键词
           </span>
         }
-        styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+        
       >
         {tableData.length === 0 ? (
           <Result
-            icon={<SearchOutlined style={{ color: '#D4A855' }} />}
+            icon={<SearchOutlined style={{  }} />}
             title="暂无搜索数据"
             subTitle="用户尚未产生搜索记录，或搜索统计功能尚未启用。"
           />

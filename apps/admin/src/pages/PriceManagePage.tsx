@@ -106,7 +106,7 @@ function SnapshotsTab() {
     {
       title: '价格 (分)', dataIndex: 'price', key: 'price', width: 120,
       render: (v: number) => (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>
+        <span style={{ fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>
       ),
     },
     { title: '货币', dataIndex: 'currency', key: 'currency', width: 80 },
@@ -210,7 +210,7 @@ function AlertsTab() {
     },
     {
       title: '当前价 (分)', dataIndex: 'currentPrice', key: 'currentPrice', width: 120,
-      render: (v: number) => <span style={{ color: '#D4A855', fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>,
+      render: (v: number) => <span style={{ fontWeight: 600 }}>{(v ?? 0).toLocaleString()}</span>,
     },
     {
       title: '状态', dataIndex: 'isTriggered', key: 'isTriggered', width: 90,
@@ -284,7 +284,7 @@ export default function PriceManagePage() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>价格管理</Title>
+      <Title level={3} style={{ marginBottom: 24 }}>价格管理</Title>
       <Tabs defaultActiveKey="snapshots" items={tabItems} />
     </div>
   );

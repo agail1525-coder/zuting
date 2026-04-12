@@ -19,7 +19,7 @@ const { Title, Text } = Typography;
 type ThemeKind = 'team-culture' | 'personal-growth' | 'family-harmony';
 
 const CONFIG: Record<ThemeKind, { label: string; backTo: string; api: typeof teamCultureTheme; color: string }> = {
-  'team-culture': { label: '团队文化', backTo: '/team-culture', api: teamCultureTheme, color: '#D4A855' },
+  'team-culture': { label: '团队文化', backTo: '/team-culture', api: teamCultureTheme, color: '#3264ff' },
   'personal-growth': { label: '个人圆满', backTo: '/cultivation', api: personalGrowthTheme, color: '#8B6914' },
   'family-harmony': { label: '家庭幸福', backTo: '/cultivation', api: familyHarmonyTheme, color: '#2D8B6F' },
 };

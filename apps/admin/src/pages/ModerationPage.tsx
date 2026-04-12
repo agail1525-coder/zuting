@@ -201,7 +201,7 @@ export default function ModerationPage() {
           marginBottom: 16,
         }}
       >
-        <Title level={4} style={{ color: '#D4A855', marginBottom: 0 }}>
+        <Title level={4} style={{ marginBottom: 0 }}>
           内容审核
         </Title>
         <Select

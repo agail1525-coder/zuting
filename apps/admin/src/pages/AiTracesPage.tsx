@@ -84,7 +84,7 @@ export default function AiTracesPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>AI 审计日志</Title>
+      <Title level={4} style={{  }}>AI 审计日志</Title>
       <Paragraph type="secondary">所有 AI 调用的追踪，支持审批与溯源。</Paragraph>
 
       <Card

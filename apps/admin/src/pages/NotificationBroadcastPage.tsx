@@ -36,7 +36,7 @@ export default function NotificationBroadcastPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>通知广播</Title>
+      <Title level={4} style={{  }}>通知广播</Title>
       <Paragraph type="secondary">向指定用户批量发送系统通知。</Paragraph>
 
       <Card style={{ maxWidth: 820 }}>

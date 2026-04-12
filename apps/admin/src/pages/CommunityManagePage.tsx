@@ -492,10 +492,10 @@ export default function CommunityManagePage() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         社区管理
       </Title>
-      <Card styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}>
+      <Card >
         <Tabs defaultActiveKey="guides" items={tabItems} />
       </Card>
     </div>

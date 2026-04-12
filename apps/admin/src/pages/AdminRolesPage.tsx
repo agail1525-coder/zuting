@@ -106,7 +106,7 @@ export default function AdminRolesPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}>管理员角色</Title>
+      <Title level={4} style={{  }}>管理员角色</Title>
       <Paragraph type="secondary">角色定义权限集合，用户关联角色获得对应权限。</Paragraph>
 
       <Card

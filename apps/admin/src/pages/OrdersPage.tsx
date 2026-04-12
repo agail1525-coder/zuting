@@ -115,7 +115,7 @@ export default function OrdersPage() {
       dataIndex: 'amount',
       key: 'amount',
       render: (v: number) => v != null ? (
-        <span style={{ color: '#D4A855', fontWeight: 600 }}>{`¥ ${Number(v).toLocaleString()}`}</span>
+        <span style={{ fontWeight: 600 }}>{`¥ ${Number(v).toLocaleString()}`}</span>
       ) : '-',
     },
     {
@@ -162,7 +162,7 @@ export default function OrdersPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>订单管理</Title>
+        <Title level={4} style={{ margin: 0 }}>订单管理</Title>
         <Button icon={<DownloadOutlined />} onClick={() => {
           exportCsv(`orders-${Date.now()}`, filteredData.map((o) => ({
             orderNo: o.orderNo || o.id,
@@ -245,7 +245,7 @@ export default function OrdersPage() {
             <Descriptions.Item label="用户">{detail.user?.name || detail.userName || '-'}</Descriptions.Item>
             <Descriptions.Item label="金额">
               {detail.amount != null ? (
-                <span style={{ color: '#D4A855', fontWeight: 600 }}>¥ {Number(detail.amount).toLocaleString()}</span>
+                <span style={{ fontWeight: 600 }}>¥ {Number(detail.amount).toLocaleString()}</span>
               ) : '-'}
             </Descriptions.Item>
             <Descriptions.Item label="支付方式">{detail.paymentMethod || '-'}</Descriptions.Item>

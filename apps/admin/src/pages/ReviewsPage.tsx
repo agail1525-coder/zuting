@@ -268,7 +268,7 @@ export default function ReviewsPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', marginBottom: 0 }}>
+        <Title level={4} style={{ marginBottom: 0 }}>
           评价管理 / Review Management
         </Title>
         <Select

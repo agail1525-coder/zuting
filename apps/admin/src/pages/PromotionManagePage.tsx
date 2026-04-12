@@ -301,7 +301,7 @@ function PromotionsTab() {
       width: 100,
       render: (_: unknown, record: Promotion) => (
         <span>
-          <span style={{ color: '#D4A855', fontWeight: 600 }}>{record.usedQuota ?? 0}</span>
+          <span style={{ fontWeight: 600 }}>{record.usedQuota ?? 0}</span>
           <span style={{ color: '#555' }}> / {record.totalQuota ?? 0}</span>
         </span>
       ),
@@ -555,7 +555,7 @@ function CouponsTab() {
       key: 'code',
       width: 130,
       render: (code: string) => (
-        <span style={{ fontFamily: 'monospace', color: '#D4A855', fontWeight: 600 }}>{code}</span>
+        <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{code}</span>
       ),
     },
     { title: '名称', dataIndex: 'name', key: 'name', ellipsis: true },
@@ -590,7 +590,7 @@ function CouponsTab() {
       width: 100,
       render: (_: unknown, record: Coupon) => (
         <span>
-          <span style={{ color: '#D4A855', fontWeight: 600 }}>{record.usedCount ?? 0}</span>
+          <span style={{ fontWeight: 600 }}>{record.usedCount ?? 0}</span>
           <span style={{ color: '#555' }}> / {record.totalCount ?? 0}</span>
         </span>
       ),
@@ -711,7 +711,7 @@ function CouponsTab() {
 export default function PromotionManagePage() {
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         促销管理
       </Title>
       <Card styles={{ body: { padding: 0 } }}>

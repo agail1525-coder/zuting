@@ -27,7 +27,6 @@ import {
   ShopOutlined,
   BarChartOutlined,
   MessageOutlined,
-  PlayCircleOutlined,
   PictureOutlined,
   AuditOutlined,
   ThunderboltOutlined,
@@ -40,6 +39,7 @@ import { logout, getCurrentUserRole } from '../lib/auth';
 import { filterMenu } from '../lib/menuAcl';
 import CommandPalette from '../components/command/CommandPalette';
 import { useIdleLogout } from '../hooks/useIdleLogout';
+import { BRAND } from '../lib/theme';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -54,10 +54,10 @@ const menuItems = [
     children: [
       { key: '/religions', icon: <GlobalOutlined />, label: '文化传统' },
       { key: '/holy-sites', icon: <EnvironmentOutlined />, label: '文化圣地' },
-      { key: '/temples', icon: <BankOutlined />, label: '祖庭' },
-      { key: '/patriarchs', icon: <UserOutlined />, label: '祖师' },
-      { key: '/teachings', icon: <BookOutlined />, label: '祖训' },
-      { key: '/seals', icon: <SafetyCertificateOutlined />, label: '三十印' },
+      { key: '/temples', icon: <BankOutlined />, label: '寺庙祖庭' },
+      { key: '/patriarchs', icon: <UserOutlined />, label: '文化大师' },
+      { key: '/teachings', icon: <BookOutlined />, label: '经典教诲' },
+      { key: '/seals', icon: <SafetyCertificateOutlined />, label: '三十传承印' },
       { key: '/media', icon: <PictureOutlined />, label: '媒体库' },
     ],
   },
@@ -95,9 +95,9 @@ const menuItems = [
   {
     key: 'grp-cultivation',
     icon: <HeartOutlined />,
-    label: '修行中心',
+    label: '成长中心',
     children: [
-      { key: '/cultivation', icon: <HeartOutlined />, label: '修行圈' },
+      { key: '/cultivation', icon: <HeartOutlined />, label: '文化圈' },
       { key: '/team-culture', icon: <TeamOutlined />, label: '团队文化' },
       { key: '/themes', icon: <BookOutlined />, label: '主题包总览' },
     ],
@@ -147,10 +147,10 @@ const breadcrumbMap: Record<string, string> = {
   '/': '仪表盘',
   '/religions': '文化传统',
   '/holy-sites': '文化圣地',
-  '/temples': '祖庭',
-  '/patriarchs': '祖师',
-  '/teachings': '祖训',
-  '/seals': '三十印',
+  '/temples': '寺庙祖庭',
+  '/patriarchs': '文化大师',
+  '/teachings': '经典教诲',
+  '/seals': '三十传承印',
   '/media': '媒体库',
   '/routes': '路线',
   '/bookings': '预订',
@@ -166,7 +166,7 @@ const breadcrumbMap: Record<string, string> = {
   '/reviews': '评价',
   '/moderation': '内容审核',
   '/chat-monitor': '聊天监控',
-  '/cultivation': '修行圈',
+  '/cultivation': '文化圈',
   '/team-culture': '团队文化',
   '/ai-config': 'AI 助手配置',
   '/prompt-lab': 'Prompt 实验室',
@@ -204,6 +204,8 @@ export default function AdminCockpitLayout() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  const role = getCurrentUserRole();
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
@@ -211,6 +213,7 @@ export default function AdminCockpitLayout() {
         collapsed={collapsed}
         trigger={null}
         width={248}
+        theme="light"
         style={{
           overflow: 'auto',
           height: '100vh',
@@ -218,7 +221,8 @@ export default function AdminCockpitLayout() {
           left: 0,
           top: 0,
           bottom: 0,
-          borderRight: '1px solid #1f1f1f',
+          borderRight: `1px solid ${BRAND.borderSubtle}`,
+          background: BRAND.bgSurface,
         }}
       >
         <div
@@ -228,26 +232,39 @@ export default function AdminCockpitLayout() {
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
             padding: collapsed ? 0 : '0 20px',
-            borderBottom: '1px solid #1f1f1f',
+            borderBottom: `1px solid ${BRAND.borderSubtle}`,
+            background: BRAND.primary,
           }}
         >
-          <span style={{ fontSize: 28 }}>🏛</span>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: BRAND.primary,
+              fontWeight: 800,
+              fontSize: 18,
+              flexShrink: 0,
+            }}
+          >
+            J
+          </div>
           {!collapsed && (
-            <Text
-              strong
-              style={{
-                color: '#D4A855',
-                fontSize: 16,
-                marginLeft: 10,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              佳绩之旅 · 驾驶舱
-            </Text>
+            <div style={{ marginLeft: 10, lineHeight: 1.1 }}>
+              <Text strong style={{ color: '#fff', fontSize: 15, display: 'block' }}>
+                Joinus
+              </Text>
+              <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 11 }}>
+                Admin · 佳绩之旅
+              </Text>
+            </div>
           )}
         </div>
         <Menu
-          theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
           defaultOpenKeys={[
@@ -259,11 +276,11 @@ export default function AdminCockpitLayout() {
             'grp-growth',
             'grp-system',
           ]}
-          items={filterMenu(menuItems, getCurrentUserRole())}
+          items={filterMenu(menuItems, role)}
           onClick={({ key }) => {
             if (key.startsWith('/')) navigate(key);
           }}
-          style={{ borderRight: 0, marginTop: 8 }}
+          style={{ borderRight: 0, marginTop: 8, background: BRAND.bgSurface }}
         />
       </Sider>
 
@@ -274,23 +291,31 @@ export default function AdminCockpitLayout() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #1f1f1f',
+            background: BRAND.bgHeader,
+            color: BRAND.textOnPrimary,
             position: 'sticky',
             top: 0,
             zIndex: 10,
+            boxShadow: '0 2px 8px rgba(50,100,255,0.12)',
           }}
         >
           <Space>
             <span
               onClick={() => setCollapsed(!collapsed)}
-              style={{ fontSize: 18, cursor: 'pointer', color: '#D4A855' }}
+              style={{ fontSize: 18, cursor: 'pointer', color: '#fff' }}
             >
               {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </span>
             <Breadcrumb
               items={[
-                { title: '佳绩之旅' },
-                { title: breadcrumbMap[location.pathname] || '仪表盘' },
+                { title: <span style={{ color: 'rgba(255,255,255,0.75)' }}>佳绩之旅</span> },
+                {
+                  title: (
+                    <span style={{ color: '#fff', fontWeight: 500 }}>
+                      {breadcrumbMap[location.pathname] || '仪表盘'}
+                    </span>
+                  ),
+                },
               ]}
               style={{ margin: 0 }}
             />
@@ -300,23 +325,40 @@ export default function AdminCockpitLayout() {
               type="text"
               icon={<SearchOutlined />}
               onClick={() => setPaletteOpen(true)}
-              style={{ color: '#D4A855' }}
+              style={{ color: '#fff' }}
             >
               命令台
-              <Tag style={{ marginLeft: 8 }}>⌘K</Tag>
+              <Tag style={{ marginLeft: 8, background: 'rgba(255,255,255,0.15)', color: '#fff', border: 'none' }}>
+                ⌘K
+              </Tag>
             </Button>
-            <Tag style={{ margin: 0, background: 'transparent', color: '#64748b', borderColor: '#334155' }}
-              title={`Build: ${__BUILD_TIME__}`}>
+            <Tag
+              style={{
+                margin: 0,
+                background: 'rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.85)',
+                border: 'none',
+              }}
+              title={`Build: ${__BUILD_TIME__}`}
+            >
               v{__BUILD_SHA__}
             </Tag>
-            <Tag color={getCurrentUserRole() === 'ADMIN' ? 'gold' : 'blue'} style={{ margin: 0 }}>
-              {getCurrentUserRole() ?? 'GUEST'}
+            <Tag
+              style={{
+                margin: 0,
+                background: role === 'ADMIN' ? BRAND.accent : 'rgba(255,255,255,0.2)',
+                color: role === 'ADMIN' ? '#141414' : '#fff',
+                border: 'none',
+                fontWeight: 600,
+              }}
+            >
+              {role ?? 'GUEST'}
             </Tag>
-            <Text style={{ color: '#999' }}>管理员</Text>
-            <Avatar style={{ backgroundColor: '#D4A855' }} icon={<UserOutlined />} />
+            <Text style={{ color: 'rgba(255,255,255,0.85)' }}>管理员</Text>
+            <Avatar style={{ backgroundColor: '#fff', color: BRAND.primary }} icon={<UserOutlined />} />
             <span
               onClick={logout}
-              style={{ cursor: 'pointer', color: '#999', fontSize: 16, marginLeft: 8 }}
+              style={{ cursor: 'pointer', color: 'rgba(255,255,255,0.8)', fontSize: 16, marginLeft: 8 }}
               title="退出登录"
             >
               <LogoutOutlined />

@@ -156,7 +156,7 @@ export default function I18nShareManagePage() {
 
   return (
     <div>
-      <Title level={3} style={{ color: '#D4A855', marginBottom: 24 }}>
+      <Title level={3} style={{ marginBottom: 24 }}>
         <TranslationOutlined style={{ marginRight: 8 }} />
         国际化 & 分享管理
       </Title>
@@ -182,7 +182,7 @@ export default function I18nShareManagePage() {
                         title={<span style={{ color: '#999' }}>总分享次数</span>}
                         value={stats.totalShares}
                         prefix={<ShareAltOutlined />}
-                        valueStyle={{ color: '#D4A855', fontSize: 36, fontWeight: 700 }}
+                        valueStyle={{ fontSize: 36, fontWeight: 700 }}
                       />
                     </Card>
                   </Col>
@@ -213,19 +213,19 @@ export default function I18nShareManagePage() {
                   <Col xs={24} lg={12}>
                     <Card
                       title="按平台分布"
-                      styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+                      
                     >
                       {platformData.length === 0 ? (
                         <span style={{ color: '#666', fontSize: 13 }}>暂无分享数据</span>
                       ) : (
                         <ResponsiveContainer width="100%" height={320}>
                           <BarChart data={platformData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e4e7ed" />
                             <XAxis dataKey="platform" stroke="#999" />
                             <YAxis stroke="#999" />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 }}
-                              labelStyle={{ color: '#D4A855' }}
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e4e7ed', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                              labelStyle={{  }}
                             />
                             <Bar dataKey="count" name="分享次数" radius={[6, 6, 0, 0]}>
                               {platformData.map((entry, i) => (
@@ -240,19 +240,19 @@ export default function I18nShareManagePage() {
                   <Col xs={24} lg={12}>
                     <Card
                       title="按内容类型分布"
-                      styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+                      
                     >
                       {entityData.length === 0 ? (
                         <span style={{ color: '#666', fontSize: 13 }}>暂无分享数据</span>
                       ) : (
                         <ResponsiveContainer width="100%" height={320}>
                           <BarChart data={entityData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e4e7ed" />
                             <XAxis dataKey="entityType" stroke="#999" />
                             <YAxis stroke="#999" />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: 8 }}
-                              labelStyle={{ color: '#D4A855' }}
+                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e4e7ed', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                              labelStyle={{  }}
                             />
                             <Bar dataKey="count" name="分享次数" radius={[6, 6, 0, 0]}>
                               {entityData.map((entry, i) => (
@@ -285,7 +285,7 @@ export default function I18nShareManagePage() {
                         title={<span style={{ color: '#999' }}>支持语言数</span>}
                         value={LANGUAGES.length}
                         prefix={<GlobalOutlined />}
-                        valueStyle={{ color: '#D4A855', fontSize: 36, fontWeight: 700 }}
+                        valueStyle={{ fontSize: 36, fontWeight: 700 }}
                       />
                     </Card>
                   </Col>
@@ -313,7 +313,7 @@ export default function I18nShareManagePage() {
 
                 <Card
                   title="语言支持列表"
-                  styles={{ header: { borderBottom: '1px solid #2a2a2a' } }}
+                  
                 >
                   <Table<LanguageRow>
                     dataSource={LANGUAGES}

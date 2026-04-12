@@ -22,7 +22,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <Title level={4} style={{ color: '#D4A855' }}><SettingOutlined /> 系统设置</Title>
+      <Title level={4} style={{  }}><SettingOutlined /> 系统设置</Title>
       <Paragraph type="secondary">快速访问系统核心配置与运维入口。</Paragraph>
 
       <Alert
@@ -57,7 +57,7 @@ export default function SettingsPage() {
                 style={{ cursor: 'pointer' }}
               >
                 <Space>
-                  <div style={{ fontSize: 24, color: '#D4A855' }}>{s.icon}</div>
+                  <div style={{ fontSize: 24 }}>{s.icon}</div>
                   <div>
                     <div style={{ fontWeight: 'bold' }}>{s.label}</div>
                     <div style={{ color: '#888', fontSize: 12 }}>{s.desc}</div>

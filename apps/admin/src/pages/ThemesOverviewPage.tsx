@@ -59,7 +59,7 @@ export default function ThemesOverviewPage() {
   return (
     <div>
       <Space style={{ marginBottom: 16 }}>
-        <Title level={4} style={{ margin: 0, color: '#D4A855' }}>主题包总览</Title>
+        <Title level={4} style={{ margin: 0 }}>主题包总览</Title>
       </Space>
       <Card>
         <Tabs items={[

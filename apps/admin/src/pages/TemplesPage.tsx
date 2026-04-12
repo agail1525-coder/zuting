@@ -179,8 +179,8 @@ export default function TemplesPage() {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>
-          祖庭管理
+        <Title level={4} style={{ margin: 0 }}>
+          寺庙祖庭管理
         </Title>
         <Space>
           <span style={{ color: '#999' }}>按文化传统筛选:</span>
