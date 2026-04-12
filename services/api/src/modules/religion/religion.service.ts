@@ -72,13 +72,13 @@ export class ReligionService {
   }
 
   async create(dto: CreateReligionDto) {
-    const result = await this.prisma.religion.create({ data: dto });
+    const result = await this.prisma.religion.create({ data: dto as any });
     await this.invalidateCache();
     return result;
   }
 
   async update(id: string, dto: UpdateReligionDto) {
-    const result = await this.prisma.religion.update({ where: { id }, data: dto });
+    const result = await this.prisma.religion.update({ where: { id }, data: dto as any });
     await this.invalidateCache(id);
     return result;
   }
