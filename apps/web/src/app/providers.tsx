@@ -1,5 +1,7 @@
 "use client";
 
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/query-client";
 import { I18nProvider } from "@/lib/i18n";
 import { AuthProvider } from "@/lib/auth-context";
 import Header from "@/components/Header";
@@ -11,6 +13,7 @@ import { SentryInit } from "./sentry-init";
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
+    <QueryClientProvider client={queryClient}>
     <I18nProvider>
       <AuthProvider>
         <SentryInit />
@@ -25,5 +28,6 @@ export default function ClientProviders({ children }: { children: React.ReactNod
         <WebVitals />
       </AuthProvider>
     </I18nProvider>
+    </QueryClientProvider>
   );
 }

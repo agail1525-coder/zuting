@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useQueries } from "@tanstack/react-query";
 import {
   fetchCompass,
   getDailyPracticeTimeline,
@@ -18,100 +18,50 @@ import {
   type ThreeLifeVision,
   type ScriptureItem,
 } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 
-const REALM_LABEL: Record<string, string> = {
-  AWAKENING: "初觉",
-  CLARIFYING: "明心",
-  SEEING: "见性",
-  ATTAINING: "证道",
-  INTEGRATING: "融通",
-  RETURNING: "归源",
-  GIVING_BACK: "布施",
-};
-
-const TRADITION_LABEL: Record<string, string> = {
-  ZEN: "禅宗",
-  BUDDHISM: "佛教",
-  TAOISM: "道教",
-  CONFUCIANISM: "儒家",
-  CHRISTIANITY: "基督文化",
-  ISLAM: "伊斯兰文化",
-  HINDUISM: "印度文化",
-  JUDAISM: "犹太文化",
-  SIKHISM: "锡克文化",
-  BAHAI: "巴哈伊文化",
-  SHINTO: "神道文化",
-  TIBETAN: "藏传文化",
-  INDIGENOUS: "原住民文化",
-};
-
-type OverviewData = {
-  compass: CompassResponse;
-  timeline: DailyPracticeTimeline | null;
-  oxPath: OxPathResponse | null;
-  wisdom: WisdomQuery[];
-  karma: KarmaEvent[];
-  threeLives: ThreeLifeVision | null;
-  scripture: ScriptureItem[];
-};
+const FIVE_MIN = 5 * 60 * 1000;
+const ONE_MIN = 60 * 1000;
+const TEN_MIN = 10 * 60 * 1000;
 
 export default function CultivationOverviewPage() {
-  const [data, setData] = useState<OverviewData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const realmLabel = (k: string) => t(`cultivation.realms.${k}`);
+  const traditionLabel = (k: string) => t(`cultivation.traditions.${k}`);
 
-  useEffect(() => {
-    (async () => {
-      const results = await Promise.allSettled([
-        fetchCompass(),
-        getDailyPracticeTimeline(),
-        fetchOxPath(),
-        fetchWisdomHistory(1, 3),
-        fetchKarmaTimeline(1, 3),
-        fetchThreeLives(),
-        fetchScriptureRecommended(),
-      ]);
-      const pick = <T,>(r: PromiseSettledResult<T>): T | null =>
-        r.status === "fulfilled" ? r.value : null;
-      const compass = pick(results[0] as PromiseSettledResult<CompassResponse>);
-      if (!compass) {
-        setError("无法加载总观数据,请稍后重试");
-        setLoading(false);
-        return;
-      }
-      setData({
-        compass,
-        timeline: pick(results[1] as PromiseSettledResult<DailyPracticeTimeline>),
-        oxPath: pick(results[2] as PromiseSettledResult<OxPathResponse>),
-        wisdom:
-          pick(
-            results[3] as PromiseSettledResult<{
-              items: WisdomQuery[];
-              total: number;
-              page: number;
-              pageSize: number;
-            }>,
-          )?.items ?? [],
-        karma:
-          pick(
-            results[4] as PromiseSettledResult<{
-              items: KarmaEvent[];
-              total: number;
-              page: number;
-              pageSize: number;
-            }>,
-          )?.items ?? [],
-        threeLives: pick(results[5] as PromiseSettledResult<ThreeLifeVision>),
-        scripture: pick(results[6] as PromiseSettledResult<ScriptureItem[]>) ?? [],
-      });
-      setLoading(false);
-    })();
-  }, []);
+  const results = useQueries({
+    queries: [
+      { queryKey: ["cultivation", "compass"], queryFn: fetchCompass, staleTime: FIVE_MIN },
+      { queryKey: ["cultivation", "daily-practice", "timeline"], queryFn: () => getDailyPracticeTimeline(), staleTime: ONE_MIN },
+      { queryKey: ["cultivation", "ox-path"], queryFn: fetchOxPath, staleTime: FIVE_MIN },
+      { queryKey: ["cultivation", "wisdom", "history", 1, 3], queryFn: () => fetchWisdomHistory(1, 3), staleTime: ONE_MIN },
+      { queryKey: ["cultivation", "karma", "timeline", 1, 3], queryFn: () => fetchKarmaTimeline(1, 3), staleTime: ONE_MIN },
+      { queryKey: ["cultivation", "three-lives"], queryFn: fetchThreeLives, staleTime: FIVE_MIN },
+      { queryKey: ["cultivation", "scripture", "recommended"], queryFn: fetchScriptureRecommended, staleTime: TEN_MIN },
+    ],
+  });
 
-  if (loading) return <div className="text-amber-200/60 py-20 text-center">加载总观...</div>;
-  if (error || !data) return <div className="text-rose-300 py-20 text-center">{error ?? "加载失败"}</div>;
+  const compassQ = results[0] as { data?: CompassResponse; isLoading: boolean; error: unknown };
+  const timelineQ = results[1] as { data?: DailyPracticeTimeline };
+  const oxPathQ = results[2] as { data?: OxPathResponse };
+  const wisdomQ = results[3] as { data?: { items: WisdomQuery[] } };
+  const karmaQ = results[4] as { data?: { items: KarmaEvent[] } };
+  const threeLivesQ = results[5] as { data?: ThreeLifeVision };
+  const scriptureQ = results[6] as { data?: ScriptureItem[] };
 
-  const { compass, timeline, oxPath, wisdom, karma, threeLives, scripture } = data;
+  const loading = results.some((r) => r.isLoading);
+  if (loading && !compassQ.data) return <div className="text-amber-200/60 py-20 text-center">加载总观...</div>;
+  if (compassQ.error || !compassQ.data) {
+    return <div className="text-rose-300 py-20 text-center">无法加载总观数据,请稍后重试</div>;
+  }
+
+  const compass = compassQ.data;
+  const timeline = timelineQ.data ?? null;
+  const oxPath = oxPathQ.data ?? null;
+  const wisdom = wisdomQ.data?.items ?? [];
+  const karma = karmaQ.data?.items ?? [];
+  const threeLives = threeLivesQ.data ?? null;
+  const scripture = scriptureQ.data ?? [];
   const { journey, currentSymbol, streakDays } = compass;
 
   // 今日功课完成度
@@ -130,10 +80,10 @@ export default function CultivationOverviewPage() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-amber-300/60 text-xs uppercase tracking-widest mb-1">
-              当前境界 · {TRADITION_LABEL[journey.primaryTradition] ?? journey.primaryTradition}
+              当前境界 · {traditionLabel(journey.primaryTradition)}
             </p>
             <h1 className="text-3xl font-bold text-amber-100 mb-1">
-              {REALM_LABEL[journey.currentRealm] || journey.currentRealm}
+              {realmLabel(journey.currentRealm)}
             </h1>
             <p className="text-amber-200/60 text-sm mb-4">
               愿行 第 {journey.oxStage} 阶 · 连击 {streakDays} 天 · {journey.karmaPoints} 因缘点
@@ -169,7 +119,7 @@ export default function CultivationOverviewPage() {
             >
               {todayFestival.icon ?? "🕉"} {todayFestival.name}
               <span className="text-rose-300/60">
-                · {TRADITION_LABEL[todayFestival.tradition] ?? todayFestival.tradition}
+                · {traditionLabel(todayFestival.tradition)}
               </span>
             </Link>
           )}
@@ -330,7 +280,7 @@ export default function CultivationOverviewPage() {
               <p className="text-amber-100 text-sm truncate">{s.title}</p>
               <p className="text-amber-200/40 text-xs mt-0.5">
                 <span className="text-amber-300/60 mr-2">
-                  {TRADITION_LABEL[s.tradition] ?? s.tradition}
+                  {traditionLabel(s.tradition)}
                 </span>
                 第 {s.ring} 环 · 难度 {s.difficulty}
               </p>
