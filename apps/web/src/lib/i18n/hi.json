@@ -2311,6 +2311,7 @@
   "tripCreate.summaryBudget": "बजट",
   "tripCreate.summarySites": "तीर्थ स्थल",
   "tripCreate.sitesUnit": "स्थल",
+  "tripCreate.siteUnknown": "अज्ञात स्थल",
   "tripCreate.selectSitesTitle": "तीर्थ स्थल चुनें",
   "tripCreate.selectSitesSubtitle": "अपनी तीर्थ यात्रा में पवित्र स्थल जोड़ें",
   "tripCreate.selectedSites": "चयनित स्थल",

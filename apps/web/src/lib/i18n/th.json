@@ -2311,6 +2311,7 @@
   "tripCreate.summaryBudget": "งบประมาณ",
   "tripCreate.summarySites": "สถานที่ศักดิ์สิทธิ์",
   "tripCreate.sitesUnit": "แห่ง",
+  "tripCreate.siteUnknown": "สถานที่ไม่ระบุ",
   "tripCreate.selectSitesTitle": "เลือกสถานที่ศักดิ์สิทธิ์",
   "tripCreate.selectSitesSubtitle": "เพิ่มสถานที่ศักดิ์สิทธิ์ในแผนการแสวงบุญ",
   "tripCreate.selectedSites": "สถานที่ที่เลือก",

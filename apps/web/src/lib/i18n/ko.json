@@ -2311,6 +2311,7 @@
   "tripCreate.summaryBudget": "예산",
   "tripCreate.summarySites": "성지",
   "tripCreate.sitesUnit": "곳",
+  "tripCreate.siteUnknown": "알 수 없는 성지",
   "tripCreate.selectSitesTitle": "성지 선택",
   "tripCreate.selectSitesSubtitle": "순례하고 싶은 성지를 일정에 추가하세요",
   "tripCreate.selectedSites": "선택한 성지",

@@ -215,4 +215,50 @@ export const ROUTE_IMAGES: Record<string, { cover: string; images: string[] }> =
     cover: '/images/routes/china-three-teachings-cover.jpg',
     images: ['/images/routes/china-three-teachings-1.jpg', '/images/routes/china-three-teachings-2.jpg', '/images/routes/china-three-teachings-3.jpg'],
   },
+  // Zen lineage routes — reuse bodhidharma/sixth-patriarch/china-three-teachings covers
+  // (all legitimately represent Chinese Chan heritage; avoids mis-mapping to jerusalem etc.)
+  'xuyun-master-route': {
+    cover: '/images/routes/sixth-patriarch-huineng-cover.jpg',
+    images: ['/images/routes/sixth-patriarch-huineng-1.jpg', '/images/routes/sixth-patriarch-huineng-2.jpg', '/images/routes/sixth-patriarch-huineng-3.jpg'],
+  },
+  'mazu-daoyi-route': {
+    cover: '/images/routes/bodhidharma-route-cover.jpg',
+    images: ['/images/routes/bodhidharma-route-1.jpg', '/images/routes/bodhidharma-route-2.jpg', '/images/routes/bodhidharma-route-3.jpg'],
+  },
+  'baizhang-huaihai-route': {
+    cover: '/images/routes/china-three-teachings-cover.jpg',
+    images: ['/images/routes/china-three-teachings-1.jpg', '/images/routes/china-three-teachings-2.jpg', '/images/routes/china-three-teachings-3.jpg'],
+  },
+  'linji-yixuan-route': {
+    cover: '/images/routes/bodhidharma-route-cover.jpg',
+    images: ['/images/routes/bodhidharma-route-1.jpg', '/images/routes/bodhidharma-route-2.jpg', '/images/routes/bodhidharma-route-3.jpg'],
+  },
+  'dongshan-caodong-route': {
+    cover: '/images/routes/sixth-patriarch-huineng-cover.jpg',
+    images: ['/images/routes/sixth-patriarch-huineng-1.jpg', '/images/routes/sixth-patriarch-huineng-2.jpg', '/images/routes/sixth-patriarch-huineng-3.jpg'],
+  },
+  'zhaozhou-congshen-route': {
+    cover: '/images/routes/china-three-teachings-cover.jpg',
+    images: ['/images/routes/china-three-teachings-1.jpg', '/images/routes/china-three-teachings-2.jpg', '/images/routes/china-three-teachings-3.jpg'],
+  },
+  'yunmen-wenyan-route': {
+    cover: '/images/routes/bodhidharma-route-cover.jpg',
+    images: ['/images/routes/bodhidharma-route-1.jpg', '/images/routes/bodhidharma-route-2.jpg', '/images/routes/bodhidharma-route-3.jpg'],
+  },
+  'zen-five-houses-grand-tour': {
+    cover: '/images/routes/sixth-patriarch-huineng-cover.jpg',
+    images: ['/images/routes/sixth-patriarch-huineng-1.jpg', '/images/routes/sixth-patriarch-huineng-2.jpg', '/images/routes/sixth-patriarch-huineng-3.jpg'],
+  },
+  'weishan-lingyou-route': {
+    cover: '/images/routes/china-three-teachings-cover.jpg',
+    images: ['/images/routes/china-three-teachings-1.jpg', '/images/routes/china-three-teachings-2.jpg', '/images/routes/china-three-teachings-3.jpg'],
+  },
+  'fayan-wenyi-route': {
+    cover: '/images/routes/bodhidharma-route-cover.jpg',
+    images: ['/images/routes/bodhidharma-route-1.jpg', '/images/routes/bodhidharma-route-2.jpg', '/images/routes/bodhidharma-route-3.jpg'],
+  },
+  'dahui-zonggao-route': {
+    cover: '/images/routes/sixth-patriarch-huineng-cover.jpg',
+    images: ['/images/routes/sixth-patriarch-huineng-1.jpg', '/images/routes/sixth-patriarch-huineng-2.jpg', '/images/routes/sixth-patriarch-huineng-3.jpg'],
+  },
 };

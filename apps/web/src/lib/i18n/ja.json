@@ -2311,6 +2311,7 @@
   "tripCreate.summaryBudget": "予算",
   "tripCreate.summarySites": "聖地",
   "tripCreate.sitesUnit": "箇所",
+  "tripCreate.siteUnknown": "不明な聖地",
   "tripCreate.selectSitesTitle": "聖地を選択",
   "tripCreate.selectSitesSubtitle": "巡礼したい聖地を旅程に追加しましょう",
   "tripCreate.selectedSites": "選択済みの聖地",

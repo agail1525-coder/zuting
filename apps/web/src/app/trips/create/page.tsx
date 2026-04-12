@@ -1170,7 +1170,7 @@ export default function TripCreatePage() {
               <div className="flex flex-wrap gap-2">
                 {selectedSiteIds.map((siteId, idx) => {
                   const site = holySites.find((s) => s.id === siteId);
-                  const name = site?.name || siteId.substring(0, 8);
+                  const name = site?.name || t("tripCreate.siteUnknown");
                   return (
                     <div
                       key={siteId}
@@ -1213,7 +1213,7 @@ export default function TripCreatePage() {
                   <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                     {selectedSiteIds.map((siteId, idx) => {
                       const site = holySites.find((s) => s.id === siteId);
-                      const name = site?.name || siteId.substring(0, 8);
+                      const name = site?.name || t("tripCreate.siteUnknown");
                       return (
                         <div
                           key={siteId}

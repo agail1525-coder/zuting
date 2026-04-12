@@ -4120,6 +4120,7 @@
   "tripCreate.summaryBudget": "Budget",
   "tripCreate.summarySites": "Sites",
   "tripCreate.sitesUnit": "sites",
+  "tripCreate.siteUnknown": "Unknown site",
   "tripCreate.selectSitesTitle": "Select Heritage Sites",
   "tripCreate.selectSitesSubtitle": "Add heritage sites to your cultural journey itinerary",
   "tripCreate.selectedSites": "Selected Sites",

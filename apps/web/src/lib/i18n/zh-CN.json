@@ -4214,6 +4214,7 @@
   "tripCreate.summaryBudget": "预算",
   "tripCreate.summarySites": "圣地",
   "tripCreate.sitesUnit": "处",
+  "tripCreate.siteUnknown": "未识别圣地",
   "tripCreate.selectSitesTitle": "选择文化圣地",
   "tripCreate.selectSitesSubtitle": "为您的行程添加想要探访的圣地",
   "tripCreate.selectedSites": "已选圣地",

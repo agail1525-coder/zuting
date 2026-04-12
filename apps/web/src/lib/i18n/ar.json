@@ -2311,6 +2311,7 @@
   "tripCreate.summaryBudget": "الميزانية",
   "tripCreate.summarySites": "المواقع المقدسة",
   "tripCreate.sitesUnit": "موقع",
+  "tripCreate.siteUnknown": "موقع غير معروف",
   "tripCreate.selectSitesTitle": "اختر المواقع المقدسة",
   "tripCreate.selectSitesSubtitle": "أضف مواقع مقدسة إلى خط سير رحلتك",
   "tripCreate.selectedSites": "المواقع المختارة",
