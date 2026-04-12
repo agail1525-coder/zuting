@@ -6,7 +6,12 @@ import {
   Param,
   Query,
   Body,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { PrismaService } from '../../prisma/prisma.service';
 import {
   ApiTags,
   ApiOperation,
@@ -24,7 +29,41 @@ import { CreateRoomDto } from './dto/create-room.dto';
 @ApiBearerAuth('bearer')
 @Controller('chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  @Get('rooms/admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Admin: list all chat rooms' })
+  async getAllRoomsAdmin() {
+    const rooms = await this.prisma.chatRoom.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 200,
+      include: {
+        participants: { select: { userId: true } },
+        messages: { orderBy: { createdAt: 'desc' }, take: 1 },
+        _count: { select: { messages: true, participants: true } },
+      },
+    });
+    return rooms.map((r) => ({
+      id: r.id,
+      type: r.type,
+      name: r.name,
+      createdAt: r.createdAt.toISOString(),
+      participantCount: r._count.participants,
+      messageCount: r._count.messages,
+      lastMessage: r.messages[0]
+        ? {
+            content: r.messages[0].content,
+            createdAt: r.messages[0].createdAt.toISOString(),
+            senderId: r.messages[0].senderId,
+          }
+        : undefined,
+    }));
+  }
 
   @Get('rooms')
   @ApiOperation({
