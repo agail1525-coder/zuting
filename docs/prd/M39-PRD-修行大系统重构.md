@@ -1,9 +1,27 @@
 # M39-PRD — 修行大系统 Phase 级重构
 
-> **状态**: 草案 v1.0 | **负责人**: CEO++ | **日期**: 2026-04-12
+> **状态**: v1.1 / Wave 1+2 已上线,Wave 3 部分交付 | **负责人**: CEO++ | **日期**: 2026-04-12
 > **前置模块**: M37 圆满之路 / M38 经论大系统 / fulfillment / bhumi-path
 > **触发来源**: 天查++ / 审查++ 综合报告 — 发现 2 项 P0 + 5 项 P1 + 3 项 P2
 > **交付形式**: 跨模块重构,非新建功能。只修不加。
+
+## 📍 执行日志 (2026-04-12)
+
+| Wave | Commit | 状态 | 说明 |
+|------|--------|------|------|
+| Wave 1 安全底线 | `70bbb78` | ✅ 上线 | 乐观锁 advanceOxStage/advanceBhumi + 转速修复 |
+| Wave 2 前端体验 | `3e67ceb` | ✅ 上线 | Toast 6 处反馈 + error-state 修复 + FulfillmentJourney 类型补齐 |
+| Wave 3 硬化收尾 | (本次) | ⏳ 编码中 | listWisdomHistory NaN 防护 + PRD 收口 |
+
+### 审查纠偏
+- 原 P0#1 (十牛图越界) 实已在 `fulfillment.service.ts:186` `oxStage >= 10` 守卫 — 审查误报
+- 原 P0#2 (十地 vowType 跨地) 实已在 `bhumi-path.service.ts:126-127` `matchedVow` 白名单 — 审查误报
+- 真 P0 只剩**并发乐观锁** — Wave 1 已修复
+
+### Wave 5 scope 调整
+- **FR-05 react-query 全量接入** — **延期**,避免与 Wave 2 同批引入大 blast radius。建议作为 M40 全站数据层 refactor 独立 PRD
+- **FR-07 i18n 文案外置** — **延期**,依赖全站 i18n 初始化到 cultivation 路由,独立 M41 处理
+- Wave 3 收窄为**输入参数硬化** (pageSize NaN 防护),作为 Wave 1 的延伸
 
 ---
 

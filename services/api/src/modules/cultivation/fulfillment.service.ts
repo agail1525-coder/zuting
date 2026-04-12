@@ -448,8 +448,10 @@ export class FulfillmentService {
 
   async listWisdomHistory(userId: string, page: number, pageSize: number) {
     const journey = await this.getOrCreateJourney(userId);
-    const take = Math.min(pageSize, 50);
-    const skip = (page - 1) * take;
+    const rawSize = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 20;
+    const take = Math.min(rawSize, 50);
+    const safePage = Number.isFinite(page) && page > 0 ? page : 1;
+    const skip = (safePage - 1) * take;
     const [items, total] = await Promise.all([
       this.prisma.wisdomQuery.findMany({
         where: { journeyId: journey.id },
