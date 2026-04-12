@@ -96,6 +96,7 @@ const menuItems = [
     children: [
       { key: '/cultivation', icon: <HeartOutlined />, label: '修行圈' },
       { key: '/team-culture', icon: <TeamOutlined />, label: '团队文化' },
+      { key: '/themes', icon: <BookOutlined />, label: '主题包总览' },
     ],
   },
 
@@ -105,6 +106,7 @@ const menuItems = [
     label: 'AI 中枢',
     children: [
       { key: '/ai-config', icon: <RobotOutlined />, label: 'AI 助手配置' },
+      { key: '/prompt-lab', icon: <ThunderboltOutlined />, label: 'Prompt 实验室' },
       { key: '/ai-traces', icon: <ThunderboltOutlined />, label: 'AI 操作追踪' },
     ],
   },
@@ -158,7 +160,9 @@ const breadcrumbMap: Record<string, string> = {
   '/cultivation': '修行圈',
   '/team-culture': '团队文化',
   '/ai-config': 'AI 助手配置',
+  '/prompt-lab': 'Prompt 实验室',
   '/ai-traces': 'AI 操作追踪',
+  '/themes': '主题包总览',
   '/analytics': '数据分析',
   '/search-stats': '搜索统计',
   '/i18n-share': '国际化&分享',

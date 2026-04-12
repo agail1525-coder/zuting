@@ -47,6 +47,9 @@ const GuideStudioPage = lazy(() => import('./pages/GuideStudioPage'));
 const QuestionStudioPage = lazy(() => import('./pages/QuestionStudioPage'));
 const ThemeStudioPage = lazy(() => import('./pages/ThemeStudioPage'));
 const ThemesOverviewPage = lazy(() => import('./pages/ThemesOverviewPage'));
+const PromptLabPage = lazy(() => import('./pages/PromptLabPage'));
+const AiTracesPage = lazy(() => import('./pages/AiTracesPage'));
+const AdminRolesPage = lazy(() => import('./pages/AdminRolesPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -111,6 +114,9 @@ export default function App() {
           <Route path="guides/:id" element={<GuideStudioPage />} />
           <Route path="questions/:id" element={<QuestionStudioPage />} />
           <Route path="themes" element={<ThemesOverviewPage />} />
+          <Route path="prompt-lab" element={<PromptLabPage />} />
+          <Route path="ai-traces" element={<AiTracesPage />} />
+          <Route path="admin-roles" element={<AdminRolesPage />} />
           <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />
           <Route path="personal-growth/themes/:slug" element={<ThemeStudioPage kind="personal-growth" />} />
           <Route path="family-harmony/themes/:slug" element={<ThemeStudioPage kind="family-harmony" />} />
