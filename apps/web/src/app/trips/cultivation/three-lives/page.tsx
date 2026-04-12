@@ -16,6 +16,8 @@ import {
   type PkbRecommendation,
   type PkbRecommendationStatus,
   type PkbCategory,
+  type VowRevelation,
+  type ChapterPlanItem,
 } from "@/lib/api";
 
 type Tab = "vows" | "struggle" | "journal" | "recs";
@@ -238,6 +240,13 @@ function usePkbLabels() {
   };
 }
 
+const TRAD_LABEL: Record<string, string> = {
+  ZEN: "禅宗", TAOISM: "道教", CONFUCIANISM: "儒家", CHRISTIANITY: "基督文化",
+  ISLAM: "伊斯兰文化", HINDUISM: "印度文化", JUDAISM: "犹太文化", SIKHISM: "锡克文化",
+  BAHAI: "巴哈伊文化", SHINTO: "神道文化", TIBETAN: "藏传文化", INDIGENOUS: "原住民文化",
+  BUDDHISM: "佛教文化",
+};
+
 function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => void }) {
   const { cat: categoryLabel } = usePkbLabels();
   const pkb = overview.pkb;
@@ -246,14 +255,20 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
   const [careerVow, setCareerVow] = useState(pkb.careerVow ?? "");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [revelation, setRevelation] = useState<VowRevelation | null>(
+    (pkb as any).vowRevelation ?? null,
+  );
+  const [freshRecs, setFreshRecs] = useState<PkbRecommendation[]>([]);
 
   const onSave = async () => {
     setSaving(true);
-    setMsg(null);
+    setMsg("小鸿正在法界传音,请静待 30-60 秒...");
     try {
-      await updatePkbVows({ personalVow, familyVow, careerVow });
-      setMsg("已保存 — 小鸿正在为你生成经论推荐…");
-      setTimeout(onSaved, 1500);
+      const res = await updatePkbVows({ personalVow, familyVow, careerVow });
+      setRevelation(res.vowRevelation ?? null);
+      setFreshRecs(res.recommendations ?? []);
+      setMsg(res.vowRevelation ? "✨ 法界回应已到" : "已保存 — 基础推荐已生成");
+      onSaved();
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "保存失败");
     } finally {
@@ -261,7 +276,9 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
     }
   };
 
-  const vowRecs = overview.activeRecs.filter((r) => ["PERSONAL", "FAMILY", "CAREER"].includes(r.category));
+  const vowRecs = freshRecs.length > 0
+    ? freshRecs
+    : overview.activeRecs.filter((r) => ["PERSONAL", "FAMILY", "CAREER"].includes(r.category));
 
   return (
     <div className="space-y-5">
@@ -270,7 +287,7 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
         <div className="flex-1">
           <div className="text-sm font-semibold text-indigo-200">小鸿主导觉门 · AI 方便法门</div>
           <div className="text-xs text-indigo-100/60 mt-1">
-            选择你最在意的关键词，让小鸿为你起草一段诚恳可践行的愿景文字 — 你可以随时编辑或让小鸿重新起草。
+            选择你最在意的关键词，让小鸿为你起草一段诚恳可践行的愿景文字 — 保存后法界传音将为你回应。
           </div>
         </div>
       </div>
@@ -284,24 +301,157 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
         disabled={saving}
         className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-50"
       >
-        {saving ? "保存中…" : "保存三生愿景 → 触发小鸿经论推荐"}
+        {saving ? "🕉 法界传音中…" : "保存三生愿景 → 触发小鸿经论推荐"}
       </button>
       {msg && <div className="text-sm text-amber-200/70 text-center">{msg}</div>}
 
+      {revelation && <RevelationCard revelation={revelation} />}
+
       {vowRecs.length > 0 && (
-        <div className="rounded-2xl border border-amber-900/40 bg-amber-950/10 p-5 space-y-3">
+        <div className="space-y-4">
           <div className="text-sm font-semibold text-amber-100">📖 小鸿为你挑选的经论</div>
           {vowRecs.slice(0, 6).map((r) => (
-            <div key={r.id} className="rounded-lg bg-amber-950/30 border border-amber-900/30 p-3">
-              <div className="text-xs text-amber-200/50">{categoryLabel(r.category)}</div>
-              <div className="text-amber-100 font-medium">{r.title}</div>
-              <div className="text-xs text-amber-200/60 mt-1">{r.reason}</div>
-              {r.scriptureSlug && (
-                <a href={`/trips/cultivation/scriptures/${r.scriptureSlug}`} className="text-xs text-amber-400 hover:text-amber-300 mt-2 inline-block">查看经论 →</a>
-              )}
+            <EnhancedRecCard key={r.id} rec={r} categoryLabel={categoryLabel(r.category)} />
+          ))}
+        </div>
+      )}
+
+      {!revelation && vowRecs.length === 0 && (
+        <div className="text-amber-200/40 text-center text-sm py-6">
+          保存愿景后,小鸿将传达法界回应 + 深度经论推荐
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RevelationCard({ revelation }: { revelation: VowRevelation }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="rounded-2xl border border-purple-500/40 bg-gradient-to-br from-purple-950/30 to-amber-950/20 p-6 space-y-4">
+      <div className="flex items-center gap-3">
+        <span className="text-3xl">🕉</span>
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-purple-200">法界回应 · 小鸿传音</h3>
+          <p className="text-xs text-purple-300/50">
+            {new Date(revelation.generatedAt).toLocaleDateString("zh-CN")} · 十牛图第 {revelation.oxStageSnapshot} 阶
+          </p>
+        </div>
+      </div>
+
+      {/* 禅宗启示 */}
+      <div className="rounded-xl border border-purple-400/30 bg-purple-950/30 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl">{revelation.zenAvatarEmoji ?? "🧘"}</span>
+          <span className="text-sm font-bold text-purple-200">{revelation.zenMasterName ?? "惠能"} · 禅宗</span>
+        </div>
+        <p className="text-amber-100/90 text-sm leading-relaxed whitespace-pre-wrap">{revelation.zenGuidance}</p>
+      </div>
+
+      {/* 大师轮播 */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full text-left text-xs text-purple-300/70 hover:text-purple-200 flex items-center gap-1"
+      >
+        {expanded ? "▼" : "▶"} {revelation.masterVoices.length} 位异传统大师启示
+        {!expanded && (
+          <span className="text-purple-400/40 ml-2">
+            {revelation.masterVoices.map((m) => m.avatarEmoji).join(" ")}
+          </span>
+        )}
+      </button>
+      {expanded && (
+        <div className="space-y-3">
+          {revelation.masterVoices.map((m, i) => (
+            <div key={i} className="rounded-xl bg-amber-950/30 border border-amber-900/40 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-lg">{m.avatarEmoji}</span>
+                <span className="text-sm font-semibold text-amber-200">{m.masterName}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300">
+                  {TRAD_LABEL[m.tradition] ?? m.tradition}
+                </span>
+              </div>
+              <p className="text-amber-100/80 text-sm leading-relaxed whitespace-pre-wrap">{m.voice}</p>
             </div>
           ))}
         </div>
+      )}
+
+      {/* 小鸿汇总 */}
+      <div className="rounded-xl bg-amber-950/40 border border-amber-500/30 p-4">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="text-lg">🐦</span>
+          <span className="text-sm font-bold text-amber-200">小鸿 · 法界传音者</span>
+        </div>
+        <p className="text-amber-100/80 text-sm leading-relaxed italic whitespace-pre-wrap">{revelation.synthesis}</p>
+      </div>
+    </div>
+  );
+}
+
+function EnhancedRecCard({ rec, categoryLabel }: { rec: PkbRecommendation; categoryLabel: string }) {
+  const [showChapters, setShowChapters] = useState(false);
+  const chapters: ChapterPlanItem[] = Array.isArray(rec.chapterPlan)
+    ? (rec.chapterPlan as ChapterPlanItem[])
+    : [];
+
+  return (
+    <div className="rounded-2xl border border-amber-900/40 bg-amber-950/20 p-5 space-y-2">
+      <div className="flex items-center gap-2">
+        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300">
+          {categoryLabel}
+        </span>
+        <span className="font-bold text-amber-100 text-sm flex-1">{rec.title}</span>
+      </div>
+
+      {rec.revelationNote && (
+        <p className="text-amber-200/70 text-sm leading-relaxed">{rec.revelationNote}</p>
+      )}
+      {!rec.revelationNote && rec.reason && (
+        <p className="text-amber-200/60 text-xs">{rec.reason}</p>
+      )}
+
+      {chapters.length > 0 && (
+        <>
+          <button
+            onClick={() => setShowChapters(!showChapters)}
+            className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1"
+          >
+            {showChapters ? "▼" : "▶"} {chapters.length} 章推荐阅读计划
+          </button>
+          {showChapters && (
+            <div className="space-y-2 pl-2 border-l-2 border-amber-900/40">
+              {chapters.map((ch) => (
+                <div key={ch.chapterNo} className="text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-amber-300 font-semibold">第 {ch.chapterNo} 章</span>
+                    <span className="text-amber-200/60 text-xs">{ch.why}</span>
+                  </div>
+                  {ch.keyQuote && (
+                    <p className="text-amber-100/50 text-xs italic mt-0.5 pl-4">「{ch.keyQuote}」</p>
+                  )}
+                  {rec.scriptureSlug && (
+                    <a
+                      href={`/trips/cultivation/scriptures/${rec.scriptureSlug}/${ch.chapterNo}`}
+                      className="text-xs text-amber-400 hover:text-amber-300 pl-4 inline-block"
+                    >
+                      进入此章 →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {rec.scriptureSlug && (
+        <a
+          href={`/trips/cultivation/scriptures/${rec.scriptureSlug}`}
+          className="text-xs text-amber-400 hover:text-amber-300 inline-block"
+        >
+          查看经论全貌 →
+        </a>
       )}
     </div>
   );

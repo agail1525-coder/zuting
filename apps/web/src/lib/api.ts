@@ -3195,6 +3195,27 @@ export type PkbEntryKind = "CHAT" | "INSIGHT" | "REFLECTION" | "VOW_UPDATE" | "S
 export type PkbCategory = "PERSONAL" | "FAMILY" | "CAREER" | "DAILY_STRUGGLE" | "GENERAL";
 export type PkbRecommendationStatus = "PENDING" | "READ" | "PRACTICING" | "DONE" | "DISMISSED";
 
+export interface VowMasterVoice {
+  tradition: string;
+  masterName: string;
+  avatarEmoji: string;
+  voice: string;
+}
+export interface VowRevelation {
+  zenGuidance: string;
+  zenMasterName: string;
+  zenAvatarEmoji: string;
+  masterVoices: VowMasterVoice[];
+  synthesis: string;
+  generatedAt: string;
+  oxStageSnapshot: number;
+}
+export interface ChapterPlanItem {
+  chapterNo: number;
+  why: string;
+  keyQuote: string;
+}
+
 export interface UserPkb {
   id: string;
   userId: string;
@@ -3202,6 +3223,8 @@ export interface UserPkb {
   familyVow: string | null;
   careerVow: string | null;
   vowUpdatedAt: string | null;
+  vowRevelation: VowRevelation | null;
+  revelationAt: string | null;
   currentOxStage: number;
   dominantRings: number[];
   topTraditions: string[];
@@ -3239,6 +3262,8 @@ export interface PkbRecommendation {
   category: PkbCategory;
   title: string;
   reason: string;
+  revelationNote: string | null;
+  chapterPlan: ChapterPlanItem[] | null;
   scriptureId: string | null;
   scriptureSlug: string | null;
   chapterNo: number | null;
@@ -3257,8 +3282,12 @@ export interface PkbOverview {
 
 export const fetchPkbOverview = () => fetchAuthed<PkbOverview>(`/api/pkb/me`);
 
+export type UpdateVowsResponse = UserPkb & {
+  vowRevelation: VowRevelation | null;
+  recommendations: PkbRecommendation[];
+};
 export const updatePkbVows = (dto: { personalVow?: string; familyVow?: string; careerVow?: string }) =>
-  fetchAuthed<UserPkb>(`/api/pkb/me/vows`, { method: "PUT", body: JSON.stringify(dto) });
+  fetchAuthed<UpdateVowsResponse>(`/api/pkb/me/vows`, { method: "PUT", body: JSON.stringify(dto) });
 
 export const fetchPkbEntries = (params?: { kind?: PkbEntryKind; category?: PkbCategory; tag?: string; page?: number; pageSize?: number }) => {
   const q = new URLSearchParams();

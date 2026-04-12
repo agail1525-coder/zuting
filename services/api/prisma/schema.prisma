@@ -144,6 +144,13 @@ model HolySite {
   imageUrl    String?
   soundEffect String?
 
+  // M40: 媒体画廊扩展
+  gallery     Json?    // [{url, caption, sortOrder}]
+  panoUrl     String?  // 360° 全景 URL
+  audioGuides Json?    // {zh, en, ja, ko, th, hi, ar}
+  lastEditedBy String?
+  version      Int     @default(1)
+
   // 旅行信息扩展
   openingHours  String?   // "8:00-17:00"
   ticketPrice   String?   // "免费" / "80元"
@@ -196,6 +203,12 @@ model Temple {
   latitude     Float?
   longitude    Float?
 
+  // M40 extensions
+  gallery            Json?
+  historicalAbbots   Json?
+  lastEditedBy       String?
+  version            Int     @default(1)
+
   religionId String
   religion   Religion @relation(fields: [religionId], references: [id])
 
@@ -224,6 +237,12 @@ model Patriarch {
   templeNames   Json?     // [{name, nameEn, role, location}]
   classicQuotes Json?     // [string]
   works         Json?     // [{title, description}]
+
+  // M40 extensions
+  gallery       Json?
+  lineage       Json?
+  lastEditedBy  String?
+  version       Int       @default(1)
 
   religionId String
   religion   Religion @relation(fields: [religionId], references: [id])
@@ -618,6 +637,12 @@ model Route {
   rating      Float?
   reviewCount Int             @default(0)
   bookCount   Int             @default(0)
+
+  // M40 extensions
+  coverGallery Json?
+  dailyPlan    Json?
+  lastEditedBy String?
+  version      Int       @default(1)
 
   religionId  String?
   religion    Religion?       @relation(fields: [religionId], references: [id])
@@ -2094,6 +2119,8 @@ model UserPkb {
   familyVow       String?   @db.Text
   careerVow       String?   @db.Text
   vowUpdatedAt    DateTime?
+  vowRevelation   Json?
+  revelationAt    DateTime?
   currentOxStage  Int       @default(1)
   dominantRings   Int[]     @default([])
   topTraditions   String[]  @default([])
@@ -2145,6 +2172,8 @@ model PkbRecommendation {
   scriptureId String?
   scriptureSlug String?
   chapterNo   Int?
+  revelationNote  String?                @db.Text
+  chapterPlan     Json?
   priority    Int                     @default(5)
   status      PkbRecommendationStatus @default(PENDING)
   expiresAt   DateTime?
@@ -2153,4 +2182,96 @@ model PkbRecommendation {
 
   @@index([pkbId, status])
   @@index([pkbId, createdAt])
+}
+
+// ========== M40 Admin Cockpit ==========
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  PANO360
+}
+
+enum AdminAction {
+  CREATE
+  UPDATE
+  DELETE
+  PUBLISH
+  UNPUBLISH
+  AI_GENERATE
+  AI_TRANSLATE
+  AI_MODERATE
+  ROLLBACK
+}
+
+model MediaAsset {
+  id          String    @id @default(cuid())
+  url         String
+  type        MediaType @default(IMAGE)
+  width       Int?
+  height      Int?
+  size        Int?
+  hash        String?   @unique
+  altText     String?
+  description String?   @db.Text
+  tags        String[]  @default([])
+  aiGenerated Boolean   @default(false)
+  uploadedBy  String?
+  references  Json?     // [{resource, id}]
+  folder      String?   @default("default")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([type, createdAt])
+  @@index([folder])
+}
+
+model AdminAuditLog {
+  id         String      @id @default(cuid())
+  adminId    String
+  action     AdminAction
+  resource   String
+  resourceId String?
+  diff       Json?
+  aiTraceId  String?
+  ip         String?
+  ua         String?
+  createdAt  DateTime    @default(now())
+
+  @@index([resource, resourceId])
+  @@index([adminId, createdAt])
+  @@index([action, createdAt])
+}
+
+model AiOperationTrace {
+  id         String   @id @default(cuid())
+  scenario   String   // PROMPT_LAB/CONTENT_GEN/TRANSLATE/SEO/MODERATE/INSIGHT/COMMAND
+  model      String
+  prompt     String   @db.Text
+  output     String?  @db.Text
+  tokensIn   Int?
+  tokensOut  Int?
+  latencyMs  Int?
+  cost       Decimal? @db.Decimal(10, 6)
+  approved   Boolean  @default(false)
+  approvedBy String?
+  adminId    String
+  resource   String?
+  resourceId String?
+  createdAt  DateTime @default(now())
+
+  @@index([scenario, createdAt])
+  @@index([adminId, createdAt])
+  @@index([approved])
+}
+
+model AdminRole {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  permissions String[] @default([])
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

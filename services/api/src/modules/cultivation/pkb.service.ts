@@ -11,6 +11,7 @@ import {
   UpdateRecommendationDto,
   UpdateVowsDto,
 } from './dto/pkb.dto';
+import { WISDOM_MASTERS, type WisdomMaster } from './wisdom/masters.constants';
 
 /**
  * PKB 修行库服务 (M39)
@@ -80,7 +81,6 @@ export class PkbService {
       },
     });
 
-    // 同步记录愿景更新 entry
     await this.prisma.pkbEntry.create({
       data: {
         pkbId: pkb.id,
@@ -91,28 +91,239 @@ export class PkbService {
       },
     });
 
-    // 异步生成推荐 (三生每一生各一条)
-    this.generateVowRecommendations(pkb.id, dto).catch(() => void 0);
+    // 清旧 PENDING 推荐
+    await this.prisma.pkbRecommendation.deleteMany({
+      where: { pkbId: pkb.id, category: { in: ['PERSONAL', 'FAMILY', 'CAREER'] }, status: 'PENDING' },
+    });
 
-    return updated;
+    // 同步生成法界启示 + 深度经论推荐
+    const result = await this.generateRevelationAndRecs(pkb.id, { ...pkb, ...updated }, dto);
+
+    return { ...updated, vowRevelation: result?.revelation ?? null, recommendations: result?.recs ?? [] };
   }
 
-  private async generateVowRecommendations(pkbId: string, dto: UpdateVowsDto) {
-    const categories: Array<{ cat: 'PERSONAL' | 'FAMILY' | 'CAREER'; vow?: string; kw: string[] }> = [
-      { cat: 'PERSONAL', vow: dto.personalVow, kw: ['个人', '修行', '觉悟', '心性'] },
-      { cat: 'FAMILY', vow: dto.familyVow, kw: ['家庭', '和合', '孝亲', '慈爱'] },
-      { cat: 'CAREER', vow: dto.careerVow, kw: ['事业', '布施', '利他', '经世'] },
+  private pickMasters(pkbId: string): WisdomMaster[] {
+    const zen = WISDOM_MASTERS.find((m) => m.tradition === 'ZEN');
+    const others = WISDOM_MASTERS.filter((m) => m.tradition !== 'ZEN');
+    // deterministic-ish shuffle seeded by pkbId
+    const seed = pkbId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+    const shuffled = others.slice().sort((a, b) => {
+      const ha = (a.masterName.charCodeAt(0) * 31 + seed) % 997;
+      const hb = (b.masterName.charCodeAt(0) * 31 + seed) % 997;
+      return ha - hb;
+    });
+    const picked: WisdomMaster[] = [];
+    const usedTrads = new Set<string>();
+    for (const m of shuffled) {
+      if (usedTrads.has(m.tradition)) continue;
+      picked.push(m);
+      usedTrads.add(m.tradition);
+      if (picked.length >= 4) break;
+    }
+    return zen ? [zen, ...picked] : picked;
+  }
+
+  private async generateRevelationAndRecs(
+    pkbId: string,
+    pkb: { personalVow: string | null; familyVow: string | null; careerVow: string | null; currentOxStage: number },
+    dto: UpdateVowsDto,
+  ) {
+    const cats: Array<{ cat: 'PERSONAL' | 'FAMILY' | 'CAREER'; vow?: string; label: string; kw: string[] }> = [
+      { cat: 'PERSONAL', vow: dto.personalVow, label: '个人圆满', kw: ['个人', '修行', '觉悟', '心性'] },
+      { cat: 'FAMILY', vow: dto.familyVow, label: '家庭幸福', kw: ['家庭', '和合', '孝亲', '慈爱'] },
+      { cat: 'CAREER', vow: dto.careerVow, label: '事业兴旺', kw: ['事业', '布施', '利他', '经世'] },
     ];
-    for (const c of categories) {
+
+    // Step A: 候选经论池 + 章节
+    const candidateMap: Record<string, Array<{ id: string; slug: string; title: string; summary: string | null; tradition: string | null; chapters: Array<{ chapterNo: number; title: string | null; subtitle: string | null }> }>> = {};
+    for (const c of cats) {
+      if (!c.vow || c.vow.trim().length < 5) { candidateMap[c.cat] = []; continue; }
+      const scriptures = await this.searchScriptures(c.vow + ' ' + c.kw.join(' '), 6);
+      const withChapters = await Promise.all(
+        scriptures.map(async (s) => {
+          const chapters = await this.prisma.scriptureChapter.findMany({
+            where: { scriptureId: s.id },
+            orderBy: { chapterNo: 'asc' },
+            take: 5,
+            select: { chapterNo: true, title: true, subtitle: true },
+          });
+          return { id: s.id, slug: s.slug, title: s.title, summary: s.summary, tradition: s.tradition, chapters };
+        }),
+      );
+      candidateMap[c.cat] = withChapters;
+    }
+
+    // Step B: 选大师
+    const masters = this.pickMasters(pkbId);
+    const zenMaster = masters[0];
+    const otherMasters = masters.slice(1);
+
+    if (!this.isLLMEnabled) {
+      await this.fallbackVowRecs(pkbId, cats, candidateMap);
+      return null;
+    }
+
+    // Step C: LLM call
+    const candidateBlock = cats.map((c) => {
+      const pool = candidateMap[c.cat];
+      if (pool.length === 0) return `[${c.label} 候选] 无`;
+      return `[${c.label} 候选 (共${pool.length}部)]\n` +
+        pool.map((s, i) => {
+          const chLine = s.chapters.map((ch) => `第${ch.chapterNo}章「${ch.title ?? ''}」`).join('; ');
+          return `${i + 1}. slug="${s.slug}" 《${s.title}》(${s.tradition ?? '综合'}) — ${s.summary?.slice(0, 100) ?? ''}\n   章节: ${chLine || '无章节'}`;
+        }).join('\n');
+    }).join('\n\n');
+
+    const masterBlock = otherMasters.map((m) => (
+      `- ${m.masterName}(${m.tradition}, ${m.era}): 文风=${m.writingStyle}; 核心关切=${m.coreConcern}; 签名词汇=${m.signatureVocab.join('/')}`
+    )).join('\n');
+
+    const systemPrompt = `你是小鸿,佳绩之旅的法界传音者。用户刚更新了三生愿景。
+你不是导师,你是禅宗六祖${zenMaster?.masterName ?? '惠能'}和 ${otherMasters.length} 位异传统大师的传音者。
+
+严格以 JSON 格式输出(不要 markdown 围栏、不要额外文字)。结构:
+{
+  "revelation": {
+    "zenGuidance": "六祖${zenMaster?.masterName ?? '惠能'}口吻, 200字, 用禅宗用语(本心/自性/不二/无念)针对用户三生愿景回应",
+    "masterVoices": [
+      {"tradition":"XX","masterName":"XX","voice":"150字该传统视角的启示"}
+    ],
+    "synthesis": "小鸿作为传音者的100字收束, 承认自己只是传音, 法界自有回应"
+  },
+  "recommendations": {
+    "PERSONAL": [
+      {
+        "scriptureSlug": "从候选池精确选取",
+        "revelationNote": "80-200字: 为什么这部经论与此生愿景有关 + 会得到什么启示",
+        "chapterPlan": [
+          {"chapterNo": 1, "why": "30字 为何读此章", "keyQuote": "原文金句片段(从章信息推断)"}
+        ]
+      }
+    ],
+    "FAMILY": [...],
+    "CAREER": [...]
+  }
+}
+
+铁律:
+- masterVoices 恰好 ${otherMasters.length} 条, 与下方大师一一对应
+- scriptureSlug 必须精确拼写自候选池, 每一生选 2 部(无候选则空数组)
+- chapterPlan 只用候选池里存在的 chapterNo
+- 不传教, 文化智慧视角
+- zenGuidance 有禅宗特征词; 各传统用各自核心词汇`;
+
+    const userPrompt = [
+      `[三生愿景]`,
+      `个人: ${dto.personalVow ?? '(未填)'}`,
+      `家庭: ${dto.familyVow ?? '(未填)'}`,
+      `事业: ${dto.careerVow ?? '(未填)'}`,
+      `[十牛图阶段] ${pkb.currentOxStage}/10`,
+      `[禅宗主声] ${zenMaster?.masterName ?? '惠能'}: ${zenMaster?.coreConcern ?? ''}, 文风=${zenMaster?.writingStyle ?? ''}`,
+      `[异传统大师]\n${masterBlock}`,
+      candidateBlock,
+    ].join('\n\n');
+
+    try {
+      const response = await fetch(`${this.llmBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(this.llmApiKey ? { Authorization: `Bearer ${this.llmApiKey}` } : {}),
+        },
+        body: JSON.stringify({
+          model: this.llmModel,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          max_tokens: 4000,
+          temperature: 0.75,
+          stream: false,
+          chat_template_kwargs: { enable_thinking: false },
+        }),
+        signal: AbortSignal.timeout(180_000),
+      });
+      if (!response.ok) throw new Error(`LLM ${response.status}`);
+      const data = (await response.json()) as any;
+      const content: string = data?.choices?.[0]?.message?.content ?? '';
+      const parsed = this.tryParseJson(content);
+      if (!parsed?.revelation?.zenGuidance) {
+        this.logger.warn('Revelation LLM returned invalid JSON, fallback');
+        await this.fallbackVowRecs(pkbId, cats, candidateMap);
+        return null;
+      }
+
+      // 保存启示到 UserPkb
+      const revelation = {
+        zenGuidance: parsed.revelation.zenGuidance,
+        masterVoices: (Array.isArray(parsed.revelation.masterVoices) ? parsed.revelation.masterVoices : []).map(
+          (v: any, i: number) => ({
+            tradition: v.tradition ?? otherMasters[i]?.tradition ?? '',
+            masterName: v.masterName ?? otherMasters[i]?.masterName ?? '',
+            avatarEmoji: otherMasters[i]?.avatarEmoji ?? '🧘',
+            voice: v.voice ?? '',
+          }),
+        ),
+        synthesis: parsed.revelation.synthesis ?? '',
+        generatedAt: new Date().toISOString(),
+        oxStageSnapshot: pkb.currentOxStage,
+        zenMasterName: zenMaster?.masterName ?? '惠能',
+        zenAvatarEmoji: zenMaster?.avatarEmoji ?? '🧘',
+      };
+      await this.prisma.userPkb.update({
+        where: { id: pkbId },
+        data: { vowRevelation: revelation as any, revelationAt: new Date() },
+      });
+
+      // 保存推荐
+      const recs: any[] = [];
+      const recData = parsed.recommendations ?? {};
+      for (const c of cats) {
+        const items = Array.isArray(recData[c.cat]) ? recData[c.cat] : [];
+        for (const item of items.slice(0, 2)) {
+          const slug = item.scriptureSlug;
+          const pool = candidateMap[c.cat];
+          const matched = pool.find((s) => s.slug === slug);
+          if (!matched) continue;
+          const rec = await this.prisma.pkbRecommendation.create({
+            data: {
+              pkbId,
+              category: c.cat,
+              title: `推荐经论: ${matched.title}`,
+              reason: typeof item.revelationNote === 'string' ? item.revelationNote : `推荐阅读《${matched.title}》`,
+              revelationNote: typeof item.revelationNote === 'string' ? item.revelationNote : null,
+              chapterPlan: Array.isArray(item.chapterPlan) ? item.chapterPlan : null,
+              scriptureId: matched.id,
+              scriptureSlug: matched.slug,
+              priority: 8,
+            },
+          });
+          recs.push(rec);
+        }
+      }
+
+      return { revelation, recs };
+    } catch (err) {
+      this.logger.warn(`Revelation LLM failed: ${(err as Error).message}`);
+      await this.fallbackVowRecs(pkbId, cats, candidateMap);
+      return null;
+    }
+  }
+
+  private async fallbackVowRecs(
+    pkbId: string,
+    cats: Array<{ cat: 'PERSONAL' | 'FAMILY' | 'CAREER'; vow?: string; label: string }>,
+    candidateMap: Record<string, Array<{ id: string; slug: string; title: string }>>,
+  ) {
+    for (const c of cats) {
       if (!c.vow || c.vow.trim().length < 5) continue;
-      const scriptures = await this.searchScriptures(c.vow + ' ' + c.kw.join(' '), 2);
-      for (const s of scriptures) {
+      for (const s of (candidateMap[c.cat] ?? []).slice(0, 2)) {
         await this.prisma.pkbRecommendation.create({
           data: {
             pkbId,
             category: c.cat,
             title: `推荐经论: ${s.title}`,
-            reason: `根据你的${c.cat === 'PERSONAL' ? '个人' : c.cat === 'FAMILY' ? '家庭' : '事业'}愿景推荐`,
+            reason: `根据你的${c.label}愿景推荐`,
             scriptureId: s.id,
             scriptureSlug: s.slug,
             priority: 7,
