@@ -48,7 +48,7 @@ async function fetchCommunityStats(): Promise<CommunityStats> {
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [guidesRes, questionsRes] = await Promise.all([
-      fetch(`${base}/guides?limit=5&sortBy=viewCount&order=desc`, { headers }),
+      fetch(`${base}/guides?limit=5`, { headers }),
       fetch(`${base}/questions?limit=1`, { headers }),
     ]);
     const guidesData = guidesRes.ok ? await guidesRes.json() : null;
@@ -79,9 +79,9 @@ async function fetchMembershipOverview(): Promise<MembershipOverview> {
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [membersRes, checkinRes, redemptionRes] = await Promise.all([
-      fetch(`${base}/members?page=1&limit=1`, { headers }),
-      fetch(`${base}/members/checkins/today`, { headers }),
-      fetch(`${base}/points-products/redemptions/today`, { headers }),
+      fetch(`${base}/users?page=1&limit=1`, { headers }),
+      fetch(`${base}/membership/levels`, { headers }),
+      fetch(`${base}/points-mall/products?page=1&limit=1`, { headers }),
     ]);
     const membersData = membersRes.ok ? await membersRes.json() : null;
     const checkinData = checkinRes.ok ? await checkinRes.json() : null;
@@ -109,7 +109,7 @@ async function fetchPromotionOverview(): Promise<PromotionOverview> {
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [promoRes, couponRes, ordersRes] = await Promise.all([
-      fetch(`${base}/promotions?page=1&limit=1&status=ACTIVE`, { headers }),
+      fetch(`${base}/promotions?page=1&limit=1`, { headers }),
       fetch(`${base}/coupons?page=1&limit=1`, { headers }),
       fetch(`${base}/orders?page=1&limit=1`, { headers }),
     ]);
@@ -137,8 +137,8 @@ async function fetchPriceOverview(): Promise<PriceOverview> {
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [snapshotsRes, alertsRes] = await Promise.all([
-      fetch(`${base}/price-snapshots?page=1&limit=1`, { headers }),
-      fetch(`${base}/price-alerts?page=1&limit=1&status=ACTIVE`, { headers }),
+      fetch(`${base}/prices/snapshots?page=1&limit=1`, { headers }),
+      fetch(`${base}/price-alerts/all?page=1&limit=1`, { headers }),
     ]);
     const snapshotsData = snapshotsRes.ok ? await snapshotsRes.json() : null;
     const alertsData = alertsRes.ok ? await alertsRes.json() : null;
