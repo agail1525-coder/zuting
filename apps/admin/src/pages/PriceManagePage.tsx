@@ -21,7 +21,7 @@ const { Option } = Select;
 const BASE = import.meta.env.VITE_API_URL || '/api';
 
 function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   return token
     ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     : { 'Content-Type': 'application/json' };

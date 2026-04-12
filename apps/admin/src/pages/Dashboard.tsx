@@ -44,7 +44,7 @@ interface CommunityStats {
 
 async function fetchCommunityStats(): Promise<CommunityStats> {
   const base = import.meta.env.VITE_API_URL || '/api';
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [guidesRes, questionsRes] = await Promise.all([
@@ -75,7 +75,7 @@ interface MembershipOverview {
 
 async function fetchMembershipOverview(): Promise<MembershipOverview> {
   const base = import.meta.env.VITE_API_URL || '/api';
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [membersRes, checkinRes, redemptionRes] = await Promise.all([
@@ -105,7 +105,7 @@ interface PromotionOverview {
 
 async function fetchPromotionOverview(): Promise<PromotionOverview> {
   const base = import.meta.env.VITE_API_URL || '/api';
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [promoRes, couponRes, ordersRes] = await Promise.all([
@@ -133,7 +133,7 @@ interface PriceOverview {
 
 async function fetchPriceOverview(): Promise<PriceOverview> {
   const base = import.meta.env.VITE_API_URL || '/api';
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const [snapshotsRes, alertsRes] = await Promise.all([

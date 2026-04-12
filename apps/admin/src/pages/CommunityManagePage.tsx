@@ -44,7 +44,7 @@ interface PagedResult<T> {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function authHeaders() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 }
 

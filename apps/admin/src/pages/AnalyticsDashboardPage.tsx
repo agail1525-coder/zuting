@@ -80,7 +80,7 @@ interface TopContentItem {
 // --------------- API helpers ---------------
 
 function authHeaders(): HeadersInit {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

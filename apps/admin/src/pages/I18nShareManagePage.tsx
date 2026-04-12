@@ -98,7 +98,7 @@ const languageColumns: ColumnsType<LanguageRow> = [
 /* ---------- API fetch ---------- */
 
 async function fetchShareStats(): Promise<ShareStats> {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('zuting_admin_token');
   const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     const res = await fetch(`${API_BASE}/shares/stats`, { headers });
