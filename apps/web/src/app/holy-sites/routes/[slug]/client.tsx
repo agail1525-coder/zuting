@@ -837,7 +837,7 @@ function BookingWidget({ route }: { route: Route }) {
 
       <div className="mt-4 space-y-2">
         <Link
-          href={`/checkout?route=${route.slug}&date=${date}&guests=${guests}`}
+          href={`/trips/create?route=${route.slug}&date=${date}&guests=${guests}`}
           className="block w-full py-3 rounded-lg bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold text-center transition-colors shadow-[0_4px_20px_rgba(15,41,77,0.12)]"
         >
           {date ? t("routeDetail.bookNow") : t("routeDetail.selectDateToBook")}
@@ -1262,7 +1262,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             <p className="text-lg font-bold text-[#0f294d]">¥{((route.priceFrom ?? 0) / 100).toLocaleString()}<span className="text-sm font-normal text-[#8592a6]">{t("routeDetail.perPerson")}</span></p>
           </div>
           <Link
-            href={`/checkout?route=${route.slug}`}
+            href={`/trips/create?route=${route.slug}`}
             className="px-6 py-2.5 bg-[#ff6600] hover:bg-[#e55c00] text-white font-bold rounded-lg text-sm transition-colors"
           >
             {t("routeDetail.bookNow")}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
@@ -51,6 +51,8 @@ function formatPrice(cents: number) {
 export default function TripCreatePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectRouteSlug = searchParams.get("route");
   const { t } = useTranslation();
 
   // Wizard
@@ -138,6 +140,14 @@ export default function TripCreatePage() {
       setLoadingSites(false);
     }
   }, [holySites.length, t]);
+
+  // If ?route=slug in URL, auto-select matching route once loaded
+  useEffect(() => {
+    if (!preselectRouteSlug || loadingRoutes || selectedRoute || routes.length === 0) return;
+    const match = routes.find((r) => r.slug === preselectRouteSlug);
+    if (match) selectRoute(match);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preselectRouteSlug, loadingRoutes, routes]);
 
   // Select a route → auto-fill step 2
   const selectRoute = (route: Route) => {

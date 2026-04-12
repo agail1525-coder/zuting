@@ -115,7 +115,8 @@ export default function CheckoutPage() {
   }, [countdown]);
 
   useEffect(() => {
-    if (!user || !tripId) return;
+    if (!user) return;
+    if (!tripId) { setLoading(false); return; }
     const load = async () => {
       try {
         const [tripData, promoData] = await Promise.all([
