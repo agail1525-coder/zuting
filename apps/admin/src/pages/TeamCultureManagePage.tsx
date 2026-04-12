@@ -3,7 +3,8 @@ import {
   Tabs, Table, Button, Tag, Modal, Input, Form, Space, Typography, message,
   Card, Select, Statistic, Row, Col, InputNumber, Switch, Popconfirm,
 } from 'antd';
-import { ReloadOutlined, EditOutlined, PlusOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { ReloadOutlined, EditOutlined, PlusOutlined, SafetyCertificateOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
 import { getToken } from '../lib/auth';
 
@@ -87,6 +88,7 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export default function TeamCultureManagePage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('inquiries');
   const [stats, setStats] = useState<Stats | null>(null);
 
@@ -248,11 +250,16 @@ export default function TeamCultureManagePage() {
     { title: '天数', dataIndex: 'durationDays', key: 'durationDays', width: 70 },
     { title: '发布', dataIndex: 'isPublished', key: 'isPublished', width: 70, render: (v: boolean) => (v ? <Tag color="green">已发布</Tag> : <Tag>草稿</Tag>) },
     {
-      title: '操作', key: 'actions', width: 100,
+      title: '操作', key: 'actions', width: 180,
       render: (_: unknown, r: Theme) => (
-        <Button size="small" icon={<EditOutlined />} onClick={() => { themeForm.setFieldsValue({ ...r, keywords: r.keywords.join(',') }); setThemeModal(r); }}>
-          编辑
-        </Button>
+        <Space size="small">
+          <Button size="small" type="link" icon={<ExperimentOutlined />} onClick={() => navigate(`/team-culture/themes/${r.slug}`)}>
+            Studio
+          </Button>
+          <Button size="small" icon={<EditOutlined />} onClick={() => { themeForm.setFieldsValue({ ...r, keywords: r.keywords.join(',') }); setThemeModal(r); }}>
+            快编
+          </Button>
+        </Space>
       ),
     },
   ];

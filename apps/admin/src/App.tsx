@@ -45,6 +45,8 @@ const CouponStudioPage = lazy(() => import('./pages/CouponStudioPage'));
 const PromotionStudioPage = lazy(() => import('./pages/PromotionStudioPage'));
 const GuideStudioPage = lazy(() => import('./pages/GuideStudioPage'));
 const QuestionStudioPage = lazy(() => import('./pages/QuestionStudioPage'));
+const ThemeStudioPage = lazy(() => import('./pages/ThemeStudioPage'));
+const ThemesOverviewPage = lazy(() => import('./pages/ThemesOverviewPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -108,6 +110,10 @@ export default function App() {
           <Route path="promotions/:id" element={<PromotionStudioPage />} />
           <Route path="guides/:id" element={<GuideStudioPage />} />
           <Route path="questions/:id" element={<QuestionStudioPage />} />
+          <Route path="themes" element={<ThemesOverviewPage />} />
+          <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />
+          <Route path="personal-growth/themes/:slug" element={<ThemeStudioPage kind="personal-growth" />} />
+          <Route path="family-harmony/themes/:slug" element={<ThemeStudioPage kind="family-harmony" />} />
         </Route>
       </Routes>
     </Suspense>

@@ -272,6 +272,41 @@ export const patchQuestion = (id: string, data: Record<string, unknown>) =>
     body: JSON.stringify(data),
   });
 
+// ===== Theme Studios (TeamCulture / PersonalGrowth / FamilyHarmony) =====
+
+export interface ThemeRecord {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle?: string | null;
+  description: string;
+  color: string;
+  icon?: string | null;
+  coverUrl?: string | null;
+  keywords?: string[];
+  holySites?: string[];
+  routes?: string[];
+  rituals?: unknown;
+  priceFrom?: number | null;
+  durationDays?: number | null;
+  sortOrder?: number;
+  isPublished?: boolean;
+}
+
+const themeApi = (base: 'team-culture' | 'personal-growth' | 'family-harmony') => ({
+  list: (page = 1, pageSize = 50) =>
+    request<{ items: ThemeRecord[]; total: number } | ThemeRecord[]>(
+      `/admin/${base}/themes?page=${page}&pageSize=${pageSize}`,
+    ),
+  get: (slug: string) => request<ThemeRecord>(`/admin/${base}/themes/${slug}`),
+  upsert: (data: Partial<ThemeRecord> & { slug: string; title: string; description: string; color: string }) =>
+    request<ThemeRecord>(`/admin/${base}/themes`, { method: 'POST', body: JSON.stringify(data) }),
+});
+
+export const teamCultureTheme = themeApi('team-culture');
+export const personalGrowthTheme = themeApi('personal-growth');
+export const familyHarmonyTheme = themeApi('family-harmony');
+
 // ===== Media Library =====
 
 export const listMedia = (params: {

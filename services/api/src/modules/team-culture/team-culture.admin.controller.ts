@@ -57,6 +57,24 @@ export class TeamCultureAdminController {
     return this.service.adminUpdateInquiryStatus(id, operatorId, dto);
   }
 
+  @Get('themes')
+  @ApiOperation({ summary: 'Admin: 主题包列表' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'pageSize', required: false, type: Number })
+  listThemes(@Query('page') page?: string, @Query('pageSize') pageSize?: string) {
+    return this.service.listThemes(
+      page ? parseInt(page, 10) : 1,
+      pageSize ? parseInt(pageSize, 10) : 50,
+    );
+  }
+
+  @Get('themes/:slug')
+  @ApiOperation({ summary: 'Admin: 主题详情 by slug' })
+  @ApiParam({ name: 'slug' })
+  getTheme(@Param('slug') slug: string) {
+    return this.service.getThemeBySlug(slug);
+  }
+
   @Post('themes')
   @ApiOperation({ summary: 'Admin: 创建/更新主题包' })
   upsertTheme(@Body() dto: UpsertThemeDto) {

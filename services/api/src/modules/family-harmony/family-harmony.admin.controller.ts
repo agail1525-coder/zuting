@@ -53,6 +53,24 @@ export class FamilyHarmonyAdminController {
     return this.service.adminUpdateInquiryStatus(id, operatorId, dto);
   }
 
+  @Get('themes')
+  @ApiOperation({ summary: '主题包列表 (Admin)' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'pageSize', required: false, type: Number })
+  listThemes(@Query('page') page?: string, @Query('pageSize') pageSize?: string) {
+    return this.service.listThemes(
+      page ? parseInt(page, 10) : 1,
+      pageSize ? parseInt(pageSize, 10) : 50,
+    );
+  }
+
+  @Get('themes/:slug')
+  @ApiOperation({ summary: '主题详情 by slug (Admin)' })
+  @ApiParam({ name: 'slug' })
+  getTheme(@Param('slug') slug: string) {
+    return this.service.getThemeBySlug(slug);
+  }
+
   @Post('themes')
   @ApiOperation({ summary: '创建/更新主题包 (Admin)' })
   upsertTheme(@Body() dto: Record<string, unknown>) {
