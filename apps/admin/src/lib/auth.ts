@@ -1,14 +1,26 @@
 const TOKEN_KEY = 'zuting_admin_token';
 const REFRESH_KEY = 'zuting_admin_refresh';
 const ROLE_KEY = 'zuting_admin_role';
+const EMAIL_KEY = 'zuting_admin_remember_email';
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-export function getCurrentUserRole(): string | null {
-  return localStorage.getItem(ROLE_KEY);
+export type AdminRole = 'ADMIN' | 'GUIDE' | 'USER';
+
+export function getCurrentUserRole(): AdminRole | null {
+  return (localStorage.getItem(ROLE_KEY) as AdminRole) || null;
 }
 
 export function setCurrentUserRole(role: string) {
   localStorage.setItem(ROLE_KEY, role);
+}
+
+export function getRememberedEmail(): string | null {
+  return localStorage.getItem(EMAIL_KEY);
+}
+
+export function setRememberedEmail(email: string | null) {
+  if (email) localStorage.setItem(EMAIL_KEY, email);
+  else localStorage.removeItem(EMAIL_KEY);
 }
 
 export function getToken(): string | null {
@@ -26,17 +38,27 @@ export function clearTokens() {
   localStorage.removeItem(ROLE_KEY);
 }
 
-export async function login(email: string, password: string) {
+export class OtpRequiredError extends Error {
+  constructor() { super('OTP_REQUIRED'); this.name = 'OtpRequiredError'; }
+}
+
+export async function login(email: string, password: string, otpCode?: string) {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, otpCode }),
   });
   if (!res.ok) {
-    const err = await res.json();
+    const err = await res.json().catch(() => ({}));
+    if (err.code === 'OTP_REQUIRED' || err.message === 'OTP_REQUIRED') {
+      throw new OtpRequiredError();
+    }
     throw new Error(err.message || 'Login failed');
   }
   const data = await res.json();
+  if (data.requires2FA || data.otpRequired) {
+    throw new OtpRequiredError();
+  }
   setTokens(data.accessToken, data.refreshToken);
 
   // Verify admin role

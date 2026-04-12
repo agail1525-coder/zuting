@@ -36,7 +36,8 @@ import {
   ApartmentOutlined,
   DatabaseOutlined,
 } from '@ant-design/icons';
-import { logout } from '../lib/auth';
+import { logout, getCurrentUserRole } from '../lib/auth';
+import { filterMenu } from '../lib/menuAcl';
 import CommandPalette from '../components/command/CommandPalette';
 
 const { Header, Sider, Content } = Layout;
@@ -256,7 +257,7 @@ export default function AdminCockpitLayout() {
             'grp-growth',
             'grp-system',
           ]}
-          items={menuItems}
+          items={filterMenu(menuItems, getCurrentUserRole())}
           onClick={({ key }) => {
             if (key.startsWith('/')) navigate(key);
           }}
@@ -302,6 +303,9 @@ export default function AdminCockpitLayout() {
               命令台
               <Tag style={{ marginLeft: 8 }}>⌘K</Tag>
             </Button>
+            <Tag color={getCurrentUserRole() === 'ADMIN' ? 'gold' : 'blue'} style={{ margin: 0 }}>
+              {getCurrentUserRole() ?? 'GUEST'}
+            </Tag>
             <Text style={{ color: '#999' }}>管理员</Text>
             <Avatar style={{ backgroundColor: '#D4A855' }} icon={<UserOutlined />} />
             <span
