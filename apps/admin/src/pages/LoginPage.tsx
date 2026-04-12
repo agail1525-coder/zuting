@@ -14,7 +14,7 @@ export default function LoginPage() {
     try {
       await login(values.identifier, values.password, values.otpCode);
       setRememberedEmail(values.remember ? values.identifier : null);
-      window.location.href = '/';
+      window.location.href = import.meta.env.PROD ? '/admin/' : '/';
     } catch (err: unknown) {
       if (err instanceof OtpRequiredError) {
         setOtpRequired(true);

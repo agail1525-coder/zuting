@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Row, Col, Card, Statistic, Typography, Spin, Result, Tag, List, Rate, Avatar, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
@@ -425,9 +426,9 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/community" style={{ fontSize: 12 }}>
+              <Link to="/community" style={{ fontSize: 12 }}>
                 社区管理
-              </a>
+              </Link>
             }
             
           >
@@ -492,9 +493,9 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/promotions" style={{ fontSize: 12 }}>
+              <Link to="/promotions" style={{ fontSize: 12 }}>
                 促销管理
-              </a>
+              </Link>
             }
             
           >
@@ -539,9 +540,9 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/membership" style={{ fontSize: 12 }}>
+              <Link to="/membership" style={{ fontSize: 12 }}>
                 会员管理
-              </a>
+              </Link>
             }
             
           >
@@ -594,9 +595,9 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/prices" style={{ fontSize: 12 }}>
+              <Link to="/prices" style={{ fontSize: 12 }}>
                 价格管理
-              </a>
+              </Link>
             }
             
           >
@@ -633,9 +634,9 @@ export default function Dashboard() {
               </span>
             }
             extra={
-              <a href="/i18n-share" style={{ fontSize: 12 }}>
+              <Link to="/i18n-share" style={{ fontSize: 12 }}>
                 详情管理
-              </a>
+              </Link>
             }
             
           >
@@ -717,10 +718,10 @@ export default function Dashboard() {
                   </span>
                 }
                 extra={
-                  <a href="/search-stats" style={{ fontSize: 12 }}>
+                  <Link to="/search-stats" style={{ fontSize: 12 }}>
                     <SearchOutlined style={{ marginRight: 4 }} />
                     查看全部
-                  </a>
+                  </Link>
                 }
                 
               >
@@ -765,9 +766,9 @@ export default function Dashboard() {
                   </span>
                 }
                 extra={
-                  <a href="/reviews" style={{ fontSize: 12 }}>
+                  <Link to="/reviews" style={{ fontSize: 12 }}>
                     查看全部
-                  </a>
+                  </Link>
                 }
                 
               >
