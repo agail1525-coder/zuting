@@ -20,6 +20,8 @@ export class AdminAuditController {
   @ApiQuery({ name: 'resourceId', required: false })
   @ApiQuery({ name: 'adminId', required: false })
   @ApiQuery({ name: 'action', required: false })
+  @ApiQuery({ name: 'dateFrom', required: false })
+  @ApiQuery({ name: 'dateTo', required: false })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
   list(
@@ -27,6 +29,8 @@ export class AdminAuditController {
     @Query('resourceId') resourceId?: string,
     @Query('adminId') adminId?: string,
     @Query('action') action?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
   ) {
@@ -35,6 +39,8 @@ export class AdminAuditController {
       resourceId,
       adminId,
       action: action as AdminAction | undefined,
+      dateFrom,
+      dateTo,
       page: page ? parseInt(page, 10) : 1,
       pageSize: pageSize ? parseInt(pageSize, 10) : 20,
     });

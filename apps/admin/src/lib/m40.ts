@@ -369,6 +369,8 @@ export const listAuditLogs = (params: {
   resourceId?: string;
   adminId?: string;
   action?: AdminActionKind;
+  dateFrom?: string;
+  dateTo?: string;
   page?: number;
   pageSize?: number;
 }) => {

@@ -303,6 +303,10 @@ export default function AdminCockpitLayout() {
               命令台
               <Tag style={{ marginLeft: 8 }}>⌘K</Tag>
             </Button>
+            <Tag style={{ margin: 0, background: 'transparent', color: '#64748b', borderColor: '#334155' }}
+              title={`Build: ${__BUILD_TIME__}`}>
+              v{__BUILD_SHA__}
+            </Tag>
             <Tag color={getCurrentUserRole() === 'ADMIN' ? 'gold' : 'blue'} style={{ margin: 0 }}>
               {getCurrentUserRole() ?? 'GUEST'}
             </Tag>

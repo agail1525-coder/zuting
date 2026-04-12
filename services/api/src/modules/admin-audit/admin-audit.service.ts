@@ -37,6 +37,8 @@ export class AdminAuditService {
     resourceId?: string;
     adminId?: string;
     action?: AdminAction;
+    dateFrom?: string;
+    dateTo?: string;
     page?: number;
     pageSize?: number;
   }) {
@@ -47,6 +49,11 @@ export class AdminAuditService {
     if (params.resourceId) where.resourceId = params.resourceId;
     if (params.adminId) where.adminId = params.adminId;
     if (params.action) where.action = params.action;
+    if (params.dateFrom || params.dateTo) {
+      where.createdAt = {};
+      if (params.dateFrom) where.createdAt.gte = new Date(params.dateFrom);
+      if (params.dateTo) where.createdAt.lte = new Date(params.dateTo);
+    }
 
     const [items, total] = await Promise.all([
       this.prisma.adminAuditLog.findMany({
