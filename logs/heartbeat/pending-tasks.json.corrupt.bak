@@ -1,7 +1,7 @@
 ﻿{
-    "id":  "web-fix-i18n-prices-constants",
-    "name":  "Web价格工具5页常量标签中文硬编码 — 价格比较/日历/趋势/提醒筛选器国际化缺失",
+    "id":  "web-prd-cultivation-overview-upgrade",
+    "name":  "撰写修行总观页面升级PRD — 对标Headspace/Calm冥想APP的首页体验",
     "app":  "web",
-    "priority":  1,
-    "description":  "Web价格工具5个页面的ENTITY_OPTIONS、COMPARE_ROWS、PERIODS等常量使用中文标签。\n\n修改文件:\n1. apps/web/src/app/prices/compare/page.tsx — COMPARE_ROWS labels(~行72-77)和ALL_PACKAGES(~行8-14)\n2. apps/web/src/app/prices/trend/page.tsx — ENTITY_OPTIONS(~行8-11)和PERIODS(~行15-17)\n3. apps/web/src/app/prices/calendar/page.tsx — ENTITY_OPTIONS(~行7-11)、WEEKDAYS(~行36)、MONTH_NAMES(~行37)\n4. apps/web/src/app/prices/alerts/page.tsx — ENTITY_OPTIONS(~行7-12)\n5. apps/web/src/app/prices/page.tsx — 如有中文标签也一并处理\n\n使用useTranslation()的t()函数替换所有中文label，添加对应翻译key。\n\n对标: Skyscanner/Kayak的价格工具支持全球多语言\n铁律: SCP-02\n验证: pnpm --filter @zuting/web build"
+    "priority":  2,
+    "description":  "根据SCP-03 PRD先行铁律，修行模块总观页面(apps/web/src/app/trips/cultivation/page.tsx)需要升级PRD。当前总观页面功能虽完整但体验远低于竞品。\n\n在 docs/prd/ 创建 M40.3-PRD-修行总观升级.md，包含:\n1. 竞品分析: 对标Headspace首页(每日推荐+进度环+成就)/Calm(每日冥想+场景)/Insight Timer(社区+直播)\n2. 当前差距: 总观页面是纯数据展示，缺少引导性和沉浸感\n3. 升级方向: 个性化每日修行推荐/进度可视化升级/社区互动入口/经论每日一句\n4. 页面线框: 6个模块卡片的布局优化\n5. API契约: 新增所需的聚合API端点\n6. 验收标准: 首屏加载\u003c2s/移动端适配/i18n支持\n\n遵循SCP-03 STEP 2-3, PRD必须包含竞品对标/用户故事/页面线框/API契约/验收标准。"
 }

@@ -1343,5 +1343,1410 @@
         "id":  "web-fix-i18n-collections-page-hardcoded",
         "name":  "Web收藏页面15+处中文硬编码 — 国际用户收藏功能不可用",
         "completedAt":  "2026-03-30 05:50:39"
+    },
+    {
+        "id":  "docs-prd-karma-wisdom-bhumi",
+        "name":  "因果分析/智慧融通/菩萨十地3个修行子模块缺少PRD — 违反SCP-03",
+        "completedAt":  "2026-04-12 00:16:08"
+    },
+    {
+        "id":  "docs-prd-daily-practice",
+        "name":  "每日功课(daily-practice)缺少PRD文档 — 违反SCP-03无PRD不动代码",
+        "completedAt":  "2026-04-12 00:16:08"
+    },
+    {
+        "id":  "api-fix-faith-assessment-any-types-and-take",
+        "name":  "信仰力评估服务5处as any违反R-01 + findMany缺少take违反R-64",
+        "completedAt":  "2026-04-12 00:16:08"
+    },
+    {
+        "id":  "api-fix-cultivation-services-any-types-batch1",
+        "name":  "修行模块zen-quiz+wisdom+scripture服务as any违反R-01 (第一批)",
+        "completedAt":  "2026-04-12 00:16:08"
+    },
+    {
+        "id":  "api-fix-cultivation-services-any-types-batch2",
+        "name":  "修行模块pkb+karma+fulfillment服务as any违反R-01 (第二批)",
+        "completedAt":  "2026-04-12 00:16:08"
+    },
+    {
+        "id":  "mobile-fix-cultivation-silent-error-catch",
+        "name":  "Mobile修行4页面.catch(()=\u003e{})静默吞错 — 用户看到空白无反馈",
+        "completedAt":  "2026-04-12 00:16:54"
+    },
+    {
+        "id":  "web-fix-detail-pages-silent-error-catch",
+        "name":  "Web核心详情页(圣地/祖庭/祖师)silent catch导致辅助数据静默失败",
+        "completedAt":  "2026-04-12 00:16:54"
+    },
+    {
+        "id":  "web-fix-karma-double-unknown-cast",
+        "name":  "Web因果分析页面double unknown cast类型不安全",
+        "completedAt":  "2026-04-12 00:16:54"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-karma-as-any",
+        "name":  "PKB+因缘服务14处as any违反R-01 — enum强转和LLM响应无类型",
+        "completedAt":  "2026-04-12 00:31:23"
+    },
+    {
+        "id":  "mobile-fix-hardcoded-ip-api-url",
+        "name":  "Mobile端API地址硬编码192.168.1.22 — 生产环境API调用指向开发机",
+        "completedAt":  "2026-04-12 00:31:23"
+    },
+    {
+        "id":  "api-fix-cultivation-zenquiz-fulfillment-as-any",
+        "name":  "禅问+圆满服务8处as any违反R-01 — JSON字段questions/answers/debate无类型",
+        "completedAt":  "2026-04-12 00:31:23"
+    },
+    {
+        "id":  "api-fix-admin-roles-without-useguards-batch",
+        "name":  "P0安全: 7个Controller的@Roles装饰器无@UseGuards — Admin权限形同虚设",
+        "completedAt":  "2026-04-12 00:31:24"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-remaining-as-any",
+        "name":  "小鸿AI服务12处残余as any违反R-01 — 数据格式化全用any转型",
+        "completedAt":  "2026-04-12 00:31:24"
+    },
+    {
+        "id":  "web-fix-i18n-journals-inquiry-forms",
+        "name":  "Web端日志页+咨询表单+评估页硬编码中文 — i18n不完整",
+        "completedAt":  "2026-04-12 00:32:09"
+    },
+    {
+        "id":  "web-fix-console-error-production-remaining",
+        "name":  "Web端13处console.error泄露生产环境 — 应替换为错误状态",
+        "completedAt":  "2026-04-12 00:32:09"
+    },
+    {
+        "id":  "docs-prd-cultivation-system",
+        "name":  "修行系统(cultivation)缺少总PRD — 8子模块无统一产品文档",
+        "completedAt":  "2026-04-12 00:32:09"
+    },
+    {
+        "id":  "web-fix-cultivation-silent-catch-batch",
+        "name":  "cultivation 7个页面.catch(()=\u003e{})静默吞错 — 加载失败用户无感知",
+        "completedAt":  "2026-04-12 00:46:22"
+    },
+    {
+        "id":  "web-fix-i18n-community-guides-write",
+        "name":  "社区游记撰写页整个表单流程零i18n — 写作功能完全不支持多语言",
+        "completedAt":  "2026-04-12 00:46:22"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-scriptures-daily",
+        "name":  "scriptures经论页和daily-practice每日功课页零i18n",
+        "completedAt":  "2026-04-12 00:46:22"
+    },
+    {
+        "id":  "api-fix-cultivation-findmany-missing-take-batch",
+        "name":  "cultivation模块4处findMany缺少take限制 — 可被恶意请求OOM攻击",
+        "completedAt":  "2026-04-12 00:46:22"
+    },
+    {
+        "id":  "api-fix-moderation-merchant-roles-no-useguards",
+        "name":  "moderation和merchant控制器@Roles装饰器无@UseGuards — 管理员权限完全失效",
+        "completedAt":  "2026-04-12 00:46:22"
+    },
+    {
+        "id":  "web-fix-i18n-prices-packages-detail",
+        "name":  "套餐详情页零i18n — 商业核心页面不支持多语言",
+        "completedAt":  "2026-04-12 00:47:07"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-overview-apply",
+        "name":  "cultivation总览页和申请页零i18n — 全部中文硬编码",
+        "completedAt":  "2026-04-12 00:47:07"
+    },
+    {
+        "id":  "web-fix-i18n-checkout-result-remaining",
+        "name":  "支付结果页4处中文绕过i18n — 支付流程多语言不完整",
+        "completedAt":  "2026-04-12 00:47:08"
+    },
+    {
+        "id":  "web-fix-i18n-daily-practice-constants",
+        "name":  "Web daily-practice页面70行硬编码中文常量 — 阻断i18n",
+        "completedAt":  "2026-04-12 01:00:07"
+    },
+    {
+        "id":  "api-fix-scripture-service-findmany-missing-take",
+        "name":  "API scripture.service 4处findMany缺少take — 经论数据无上限查询",
+        "completedAt":  "2026-04-12 01:00:07"
+    },
+    {
+        "id":  "api-fix-cultivation-remaining-as-any-batch3",
+        "name":  "API cultivation模块仍有29处as any类型违规 — batch1/batch2修复后残留",
+        "completedAt":  "2026-04-12 01:00:07"
+    },
+    {
+        "id":  "api-fix-community-findmany-missing-take",
+        "name":  "API community.service 6处findMany缺少take — OOM风险",
+        "completedAt":  "2026-04-12 01:00:07"
+    },
+    {
+        "id":  "web-fix-cultivation-remaining-silent-catch",
+        "name":  "Web cultivation 9个页面仍有silent .catch(() =\u003e {}) — 用户数据加载失败无反馈",
+        "completedAt":  "2026-04-12 01:00:07"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-karma-threelives",
+        "name":  "Web cultivation karma/three-lives页面大量硬编码中文 — 阻断i18n",
+        "completedAt":  "2026-04-12 01:00:43"
+    },
+    {
+        "id":  "web-fix-i18n-faith-assessment-constants",
+        "name":  "Web faith-assessment页面80+行硬编码中文常量 — 阻断i18n + as any",
+        "completedAt":  "2026-04-12 01:00:43"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-pkb-as-any",
+        "name":  "cultivation karma.service+pkb.service 14处as any违反R-01",
+        "completedAt":  "2026-04-12 01:13:08"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-ox-path-karma",
+        "name":  "Web十牛图+因缘页 硬编码中文缺少i18n",
+        "completedAt":  "2026-04-12 01:13:08"
+    },
+    {
+        "id":  "api-fix-cultivation-daily-practice-as-any",
+        "name":  "cultivation daily-practice.service.ts 3处as any违反R-01类型安全",
+        "completedAt":  "2026-04-12 01:13:08"
+    },
+    {
+        "id":  "api-fix-order-controller-missing-jwt-guard",
+        "name":  "Order控制器6个用户端点缺少JwtAuthGuard — 未认证用户可创建订单/支付/取消",
+        "completedAt":  "2026-04-12 01:13:08"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-overview-layout",
+        "name":  "Web修行总观页+布局 大量硬编码中文缺少i18n",
+        "completedAt":  "2026-04-12 01:13:08"
+    },
+    {
+        "id":  "web-fix-cultivation-scriptures-silent-catch",
+        "name":  "Web经论页scriptures/page.tsx 硬编码中文+静默catch",
+        "completedAt":  "2026-04-12 01:13:53"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any",
+        "name":  "Web FaithAssessmentClient.tsx as any类型转换",
+        "completedAt":  "2026-04-12 01:13:53"
+    },
+    {
+        "id":  "api-fix-cultivation-fulfillment-zenquiz-as-any",
+        "name":  "cultivation fulfillment.service+zen-quiz.service 8处as any违反R-01",
+        "completedAt":  "2026-04-12 01:13:53"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-remaining-as-any",
+        "name":  "API pkb.service.ts 仍有8处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:26:51"
+    },
+    {
+        "id":  "web-fix-i18n-guides-page",
+        "name":  "Web 攻略列表页10+处中文硬编码 违反 i18n 规范",
+        "completedAt":  "2026-04-12 01:26:51"
+    },
+    {
+        "id":  "api-fix-cultivation-daily-practice-remaining-as-any",
+        "name":  "API daily-practice.service.ts 仍有3处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:26:51"
+    },
+    {
+        "id":  "web-fix-i18n-offline-page",
+        "name":  "Web 离线页面12处中文硬编码 违反 M25 i18n 规范",
+        "completedAt":  "2026-04-12 01:26:51"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-remaining-as-any",
+        "name":  "API karma.service.ts 仍有6处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:26:51"
+    },
+    {
+        "id":  "web-fix-membership-mock-data",
+        "name":  "Web 会员中心页任务和专属权益仍为静态 mock 数据",
+        "completedAt":  "2026-04-12 01:27:46"
+    },
+    {
+        "id":  "web-fix-i18n-points-mall-search",
+        "name":  "Web 积分商城搜索框中文硬编码 placeholder",
+        "completedAt":  "2026-04-12 01:27:46"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any",
+        "name":  "Web FaithAssessmentClient 仍有1处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:27:47"
+    },
+    {
+        "id":  "api-fix-scripture-service-as-any",
+        "name":  "API scripture.service.ts 1处 as any[] 违反 R-01",
+        "completedAt":  "2026-04-12 01:27:47"
+    },
+    {
+        "id":  "web-fix-i18n-profile-page-remaining-v2",
+        "name":  "Web 个人中心页仍有6处中文硬编码",
+        "completedAt":  "2026-04-12 01:27:47"
+    },
+    {
+        "id":  "api-fix-cultivation-findmany-missing-take",
+        "name":  "API cultivation模块scripture/pkb/wisdom 20+处findMany缺少take违反R-64",
+        "completedAt":  "2026-04-12 01:41:13"
+    },
+    {
+        "id":  "web-fix-cultivation-wisdom-missing-states",
+        "name":  "Web cultivation wisdom页面无loading/error状态 — 错误静默吞掉",
+        "completedAt":  "2026-04-12 01:41:13"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-karma-fulfillment",
+        "name":  "API cultivation karma/fulfillment服务10处as any违反R-01",
+        "completedAt":  "2026-04-12 01:41:13"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-pkb-scripture",
+        "name":  "API cultivation pkb服务8处+scripture/wisdom各1处as any违反R-01",
+        "completedAt":  "2026-04-12 01:41:14"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-zenquiz-dailypractice",
+        "name":  "API cultivation zen-quiz/daily-practice服务7处as any违反R-01",
+        "completedAt":  "2026-04-12 01:41:14"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any",
+        "name":  "Web信仰力评估页面1处as any违反R-01",
+        "completedAt":  "2026-04-12 01:41:59"
+    },
+    {
+        "id":  "web-fix-cultivation-karma-missing-states",
+        "name":  "Web cultivation karma页面无loading/error状态 — 错误静默吞掉",
+        "completedAt":  "2026-04-12 01:41:59"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any",
+        "name":  "API信仰力评估服务5处as any违反R-01",
+        "completedAt":  "2026-04-12 01:41:59"
+    },
+    {
+        "id":  "api-fix-cultivation-zenquiz-remaining-as-any-v2",
+        "name":  "Cultivation zen-quiz.service.ts 仍有4处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:55:47"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-remaining-as-any-v2",
+        "name":  "Cultivation pkb.service.ts 仍有8处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:55:48"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-remaining-as-any-v2",
+        "name":  "Cultivation karma.service.ts 仍有6处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:55:48"
+    },
+    {
+        "id":  "api-fix-cultivation-fulfillment-as-any-v2",
+        "name":  "Cultivation fulfillment.service.ts 仍有4处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:55:48"
+    },
+    {
+        "id":  "api-fix-cultivation-misc-as-any-v2",
+        "name":  "Cultivation剩余4个service各1处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:55:48"
+    },
+    {
+        "id":  "docs-prd-m40-cultivation-overview",
+        "name":  "M40修行总览系统缺少PRD — 违反SCP-03",
+        "completedAt":  "2026-04-12 01:56:33"
+    },
+    {
+        "id":  "web-fix-faith-assessment-remaining-as-any",
+        "name":  "Web FaithAssessmentClient.tsx 残留1处 as any 违反 R-01",
+        "completedAt":  "2026-04-12 01:56:33"
+    },
+    {
+        "id":  "mobile-fix-router-push-as-any-batch",
+        "name":  "Mobile 10+文件 router.push as any 路由类型不安全",
+        "completedAt":  "2026-04-12 01:56:33"
+    },
+    {
+        "id":  "mobile-fix-i18n-about-page-hardcoded",
+        "name":  "Mobile关于页面100%中文硬编码 — 整个页面零i18n覆盖",
+        "completedAt":  "2026-04-12 02:11:45"
+    },
+    {
+        "id":  "web-fix-prices-page-silent-failures",
+        "name":  "Web价格中心页3个数据源全部静默失败 — 页面可能完全空白无任何错误提示",
+        "completedAt":  "2026-04-12 02:11:45"
+    },
+    {
+        "id":  "api-fix-festival-ai-community-findmany-no-take",
+        "name":  "festival.service + ai-community-content.service findMany缺少take — R-64违规OOM风险",
+        "completedAt":  "2026-04-12 02:11:45"
+    },
+    {
+        "id":  "web-fix-holysites-detail-5-silent-catches",
+        "name":  "Web圣地详情页5处静默catch — 评价/附近/统计/路线价格全部可能无声失败",
+        "completedAt":  "2026-04-12 02:11:45"
+    },
+    {
+        "id":  "api-fix-llm-fetch-missing-trycatch",
+        "name":  "4个LLM服务bare fetch()无try/catch — 网络异常直接崩溃",
+        "completedAt":  "2026-04-12 02:11:45"
+    },
+    {
+        "id":  "web-fix-i18n-auth-callback-hardcoded",
+        "name":  "Web认证回调页全部中文硬编码 — 7语言用户看到纯中文认证界面",
+        "completedAt":  "2026-04-12 02:12:31"
+    },
+    {
+        "id":  "web-refactor-inkavatar-to-shared-components",
+        "name":  "InkAvatar组件放在zen-patriarchs目录下但被6+个页面跨目录导入 — 应迁移至共享组件",
+        "completedAt":  "2026-04-12 02:12:31"
+    },
+    {
+        "id":  "web-fix-web-vitals-production-console-log",
+        "name":  "Web web-vitals.tsx每次页面加载console.log泄露性能数据到生产控制台",
+        "completedAt":  "2026-04-12 02:12:31"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-as-any-v3",
+        "name":  "pkb.service.ts仍有8处as any违反R-01 — enum/JSON字段缺少类型定义",
+        "completedAt":  "2026-04-12 02:26:31"
+    },
+    {
+        "id":  "api-fix-cultivation-findmany-missing-take-v3",
+        "name":  "cultivation多个service的findMany缺少take参数违反R-64 — OOM风险",
+        "completedAt":  "2026-04-12 02:26:31"
+    },
+    {
+        "id":  "api-fix-cultivation-zenquiz-dailypractice-as-any-v3",
+        "name":  "zen-quiz(4处)+daily-practice(3处)+scripture-learning(1处)as any违反R-01",
+        "completedAt":  "2026-04-12 02:26:31"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-v3",
+        "name":  "xiaohong.service.ts仍有15+处as any违反R-01 — 路由数据/圣地属性/搜索结果",
+        "completedAt":  "2026-04-12 02:26:31"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-fulfillment-as-any-v3",
+        "name":  "karma.service.ts(6处)+fulfillment.service.ts(4处)as any违反R-01",
+        "completedAt":  "2026-04-12 02:26:31"
+    },
+    {
+        "id":  "api-fix-cultivation-bhumi-scripture-as-any-v2",
+        "name":  "bhumi-path(1处)+scripture(1处)as any违反R-01 — JSON字段类型缺失",
+        "completedAt":  "2026-04-12 02:27:16"
+    },
+    {
+        "id":  "web-fix-scriptures-page-useeffect-antipattern",
+        "name":  "经论页面使用useState+useEffect反模式 — 应改用数据获取最佳实践",
+        "completedAt":  "2026-04-12 02:27:16"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-v4",
+        "name":  "faith-assessment.service.ts仍有5处as any违反R-01 — mode/options/dimension字段",
+        "completedAt":  "2026-04-12 02:27:16"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any",
+        "name":  "Web信仰力评估页面使用as any类型断言 — 违反R-01类型安全铁律",
+        "completedAt":  "2026-04-12 02:40:00"
+    },
+    {
+        "id":  "mobile-fix-as-any-navigation-routes",
+        "name":  "Mobile 40+处router.push使用as any/as never — 类型安全完全失效",
+        "completedAt":  "2026-04-12 02:40:00"
+    },
+    {
+        "id":  "web-fix-membership-hardcoded-mock-data",
+        "name":  "Web会员中心页面多处硬编码mock数据 — 任务/成就/积分活动/推荐统计全为假数据",
+        "completedAt":  "2026-04-12 02:40:00"
+    },
+    {
+        "id":  "miniprogram-fix-community-guide-edit-navigation",
+        "name":  "小程序社区页导航到不存在的guide-edit路由 — 功能断裂",
+        "completedAt":  "2026-04-12 02:40:00"
+    },
+    {
+        "id":  "web-fix-prices-page-silent-errors-hardcoded",
+        "name":  "Web价格中心页面API错误静默吞掉+预算计算器硬编码假数据",
+        "completedAt":  "2026-04-12 02:40:00"
+    },
+    {
+        "id":  "web-fix-merchants-detail-inefficient-fetch",
+        "name":  "Web商家详情页下载100条商家数据仅为找相关商家 — 性能浪费",
+        "completedAt":  "2026-04-12 02:40:56"
+    },
+    {
+        "id":  "miniprogram-fix-pkb-as-any-event",
+        "name":  "小程序PKB页面使用(e.detail as any).value — 违反R-01",
+        "completedAt":  "2026-04-12 02:40:56"
+    },
+    {
+        "id":  "web-fix-community-guide-silent-errors",
+        "name":  "Web攻略详情页多处catch静默吞错 — 点赞/加载失败用户无任何反馈",
+        "completedAt":  "2026-04-12 02:40:56"
+    },
+    {
+        "id":  "mobile-fix-home-tab-silent-catch-errors",
+        "name":  "Mobile首页Tab多处.catch()静默返回空数据 — 数据加载失败用户无感知",
+        "completedAt":  "2026-04-12 02:40:56"
+    },
+    {
+        "id":  "web-fix-leaderboard-math-random-key",
+        "name":  "Web排行榜页面使用Math.random()作为React key — 性能问题+反模式",
+        "completedAt":  "2026-04-12 02:40:56"
+    },
+    {
+        "id":  "web-fix-cultivation-pages-silent-catch-batch2",
+        "name":  "修行子页面(bhumi-path/karma/ox-path/quiz)静默吞错 — 6处.catch(()=\u003e{})",
+        "completedAt":  "2026-04-12 02:53:50"
+    },
+    {
+        "id":  "api-fix-booking-controller-missing-guards",
+        "name":  "预订Controller缺少@UseGuards — 用户身份未验证，req.user可能为undefined导致500",
+        "completedAt":  "2026-04-12 02:53:50"
+    },
+    {
+        "id":  "mobile-fix-chat-suggestions-missing-auth",
+        "name":  "Mobile聊天建议请求缺少Authorization头 — 可能401失败或未授权访问",
+        "completedAt":  "2026-04-12 02:53:50"
+    },
+    {
+        "id":  "web-fix-scriptures-page-silent-error-no-ui",
+        "name":  "经论页面API失败无任何提示 — 用户看到永久loading或空白页面",
+        "completedAt":  "2026-04-12 02:53:50"
+    },
+    {
+        "id":  "api-fix-aiconfig-controller-missing-useguards",
+        "name":  "AI配置Controller缺少@UseGuards — @Roles装饰器完全无效，任何用户可修改AI配置",
+        "completedAt":  "2026-04-12 02:53:50"
+    },
+    {
+        "id":  "web-fix-community-page-silent-errors",
+        "name":  "社区首页API错误静默吞掉 — 372行.catch处理不当",
+        "completedAt":  "2026-04-12 02:54:36"
+    },
+    {
+        "id":  "mobile-fix-remaining-as-any-batch",
+        "name":  "Mobile端残留20+处as any — i18n翻译key和Ionicons图标名类型不安全",
+        "completedAt":  "2026-04-12 02:54:36"
+    },
+    {
+        "id":  "web-fix-prices-page-hardcoded-data-remaining",
+        "name":  "价格中心页面仍有硬编码测试数据 — 信任徽章和附加服务未从API获取",
+        "completedAt":  "2026-04-12 02:54:36"
+    },
+    {
+        "id":  "api-fix-cultivation-daily-practice-as-any-v4",
+        "name":  "daily-practice.service.ts仍有3处as any — AI响应和JSON字段类型不安全",
+        "completedAt":  "2026-04-12 03:08:05"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-v5",
+        "name":  "faith-assessment.service.ts仍有5处as any类型断言 — 类型安全违规",
+        "completedAt":  "2026-04-12 03:08:05"
+    },
+    {
+        "id":  "api-fix-community-trending-findmany-no-take-v2",
+        "name":  "Community服务getTrending/getFeaturedPhotos缺少take限制 — 可能OOM",
+        "completedAt":  "2026-04-12 03:08:05"
+    },
+    {
+        "id":  "api-fix-chat-upload-controller-missing-useguards",
+        "name":  "Chat和Upload控制器缺少@UseGuards(JwtAuthGuard) — 认证绕过风险",
+        "completedAt":  "2026-04-12 03:08:05"
+    },
+    {
+        "id":  "web-fix-scriptures-pagination-hardcoded-limit",
+        "name":  "经论页面分页循环硬编码20页上限 — 超过1000部经论时数据截断",
+        "completedAt":  "2026-04-12 03:08:05"
+    },
+    {
+        "id":  "web-fix-chapter-page-missing-validation",
+        "name":  "经论章节页面缺少chapterNo参数校验 — 无效章节号导致空白页",
+        "completedAt":  "2026-04-12 03:08:51"
+    },
+    {
+        "id":  "web-cleanup-daily-seal-stub-redirect",
+        "name":  "daily-seal页面是5行空壳仅redirect — 违反空壳零容忍",
+        "completedAt":  "2026-04-12 03:08:51"
+    },
+    {
+        "id":  "web-add-daily-practice-unsaved-changes-warning",
+        "name":  "修行日课页面1183行长表单无离开警告 — 用户数据丢失风险",
+        "completedAt":  "2026-04-12 03:08:51"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-v4",
+        "name":  "API xiaohong.service.ts 仍有12处 as any 类型断言 — 违反R-01",
+        "completedAt":  "2026-04-12 03:21:35"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-v6",
+        "name":  "API faith-assessment.service.ts 5处 as any — 违反R-01",
+        "completedAt":  "2026-04-12 03:21:35"
+    },
+    {
+        "id":  "api-fix-daily-practice-findmany-missing-take",
+        "name":  "API daily-practice.service.ts 3处 findMany 缺少 take 参数 — 违反R-64",
+        "completedAt":  "2026-04-12 03:21:35"
+    },
+    {
+        "id":  "api-fix-scripture-learning-findmany-missing-take",
+        "name":  "API scripture-learning.service.ts 2处 findMany 缺少 take — 违反R-64",
+        "completedAt":  "2026-04-12 03:21:35"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-findmany-missing-take",
+        "name":  "API pkb.service.ts 多处 findMany 缺少 take + 8处 as any — R-64/R-01",
+        "completedAt":  "2026-04-12 03:21:35"
+    },
+    {
+        "id":  "web-fix-scriptures-page-i18n-hardcoded-labels",
+        "name":  "Web 经论页面 RING_LABELS/TRADITION_ICONS 等中文硬编码 — 违反i18n规范",
+        "completedAt":  "2026-04-12 03:22:20"
+    },
+    {
+        "id":  "web-fix-daily-practice-monolith-refactor",
+        "name":  "Web daily-practice/page.tsx 1183行单体组件 — 需要拆分重构",
+        "completedAt":  "2026-04-12 03:22:20"
+    },
+    {
+        "id":  "api-fix-daily-practice-service-as-any-v5",
+        "name":  "API daily-practice.service.ts 3处 as any — 违反R-01",
+        "completedAt":  "2026-04-12 03:22:21"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-findmany-missing-take-v2",
+        "name":  "Karma服务3处findMany缺少take — 因果事件和经论查询无上限防护",
+        "completedAt":  "2026-04-12 03:36:25"
+    },
+    {
+        "id":  "api-fix-scripture-service-getgraph-missing-take",
+        "name":  "Scripture服务getGraph方法findMany缺少take — 加载全量经论+分类无上限防护",
+        "completedAt":  "2026-04-12 03:36:25"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-findmany-missing-take-v2",
+        "name":  "PKB服务6处findMany缺少take — 个人知识库查询无上限防护",
+        "completedAt":  "2026-04-12 03:36:25"
+    },
+    {
+        "id":  "api-fix-family-harmony-admin-missing-useguards",
+        "name":  "FamilyHarmony Admin控制器缺少@UseGuards — @Roles装饰器无效，任何登录用户可访问Admin端点",
+        "completedAt":  "2026-04-12 03:36:25"
+    },
+    {
+        "id":  "api-fix-personal-growth-admin-missing-useguards",
+        "name":  "PersonalGrowth Admin控制器缺少@UseGuards — @Roles装饰器无效，任何登录用户可访问Admin端点",
+        "completedAt":  "2026-04-12 03:36:25"
+    },
+    {
+        "id":  "api-fix-daily-practice-findmany-missing-take-v2",
+        "name":  "DailyPractice服务2处findMany缺少take — 日志查询和课诵模板查询可能OOM",
+        "completedAt":  "2026-04-12 03:37:11"
+    },
+    {
+        "id":  "api-fix-wisdom-service-as-any-v2",
+        "name":  "Wisdom服务残留1处as any — LLM响应未定义类型",
+        "completedAt":  "2026-04-12 03:37:11"
+    },
+    {
+        "id":  "api-fix-faith-assessment-remaining-as-any-v7",
+        "name":  "信仰力评估服务残留5处as any违反R-01 — mode/options/dimension类型不安全",
+        "completedAt":  "2026-04-12 03:37:11"
+    },
+    {
+        "id":  "web-fix-silent-catch-detail-pages",
+        "name":  "Web 5个详情页+首页+社区共12处.catch(()=\u003e{})静默吞错 — 辅助数据加载失败用户无感知",
+        "completedAt":  "2026-04-12 03:51:18"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-definitive",
+        "name":  "API xiaohong.service.ts 12处as any — 需定义接口彻底解决(已失败7次)",
+        "completedAt":  "2026-04-12 03:51:18"
+    },
+    {
+        "id":  "web-fix-i18n-users-profile-page",
+        "name":  "Web用户主页15+处中文硬编码 — 会员等级/统计标签/错误提示全中文",
+        "completedAt":  "2026-04-12 03:51:18"
+    },
+    {
+        "id":  "web-fix-i18n-teachings-client-religion-icons",
+        "name":  "Web祖训页面RELIGION_ICONS使用中文宗教名作为key — 国际用户筛选功能断裂",
+        "completedAt":  "2026-04-12 03:51:18"
+    },
+    {
+        "id":  "web-fix-i18n-community-questions-page",
+        "name":  "Web问答广场页面8处中文硬编码 — 国际用户搜索/标签/提示全中文",
+        "completedAt":  "2026-04-12 03:51:18"
+    },
+    {
+        "id":  "web-fix-i18n-scriptures-ring-labels",
+        "name":  "Web经论页面RING_LABELS中文硬编码 — \u0027禅宗核心/佛教宗派/文化传统\u0027未走i18n",
+        "completedAt":  "2026-04-12 03:52:04"
+    },
+    {
+        "id":  "web-fix-web-vitals-console-log",
+        "name":  "Web web-vitals.tsx生产环境console.log泄露性能数据 — 应条件输出或移除",
+        "completedAt":  "2026-04-12 03:52:04"
+    },
+    {
+        "id":  "web-fix-i18n-messages-layout-metadata",
+        "name":  "Web消息页面metadata中文硬编码 — SEO标题描述国际化缺失",
+        "completedAt":  "2026-04-12 03:52:04"
+    },
+    {
+        "id":  "api-fix-family-harmony-admin-unvalidated-dto",
+        "name":  "API FamilyHarmony/PersonalGrowth Admin的upsertTheme使用Record\u003cstring,unknown\u003e — 完全无输入校验",
+        "completedAt":  "2026-04-12 04:04:46"
+    },
+    {
+        "id":  "api-fix-holysite-bulk-create-public-endpoint",
+        "name":  "API圣地bulkCreateEnriched标记@Public()但执行数据库写入 — 未认证用户可批量创建圣地",
+        "completedAt":  "2026-04-12 04:04:46"
+    },
+    {
+        "id":  "api-fix-media-controller-missing-guards",
+        "name":  "API Media控制器POST/PATCH/DELETE缺少@UseGuards — 写入端点无实际鉴权",
+        "completedAt":  "2026-04-12 04:04:46"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-pkb-scripture",
+        "name":  "API cultivation模块pkb/scripture/scripture-learning/bhumi服务15处as any",
+        "completedAt":  "2026-04-12 04:04:46"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-karma-fulfillment",
+        "name":  "API cultivation模块karma/fulfillment/zen-quiz服务14处as any — 类型安全缺失",
+        "completedAt":  "2026-04-12 04:04:46"
+    },
+    {
+        "id":  "web-fix-silent-catch-remaining-20",
+        "name":  "Web仍有20+处.catch(()=\u003e{})静默吞错 — 辅助数据加载失败用户无感知",
+        "completedAt":  "2026-04-12 04:05:32"
+    },
+    {
+        "id":  "web-fix-detail-pages-hardcoded-heatmap",
+        "name":  "Web圣地/祖庭详情页热力图使用硬编码月度数据 — 季节性访问量为假数据",
+        "completedAt":  "2026-04-12 04:05:32"
+    },
+    {
+        "id":  "web-fix-membership-page-mock-sections",
+        "name":  "Web会员中心页面多个模块使用静态硬编码数据 — 任务/专属优惠/积分记录未接API",
+        "completedAt":  "2026-04-12 04:05:32"
+    },
+    {
+        "id":  "api-fix-wisdom-service-remaining-as-any-v3",
+        "name":  "智慧融通服务6处as any违反R-01类型安全",
+        "completedAt":  "2026-04-12 04:18:00"
+    },
+    {
+        "id":  "api-fix-cultivation-festival-findmany-missing-take",
+        "name":  "节日服务+修行准入服务findMany缺少take限制",
+        "completedAt":  "2026-04-12 04:18:00"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-pkb-findmany-remaining",
+        "name":  "因缘+PKB服务多处findMany缺少take限制",
+        "completedAt":  "2026-04-12 04:18:00"
+    },
+    {
+        "id":  "api-fix-scripture-service-findmany-missing-take-v2",
+        "name":  "经论服务3处findMany缺少take限制 — 无界查询OOM风险",
+        "completedAt":  "2026-04-12 04:18:00"
+    },
+    {
+        "id":  "api-fix-cultivation-fulfillment-findmany-missing-take",
+        "name":  "圆满服务3处findMany缺少take限制",
+        "completedAt":  "2026-04-12 04:18:00"
+    },
+    {
+        "id":  "web-fix-messages-page-polling-inefficiency",
+        "name":  "实时消息页面5秒轮询效率低下 — 高API负载",
+        "completedAt":  "2026-04-12 04:18:46"
+    },
+    {
+        "id":  "api-fix-cultivation-scripture-learning-findmany-take",
+        "name":  "经论学习服务4处findMany缺少take限制",
+        "completedAt":  "2026-04-12 04:18:46"
+    },
+    {
+        "id":  "web-fix-scriptures-page-hardcoded-ring-labels-v2",
+        "name":  "经论页面RING_LABELS硬编码中文未走i18n",
+        "completedAt":  "2026-04-12 04:18:46"
+    },
+    {
+        "id":  "web-fix-i18n-community-guides-page",
+        "name":  "Web攻略列表页大量中文硬编码 — 违反i18n规范",
+        "completedAt":  "2026-04-12 04:32:20"
+    },
+    {
+        "id":  "web-fix-i18n-community-questions-page",
+        "name":  "Web问答广场页8处中文硬编码 — 违反i18n规范",
+        "completedAt":  "2026-04-12 04:32:21"
+    },
+    {
+        "id":  "mobile-fix-hardcoded-ip-api-auth",
+        "name":  "Mobile API/Auth模块硬编码私有IP地址 — 生产环境连接失败",
+        "completedAt":  "2026-04-12 04:32:21"
+    },
+    {
+        "id":  "miniprogram-fix-hardcoded-ip-api-url",
+        "name":  "小程序API/Auth硬编码localhost和私有IP — 生产环境完全不可用",
+        "completedAt":  "2026-04-12 04:32:21"
+    },
+    {
+        "id":  "web-fix-i18n-community-guides-write",
+        "name":  "Web游记写作页20+处中文硬编码 — 国际化严重缺失",
+        "completedAt":  "2026-04-12 04:32:21"
+    },
+    {
+        "id":  "web-fix-faith-assessment-remaining-as-any",
+        "name":  "Web信仰力评估组件残留as any类型转换 — 违反R-01",
+        "completedAt":  "2026-04-12 04:33:06"
+    },
+    {
+        "id":  "web-fix-community-guide-detail-console-error",
+        "name":  "Web攻略详情页生产环境console.error泄露 — 应静默处理",
+        "completedAt":  "2026-04-12 04:33:06"
+    },
+    {
+        "id":  "web-fix-community-guides-write-empty-catch",
+        "name":  "Web游记写作页空catch块吞掉语音识别错误 — 静默失败",
+        "completedAt":  "2026-04-12 04:33:06"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-regression",
+        "name":  "API信仰力评估服务仍有5处as any — R-01违规(之前修复回归)",
+        "completedAt":  "2026-04-12 05:25:19"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-regression",
+        "name":  "API修行模块仍有29处as any — R-01违规(batch1-3修复后残留/回归)",
+        "completedAt":  "2026-04-12 05:25:34"
+    },
+    {
+        "id":  "api-fix-xiaohong-as-any-regression",
+        "name":  "API小鸿服务仍有12处as any — R-01类型安全违规(之前修复回归)",
+        "completedAt":  "2026-04-12 05:26:00"
+    },
+    {
+        "id":  "web-fix-i18n-daily-practice-tradition-map-regression",
+        "name":  "Web每日功课页面传统映射表硬编码中文 — i18n回归",
+        "completedAt":  "2026-04-12 05:26:01"
+    },
+    {
+        "id":  "web-fix-i18n-cultivation-scriptures-regression",
+        "name":  "Web经论页面RING_LABELS等常量硬编码中文 — i18n回归",
+        "completedAt":  "2026-04-12 05:26:37"
+    },
+    {
+        "id":  "web-fix-community-page-mock-data",
+        "name":  "Web社区首页使用硬编码假数据 — SEED_ACTIVITIES/EDITORIAL_PICKS/PLACEHOLDER_GUIDES违反HH-V02",
+        "completedAt":  "2026-04-12 05:26:37"
+    },
+    {
+        "id":  "web-fix-i18n-three-lives-regression",
+        "name":  "Web三生愿景页面大量硬编码中文 — i18n回归",
+        "completedAt":  "2026-04-12 05:26:38"
+    },
+    {
+        "id":  "web-fix-i18n-bahai-figures-hardcoded",
+        "name":  "Web巴哈伊文化人物3页面零i18n — 全部中文硬编码",
+        "completedAt":  "2026-04-12 05:27:04"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-batch-final",
+        "name":  "API cultivation模块29处as any — pkb/karma/fulfillment/zen-quiz/daily-practice JSON字段未类型化",
+        "completedAt":  "2026-04-12 05:40:32"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-persistent-v8",
+        "name":  "信仰力评估服务5处as any — enum和JSON字段未正确类型化",
+        "completedAt":  "2026-04-12 05:40:32"
+    },
+    {
+        "id":  "web-fix-cultivation-pages-silent-catch-final",
+        "name":  "Web修行系统7页面silent catch — 十牛图/菩萨道/因缘/智慧/经论页面错误被吞",
+        "completedAt":  "2026-04-12 05:40:32"
+    },
+    {
+        "id":  "web-fix-core-detail-pages-silent-catch-v2",
+        "name":  "Web核心详情页(圣地/祖庭/祖师/祖训)30+处.catch(()=\u003e{})静默吞错 — 用户看不到加载失败",
+        "completedAt":  "2026-04-12 05:40:32"
+    },
+    {
+        "id":  "api-fix-xiaohong-as-any-persistent-v5",
+        "name":  "小鸿AI服务12处as any类型安全违规 — 数据结构不安全导致运行时风险",
+        "completedAt":  "2026-04-12 05:40:32"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any-final",
+        "name":  "Web信仰力评估页面as any — options字段类型不安全",
+        "completedAt":  "2026-04-12 05:41:18"
+    },
+    {
+        "id":  "web-fix-prices-rankings-community-silent-catch",
+        "name":  "Web价格/排行/社区页面silent catch — 页面核心数据加载失败无反馈",
+        "completedAt":  "2026-04-12 05:41:18"
+    },
+    {
+        "id":  "web-fix-web-vitals-console-log-final",
+        "name":  "Web web-vitals.tsx生产环境console.log — 性能指标泄露到控制台",
+        "completedAt":  "2026-04-12 05:41:18"
+    },
+    {
+        "id":  "web-fix-rankings-home-globalerror-silent-catch",
+        "name":  "Web排行榜+首页+全局错误页3处.catch(()=\u003e{})静默吞错",
+        "completedAt":  "2026-04-12 05:56:13"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-final",
+        "name":  "API信仰力评估服务5处as any — mode/options/dimension字段强转型",
+        "completedAt":  "2026-04-12 05:56:13"
+    },
+    {
+        "id":  "web-fix-holysites-detail-silent-catch-v2",
+        "name":  "Web圣地详情页+路线详情页7处.catch(()=\u003e{})静默吞错 — 评价/附近/统计全部可能无声失败",
+        "completedAt":  "2026-04-12 05:56:13"
+    },
+    {
+        "id":  "api-fix-xiaohong-as-any-v5",
+        "name":  "API小鸿服务12处as any类型断言 — 路由数据/圣地属性/搜索结果全部类型不安全",
+        "completedAt":  "2026-04-12 05:56:13"
+    },
+    {
+        "id":  "web-fix-prices-page-silent-error-remaining",
+        "name":  "Web价格中心页3处.catch(()=\u003e{})静默吞错 — 商业核心页面数据加载失败无反馈",
+        "completedAt":  "2026-04-12 05:56:13"
+    },
+    {
+        "id":  "api-fix-cultivation-daily-practice-as-any-final",
+        "name":  "API daily-practice.service.ts 3处as any — AI响应和JSON字段slots类型不安全",
+        "completedAt":  "2026-04-12 05:57:09"
+    },
+    {
+        "id":  "web-fix-cultivation-scriptures-silent-catch-remaining",
+        "name":  "Web经论+修行子页面仍有10处.catch(()=\u003e{})静默吞错",
+        "completedAt":  "2026-04-12 05:57:09"
+    },
+    {
+        "id":  "web-fix-temples-patriarchs-teachings-detail-silent-catch",
+        "name":  "Web祖庭/祖师/祖训详情页静默catch — 核心内容页辅助数据无声失败",
+        "completedAt":  "2026-04-12 05:57:09"
+    },
+    {
+        "id":  "api-fix-cultivation-remaining-as-any-final",
+        "name":  "API cultivation模块29处残余as any — 多轮修复后仍存在",
+        "completedAt":  "2026-04-12 05:57:09"
+    },
+    {
+        "id":  "web-fix-community-page-seed-data-fallback",
+        "name":  "Web社区首页使用SEED_ACTIVITIES等硬编码mock数据 — API返回空时展示假数据",
+        "completedAt":  "2026-04-12 05:57:09"
+    },
+    {
+        "id":  "web-fix-leaderboard-math-random-key-v2",
+        "name":  "社区排行榜使用Math.random()作为React key — 性能bug+DATA-01违规",
+        "completedAt":  "2026-04-12 06:10:57"
+    },
+    {
+        "id":  "miniprogram-fix-auth-i18n-hardcoded",
+        "name":  "小程序auth.ts硬编码中文错误消息 — i18n违规+用户体验",
+        "completedAt":  "2026-04-12 06:10:57"
+    },
+    {
+        "id":  "web-fix-patriarchs-temples-mock-popularity",
+        "name":  "祖师/祖庭详情页使用Math.random()生成假人气数据 — 违反DATA-01+HH-V02空壳",
+        "completedAt":  "2026-04-12 06:10:57"
+    },
+    {
+        "id":  "api-fix-xiaohong-as-any-v6",
+        "name":  "小鸿AI服务仍有15处as any — R-01类型安全违规",
+        "completedAt":  "2026-04-12 06:10:57"
+    },
+    {
+        "id":  "mobile-fix-messages-i18n-hardcoded",
+        "name":  "Mobile消息页面硬编码中文时间和UI文案 — i18n违规",
+        "completedAt":  "2026-04-12 06:10:57"
+    },
+    {
+        "id":  "web-fix-personal-growth-i18n",
+        "name":  "个人圆满/家庭幸福4个页面硬编码中文 — i18n违规",
+        "completedAt":  "2026-04-12 06:11:43"
+    },
+    {
+        "id":  "web-fix-checkout-result-i18n-remaining",
+        "name":  "结账结果页仍有硬编码中文 — i18n违规",
+        "completedAt":  "2026-04-12 06:11:43"
+    },
+    {
+        "id":  "web-fix-coupons-console-error-string",
+        "name":  "优惠券页面console.error使用硬编码英文 — 生产日志规范",
+        "completedAt":  "2026-04-12 06:11:43"
+    },
+    {
+        "id":  "api-fix-daily-practice-as-any-remaining",
+        "name":  "API daily-practice.service.ts 3处 as any 违反R-01",
+        "completedAt":  "2026-04-12 06:25:16"
+    },
+    {
+        "id":  "api-fix-zen-quiz-as-any",
+        "name":  "API zen-quiz.service.ts 4处 as any 违反R-01",
+        "completedAt":  "2026-04-12 06:25:16"
+    },
+    {
+        "id":  "api-fix-pkb-service-as-any-v3",
+        "name":  "API pkb.service.ts 仍有8处 as any 违反R-01",
+        "completedAt":  "2026-04-12 06:25:16"
+    },
+    {
+        "id":  "api-fix-fulfillment-karma-as-any-v2",
+        "name":  "API fulfillment+karma服务共10处 as any 违反R-01",
+        "completedAt":  "2026-04-12 06:25:16"
+    },
+    {
+        "id":  "api-fix-xiaohong-as-any-definitive-v2",
+        "name":  "API xiaohong.service.ts 仍有12处 as any 违反R-01",
+        "completedAt":  "2026-04-12 06:25:16"
+    },
+    {
+        "id":  "web-fix-cultivation-ox-path-quiz-silent-catch",
+        "name":  "Web 修行子页面(ox-path/quiz等)静默catch",
+        "completedAt":  "2026-04-12 06:26:01"
+    },
+    {
+        "id":  "web-fix-home-client-silent-catch",
+        "name":  "Web 首页home-client.tsx静默catch隐藏错误",
+        "completedAt":  "2026-04-12 06:26:01"
+    },
+    {
+        "id":  "web-fix-prices-page-silent-catch-v2",
+        "name":  "Web prices页面3处静默catch隐藏API错误",
+        "completedAt":  "2026-04-12 06:26:01"
+    },
+    {
+        "id":  "api-fix-booking-chat-collection-missing-useguards",
+        "name":  "API三个核心Controller缺少@UseGuards — 认证形同虚设，任何人可操作预订/聊天/收藏",
+        "completedAt":  "2026-04-12 06:38:28"
+    },
+    {
+        "id":  "mobile-fix-prices-messages-i18n-hardcoded",
+        "name":  "Mobile价格页和消息页大量中文硬编码 — 违反i18n规范，非中文用户无法使用",
+        "completedAt":  "2026-04-12 06:38:28"
+    },
+    {
+        "id":  "mobile-fix-membership-promotions-as-any-batch",
+        "name":  "Mobile会员和促销页面as any泛滥 — membership.tsx 7处+promotions.tsx 3处类型不安全",
+        "completedAt":  "2026-04-12 06:38:28"
+    },
+    {
+        "id":  "mobile-fix-trips-journals-as-any-batch",
+        "name":  "Mobile行程和日志页面as any泛滥 — trips/ 7处+journals/ 4处类型不安全",
+        "completedAt":  "2026-04-12 06:38:28"
+    },
+    {
+        "id":  "api-fix-guide-faith-assessment-missing-useguards",
+        "name":  "API guide和faith-assessment Controller缺少@UseGuards — 攻略和信仰力评估端点无认证保护",
+        "completedAt":  "2026-04-12 06:38:28"
+    },
+    {
+        "id":  "miniprogram-fix-journals-pkb-as-any",
+        "name":  "小程序日志和知识库页面3处as any — 类型断言绕过检查",
+        "completedAt":  "2026-04-12 06:39:13"
+    },
+    {
+        "id":  "web-fix-collections-checkout-silent-catch",
+        "name":  "Web收藏页和结账页静默吞错误 — .catch(()=\u003e{})导致用户操作失败无任何反馈",
+        "completedAt":  "2026-04-12 06:39:13"
+    },
+    {
+        "id":  "web-fix-faith-assessment-remaining-as-any-v2",
+        "name":  "Web信仰力评估页面残留as any — FaithAssessmentClient.tsx:389 类型不安全",
+        "completedAt":  "2026-04-12 06:39:13"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-v2",
+        "name":  "API小鸿服务12处as any违反R-01 — 类型断言泛滥导致运行时风险",
+        "completedAt":  "2026-04-12 06:52:53"
+    },
+    {
+        "id":  "api-fix-cultivation-pkb-as-any",
+        "name":  "API修行PKB服务8处as any违反R-01 — 个人知识库模块类型安全缺失",
+        "completedAt":  "2026-04-12 06:52:53"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any",
+        "name":  "API信仰力评估模块7处as any违反R-01 — controller的@Req()和service的类型断言",
+        "completedAt":  "2026-04-12 06:52:53"
+    },
+    {
+        "id":  "docs-prd-cultivation-system",
+        "name":  "修行系统缺少主PRD文档 — 13个页面+8个服务无PRD指导违反SCP-03",
+        "completedAt":  "2026-04-12 06:52:53"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-fulfillment-as-any",
+        "name":  "API修行karma+fulfillment服务10处as any违反R-01 — JSON字段和AI响应缺类型",
+        "completedAt":  "2026-04-12 06:52:53"
+    },
+    {
+        "id":  "api-fix-cultivation-findmany-missing-take",
+        "name":  "API修行模块多处findMany缺少take参数违反R-64 — 数据增长后OOM风险",
+        "completedAt":  "2026-04-12 06:53:39"
+    },
+    {
+        "id":  "web-fix-faith-assessment-i18n-hardcoded",
+        "name":  "Web信仰力评估页面100+行常量中文硬编码 — MODES/DIMENSIONS/LEVELS全未国际化",
+        "completedAt":  "2026-04-12 06:53:39"
+    },
+    {
+        "id":  "api-fix-cultivation-daily-practice-zen-quiz-as-any",
+        "name":  "API修行daily-practice+zen-quiz+scripture-learning 8处as any违反R-01",
+        "completedAt":  "2026-04-12 06:53:39"
+    },
+    {
+        "id":  "api-fix-roles-without-useguards-batch-v2-part2",
+        "name":  "API 剩余11个Controller @Roles()无@UseGuards — 权限装饰器完全失效(R-74回归续)",
+        "completedAt":  "2026-04-12 07:07:57"
+    },
+    {
+        "id":  "web-fix-community-page-seed-mock-data",
+        "name":  "Web社区首页仍有SEED_ACTIVITIES/EDITORIAL_PICKS硬编码假数据",
+        "completedAt":  "2026-04-12 07:07:58"
+    },
+    {
+        "id":  "api-fix-findmany-missing-take-scripture-service",
+        "name":  "API scripture/faith-assessment/daily-practice服务findMany缺take — OOM风险(R-64)",
+        "completedAt":  "2026-04-12 07:07:58"
+    },
+    {
+        "id":  "api-fix-roles-without-useguards-batch-v2",
+        "name":  "API 22个Controller @Roles()无@UseGuards — 权限装饰器完全失效(R-74回归)",
+        "completedAt":  "2026-04-12 07:07:58"
+    },
+    {
+        "id":  "api-fix-update-dto-partialtype-wrong-import",
+        "name":  "API 10个Update DTO使用@nestjs/swagger的PartialType — class-validator静默失效",
+        "completedAt":  "2026-04-12 07:07:58"
+    },
+    {
+        "id":  "web-fix-faith-assessment-as-any",
+        "name":  "Web FaithAssessmentClient残留as any类型转换(R-01)",
+        "completedAt":  "2026-04-12 07:08:43"
+    },
+    {
+        "id":  "web-fix-i18n-profile-auth-callback",
+        "name":  "Web profile页和auth/callback页中文硬编码 — 缺少i18n",
+        "completedAt":  "2026-04-12 07:08:43"
+    },
+    {
+        "id":  "web-fix-i18n-karma-wisdom-pages",
+        "name":  "Web cultivation karma/wisdom两个页面完全无i18n — 全中文硬编码",
+        "completedAt":  "2026-04-12 07:08:43"
+    },
+    {
+        "id":  "api-fix-cultivation-as-any-remaining-29",
+        "name":  "API修行模块29处as any残留 — 需定义JSON字段和LLM响应类型",
+        "completedAt":  "2026-04-12 07:23:10"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-definitive",
+        "name":  "API信仰力评估服务5处as any类型违规 — 已尝试7+次修复仍残留",
+        "completedAt":  "2026-04-12 07:23:10"
+    },
+    {
+        "id":  "api-fix-chat-findmany-missing-take",
+        "name":  "API Chat服务3处findMany缺少take限制 — 消息历史查询OOM风险",
+        "completedAt":  "2026-04-12 07:23:10"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-definitive-v2",
+        "name":  "API小鸿AI服务12处as any类型违规 — 需定义完整接口",
+        "completedAt":  "2026-04-12 07:23:10"
+    },
+    {
+        "id":  "web-fix-community-page-hardcoded-mock-data",
+        "name":  "Web社区首页SEED_ACTIVITIES/EDITORIAL_PICKS/TRAVEL_TIPS硬编码假数据",
+        "completedAt":  "2026-04-12 07:23:11"
+    },
+    {
+        "id":  "web-fix-i18n-messages-page-hardcoded",
+        "name":  "Web实时消息页面大量中文硬编码 — 国际用户消息功能不可用",
+        "completedAt":  "2026-04-12 07:23:56"
+    },
+    {
+        "id":  "web-fix-silent-catch-temples-holysites-detail",
+        "name":  "Web详情页(祖庭/圣地/祖师/祖训)仍有silent catch — 辅助数据无声失败",
+        "completedAt":  "2026-04-12 07:23:56"
+    },
+    {
+        "id":  "web-fix-i18n-coupons-page-hardcoded",
+        "name":  "Web优惠券页面中文硬编码 — 促销功能国际化缺失",
+        "completedAt":  "2026-04-12 07:23:56"
+    },
+    {
+        "id":  "mobile-fix-home-rec-cards-no-navigation",
+        "name":  "Mobile首页推荐卡片点击无响应 — onPress未绑定导航",
+        "completedAt":  "2026-04-12 07:36:28"
+    },
+    {
+        "id":  "api-fix-faith-assessment-controller-any-types",
+        "name":  "API信仰力评估Controller使用req:any — 违反R-01类型安全",
+        "completedAt":  "2026-04-12 07:36:28"
+    },
+    {
+        "id":  "web-fix-rankings-retry-button-broken",
+        "name":  "Web排行榜页面重试按钮无效 — 点击后不触发重新加载",
+        "completedAt":  "2026-04-12 07:36:29"
+    },
+    {
+        "id":  "api-fix-journal-detail-not-public",
+        "name":  "API日志详情端点缺少@Public() — 公开日志无法匿名访问",
+        "completedAt":  "2026-04-12 07:36:29"
+    },
+    {
+        "id":  "mobile-fix-write-review-i18n-hardcoded",
+        "name":  "Mobile写评价页面全部中文硬编码 — Alert和表单文本未国际化",
+        "completedAt":  "2026-04-12 07:36:29"
+    },
+    {
+        "id":  "mobile-fix-profile-i18n-hardcoded-chinese",
+        "name":  "Mobile个人中心页面全部中文硬编码 — 7语言i18n完全失效",
+        "completedAt":  "2026-04-12 07:37:24"
+    },
+    {
+        "id":  "web-fix-scriptures-search-overwrites-data",
+        "name":  "Web经论页面搜索覆盖Ring筛选数据 — 搜索后清空导致列表异常",
+        "completedAt":  "2026-04-12 07:37:24"
+    },
+    {
+        "id":  "web-fix-rankings-sites-no-ranking-sort",
+        "name":  "Web排行榜页面圣地按名称排序而非评分 — 排行榜名不副实",
+        "completedAt":  "2026-04-12 07:37:24"
+    },
+    {
+        "id":  "mobile-fix-home-hardcoded-platform-stats",
+        "name":  "Mobile+小程序首页平台统计数字硬编码 — 300圣地但仍显示60+",
+        "completedAt":  "2026-04-12 07:37:25"
+    },
+    {
+        "id":  "miniprogram-fix-journals-as-any-ispublic",
+        "name":  "小程序日志页面使用as any访问isPublic字段 — 类型定义缺失",
+        "completedAt":  "2026-04-12 07:37:25"
+    },
+    {
+        "id":  "api-fix-notification-controller-missing-guards",
+        "name":  "Notification控制器缺少@UseGuards — 通知端点无认证强制",
+        "completedAt":  "2026-04-12 07:51:42"
+    },
+    {
+        "id":  "api-fix-share-dto-userid-idor",
+        "name":  "Share模块IDOR漏洞 — CreateShareDto接受客户端userId覆盖认证用户",
+        "completedAt":  "2026-04-12 07:51:42"
+    },
+    {
+        "id":  "api-fix-share-dto-missing-maxlength",
+        "name":  "Share DTO缺少@MaxLength校验 — entityId无长度限制可能导致存储攻击",
+        "completedAt":  "2026-04-12 07:51:42"
+    },
+    {
+        "id":  "api-fix-chat-controller-missing-guards",
+        "name":  "Chat控制器缺少@UseGuards — 所有聊天端点无认证保护",
+        "completedAt":  "2026-04-12 07:51:42"
+    },
+    {
+        "id":  "api-fix-faith-assessment-xiaohong-req-any",
+        "name":  "faith-assessment和xiaohong控制器4处@Req() req: any违反R-01",
+        "completedAt":  "2026-04-12 07:51:43"
+    },
+    {
+        "id":  "web-fix-cultivation-scriptures-animation",
+        "name":  "经论页面旋转环动画速度已调整但缺少prefers-reduced-motion适配",
+        "completedAt":  "2026-04-12 07:52:28"
+    },
+    {
+        "id":  "docs-prd-m39-patriarch-atlas",
+        "name":  "撰写M39-PRD-祖师图谱系统 — 18个atlas页面无PRD文档",
+        "completedAt":  "2026-04-12 07:52:28"
+    },
+    {
+        "id":  "web-fix-atlas-pages-missing-error-states",
+        "name":  "18个祖师图谱atlas页面缺少loading/error/empty三态处理",
+        "completedAt":  "2026-04-12 07:52:28"
+    },
+    {
+        "id":  "mobile-fix-profile-missing-auth-gates",
+        "name":  "Mobile个人中心6个导航跳转缺少登录校验 — 未登录用户访问受保护页面",
+        "completedAt":  "2026-04-12 08:05:19"
+    },
+    {
+        "id":  "api-fix-points-mall-roles-no-useguards",
+        "name":  "积分商城Admin端点@Roles无@UseGuards — 角色校验完全失效",
+        "completedAt":  "2026-04-12 08:05:19"
+    },
+    {
+        "id":  "web-fix-cultivation-pages-i18n-hardcoded-labels",
+        "name":  "修行子页面5+文件大量硬编码中文标签未走i18n",
+        "completedAt":  "2026-04-12 08:05:19"
+    },
+    {
+        "id":  "api-fix-merchant-roles-no-useguards",
+        "name":  "商家模块4个Admin端点@Roles无@UseGuards — 任何用户可审批商家",
+        "completedAt":  "2026-04-12 08:05:19"
+    },
+    {
+        "id":  "api-fix-referral-roles-no-useguards",
+        "name":  "分销模块Admin端点@Roles无@UseGuards — 分销商数据任何用户可查",
+        "completedAt":  "2026-04-12 08:05:19"
+    },
+    {
+        "id":  "api-fix-question-dto-missing-isnotempty",
+        "name":  "问答CreateQuestionDto.content缺少@IsNotEmpty — 可提交空内容问题",
+        "completedAt":  "2026-04-12 08:06:05"
+    },
+    {
+        "id":  "web-fix-scriptures-page-silent-catch-hardcoded-labels",
+        "name":  "经论页面.catch(()=\u003e{})吞噬错误 + RING_LABELS硬编码中文",
+        "completedAt":  "2026-04-12 08:06:05"
+    },
+    {
+        "id":  "web-fix-community-page-hardcoded-seed-activities",
+        "name":  "社区首页SEED_ACTIVITIES/EDITORIAL_PICKS等硬编码数据应走API",
+        "completedAt":  "2026-04-12 08:06:05"
+    },
+    {
+        "id":  "api-fix-booking-controller-missing-jwt-guard",
+        "name":  "Booking控制器缺少JwtAuthGuard — 所有预订端点无认证保护",
+        "completedAt":  "2026-04-12 08:19:16"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-remaining",
+        "name":  "小鸿AI服务仍有12处as any — 最大R-01违规源",
+        "completedAt":  "2026-04-12 08:19:16"
+    },
+    {
+        "id":  "api-fix-ai-community-findmany-missing-take",
+        "name":  "AI社区answer.findMany缺少take参数 — OOM风险",
+        "completedAt":  "2026-04-12 08:19:16"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-v9",
+        "name":  "信仰力评估服务仍有5处as any违反R-01",
+        "completedAt":  "2026-04-12 08:19:16"
+    },
+    {
+        "id":  "api-fix-zen-quiz-service-as-any",
+        "name":  "禅宗测验服务4处as any — JSON字段类型缺失",
+        "completedAt":  "2026-04-12 08:19:16"
+    },
+    {
+        "id":  "web-fix-rankings-swallowed-error",
+        "name":  "排行榜页面完全吞掉宗教筛选器加载错误",
+        "completedAt":  "2026-04-12 08:20:02"
+    },
+    {
+        "id":  "web-fix-i18n-search-filter-empty-states",
+        "name":  "Web 5个页面搜索空态硬编码中文 — i18n缺失",
+        "completedAt":  "2026-04-12 08:20:02"
+    },
+    {
+        "id":  "web-fix-faith-assessment-remaining-as-any-v3",
+        "name":  "信仰力评估前端组件仍有as any类型断言",
+        "completedAt":  "2026-04-12 08:20:02"
+    },
+    {
+        "id":  "web-fix-cultivation-9-silent-catches-batch",
+        "name":  "Web cultivation 7个页面共9处 .catch(() =\u003e {}) 静默吞错 — API失败用户无感知",
+        "completedAt":  "2026-04-12 08:36:00"
+    },
+    {
+        "id":  "api-fix-daily-practice-two-findmany-no-take",
+        "name":  "API daily-practice.service.ts 两处findMany缺少take — todayLogs和autoSetup模板查询无界",
+        "completedAt":  "2026-04-12 08:36:00"
+    },
+    {
+        "id":  "api-fix-daily-practice-slots-as-any-interfaces",
+        "name":  "API daily-practice.service.ts getTimeline() 使用 (practice as any).slots 和 any 局部变量 — 类型安全缺失",
+        "completedAt":  "2026-04-12 08:36:00"
+    },
+    {
+        "id":  "api-fix-festival-listbydate-unbounded-query",
+        "name":  "API festival.service.ts listByDate() 缺少take限制 — 特定日期可能返回无限记录导致OOM",
+        "completedAt":  "2026-04-12 08:36:00"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-proper-interfaces",
+        "name":  "API xiaohong.service.ts 12处 as any 类型不安全 — 需要定义关联数据接口",
+        "completedAt":  "2026-04-12 08:36:00"
+    },
+    {
+        "id":  "api-fix-cultivation-karma-pkb-fulfillment-as-any-definitive",
+        "name":  "API cultivation karma/pkb/fulfillment 服务共15处as any — Prisma Json字段需类型化",
+        "completedAt":  "2026-04-12 08:36:46"
+    },
+    {
+        "id":  "web-fix-scriptures-page-remaining-chinese-hardcoded",
+        "name":  "Web scriptures/page.tsx 仍有中文硬编码标签 — RING_LABELS/搜索提示/加载文字未国际化",
+        "completedAt":  "2026-04-12 08:36:46"
+    },
+    {
+        "id":  "web-prd-cultivation-overview-upgrade",
+        "name":  "撰写修行总观页面升级PRD — 对标Headspace/Calm冥想APP的首页体验",
+        "completedAt":  "2026-04-12 08:36:46"
+    },
+    {
+        "id":  "api-fix-booking-controller-missing-jwt-guard-v2",
+        "name":  "Booking控制器缺少@UseGuards(JwtAuthGuard) — 所有预订端点无认证保护",
+        "completedAt":  "2026-04-12 08:52:45"
+    },
+    {
+        "id":  "api-fix-daily-practice-as-any-remaining",
+        "name":  "DailyPractice服务3处any类型 — 类型安全违规",
+        "completedAt":  "2026-04-12 08:52:45"
+    },
+    {
+        "id":  "api-fix-chat-controller-missing-jwt-guard-v2",
+        "name":  "Chat控制器缺少@UseGuards(JwtAuthGuard) — 所有聊天端点无认证保护",
+        "completedAt":  "2026-04-12 08:52:45"
+    },
+    {
+        "id":  "api-fix-scripture-service-as-any-v2",
+        "name":  "经论服务5处any类型 — 类型安全违规",
+        "completedAt":  "2026-04-12 08:52:45"
+    },
+    {
+        "id":  "api-fix-daily-practice-findmany-missing-take-v3",
+        "name":  "DailyPractice三处findMany缺少take限制 — OOM风险",
+        "completedAt":  "2026-04-12 08:52:45"
+    },
+    {
+        "id":  "api-fix-xiaohong-service-as-any-v7",
+        "name":  "小鸿AI服务13处any类型 — 类型安全违规",
+        "completedAt":  "2026-04-12 08:53:41"
+    },
+    {
+        "id":  "web-fix-community-page-remaining-seed-data",
+        "name":  "Web社区首页仍有SEED_ACTIVITIES硬编码数据作为API失败兜底",
+        "completedAt":  "2026-04-12 08:53:41"
+    },
+    {
+        "id":  "docs-prd-m39-cultivation-system-update",
+        "name":  "M39修行大系统PRD需更新 — 新增乐观锁+愿财双圆转速功能未记录",
+        "completedAt":  "2026-04-12 08:53:41"
+    },
+    {
+        "id":  "web-fix-family-harmony-cases-coming-soon",
+        "name":  "家庭幸福/个人圆满/团队文化案例页显示\u0027即将上线\u0027 — 空壳页面",
+        "completedAt":  "2026-04-12 08:53:41"
+    },
+    {
+        "id":  "api-fix-faith-assessment-as-any-v10",
+        "name":  "信仰力评估模块10处any类型 — 类型安全违规",
+        "completedAt":  "2026-04-12 08:53:41"
     }
 ]

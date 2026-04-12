@@ -1,7 +1,7 @@
 ﻿{
-    "id":  "web-fix-i18n-collections-page-hardcoded",
-    "name":  "Web收藏页面15+处中文硬编码 — 国际用户收藏功能不可用",
-    "app":  "web",
-    "priority":  2,
-    "description":  "收藏是对标Airbnb Wishlist的核心功能，但apps/web/src/app/collections/page.tsx有大量中文硬编码:\n\n- 行85: \u0027公开\u0027 badge文本\n- 行93: \u0027删除收藏夹\u0027 aria-label\n- 行120: \u0027个收藏\u0027 单位文本\n- 行123: date formatting使用zh-CN locale\n- 行148: \u0027请输入收藏夹名称\u0027 错误消息\n- 弹窗的placeholder: \u0027例如：朝圣心愿清单\u0027、\u0027简短描述这个收藏夹...\u0027\n\n操作:\n1. 替换所有中文为t()函数调用\n2. 日期格式化使用i18n locale而非硬编码zh-CN\n3. 添加对应翻译key到translations包\n\n对标: Airbnb Wishlist页面完整多语言支持\n铁律: SCP-02, HH-V03\n验证: pnpm --filter @zuting/web build"
+    "id":  "api-fix-faith-assessment-as-any-v10",
+    "name":  "信仰力评估模块10处any类型 — 类型安全违规",
+    "app":  "api",
+    "priority":  1,
+    "description":  "services/api/src/modules/faith-assessment/ 残留10处any:\n- controller.ts:39,63 — @Req() req: any → 定义RequestWithUser接口{user:{id:string}}\n- service.ts:46 — mode as any → 用Prisma.AssessmentMode枚举\n- service.ts:75 — (q: any) → 定义QuestionWithOptions接口\n- service.ts:92-93 — (question as any).options, (o: any) → 用定义的接口\n- service.ts:97 — (question as any).dimension → 同上\n- service.ts:144 — dto.mode as any → 枚举对齐\n- service.ts:266 — (m: any) → 定义GroupByResult接口\n- service.ts:289 — mode as any → 枚举对齐\n\n铁律: R-01(严禁any类型，必须定义Interface/DTO)\n验证: pnpm --filter @zuting/api build"
 }
