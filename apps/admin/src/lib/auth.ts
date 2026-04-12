@@ -1,6 +1,15 @@
 const TOKEN_KEY = 'zuting_admin_token';
 const REFRESH_KEY = 'zuting_admin_refresh';
+const ROLE_KEY = 'zuting_admin_role';
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+export function getCurrentUserRole(): string | null {
+  return localStorage.getItem(ROLE_KEY);
+}
+
+export function setCurrentUserRole(role: string) {
+  localStorage.setItem(ROLE_KEY, role);
+}
 
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
@@ -14,6 +23,7 @@ export function setTokens(access: string, refresh: string) {
 export function clearTokens() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
+  localStorage.removeItem(ROLE_KEY);
 }
 
 export async function login(email: string, password: string) {
@@ -39,6 +49,7 @@ export async function login(email: string, password: string) {
     clearTokens();
     throw new Error('仅管理员可登录后台 / Admin access only');
   }
+  setCurrentUserRole(user.role);
   return user;
 }
 

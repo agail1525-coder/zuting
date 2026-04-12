@@ -1,7 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Spin } from 'antd';
-import AdminLayout from './layouts/AdminLayout';
+import AdminCockpitLayout from './layouts/AdminCockpitLayout';
 import { isAuthenticated } from './lib/auth';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -31,6 +31,8 @@ const I18nShareManagePage = lazy(() => import('./pages/I18nShareManagePage'));
 const AnalyticsDashboardPage = lazy(() => import('./pages/AnalyticsDashboardPage'));
 const ChatMonitorPage = lazy(() => import('./pages/ChatMonitorPage'));
 const MediaPage = lazy(() => import('./pages/MediaPage'));
+const MediaLibraryPage = lazy(() => import('./pages/MediaLibraryPage'));
+const AuditLogPage = lazy(() => import('./pages/AuditLogPage'));
 const TeamCultureManagePage = lazy(() => import('./pages/TeamCultureManagePage'));
 const CultivationManagePage = lazy(() => import('./pages/CultivationManagePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -51,7 +53,7 @@ export default function App() {
         <Route
           element={
             <RequireAuth>
-              <AdminLayout />
+              <AdminCockpitLayout />
             </RequireAuth>
           }
         >
@@ -81,7 +83,9 @@ export default function App() {
           <Route path="i18n-share" element={<I18nShareManagePage />} />
           <Route path="analytics" element={<AnalyticsDashboardPage />} />
           <Route path="chat-monitor" element={<ChatMonitorPage />} />
-          <Route path="media" element={<MediaPage />} />
+          <Route path="media" element={<MediaLibraryPage />} />
+          <Route path="media-legacy" element={<MediaPage />} />
+          <Route path="audit" element={<AuditLogPage />} />
           <Route path="team-culture" element={<TeamCultureManagePage />} />
           <Route path="cultivation" element={<CultivationManagePage />} />
         </Route>
