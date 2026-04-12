@@ -20,21 +20,10 @@ import {
 
 type Tab = "vows" | "struggle" | "journal" | "recs";
 
-const CATEGORY_LABEL: Record<PkbCategory, string> = {
-  PERSONAL: "个人",
-  FAMILY: "家庭",
-  CAREER: "事业",
-  DAILY_STRUGGLE: "当下烦恼",
-  GENERAL: "通用",
-};
+import { useTranslation } from "@/lib/i18n";
 
-const STATUS_LABEL: Record<PkbRecommendationStatus, string> = {
-  PENDING: "未读",
-  READ: "已读",
-  PRACTICING: "实践中",
-  DONE: "已完成",
-  DISMISSED: "已忽略",
-};
+const CATEGORY_KEYS: PkbCategory[] = ["PERSONAL", "FAMILY", "CAREER", "DAILY_STRUGGLE", "GENERAL"];
+const STATUS_KEYS: PkbRecommendationStatus[] = ["PENDING", "READ", "PRACTICING", "DONE", "DISMISSED"];
 
 export default function CultivationPkbPage() {
   const queryClient = useQueryClient();
@@ -241,7 +230,16 @@ function VowCard({
   );
 }
 
+function usePkbLabels() {
+  const { t } = useTranslation();
+  return {
+    cat: (c: PkbCategory) => t(`cultivation.pkbCategories.${c}`),
+    status: (s: PkbRecommendationStatus) => t(`cultivation.pkbStatus.${s}`),
+  };
+}
+
 function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => void }) {
+  const { cat: categoryLabel } = usePkbLabels();
   const pkb = overview.pkb;
   const [personalVow, setPersonalVow] = useState(pkb.personalVow ?? "");
   const [familyVow, setFamilyVow] = useState(pkb.familyVow ?? "");
@@ -295,7 +293,7 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
           <div className="text-sm font-semibold text-amber-100">📖 小鸿为你挑选的经论</div>
           {vowRecs.slice(0, 6).map((r) => (
             <div key={r.id} className="rounded-lg bg-amber-950/30 border border-amber-900/30 p-3">
-              <div className="text-xs text-amber-200/50">{CATEGORY_LABEL[r.category]}</div>
+              <div className="text-xs text-amber-200/50">{categoryLabel(r.category)}</div>
               <div className="text-amber-100 font-medium">{r.title}</div>
               <div className="text-xs text-amber-200/60 mt-1">{r.reason}</div>
               {r.scriptureSlug && (
@@ -312,6 +310,7 @@ function VowsTab({ overview, onSaved }: { overview: PkbOverview; onSaved: () => 
 // ── 烦恼 Tab ─────────────────────────────────
 
 function StruggleTab({ onSubmitted }: { onSubmitted: () => void }) {
+  const { cat: categoryLabel } = usePkbLabels();
   const [message, setMessage] = useState("");
   const [category, setCategory] = useState<PkbCategory>("DAILY_STRUGGLE");
   const [tags, setTags] = useState<string[]>([]);
@@ -380,7 +379,7 @@ function StruggleTab({ onSubmitted }: { onSubmitted: () => void }) {
                 category === c ? "bg-amber-900/40 border-amber-500 text-amber-100" : "border-amber-900/40 text-amber-200/60"
               }`}
             >
-              {CATEGORY_LABEL[c]}
+              {categoryLabel(c)}
             </button>
           ))}
         </div>
@@ -431,6 +430,7 @@ function StruggleTab({ onSubmitted }: { onSubmitted: () => void }) {
 
 function JournalTab() {
   const queryClient = useQueryClient();
+  const { cat: categoryLabel } = usePkbLabels();
   const [filter, setFilter] = useState<PkbCategory | "ALL">("ALL");
 
   const entriesQuery = useQuery({
@@ -473,7 +473,7 @@ function JournalTab() {
               filter === c ? "bg-amber-900/40 border-amber-500 text-amber-100" : "border-amber-900/40 text-amber-200/60"
             }`}
           >
-            {c === "ALL" ? "全部" : CATEGORY_LABEL[c]}
+            {c === "ALL" ? "全部" : categoryLabel(c)}
           </button>
         ))}
       </div>
@@ -487,7 +487,7 @@ function JournalTab() {
           <div key={e.id} className="rounded-xl border border-amber-900/40 bg-amber-950/20 p-4">
             <div className="flex items-start justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-xs px-2 py-0.5 rounded bg-amber-900/30 text-amber-300">{CATEGORY_LABEL[e.category]}</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-900/30 text-amber-300">{categoryLabel(e.category)}</span>
                 <span className="text-xs text-amber-200/40">{new Date(e.createdAt).toLocaleString()}</span>
               </div>
               {!e.isShared && e.kind === "CHAT" && (
@@ -520,6 +520,7 @@ function JournalTab() {
 
 function RecsTab({ onChanged }: { onChanged: () => void }) {
   const queryClient = useQueryClient();
+  const { cat: categoryLabel, status: statusLabel } = usePkbLabels();
   const recsQuery = useQuery({
     queryKey: ["cultivation", "pkb", "recs"],
     queryFn: fetchPkbRecommendations,
@@ -548,11 +549,11 @@ function RecsTab({ onChanged }: { onChanged: () => void }) {
         const list = recs.filter((r) => r.status === col);
         return (
           <div key={col} className="rounded-2xl border border-amber-900/40 bg-amber-950/10 p-3 min-h-[200px]">
-            <div className="text-xs font-bold text-amber-200 mb-3 px-1">{STATUS_LABEL[col]} ({list.length})</div>
+            <div className="text-xs font-bold text-amber-200 mb-3 px-1">{statusLabel(col)} ({list.length})</div>
             <div className="space-y-2">
               {list.map((r) => (
                 <div key={r.id} className="rounded-lg bg-amber-950/40 border border-amber-900/40 p-3">
-                  <div className="text-xs text-amber-200/50">{CATEGORY_LABEL[r.category]}</div>
+                  <div className="text-xs text-amber-200/50">{categoryLabel(r.category)}</div>
                   <div className="text-amber-100 font-medium text-sm">{r.title}</div>
                   <div className="text-xs text-amber-200/60 mt-1 line-clamp-2">{r.reason}</div>
                   {r.scriptureSlug && (

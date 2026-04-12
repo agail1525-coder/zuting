@@ -4195,5 +4195,22 @@
   "cultivation.traditions.BAHAI": "Bahá'í",
   "cultivation.traditions.SHINTO": "Shinto",
   "cultivation.traditions.TIBETAN": "Tibetan",
-  "cultivation.traditions.INDIGENOUS": "Indigenous"
+  "cultivation.traditions.INDIGENOUS": "Indigenous",
+  "cultivation.pkbCategories.PERSONAL": "Personal",
+  "cultivation.pkbCategories.FAMILY": "Family",
+  "cultivation.pkbCategories.CAREER": "Career",
+  "cultivation.pkbCategories.DAILY_STRUGGLE": "Current Struggle",
+  "cultivation.pkbCategories.GENERAL": "General",
+  "cultivation.pkbStatus.PENDING": "Pending",
+  "cultivation.pkbStatus.READ": "Read",
+  "cultivation.pkbStatus.PRACTICING": "Practicing",
+  "cultivation.pkbStatus.DONE": "Done",
+  "cultivation.pkbStatus.DISMISSED": "Dismissed",
+  "cultivation.calendars.SOLAR": "Gregorian",
+  "cultivation.calendars.LUNAR": "Lunar",
+  "cultivation.calendars.ISLAMIC_HIJRI": "Hijri",
+  "cultivation.calendars.HEBREW": "Hebrew",
+  "cultivation.calendars.TIBETAN": "Tibetan",
+  "cultivation.calendars.COMPUTED": "Computed",
+  "cultivation.calendars.FIXED_WEEK": "Fixed Week"
 }

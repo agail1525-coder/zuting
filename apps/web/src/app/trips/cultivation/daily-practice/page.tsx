@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 import {
   applyLiturgyTemplate,
   coachDailyPracticeSlot,
@@ -83,15 +84,6 @@ const REFLECTION_PLACEHOLDER: Record<string, string> = {
   INDIGENOUS: "今日与大地/祖灵的连接 ...",
 };
 
-const CALENDAR_LABEL: Record<string, string> = {
-  SOLAR: "公历",
-  LUNAR: "农历",
-  ISLAMIC_HIJRI: "伊斯兰历",
-  HEBREW: "希伯来历",
-  TIBETAN: "藏历",
-  COMPUTED: "推算",
-  FIXED_WEEK: "固定周",
-};
 
 function toMinutes(hhmm: string): number {
   const [h, m] = hhmm.split(":").map(Number);
@@ -536,6 +528,7 @@ function FestivalModal({
   festival: CulturalFestival;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
@@ -561,7 +554,7 @@ function FestivalModal({
             {TRADITION_LABEL[festival.tradition] ?? festival.tradition}
           </span>
           <span className="px-2 py-0.5 rounded-full bg-slate-950/60 text-amber-300 border border-amber-900/60">
-            {CALENDAR_LABEL[festival.calendar] ?? festival.calendar} · {festival.month}月{festival.day}日
+            {t(`cultivation.calendars.${festival.calendar}`)} · {festival.month}月{festival.day}日
           </span>
         </div>
         <div className="text-amber-200 text-sm leading-relaxed whitespace-pre-wrap">

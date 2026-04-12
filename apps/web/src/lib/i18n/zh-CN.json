@@ -4289,5 +4289,22 @@
   "cultivation.traditions.BAHAI": "巴哈伊文化",
   "cultivation.traditions.SHINTO": "神道文化",
   "cultivation.traditions.TIBETAN": "藏传文化",
-  "cultivation.traditions.INDIGENOUS": "原住民文化"
+  "cultivation.traditions.INDIGENOUS": "原住民文化",
+  "cultivation.pkbCategories.PERSONAL": "个人",
+  "cultivation.pkbCategories.FAMILY": "家庭",
+  "cultivation.pkbCategories.CAREER": "事业",
+  "cultivation.pkbCategories.DAILY_STRUGGLE": "当下烦恼",
+  "cultivation.pkbCategories.GENERAL": "通用",
+  "cultivation.pkbStatus.PENDING": "未读",
+  "cultivation.pkbStatus.READ": "已读",
+  "cultivation.pkbStatus.PRACTICING": "实践中",
+  "cultivation.pkbStatus.DONE": "已完成",
+  "cultivation.pkbStatus.DISMISSED": "已忽略",
+  "cultivation.calendars.SOLAR": "公历",
+  "cultivation.calendars.LUNAR": "农历",
+  "cultivation.calendars.ISLAMIC_HIJRI": "伊斯兰历",
+  "cultivation.calendars.HEBREW": "希伯来历",
+  "cultivation.calendars.TIBETAN": "藏历",
+  "cultivation.calendars.COMPUTED": "推算",
+  "cultivation.calendars.FIXED_WEEK": "固定周"
 }
