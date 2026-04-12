@@ -15,6 +15,12 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     logout();
     throw new Error('Session expired');
   }
+  if (res.status === 403) {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/403') {
+      window.location.href = '/403';
+    }
+    throw new Error('Forbidden');
+  }
   if (!res.ok) {
     let detail = '';
     try {

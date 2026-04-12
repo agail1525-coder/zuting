@@ -11,6 +11,7 @@ import { getReligionDetail, patchReligion } from '../lib/m40';
 import MediaPicker from '../components/media/MediaPicker';
 import AuditTimeline from '../components/audit/AuditTimeline';
 import AiAssistantDrawer from '../components/ai/AiAssistantDrawer';
+import { useUnsavedGuard } from '../hooks/useUnsavedGuard';
 
 const { Title, Text } = Typography;
 
@@ -24,6 +25,8 @@ export default function ReligionStudioPage() {
   const [aiOpen, setAiOpen] = useState(false);
   const [aiField, setAiField] = useState('summary');
   const [raw, setRaw] = useState<Record<string, unknown>>({});
+  const [dirty, setDirty] = useState(false);
+  useUnsavedGuard(dirty);
 
   const load = useCallback(async () => {
     if (!slug) return;
@@ -69,6 +72,7 @@ export default function ReligionStudioPage() {
         businessInsight: v.businessInsight || null,
       });
       message.success('保存成功');
+      setDirty(false);
       load();
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
@@ -102,7 +106,7 @@ export default function ReligionStudioPage() {
               </Space>
             }
           >
-            <Form form={form} layout="vertical">
+            <Form form={form} layout="vertical" onValuesChange={() => setDirty(true)}>
               <Tabs items={[
                 {
                   key: 'basic', label: '基础 · 双语',

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  Card, Typography, Row, Col, Statistic, Tag, Space, Button, Descriptions, Alert, message,
+  Card, Typography, Row, Col, Statistic, Tag, Space, Button, Descriptions, Alert, Table, message,
 } from 'antd';
 import {
   ReloadOutlined, CheckCircleOutlined, CloseCircleOutlined,
@@ -9,6 +9,20 @@ import {
 import { getHealthInfo, getHealthReady } from '../lib/m40';
 
 const { Title, Paragraph } = Typography;
+
+const CRON_JOBS: { name: string; schedule: string; module: string; desc: string }[] = [
+  { name: 'AI 社区 晨间游记', schedule: '0 7 * * *', module: 'ai-community', desc: '清晨自动生成智能体游记' },
+  { name: 'AI 社区 问答', schedule: '30 8 * * *', module: 'ai-community', desc: '自动发起每日问答' },
+  { name: 'AI 社区 上午推文', schedule: '0 10 * * *', module: 'ai-community', desc: '智能体发帖' },
+  { name: 'AI 社区 午间互动', schedule: '0 12 * * *', module: 'ai-community', desc: '回复与评论' },
+  { name: 'AI 社区 下午推文', schedule: '30 14 * * *', module: 'ai-community', desc: '智能体发帖' },
+  { name: 'AI 社区 傍晚分享', schedule: '0 16 * * *', module: 'ai-community', desc: '文化心得分享' },
+  { name: 'AI 社区 晚间总结', schedule: '0 19 * * *', module: 'ai-community', desc: '一日回顾' },
+  { name: 'AI 社区 夜间问答', schedule: '0 20 * * *', module: 'ai-community', desc: '夜间深度问答' },
+  { name: '经论学习 每日推送', schedule: '0 3 * * *', module: 'cultivation', desc: '凌晨生成当日推送' },
+  { name: '经论学习 进度结算', schedule: '0 5 * * *', module: 'cultivation', desc: '统计用户修习进度' },
+  { name: '经论学习 提醒推送', schedule: '0 6 * * *', module: 'cultivation', desc: '早课提醒' },
+];
 
 function fmtUptime(sec: number): string {
   const d = Math.floor(sec / 86400);
@@ -101,6 +115,28 @@ export default function SystemHealthPage() {
           </Card>
         </Col>
       </Row>
+
+      <Card title="前端构建" size="small" style={{ marginBottom: 16 }}>
+        <Descriptions column={2} bordered size="small">
+          <Descriptions.Item label="Build SHA"><code>{__BUILD_SHA__}</code></Descriptions.Item>
+          <Descriptions.Item label="Build Time">{__BUILD_TIME__}</Descriptions.Item>
+        </Descriptions>
+      </Card>
+
+      <Card title={<Space>定时任务 <Tag color="gold">{CRON_JOBS.length}</Tag></Space>} size="small" style={{ marginBottom: 16 }}>
+        <Table
+          size="small"
+          rowKey="name"
+          dataSource={CRON_JOBS}
+          pagination={false}
+          columns={[
+            { title: '任务', dataIndex: 'name' },
+            { title: 'Cron', dataIndex: 'schedule', width: 140, render: (v: string) => <code>{v}</code> },
+            { title: '模块', dataIndex: 'module', width: 140, render: (v: string) => <Tag>{v}</Tag> },
+            { title: '说明', dataIndex: 'desc' },
+          ]}
+        />
+      </Card>
 
       <Card title="详细信息" size="small">
         {info ? (

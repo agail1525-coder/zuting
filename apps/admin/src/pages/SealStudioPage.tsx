@@ -10,6 +10,7 @@ import {
 import { getSealDetail, patchSeal } from '../lib/m40';
 import AuditTimeline from '../components/audit/AuditTimeline';
 import AiAssistantDrawer from '../components/ai/AiAssistantDrawer';
+import { useUnsavedGuard } from '../hooks/useUnsavedGuard';
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,8 @@ export default function SealStudioPage() {
   const [aiOpen, setAiOpen] = useState(false);
   const [aiField, setAiField] = useState('poem');
   const [raw, setRaw] = useState<Record<string, unknown>>({});
+  const [dirty, setDirty] = useState(false);
+  useUnsavedGuard(dirty);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -66,6 +69,7 @@ export default function SealStudioPage() {
         poem: v.poem, essence: v.essence, practice: v.practice, vow: v.vow,
       });
       message.success('保存成功');
+      setDirty(false);
       load();
     } catch (err) {
       if (err && typeof err === 'object' && 'errorFields' in err) return;
@@ -101,7 +105,7 @@ export default function SealStudioPage() {
               </Space>
             }
           >
-            <Form form={form} layout="vertical">
+            <Form form={form} layout="vertical" onValuesChange={() => setDirty(true)}>
               <Tabs items={[
                 {
                   key: 'basic', label: '基础',

@@ -3,11 +3,12 @@ import {
   Table, Card, Typography, Tag, Button, Space, Input,
   Select, Switch, message, Drawer, Descriptions, Avatar,
 } from 'antd';
-import { EyeOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { EyeOutlined, SearchOutlined, UserOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { getUsers, updateUser } from '../lib/api';
 import type { User } from '../types';
 import dayjs from 'dayjs';
+import { exportCsv } from '../lib/csv';
 
 const { Title } = Typography;
 
@@ -172,9 +173,27 @@ export default function UsersPage() {
 
   return (
     <>
-      <Title level={4} style={{ color: '#D4A855', marginBottom: 16 }}>
-        用户管理
-      </Title>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>用户管理</Title>
+        <Button icon={<DownloadOutlined />} onClick={() => {
+          exportCsv(`users-${Date.now()}`, data.map((u) => ({
+            id: u.id,
+            name: u.name ?? u.nickname ?? '',
+            email: u.email ?? '',
+            phone: u.phone ?? '',
+            role: ROLE_MAP[u.role]?.label ?? u.role,
+            createdAt: u.createdAt ? dayjs(u.createdAt).format('YYYY-MM-DD HH:mm') : '',
+          })), [
+            { key: 'id', label: 'ID' },
+            { key: 'name', label: '昵称' },
+            { key: 'email', label: '邮箱' },
+            { key: 'phone', label: '手机' },
+            { key: 'role', label: '角色' },
+            { key: 'createdAt', label: '注册时间' },
+          ]);
+          message.success(`已导出 ${data.length} 条`);
+        }}>导出CSV</Button>
+      </div>
       <Card>
         <Space style={{ marginBottom: 16 }} wrap>
           <Input

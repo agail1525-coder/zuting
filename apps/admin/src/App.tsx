@@ -1,8 +1,9 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import { Spin } from 'antd';
 import AdminCockpitLayout from './layouts/AdminCockpitLayout';
-import { isAuthenticated } from './lib/auth';
+import { isAuthenticated, getCurrentUserRole } from './lib/auth';
+import { canAccess } from './lib/menuAcl';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const ReligionsPage = lazy(() => import('./pages/ReligionsPage'));
@@ -59,6 +60,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ReligionStudioPage = lazy(() => import('./pages/ReligionStudioPage'));
 const SealStudioPage = lazy(() => import('./pages/SealStudioPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const ForbiddenPage = lazy(() => import('./pages/ForbiddenPage'));
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -66,6 +68,17 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return <>{children}</>;
+}
+
+function AclOutlet() {
+  const { pathname } = useLocation();
+  if (pathname === '/403') return <Outlet />;
+  const seg = pathname.split('/').filter(Boolean)[0];
+  const root = seg ? '/' + seg : '/';
+  if (!canAccess(root, getCurrentUserRole())) {
+    return <Navigate to="/403" replace />;
+  }
+  return <Outlet />;
 }
 
 export default function App() {
@@ -80,6 +93,8 @@ export default function App() {
             </RequireAuth>
           }
         >
+          <Route path="403" element={<ForbiddenPage />} />
+          <Route element={<AclOutlet />}>
           <Route index element={<Dashboard />} />
           <Route path="religions" element={<ReligionsPage />} />
           <Route path="holy-sites" element={<HolySitesPage />} />
@@ -136,6 +151,7 @@ export default function App() {
           <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />
           <Route path="personal-growth/themes/:slug" element={<ThemeStudioPage kind="personal-growth" />} />
           <Route path="family-harmony/themes/:slug" element={<ThemeStudioPage kind="family-harmony" />} />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

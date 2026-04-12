@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { Table, Card, Typography, Tag, Button, Space, Popconfirm, Drawer, Descriptions, message, Input, Select, Row, Col } from 'antd';
-import { EyeOutlined, RollbackOutlined, SearchOutlined } from '@ant-design/icons';
+import { EyeOutlined, RollbackOutlined, SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { getOrders, getOrder, refundOrder } from '../lib/api';
 import type { Order } from '../types';
 import dayjs from 'dayjs';
+import { exportCsv } from '../lib/csv';
 
 const { Title } = Typography;
 
@@ -160,9 +161,27 @@ export default function OrdersPage() {
 
   return (
     <>
-      <Title level={4} style={{ color: '#D4A855', marginBottom: 16 }}>
-        订单管理
-      </Title>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Title level={4} style={{ color: '#D4A855', margin: 0 }}>订单管理</Title>
+        <Button icon={<DownloadOutlined />} onClick={() => {
+          exportCsv(`orders-${Date.now()}`, filteredData.map((o) => ({
+            orderNo: o.orderNo || o.id,
+            status: STATUS_MAP[o.status]?.label ?? o.status,
+            amount: o.totalAmount ?? 0,
+            user: o.user?.name ?? o.userName ?? '',
+            trip: o.trip?.title ?? o.tripTitle ?? '',
+            createdAt: o.createdAt ? dayjs(o.createdAt).format('YYYY-MM-DD HH:mm') : '',
+          })), [
+            { key: 'orderNo', label: '订单号' },
+            { key: 'status', label: '状态' },
+            { key: 'amount', label: '金额' },
+            { key: 'user', label: '用户' },
+            { key: 'trip', label: '行程' },
+            { key: 'createdAt', label: '创建时间' },
+          ]);
+          message.success(`已导出 ${filteredData.length} 条`);
+        }}>导出CSV</Button>
+      </div>
       <Card style={{ marginBottom: 16 }}>
         <Row gutter={[16, 12]} align="middle">
           <Col flex="auto">
