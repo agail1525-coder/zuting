@@ -7,8 +7,9 @@ function gitSha(): string {
   catch { return 'dev'; }
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
+  base: command === 'build' ? '/admin/' : '/',
   define: {
     __BUILD_SHA__: JSON.stringify(gitSha()),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
@@ -33,4 +34,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
