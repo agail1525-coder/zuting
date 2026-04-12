@@ -183,6 +183,7 @@ model HolySite {
   religion   Religion    @relation(fields: [religionId], references: [id])
   tripSites  TripSite[]
   routeSites RouteSite[]
+  destinationPackages DestinationPackage[]
 
   @@index([religionId])
   @@index([latitude, longitude])
@@ -657,6 +658,7 @@ model Route {
   religion    Religion?       @relation(fields: [religionId], references: [id])
   sites       RouteSite[]
   bookings    RouteBooking[]
+  destinationPackages DestinationPackage[]
 
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -2364,3 +2366,126 @@ model LifeStageGuide {
   @@index([stage])
 }
 
+
+// ========== M42 旅游配套系统 (TP++) ==========
+
+enum PackageTier {
+  LUXURY       // 尊贵游
+  BUSINESS     // 商务游
+  STANDARD     // 标准游
+  BUDGET       // 自助游
+}
+
+enum PackageCategory {
+  HOTEL        // 住
+  RESTAURANT   // 食
+  TRANSPORT    // 行
+  EXPERIENCE   // 游
+  SHOPPING     // 购
+  GUIDE        // 向导
+  GROUND_TEAM  // 地接
+}
+
+model DestinationPackage {
+  id            String           @id @default(cuid())
+  holySiteId    String?
+  routeId       String?
+  holySite      HolySite?        @relation(fields: [holySiteId], references: [id])
+  route         Route?           @relation(fields: [routeId], references: [id])
+
+  tier          PackageTier
+  category      PackageCategory
+  title         String
+  titleEn       String?
+  description   String           @db.Text
+  coverImage    String?
+  images        String[]
+
+  priceMin      Int
+  priceMax      Int
+  currency      String           @default("CNY")
+  priceUnit     String
+  priceAsOf     DateTime
+
+  groundTeamName    String?
+  groundTeamPhone   String?
+  groundTeamWechat  String?
+  groundTeamHours   String?
+  groundTeamNote    String?      @db.Text
+
+  sourceUrls        String[]
+  sourceLastSeenAt  DateTime
+  crawlerSourceId   String?
+  crawlerSource     CrawlerSource? @relation(fields: [crawlerSourceId], references: [id])
+
+  bestMonths    Int[]
+  avoidMonths   Int[]
+  taboos        String[]
+  leadTimeDays  Int              @default(3)
+  rating        Float?
+  reviewCount   Int              @default(0)
+  enabled       Boolean          @default(true)
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  priceAlerts   PackagePriceAlert[]
+
+  @@index([holySiteId, tier])
+  @@index([routeId, tier])
+  @@index([tier, category])
+}
+
+model CrawlerSource {
+  id           String           @id @default(cuid())
+  name         String
+  baseUrl      String
+  type         String
+  schedule     String           @default("0 3 * * *")
+  selector     Json
+  parser       String
+  rateLimitMs  Int              @default(1000)
+  enabled      Boolean          @default(true)
+  lastRunAt    DateTime?
+  lastStatus   String?
+  createdBy    String
+  packages     DestinationPackage[]
+  runs         CrawlerRun[]
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([enabled, schedule])
+}
+
+model CrawlerRun {
+  id            String        @id @default(cuid())
+  sourceId      String
+  source        CrawlerSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  startedAt     DateTime      @default(now())
+  finishedAt    DateTime?
+  status        String
+  itemsFound    Int           @default(0)
+  itemsCreated  Int           @default(0)
+  itemsUpdated  Int           @default(0)
+  itemsSkipped  Int           @default(0)
+  alertsCount   Int           @default(0)
+  errorLog      String?       @db.Text
+  triggeredBy   String        @default("CRON")
+
+  @@index([sourceId, startedAt])
+}
+
+model PackagePriceAlert {
+  id           String        @id @default(cuid())
+  packageId    String
+  package      DestinationPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  oldPriceMin  Int
+  newPriceMin  Int
+  changeRatio  Float
+  detectedAt   DateTime      @default(now())
+  acknowledged Boolean       @default(false)
+  note         String?
+
+  @@index([acknowledged, detectedAt])
+}
