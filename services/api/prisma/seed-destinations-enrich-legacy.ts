@@ -373,8 +373,6 @@ const DATA: Record<string, Enrich> = {
 
 async function main() {
   console.log('🏛  ADMIN 老站点落地信息补全\n');
-  console.log(`  [DIAG] DATA 条目数: ${Object.keys(DATA).length}`);
-  console.log(`  [DIAG] 洛杉矶威尔希大会堂 in DATA: ${!!(DATA as any)['洛杉矶威尔希大会堂']}`);
 
   const sites = await prisma.holySite.findMany({
     where: { source: 'ADMIN' },

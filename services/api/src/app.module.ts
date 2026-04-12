@@ -54,6 +54,8 @@ import { AdminAiModule } from './modules/admin-ai/admin-ai.module';
 import { AdminMediaModule } from './modules/admin-media/admin-media.module';
 import { AdminRoleModule } from './modules/admin-role/admin-role.module';
 import { CultureLifeModule } from './modules/culture-life/culture-life.module';
+import { DestinationPackageModule } from './modules/destination-package/destination-package.module';
+import { CrawlerModule } from './modules/crawler/crawler.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -113,6 +115,8 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     AdminMediaModule,
     AdminRoleModule,
     CultureLifeModule,
+    DestinationPackageModule,
+    CrawlerModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

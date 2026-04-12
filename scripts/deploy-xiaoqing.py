@@ -214,8 +214,7 @@ LLM_API_KEY="zuoyelang2026"
 
     # 目的地++ 老站点落地信息补全 (60 famous ADMIN sites)
     print("  Enriching legacy ADMIN sites (hours/price/season/transport/tips)...")
-    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-enrich-legacy.ts 2>&1 | tail -15")
-    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/diag-check.ts 2>&1 | tail -20")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-enrich-legacy.ts 2>&1 | tail -5")
 
     # 目的地++ 按气候回填 bestSeason (v4/v5 数据对象遗漏)
     print("  Backfilling bestSeason by country climate...")
