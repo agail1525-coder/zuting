@@ -1,0 +1,517 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "Joinus 佳绩之旅" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Joinus
+        - generic [ref=e8]: 佳绩之旅
+      - generic [ref=e9]:
+        - link "Search" [ref=e10] [cursor=pointer]:
+          - /url: /search
+          - img [ref=e11]
+        - link "Messages" [ref=e13] [cursor=pointer]:
+          - /url: /messages
+          - img [ref=e14]
+        - button "中文" [ref=e17]
+        - link "登录" [ref=e18] [cursor=pointer]:
+          - /url: /login
+          - generic [ref=e19]: 登录
+        - button "Toggle menu" [ref=e20]:
+          - generic [ref=e21]: Open menu
+          - img [ref=e22]
+  - main [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - heading "探索全球文化圣地" [level=1] [ref=e28]
+        - paragraph [ref=e29]: 横跨12大文化传统的文化目的地
+        - generic [ref=e30]:
+          - generic [ref=e31]: 🏛️ 503 个圣地
+          - generic [ref=e32]: 🌍 86 个国家
+          - generic [ref=e33]: 🙏 12 大文化传统
+        - generic [ref=e34]:
+          - img [ref=e35]
+          - textbox "Search holy sites" [ref=e37]:
+            - /placeholder: 搜索圣地名称、国家...
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]: HOT
+            - generic [ref=e42]:
+              - heading "精选文化路线" [level=2] [ref=e43]
+              - paragraph [ref=e44]: 最受欢迎的文化之旅路线
+          - link "查看全部路线 →" [ref=e45] [cursor=pointer]:
+            - /url: /holy-sites#routes
+        - generic [ref=e48]:
+          - link "日本神佛习合之旅 6天 · 2站 日本神佛习合之旅 神道与佛教文化交融的千年美学 法隆寺 — 伊势神宫 ¥9,980/人" [ref=e49] [cursor=pointer]:
+            - /url: /holy-sites/routes/japan-shinbutsu
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - img "日本神佛习合之旅" [ref=e52]
+                - generic [ref=e54]: 6天 · 2站
+                - generic [ref=e55]:
+                  - heading "日本神佛习合之旅" [level=3] [ref=e56]
+                  - paragraph [ref=e57]: 神道与佛教文化交融的千年美学
+              - generic [ref=e58]:
+                - generic [ref=e59]:
+                  - generic [ref=e61]: 法隆寺
+                  - generic [ref=e62]: —
+                - generic [ref=e65]: 伊势神宫
+              - generic [ref=e68]: ¥9,980/人
+          - link "恒河圣城文化之旅 7天 · 0站 恒河圣城文化之旅 沿恒河探访印度文化圣城与文明 ¥8,980/人" [ref=e69] [cursor=pointer]:
+            - /url: /holy-sites/routes/ganges-holy-cities
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - img "恒河圣城文化之旅" [ref=e72]
+                - generic [ref=e74]: 7天 · 0站
+                - generic [ref=e75]:
+                  - heading "恒河圣城文化之旅" [level=3] [ref=e76]
+                  - paragraph [ref=e77]: 沿恒河探访印度文化圣城与文明
+              - generic [ref=e80]: ¥8,980/人
+          - link "禅宗五家祖庭大巡礼 10天 · 0站 禅宗五家祖庭大巡礼 临济·曹洞·云门·法眼·沩仰——一次走遍五家祖庭 ¥8,980/人" [ref=e81] [cursor=pointer]:
+            - /url: /holy-sites/routes/zen-five-houses-grand-tour
+            - generic [ref=e82]:
+              - generic [ref=e83]:
+                - img "禅宗五家祖庭大巡礼" [ref=e84]
+                - generic [ref=e86]: 10天 · 0站
+                - generic [ref=e87]:
+                  - heading "禅宗五家祖庭大巡礼" [level=3] [ref=e88]
+                  - paragraph [ref=e89]: 临济·曹洞·云门·法眼·沩仰——一次走遍五家祖庭
+              - generic [ref=e92]: ¥8,980/人
+          - link "耶路撒冷文化之旅 5天 · 3站 耶路撒冷文化之旅 走进圣城，感受三大文化传统交汇 耶路撒冷圣墓教堂 — 耶路撒冷哭墙 — 圆顶清真寺 ¥8,800/人" [ref=e93] [cursor=pointer]:
+            - /url: /holy-sites/routes/jerusalem-pilgrimage
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - img "耶路撒冷文化之旅" [ref=e96]
+                - generic [ref=e98]: 5天 · 3站
+                - generic [ref=e99]:
+                  - heading "耶路撒冷文化之旅" [level=3] [ref=e100]
+                  - paragraph [ref=e101]: 走进圣城，感受三大文化传统交汇
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - generic [ref=e105]: 耶路撒冷圣墓教堂
+                  - generic [ref=e106]: —
+                - generic [ref=e107]:
+                  - generic [ref=e109]: 耶路撒冷哭墙
+                  - generic [ref=e110]: —
+                - generic [ref=e113]: 圆顶清真寺
+              - generic [ref=e116]: ¥8,800/人
+          - link "大慧宗杲·看话禅路线 5天 · 0站 大慧宗杲·看话禅路线 \"参话头\"——宋代禅宗复兴的旗手 ¥2,980/人" [ref=e117] [cursor=pointer]:
+            - /url: /holy-sites/routes/dahui-zonggao-route
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - img "大慧宗杲·看话禅路线" [ref=e120]
+                - generic [ref=e122]: 5天 · 0站
+                - generic [ref=e123]:
+                  - heading "大慧宗杲·看话禅路线" [level=3] [ref=e124]
+                  - paragraph [ref=e125]: "\"参话头\"——宋代禅宗复兴的旗手"
+              - generic [ref=e128]: ¥2,980/人
+          - link "百丈怀海·禅门清规路线 4天 · 0站 百丈怀海·禅门清规路线 \"一日不作，一日不食\"——农禅并重的开创者 ¥1,980/人" [ref=e129] [cursor=pointer]:
+            - /url: /holy-sites/routes/baizhang-huaihai-route
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - img "百丈怀海·禅门清规路线" [ref=e132]
+                - generic [ref=e134]: 4天 · 0站
+                - generic [ref=e135]:
+                  - heading "百丈怀海·禅门清规路线" [level=3] [ref=e136]
+                  - paragraph [ref=e137]: "\"一日不作，一日不食\"——农禅并重的开创者"
+              - generic [ref=e140]: ¥1,980/人
+      - generic [ref=e141]:
+        - generic [ref=e142]:
+          - img "万松书院" [ref=e143]
+          - generic [ref=e145]:
+            - heading "万松书院" [level=3] [ref=e146]
+            - paragraph [ref=e147]: 中国
+        - generic [ref=e148]:
+          - img "三山五岳南岳衡山" [ref=e149]
+          - paragraph [ref=e152]: 三山五岳南岳衡山
+        - generic [ref=e153]:
+          - img "三岛大社" [ref=e154]
+          - paragraph [ref=e157]: 三岛大社
+        - generic [ref=e158]:
+          - img "三清山" [ref=e159]
+          - paragraph [ref=e162]: 三清山
+        - generic [ref=e163]:
+          - img "上贺茂神社" [ref=e164]
+          - paragraph [ref=e167]: 上贺茂神社
+      - generic [ref=e168]:
+        - button "🌏 全部 503" [ref=e169]:
+          - generic [ref=e170]: 🌏
+          - generic [ref=e171]: 全部
+          - generic [ref=e172]: "503"
+        - button "☪ 伊斯兰文化 46" [ref=e173]:
+          - generic [ref=e174]: ☪
+          - generic [ref=e175]: 伊斯兰文化
+          - generic [ref=e176]: "46"
+        - button "☸ 佛教文化 67" [ref=e177]:
+          - generic [ref=e178]: ☸
+          - generic [ref=e179]: 佛教文化
+          - generic [ref=e180]: "67"
+        - button "儒 儒家文化 31" [ref=e181]:
+          - generic [ref=e182]: 儒
+          - generic [ref=e183]: 儒家文化
+          - generic [ref=e184]: "31"
+        - button "🕉 印度文化 41" [ref=e185]:
+          - generic [ref=e186]: 🕉
+          - generic [ref=e187]: 印度文化
+          - generic [ref=e188]: "41"
+        - button "◉ 原住民文化 41" [ref=e189]:
+          - generic [ref=e190]: ◉
+          - generic [ref=e191]: 原住民文化
+          - generic [ref=e192]: "41"
+        - button "✝ 基督文化 61" [ref=e193]:
+          - generic [ref=e194]: ✝
+          - generic [ref=e195]: 基督文化
+          - generic [ref=e196]: "61"
+        - button "✦ 巴哈伊文化 30" [ref=e197]:
+          - generic [ref=e198]: ✦
+          - generic [ref=e199]: 巴哈伊文化
+          - generic [ref=e200]: "30"
+        - button "✡ 犹太文化 37" [ref=e201]:
+          - generic [ref=e202]: ✡
+          - generic [ref=e203]: 犹太文化
+          - generic [ref=e204]: "37"
+        - button "⛩ 神道文化 40" [ref=e205]:
+          - generic [ref=e206]: ⛩
+          - generic [ref=e207]: 神道文化
+          - generic [ref=e208]: "40"
+        - button "☸ 藏传文化 38" [ref=e209]:
+          - generic [ref=e210]: ☸
+          - generic [ref=e211]: 藏传文化
+          - generic [ref=e212]: "38"
+        - button "☯ 道教文化 43" [ref=e213]:
+          - generic [ref=e214]: ☯
+          - generic [ref=e215]: 道教文化
+          - generic [ref=e216]: "43"
+        - button "☬ 锡克文化 28" [ref=e217]:
+          - generic [ref=e218]: ☬
+          - generic [ref=e219]: 锡克文化
+          - generic [ref=e220]: "28"
+      - generic [ref=e221]:
+        - button "🌏 全部地区" [ref=e222]
+        - button "亚洲 (307)" [ref=e223]
+        - button "欧洲 (60)" [ref=e224]
+        - button "中东 (63)" [ref=e225]
+        - button "非洲 (20)" [ref=e226]
+        - button "美洲 (53)" [ref=e227]
+      - generic [ref=e228]:
+        - generic [ref=e231]:
+          - generic [ref=e232]:
+            - generic [ref=e233]:
+              - img [ref=e234]
+              - textbox "搜索圣地名称、国家..." [ref=e236]
+            - combobox [ref=e237] [cursor=pointer]:
+              - option "名称 A→Z" [selected]
+              - option "名称 Z→A"
+              - option "按国家"
+              - option "评分最高"
+              - option "评价最多"
+            - generic [ref=e238]: 503 条结果
+          - generic [ref=e239]:
+            - button "全部" [ref=e240]
+            - button "☪ 伊斯兰文化" [ref=e241]
+            - button "☸ 佛教文化" [ref=e242]
+            - button "儒 儒家文化" [ref=e243]
+            - button "🕉 印度文化" [ref=e244]
+            - button "◉ 原住民文化" [ref=e245]
+            - button "✝ 基督文化" [ref=e246]
+            - button "✦ 巴哈伊文化" [ref=e247]
+            - button "✡ 犹太文化" [ref=e248]
+            - button "⛩ 神道文化" [ref=e249]
+            - button "☸ 藏传文化" [ref=e250]
+            - button "☯ 道教文化" [ref=e251]
+            - button "☬ 锡克文化" [ref=e252]
+        - generic [ref=e254]:
+          - generic [ref=e255]:
+            - button "Grid view" [ref=e256]:
+              - img [ref=e257]
+              - text: 列表模式
+            - button "Map view" [ref=e259]:
+              - img [ref=e260]
+              - text: 地图模式
+          - button "Toggle compare mode" [ref=e262]:
+            - img [ref=e263]
+            - text: 对比
+      - generic [ref=e265]:
+        - generic [ref=e266]:
+          - 'link "阿巴斯陵 以色列 巴哈伊文化 阿巴斯陵 Shrine of Abdul-Baha 阿巴斯·阿芬迪新陵寝 —— 2024年开放 巴哈伊第二代圣护，海法卡梅尔山脚 免费 1-1.5小时 最佳季节: 3-5/9-11月" [ref=e267] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi8i79004fpxdjybs7dqul
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - img "阿巴斯陵" [ref=e270]
+                - generic [ref=e271]:
+                  - generic [ref=e272]: 以色列
+                  - generic [ref=e273]: 巴哈伊文化
+              - generic [ref=e274]:
+                - heading "阿巴斯陵" [level=3] [ref=e275]
+                - paragraph [ref=e276]: Shrine of Abdul-Baha
+                - paragraph [ref=e277]: 阿巴斯·阿芬迪新陵寝 —— 2024年开放 巴哈伊第二代圣护，海法卡梅尔山脚
+                - generic [ref=e278]:
+                  - generic [ref=e279]: 免费
+                  - generic [ref=e280]: 1-1.5小时
+                - generic [ref=e282]: "最佳季节: 3-5/9-11月"
+          - button "已收藏" [ref=e285]:
+            - img [ref=e286]
+        - generic [ref=e288]:
+          - 'link "阿不都拉哈曼清真寺 马来西亚 伊斯兰文化 阿不都拉哈曼清真寺 Masjid Kristal 登嘉楼水晶清真寺，钢铁玻璃结构2008年 免费 1.5小时 最佳季节: 3-9月" [ref=e289] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi8isb000tpxeq2g80n2ll
+            - generic [ref=e290]:
+              - generic [ref=e291]:
+                - img "阿不都拉哈曼清真寺" [ref=e292]
+                - generic [ref=e293]:
+                  - generic [ref=e294]: 马来西亚
+                  - generic [ref=e295]: 伊斯兰文化
+              - generic [ref=e296]:
+                - heading "阿不都拉哈曼清真寺" [level=3] [ref=e297]
+                - paragraph [ref=e298]: Masjid Kristal
+                - paragraph [ref=e299]: 登嘉楼水晶清真寺，钢铁玻璃结构2008年
+                - generic [ref=e300]:
+                  - generic [ref=e301]: 免费
+                  - generic [ref=e302]: 1.5小时
+                - generic [ref=e304]: "最佳季节: 3-9月"
+          - button "已收藏" [ref=e307]:
+            - img [ref=e308]
+        - generic [ref=e310]:
+          - 'link "阿德里安堡圣地 土耳其 巴哈伊文化 阿德里安堡圣地 Edirne Bahai Site 巴哈欧拉宣示之地 —— 阿德里安堡 他在此宣示自己的使命 免费 1-2小时 最佳季节: 4-10月" [ref=e311] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7o6d00gqpxdg6ena3inr
+            - generic [ref=e312]:
+              - generic [ref=e313]:
+                - img "阿德里安堡圣地" [ref=e314]
+                - generic [ref=e315]:
+                  - generic [ref=e316]: 土耳其
+                  - generic [ref=e317]: 巴哈伊文化
+              - generic [ref=e318]:
+                - heading "阿德里安堡圣地" [level=3] [ref=e319]
+                - paragraph [ref=e320]: Edirne Bahai Site
+                - paragraph [ref=e321]: 巴哈欧拉宣示之地 —— 阿德里安堡 他在此宣示自己的使命
+                - generic [ref=e322]:
+                  - generic [ref=e323]: 免费
+                  - generic [ref=e324]: 1-2小时
+                - generic [ref=e326]: "最佳季节: 4-10月"
+          - button "已收藏" [ref=e329]:
+            - img [ref=e330]
+        - generic [ref=e332]:
+          - 'link "阿尔罕布拉宫 西班牙 伊斯兰文化 阿尔罕布拉宫 Alhambra Lā ghāliba illā Allāh —— 阿尔罕布拉宫铭文 唯有真主是胜利者 €19.09 需提前预约 1-2小时 最佳季节: 4-6/9-11月" [ref=e333] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7nx2005ipxdgue6r85o6
+            - generic [ref=e334]:
+              - generic [ref=e335]:
+                - img "阿尔罕布拉宫" [ref=e336]
+                - generic [ref=e337]:
+                  - generic [ref=e338]: 西班牙
+                  - generic [ref=e339]: 伊斯兰文化
+              - generic [ref=e340]:
+                - heading "阿尔罕布拉宫" [level=3] [ref=e341]
+                - paragraph [ref=e342]: Alhambra
+                - paragraph [ref=e343]: Lā ghāliba illā Allāh —— 阿尔罕布拉宫铭文 唯有真主是胜利者
+                - generic [ref=e344]:
+                  - generic [ref=e345]: €19.09 需提前预约
+                  - generic [ref=e346]: 1-2小时
+                - generic [ref=e348]: "最佳季节: 4-6/9-11月"
+          - button "已收藏" [ref=e351]:
+            - img [ref=e352]
+        - generic [ref=e354]:
+          - 'link "阿卡巴比花园 以色列 巴哈伊文化 阿卡巴比花园 Mansion of Bahji O Son of Spirit! My first counsel is this: possess a pure heart —— 《隐言经》 圣子啊，我对你的第一个忠告是：保持纯洁的心 免费 1-1.5小时 最佳季节: 3-11月" [ref=e355] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7o6800gkpxdgso7drx9j
+            - generic [ref=e356]:
+              - generic [ref=e357]:
+                - img "阿卡巴比花园" [ref=e358]
+                - generic [ref=e359]:
+                  - generic [ref=e360]: 以色列
+                  - generic [ref=e361]: 巴哈伊文化
+              - generic [ref=e362]:
+                - heading "阿卡巴比花园" [level=3] [ref=e363]
+                - paragraph [ref=e364]: Mansion of Bahji
+                - paragraph [ref=e365]: "O Son of Spirit! My first counsel is this: possess a pure heart —— 《隐言经》 圣子啊，我对你的第一个忠告是：保持纯洁的心"
+                - generic [ref=e366]:
+                  - generic [ref=e367]: 免费
+                  - generic [ref=e368]: 1-1.5小时
+                - generic [ref=e370]: "最佳季节: 3-11月"
+          - button "已收藏" [ref=e373]:
+            - img [ref=e374]
+        - generic [ref=e376]:
+          - 'link "阿克萨达姆神庙 印度 印度文化 阿克萨达姆神庙 Akshardham Lokah Samastah Sukhino Bhavantu —— 印度文化祈祷文 愿一切众生幸福安康 免费 (展览 ₹170) 1-2小时 最佳季节: 10-3月" [ref=e377] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7nyn007cpxdgp4pb3q9w
+            - generic [ref=e378]:
+              - generic [ref=e379]:
+                - img "阿克萨达姆神庙" [ref=e380]
+                - generic [ref=e381]:
+                  - generic [ref=e382]: 印度
+                  - generic [ref=e383]: 印度文化
+              - generic [ref=e384]:
+                - heading "阿克萨达姆神庙" [level=3] [ref=e385]
+                - paragraph [ref=e386]: Akshardham
+                - paragraph [ref=e387]: Lokah Samastah Sukhino Bhavantu —— 印度文化祈祷文 愿一切众生幸福安康
+                - generic [ref=e388]:
+                  - generic [ref=e389]: 免费 (展览 ₹170)
+                  - generic [ref=e390]: 1-2小时
+                - generic [ref=e392]: "最佳季节: 10-3月"
+          - button "已收藏" [ref=e395]:
+            - img [ref=e396]
+        - generic [ref=e398]:
+          - 'link "阿克苏姆锡安圣母堂 埃塞俄比亚 基督文化 阿克苏姆锡安圣母堂 Church of Our Lady Mary of Zion 传约柜安置地，4世纪埃塞最古教堂 200比尔 1.5小时 最佳季节: 10-3月" [ref=e399] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi8isy0019pxeqzc9aec4d
+            - generic [ref=e400]:
+              - generic [ref=e401]:
+                - img "阿克苏姆锡安圣母堂" [ref=e402]
+                - generic [ref=e403]:
+                  - generic [ref=e404]: 埃塞俄比亚
+                  - generic [ref=e405]: 基督文化
+              - generic [ref=e406]:
+                - heading "阿克苏姆锡安圣母堂" [level=3] [ref=e407]
+                - paragraph [ref=e408]: Church of Our Lady Mary of Zion
+                - paragraph [ref=e409]: 传约柜安置地，4世纪埃塞最古教堂
+                - generic [ref=e410]:
+                  - generic [ref=e411]: 200比尔
+                  - generic [ref=e412]: 1.5小时
+                - generic [ref=e414]: "最佳季节: 10-3月"
+          - button "已收藏" [ref=e417]:
+            - img [ref=e418]
+        - generic [ref=e420]:
+          - 'link "阿雷奥帕谷圣母堂 科特迪瓦 基督文化 阿雷奥帕谷圣母堂 Yamoussoukro Basilica 世界最大天主教堂基尼斯纪录，1990年 2,000西非法郎 2小时 最佳季节: 11-3月" [ref=e421] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi8it3001dpxeqw4gnfcxm
+            - generic [ref=e422]:
+              - generic [ref=e423]:
+                - img "阿雷奥帕谷圣母堂" [ref=e424]
+                - generic [ref=e425]:
+                  - generic [ref=e426]: 科特迪瓦
+                  - generic [ref=e427]: 基督文化
+              - generic [ref=e428]:
+                - heading "阿雷奥帕谷圣母堂" [level=3] [ref=e429]
+                - paragraph [ref=e430]: Yamoussoukro Basilica
+                - paragraph [ref=e431]: 世界最大天主教堂基尼斯纪录，1990年
+                - generic [ref=e432]:
+                  - generic [ref=e433]: 2,000西非法郎
+                  - generic [ref=e434]: 2小时
+                - generic [ref=e436]: "最佳季节: 11-3月"
+          - button "已收藏" [ref=e439]:
+            - img [ref=e440]
+        - generic [ref=e442]:
+          - 'link "阿联酋巴哈伊中心 阿联酋 巴哈伊文化 阿联酋巴哈伊中心 UAE Bahai Center Love is the most great law —— 阿博都巴哈 爱是最伟大的律法 免费 1小时 最佳季节: 11-3月" [ref=e443] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7o6g00gupxdggb45mkjq
+            - generic [ref=e444]:
+              - generic [ref=e445]:
+                - img "阿联酋巴哈伊中心" [ref=e446]
+                - generic [ref=e447]:
+                  - generic [ref=e448]: 阿联酋
+                  - generic [ref=e449]: 巴哈伊文化
+              - generic [ref=e450]:
+                - heading "阿联酋巴哈伊中心" [level=3] [ref=e451]
+                - paragraph [ref=e452]: UAE Bahai Center
+                - paragraph [ref=e453]: Love is the most great law —— 阿博都巴哈 爱是最伟大的律法
+                - generic [ref=e454]:
+                  - generic [ref=e455]: 免费
+                  - generic [ref=e456]: 1小时
+                - generic [ref=e458]: "最佳季节: 11-3月"
+          - button "已收藏" [ref=e461]:
+            - img [ref=e462]
+        - generic [ref=e464]:
+          - 'link "阿姆利则杜加庙 印度 印度文化 阿姆利则杜加庙 Durgiana Temple Sarve Bhavantu Sukhinah —— 印度文化祈祷 愿众生皆得安乐 免费 1-2小时 最佳季节: 10-3月" [ref=e465] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7nzm008gpxdgqmu34v53
+            - generic [ref=e466]:
+              - generic [ref=e467]:
+                - img "阿姆利则杜加庙" [ref=e468]
+                - generic [ref=e469]:
+                  - generic [ref=e470]: 印度
+                  - generic [ref=e471]: 印度文化
+              - generic [ref=e472]:
+                - heading "阿姆利则杜加庙" [level=3] [ref=e473]
+                - paragraph [ref=e474]: Durgiana Temple
+                - paragraph [ref=e475]: Sarve Bhavantu Sukhinah —— 印度文化祈祷 愿众生皆得安乐
+                - generic [ref=e476]:
+                  - generic [ref=e477]: 免费
+                  - generic [ref=e478]: 1-2小时
+                - generic [ref=e480]: "最佳季节: 10-3月"
+          - button "已收藏" [ref=e483]:
+            - img [ref=e484]
+        - generic [ref=e486]:
+          - 'link "阿姆利则杜加神庙 印度 印度文化 阿姆利则杜加神庙 Durgiana Temple 金庙印度教版本，大理石湖中殿 免费 1-1.5小时 最佳季节: 10-3月" [ref=e487] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi8itp001rpxeqo46qih46
+            - generic [ref=e488]:
+              - generic [ref=e489]:
+                - img "阿姆利则杜加神庙" [ref=e490]
+                - generic [ref=e491]:
+                  - generic [ref=e492]: 印度
+                  - generic [ref=e493]: 印度文化
+              - generic [ref=e494]:
+                - heading "阿姆利则杜加神庙" [level=3] [ref=e495]
+                - paragraph [ref=e496]: Durgiana Temple
+                - paragraph [ref=e497]: 金庙印度教版本，大理石湖中殿
+                - generic [ref=e498]:
+                  - generic [ref=e499]: 免费
+                  - generic [ref=e500]: 1-1.5小时
+                - generic [ref=e502]: "最佳季节: 10-3月"
+          - button "已收藏" [ref=e505]:
+            - img [ref=e506]
+        - generic [ref=e508]:
+          - 'link "阿姆利则金庙 印度 锡克文化 阿姆利则金庙 Golden Temple Ik Onkar — There is One God —— 《古鲁·格兰特·萨希卜》 万物同源——只有一个创造者 免费 1-2小时 最佳季节: 10-3月" [ref=e509] [cursor=pointer]':
+            - /url: /holy-sites/cmnwi7o1n00aypxdgnmqi293s
+            - generic [ref=e510]:
+              - generic [ref=e511]:
+                - img "阿姆利则金庙" [ref=e512]
+                - generic [ref=e513]:
+                  - generic [ref=e514]: 印度
+                  - generic [ref=e515]: 锡克文化
+              - generic [ref=e516]:
+                - heading "阿姆利则金庙" [level=3] [ref=e517]
+                - paragraph [ref=e518]: Golden Temple
+                - paragraph [ref=e519]: Ik Onkar — There is One God —— 《古鲁·格兰特·萨希卜》 万物同源——只有一个创造者
+                - generic [ref=e520]:
+                  - generic [ref=e521]: 免费
+                  - generic [ref=e522]: 1-2小时
+                - generic [ref=e524]: "最佳季节: 10-3月"
+          - button "已收藏" [ref=e527]:
+            - img [ref=e528]
+      - generic [ref=e530]:
+        - button "加载更多 (491 个圣地)" [ref=e531]
+        - paragraph [ref=e532]: 已展示 12 / 503
+      - generic [ref=e534]:
+        - generic [ref=e535]:
+          - heading "找不到想去的圣地？" [level=2] [ref=e536]
+          - paragraph [ref=e537]: 让AI旅行规划师根据你的偏好推荐
+        - generic [ref=e538]:
+          - link "AI推荐圣地" [ref=e539] [cursor=pointer]:
+            - /url: /chat
+          - link "浏览路线" [ref=e540] [cursor=pointer]:
+            - /url: /holy-sites#routes
+  - contentinfo [ref=e541]:
+    - generic [ref=e542]:
+      - generic [ref=e543]:
+        - generic [ref=e544]:
+          - generic [ref=e545]:
+            - generic [ref=e546]: Joinus
+            - generic [ref=e547]: "|"
+            - generic [ref=e548]: 探索人类文明，创造人生佳绩
+          - paragraph [ref=e549]: 加入我们，探索世界
+        - generic [ref=e550]:
+          - heading "探索" [level=3] [ref=e551]
+          - generic [ref=e552]:
+            - link "目的地" [ref=e553] [cursor=pointer]:
+              - /url: /holy-sites
+            - link "文化百科" [ref=e554] [cursor=pointer]:
+              - /url: /religions
+            - link "AI助手" [ref=e555] [cursor=pointer]:
+              - /url: /chat
+            - link "地图" [ref=e556] [cursor=pointer]:
+              - /url: /map
+        - generic [ref=e557]:
+          - heading "支持" [level=3] [ref=e558]
+          - generic [ref=e559]:
+            - link "关于我们" [ref=e560] [cursor=pointer]:
+              - /url: /about
+            - link "用户协议" [ref=e561] [cursor=pointer]:
+              - /url: /terms
+            - link "隐私政策" [ref=e562] [cursor=pointer]:
+              - /url: /privacy
+        - generic [ref=e563]:
+          - heading "联系我们" [level=3] [ref=e564]
+          - generic [ref=e565]:
+            - generic [ref=e566]: support@joinus.com
+            - generic [ref=e567]:
+              - generic [ref=e568] [cursor=pointer]: 微
+              - generic [ref=e569] [cursor=pointer]: 博
+              - generic [ref=e570] [cursor=pointer]: X
+      - generic [ref=e572]:
+        - paragraph [ref=e573]: © 2026 Joinus.com. 版权所有.
+        - paragraph [ref=e574]: 备案审核中
+  - alert [ref=e575]

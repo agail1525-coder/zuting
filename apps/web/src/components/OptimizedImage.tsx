@@ -73,11 +73,16 @@ export default function OptimizedImage({
   const blurW = width ?? 400;
   const blurH = height ?? 300;
 
+  // 生产服务器位于中国,无法访问 upload.wikimedia.org 做 Next 图片优化(500/504)
+  // 远程维基/Commons 图直接让浏览器加载,绕过服务端优化
+  const isRemoteCDN = /^https?:\/\/(upload|commons)\.wikimedia\.org/i.test(src);
+
   const imageProps: Partial<ImageProps> = {
     src,
     alt,
     className,
     priority,
+    unoptimized: isRemoteCDN,
     onError: () => setHasError(true),
     placeholder: "blur" as const,
     blurDataURL: `data:image/svg+xml;base64,${toBase64(shimmerSvg(blurW, blurH))}`,
