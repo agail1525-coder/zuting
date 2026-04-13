@@ -22,6 +22,97 @@ const prisma = new PrismaClient();
 const JSON_PATH = path.join(__dirname, 'data', 'wiki-images.json');
 const FETCH_MODE = process.argv.includes('--fetch');
 
+// 手工维护的 Wikipedia 标题别名 (针对 nameEn 无法直接匹配的站点)
+const ALIASES: Record<string, string[]> = {
+  '浙江宁波天童寺': ['Tiantong_Temple'],
+  '海法空中花园': ['Bahá%27í_World_Centre', 'Shrine_of_the_Báb', 'Terraces_(Baháʼí)'],
+  '温哥华罗斯街锡克庙': ['Ross_Street_Gurdwara_Sahib'],
+  '湖南沩山密印寺': ['Miyin_Temple'],
+  '特拉维夫大会堂': ['Great_Synagogue_of_Tel_Aviv'],
+  '玻利维亚萨玛帕塔': ['El_Fuerte_de_Samaipata'],
+  '瓦拉纳西恒河': ['Varanasi', 'Dashashwamedh_Ghat'],
+  '甘南郎木寺': ['Langmu_Monastery', 'Langmusi'],
+  '白马寺': ['White_Horse_Temple'],
+  '直贡梯寺': ['Drigung_Monastery'],
+  '石清水八幡宫': ['Iwashimizu_Shrine'],
+  '石鼓书院': ['Shigu_Academy'],
+  '福建福州鼓山涌泉寺': ['Yongquan_Temple'],
+  '科尔多瓦主教座堂(原大清真寺)': ['Mosque%E2%80%93Cathedral_of_C%C3%B3rdoba'],
+  '科帕卡瓦纳': ['Copacabana,_Bolivia'],
+  '科罗拉多四角地': ['Four_Corners_Monument'],
+  '穆罕默德·阿里清真寺': ['Mosque_of_Muhammad_Ali'],
+  '米纳克希神庙': ['Meenakshi_Temple'],
+  '索玛纳特神庙': ['Somnath_temple'],
+  '紫阳书院': ['Ziyang_Academy'],
+  '塔兰塔兰萨希卜': ['Darbar_Sahib_Tarn_Taran'],
+  '鹿岛神宫': ['Kashima_Shrine'],
+  '贵船神社': ['Kifune_Shrine'],
+  '加尔各答卡莉庙': ['Kalighat_Kali_Temple'],
+  '蒙古甘丹寺': ['Gandantegchinlen_Monastery'],
+  '蒂卡尔': ['Tikal'],
+  '特奥蒂瓦坎': ['Teotihuacan'],
+  '帕伦克': ['Palenque'],
+  '乌斯马尔': ['Uxmal'],
+  '埃洛拉凯拉撒石窟': ['Kailasa_Temple,_Ellora'],
+  '普兰巴南神庙': ['Prambanan'],
+  '莫斯科救世主大教堂': ['Cathedral_of_Christ_the_Saviour'],
+  '滴血救世主大教堂': ['Church_of_the_Savior_on_Blood'],
+  '蒙特塞拉特修道院': ['Montserrat_(monastery)'],
+  '都柏林圣帕特里克大教堂': ["Saint_Patrick%27s_Cathedral,_Dublin"],
+  '布宜诺斯艾利斯大教堂': ['Buenos_Aires_Metropolitan_Cathedral'],
+  '巴西利亚大教堂': ['Cathedral_of_Brasília'],
+  '瓜达卢佩圣母大教堂': ['Basilica_of_Our_Lady_of_Guadalupe'],
+  '卢尔德圣母文化探访地': ['Sanctuary_of_Our_Lady_of_Lourdes'],
+  '法蒂玛圣母文化探访地': ['Sanctuary_of_Our_Lady_of_Fátima'],
+  '柏林新会堂': ['New_Synagogue,_Berlin'],
+  '布达佩斯大犹太会堂': ['Dohány_Street_Synagogue'],
+  '布拉格老新犹太会堂': ['Old_New_Synagogue'],
+  '威尼斯犹太区': ['Venetian_Ghetto'],
+  '阿姆斯特丹葡萄牙会堂': ['Portuguese_Synagogue_(Amsterdam)'],
+  '布尔萨绿色清真寺': ['Green_Mosque_(Bursa)'],
+  '西安化觉巷清真大寺': ['Great_Mosque_of_Xi%27an'],
+  '艾提尕尔清真寺': ['Id_Kah_Mosque'],
+  '马来西亚国家清真寺': ['National_Mosque_of_Malaysia'],
+  '奥马尔·阿里·赛义夫丁清真寺': ['Omar_Ali_Saifuddien_Mosque'],
+  '伊斯蒂赫拉尔清真寺': ['Istiqlal_Mosque,_Jakarta'],
+  '毛里求斯大盆地': ['Ganga_Talao'],
+  '卡鲁因清真寺': ['University_of_al-Qarawiyyin'],
+  '伊本·图伦清真寺': ['Mosque_of_Ibn_Tulun'],
+  '马图拉': ['Mathura'],
+  '沃林达文': ['Vrindavan'],
+  '阿约提亚': ['Ayodhya'],
+  '拉梅什瓦拉姆神庙': ['Ramanathaswamy_Temple'],
+  '蒂鲁马拉文卡塔什瓦拉神庙': ['Venkateswara_Temple,_Tirumala'],
+  '普里贾格纳神庙': ['Jagannath_Temple,_Puri'],
+  '维鲁帕克沙神庙': ['Virupaksha_Temple,_Hampi'],
+  '吴哥窟印度文化': ['Angkor_Wat'],
+  '博达哈大佛塔': ['Boudhanath'],
+  '斯瓦扬布纳特': ['Swayambhunath'],
+  '不丹普那卡宗': ['Punakha_Dzong'],
+  '萨迦寺': ['Sakya_Monastery'],
+  '楚布寺': ['Tsurphu_Monastery'],
+  '云南松赞林寺': ['Songtsen_Gampo_Monastery'],
+  '德格印经院': ['Parkhang'],
+  '熊野三山': ['Kumano_Sanzan'],
+  '宗像大社': ['Munakata_Taisha'],
+  '住吉大社': ['Sumiyoshi-taisha'],
+  '热田神宫': ['Atsuta_Shrine'],
+  '冰川神社': ['Hikawa_Shrine'],
+  '大神神社': ['%C5%8Cmiwa_Shrine'],
+  '三岛大社': ['Mishima_Taisha'],
+  '宫崎神宫': ['Miyazaki_Shrine'],
+  '宇佐神宫': ['Usa_Jingū'],
+  '香取神宫': ['Katori_Shrine'],
+  '靖国神社': ['Yasukuni_Shrine'],
+  '普拉巴萨加斯雅': ['Prabhasa_Kshetra'],
+  '金汤桥清真寺': ['Jintang_Mosque'],
+  '提瓦纳库': ['Tiwanaku'],
+  '马丘比丘': ['Machu_Picchu'],
+  '因加皮尔卡': ['Ingapirca'],
+  '大津巴布韦': ['Great_Zimbabwe'],
+  '纳米布红岩': ['Sossusvlei'],
+};
+
 async function wikiImage(title: string, lang: 'en' | 'zh'): Promise<string | null> {
   try {
     const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
@@ -84,7 +175,18 @@ async function fetchAndSave() {
     if (result[s.name]) continue;
     attempts++;
     let img: string | null = null;
-    if (s.nameEn) img = await wikiImage(s.nameEn, 'en');
+    // 1. 别名优先 (手工维护)
+    const aliases = ALIASES[s.name];
+    if (aliases) {
+      for (const a of aliases) {
+        img = await wikiImage(a, 'en');
+        if (img) break;
+        await sleep(100);
+      }
+    }
+    // 2. nameEn 回退
+    if (!img && s.nameEn) img = await wikiImage(s.nameEn, 'en');
+    // 3. 中文维基
     if (!img) img = await wikiImage(s.name, 'zh');
     if (img) {
       result[s.name] = img;

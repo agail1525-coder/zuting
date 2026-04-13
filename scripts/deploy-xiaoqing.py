@@ -220,6 +220,9 @@ LLM_API_KEY="zuoyelang2026"
     print("  Backfilling bestSeason by country climate...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-backfill-season.ts 2>&1 | tail -5")
 
+    print("  Backfilling visitDuration by keyword heuristic...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-destinations-visit-duration.ts 2>&1 | tail -5")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
