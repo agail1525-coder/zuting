@@ -13,12 +13,22 @@ export const metadata = {
 };
 
 export default async function MerchantsPage() {
-  const results = await Promise.allSettled([
-    fetchMerchants({ pageSize: 100 }),
-  ]);
-  const data = results[0].status === "fulfilled" ? results[0].value : { items: [], total: 0 };
-  const merchants = Array.isArray(data.items) ? data.items : [];
-  const total = data.total || 0;
+  // [FE-03] 后端 @Max(100) 分页上限,循环分页到 page<=10 取 1000 条
+  const firstPage = await fetchMerchants({ pageSize: 100, page: 1 }).catch(() => ({ items: [], total: 0 }));
+  const total = firstPage.total || 0;
+  const items: typeof firstPage.items = Array.isArray(firstPage.items) ? [...firstPage.items] : [];
 
-  return <MerchantsClient initialMerchants={merchants} initialTotal={total} />;
+  const maxPages = Math.min(10, Math.ceil(total / 100));
+  if (maxPages > 1) {
+    const rest = await Promise.allSettled(
+      Array.from({ length: maxPages - 1 }, (_, i) =>
+        fetchMerchants({ pageSize: 100, page: i + 2 }),
+      ),
+    );
+    for (const r of rest) {
+      if (r.status === "fulfilled" && Array.isArray(r.value.items)) items.push(...r.value.items);
+    }
+  }
+
+  return <MerchantsClient initialMerchants={items} initialTotal={total} />;
 }
