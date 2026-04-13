@@ -226,6 +226,9 @@ LLM_API_KEY="zuoyelang2026"
     print("  旅游配套++ TP seeds (v1/v2/v3-auto/v4-auto)...")
     run(ssh, f"cd {REMOTE_BASE}/api && for f in prisma/seed-packages-v*.ts; do echo \"→ $f\"; npx tsx \"$f\" 2>&1 | tail -3; done")
 
+    print("  旅游配套++ 商家派生 (seed-merchants-from-tp)...")
+    run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-merchants-from-tp.ts 2>&1 | tail -5")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
@@ -366,7 +369,7 @@ echo "Admin container: zuting-admin-nginx on port {ADMIN_PORT}"
     print("  Flushing stale Redis entity caches...")
     flush_cmd = (
         "docker exec zuoyelang-redis sh -c \""
-        "for prefix in holy-site temple patriarch teaching seal route religion scripture destination-package crawler; do "
+        "for prefix in holy-site temple patriarch teaching seal route religion scripture destination-package crawler merchant merchants; do "
         "  redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning --scan --pattern \\\"$prefix:*\\\" | "
         "  xargs -r redis-cli -a 'CbFjnSKeIFi3dk7mzIRW' -n 2 --no-auth-warning DEL; "
         "done\""
