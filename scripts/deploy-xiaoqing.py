@@ -229,6 +229,10 @@ LLM_API_KEY="zuoyelang2026"
     print("  旅游配套++ 商家派生 (seed-merchants-from-tp)...")
     run(ssh, f"cd {REMOTE_BASE}/api && npx tsx prisma/seed-merchants-from-tp.ts 2>&1 | tail -5")
 
+    print("  旅游配套++ 图片本地化 (seed-localize-images)...")
+    run(ssh, f"mkdir -p /opt/zuting/static/images && chmod 755 /opt/zuting/static/images")
+    run(ssh, f"cd {REMOTE_BASE}/api && TP_STATIC_DIR=/opt/zuting/static/images npx tsx prisma/seed-localize-images.ts 2>&1 | tail -10")
+
     # Fix ALL broken pnpm symlinks via Python script on server
     print("  修复 Web standalone pnpm symlinks...")
     fix_script = r'''
@@ -391,6 +395,8 @@ echo "Admin container: zuting-admin-nginx on port {ADMIN_PORT}"
     # on the server. No need to inject conf.d files — ports 3080/3083 are not exposed
     # by the Docker nginx container. Access via domain or direct ports (3002/3003/3004).
     print("\n[6/7] Nginx域名路由已配置 (zuting.fszyl.top)")
+
+    # TP++ /static/ route is handled via Next.js rewrites → API:3002 (see apps/web/next.config.mjs)
 
     # ── 7. 上传 Admin nginx SPA 配置 ──
     print("\n[7/7] 配置 Admin SPA路由...")

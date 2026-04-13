@@ -18,11 +18,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {},
   async rewrites() {
+    const apiBase = process.env.API_INTERNAL_URL || "http://localhost:3002";
     return [
-      {
-        source: "/api/:path*",
-        destination: `${process.env.API_INTERNAL_URL || "http://localhost:3002"}/api/:path*`,
-      },
+      { source: "/api/:path*", destination: `${apiBase}/api/:path*` },
+      { source: "/static/:path*", destination: `${apiBase}/static/:path*` },
     ];
   },
   // Ensure Leaflet CSS and images are handled correctly

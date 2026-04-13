@@ -108,6 +108,13 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
+  // TP++ localized images — served from TP_STATIC_DIR (default /opt/zuting/static)
+  const tpStaticRoot = process.env.TP_STATIC_ROOT || '/opt/zuting/static';
+  app.useStaticAssets(tpStaticRoot, {
+    prefix: '/static/',
+    maxAge: 7 * 24 * 3600 * 1000,
+  });
+
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
