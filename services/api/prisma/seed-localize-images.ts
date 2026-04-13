@@ -27,7 +27,7 @@ const prisma = new PrismaClient();
 const STATIC_DIR = process.env.TP_STATIC_DIR || '/opt/zuting/static/images';
 const PUBLIC_PREFIX = '/static/images';
 const MAX_BYTES = 10 * 1024 * 1024;
-const TIMEOUT_MS = 20000;
+const TIMEOUT_MS = 10000;
 const CONCURRENCY = 2;
 
 fs.mkdirSync(STATIC_DIR, { recursive: true });
