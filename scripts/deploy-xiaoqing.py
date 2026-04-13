@@ -328,9 +328,9 @@ docker stop zuting-admin-nginx 2>/dev/null
 docker rm zuting-admin-nginx 2>/dev/null
 sleep 2
 
-# Start API
+# Start API (NODE_NO_COMPILE_CACHE=1 required — see [OPS-01] Node v20 + Prisma 6)
 cd /opt/zuting/api
-export NODE_ENV=production PORT={API_PORT}
+export NODE_ENV=production PORT={API_PORT} NODE_NO_COMPILE_CACHE=1
 nohup node dist/main.js > /opt/zuting/api.log 2>&1 &
 echo "API PID: $!"
 
