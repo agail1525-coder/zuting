@@ -285,6 +285,38 @@ async function wikiSearchImage(term: string, lang: 'en' | 'zh'): Promise<string 
   }
 }
 
+// Wikidata P18 抓取: 最可靠的单体实体图片来源,走 wikidata.org 独立速率桶
+// 流程: wbsearchentities 找 QID → wbgetentities 取 P18 filename → Special:FilePath 解析 Commons URL
+async function wikidataP18Image(term: string): Promise<string | null> {
+  try {
+    const sr = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&limit=3&search=${encodeURIComponent(term)}`,
+      { headers: { 'User-Agent': 'zuting-destination-bot/1.0 (https://zuting.fszyl.top)' }, signal: AbortSignal.timeout(12000) },
+    );
+    if (!sr.ok) return null;
+    const sd: any = await sr.json();
+    const hits = sd?.search ?? [];
+    for (const h of hits) {
+      const qid = h.id;
+      if (!qid) continue;
+      const er = await fetch(
+        `https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&props=claims&ids=${qid}`,
+        { headers: { 'User-Agent': 'zuting-destination-bot/1.0 (https://zuting.fszyl.top)' }, signal: AbortSignal.timeout(12000) },
+      );
+      if (!er.ok) continue;
+      const ed: any = await er.json();
+      const p18 = ed?.entities?.[qid]?.claims?.P18;
+      const filename = p18?.[0]?.mainsnak?.datavalue?.value;
+      if (filename && typeof filename === 'string') {
+        return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=1200`;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // Commons 图片搜索: 最后防线,任何关键词都能在 Commons 找到相关图片
 async function commonsSearchImage(term: string): Promise<string | null> {
   try {
@@ -371,11 +403,14 @@ async function fetchAndSave() {
     if (!img && s.nameEn) img = await wikiImage(s.nameEn, 'en');
     // 3. 中文维基
     if (!img) img = await wikiImage(s.name, 'zh');
-    // 4. EN 搜索 + pageimages (处理标题拼写变体/消歧义)
+    // 4. Wikidata P18 (独立速率桶,最可靠的单体实体图)
+    if (!img && s.nameEn) img = await wikidataP18Image(s.nameEn);
+    if (!img) img = await wikidataP18Image(s.name);
+    // 5. EN 搜索 + pageimages (处理标题拼写变体/消歧义)
     if (!img && s.nameEn) img = await wikiSearchImage(s.nameEn, 'en');
-    // 5. ZH 搜索
+    // 6. ZH 搜索
     if (!img) img = await wikiSearchImage(s.name, 'zh');
-    // 6. Commons 图片搜索 (最后防线)
+    // 7. Commons 图片搜索 (最后防线)
     if (!img && s.nameEn) img = await commonsSearchImage(s.nameEn);
     if (!img) img = await commonsSearchImage(s.name);
     if (img) {
