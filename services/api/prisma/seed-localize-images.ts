@@ -28,7 +28,7 @@ const STATIC_DIR = process.env.TP_STATIC_DIR || '/opt/zuting/static/images';
 const PUBLIC_PREFIX = '/static/images';
 const MAX_BYTES = 10 * 1024 * 1024;
 const TIMEOUT_MS = 20000;
-const CONCURRENCY = 4;
+const CONCURRENCY = 2;
 
 fs.mkdirSync(STATIC_DIR, { recursive: true });
 
@@ -56,13 +56,14 @@ function safeJoin(dir: string, sha: string, ext: string): string {
   return `${dir}${sep}${cleanSha}.${ext}`;
 }
 
-async function downloadOne(url: string): Promise<string | null> {
-  if (url.startsWith('/static/') || url.startsWith('/')) return url; // already local
+const BROWSER_UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+
+async function downloadOnce(url: string): Promise<string | null> {
   try {
     const u = new URL(url);
     if (!['http:', 'https:'].includes(u.protocol)) return null;
     const sha = crypto.createHash('sha1').update(url).digest('hex');
-    // sha is sha1 hex (safe), ext is from whitelist — see safeJoin
     for (const ext of SAFE_EXTS) {
       // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
       const p = safeJoin(STATIC_DIR, sha, ext);
@@ -76,17 +77,23 @@ async function downloadOne(url: string): Promise<string | null> {
           method: 'GET',
           agent: ssrfFilter(url),
           timeout: TIMEOUT_MS,
-          headers: { 'User-Agent': 'JoinusBot/1.0 (+https://joinus.com/bot)' },
+          headers: {
+            'User-Agent': BROWSER_UA,
+            Accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8',
+            Referer: `${u.protocol}//${u.hostname}/`,
+          },
         },
         (res) => {
           if (res.statusCode && res.statusCode >= 400) {
+            console.log(`  ✗ HTTP ${res.statusCode} ${url.slice(0, 80)}`);
             res.resume();
             return resolve(null);
           }
-          if (res.statusCode === 301 || res.statusCode === 302) {
+          if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400) {
             const loc = res.headers.location;
             res.resume();
-            if (loc) return resolve(downloadOne(new URL(loc, url).toString()));
+            if (loc) return resolve(downloadOnce(new URL(loc, url).toString()));
             return resolve(null);
           }
           const ext = extFromContentType(res.headers['content-type'] as string | undefined, u.pathname);
@@ -116,15 +123,29 @@ async function downloadOne(url: string): Promise<string | null> {
         },
       );
       req.on('timeout', () => {
+        console.log(`  ⏱  timeout ${url.slice(0, 80)}`);
         req.destroy();
         resolve(null);
       });
-      req.on('error', () => resolve(null));
+      req.on('error', (e) => {
+        console.log(`  ⚠ ${(e as Error).message} ${url.slice(0, 80)}`);
+        resolve(null);
+      });
       req.end();
     });
   } catch {
     return null;
   }
+}
+
+async function downloadOne(url: string): Promise<string | null> {
+  if (url.startsWith('/static/') || url.startsWith('/')) return url;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const r = await downloadOnce(url);
+    if (r) return r;
+    await new Promise((res) => setTimeout(res, 500 + attempt * 1000));
+  }
+  return null;
 }
 
 async function pMap<T, R>(items: T[], fn: (x: T) => Promise<R>, concurrency: number): Promise<R[]> {
