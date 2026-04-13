@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
@@ -38,9 +39,8 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl font-bold text-white">Joinus</span>
-            <span className="text-white/60 font-medium text-base hidden sm:block ml-1">佳绩之旅</span>
+          <Link href="/" className="flex items-center shrink-0 bg-white rounded-md px-3 py-1.5" aria-label="Joinus 佳绩之旅">
+            <Image src="/logo.png" alt="Joinus 佳绩之旅" width={160} height={36} priority className="h-8 w-auto" />
           </Link>
 
           {/* Desktop Nav */}

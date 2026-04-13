@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 
 export default function Footer() {
@@ -10,10 +11,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl font-bold text-[#0066FF]">Joinus</span>
-              <span className="text-gray-300">|</span>
-              <span className="text-gray-600 text-sm">{t("site.title")}</span>
+            <div className="flex items-center mb-4">
+              <Image src="/logo.png" alt="Joinus 佳绩之旅" width={180} height={40} className="h-10 w-auto" />
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-4">
               {t("footer.mission") || "加入我们，探索世界。发现全球文化遗产，体验千年智慧之旅。"}
