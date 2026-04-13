@@ -2438,9 +2438,19 @@ model DestinationPackage {
 
 model CrawlerSource {
   id           String           @id @default(cuid())
+  key          String?          @unique
   name         String
   baseUrl      String
   type         String
+  targetDomain String           @default("MERCHANT")
+  channel      String           @default("OFFICIAL")
+  priority     Int              @default(3)
+  strategy     String           @default("HTTP")
+  healthScore  Float            @default(1.0)
+  consecutiveFails Int          @default(0)
+  proxyNeeded  Boolean          @default(false)
+  minDate      DateTime?
+  notes        String?
   schedule     String           @default("0 3 * * *")
   selector     Json
   parser       String
@@ -2451,11 +2461,51 @@ model CrawlerSource {
   createdBy    String
   packages     DestinationPackage[]
   runs         CrawlerRun[]
+  items        CrawlerItem[]
 
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
   @@index([enabled, schedule])
+  @@index([targetDomain, channel])
+  @@index([priority, enabled])
+}
+
+model CrawlerItem {
+  id           String   @id @default(cuid())
+  sourceId     String
+  source       CrawlerSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  externalUrl  String
+  dedupKey     String   @unique
+  title        String?
+  description  String?  @db.Text
+  raw          Json
+  imageUrls    String[]
+  status       String   @default("PENDING")
+  targetType   String?
+  targetId     String?
+  errorLog     String?  @db.Text
+  fetchedAt    DateTime @default(now())
+  dispatchedAt DateTime?
+
+  @@index([sourceId, status])
+  @@index([targetType, targetId])
+  @@index([status, fetchedAt])
+}
+
+model CrawlerCoverageSnapshot {
+  id           String   @id @default(cuid())
+  takenAt      DateTime @default(now())
+  domain       String
+  channel      String
+  sourceCount  Int      @default(0)
+  activeCount  Int      @default(0)
+  itemsLast24h Int      @default(0)
+  avgHealth    Float    @default(0)
+  status       String   @default("UNKNOWN")
+
+  @@index([takenAt])
+  @@index([domain, channel, takenAt])
 }
 
 model CrawlerRun {

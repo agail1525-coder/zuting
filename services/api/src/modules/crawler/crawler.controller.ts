@@ -20,6 +20,7 @@ import { CrawlerService } from './crawler.service';
 import {
   AcknowledgeAlertDto,
   CreateCrawlerSourceDto,
+  RunMatrixDto,
   UpdateCrawlerSourceDto,
 } from './dto/crawler.dto';
 
@@ -27,10 +28,19 @@ class ListSourcesQuery {
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) page?: number;
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(100) limit?: number;
   @IsOptional() @Transform(({ value }) => value === 'true' || value === true) @IsBoolean() enabled?: boolean;
+  @IsOptional() @IsString() domain?: string;
+  @IsOptional() @IsString() channel?: string;
 }
 
 class ListRunsQuery {
   @IsOptional() @IsString() sourceId?: string;
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1) page?: number;
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(100) limit?: number;
+}
+
+class ListItemsQuery {
+  @IsOptional() @IsString() sourceId?: string;
+  @IsOptional() @IsString() status?: string;
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) page?: number;
   @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(100) limit?: number;
 }
@@ -54,6 +64,8 @@ export class CrawlerController {
   listSources(@Query() q: ListSourcesQuery) {
     return this.service.listSources({
       enabled: q.enabled,
+      domain: q.domain,
+      channel: q.channel,
       page: q.page ?? 1,
       limit: q.limit ?? 20,
     });
@@ -85,22 +97,43 @@ export class CrawlerController {
     return this.service.runSource(id, 'MANUAL');
   }
 
+  @Post('matrix/run')
+  @ApiOperation({ summary: 'Admin: run the full 5×6 matrix (optional domain/channel/minPriority filter)' })
+  runMatrix(@Body() dto: RunMatrixDto) {
+    return this.service.runMatrix({ domain: dto.domain, channel: dto.channel, minPriority: dto.minPriority }, 'MANUAL');
+  }
+
+  @Get('health')
+  @ApiOperation({ summary: 'Admin: health scan (7-day per-source stats)' })
+  health() {
+    return this.service.healthScan();
+  }
+
+  @Get('coverage')
+  @ApiOperation({ summary: 'Admin: latest 5×6 coverage snapshot' })
+  coverage() {
+    return this.service.getLatestCoverage();
+  }
+
+  @Post('coverage/generate')
+  @ApiOperation({ summary: 'Admin: regenerate coverage snapshot now' })
+  generateCoverage() {
+    return this.service.generateCoverageSnapshot();
+  }
+
   @Get('runs')
   listRuns(@Query() q: ListRunsQuery) {
-    return this.service.listRuns({
-      sourceId: q.sourceId,
-      page: q.page ?? 1,
-      limit: q.limit ?? 20,
-    });
+    return this.service.listRuns({ sourceId: q.sourceId, page: q.page ?? 1, limit: q.limit ?? 20 });
+  }
+
+  @Get('items')
+  listItems(@Query() q: ListItemsQuery) {
+    return this.service.listItems({ sourceId: q.sourceId, status: q.status, page: q.page ?? 1, limit: q.limit ?? 20 });
   }
 
   @Get('alerts')
   listAlerts(@Query() q: ListAlertsQuery) {
-    return this.service.listAlerts({
-      acknowledged: q.acknowledged,
-      page: q.page ?? 1,
-      limit: q.limit ?? 20,
-    });
+    return this.service.listAlerts({ acknowledged: q.acknowledged, page: q.page ?? 1, limit: q.limit ?? 20 });
   }
 
   @Patch('alerts/:id/ack')
