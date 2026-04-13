@@ -255,6 +255,65 @@ async function wikiImage(title: string, lang: 'en' | 'zh'): Promise<string | nul
   }
 }
 
+// MediaWiki search + pageimages: 用关键词搜索并拿首个命中页面的主图
+// 这是业界最佳实践(比逐个尝试 REST summary 更鲁棒,能处理拼写变体/消歧义)
+async function wikiSearchImage(term: string, lang: 'en' | 'zh'): Promise<string | null> {
+  try {
+    const url =
+      `https://${lang}.wikipedia.org/w/api.php?action=query&format=json` +
+      `&prop=pageimages&piprop=original|thumbnail&pithumbsize=1200` +
+      `&generator=search&gsrsearch=${encodeURIComponent(term)}&gsrlimit=3&gsrnamespace=0` +
+      `&origin=*`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'zuting-destination-bot/1.0' },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return null;
+    const data: any = await res.json();
+    const pages = data?.query?.pages;
+    if (!pages) return null;
+    // 取首个有主图的页面 (按 search index 排序)
+    const arr = Object.values(pages) as any[];
+    arr.sort((a, b) => (a.index ?? 99) - (b.index ?? 99));
+    for (const p of arr) {
+      const img = p.original?.source || p.thumbnail?.source;
+      if (img && typeof img === 'string' && img.includes('upload.wikimedia.org')) return img;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Commons 图片搜索: 最后防线,任何关键词都能在 Commons 找到相关图片
+async function commonsSearchImage(term: string): Promise<string | null> {
+  try {
+    const url =
+      `https://commons.wikimedia.org/w/api.php?action=query&format=json` +
+      `&prop=imageinfo&iiprop=url&iiurlwidth=1200` +
+      `&generator=search&gsrsearch=${encodeURIComponent(term)}+filetype:bitmap` +
+      `&gsrlimit=5&gsrnamespace=6&origin=*`;
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'zuting-destination-bot/1.0' },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!res.ok) return null;
+    const data: any = await res.json();
+    const pages = data?.query?.pages;
+    if (!pages) return null;
+    const arr = Object.values(pages) as any[];
+    arr.sort((a, b) => (a.index ?? 99) - (b.index ?? 99));
+    for (const p of arr) {
+      const info = p.imageinfo?.[0];
+      const img = info?.thumburl || info?.url;
+      if (img && typeof img === 'string' && img.includes('upload.wikimedia.org')) return img;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -312,6 +371,13 @@ async function fetchAndSave() {
     if (!img && s.nameEn) img = await wikiImage(s.nameEn, 'en');
     // 3. 中文维基
     if (!img) img = await wikiImage(s.name, 'zh');
+    // 4. EN 搜索 + pageimages (处理标题拼写变体/消歧义)
+    if (!img && s.nameEn) img = await wikiSearchImage(s.nameEn, 'en');
+    // 5. ZH 搜索
+    if (!img) img = await wikiSearchImage(s.name, 'zh');
+    // 6. Commons 图片搜索 (最后防线)
+    if (!img && s.nameEn) img = await commonsSearchImage(s.nameEn);
+    if (!img) img = await commonsSearchImage(s.name);
     if (img) {
       result[s.name] = img;
       newHits++;
@@ -321,7 +387,7 @@ async function fetchAndSave() {
       fs.mkdirSync(path.dirname(JSON_PATH), { recursive: true });
       fs.writeFileSync(JSON_PATH, JSON.stringify(result, null, 2));
     }
-    await sleep(120);
+    await sleep(1500);
   }
 
   fs.mkdirSync(path.dirname(JSON_PATH), { recursive: true });

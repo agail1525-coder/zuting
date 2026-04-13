@@ -8,6 +8,7 @@ import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
 import MediaTour from "@/components/MediaTour";
+import TravelPackages from "@/components/TravelPackages";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
 import UGCPhotoWall from "@/components/UGCPhotoWall";
@@ -1000,6 +1001,11 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             {/* S7. 包含路线 — Trip.com Tickets风格 */}
             <div id="routes">
               <AvailableRoutes siteId={site.id} />
+            </div>
+
+            {/* S7.5 旅游配套++ 4档×7类 */}
+            <div id="packages">
+              <TravelPackages siteId={site.id} />
             </div>
 
             {/* S9. 圣地介绍 */}
