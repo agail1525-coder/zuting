@@ -3,6 +3,31 @@ import * as https from 'https';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ssrfFilter = require('ssrf-req-filter') as (url: string) => http.Agent;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { HttpsProxyAgent } = require('https-proxy-agent') as { HttpsProxyAgent: new (proxy: string) => http.Agent };
+
+// CW-GFW: 境外域名走 proxy 绕墙 (wiki/wikidata/commons 在大陆出站被封)
+// 配置: 环境变量 OUTBOUND_PROXY (e.g. http://hk-proxy.host:3128)
+// 命中域名: wikipedia.org / wikidata.org / wikimedia.org 等
+const OUTBOUND_PROXY_DOMAINS = [
+  'wikipedia.org',
+  'wikidata.org',
+  'wikimedia.org',
+  'mediawiki.org',
+];
+
+function needsOutboundProxy(hostname: string): boolean {
+  return OUTBOUND_PROXY_DOMAINS.some((d) => hostname === d || hostname.endsWith('.' + d));
+}
+
+function pickAgent(url: string): http.Agent {
+  const u = new URL(url);
+  const proxy = process.env.OUTBOUND_PROXY;
+  if (proxy && needsOutboundProxy(u.hostname)) {
+    return new HttpsProxyAgent(proxy);
+  }
+  return ssrfFilter(url);
+}
 
 const UA_POOL = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
@@ -30,7 +55,7 @@ export function fetchText(url: string, opts: FetchOpts = {}): Promise<{ body: st
     const u = new URL(url);
     if (!['http:', 'https:'].includes(u.protocol)) return reject(new Error('CW-41: non-http(s)'));
     const lib = u.protocol === 'https:' ? https : http;
-    const agent = ssrfFilter(url);
+    const agent = pickAgent(url);
     const req = lib.request(
       url,
       {

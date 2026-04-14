@@ -39,6 +39,7 @@
     "class-validator": "^0.14.1",
     "compression": "^1.8.1",
     "helmet": "^8.1.0",
+    "https-proxy-agent": "^9.0.0",
     "ioredis": "^5.10.1",
     "nodemailer": "^8.0.4",
     "passport": "^0.7.0",
