@@ -44,6 +44,15 @@ const Messages = lazy(() => import("./pages/Messages"));
 const About = lazy(() => import("./pages/About"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const CultureLife = lazy(() => import("./pages/CultureLife"));
+const CultureLifeDetail = lazy(() => import("./pages/CultureLifeDetail"));
+const FaithAssessment = lazy(() => import("./pages/FaithAssessment"));
+const PersonalGrowth = lazy(() => import("./pages/PersonalGrowth"));
+const PersonalGrowthDetail = lazy(() => import("./pages/PersonalGrowthDetail"));
+const FamilyHarmony = lazy(() => import("./pages/FamilyHarmony"));
+const FamilyHarmonyDetail = lazy(() => import("./pages/FamilyHarmonyDetail"));
+const TeamCulture = lazy(() => import("./pages/TeamCulture"));
+const Referral = lazy(() => import("./pages/Referral"));
 
 function PageLoader() {
   return (
@@ -112,6 +121,17 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="privacy" element={<Privacy />} />
           <Route path="terms" element={<Terms />} />
+
+          {/* Culture & faith */}
+          <Route path="culture-life" element={<CultureLife />} />
+          <Route path="culture-life/:code" element={<CultureLifeDetail />} />
+          <Route path="faith-assessment" element={<FaithAssessment />} />
+          <Route path="personal-growth" element={<PersonalGrowth />} />
+          <Route path="personal-growth/:slug" element={<PersonalGrowthDetail />} />
+          <Route path="family-harmony" element={<FamilyHarmony />} />
+          <Route path="family-harmony/:slug" element={<FamilyHarmonyDetail />} />
+          <Route path="team-culture" element={<TeamCulture />} />
+          <Route path="referral" element={<Referral />} />
         </Route>
       </Routes>
     </Suspense>
