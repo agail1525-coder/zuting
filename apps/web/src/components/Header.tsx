@@ -40,7 +40,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0" aria-label="Joinus 佳绩之旅">
-            <Image src="/logo.png" alt="Joinus 佳绩之旅" width={255} height={28} priority className="h-7 w-auto" />
+            <Image src="/logo.png" alt="Joinus 佳绩之旅" width={160} height={18} priority className="h-4 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
