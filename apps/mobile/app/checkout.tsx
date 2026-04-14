@@ -69,7 +69,7 @@ export default function CheckoutScreen() {
   if (!trip) {
     return (
       <View style={s.center}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>行程不存在</Text>
       </View>
     );
@@ -224,12 +224,12 @@ export default function CheckoutScreen() {
             style={[s.paymentItem, paymentMethod === m.id && s.paymentItemSelected]}
             onPress={() => setPaymentMethod(m.id)}
           >
-            <Ionicons name={m.icon} size={22} color={paymentMethod === m.id ? '#0066FF' : '#6B7280'} />
+            <Ionicons name={m.icon} size={22} color={paymentMethod === m.id ? '#3264ff' : '#6B7280'} />
             <Text style={[s.paymentLabel, paymentMethod === m.id && s.paymentLabelSelected]}>
               {m.label}
             </Text>
             {paymentMethod === m.id && (
-              <Ionicons name="checkmark-circle" size={20} color="#0066FF" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark-circle" size={20} color="#3264ff" style={{ marginLeft: 'auto' }} />
             )}
           </Pressable>
         ))}
@@ -306,7 +306,7 @@ const s = StyleSheet.create({
     color: '#1A1A1A',
   },
   verifyBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     borderRadius: 10,
     paddingHorizontal: 16,
     justifyContent: 'center',
@@ -326,10 +326,10 @@ const s = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: '#F9FAFB',
   },
-  promoItemSelected: { borderColor: '#0066FF', backgroundColor: '#EFF6FF' },
+  promoItemSelected: { borderColor: '#3264ff', backgroundColor: '#EFF6FF' },
   promoLeft: { flex: 1 },
   promoName: { fontSize: 14, fontWeight: '600', color: '#1A1A1A' },
-  promoNameSelected: { color: '#0066FF' },
+  promoNameSelected: { color: '#3264ff' },
   promoDesc: { fontSize: 12, color: '#6B7280', marginTop: 2 },
   promoRemaining: { fontSize: 11, color: '#9CA3AF', marginTop: 4 },
   promoBadge: {
@@ -350,9 +350,9 @@ const s = StyleSheet.create({
     marginBottom: 8,
     gap: 10,
   },
-  paymentItemSelected: { borderColor: '#0066FF', backgroundColor: '#EFF6FF' },
+  paymentItemSelected: { borderColor: '#3264ff', backgroundColor: '#EFF6FF' },
   paymentLabel: { fontSize: 15, color: '#374151' },
-  paymentLabelSelected: { color: '#0066FF', fontWeight: '600' },
+  paymentLabelSelected: { color: '#3264ff', fontWeight: '600' },
   priceRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   priceLabel: { fontSize: 14, color: '#6B7280' },
   priceValue: { fontSize: 14, color: '#374151' },
@@ -367,7 +367,7 @@ const s = StyleSheet.create({
   totalLabel: { fontSize: 16, fontWeight: '700', color: '#1A1A1A' },
   totalValue: { fontSize: 20, fontWeight: '800', color: '#EF4444' },
   submitBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     marginHorizontal: 16,
     marginTop: 20,
     borderRadius: 999,

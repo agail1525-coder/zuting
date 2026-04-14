@@ -32,7 +32,7 @@ export default function RouteCheckoutScreen() {
   if (!route) {
     return (
       <View style={s.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>路线不存在</Text>
       </View>
     );
@@ -183,7 +183,7 @@ const s = StyleSheet.create({
   totalLabel: { fontSize: 16, fontWeight: '700', color: '#1A1A1A' },
   totalValue: { fontSize: 20, fontWeight: '800', color: '#EF4444' },
   submitBtn: {
-    backgroundColor: '#0066FF', marginHorizontal: 16, marginTop: 8,
+    backgroundColor: '#3264ff', marginHorizontal: 16, marginTop: 8,
     borderRadius: 999, paddingVertical: 14, alignItems: 'center',
   },
   submitBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },

@@ -39,10 +39,10 @@ export default function PatriarchDetailScreen() {
   if (error || !patriarch) {
     return (
       <View style={s.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>{error ?? '祖师不存在'}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+          <Text style={{ color: '#3264ff', fontSize: 15, marginTop: 8 }}>返回</Text>
         </Pressable>
       </View>
     );
@@ -64,7 +64,7 @@ export default function PatriarchDetailScreen() {
         {hasImage ? (
           <Image source={{ uri: patriarch.imageUrl }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
         ) : (
-          <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+          <LinearGradient colors={['#3264ff', '#003D99']} style={StyleSheet.absoluteFillObject} />
         )}
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={s.heroOverlay}>
           {religion && (
@@ -89,7 +89,7 @@ export default function PatriarchDetailScreen() {
         <View style={s.section}>
           <Text style={s.sectionTitle}>核心教义</Text>
           <View style={s.teachingCard}>
-            <Ionicons name="book" size={20} color="#0066FF" style={{ marginBottom: 8 }} />
+            <Ionicons name="book" size={20} color="#3264ff" style={{ marginBottom: 8 }} />
             <Text style={s.teachingText}>{coreTeaching}</Text>
           </View>
         </View>
@@ -115,7 +115,7 @@ export default function PatriarchDetailScreen() {
           <Text style={s.ctaBtnText}>规划行程</Text>
         </Pressable>
         <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
-          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Ionicons name="chatbubble-ellipses" size={18} color="#3264ff" />
           <Text style={s.ctaBtnOutlineText}>AI规划</Text>
         </Pressable>
       </View>
@@ -150,12 +150,12 @@ const s = StyleSheet.create({
   ctaRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 24, gap: 12 },
   ctaBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, backgroundColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, backgroundColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
   ctaBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
   ctaBtnOutline: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, borderWidth: 1, borderColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, borderWidth: 1, borderColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
-  ctaBtnOutlineText: { color: '#0066FF', fontSize: 15, fontWeight: '600' },
+  ctaBtnOutlineText: { color: '#3264ff', fontSize: 15, fontWeight: '600' },
 });

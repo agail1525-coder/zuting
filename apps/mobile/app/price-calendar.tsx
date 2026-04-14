@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   cellSelected: {
     borderWidth: 2,
-    borderColor: '#0066FF',
+    borderColor: '#3264ff',
   },
   cellUnavailable: {
     backgroundColor: '#F9FAFB',
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   detailPrice: { fontSize: 32, fontWeight: '800', color: colors.textPrimary },
   detailNote: { fontSize: fontSize.sm, color: colors.textSecondary, marginBottom: spacing.md },
   bookBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     borderRadius: borderRadius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',

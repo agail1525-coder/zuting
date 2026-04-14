@@ -25,7 +25,7 @@ const STATUS_ICON_COLOR: Record<TripStatus, { color: string; icon: keyof typeof 
   PAID: { color: '#10B981', icon: 'card' },
   PREPARING: { color: '#F97316', icon: 'construct' },
   IN_PROGRESS: { color: '#F59E0B', icon: 'walk' },
-  COMPLETED: { color: '#0066FF', icon: 'trophy' },
+  COMPLETED: { color: '#3264ff', icon: 'trophy' },
   REVIEWING: { color: '#EC4899', icon: 'star' },
   CANCELLED: { color: '#9CA3AF', icon: 'close-circle' },
   REFUNDING: { color: '#EF4444', icon: 'time' },

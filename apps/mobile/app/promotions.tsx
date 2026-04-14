@@ -37,7 +37,7 @@ const TYPE_BADGE_COLORS: Record<string, string> = {
   FLASH_SALE: '#EF4444',
   EARLY_BIRD: '#F59E0B',
   LIMITED_TIME: '#8B5CF6',
-  DEFAULT: '#0066FF',
+  DEFAULT: '#3264ff',
 };
 
 const TYPE_BADGE_KEYS: Record<string, string> = {
@@ -261,7 +261,7 @@ export default function PromotionsScreen() {
 
       {loading ? (
         <View style={s.loadingView}>
-          <ActivityIndicator size="large" color="#0066FF" />
+          <ActivityIndicator size="large" color="#3264ff" />
         </View>
       ) : filtered.length === 0 ? (
         <View style={s.emptyView}>
@@ -337,9 +337,9 @@ const s = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
-  tabItemActive: { borderBottomColor: '#0066FF' },
+  tabItemActive: { borderBottomColor: '#3264ff' },
   tabText: { fontSize: 13, color: '#6B7280', fontWeight: '500' },
-  tabTextActive: { color: '#0066FF', fontWeight: '700' },
+  tabTextActive: { color: '#3264ff', fontWeight: '700' },
   tabBadge: {
     backgroundColor: '#F3F4F6',
     borderRadius: 10,
@@ -350,7 +350,7 @@ const s = StyleSheet.create({
   },
   tabBadgeActive: { backgroundColor: '#DBEAFE' },
   tabBadgeText: { fontSize: 10, color: '#6B7280', fontWeight: '700' },
-  tabBadgeTextActive: { color: '#0066FF' },
+  tabBadgeTextActive: { color: '#3264ff' },
 
   searchRow: {
     flexDirection: 'row',
@@ -380,7 +380,7 @@ const s = StyleSheet.create({
     paddingVertical: 12,
   },
   statItem: { flex: 1, alignItems: 'center' },
-  statNumber: { fontSize: 20, fontWeight: '800', color: '#0066FF' },
+  statNumber: { fontSize: 20, fontWeight: '800', color: '#3264ff' },
   statLabel: { fontSize: 11, color: '#9CA3AF', marginTop: 2 },
   statDivider: { width: 1, backgroundColor: '#E5E7EB', marginVertical: 4 },
 
@@ -445,7 +445,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,

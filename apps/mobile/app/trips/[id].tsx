@@ -25,7 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
   PAID: '#10B981',
   PREPARING: '#06B6D4',
   IN_PROGRESS: '#F59E0B',
-  COMPLETED: '#0066FF',
+  COMPLETED: '#3264ff',
   REVIEWING: '#A78BFA',
   CANCELLED: '#9CA3AF',
   REFUNDING: '#EF4444',
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   stepDotCurrent: {
-    shadowColor: '#0066FF',
+    shadowColor: '#3264ff',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 6,

@@ -3,7 +3,7 @@ export const colors = {
   backgroundDark: '#FFFFFF',
   backgroundCard: 'rgba(255, 255, 255, 0.9)',
   backgroundCardSolid: '#FFFFFF',
-  gold: '#0066FF',
+  gold: '#3264ff',
   goldLight: '#3385FF',
   goldDark: '#0052CC',
   white: '#FFFFFF',

@@ -27,7 +27,7 @@ const TAB_KEYS = ['available', 'mine', 'used'] as const;
 type TabKey = typeof TAB_KEYS[number];
 
 const TYPE_COLORS: Record<string, string> = {
-  FIXED: '#0066FF',
+  FIXED: '#3264ff',
   PERCENTAGE: '#EF4444',
   CASHBACK: '#F59E0B',
 };
@@ -132,7 +132,7 @@ export default function CouponsScreen() {
   }, [currentRaw, search, activeTab]);
 
   const renderAvailableCoupon = ({ item }: { item: CouponItem }) => {
-    const accentColor = TYPE_COLORS[item.type] ?? '#0066FF';
+    const accentColor = TYPE_COLORS[item.type] ?? '#3264ff';
     return (
       <View style={s.couponCard}>
         <View style={[s.couponAccent, { backgroundColor: accentColor }]} />
@@ -172,7 +172,7 @@ export default function CouponsScreen() {
 
   const renderUserCoupon = ({ item }: { item: UserCouponItem }) => {
     const c = item.coupon;
-    const accentColor = TYPE_COLORS[c.type] ?? '#0066FF';
+    const accentColor = TYPE_COLORS[c.type] ?? '#3264ff';
     const isUsed = item.status === 'USED' || item.status === 'EXPIRED';
     return (
       <View style={[s.couponCard, isUsed && s.couponCardUsed]}>
@@ -260,7 +260,7 @@ export default function CouponsScreen() {
 
       {loading ? (
         <View style={s.loadingView}>
-          <ActivityIndicator size="large" color="#0066FF" />
+          <ActivityIndicator size="large" color="#3264ff" />
         </View>
       ) : currentData.length === 0 ? (
         <View style={s.emptyView}>
@@ -340,9 +340,9 @@ const s = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
-  tabItemActive: { borderBottomColor: '#0066FF' },
+  tabItemActive: { borderBottomColor: '#3264ff' },
   tabText: { fontSize: 14, color: '#6B7280', fontWeight: '500' },
-  tabTextActive: { color: '#0066FF', fontWeight: '700' },
+  tabTextActive: { color: '#3264ff', fontWeight: '700' },
   tabBadge: {
     backgroundColor: '#F3F4F6',
     borderRadius: 10,
@@ -353,7 +353,7 @@ const s = StyleSheet.create({
   },
   tabBadgeActive: { backgroundColor: '#DBEAFE' },
   tabBadgeText: { fontSize: 10, color: '#6B7280', fontWeight: '700' },
-  tabBadgeTextActive: { color: '#0066FF' },
+  tabBadgeTextActive: { color: '#3264ff' },
 
   searchRow: {
     flexDirection: 'row',
@@ -407,7 +407,7 @@ const s = StyleSheet.create({
   typeBadgeText: { fontSize: 11, fontWeight: '600' },
   couponExpiry: { fontSize: 11, color: '#9CA3AF' },
   claimBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     marginRight: 14,
     borderRadius: 8,
     paddingHorizontal: 14,
@@ -435,7 +435,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,

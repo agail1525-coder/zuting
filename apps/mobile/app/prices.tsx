@@ -27,7 +27,7 @@ const TOOLS: ToolCard[] = [
     subtitle: '查看全月价格趋势，选最低价出行',
     badge: '热门',
     route: '/price-calendar',
-    accentColor: '#0066FF',
+    accentColor: '#3264ff',
   },
   {
     icon: 'swap-horizontal',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   banner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     marginHorizontal: spacing.md,
     borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,

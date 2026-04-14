@@ -139,7 +139,7 @@ export default function MediaTour({ entityType, entityId }: MediaTourProps) {
             <Ionicons
               name={tab.icon as keyof typeof Ionicons.glyphMap}
               size={14}
-              color={currentTab === tab.key ? '#FFFFFF' : '#0066FF'}
+              color={currentTab === tab.key ? '#FFFFFF' : '#3264ff'}
             />
             <Text style={[s.tabText, currentTab === tab.key && s.tabTextActive]}>
               {tab.label} ({grouped[tab.key].length})
@@ -160,7 +160,7 @@ export default function MediaTour({ entityType, entityId }: MediaTourProps) {
           )}
           <View style={s.videoOverlay}>
             <View style={s.playIcon}>
-              <Ionicons name="play" size={20} color="#0066FF" />
+              <Ionicons name="play" size={20} color="#3264ff" />
             </View>
           </View>
           {item.duration != null && (
@@ -184,7 +184,7 @@ export default function MediaTour({ entityType, entityId }: MediaTourProps) {
           )}
           <View style={s.videoOverlay}>
             <View style={s.playIcon}>
-              <Ionicons name="globe" size={20} color="#0066FF" />
+              <Ionicons name="globe" size={20} color="#3264ff" />
             </View>
           </View>
           <Text style={s.videoTitle} numberOfLines={1}>{item.title}</Text>
@@ -225,12 +225,12 @@ const s = StyleSheet.create({
     marginRight: 8,
   },
   tabActive: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
   },
   tabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#0066FF',
+    color: '#3264ff',
   },
   tabTextActive: {
     color: '#FFFFFF',
@@ -317,7 +317,7 @@ const s = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 2,
@@ -335,7 +335,7 @@ const s = StyleSheet.create({
   },
   progressFill: {
     height: 4,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     borderRadius: 2,
   },
   audioDuration: {

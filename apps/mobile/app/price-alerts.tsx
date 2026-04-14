@@ -205,7 +205,7 @@ export default function PriceAlertsScreen() {
                     </Text>
                   </View>
                   {selectedRouteId === r.id && (
-                    <Ionicons name="checkmark-circle" size={20} color="#0066FF" />
+                    <Ionicons name="checkmark-circle" size={20} color="#3264ff" />
                   )}
                 </Pressable>
               ))}
@@ -258,7 +258,7 @@ export default function PriceAlertsScreen() {
 
         {/* Tip */}
         <View style={styles.tip}>
-          <Ionicons name="information-circle-outline" size={16} color="#0066FF" />
+          <Ionicons name="information-circle-outline" size={16} color="#3264ff" />
           <Text style={styles.tipText}>提醒最多同时设置 5 条，触发后自动保留 7 天</Text>
         </View>
       </ScrollView>
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: borderRadius.full,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#DBEAFE',
     marginBottom: spacing.md,
-    shadowColor: '#0066FF',
+    shadowColor: '#3264ff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
@@ -317,12 +317,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
   },
   routeItemSelected: {
-    borderColor: '#0066FF',
+    borderColor: '#3264ff',
     backgroundColor: '#EFF6FF',
   },
   routeItemInner: { flex: 1 },
   routeItemTitle: { fontSize: fontSize.sm, fontWeight: '500', color: colors.textPrimary },
-  routeItemTitleSelected: { color: '#0066FF', fontWeight: '600' },
+  routeItemTitleSelected: { color: '#3264ff', fontWeight: '600' },
   routeItemPrice: { fontSize: fontSize.xs, color: colors.textSecondary, marginTop: 2 },
   input: {
     backgroundColor: '#F9FAFB',
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   },
   formHint: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 4 },
   submitBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     borderRadius: borderRadius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',

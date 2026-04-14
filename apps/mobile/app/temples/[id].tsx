@@ -42,10 +42,10 @@ export default function TempleDetailScreen() {
   if (error || !temple) {
     return (
       <View style={s.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>{error ?? t('templeDetail.notFound')}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>{t('common.back')}</Text>
+          <Text style={{ color: '#3264ff', fontSize: 15, marginTop: 8 }}>{t('common.back')}</Text>
         </Pressable>
       </View>
     );
@@ -64,7 +64,7 @@ export default function TempleDetailScreen() {
         {hasImage ? (
           <Image source={{ uri: temple.imageUrl }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
         ) : (
-          <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+          <LinearGradient colors={['#3264ff', '#003D99']} style={StyleSheet.absoluteFillObject} />
         )}
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={s.heroOverlay}>
           {religion && (
@@ -111,7 +111,7 @@ export default function TempleDetailScreen() {
           <Text style={s.ctaBtnText}>{t('templeDetail.addToTrip')}</Text>
         </Pressable>
         <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
-          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Ionicons name="chatbubble-ellipses" size={18} color="#3264ff" />
           <Text style={s.ctaBtnOutlineText}>{t('templeDetail.aiPlan')}</Text>
         </Pressable>
       </View>
@@ -122,7 +122,7 @@ export default function TempleDetailScreen() {
 function InfoCell({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value: string }) {
   return (
     <View style={s.infoCell}>
-      <Ionicons name={icon} size={18} color="#0066FF" />
+      <Ionicons name={icon} size={18} color="#3264ff" />
       <Text style={s.infoCellLabel}>{label}</Text>
       <Text style={s.infoCellValue} numberOfLines={2}>{value}</Text>
     </View>
@@ -155,12 +155,12 @@ const s = StyleSheet.create({
   ctaRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 24, gap: 12 },
   ctaBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, backgroundColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, backgroundColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
   ctaBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
   ctaBtnOutline: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, borderWidth: 1, borderColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, borderWidth: 1, borderColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
-  ctaBtnOutlineText: { color: '#0066FF', fontSize: 15, fontWeight: '600' },
+  ctaBtnOutlineText: { color: '#3264ff', fontSize: 15, fontWeight: '600' },
 });

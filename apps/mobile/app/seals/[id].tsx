@@ -41,16 +41,16 @@ export default function SealDetailScreen() {
   if (error || !seal) {
     return (
       <View style={s.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>{error ?? '印不存在'}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+          <Text style={{ color: '#3264ff', fontSize: 15, marginTop: 8 }}>返回</Text>
         </Pressable>
       </View>
     );
   }
 
-  const seriesColor = seriesColors[seal.series] || '#0066FF';
+  const seriesColor = seriesColors[seal.series] || '#3264ff';
   const currentIndex = allSeals.findIndex((item) => item.id === id);
   const prevSeal = currentIndex > 0 ? allSeals[currentIndex - 1] : null;
   const nextSeal = currentIndex < allSeals.length - 1 ? allSeals[currentIndex + 1] : null;
@@ -118,7 +118,7 @@ export default function SealDetailScreen() {
             style={s.navButton}
             onPress={() => router.replace({ pathname: '/seals/[id]', params: { id: prevSeal.id } })}
           >
-            <Ionicons name="chevron-back" size={20} color="#0066FF" />
+            <Ionicons name="chevron-back" size={20} color="#3264ff" />
             <View>
               <Text style={s.navLabel}>上一印</Text>
               <Text style={s.navName}>{prevSeal.name}</Text>
@@ -134,7 +134,7 @@ export default function SealDetailScreen() {
               <Text style={s.navLabel}>下一印</Text>
               <Text style={s.navName}>{nextSeal.name}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#0066FF" />
+            <Ionicons name="chevron-forward" size={20} color="#3264ff" />
           </Pressable>
         ) : <View style={s.navSpacer} />}
       </View>

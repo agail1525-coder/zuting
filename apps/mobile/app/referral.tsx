@@ -25,7 +25,7 @@ import {
   type ReferralTeamMember,
 } from '../src/lib/api';
 
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 const GREEN = '#22C55E';
 const GOLD = '#F59E0B';
 

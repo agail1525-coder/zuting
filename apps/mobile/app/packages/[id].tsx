@@ -17,7 +17,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 import { fetchPackage, bookPackage, type PackageDetail } from '../../src/lib/api';
 
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 const GOLD = '#D4A855';
 
 const INCLUDE_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors, fontSize, spacing, borderRadius } from '../src/lib/theme';
+import { BRAND_DOMAIN, BRAND_NAME_ZH } from '../src/constants/brand';
 
 const FEATURES = [
   { icon: 'globe-outline' as const, label: '12大文化传统', desc: '佛教文化、道教文化、基督文化等全球文化传统' },
@@ -43,8 +44,8 @@ export default function AboutScreen() {
         <View style={styles.logoContainer}>
           <Ionicons name="earth" size={56} color={colors.gold} />
         </View>
-        <Text style={styles.title}>JOINUS.COM</Text>
-        <Text style={styles.subtitle}>佳绩之旅</Text>
+        <Text style={styles.title}>{BRAND_DOMAIN.toUpperCase()}</Text>
+        <Text style={styles.subtitle}>{BRAND_NAME_ZH}</Text>
       </View>
 
       {/* Platform Stats Bar */}
@@ -97,7 +98,7 @@ export default function AboutScreen() {
           {TRUST_BADGES.map((badge, idx) => (
             <View key={idx} style={styles.trustBadge}>
               <View style={styles.trustIconWrap}>
-                <Ionicons name={badge.icon} size={24} color="#0066FF" />
+                <Ionicons name={badge.icon} size={24} color="#3264ff" />
               </View>
               <Text style={styles.trustLabel}>{badge.label}</Text>
               <Text style={styles.trustDesc}>{badge.desc}</Text>
@@ -370,7 +371,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderRadius: 10,

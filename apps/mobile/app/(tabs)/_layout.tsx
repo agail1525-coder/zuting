@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 const MUTED = '#9CA3AF';
 const BG = '#FFFFFF';
 
@@ -112,9 +112,9 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: 'rgba(0, 102, 255, 0.1)',
+    backgroundColor: 'rgba(50, 100, 255, 0.1)',
     borderWidth: 2,
-    borderColor: 'rgba(0, 102, 255, 0.3)',
+    borderColor: 'rgba(50, 100, 255, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,

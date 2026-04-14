@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   submitBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 8, marginHorizontal: 16, marginTop: 24,
-    backgroundColor: '#0066FF', paddingVertical: 14, borderRadius: 999,
+    backgroundColor: '#3264ff', paddingVertical: 14, borderRadius: 999,
   },
   submitBtnDisabled: { opacity: 0.4 },
   submitBtnText: { fontSize: 16, fontWeight: '700', color: '#FFFFFF' },

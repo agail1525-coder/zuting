@@ -130,7 +130,7 @@ export default function CollectionDetailScreen() {
     return (
       <View style={styles.itemCard}>
         <View style={styles.itemIconWrapper}>
-          <Ionicons name={icon} size={22} color="#0066FF" />
+          <Ionicons name={icon} size={22} color="#3264ff" />
         </View>
         <View style={styles.itemContent}>
           <View style={styles.itemBadgeRow}>
@@ -212,7 +212,7 @@ export default function CollectionDetailScreen() {
             <Text style={styles.headerCount}>{items.length} 个收藏</Text>
             {collection.isPublic && (
               <View style={styles.publicBadge}>
-                <Ionicons name="globe-outline" size={10} color="#0066FF" />
+                <Ionicons name="globe-outline" size={10} color="#3264ff" />
                 <Text style={styles.publicBadgeText}>公开</Text>
               </View>
             )}
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   },
   publicBadgeText: {
     fontSize: fontSize.xs,
-    color: '#0066FF',
+    color: '#3264ff',
     fontWeight: '500',
   },
   listContent: {
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   },
   typeBadgeText: {
     fontSize: fontSize.xs,
-    color: '#0066FF',
+    color: '#3264ff',
     fontWeight: '600',
   },
   itemId: {

@@ -66,7 +66,7 @@ export default function PaymentResultScreen() {
   if (loading) {
     return (
       <View style={s.center}>
-        <ActivityIndicator size="large" color="#0066FF" />
+        <ActivityIndicator size="large" color="#3264ff" />
         <Text style={s.loadingText}>查询订单状态...</Text>
       </View>
     );
@@ -178,7 +178,7 @@ const s = StyleSheet.create({
   infoValue: { fontSize: 14, fontWeight: '600', color: '#1A1A1A', maxWidth: '60%', textAlign: 'right' },
   actions: { gap: 12 },
   primaryBtn: {
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     borderRadius: 999,
     paddingVertical: 14,
     alignItems: 'center',

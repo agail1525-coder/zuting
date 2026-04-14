@@ -136,7 +136,7 @@ export default function RouteDetailScreen() {
         {route.coverImage ? (
           <Image source={{ uri: route.coverImage }} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
         ) : (
-          <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+          <LinearGradient colors={['#3264ff', '#003D99']} style={StyleSheet.absoluteFillObject} />
         )}
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.7)']} style={styles.heroOverlay}>
           <View style={styles.badges}>
@@ -326,7 +326,7 @@ export default function RouteDetailScreen() {
           style={({ pressed }) => [styles.ctaBtnOutline, pressed && { opacity: 0.8 }]}
           onPress={() => router.push('/(tabs)/chat')}
         >
-          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Ionicons name="chatbubble-ellipses" size={18} color="#3264ff" />
           <Text style={styles.ctaBtnOutlineText}>{t('route.aiPlanner')}</Text>
         </Pressable>
       </View>
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    backgroundColor: '#0066FF',
+    backgroundColor: '#3264ff',
     paddingVertical: 12,
     borderRadius: 999,
   },
@@ -691,12 +691,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     borderWidth: 1,
-    borderColor: '#0066FF',
+    borderColor: '#3264ff',
     paddingVertical: 12,
     borderRadius: 999,
   },
   ctaBtnOutlineText: {
-    color: '#0066FF',
+    color: '#3264ff',
     fontSize: fontSize.lg,
     fontWeight: '600',
   },

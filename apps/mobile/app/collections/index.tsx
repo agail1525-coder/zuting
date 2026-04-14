@@ -15,7 +15,7 @@ import { useRouter } from 'expo-router';
 import { api, Collection } from '../../src/lib/api';
 import { colors, fontSize, spacing, borderRadius } from '../../src/lib/theme';
 
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 
 export default function CollectionsScreen() {
   const router = useRouter();

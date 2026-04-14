@@ -22,7 +22,7 @@ import {
   type MembershipData,
 } from '../src/lib/api';
 
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 const GOLD = '#D4A855';
 
 const CATEGORIES = ['全部', '优惠券', '实物礼品', '旅行增值', '会员权益'];

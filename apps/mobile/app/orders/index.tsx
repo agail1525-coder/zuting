@@ -121,7 +121,7 @@ const s = StyleSheet.create({
     borderRadius: 20, backgroundColor: '#FFFFFF',
     borderWidth: 1, borderColor: '#E5E7EB',
   },
-  filterChipActive: { backgroundColor: '#0066FF', borderColor: '#0066FF' },
+  filterChipActive: { backgroundColor: '#3264ff', borderColor: '#3264ff' },
   filterText: { fontSize: 13, color: '#6B7280' },
   filterTextActive: { color: '#FFFFFF', fontWeight: '600' },
   orderCard: {

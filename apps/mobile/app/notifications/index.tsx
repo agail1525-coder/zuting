@@ -54,7 +54,7 @@ export default function NotificationsScreen() {
         onPress={() => !item.read && markRead(item.id)}
       >
         <View style={[s.iconCircle, !item.read && s.iconCircleUnread]}>
-          <Ionicons name={iconName as any} size={18} color={item.read ? '#9CA3AF' : '#0066FF'} />
+          <Ionicons name={iconName as any} size={18} color={item.read ? '#9CA3AF' : '#3264ff'} />
         </View>
         <View style={s.notifContent}>
           <Text style={[s.notifTitle, !item.read && s.notifTitleUnread]}>{item.title}</Text>
@@ -71,7 +71,7 @@ export default function NotificationsScreen() {
       {/* Header actions */}
       {hasUnread && (
         <Pressable style={s.markAllBtn} onPress={markAllRead}>
-          <Ionicons name="checkmark-done" size={16} color="#0066FF" />
+          <Ionicons name="checkmark-done" size={16} color="#3264ff" />
           <Text style={s.markAllText}>全部已读</Text>
         </Pressable>
       )}
@@ -102,7 +102,7 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 4,
     alignSelf: 'flex-end', paddingHorizontal: 16, paddingVertical: 8,
   },
-  markAllText: { fontSize: 13, color: '#0066FF' },
+  markAllText: { fontSize: 13, color: '#3264ff' },
   notifCard: {
     flexDirection: 'row', backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14,
     borderWidth: 1, borderColor: '#E5E7EB', alignItems: 'flex-start', gap: 12,
@@ -118,7 +118,7 @@ const s = StyleSheet.create({
   notifTitleUnread: { color: '#1A1A1A' },
   notifBody: { fontSize: 13, color: '#6B7280', lineHeight: 18, marginBottom: 4 },
   notifDate: { fontSize: 11, color: '#9CA3AF' },
-  unreadDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#0066FF', marginTop: 4 },
+  unreadDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#3264ff', marginTop: 4 },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12 },
   emptyText: { fontSize: 14, color: '#9CA3AF' },
 });

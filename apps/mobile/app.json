@@ -8,7 +8,9 @@
     "scheme": "joinus",
     "userInterfaceStyle": "light",
     "splash": {
-      "backgroundColor": "#0066FF"
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#3264ff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -17,7 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0066FF"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#3264ff"
       },
       "package": "com.zuting.travel"
     },
@@ -31,7 +34,7 @@
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
-          "color": "#0066FF"
+          "color": "#3264ff"
         }
       ]
     ],

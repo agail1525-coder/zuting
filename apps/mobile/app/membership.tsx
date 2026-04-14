@@ -24,7 +24,7 @@ import {
 } from '../src/lib/api';
 
 const GOLD = '#D4A855';
-const PRIMARY = '#0066FF';
+const PRIMARY = '#3264ff';
 
 function levelColor(level: string): string {
   switch (level) {

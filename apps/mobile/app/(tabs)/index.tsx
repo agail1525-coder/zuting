@@ -141,7 +141,7 @@ export default function HomeScreen() {
       }
     >
       {/* ── 1. Hero + Tab Search ── */}
-      <LinearGradient colors={['#0066FF', '#003D99']} style={styles.hero}>
+      <LinearGradient colors={['#3264ff', '#003D99']} style={styles.hero}>
         <Text style={styles.heroTitle}>{t('home.heroTitle')}</Text>
         <Text style={styles.heroSubtitle}>{t('home.heroSubtitle')}</Text>
 
@@ -157,7 +157,7 @@ export default function HomeScreen() {
                 <Ionicons
                   name={tab.icon}
                   size={14}
-                  color={activeSearchTab === tab.key ? '#0066FF' : '#9CA3AF'}
+                  color={activeSearchTab === tab.key ? '#3264ff' : '#9CA3AF'}
                 />
                 <Text style={[styles.searchTabText, activeSearchTab === tab.key && styles.searchTabTextActive]}>
                   {t(tab.labelKey)}
@@ -193,7 +193,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/search')}
           >
             <View style={styles.categoryIcon}>
-              <Ionicons name={cat.icon} size={22} color="#0066FF" />
+              <Ionicons name={cat.icon} size={22} color="#3264ff" />
             </View>
             <Text style={styles.categoryLabel}>{t(cat.labelKey)}</Text>
           </Pressable>
@@ -212,7 +212,7 @@ export default function HomeScreen() {
             onPress={() => router.push(h.route as never)}
           >
             <View style={styles.highlightIconBox}>
-              <Ionicons name={h.icon} size={20} color="#0066FF" />
+              <Ionicons name={h.icon} size={20} color="#3264ff" />
             </View>
             <Text style={styles.highlightTitle}>{t(h.titleKey)}</Text>
             <Text style={styles.highlightDesc}>{t(h.descKey)}</Text>
@@ -298,7 +298,7 @@ export default function HomeScreen() {
             onPress={() => router.push(action.route as never)}
           >
             <View style={styles.communityHubIcon}>
-              <Ionicons name={action.icon} size={22} color="#0066FF" />
+              <Ionicons name={action.icon} size={22} color="#3264ff" />
             </View>
             <Text style={styles.communityHubLabel}>{t(action.labelKey)}</Text>
           </Pressable>
@@ -349,13 +349,13 @@ export default function HomeScreen() {
 
       {/* ── 6. AI Planner Banner ── */}
       <Pressable onPress={() => router.push('/(tabs)/chat')} style={styles.aiBannerWrap}>
-        <LinearGradient colors={['#0066FF', '#0052CC']} style={styles.aiBanner}>
+        <LinearGradient colors={['#3264ff', '#0052CC']} style={styles.aiBanner}>
           <View style={styles.aiBannerContent}>
             <Text style={styles.aiBannerTitle}>{t('home.aiPlannerTitle')}</Text>
             <Text style={styles.aiBannerDesc}>{t('home.aiPlannerDesc')}</Text>
             <View style={styles.aiBannerBtn}>
               <Text style={styles.aiBannerBtnText}>{t('home.startChat')}</Text>
-              <Ionicons name="arrow-forward" size={14} color="#0066FF" />
+              <Ionicons name="arrow-forward" size={14} color="#3264ff" />
             </View>
           </View>
           <View style={styles.aiBannerChat}>
@@ -538,7 +538,7 @@ export default function HomeScreen() {
             style={styles.ctaButtonOutline}
             onPress={() => router.push('/(tabs)/chat')}
           >
-            <Ionicons name="chatbubble-ellipses" size={16} color="#0066FF" />
+            <Ionicons name="chatbubble-ellipses" size={16} color="#3264ff" />
             <Text style={styles.ctaButtonOutlineText}>{t('home.aiPlanForYou')}</Text>
           </Pressable>
         </View>
@@ -599,7 +599,7 @@ function PopularCard({ item, onPress }: { item: RecommendationItem; onPress: () 
       )}
       <View style={styles.popularCardBody}>
         <View style={[styles.popularBadge, { backgroundColor: item.religionColor ? `${item.religionColor}22` : '#EFF6FF' }]}>
-          <Text style={[styles.popularBadgeText, { color: item.religionColor ?? '#0066FF' }]} numberOfLines={1}>
+          <Text style={[styles.popularBadgeText, { color: item.religionColor ?? '#3264ff' }]} numberOfLines={1}>
             {item.religionName}
           </Text>
         </View>
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
   },
   searchTabActive: { backgroundColor: '#EFF6FF' },
   searchTabText: { fontSize: 12, color: '#9CA3AF' },
-  searchTabTextActive: { color: '#0066FF', fontWeight: '600' },
+  searchTabTextActive: { color: '#3264ff', fontWeight: '600' },
   searchBar: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: '#F9FAFB', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 14,
@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md, paddingTop: 24, paddingBottom: 12,
   },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
-  sectionMore: { fontSize: 12, color: '#0066FF' },
+  sectionMore: { fontSize: 12, color: '#3264ff' },
 
   // Platform Highlights
   highlightGrid: {
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
   },
   highlightTitle: { fontSize: 15, fontWeight: '700', color: '#1A1A1A' },
   highlightDesc: { fontSize: 12, color: '#9CA3AF', marginTop: 2 },
-  highlightCta: { fontSize: 12, color: '#0066FF', marginTop: 8 },
+  highlightCta: { fontSize: 12, color: '#3264ff', marginTop: 8 },
 
   // Pilgrim Stories
   storyList: { paddingHorizontal: spacing.md, gap: 12 },
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     width: 24, height: 24, borderRadius: 12, backgroundColor: '#EFF6FF',
     justifyContent: 'center', alignItems: 'center',
   },
-  storyAvatarText: { fontSize: 11, color: '#0066FF', fontWeight: '600' },
+  storyAvatarText: { fontSize: 11, color: '#3264ff', fontWeight: '600' },
   storyAuthorName: { fontSize: 11, color: '#6B7280' },
   storyTitle: { fontSize: 14, fontWeight: '700', color: '#1A1A1A' },
   storyExcerpt: { fontSize: 12, color: '#9CA3AF', marginTop: 4, lineHeight: 18 },
@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
   },
   routeBadgeText: { color: '#FFFFFF', fontSize: 10 },
   routeRatingBadge: {
-    position: 'absolute', top: 8, right: 8, backgroundColor: '#0066FF',
+    position: 'absolute', top: 8, right: 8, backgroundColor: '#3264ff',
     flexDirection: 'row', alignItems: 'center', gap: 2,
     paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6,
   },
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF', alignSelf: 'flex-start',
     paddingHorizontal: 14, paddingVertical: 6, borderRadius: 999,
   },
-  aiBannerBtnText: { fontSize: 12, fontWeight: '600', color: '#0066FF' },
+  aiBannerBtnText: { fontSize: 12, fontWeight: '600', color: '#3264ff' },
   aiBannerChat: { width: 120, justifyContent: 'center', gap: 6 },
   chatBubble: {
     backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 5,
@@ -752,7 +752,7 @@ const styles = StyleSheet.create({
   },
   chatBubbleText: { fontSize: 10, color: '#FFFFFF' },
   chatBubbleReply: { backgroundColor: 'rgba(255,255,255,0.9)', alignSelf: 'flex-start' },
-  chatBubbleReplyText: { fontSize: 10, color: '#0066FF' },
+  chatBubbleReplyText: { fontSize: 10, color: '#3264ff' },
 
   // Destinations Grid
   destGrid: {
@@ -778,7 +778,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 6, borderRadius: 999,
     backgroundColor: '#F3F4F6',
   },
-  recTabActive: { backgroundColor: '#0066FF' },
+  recTabActive: { backgroundColor: '#3264ff' },
   recTabText: { fontSize: 13, color: '#6B7280' },
   recTabTextActive: { color: '#FFFFFF', fontWeight: '600' },
   recGrid: {
@@ -800,7 +800,7 @@ const styles = StyleSheet.create({
   },
   statsGrid: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center' },
-  statValue: { fontSize: 22, fontWeight: '800', color: '#0066FF' },
+  statValue: { fontSize: 22, fontWeight: '800', color: '#3264ff' },
   statLabel: { fontSize: 11, color: '#6B7280', marginTop: 2 },
 
   // CTA
@@ -814,14 +814,14 @@ const styles = StyleSheet.create({
   ctaButtons: { flexDirection: 'row', gap: 12 },
   ctaButton: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: '#0066FF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
+    backgroundColor: '#3264ff', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
   },
   ctaButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
   ctaButtonOutline: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    borderWidth: 1, borderColor: '#0066FF', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
+    borderWidth: 1, borderColor: '#3264ff', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 999,
   },
-  ctaButtonOutlineText: { color: '#0066FF', fontSize: 14, fontWeight: '600' },
+  ctaButtonOutlineText: { color: '#3264ff', fontSize: 14, fontWeight: '600' },
 
   // Footer
   footer: { alignItems: 'center', paddingVertical: 24 },

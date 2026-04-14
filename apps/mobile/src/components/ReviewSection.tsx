@@ -98,7 +98,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
       <View style={st.headerRow}>
         <Text style={st.title}>文化评价</Text>
         <Pressable style={st.writeBtn} onPress={handleWriteReview}>
-          <Ionicons name="create-outline" size={14} color="#0066FF" />
+          <Ionicons name="create-outline" size={14} color="#3264ff" />
           <Text style={st.writeBtnText}>写评价</Text>
         </Pressable>
       </View>
@@ -159,7 +159,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
                 <Ionicons
                   name={votedIds.has(review.id) ? 'thumbs-up' : 'thumbs-up-outline'}
                   size={13}
-                  color={votedIds.has(review.id) ? '#0066FF' : '#9CA3AF'}
+                  color={votedIds.has(review.id) ? '#3264ff' : '#9CA3AF'}
                 />
                 <Text style={[st.helpfulText, votedIds.has(review.id) && st.helpfulTextActive]}>
                   有用
@@ -172,7 +172,7 @@ export default function ReviewSection({ targetType, targetId }: ReviewSectionPro
           {(stats?.totalCount ?? 0) > 3 && (
             <Pressable style={st.viewAllBtn} onPress={handleViewAll}>
               <Text style={st.viewAllText}>查看全部 {stats?.totalCount} 条评价</Text>
-              <Ionicons name="chevron-forward" size={14} color="#0066FF" />
+              <Ionicons name="chevron-forward" size={14} color="#3264ff" />
             </Pressable>
           )}
         </>
@@ -196,7 +196,7 @@ const st = StyleSheet.create({
     paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20,
     borderWidth: 1, borderColor: 'rgba(0,102,255,0.3)',
   },
-  writeBtnText: { fontSize: 12, color: '#0066FF' },
+  writeBtnText: { fontSize: 12, color: '#3264ff' },
   loadingText: { color: '#9CA3AF', fontSize: 14, textAlign: 'center', paddingVertical: 24 },
   emptyState: { alignItems: 'center', paddingVertical: 24 },
   emptyIcon: { fontSize: 32, marginBottom: 8 },
@@ -230,7 +230,7 @@ const st = StyleSheet.create({
     backgroundColor: 'rgba(0,102,255,0.1)', borderWidth: 1, borderColor: 'rgba(0,102,255,0.2)',
     justifyContent: 'center', alignItems: 'center',
   },
-  avatarText: { fontSize: 13, color: '#0066FF', fontWeight: '600' },
+  avatarText: { fontSize: 13, color: '#3264ff', fontWeight: '600' },
   nickname: { fontSize: 13, fontWeight: '600', color: '#374151' },
   date: { fontSize: 11, color: '#9CA3AF', marginTop: 1 },
   reviewContent: { fontSize: 13, color: '#4B5563', lineHeight: 20, marginBottom: 10 },
@@ -243,7 +243,7 @@ const st = StyleSheet.create({
   },
   helpfulBtnActive: { borderColor: 'rgba(0,102,255,0.3)', backgroundColor: '#EFF6FF' },
   helpfulText: { fontSize: 11, color: '#9CA3AF' },
-  helpfulTextActive: { color: '#0066FF' },
+  helpfulTextActive: { color: '#3264ff' },
 
   // View all
   viewAllBtn: {
@@ -252,5 +252,5 @@ const st = StyleSheet.create({
     borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 10,
     marginTop: 4,
   },
-  viewAllText: { fontSize: 13, color: '#0066FF' },
+  viewAllText: { fontSize: 13, color: '#3264ff' },
 });

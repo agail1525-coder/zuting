@@ -74,7 +74,7 @@ export default function RelatedEntities({ entityType, entityId, title = '相关�
                 <Text
                   style={[
                     styles.religionBadgeText,
-                    { color: item.religionColor ?? '#0066FF' },
+                    { color: item.religionColor ?? '#3264ff' },
                   ]}
                   numberOfLines={1}
                 >

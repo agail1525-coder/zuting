@@ -35,10 +35,10 @@ export default function TeachingDetailScreen() {
   if (error || !teaching) {
     return (
       <View style={s.errorContainer}>
-        <Ionicons name="alert-circle-outline" size={48} color="#0066FF" />
+        <Ionicons name="alert-circle-outline" size={48} color="#3264ff" />
         <Text style={s.errorText}>{error ?? '祖训不存在'}</Text>
         <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#0066FF', fontSize: 15, marginTop: 8 }}>返回</Text>
+          <Text style={{ color: '#3264ff', fontSize: 15, marginTop: 8 }}>返回</Text>
         </Pressable>
       </View>
     );
@@ -50,7 +50,7 @@ export default function TeachingDetailScreen() {
     <ScrollView style={s.container} contentContainerStyle={s.content}>
       {/* Hero */}
       <View style={s.hero}>
-        <LinearGradient colors={['#0066FF', '#003D99']} style={StyleSheet.absoluteFillObject} />
+        <LinearGradient colors={['#3264ff', '#003D99']} style={StyleSheet.absoluteFillObject} />
         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.5)']} style={s.heroOverlay}>
           {religionName ? (
             <View style={s.religionBadge}>
@@ -103,7 +103,7 @@ export default function TeachingDetailScreen() {
           <Text style={s.ctaBtnText}>规划行程</Text>
         </Pressable>
         <Pressable style={s.ctaBtnOutline} onPress={() => router.push('/(tabs)/chat')}>
-          <Ionicons name="chatbubble-ellipses" size={18} color="#0066FF" />
+          <Ionicons name="chatbubble-ellipses" size={18} color="#3264ff" />
           <Text style={s.ctaBtnOutlineText}>AI规划</Text>
         </Pressable>
       </View>
@@ -138,7 +138,7 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: '#E5E7EB', flexDirection: 'row',
   },
   quoteBar: {
-    width: 3, backgroundColor: '#0066FF', borderRadius: 2, marginRight: 14,
+    width: 3, backgroundColor: '#3264ff', borderRadius: 2, marginRight: 14,
   },
   quoteText: {
     flex: 1, fontSize: 16, color: '#374151', lineHeight: 28, fontStyle: 'italic',
@@ -151,12 +151,12 @@ const s = StyleSheet.create({
   ctaRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 24, gap: 12 },
   ctaBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, backgroundColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, backgroundColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
   ctaBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
   ctaBtnOutline: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, borderWidth: 1, borderColor: '#0066FF', paddingVertical: 12, borderRadius: 999,
+    gap: 6, borderWidth: 1, borderColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
-  ctaBtnOutlineText: { color: '#0066FF', fontSize: 15, fontWeight: '600' },
+  ctaBtnOutlineText: { color: '#3264ff', fontSize: 15, fontWeight: '600' },
 });
