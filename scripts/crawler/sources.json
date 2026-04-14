@@ -277,6 +277,21 @@
       "notes": "CW-27 urls.txt 投喂, 反爬强不硬刚"
     },
     {
+      "key": "wechat-mp-urls-feed",
+      "name": "微信公众号人工投喂 (urls.txt)",
+      "baseUrl": "file://scripts/crawler/feeds/wechat/",
+      "type": "GUIDE",
+      "targetDomain": "GUIDE",
+      "channel": "MEDIA",
+      "priority": 3,
+      "schedule": "0 13 * * *",
+      "parser": "wechat-mp-urls-feed",
+      "strategy": "HTTP",
+      "rateLimitMs": 3000,
+      "enabled": true,
+      "notes": "CW-27 urls.txt 投喂, 腾讯 ToS 禁批量爬, 只抓用户主动投喂的单篇链接"
+    },
+    {
       "key": "weibo-travel-topic",
       "name": "微博旅游话题",
       "baseUrl": "https://m.weibo.cn",

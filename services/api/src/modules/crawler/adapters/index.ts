@@ -2,11 +2,13 @@ import type { CrawlerSource } from '@prisma/client';
 import type { CrawlerAdapter } from './types';
 import { WikiAdapter } from './wiki-adapter';
 import { OfficialAdapter } from './official-adapter';
+import { WechatMpAdapter } from './wechat-mp-adapter';
 import { MapAdapter, OTAAdapter, UGCAdapter } from './stub-adapters';
 
-// 顺序敏感: WikiAdapter 先于 OfficialAdapter,避免 channel=WIKI 的源被通用 HTTP 抓
+// 顺序敏感: 精确匹配(Wiki/WechatMp)先于通用 Stub/Official
 const ADAPTERS: CrawlerAdapter[] = [
   new WikiAdapter(),
+  new WechatMpAdapter(),
   new MapAdapter(),
   new OTAAdapter(),
   new UGCAdapter(),
