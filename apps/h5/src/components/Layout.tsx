@@ -43,6 +43,15 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Brand top bar */}
+      <header className="sticky top-0 z-40 bg-[#3264ff] shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 h-12 flex items-center">
+          <NavLink to="/" aria-label="Joinus 佳绩之旅">
+            <img src="/logo.png" alt="Joinus 佳绩之旅" className="h-4 w-auto" />
+          </NavLink>
+        </div>
+      </header>
+
       {/* Page content */}
       <main className={`flex-1 ${hideTabBar ? "" : "pb-safe"}`}>
         <Outlet />

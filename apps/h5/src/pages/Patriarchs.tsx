@@ -37,7 +37,7 @@ export default function Patriarchs() {
   return (
     <div className="pb-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0066FF] to-[#0044CC] px-4 pt-8 pb-5 text-white">
+      <div className="bg-gradient-to-br from-[#3264ff] to-[#0044CC] px-4 pt-8 pb-5 text-white">
         <h1 className="text-lg font-bold">{t("nav.patriarchs")}</h1>
         <p className="text-xs text-white/70 mt-1">{t("religions.statPatriarchs")}</p>
       </div>
@@ -57,7 +57,7 @@ export default function Patriarchs() {
         <button
           onClick={() => setFilterId("")}
           className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium ${
-            !filterId ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600"
+            !filterId ? "bg-[#3264ff] text-white" : "bg-gray-100 text-gray-600"
           }`}
         >
           {t("holySites.continent.all")}
@@ -67,7 +67,7 @@ export default function Patriarchs() {
             key={r.id}
             onClick={() => setFilterId(r.id)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium ${
-              filterId === r.id ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600"
+              filterId === r.id ? "bg-[#3264ff] text-white" : "bg-gray-100 text-gray-600"
             }`}
           >
             {r.symbol} {r.name}
@@ -99,7 +99,7 @@ export default function Patriarchs() {
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-semibold text-gray-900">{p.name}</h3>
                   {p.nameEn && <p className="text-xs text-gray-500 mt-0.5">{p.nameEn}</p>}
-                  {p.title && <p className="text-xs text-[#0066FF] mt-0.5">{p.title}</p>}
+                  {p.title && <p className="text-xs text-[#3264ff] mt-0.5">{p.title}</p>}
                   {p.dates && <p className="text-[10px] text-gray-400 mt-0.5">{p.dates}</p>}
                   <div className="flex flex-wrap gap-1 mt-1">
                     {p.school && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700">{p.school}</span>}

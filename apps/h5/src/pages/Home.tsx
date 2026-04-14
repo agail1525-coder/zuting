@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <div className="pb-6">
       {/* Hero search */}
-      <div className="bg-gradient-to-br from-[#0066FF] to-[#0044CC] px-4 pt-10 pb-8 text-white">
+      <div className="bg-gradient-to-br from-[#3264ff] to-[#0044CC] px-4 pt-10 pb-8 text-white">
         <h1 className="text-xl font-bold mb-1">{t("home.hero.title")}</h1>
         <p className="text-xs text-white/70 mb-5">{t("home.hero.subtitle")}</p>
         <div className="flex bg-white rounded-full overflow-hidden">
@@ -73,7 +73,7 @@ export default function Home() {
           />
           <button
             onClick={handleSearch}
-            className="px-4 text-[#0066FF] font-medium text-sm"
+            className="px-4 text-[#3264ff] font-medium text-sm"
           >
             {t("home.search")}
           </button>
@@ -98,7 +98,7 @@ export default function Home() {
         <section className="mt-5">
           <div className="flex items-center justify-between px-4 mb-3">
             <h2 className="font-bold text-base text-gray-900">{t("home.featuredRoutes")}</h2>
-            <Link to="/routes" className="text-xs text-[#0066FF]">{t("home.viewAll")}</Link>
+            <Link to="/routes" className="text-xs text-[#3264ff]">{t("home.viewAll")}</Link>
           </div>
           <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
             {routes.map((r) => (
@@ -138,7 +138,7 @@ export default function Home() {
               >
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center text-xl"
-                  style={{ backgroundColor: (r.color || "#0066FF") + "18" }}
+                  style={{ backgroundColor: (r.color || "#3264ff") + "18" }}
                 >
                   {r.symbol || "🕊️"}
                 </div>
@@ -147,7 +147,7 @@ export default function Home() {
             ))}
           </div>
           {religions.length > 8 && (
-            <Link to="/religions" className="block text-center text-xs text-[#0066FF] mt-3">{t("home.viewAll")}</Link>
+            <Link to="/religions" className="block text-center text-xs text-[#3264ff] mt-3">{t("home.viewAll")}</Link>
           )}
         </section>
       )}
@@ -157,7 +157,7 @@ export default function Home() {
         <section className="mt-6 px-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-base text-gray-900">{t("home.popularDest")}</h2>
-            <Link to="/holy-sites" className="text-xs text-[#0066FF]">{t("home.viewAll")}</Link>
+            <Link to="/holy-sites" className="text-xs text-[#3264ff]">{t("home.viewAll")}</Link>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {sites.map((s) => (
@@ -210,10 +210,10 @@ export default function Home() {
       )}
 
       {/* AI Planning CTA */}
-      <section className="mt-6 mx-4 bg-gradient-to-r from-[#0066FF] to-[#4488FF] rounded-xl p-4 text-white">
+      <section className="mt-6 mx-4 bg-gradient-to-r from-[#3264ff] to-[#4488FF] rounded-xl p-4 text-white">
         <h3 className="font-bold text-sm mb-1">{t("home.aiPlanTitle")}</h3>
         <p className="text-xs text-white/80 mb-3">{t("home.aiDesc")}</p>
-        <Link to="/chat" className="inline-block bg-white text-[#0066FF] text-xs font-semibold px-4 py-2 rounded-full">
+        <Link to="/chat" className="inline-block bg-white text-[#3264ff] text-xs font-semibold px-4 py-2 rounded-full">
           {t("home.startAI")}
         </Link>
       </section>

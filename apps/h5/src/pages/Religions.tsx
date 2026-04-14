@@ -66,7 +66,7 @@ export default function Religions() {
   return (
     <div className="pb-6">
       {/* Hero with stats */}
-      <div className="bg-gradient-to-br from-[#0066FF] to-[#4400CC] px-4 pt-8 pb-6 text-white">
+      <div className="bg-gradient-to-br from-[#3264ff] to-[#4400CC] px-4 pt-8 pb-6 text-white">
         <p className="text-[10px] text-white/50 uppercase tracking-widest">{t("religions.heroSubtag")}</p>
         <h1 className="text-lg font-bold mt-1">{t("religions.heroTitle")}</h1>
         <p className="text-xs text-white/70 mt-1 leading-relaxed">{t("religions.heroDesc")}</p>
@@ -112,7 +112,7 @@ export default function Religions() {
             >
               <div
                 className="h-20 flex items-center justify-center text-3xl"
-                style={{ background: `linear-gradient(135deg, ${r.color || "#0066FF"}22, ${r.color || "#0066FF"}08)` }}
+                style={{ background: `linear-gradient(135deg, ${r.color || "#3264ff"}22, ${r.color || "#3264ff"}08)` }}
               >
                 {r.symbol || "🕊️"}
               </div>
@@ -129,7 +129,7 @@ export default function Religions() {
       <FAQSection title={t("religions.faqTitle")} items={faqItems} />
 
       {/* CTA */}
-      <div className="mx-4 mt-6 rounded-xl p-5 text-center text-white bg-gradient-to-r from-[#0066FF] to-[#4400CC]">
+      <div className="mx-4 mt-6 rounded-xl p-5 text-center text-white bg-gradient-to-r from-[#3264ff] to-[#4400CC]">
         <h3 className="text-base font-bold">{t("religions.ctaTitle")}</h3>
         <p className="text-xs text-white/70 mt-1">{t("religions.ctaDesc")}</p>
         <div className="flex gap-3 mt-4 justify-center">
@@ -141,7 +141,7 @@ export default function Religions() {
           </button>
           <button
             onClick={() => nav("/chat")}
-            className="px-4 py-2 bg-white rounded-full text-sm font-medium text-[#0066FF] active:opacity-80"
+            className="px-4 py-2 bg-white rounded-full text-sm font-medium text-[#3264ff] active:opacity-80"
           >
             {t("religions.ctaAiPlan")}
           </button>

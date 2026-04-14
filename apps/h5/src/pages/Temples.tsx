@@ -37,7 +37,7 @@ export default function Temples() {
   return (
     <div className="pb-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0066FF] to-[#0044CC] px-4 pt-8 pb-5 text-white">
+      <div className="bg-gradient-to-br from-[#3264ff] to-[#0044CC] px-4 pt-8 pb-5 text-white">
         <h1 className="text-lg font-bold">{t("nav.temples")}</h1>
         <p className="text-xs text-white/70 mt-1">{t("religions.statTemples")}</p>
       </div>
@@ -57,7 +57,7 @@ export default function Temples() {
         <button
           onClick={() => setFilterId("")}
           className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium ${
-            !filterId ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600"
+            !filterId ? "bg-[#3264ff] text-white" : "bg-gray-100 text-gray-600"
           }`}
         >
           {t("holySites.continent.all")}
@@ -67,7 +67,7 @@ export default function Temples() {
             key={r.id}
             onClick={() => setFilterId(r.id)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium ${
-              filterId === r.id ? "bg-[#0066FF] text-white" : "bg-gray-100 text-gray-600"
+              filterId === r.id ? "bg-[#3264ff] text-white" : "bg-gray-100 text-gray-600"
             }`}
           >
             {r.symbol} {r.name}

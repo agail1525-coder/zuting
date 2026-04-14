@@ -103,7 +103,7 @@ export default function ReligionDetail() {
     { key: "teachings" as Tab, label: `${t("nav.teachings")} (${counts.teachings})` },
   ];
 
-  const color = religion.color || "#0066FF";
+  const color = religion.color || "#3264ff";
 
   const faqItems = [
     { question: t("religions.faq1Q"), answer: t("religions.faq1A") },

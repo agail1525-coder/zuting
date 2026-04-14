@@ -65,7 +65,7 @@ export default function TeachingDetail() {
       <PageHeader title={teaching.name} />
 
       {/* Title card */}
-      <div className="mx-4 mt-4 p-5 bg-gradient-to-br from-[#0066FF]/5 to-[#0066FF]/10 rounded-xl">
+      <div className="mx-4 mt-4 p-5 bg-gradient-to-br from-[#3264ff]/5 to-[#3264ff]/10 rounded-xl">
         <h1 className="text-lg font-bold text-gray-900 text-center">{teaching.name}</h1>
         {teaching.religion && (
           <div className="flex justify-center mt-2">
@@ -90,7 +90,7 @@ export default function TeachingDetail() {
       {/* Source */}
       {teaching.sourceText && (
         <div className="px-4 mt-3">
-          <div className="p-3 bg-gray-50 rounded-lg border-l-2 border-[#0066FF]">
+          <div className="p-3 bg-gray-50 rounded-lg border-l-2 border-[#3264ff]">
             <p className="text-sm text-gray-600">— {teaching.sourceText}</p>
           </div>
         </div>

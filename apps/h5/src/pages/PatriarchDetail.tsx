@@ -94,7 +94,7 @@ export default function PatriarchDetail() {
         <h1 className="text-xl font-bold text-gray-900 mt-3">{patriarch.name}</h1>
         {patriarch.nameEn && <p className="text-sm text-gray-500">{patriarch.nameEn}</p>}
         {patriarch.title && (
-          <span className="mt-2 text-xs px-3 py-1 bg-[#0066FF]/10 text-[#0066FF] rounded-full font-medium">{patriarch.title}</span>
+          <span className="mt-2 text-xs px-3 py-1 bg-[#3264ff]/10 text-[#3264ff] rounded-full font-medium">{patriarch.title}</span>
         )}
         {patriarch.dates && <p className="text-xs text-gray-400 mt-1">{patriarch.dates}</p>}
         <div className="flex items-center gap-2 mt-2">
@@ -133,8 +133,8 @@ export default function PatriarchDetail() {
 
             {/* Core teaching preview */}
             {patriarch.coreTeaching && (
-              <section className="mx-4 mt-4 p-4 bg-[#0066FF]/5 rounded-xl border border-[#0066FF]/10">
-                <h2 className="font-bold text-sm text-[#0066FF] mb-2">{t("patriarchDetail.coreTeaching")}</h2>
+              <section className="mx-4 mt-4 p-4 bg-[#3264ff]/5 rounded-xl border border-[#3264ff]/10">
+                <h2 className="font-bold text-sm text-[#3264ff] mb-2">{t("patriarchDetail.coreTeaching")}</h2>
                 <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">{patriarch.coreTeaching}</p>
                 <button onClick={() => setTab("teaching")} className="text-xs text-blue-600 mt-1">{t("patriarchDetail.learnMore")}</button>
               </section>
@@ -169,9 +169,9 @@ export default function PatriarchDetail() {
 
                   {/* Self */}
                   <div className="relative mb-4">
-                    <div className="absolute -left-3.5 top-1 w-3 h-3 rounded-full bg-[#0066FF] border-2 border-white ring-2 ring-blue-200" />
-                    <div className="p-2 bg-[#0066FF]/10 rounded-lg border border-[#0066FF]/20">
-                      <p className="text-xs font-bold text-[#0066FF]">{patriarch.name}</p>
+                    <div className="absolute -left-3.5 top-1 w-3 h-3 rounded-full bg-[#3264ff] border-2 border-white ring-2 ring-blue-200" />
+                    <div className="p-2 bg-[#3264ff]/10 rounded-lg border border-[#3264ff]/20">
+                      <p className="text-xs font-bold text-[#3264ff]">{patriarch.name}</p>
                       {patriarch.generation && <p className="text-[10px] text-gray-500">{t("patriarchDetail.lineage")} · {patriarch.generation}</p>}
                     </div>
                   </div>
@@ -223,7 +223,7 @@ export default function PatriarchDetail() {
               <div className="space-y-3">
                 {learningPath.map((item) => (
                   <div key={item.step} className="flex gap-3 items-start">
-                    <div className="w-8 h-8 rounded-full bg-[#0066FF] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#3264ff] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                       {item.step}
                     </div>
                     <div>
@@ -266,7 +266,7 @@ export default function PatriarchDetail() {
                     <h3 className="font-bold text-sm text-gray-900 mb-2">{t("nav.teachings")}</h3>
                     <div className="space-y-2">
                       {patriarch.classicQuotes.map((q, i) => (
-                        <div key={i} className="p-3 bg-gray-50 rounded-lg border-l-2 border-[#0066FF]">
+                        <div key={i} className="p-3 bg-gray-50 rounded-lg border-l-2 border-[#3264ff]">
                           <p className="text-sm text-gray-700 italic">{q}</p>
                         </div>
                       ))}
@@ -296,7 +296,7 @@ export default function PatriarchDetail() {
           <div className="px-4">
             {patriarch.coreTeaching ? (
               <div>
-                <div className="p-4 bg-[#0066FF]/5 rounded-xl border border-[#0066FF]/10">
+                <div className="p-4 bg-[#3264ff]/5 rounded-xl border border-[#3264ff]/10">
                   <p className="text-sm text-gray-700 leading-relaxed">{patriarch.coreTeaching}</p>
                 </div>
 

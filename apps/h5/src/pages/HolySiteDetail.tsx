@@ -190,7 +190,7 @@ export default function HolySiteDetail() {
         <div className="flex items-center gap-3">
           {site.reviewStats && site.reviewStats.averageRating > 0 && (
             <>
-              <span className="bg-[#0066FF] text-white text-sm font-bold px-2 py-0.5 rounded">
+              <span className="bg-[#3264ff] text-white text-sm font-bold px-2 py-0.5 rounded">
                 {site.reviewStats.averageRating.toFixed(1)}
               </span>
               <span className="text-xs text-gray-500">
@@ -250,7 +250,7 @@ export default function HolySiteDetail() {
                 <ul className="space-y-2">
                   {site.tips.slice(0, 3).map((tip, i) => (
                     <li key={i} className="flex gap-2 text-sm text-gray-600">
-                      <span className="text-[#0066FF] mt-0.5 flex-shrink-0">•</span>
+                      <span className="text-[#3264ff] mt-0.5 flex-shrink-0">•</span>
                       <span>{tip}</span>
                     </li>
                   ))}
@@ -351,7 +351,7 @@ export default function HolySiteDetail() {
               <div>
                 {/* Rating summary */}
                 <div className="bg-white rounded-xl shadow-sm p-4 text-center">
-                  <span className="text-4xl font-bold text-[#0066FF]">{site.reviewStats.averageRating.toFixed(1)}</span>
+                  <span className="text-4xl font-bold text-[#3264ff]">{site.reviewStats.averageRating.toFixed(1)}</span>
                   <div className="flex justify-center mt-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <span key={star} className={`text-lg ${star <= Math.round(site.reviewStats!.averageRating) ? "text-yellow-400" : "text-gray-200"}`}>
