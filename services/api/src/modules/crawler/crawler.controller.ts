@@ -15,6 +15,7 @@ import { Type, Transform } from 'class-transformer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CrawlerService } from './crawler.service';
 import {
@@ -58,6 +59,23 @@ class ListAlertsQuery {
 @Controller('crawlers')
 export class CrawlerController {
   constructor(private readonly service: CrawlerService) {}
+
+  @Public()
+  @Get('public-coverage')
+  @ApiOperation({ summary: 'Public: sanitized coverage grid (no source identifiers) — for /about/data-freshness' })
+  async publicCoverage() {
+    const { takenAt, snapshots } = await this.service.getLatestCoverage();
+    return {
+      takenAt,
+      grids: snapshots.map((s) => ({
+        domain: s.domain,
+        channel: s.channel,
+        activeCount: s.activeCount,
+        itemsLast24h: s.itemsLast24h,
+        status: s.status,
+      })),
+    };
+  }
 
   @Get('sources')
   @ApiOperation({ summary: 'Admin: list crawler sources' })

@@ -7,6 +7,7 @@ import { canAccess } from './lib/menuAcl';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const TravelPackagesPage = lazy(() => import('./pages/TravelPackagesPage'));
+const CrawlerManagePage = lazy(() => import('./pages/CrawlerManagePage'));
 const ReligionsPage = lazy(() => import('./pages/ReligionsPage'));
 const HolySitesPage = lazy(() => import('./pages/HolySitesPage'));
 const TemplesPage = lazy(() => import('./pages/TemplesPage'));
@@ -150,6 +151,7 @@ export default function App() {
           <Route path="system-health" element={<SystemHealthPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="travel-packages" element={<TravelPackagesPage />} />
+          <Route path="crawlers" element={<CrawlerManagePage />} />
           <Route path="religions/:slug" element={<ReligionStudioPage />} />
           <Route path="seals/:id" element={<SealStudioPage />} />
           <Route path="team-culture/themes/:slug" element={<ThemeStudioPage kind="team-culture" />} />

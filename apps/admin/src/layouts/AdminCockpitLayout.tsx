@@ -76,6 +76,7 @@ const menuItems = [
       { key: '/membership', icon: <CrownOutlined />, label: '会员' },
       { key: '/prices', icon: <DollarOutlined />, label: '价格' },
       { key: '/merchants', icon: <ShopOutlined />, label: '商家' },
+      { key: '/crawlers', icon: <ThunderboltOutlined />, label: '爬虫++' },
     ],
   },
 
@@ -161,6 +162,7 @@ const breadcrumbMap: Record<string, string> = {
   '/membership': '会员',
   '/prices': '价格',
   '/merchants': '商家',
+  '/crawlers': '爬虫++',
   '/community': '社区管理',
   '/journals': '文化日志',
   '/reviews': '评价',
