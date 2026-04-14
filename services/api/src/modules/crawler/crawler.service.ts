@@ -151,7 +151,7 @@ export class CrawlerService {
     try {
       const raw = await adapter.fetch(source);
       const extracted = adapter.extract(raw, source);
-      const limit = Math.min(extracted.length, 50);
+      const limit = Math.min(extracted.length, 500);
 
       let created = 0;
       let updated = 0;
@@ -298,6 +298,44 @@ export class CrawlerService {
       this.prisma.crawlerItem.count({ where }),
     ]);
     return { items, total, page: params.page, limit: params.limit };
+  }
+
+  async listAttachedVideos(targetType: string, targetId: string, limit: number) {
+    const items = await this.prisma.crawlerItem.findMany({
+      where: {
+        targetType,
+        targetId,
+        status: 'DISPATCHED',
+        source: { parser: 'youtube-rss' },
+      },
+      orderBy: { fetchedAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        sanitizedTitle: true,
+        externalUrl: true,
+        imageUrls: true,
+        raw: true,
+        fetchedAt: true,
+        qualityScore: true,
+      },
+    });
+    return {
+      items: items.map((it) => {
+        const raw = (it.raw ?? {}) as { channelId?: string; channelTitle?: string; videoId?: string; published?: string };
+        return {
+          id: it.id,
+          title: it.sanitizedTitle ?? it.title,
+          url: it.externalUrl,
+          thumbnail: it.imageUrls?.[0] ?? null,
+          videoId: raw.videoId ?? null,
+          channelTitle: raw.channelTitle ?? null,
+          publishedAt: raw.published ?? it.fetchedAt?.toISOString?.() ?? null,
+          qualityScore: it.qualityScore,
+        };
+      }),
+    };
   }
 
   async listAlerts(params: { acknowledged?: boolean; page: number; limit: number }) {

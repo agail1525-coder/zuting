@@ -12,6 +12,7 @@ import SocialProof from "@/components/SocialProof";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
 import MediaTour from "@/components/MediaTour";
+import CrawlerVideos from "@/components/CrawlerVideos";
 import type { Religion, HolySite, Temple, Patriarch, Teaching, ReligionBusinessCases } from "@/lib/api";
 
 const RELIGION_ICONS: Record<string, string> = {
@@ -753,6 +754,11 @@ export default function ReligionDetailClient({
         {/* ========== Multimedia Tour ========== */}
         <div id="sec-media" className="mt-10">
           <MediaTour entityType="RELIGION" entityId={religion.id} />
+        </div>
+
+        {/* ========== CW-YT Crawler Videos ========== */}
+        <div className="mt-10">
+          <CrawlerVideos targetType="religion" targetId={religion.id} limit={18} />
         </div>
 
         {/* ========== Reviews ========== */}

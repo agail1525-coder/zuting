@@ -77,6 +77,21 @@ export class CrawlerController {
     };
   }
 
+  @Public()
+  @Get('videos')
+  @ApiOperation({ summary: 'Public: list YouTube videos attached to a holySite or religion' })
+  async listVideos(
+    @Query('targetType') targetType: string,
+    @Query('targetId') targetId: string,
+    @Query('limit') limitRaw?: string,
+  ) {
+    const limit = Math.min(Math.max(parseInt(limitRaw ?? '12', 10) || 12, 1), 30);
+    if (!['holySite', 'religion'].includes(targetType) || !targetId) {
+      return { items: [] };
+    }
+    return this.service.listAttachedVideos(targetType, targetId, limit);
+  }
+
   @Get('sources')
   @ApiOperation({ summary: 'Admin: list crawler sources' })
   listSources(@Query() q: ListSourcesQuery) {

@@ -8,6 +8,7 @@ import MobileNav from "@/components/MobileNav";
 import ReviewSection from "@/components/ReviewSection";
 import RelatedEntities from "@/components/RelatedEntities";
 import MediaTour from "@/components/MediaTour";
+import CrawlerVideos from "@/components/CrawlerVideos";
 import TravelPackages from "@/components/TravelPackages";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
@@ -1030,6 +1031,10 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             <div className="mt-6">
               <MediaTour entityType="HOLY_SITE" entityId={site.id} />
             </div>
+
+            {/* CW-YT Crawler Videos */}
+            <CrawlerVideos targetType="holySite" targetId={site.id} />
+
 
             {/* S8. 评分分布 + 评价完整区 */}
             <div id="reviews" className="mt-6">
