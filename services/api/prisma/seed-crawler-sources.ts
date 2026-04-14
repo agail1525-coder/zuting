@@ -4,11 +4,17 @@
  * 读 /scripts/crawler/sources.json → upsert CrawlerSource (by key)
  * 用法: cd services/api && npx tsx prisma/seed-crawler-sources.ts
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PrismaClient } from '@prisma/client';
 
-const jsonPath = resolve(__dirname, '../../../scripts/crawler/sources.json');
+const CANDIDATES = [
+  resolve(__dirname, '../../../scripts/crawler/sources.json'),
+  resolve(__dirname, '../../scripts/crawler/sources.json'),
+  '/opt/zuting/scripts/crawler/sources.json',
+];
+const jsonPath = CANDIDATES.find((p) => existsSync(p));
+if (!jsonPath) throw new Error(`sources.json not found in: ${CANDIDATES.join(', ')}`);
 const cfg = JSON.parse(readFileSync(jsonPath, 'utf8')) as {
   sources: Array<Record<string, unknown>>;
 };
