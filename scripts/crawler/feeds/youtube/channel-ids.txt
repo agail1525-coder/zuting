@@ -1,41 +1,52 @@
 # 爬虫++ YouTube RSS 投喂 (CW-YT / CW-27)
-# 每行一个频道 ID (UCxxxxxxxxxxxxxxxxxxxxxx, 长度 24, U/C 开头)
-# 如何获取: 打开频道页 → 右键"查看网页源代码" → 搜索 "channelId":"UC..." 复制
-# 或用工具: https://commentpicker.com/youtube-channel-id.php
-# '#' 开头为注释, 空行忽略; 单批最多 50 频道, 超出自动截断
-# 源: youtube-rss-feed (sources.json) → MEDIA/GUIDE → 每天 14:00 (schedule: 0 14 * * *)
+# 每行一个频道 ID (UCxxxxxxxxxxxxxxxxxxxxxx, 长度 24, UC 开头)
+# '#' 开头为注释, 空行忽略; 单批最多 50 频道
+# 源: youtube-rss-feed (sources.json) → MEDIA/GUIDE → 每天 14:00
+# 2026-04-14 由 Claude 深度研究自动配置 (14 频道已验证)
 
 # ==== 旅行媒体 (通用) ====
-# Lonely Planet
-UCwfmRc8hLNwRiK77EBvwKQg
-# National Geographic Travel
-UCpVm7bg6pXKo1Pr6k5kxG9A
-# Travel + Leisure
-# (待补充: 用户根据 12 文化兴趣自行添加)
+UCpVm7bg6pXKo1Pr6k5kxG9A    # National Geographic (官方)
+UCPsil91i8gN0XLIbwl3vqsw    # Lonely Planet (官方)
+UCyEd6QBSgat5kkC6svyjudA    # Mark Wiens (美食旅行 1.6B 观看)
+UCchgIh8Tc4sTmBfnMQ5pDdg    # Rick Steves' Europe
+UC8Nkv_XC9dbHzl3WZ1ajH2g    # Rick Steves Travel Talks
 
 # ==== 佛教文化 ====
-# 法鼓山
-# 佛光山
-# 慈济人文志业
+UCYGbhLeLCvI4pwm2sknjKDw    # 法鼓山 Dharma Drum Mountain (圣严法师)
+UCQVlk-MxEj4O38usgxBm14w    # 佛光山西来寺 Fo Guang Shan Hsi Lai Temple (星云大师)
 
 # ==== 道教文化 ====
+# TODO: 用户自行补充 (推荐: 中华道教协会 / 武当山官方 / 龙虎山天师府 YouTube)
 
 # ==== 基督文化 ====
+UC7E-LYc1wivk33iyt5bR5zQ    # Vatican News (梵蒂冈新闻官方)
+UCVfwlh9XpX2Y_tQfjeln9QA    # BibleProject (动画圣经解读)
 
 # ==== 伊斯兰文化 ====
+UCNB_OaI4524fASt8h0IL8dw    # Mufti Menk (津巴布韦大穆夫提, 5.9M 订阅)
+UC3vHW2h22WE-pNi5WJtRIjg    # Yaqeen Institute (伊斯兰智库, 1.7M 订阅)
 
-# ==== 印度文化 ====
+# ==== 印度文化 (Hindu) ====
+UCcYzLCs3zrQIBVHYA1sK2sw    # Sadhguru (Isha Foundation, 12.2M 订阅)
 
 # ==== 犹太文化 ====
+# TODO: 用户自行补充 (推荐: Chabad.org / Aleph Beta / Rabbi Jonathan Sacks)
 
 # ==== 儒家文化 ====
+# TODO: 用户自行补充 (推荐: 曲阜孔子研究院 / 台湾至圣先师孔子学院 YouTube)
 
 # ==== 锡克文化 ====
+# TODO: 用户自行补充 (推荐: Basics of Sikhi / SikhNet / Nanak Naam)
 
 # ==== 神道文化 ====
+# TODO: 用户自行补充 (日本神社官方 YouTube 较少, 推荐 NHK World Shinto 专题)
 
 # ==== 藏传文化 ====
+UCiPJ_g02LuOgOG0ZNk5j1jA    # His Holiness the 14th Dalai Lama (Gyalwarinpoche)
+UCv-oUk8x6SGHMOLrCMDNrsw    # Yongey Mingyur Rinpoche (Tergar Meditation)
 
 # ==== 原住民文化 ====
+# TODO: 用户自行补充 (推荐: CBC Indigenous / Indian Country Today / APTN)
 
 # ==== 巴哈伊文化 ====
+# TODO: 用户自行补充 (推荐: Bahai World News Service / Bahai Blog)
