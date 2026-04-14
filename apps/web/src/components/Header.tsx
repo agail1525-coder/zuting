@@ -39,8 +39,8 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 bg-white rounded-md px-3 py-1.5" aria-label="Joinus 佳绩之旅">
-            <Image src="/logo.png" alt="Joinus 佳绩之旅" width={160} height={36} priority className="h-8 w-auto" />
+          <Link href="/" className="flex items-center shrink-0" aria-label="Joinus 佳绩之旅">
+            <Image src="/logo.png" alt="Joinus 佳绩之旅" width={120} height={28} priority className="h-6 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
