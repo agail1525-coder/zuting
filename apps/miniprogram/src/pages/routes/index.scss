@@ -22,10 +22,10 @@
   margin-right: 16rpx;
 
   &--active {
-    background: #0066FF;
+    background: #3264ff;
     color: #FFFFFF;
     font-weight: 700;
-    border-color: #0066FF;
+    border-color: #3264ff;
   }
 }
 
@@ -43,7 +43,7 @@
 }
 
 .empty__reset {
-  color: #0066FF;
+  color: #3264ff;
   font-size: 28rpx;
   margin-top: 24rpx;
 }
@@ -93,7 +93,7 @@
 
   &__tag {
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
     background: rgba(0, 102, 255, 0.08);
     padding: 2rpx 12rpx;
     border-radius: 8rpx;
@@ -136,7 +136,7 @@
 
   &__rating {
     font-size: 24rpx;
-    color: #0066FF;
+    color: #3264ff;
   }
 }
 

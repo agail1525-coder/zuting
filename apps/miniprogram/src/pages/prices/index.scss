@@ -5,7 +5,7 @@
 
 /* ── Hero ── */
 .prices-hero {
-  background: linear-gradient(135deg, #0066FF 0%, #003D99 100%);
+  background: linear-gradient(135deg, #3264ff 0%, #003D99 100%);
   padding: 60rpx 32rpx 48rpx;
 
   &__title {
@@ -172,7 +172,7 @@
 
   &__target {
     font-size: 24rpx;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 700;
   }
 
@@ -294,7 +294,7 @@
 
   &__btn-text {
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 700;
   }
 }

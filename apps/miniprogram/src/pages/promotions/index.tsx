@@ -12,7 +12,7 @@ const TYPE_COLORS: Record<string, string> = {
   EARLY_BIRD: '#F59E0B',
   LIMITED_TIME: '#8B5CF6',
   COUPON: '#10B981',
-  SEASONAL: '#0066FF',
+  SEASONAL: '#3264ff',
 }
 
 const TYPE_LABEL_KEYS: Record<string, string> = {
@@ -48,7 +48,7 @@ function QuotaBar({ used, total, tr }: { used: number; total: number; tr: (key: 
 
 function PromotionCard({ promo, tr }: { promo: PromotionItem; tr: (key: string, params?: Record<string, string | number>) => string }) {
   const ended = new Date(promo.endAt) < new Date()
-  const accentColor = TYPE_COLORS[promo.type] || '#0066FF'
+  const accentColor = TYPE_COLORS[promo.type] || '#3264ff'
 
   const formatCountdown = (endAt: string): string => {
     const ms = new Date(endAt).getTime() - Date.now()

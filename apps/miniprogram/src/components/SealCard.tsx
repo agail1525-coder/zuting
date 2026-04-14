@@ -22,7 +22,7 @@ export default function SealCard({ seal }: Props) {
     })
   }
 
-  const seriesColor = SERIES_COLORS[seal.series] || '#0066FF'
+  const seriesColor = SERIES_COLORS[seal.series] || '#3264ff'
 
   return (
     <View className='seal-card' hoverClass='seal-card--hover' onClick={handleTap}>

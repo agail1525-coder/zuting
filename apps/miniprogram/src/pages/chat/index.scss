@@ -34,7 +34,7 @@
   }
 
   &__btn {
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     border-radius: 40rpx;
     padding: 20rpx 64rpx;
   }
@@ -64,7 +64,7 @@
 
   &__text {
     font-size: 24rpx;
-    color: #0066FF;
+    color: #3264ff;
     white-space: nowrap;
   }
 }
@@ -114,7 +114,7 @@
     }
 
     &--user {
-      background: linear-gradient(135deg, #0066FF, #0052CC);
+      background: linear-gradient(135deg, #3264ff, #0052CC);
       border-top-right-radius: 4rpx;
     }
   }
@@ -131,7 +131,7 @@
 }
 
 .typing-cursor {
-  color: #0066FF;
+  color: #3264ff;
   animation: blink 0.8s infinite;
 }
 
@@ -172,7 +172,7 @@
     width: 64rpx;
     height: 64rpx;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -23,7 +23,7 @@
     background: #eff6ff;
 
     &--active {
-      background: #0066ff;
+      background: #3264ff;
       .media-tour__tab-text {
         color: #fff;
       }
@@ -33,7 +33,7 @@
   &__tab-text {
     font-size: 24rpx;
     font-weight: 600;
-    color: #0066ff;
+    color: #3264ff;
   }
 
   // Video
@@ -131,7 +131,7 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 36rpx;
-    background: #0066ff;
+    background: #3264ff;
     display: flex;
     align-items: center;
     justify-content: center;

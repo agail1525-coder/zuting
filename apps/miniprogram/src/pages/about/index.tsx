@@ -1,6 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useTranslation } from '../../lib/i18n'
+import { BRAND_DOMAIN } from '../../constants/brand'
 import './index.scss'
 
 const APP_VERSION = '0.2.0'
@@ -20,7 +21,7 @@ export default function AboutPage() {
       {/* Hero */}
       <View className='about-hero'>
         <Text className='about-hero__icon'>{'\u{1F3EF}'}</Text>
-        <Text className='about-hero__title'>JOINUS.COM</Text>
+        <Text className='about-hero__title'>{BRAND_DOMAIN.toUpperCase()}</Text>
         <Text className='about-hero__subtitle'>{t('about.subtitle')}</Text>
       </View>
 

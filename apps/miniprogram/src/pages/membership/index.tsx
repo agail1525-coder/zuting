@@ -60,7 +60,7 @@ export default function MembershipPage() {
   const QUICK_ACTIONS = useMemo(() => [
     { icon: '🎁', label: t('membership.actionPointsMall'), url: '/pages/points-mall/index', color: '#EF4444', key: 'points-mall' },
     { icon: '📢', label: t('membership.actionReferral'), url: '/pages/referral/index', color: '#F59E0B', key: 'referral' },
-    { icon: '📦', label: t('membership.actionMyPackages'), url: '/pages/packages/index', color: '#0066FF', key: 'packages' },
+    { icon: '📦', label: t('membership.actionMyPackages'), url: '/pages/packages/index', color: '#3264ff', key: 'packages' },
     { icon: '📅', label: t('membership.actionCheckinCalendar'), url: '', color: '#10B981', key: 'checkin-calendar' },
   ], [t])
 
@@ -157,7 +157,7 @@ export default function MembershipPage() {
     )
   }
 
-  const levelColor = LEVEL_COLORS[data.level] || '#0066FF'
+  const levelColor = LEVEL_COLORS[data.level] || '#3264ff'
   const levelLabel = t(LEVEL_KEYS[data.level] || 'membership.levelBronze')
 
   return (

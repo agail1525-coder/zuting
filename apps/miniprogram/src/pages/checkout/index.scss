@@ -132,7 +132,7 @@
   }
 
   &__apply-btn {
-    background: #0066FF;
+    background: #3264ff;
     border-radius: 12rpx;
     padding: 16rpx 28rpx;
     flex-shrink: 0;
@@ -181,7 +181,7 @@
   &__link {
     display: block;
     font-size: 24rpx;
-    color: #0066FF;
+    color: #3264ff;
     margin-top: 16rpx;
   }
 }
@@ -238,7 +238,7 @@
     justify-content: center;
 
     .pay-method-item--active & {
-      border-color: #0066FF;
+      border-color: #3264ff;
     }
   }
 
@@ -246,7 +246,7 @@
     width: 20rpx;
     height: 20rpx;
     border-radius: 50%;
-    background: #0066FF;
+    background: #3264ff;
   }
 }
 

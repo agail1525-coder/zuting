@@ -1,5 +1,5 @@
 export default definePageConfig({
   navigationBarTitleText: '分销中心',
-  navigationBarBackgroundColor: '#0066FF',
+  navigationBarBackgroundColor: '#3264ff',
   navigationBarTextStyle: 'white',
 })

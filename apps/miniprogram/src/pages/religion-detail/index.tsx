@@ -72,7 +72,7 @@ export default function ReligionDetailPage() {
         <View style={{ display: 'flex', flexDirection: 'row', gap: '24rpx' }}>
           <View
             hoverClass='card-hover'
-            style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
+            style={{ padding: '16rpx 48rpx', backgroundColor: '#3264ff', borderRadius: '12rpx' }}
             onClick={loadData}
           >
             <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>{t('common.retry')}</Text>

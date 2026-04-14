@@ -133,7 +133,7 @@ export default function IndexPage() {
         <Text style={{ fontSize: '30rpx', color: '#6B7280', marginBottom: '24rpx' }}>{t('home.noDataCheckNetwork')}</Text>
         <View
           hoverClass='card-hover'
-          style={{ padding: '16rpx 48rpx', backgroundColor: '#0066FF', borderRadius: '12rpx' }}
+          style={{ padding: '16rpx 48rpx', backgroundColor: '#3264ff', borderRadius: '12rpx' }}
           onClick={loadData}
         >
           <Text style={{ fontSize: '28rpx', color: '#FFFFFF' }}>{t('home.reload')}</Text>
@@ -284,7 +284,7 @@ export default function IndexPage() {
                 EARLY_BIRD: '#F59E0B',
                 LIMITED_TIME: '#8B5CF6',
               }
-              const accent = accentColors[promo.type] || '#0066FF'
+              const accent = accentColors[promo.type] || '#3264ff'
               const discountLabel = promo.discountType === 'PERCENT'
                 ? t('home.promo.percentOff', { value: String(promo.discountValue) })
                 : t('home.promo.amountOff', { value: String(promo.discountValue) })

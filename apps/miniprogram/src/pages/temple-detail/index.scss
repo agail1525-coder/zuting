@@ -18,7 +18,7 @@
     left: 0;
 
     &--gradient {
-      background: linear-gradient(135deg, #0066FF, #003D99);
+      background: linear-gradient(135deg, #3264ff, #003D99);
     }
   }
 
@@ -151,7 +151,7 @@
 
   &__text {
     font-size: 26rpx;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 600;
   }
 }
@@ -165,13 +165,13 @@
   &__btn {
     flex: 1;
     text-align: center;
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     border-radius: 999rpx;
     padding: 20rpx 0;
 
     &--outline {
       background: transparent;
-      border: 2rpx solid #0066FF;
+      border: 2rpx solid #3264ff;
     }
   }
 
@@ -183,7 +183,7 @@
     &--outline {
       font-size: 28rpx;
       font-weight: 600;
-      color: #0066FF;
+      color: #3264ff;
     }
   }
 }
@@ -207,6 +207,6 @@
 
 .retry-btn {
   font-size: 26rpx;
-  color: #0066FF;
+  color: #3264ff;
   margin-top: 20rpx;
 }

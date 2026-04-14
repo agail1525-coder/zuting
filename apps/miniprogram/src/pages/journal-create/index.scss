@@ -83,7 +83,7 @@
 
   &--active {
     background: rgba(0, 102, 255, 0.08);
-    border-color: #0066FF;
+    border-color: #3264ff;
   }
 
   &__emoji {
@@ -97,7 +97,7 @@
   }
 
   &--active &__label {
-    color: #0066FF;
+    color: #3264ff;
   }
 }
 
@@ -105,7 +105,7 @@
 .submit-btn {
   margin-top: 48rpx;
   height: 96rpx;
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #3264ff, #0052CC);
   border-radius: 48rpx;
   display: flex;
   align-items: center;

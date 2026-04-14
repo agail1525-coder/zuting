@@ -28,7 +28,7 @@
   }
 
   &__text--active {
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 600;
   }
 
@@ -39,7 +39,7 @@
     transform: translateX(-50%);
     width: 40rpx;
     height: 4rpx;
-    background: #0066FF;
+    background: #3264ff;
     border-radius: 2rpx;
   }
 }
@@ -60,7 +60,7 @@
 
   &__more {
     font-size: 26rpx;
-    color: #0066FF;
+    color: #3264ff;
   }
 }
 
@@ -122,7 +122,7 @@
     width: 48rpx;
     height: 48rpx;
     border-radius: 50%;
-    background: #0066FF;
+    background: #3264ff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -167,7 +167,7 @@
 
   &__tag {
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
     background: #EEF4FF;
     padding: 4rpx 16rpx;
     border-radius: 20rpx;
@@ -216,7 +216,7 @@
 
   &__answers {
     font-size: 24rpx;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 500;
   }
 
@@ -301,7 +301,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0066FF;
+    background: #3264ff;
     margin-right: 20rpx;
     flex-shrink: 0;
   }

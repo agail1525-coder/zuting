@@ -34,7 +34,7 @@
   }
 
   &__btn {
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     border-radius: 40rpx;
     padding: 20rpx 64rpx;
   }
@@ -74,7 +74,7 @@
   }
 
   &--active &__text {
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 600;
   }
 }
@@ -180,7 +180,7 @@
   bottom: calc(32rpx + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #3264ff, #0052CC);
   border-radius: 48rpx;
   padding: 24rpx 64rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 102, 255, 0.3);

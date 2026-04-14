@@ -9,7 +9,7 @@
 .seal-hero {
   position: relative;
   height: 380rpx;
-  background: linear-gradient(135deg, #0066FF, #003D99);
+  background: linear-gradient(135deg, #3264ff, #003D99);
 
   &__overlay {
     position: absolute;
@@ -134,7 +134,7 @@
   border-radius: 16rpx;
   padding: 24rpx;
   border: 1rpx solid #E5E7EB;
-  border-left: 6rpx solid #0066FF;
+  border-left: 6rpx solid #3264ff;
 
   &__text {
     display: block;

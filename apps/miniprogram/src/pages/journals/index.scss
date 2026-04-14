@@ -20,7 +20,7 @@
 
     &--active {
       background: rgba(0, 102, 255, 0.08);
-      border-bottom: 4rpx solid #0066FF;
+      border-bottom: 4rpx solid #3264ff;
     }
   }
 
@@ -30,7 +30,7 @@
   }
 
   &__item--active &__text {
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 600;
   }
 }
@@ -95,7 +95,7 @@
 
   &__mood-text {
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
     white-space: nowrap;
   }
 
@@ -134,7 +134,7 @@
   bottom: calc(40rpx + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #3264ff, #0052CC);
   border-radius: 48rpx;
   padding: 20rpx 36rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 102, 255, 0.3);

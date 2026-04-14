@@ -155,7 +155,7 @@ export default function PriceCalendarPage() {
           ].join(' ')}
           style={
             isSelected
-              ? { backgroundColor: '#0066FF', borderColor: '#0066FF' }
+              ? { backgroundColor: '#3264ff', borderColor: '#3264ff' }
               : { backgroundColor: style.bg, borderColor: style.text + '44' }
           }
           onClick={() => dayData && handleDayPress(dayData)}

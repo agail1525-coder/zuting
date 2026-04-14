@@ -6,7 +6,7 @@
 /* Hero Card */
 .hero-card {
   padding: 48rpx 40rpx 40rpx;
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #3264ff, #0052CC);
   border-radius: 0 0 40rpx 40rpx;
 
   &__subtitle {
@@ -155,7 +155,7 @@
 
   &--active {
     background: #FFFFFF;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 700;
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
   }
@@ -165,7 +165,7 @@
   display: inline;
   margin-left: 8rpx;
   font-size: 20rpx;
-  background: #0066FF;
+  background: #3264ff;
   color: #FFFFFF;
   padding: 4rpx 12rpx;
   border-radius: 20rpx;
@@ -210,7 +210,7 @@
 
   &__avatar--l1 {
     background: rgba(0, 102, 255, 0.1);
-    color: #0066FF;
+    color: #3264ff;
   }
 
   &__avatar--l2 {
@@ -239,7 +239,7 @@
   border-radius: 20rpx;
 
   &--l1 {
-    color: #0066FF;
+    color: #3264ff;
     background: rgba(0, 102, 255, 0.1);
   }
 

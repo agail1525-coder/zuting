@@ -23,7 +23,7 @@ export default function PricesPage() {
       icon: '📅',
       title: t('prices.toolCalendar'),
       desc: t('prices.toolCalendarDesc'),
-      accent: '#0066FF',
+      accent: '#3264ff',
       bg: '#EFF6FF',
     },
     {

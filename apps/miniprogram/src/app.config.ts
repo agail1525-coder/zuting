@@ -62,7 +62,7 @@ export default defineAppConfig({
   ],
   tabBar: {
     color: '#9CA3AF',
-    selectedColor: '#0066FF',
+    selectedColor: '#3264ff',
     backgroundColor: '#FFFFFF',
     borderStyle: 'white',
     list: [
@@ -94,9 +94,9 @@ export default defineAppConfig({
   },
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#FFFFFF',
+    navigationBarBackgroundColor: '#3264ff',
     navigationBarTitleText: '佳绩之旅',
-    navigationBarTextStyle: 'black',
+    navigationBarTextStyle: 'white',
     backgroundColor: '#F5F5F5'
   }
 })

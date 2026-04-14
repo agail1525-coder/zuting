@@ -5,7 +5,7 @@
 
 /* ── 1. Hero ── */
 .hero {
-  background: linear-gradient(135deg, #0066FF, #003D99);
+  background: linear-gradient(135deg, #3264ff, #003D99);
   padding: 80rpx 32rpx 40rpx;
   text-align: center;
 
@@ -89,7 +89,7 @@
     color: #9CA3AF;
 
     &--active {
-      color: #0066FF;
+      color: #3264ff;
       font-weight: 600;
     }
   }
@@ -176,7 +176,7 @@
 
 .section-more {
   font-size: 24rpx;
-  color: #0066FF;
+  color: #3264ff;
 }
 
 /* ── 3. Platform Highlights ── */
@@ -227,7 +227,7 @@
   &__cta {
     display: block;
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
     margin-top: 12rpx;
   }
 }
@@ -290,7 +290,7 @@
 
   &__avatar-text {
     font-size: 20rpx;
-    color: #0066FF;
+    color: #3264ff;
     font-weight: 600;
   }
 
@@ -386,7 +386,7 @@
     position: absolute;
     top: 12rpx;
     right: 12rpx;
-    background: #0066FF;
+    background: #3264ff;
     padding: 4rpx 12rpx;
     border-radius: 10rpx;
   }
@@ -445,7 +445,7 @@
 /* ── 6. AI Banner ── */
 .ai-banner {
   display: flex;
-  background: linear-gradient(135deg, #0066FF, #0052CC);
+  background: linear-gradient(135deg, #3264ff, #0052CC);
   border-radius: 24rpx;
   padding: 32rpx;
   margin: 32rpx 32rpx;
@@ -481,7 +481,7 @@
   &__btn-text {
     font-size: 22rpx;
     font-weight: 600;
-    color: #0066FF;
+    color: #3264ff;
   }
 
   &__chat {
@@ -514,7 +514,7 @@
 
     &--reply {
       font-size: 18rpx;
-      color: #0066FF;
+      color: #3264ff;
     }
   }
 }
@@ -586,7 +586,7 @@
     background: #F3F4F6;
 
     &--active {
-      background: #0066FF;
+      background: #3264ff;
     }
   }
 
@@ -669,7 +669,7 @@
     display: block;
     font-size: 40rpx;
     font-weight: 800;
-    color: #0066FF;
+    color: #3264ff;
     line-height: 1.2;
   }
 
@@ -712,13 +712,13 @@
 
   &__btn {
     display: inline-block;
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     border-radius: 40rpx;
     padding: 16rpx 48rpx;
 
     &--outline {
       background: transparent;
-      border: 1rpx solid #0066FF;
+      border: 1rpx solid #3264ff;
     }
 
     &--hover {
@@ -734,7 +734,7 @@
     &--outline {
       font-size: 28rpx;
       font-weight: 700;
-      color: #0066FF;
+      color: #3264ff;
     }
   }
 }

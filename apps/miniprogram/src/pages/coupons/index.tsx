@@ -28,7 +28,7 @@ function daysUntilExpiry(endAt: string): number {
 function CouponCard({ coupon, onClaim, tr }: { coupon: CouponItem; onClaim?: (id: string) => void; tr: (key: string, params?: Record<string, string | number>) => string }) {
   const expired = isExpired(coupon.endAt)
   const isPercent = coupon.type === 'PERCENT'
-  const stripColor = isPercent ? '#0066FF' : '#EF4444'
+  const stripColor = isPercent ? '#3264ff' : '#EF4444'
   const remaining = daysUntilExpiry(coupon.endAt)
 
   return (
@@ -78,7 +78,7 @@ function MyCouponCard({ userCoupon, tr }: { userCoupon: UserCoupon; tr: (key: st
   const isPercent = coupon.type === 'PERCENT'
   const isUsed = status === 'USED'
   const isExp = status === 'EXPIRED' || new Date(coupon.endAt) < new Date()
-  const stripColor = isUsed || isExp ? '#9CA3AF' : (isPercent ? '#0066FF' : '#EF4444')
+  const stripColor = isUsed || isExp ? '#9CA3AF' : (isPercent ? '#3264ff' : '#EF4444')
   const remaining = daysUntilExpiry(coupon.endAt)
 
   return (

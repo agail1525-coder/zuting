@@ -21,7 +21,7 @@
   }
 
   &__write-btn {
-    background: #0066FF;
+    background: #3264ff;
     padding: 8rpx 20rpx;
     border-radius: 999rpx;
   }
@@ -64,7 +64,7 @@
     color: #D1D5DB;
 
     &--active {
-      color: #0066FF;
+      color: #3264ff;
     }
 
     &--interactive {
@@ -126,7 +126,7 @@
 
   &__bar-star {
     font-size: 18rpx;
-    color: #0066FF;
+    color: #3264ff;
   }
 
   &__bar-bg {
@@ -179,7 +179,7 @@
 
   &__avatar-text {
     font-size: 22rpx;
-    color: #0066FF;
+    color: #3264ff;
   }
 
   &__nickname {
@@ -217,7 +217,7 @@
     background: #F9FAFB;
 
     &--active {
-      border-color: #0066FF;
+      border-color: #3264ff;
       background: rgba(0, 102, 255, 0.06);
     }
   }
@@ -231,7 +231,7 @@
     color: #6B7280;
 
     .review-card__vote--active & {
-      color: #0066FF;
+      color: #3264ff;
     }
   }
 

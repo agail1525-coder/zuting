@@ -26,7 +26,7 @@
     color: #6B7280;
 
     &--active {
-      color: #0066FF;
+      color: #3264ff;
       font-weight: 700;
     }
   }
@@ -38,7 +38,7 @@
     transform: translateX(-50%);
     width: 48rpx;
     height: 6rpx;
-    background: #0066FF;
+    background: #3264ff;
     border-radius: 3rpx;
   }
 }
@@ -142,7 +142,7 @@
   }
 
   &__btn {
-    background: linear-gradient(135deg, #0066FF, #0052CC);
+    background: linear-gradient(135deg, #3264ff, #0052CC);
     border-radius: 32rpx;
     padding: 14rpx 24rpx;
     flex-shrink: 0;

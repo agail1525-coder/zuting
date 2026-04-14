@@ -92,7 +92,7 @@ export default function MapPage() {
       content: `${site.name}\n${site.city}, ${site.country}`,
       color: '#1A1A1A',
       bgColor: '#FFFFFF',
-      borderColor: '#0066FF',
+      borderColor: '#3264ff',
       borderWidth: 1,
       borderRadius: 8,
       padding: 8,

@@ -6,7 +6,7 @@ import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
 const TYPE_COLORS: Record<string, string> = {
-  CLASSIC: '#0066FF',
+  CLASSIC: '#3264ff',
   PREMIUM: '#D4A855',
   LUXURY: '#8B5CF6',
   CUSTOM: '#10B981',
@@ -98,7 +98,7 @@ export default function PackageDetailPage() {
     )
   }
 
-  const typeColor = TYPE_COLORS[pkg.type] || '#0066FF'
+  const typeColor = TYPE_COLORS[pkg.type] || '#3264ff'
   const typeLabel = TYPE_LABELS[pkg.type] || pkg.type
 
   return (

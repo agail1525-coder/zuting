@@ -96,7 +96,7 @@ export default function SealDetailPage() {
   if (loading) return <View className='container'><Text className='loading-text'>{t('common.loading')}</Text></View>
   if (!seal) return <View className='container'><Text className='empty-text'>{t('sealDetail.notFound')}</Text></View>
 
-  const seriesColor = SERIES_COLORS[seal.series] || '#0066FF'
+  const seriesColor = SERIES_COLORS[seal.series] || '#3264ff'
 
   return (
     <ScrollView className='detail-page' scrollY>
