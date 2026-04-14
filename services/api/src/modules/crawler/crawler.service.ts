@@ -9,6 +9,7 @@ import {
 import { pickAdapter } from './adapters';
 import { sha256, titleNormalize } from './adapters/http-util';
 import { CrawlerDispatcherService } from './dispatcher.service';
+import { sanitize, scoreQuality, classifyQuality } from './quality';
 
 const ALLOWED_DOMAINS = ['HOLY_SITE', 'MERCHANT', 'PRICE', 'GUIDE', 'NEWS'];
 const ALLOWED_CHANNELS = ['OFFICIAL', 'WIKI', 'OTA', 'MAP', 'UGC', 'MEDIA'];
@@ -168,6 +169,23 @@ export class CrawlerService {
           skipped++;
           continue;
         }
+
+        // CW-QG 质量守门: sanitize → score → classify
+        const cleaned = sanitize({
+          title: item.title,
+          content: item.description ?? '',
+          imageUrls: item.imageUrls ?? [],
+          isHtml: /<[^>]+>/.test(item.description ?? ''),
+        });
+        const quality = scoreQuality({
+          title: cleaned.title,
+          content: cleaned.content,
+          imageUrls: cleaned.imageUrls,
+          rawAdPhraseHits: cleaned.removed.adPhrases.length,
+        });
+        const level = classifyQuality(quality.score);
+        const itemStatus = level === 'REJECTED' ? 'REJECTED' : level === 'PENDING_REVIEW' ? 'PENDING_REVIEW' : 'PENDING';
+
         const createdItem = await this.prisma.crawlerItem.create({
           data: {
             sourceId: source.id,
@@ -175,15 +193,26 @@ export class CrawlerService {
             dedupKey,
             title: item.title.slice(0, 500),
             description: item.description?.slice(0, 8000),
-            imageUrls: (item.imageUrls ?? []).slice(0, 10),
+            imageUrls: cleaned.imageUrls.slice(0, 10),
             raw: item.raw as Prisma.InputJsonValue,
+            status: itemStatus,
+            qualityScore: quality.score,
+            qualityLevel: level,
+            sanitizedTitle: cleaned.title.slice(0, 500),
+            sanitizedContent: cleaned.content.slice(0, 16000),
+            rejectReasons: quality.reasons,
           },
         });
         created++;
-        // Dispatch 后台路由标记,不阻塞抓取
-        this.dispatcher.dispatch(source, createdItem.id).catch((e) => {
-          this.logger.warn(`dispatch fail item=${createdItem.id}: ${String(e)}`);
-        });
+
+        // 只 dispatch APPROVED;PENDING_REVIEW 等人工复核;REJECTED 不路由
+        if (level === 'APPROVED') {
+          this.dispatcher.dispatch(source, createdItem.id).catch((e) => {
+            this.logger.warn(`dispatch fail item=${createdItem.id}: ${String(e)}`);
+          });
+        } else {
+          this.logger.log(`[QG] item=${createdItem.id} level=${level} score=${quality.score.toFixed(2)} reasons=${quality.reasons.join(';')}`);
+        }
       }
 
       await this.prisma.crawlerRun.update({

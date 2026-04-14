@@ -2488,9 +2488,17 @@ model CrawlerItem {
   fetchedAt    DateTime @default(now())
   dispatchedAt DateTime?
 
+  // CW-QG 质量守门 (防污染 v1.2)
+  qualityScore     Float    @default(0)
+  qualityLevel     String?  // APPROVED / PENDING_REVIEW / REJECTED
+  sanitizedTitle   String?
+  sanitizedContent String?  @db.Text
+  rejectReasons    String[]
+
   @@index([sourceId, status])
   @@index([targetType, targetId])
   @@index([status, fetchedAt])
+  @@index([qualityLevel, fetchedAt])
 }
 
 model CrawlerCoverageSnapshot {
