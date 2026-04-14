@@ -1,0 +1,41 @@
+# 爬虫++ YouTube RSS 投喂 (CW-YT / CW-27)
+# 每行一个频道 ID (UCxxxxxxxxxxxxxxxxxxxxxx, 长度 24, U/C 开头)
+# 如何获取: 打开频道页 → 右键"查看网页源代码" → 搜索 "channelId":"UC..." 复制
+# 或用工具: https://commentpicker.com/youtube-channel-id.php
+# '#' 开头为注释, 空行忽略; 单批最多 50 频道, 超出自动截断
+# 源: youtube-rss-feed (sources.json) → MEDIA/GUIDE → 每天 14:00 (schedule: 0 14 * * *)
+
+# ==== 旅行媒体 (通用) ====
+# Lonely Planet
+UCwfmRc8hLNwRiK77EBvwKQg
+# National Geographic Travel
+UCpVm7bg6pXKo1Pr6k5kxG9A
+# Travel + Leisure
+# (待补充: 用户根据 12 文化兴趣自行添加)
+
+# ==== 佛教文化 ====
+# 法鼓山
+# 佛光山
+# 慈济人文志业
+
+# ==== 道教文化 ====
+
+# ==== 基督文化 ====
+
+# ==== 伊斯兰文化 ====
+
+# ==== 印度文化 ====
+
+# ==== 犹太文化 ====
+
+# ==== 儒家文化 ====
+
+# ==== 锡克文化 ====
+
+# ==== 神道文化 ====
+
+# ==== 藏传文化 ====
+
+# ==== 原住民文化 ====
+
+# ==== 巴哈伊文化 ====

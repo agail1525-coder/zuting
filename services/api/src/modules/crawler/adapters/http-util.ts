@@ -14,6 +14,10 @@ const OUTBOUND_PROXY_DOMAINS = [
   'wikidata.org',
   'wikimedia.org',
   'mediawiki.org',
+  'youtube.com',
+  'youtu.be',
+  'ytimg.com',
+  'googlevideo.com',
 ];
 
 function needsOutboundProxy(hostname: string): boolean {

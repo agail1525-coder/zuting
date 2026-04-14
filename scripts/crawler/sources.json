@@ -292,6 +292,22 @@
       "notes": "CW-27 urls.txt 投喂, 腾讯 ToS 禁批量爬, 只抓用户主动投喂的单篇链接"
     },
     {
+      "key": "youtube-rss-feed",
+      "name": "YouTube RSS — 文化/旅行频道",
+      "baseUrl": "https://www.youtube.com/feeds/videos.xml",
+      "type": "GUIDE",
+      "targetDomain": "GUIDE",
+      "channel": "MEDIA",
+      "priority": 3,
+      "schedule": "0 14 * * *",
+      "parser": "youtube-rss",
+      "strategy": "API",
+      "rateLimitMs": 2000,
+      "enabled": true,
+      "proxyNeeded": true,
+      "notes": "CW-27 channel-ids.txt 投喂, 官方公开 Atom RSS 无鉴权, 走 OUTBOUND_PROXY 绕 GFW, 每频道最新 15 条"
+    },
+    {
       "key": "weibo-travel-topic",
       "name": "微博旅游话题",
       "baseUrl": "https://m.weibo.cn",
