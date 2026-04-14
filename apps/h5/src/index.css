@@ -3,7 +3,7 @@
 /* Mobile-first base styles */
 :root {
   --color-primary: #3264ff;
-  --color-primary-dark: #0052CC;
+  --color-primary-dark: #2850cc;
   --color-gold: #D4A855;
   --color-bg-dark: #0f172a;
   --safe-area-top: env(safe-area-inset-top, 0px);
