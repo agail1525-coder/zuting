@@ -1,9 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Typography, Card, Tabs, Table, Tag, Button, Space, message, Popconfirm, Select, Progress, Row, Col, Statistic, Descriptions } from 'antd';
 import { ReloadOutlined, PlayCircleOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { api } from '../lib/api';
+import { getToken } from '../lib/auth';
 
 const { Title, Text } = Typography;
+
+const BASE = import.meta.env.VITE_API_URL || '/api';
+
+async function api<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
+  const token = getToken();
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(init.headers || {}),
+    },
+  });
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return res.json();
+}
 
 const DOMAIN_COLOR: Record<string, string> = {
   HOLY_SITE: 'magenta', MERCHANT: 'blue', PRICE: 'orange', GUIDE: 'cyan', NEWS: 'purple',
