@@ -12,6 +12,8 @@ import InfoCard from "@/components/InfoCard";
 import FAQSection from "@/components/FAQSection";
 import RouteCarousel from "@/components/RouteCarousel";
 import ActionBar from "@/components/ActionBar";
+import SaveButton from "@/components/SaveButton";
+import ShareButton from "@/components/ShareButton";
 
 type Tab = "overview" | "routes" | "intro" | "reviews" | "facilities" | "etiquette" | "packing" | "faq";
 
@@ -159,6 +161,10 @@ export default function HolySiteDetail() {
           <div className="w-full h-56 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-4xl">⛩️</div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+        <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+          <SaveButton entityType="HOLY_SITE" entityId={site.id} size="md" />
+          <ShareButton title={site.name} description={site.country} url={`/holy-sites/${site.id}`} entityType="HOLY_SITE" entityId={site.id} className="bg-white/90 backdrop-blur-sm rounded-full" />
+        </div>
         <div className="absolute bottom-4 left-4 right-16 text-white">
           <h1 className="text-xl font-bold">{site.name}</h1>
           <p className="text-sm text-white/80 mt-0.5">{site.country}</p>
