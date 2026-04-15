@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { useTranslation } from "@/lib/i18n";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "@/lib/toast";
@@ -15,6 +16,7 @@ interface ReferralData {
 
 export default function Referral() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [data, setData] = useState<ReferralData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ export default function Referral() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader title="分销中心" subtitle="邀请好友 · 共享佳绩" />
+        <PageHeader title={t("page.referral.title")} subtitle={t("page.referral.subtitle")} />
         <div className="p-8 text-center text-gray-500">
           请先<Link to="/login" className="text-[#3264ff] ml-1">登录</Link>
         </div>
@@ -52,7 +54,7 @@ export default function Referral() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="分销中心" subtitle="邀请好友 · 共享佳绩" />
+      <PageHeader title={t("page.referral.title")} subtitle={t("page.referral.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
         <div className="bg-gradient-to-br from-[#3264ff] to-[#2850cc] rounded-2xl p-6 text-white">
           <p className="text-sm text-white/80 mb-1">我的邀请码</p>

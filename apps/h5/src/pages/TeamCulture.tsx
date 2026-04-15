@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageHeader from "@/components/PageHeader";
 
@@ -15,6 +16,7 @@ interface Theme {
 }
 
 export default function TeamCulture() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +30,7 @@ export default function TeamCulture() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="团队文化" subtitle="企业兴旺 · 文化落地" />
+      <PageHeader title={t("page.teamCulture.title")} subtitle={t("page.teamCulture.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-3">
         {loading ? <LoadingSpinner /> : items.map((t) => (
           <div key={t.id} className="bg-white rounded-xl overflow-hidden shadow-sm">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageHeader from "@/components/PageHeader";
 
@@ -13,6 +14,7 @@ interface Question {
 }
 
 export default function CultureLife() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +28,7 @@ export default function CultureLife() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="文化与生命" subtitle="12 大生命命题 × 12 文化传统" />
+      <PageHeader title={t("page.cultureLife.title")} subtitle={t("page.cultureLife.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4">
         {loading ? <LoadingSpinner /> : (
           <div className="grid gap-3">

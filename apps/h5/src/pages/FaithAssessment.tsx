@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
+import { useTranslation } from "@/lib/i18n";
 
 const DIMENSIONS = [
   { key: "awareness", label: "觉察力", icon: "👁️", desc: "对内在与外境的觉知能力" },
@@ -18,9 +18,10 @@ const LEVELS = [
 ];
 
 export default function FaithAssessment() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="信仰力评估" subtitle="五维 · 六十题 · 见自己" />
+      <PageHeader title={t("page.faithAssessment.title")} subtitle={t("page.faithAssessment.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
         <div className="bg-gradient-to-br from-[#3264ff] to-[#2850cc] rounded-2xl p-6 text-white">
           <h3 className="text-xl font-bold mb-2">🔮 开启一次内观</h3>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageHeader from "@/components/PageHeader";
 
@@ -17,6 +18,7 @@ interface Theme {
 }
 
 export default function FamilyHarmony() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +32,7 @@ export default function FamilyHarmony() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="家庭幸福" subtitle="同心 · 传家 · 和解 · 归根" />
+      <PageHeader title={t("page.familyHarmony.title")} subtitle={t("page.familyHarmony.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-3">
         {loading ? <LoadingSpinner /> : items.map((t) => (
           <Link key={t.id} to={`/family-harmony/${t.slug}`}

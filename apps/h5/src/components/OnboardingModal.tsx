@@ -1,28 +1,18 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 const STORAGE_KEY = "onboarding-v1";
 
-const SLIDES = [
-  {
-    icon: "🌍",
-    title: "探索人类文明",
-    body: "12 大文化传统 · 300 文化圣地 · 真实 GPS 坐标与经文典故",
-  },
-  {
-    icon: "🧭",
-    title: "规划你的佳绩之旅",
-    body: "精品文化路线 · AI 定制行程 · 多档配套灵活选择",
-  },
-  {
-    icon: "🔮",
-    title: "小鸿 AI 常伴左右",
-    body: "问答 · 智慧融通 · 信仰力评估 · 文化与生命主题对话",
-  },
-];
-
 export default function OnboardingModal() {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
+
+  const SLIDES = [
+    { icon: "🌍", title: t("onboarding.slide1.title"), body: t("onboarding.slide1.body") },
+    { icon: "🧭", title: t("onboarding.slide2.title"), body: t("onboarding.slide2.body") },
+    { icon: "🔮", title: t("onboarding.slide3.title"), body: t("onboarding.slide3.body") },
+  ];
 
   useEffect(() => {
     if (!localStorage.getItem(STORAGE_KEY)) {
@@ -56,13 +46,13 @@ export default function OnboardingModal() {
           </div>
           <div className="flex gap-2 mt-5">
             <button onClick={finish} className="flex-1 px-4 py-2 rounded-full border border-gray-200 text-gray-700 text-sm">
-              跳过
+              {t("onboarding.skip")}
             </button>
             <button
               onClick={() => (isLast ? finish() : setStep(step + 1))}
               className="flex-1 px-4 py-2 rounded-full bg-[#3264ff] text-white font-semibold text-sm"
             >
-              {isLast ? "开始探索" : "下一步"}
+              {isLast ? t("onboarding.start") : t("onboarding.next")}
             </button>
           </div>
         </div>

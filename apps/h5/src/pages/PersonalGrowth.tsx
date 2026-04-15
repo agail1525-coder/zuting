@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_BASE } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageHeader from "@/components/PageHeader";
 
@@ -17,6 +18,7 @@ interface Theme {
 }
 
 export default function PersonalGrowth() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,7 +32,7 @@ export default function PersonalGrowth() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader title="个人圆满" subtitle="起大愿 · 发大财 · 布施众生" />
+      <PageHeader title={t("page.personalGrowth.title")} subtitle={t("page.personalGrowth.subtitle")} />
       <div className="max-w-2xl mx-auto px-4 py-4 space-y-3">
         {loading ? <LoadingSpinner /> : items.map((t) => (
           <Link key={t.id} to={`/personal-growth/${t.slug}`}
