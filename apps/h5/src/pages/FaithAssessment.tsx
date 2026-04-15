@@ -27,10 +27,10 @@ export default function FaithAssessment() {
           <p className="text-white/90 text-sm leading-relaxed mb-4">
             通过 60 道问题，从觉察/定力/格局/连接/传承五维，看见自己当下的信仰力层级。完成评估赠 50 积分。
           </p>
-          <Link to="/faith-assessment/start"
+          <a href="https://zuting.fszyl.top/faith-assessment/start" target="_blank" rel="noopener noreferrer"
             className="inline-block px-6 py-2.5 bg-white text-[#3264ff] rounded-full font-semibold text-sm hover:bg-white/90 transition-colors">
             开始评估 →
-          </Link>
+          </a>
         </div>
 
         <section className="bg-white rounded-xl p-4">

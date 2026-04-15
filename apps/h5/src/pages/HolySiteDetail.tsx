@@ -14,6 +14,9 @@ import RouteCarousel from "@/components/RouteCarousel";
 import ActionBar from "@/components/ActionBar";
 import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
+import ReviewSection from "@/components/ReviewSection";
+import QASection from "@/components/QASection";
+import MediaTour from "@/components/MediaTour";
 
 type Tab = "overview" | "routes" | "intro" | "reviews" | "facilities" | "etiquette" | "packing" | "faq";
 
@@ -392,9 +395,10 @@ export default function HolySiteDetail() {
                   </div>
                 </div>
               </div>
-            ) : (
-              <EmptyState icon="⭐" />
-            )}
+            ) : null}
+            <ReviewSection targetType="SITE" targetId={site.id} />
+            <QASection targetType="HOLY_SITE" targetId={site.id} />
+            <MediaTour entityType="HOLY_SITE" entityId={site.id} />
           </div>
         ) : tab === "facilities" ? (
           <div className="px-4 space-y-4">

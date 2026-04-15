@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 export interface MediaItem {
   id: string;
@@ -10,11 +11,23 @@ export interface MediaItem {
 }
 
 interface Props {
-  items: MediaItem[];
+  items?: MediaItem[];
+  entityType?: string;
+  entityId?: string;
 }
 
-export default function MediaTour({ items }: Props) {
+export default function MediaTour({ items: itemsProp, entityType, entityId }: Props) {
   const [selected, setSelected] = useState<MediaItem | null>(null);
+  const [items, setItems] = useState<MediaItem[]>(itemsProp || []);
+
+  useEffect(() => {
+    if (itemsProp || !entityType || !entityId) return;
+    fetch(`${API_BASE}/api/media?entityType=${entityType}&entityId=${entityId}&limit=12`)
+      .then((r) => r.json())
+      .then((r) => setItems(r.items || r.data || []))
+      .catch(() => setItems([]));
+  }, [itemsProp, entityType, entityId]);
+
   if (!items?.length) return null;
 
   return (

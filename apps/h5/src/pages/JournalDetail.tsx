@@ -5,6 +5,7 @@ import { fetchJournal, type JournalDetail as JournalDetailType } from "@/lib/api
 import PageHeader from "@/components/PageHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorState from "@/components/ErrorState";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 const MOOD_MAP: Record<string, string> = {
   insight: "💡", joy: "😊", peace: "🕊️", awe: "🤩",
@@ -75,7 +76,7 @@ export default function JournalDetail() {
 
         {/* Content */}
         <div className="bg-white rounded-xl p-5 shadow-sm mt-3">
-          <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{journal.content}</p>
+          <MarkdownRenderer content={journal.content || ""} />
         </div>
 
         {/* Linked trip */}

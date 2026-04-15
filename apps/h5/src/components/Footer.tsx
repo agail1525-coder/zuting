@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#0f172a] text-white/80 mt-8">
       <div className="max-w-6xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
           <div className="col-span-2 md:col-span-1">
             <img src="/logo-dark.png" alt="Joinus 佳绩之旅" className="h-10 w-auto mb-3 bg-white/95 px-2 py-1 rounded" />
             <p className="text-white/60 text-sm leading-relaxed">
@@ -18,13 +18,26 @@ export default function Footer() {
             <div className="flex flex-col gap-2 text-sm">
               <Link to="/holy-sites" className="text-white/60 hover:text-white transition-colors">{t("nav.destinations")}</Link>
               <Link to="/religions" className="text-white/60 hover:text-white transition-colors">{t("nav.wiki")}</Link>
+              <Link to="/culture-life" className="text-white/60 hover:text-white transition-colors">{t("nav.cultureLife")}</Link>
               <Link to="/chat" className="text-white/60 hover:text-white transition-colors">{t("nav.aiPlanner")}</Link>
               <Link to="/map" className="text-white/60 hover:text-white transition-colors">{t("nav.map")}</Link>
             </div>
           </div>
           <div>
-            <h3 className="text-white font-semibold text-sm mb-3">{t("footer.support") || "支持"}</h3>
+            <h3 className="text-white font-semibold text-sm mb-3">圆满之路</h3>
             <div className="flex flex-col gap-2 text-sm">
+              <Link to="/personal-growth" className="text-white/60 hover:text-white transition-colors">{t("nav.personalGrowth")}</Link>
+              <Link to="/family-harmony" className="text-white/60 hover:text-white transition-colors">{t("nav.familyHappiness")}</Link>
+              <Link to="/team-culture" className="text-white/60 hover:text-white transition-colors">{t("nav.enterpriseEvergreen")}</Link>
+              <Link to="/faith-assessment" className="text-white/60 hover:text-white transition-colors">{t("nav.faithAssessment")}</Link>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-white font-semibold text-sm mb-3">{t("footer.support") || "用户"}</h3>
+            <div className="flex flex-col gap-2 text-sm">
+              <Link to="/membership" className="text-white/60 hover:text-white transition-colors">{t("nav.membership") || "会员"}</Link>
+              <Link to="/coupons" className="text-white/60 hover:text-white transition-colors">优惠券</Link>
+              <Link to="/referral" className="text-white/60 hover:text-white transition-colors">分销中心</Link>
               <Link to="/about" className="text-white/60 hover:text-white transition-colors">{t("footer.about")}</Link>
               <Link to="/terms" className="text-white/60 hover:text-white transition-colors">{t("footer.terms")}</Link>
               <Link to="/privacy" className="text-white/60 hover:text-white transition-colors">{t("footer.privacy")}</Link>

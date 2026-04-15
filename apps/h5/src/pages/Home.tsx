@@ -209,6 +209,47 @@ export default function Home() {
         </section>
       )}
 
+      {/* 圆满之路三模块 */}
+      <section className="mt-6 px-4">
+        <h2 className="font-bold text-base text-gray-900 mb-3">圆满之路</h2>
+        <div className="grid grid-cols-3 gap-2">
+          <Link to="/personal-growth" className="rounded-xl p-3 text-white text-center" style={{ background: "linear-gradient(135deg,#8B6914,#B8923C)" }}>
+            <div className="text-2xl mb-1">🧘</div>
+            <div className="text-xs font-semibold">个人圆满</div>
+          </Link>
+          <Link to="/family-harmony" className="rounded-xl p-3 text-white text-center" style={{ background: "linear-gradient(135deg,#2D8B6F,#56B894)" }}>
+            <div className="text-2xl mb-1">🏠</div>
+            <div className="text-xs font-semibold">家庭幸福</div>
+          </Link>
+          <Link to="/team-culture" className="rounded-xl p-3 text-white text-center" style={{ background: "linear-gradient(135deg,#3264ff,#5588ff)" }}>
+            <div className="text-2xl mb-1">🏢</div>
+            <div className="text-xs font-semibold">企业兴旺</div>
+          </Link>
+        </div>
+      </section>
+
+      {/* 文化与生命 + 信仰力 */}
+      <section className="mt-4 px-4 grid grid-cols-2 gap-3">
+        <Link to="/culture-life" className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="text-2xl">🌱</div>
+          <h3 className="font-semibold text-sm mt-2">文化与生命</h3>
+          <p className="text-[10px] text-gray-500 mt-1">12 命题 × 12 文化</p>
+        </Link>
+        <Link to="/faith-assessment" className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="text-2xl">🔮</div>
+          <h3 className="font-semibold text-sm mt-2">信仰力评估</h3>
+          <p className="text-[10px] text-gray-500 mt-1">五维 · 60 题 · 见自己</p>
+        </Link>
+      </section>
+
+      {/* 商业入口 */}
+      <section className="mt-4 px-4 grid grid-cols-4 gap-2 text-center">
+        <Link to="/membership" className="bg-white rounded-xl py-3"><div className="text-xl">⭐</div><div className="text-[10px] text-gray-700 mt-1">会员</div></Link>
+        <Link to="/coupons" className="bg-white rounded-xl py-3"><div className="text-xl">🎟️</div><div className="text-[10px] text-gray-700 mt-1">优惠券</div></Link>
+        <Link to="/points-mall" className="bg-white rounded-xl py-3"><div className="text-xl">🎁</div><div className="text-[10px] text-gray-700 mt-1">积分商城</div></Link>
+        <Link to="/referral" className="bg-white rounded-xl py-3"><div className="text-xl">🤝</div><div className="text-[10px] text-gray-700 mt-1">分销</div></Link>
+      </section>
+
       {/* AI Planning CTA */}
       <section className="mt-6 mx-4 bg-gradient-to-r from-[#3264ff] to-[#4488FF] rounded-xl p-4 text-white">
         <h3 className="font-bold text-sm mb-1">{t("home.aiPlanTitle")}</h3>

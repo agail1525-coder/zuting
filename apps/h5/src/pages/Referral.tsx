@@ -21,10 +21,12 @@ export default function Referral() {
   useEffect(() => {
     if (!user) { setLoading(false); return; }
     const token = localStorage.getItem("token") || "";
-    Promise.all([
-      fetch(`${API_BASE}/api/referral/my-code`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json()).catch(() => null),
-      fetch(`${API_BASE}/api/referral/stats`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json()).catch(() => null),
-    ]).then(([code, stats]) => {
+    Promise.allSettled([
+      fetch(`${API_BASE}/api/referral/my-code`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json()),
+      fetch(`${API_BASE}/api/referral/stats`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json()),
+    ]).then(([codeRes, statsRes]) => {
+      const code = codeRes.status === "fulfilled" ? codeRes.value : null;
+      const stats = statsRes.status === "fulfilled" ? statsRes.value : null;
       setData({ code: code?.code, ...(stats || {}) });
     }).finally(() => setLoading(false));
   }, [user]);

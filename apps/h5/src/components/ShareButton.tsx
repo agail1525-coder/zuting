@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "@/lib/i18n";
+import { API_BASE } from "@/lib/api";
 
 interface ShareButtonProps {
   title: string;
@@ -52,7 +53,7 @@ export default function ShareButton({
       const token = localStorage.getItem("token");
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
-      await fetch("/api/shares", {
+      await fetch(`${API_BASE}/api/shares`, {
         method: "POST",
         headers,
         body: JSON.stringify({ platform, entityType, entityId }),
