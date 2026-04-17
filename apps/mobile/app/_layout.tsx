@@ -210,6 +210,99 @@ function RootLayout() {
           name="users/[userId]"
           options={{ title: '用户主页' }}
         />
+        {/* ── Wave 4 补齐未注册路由 ────────────── */}
+        <Stack.Screen
+          name="prices/compare"
+          options={{ title: '价格比较' }}
+        />
+        <Stack.Screen
+          name="prices/trend"
+          options={{ title: '价格趋势' }}
+        />
+        <Stack.Screen
+          name="community/index"
+          options={{ title: '攻略社区' }}
+        />
+        <Stack.Screen
+          name="community/guide/[id]"
+          options={{ title: '攻略详情' }}
+        />
+        <Stack.Screen
+          name="community/question/[id]"
+          options={{ title: '问答详情' }}
+        />
+        <Stack.Screen
+          name="community/questions"
+          options={{ title: '问答广场' }}
+        />
+        <Stack.Screen
+          name="community/photos"
+          options={{ title: '照片墙' }}
+        />
+        <Stack.Screen
+          name="community/leaderboard"
+          options={{ title: '排行榜' }}
+        />
+        <Stack.Screen
+          name="guides/index"
+          options={{ title: '攻略列表' }}
+        />
+        <Stack.Screen
+          name="write-guide"
+          options={{ title: '写攻略', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="write-review"
+          options={{ title: '写评价', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="collections/index"
+          options={{ title: '我的收藏' }}
+        />
+        <Stack.Screen
+          name="collections/[id]"
+          options={{ title: '收藏夹详情' }}
+        />
+        <Stack.Screen
+          name="orders/index"
+          options={{ title: '我的订单' }}
+        />
+        <Stack.Screen
+          name="notifications/index"
+          options={{ title: '通知' }}
+        />
+        <Stack.Screen
+          name="map/index"
+          options={{ title: '地图' }}
+        />
+        <Stack.Screen
+          name="routes/index"
+          options={{ title: '路线列表' }}
+        />
+        <Stack.Screen
+          name="routes/[slug]"
+          options={{ title: '路线详情' }}
+        />
+        <Stack.Screen
+          name="routes/checkout"
+          options={{ title: '路线结账' }}
+        />
+        <Stack.Screen
+          name="teachings/index"
+          options={{ title: '祖训列表' }}
+        />
+        <Stack.Screen
+          name="teachings/[id]"
+          options={{ title: '祖训详情' }}
+        />
+        <Stack.Screen
+          name="trips/create"
+          options={{ title: '创建行程', presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="team-culture"
+          options={{ title: '团队文化' }}
+        />
         </Stack>
       </I18nProvider>
     </AuthProvider>
