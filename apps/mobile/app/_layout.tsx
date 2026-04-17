@@ -153,6 +153,63 @@ function RootLayout() {
           name="terms"
           options={{ title: '用户协议' }}
         />
+        {/* ── F2-F5 四部曲 ─────────────────────── */}
+        <Stack.Screen
+          name="culture-life/index"
+          options={{ title: '文化与生命' }}
+        />
+        <Stack.Screen
+          name="culture-life/questions/index"
+          options={{ title: '十二命题' }}
+        />
+        <Stack.Screen
+          name="culture-life/questions/[code]"
+          options={{ title: '命题详情' }}
+        />
+        <Stack.Screen
+          name="culture-life/stages"
+          options={{ title: '七阶段' }}
+        />
+        <Stack.Screen
+          name="culture-life/dialogue"
+          options={{ title: 'AI 智者圆桌' }}
+        />
+        <Stack.Screen
+          name="faith-assessment"
+          options={{ title: '信仰力评估' }}
+        />
+        <Stack.Screen
+          name="personal-growth/index"
+          options={{ title: '个人圆满' }}
+        />
+        <Stack.Screen
+          name="personal-growth/themes/[slug]"
+          options={{ title: '主题详情' }}
+        />
+        <Stack.Screen
+          name="personal-growth/cases/[slug]"
+          options={{ title: '案例详情' }}
+        />
+        <Stack.Screen
+          name="family-harmony/index"
+          options={{ title: '家庭幸福' }}
+        />
+        <Stack.Screen
+          name="family-harmony/themes/[slug]"
+          options={{ title: '主题详情' }}
+        />
+        <Stack.Screen
+          name="family-harmony/cases/[slug]"
+          options={{ title: '案例详情' }}
+        />
+        <Stack.Screen
+          name="rankings"
+          options={{ title: '排行榜' }}
+        />
+        <Stack.Screen
+          name="users/[userId]"
+          options={{ title: '用户主页' }}
+        />
         </Stack>
       </I18nProvider>
     </AuthProvider>

@@ -27,6 +27,7 @@ import {
   religionGradients,
 } from '../../src/lib/theme';
 import { useTranslation } from '../../src/lib/i18n';
+import { CrawlerVideos } from '../../src/components/CrawlerVideos';
 
 export default function ReligionDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -188,6 +189,8 @@ export default function ReligionDetailScreen() {
           ))}
         </SectionBlock>
       )}
+
+      {religion && <CrawlerVideos targetType="religion" targetId={religion.id} limit={8} />}
     </ScrollView>
   );
 }

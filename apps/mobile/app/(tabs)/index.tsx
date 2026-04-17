@@ -50,7 +50,15 @@ const PLATFORM_HIGHLIGHTS = [
 const COMMUNITY_ACTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; labelKey: string; route: string }[] = [
   { key: 'journals', icon: 'journal', labelKey: 'home.community.journals', route: '/journals' },
   { key: 'questions', icon: 'help-circle', labelKey: 'home.community.questions', route: '/community/questions' },
-  { key: 'leaderboard', icon: 'trophy', labelKey: 'home.community.leaderboard', route: '/community/leaderboard' },
+  { key: 'leaderboard', icon: 'trophy', labelKey: 'home.community.leaderboard', route: '/rankings' },
+];
+
+const PILLAR_ENTRIES: { key: string; icon: keyof typeof Ionicons.glyphMap; title: string; desc: string; color: string; route: string }[] = [
+  { key: 'culture-life',    icon: 'earth-outline',      title: '文化与生命', desc: '12命题 × 12文化 × 7阶段', color: '#0f172a', route: '/culture-life' },
+  { key: 'faith-assessment',icon: 'compass-outline',    title: '信仰力评估', desc: '五维评估 · 60题15分钟',    color: '#FCD34D', route: '/faith-assessment' },
+  { key: 'personal-growth', icon: 'sparkles-outline',   title: '个人圆满',   desc: '企业家内修六境',           color: '#8B6914', route: '/personal-growth' },
+  { key: 'family-harmony',  icon: 'home-outline',       title: '家庭幸福',   desc: '家庭归根六路',             color: '#2D8B6F', route: '/family-harmony' },
+  { key: 'team-culture',    icon: 'people-outline',     title: '团队文化',   desc: '企业团建六主题',           color: '#3264ff', route: '/team-culture' },
 ];
 
 
@@ -199,6 +207,27 @@ export default function HomeScreen() {
           </Pressable>
         ))}
       </View>
+
+      {/* ── 2.5 Four Pillars (佳绩之旅 四部曲) ── */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>佳绩之旅 · 四部曲</Text>
+        <Text style={styles.sectionSub}>文化智慧 · 内修外达</Text>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillarRow}>
+        {PILLAR_ENTRIES.map(p => (
+          <Pressable
+            key={p.key}
+            style={[styles.pillarCard, { borderLeftColor: p.color }]}
+            onPress={() => router.push(p.route as never)}
+          >
+            <View style={[styles.pillarIconBox, { backgroundColor: p.color + '18' }]}>
+              <Ionicons name={p.icon} size={22} color={p.color} />
+            </View>
+            <Text style={styles.pillarTitle}>{p.title}</Text>
+            <Text style={styles.pillarDesc} numberOfLines={2}>{p.desc}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
 
       {/* ── 3. Platform Highlights ── */}
       <View style={styles.sectionHeader}>
@@ -668,7 +697,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md, paddingTop: 24, paddingBottom: 12,
   },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
+  sectionSub: { fontSize: 12, color: '#6b7280', marginTop: 2 },
   sectionMore: { fontSize: 12, color: '#3264ff' },
+
+  // Four Pillars
+  pillarRow: { paddingHorizontal: spacing.md, gap: 10 },
+  pillarCard: {
+    width: 160, padding: 14, backgroundColor: '#FFFFFF', borderRadius: 12,
+    borderWidth: 1, borderColor: '#E5E7EB', borderLeftWidth: 4,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 2, elevation: 1,
+  },
+  pillarIconBox: {
+    width: 40, height: 40, borderRadius: 10,
+    justifyContent: 'center', alignItems: 'center', marginBottom: 10,
+  },
+  pillarTitle: { fontSize: 14, fontWeight: '700', color: '#1A1A1A' },
+  pillarDesc: { fontSize: 11, color: '#6B7280', marginTop: 4, lineHeight: 16 },
 
   // Platform Highlights
   highlightGrid: {

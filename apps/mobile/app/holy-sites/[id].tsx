@@ -10,6 +10,8 @@ import ReviewSection from '../../src/components/ReviewSection';
 import RelatedEntities from '../../src/components/RelatedEntities';
 import SaveButton from '../../src/components/SaveButton';
 import MediaTour from '../../src/components/MediaTour';
+import { CrawlerVideos } from '../../src/components/CrawlerVideos';
+import { TpPackages } from '../../src/components/TpPackages';
 
 export default function HolySiteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -172,6 +174,12 @@ export default function HolySiteDetailScreen() {
 
       {/* Multimedia Tour */}
       <MediaTour entityType="HOLY_SITE" entityId={id!} />
+
+      {/* YouTube Crawler Videos */}
+      <CrawlerVideos targetType="holySite" targetId={id!} limit={8} />
+
+      {/* TP++ Tiered Packages */}
+      <TpPackages holySiteId={id!} />
 
       {/* Reviews */}
       <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
