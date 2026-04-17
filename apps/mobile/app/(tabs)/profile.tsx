@@ -188,6 +188,47 @@ export default function ProfileScreen() {
         />
       </Animated.View>
 
+      {/* 佳绩之旅 · 四部曲 */}
+      <Animated.View entering={FadeInDown.duration(300).delay(290)} style={styles.menuSection}>
+        <Text style={styles.menuSectionTitle}>佳绩之旅 · 四部曲</Text>
+        <MenuItem
+          icon="earth"
+          label="文化与生命"
+          subtitle="12命题 × 12文化 × 7阶段"
+          onPress={() => router.push('/culture-life' as never)}
+        />
+        <MenuItem
+          icon="compass"
+          label="信仰力评估"
+          subtitle="五维评估 · 60题15分钟"
+          onPress={() => router.push('/faith-assessment' as never)}
+        />
+        <MenuItem
+          icon="sparkles"
+          label="个人圆满"
+          subtitle="企业家内修六境"
+          onPress={() => router.push('/personal-growth' as never)}
+        />
+        <MenuItem
+          icon="home"
+          label="家庭幸福"
+          subtitle="家庭归根六路"
+          onPress={() => router.push('/family-harmony' as never)}
+        />
+        <MenuItem
+          icon="people"
+          label="团队文化"
+          subtitle="企业团建六主题"
+          onPress={() => router.push('/team-culture' as never)}
+        />
+        <MenuItem
+          icon="trophy"
+          label="排行榜"
+          subtitle="攻略王 · 达人榜"
+          onPress={() => router.push('/rankings' as never)}
+        />
+      </Animated.View>
+
       {/* About */}
       <Animated.View entering={FadeInDown.duration(300).delay(300)} style={styles.menuSection}>
         <Text style={styles.menuSectionTitle}>关于</Text>
