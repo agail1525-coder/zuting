@@ -1,0 +1,175 @@
+.tp-pkgs {
+  padding: 32rpx 0;
+  background: #fff;
+  margin-top: 20rpx;
+
+  &__head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32rpx 20rpx;
+  }
+
+  &__title {
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  &__hint {
+    font-size: 22rpx;
+    color: #6b7280;
+  }
+
+  &__tabs-scroll {
+    white-space: nowrap;
+  }
+
+  &__tabs {
+    display: inline-flex;
+    flex-direction: row;
+    padding: 0 24rpx;
+  }
+
+  &__tab {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12rpx 24rpx;
+    margin-right: 12rpx;
+    border-radius: 999rpx;
+    border: 2rpx solid #e5e7eb;
+    background: #f9fafb;
+
+    &-icon {
+      font-size: 24rpx;
+      margin-right: 8rpx;
+    }
+
+    &-text {
+      font-size: 24rpx;
+      color: #374151;
+      font-weight: 600;
+
+      &--active {
+        color: #fff;
+      }
+    }
+  }
+
+  &__tier-desc {
+    margin: 20rpx 32rpx;
+    padding: 16rpx 20rpx;
+    background: #f9fafb;
+    border-left: 6rpx solid #3264ff;
+    border-radius: 8rpx;
+
+    &-text {
+      font-size: 24rpx;
+      color: #4b5563;
+    }
+  }
+
+  &__empty {
+    padding: 60rpx 32rpx;
+    text-align: center;
+
+    &-text {
+      font-size: 24rpx;
+      color: #9ca3af;
+    }
+  }
+
+  &__list {
+    padding: 0 32rpx;
+  }
+
+  &__card {
+    background: #fff;
+    border-radius: 16rpx;
+    border: 2rpx solid #f3f4f6;
+    overflow: hidden;
+    margin-bottom: 20rpx;
+  }
+
+  &__cover {
+    width: 100%;
+    height: 280rpx;
+    background: #f3f4f6;
+
+    &--fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__cover-icon {
+    font-size: 80rpx;
+    opacity: 0.5;
+  }
+
+  &__card-body {
+    padding: 20rpx;
+  }
+
+  &__card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10rpx;
+  }
+
+  &__badge {
+    padding: 4rpx 12rpx;
+    border-radius: 6rpx;
+
+    &-text {
+      color: #fff;
+      font-size: 20rpx;
+      font-weight: 600;
+    }
+  }
+
+  &__rating {
+    font-size: 22rpx;
+    color: #f59e0b;
+    font-weight: 600;
+  }
+
+  &__name {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8rpx;
+  }
+
+  &__desc {
+    display: block;
+    font-size: 22rpx;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 12rpx;
+  }
+
+  &__price-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-end;
+  }
+
+  &__price-label {
+    font-size: 20rpx;
+    color: #6b7280;
+    margin-right: 8rpx;
+  }
+
+  &__price {
+    font-size: 32rpx;
+    font-weight: 700;
+  }
+}

@@ -6,6 +6,8 @@ import ReviewSection from '../../components/ReviewSection'
 import RelatedEntities from '../../components/RelatedEntities'
 import SaveButton from '../../components/SaveButton'
 import MediaTour from '../../components/MediaTour'
+import CrawlerVideos from '../../components/CrawlerVideos'
+import TpPackages from '../../components/TpPackages'
 import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
@@ -195,6 +197,12 @@ export default function HolySiteDetailPage() {
 
       {/* Multimedia Tour */}
       <MediaTour entityType='HOLY_SITE' entityId={id!} />
+
+      {/* Crawler Videos (YouTube picks) */}
+      <CrawlerVideos targetType='holySite' targetId={id!} />
+
+      {/* TP++ Tiered Packages */}
+      <TpPackages holySiteId={id!} />
 
       {/* Reviews */}
       <View className='section'>

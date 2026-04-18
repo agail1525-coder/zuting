@@ -6,6 +6,7 @@ import {
   fetchReligionBySlug, fetchReligionById, fetchHolySites, fetchTemples, fetchPatriarchs, fetchTeachings
 } from '../../lib/api'
 import HolySiteCard from '../../components/HolySiteCard'
+import CrawlerVideos from '../../components/CrawlerVideos'
 import { useTranslation } from '../../lib/i18n'
 import './index.scss'
 
@@ -167,6 +168,11 @@ export default function ReligionDetailPage() {
             </View>
           ))}
         </View>
+      )}
+
+      {/* Crawler Videos */}
+      {religion && (
+        <CrawlerVideos targetType='religion' targetId={religion.id} title='精选视频导览' />
       )}
 
       {/* Teachings */}
