@@ -22,6 +22,7 @@ import EmptyState from "@/components/EmptyState";
 import StickyTabBar from "@/components/StickyTabBar";
 import FAQSection from "@/components/FAQSection";
 import RouteCarousel from "@/components/RouteCarousel";
+import CrawlerVideos from "@/components/CrawlerVideos";
 
 type Tab = "overview" | "sites" | "temples" | "patriarchs" | "teachings";
 
@@ -227,6 +228,9 @@ export default function ReligionDetail() {
             {routes.length > 0 && (
               <RouteCarousel title={t("religion.exploreRoutes", { name: religion.name })} routes={routes} />
             )}
+
+            {/* Crawler videos */}
+            <CrawlerVideos targetType="religion" targetId={religion.id} limit={8} />
 
             {/* FAQ */}
             <FAQSection title={t("religions.faqTitle")} items={faqItems} />

@@ -17,6 +17,8 @@ import ShareButton from "@/components/ShareButton";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
 import MediaTour from "@/components/MediaTour";
+import CrawlerVideos from "@/components/CrawlerVideos";
+import TpPackages from "@/components/TpPackages";
 
 type Tab = "overview" | "routes" | "intro" | "reviews" | "facilities" | "etiquette" | "packing" | "faq";
 
@@ -399,6 +401,8 @@ export default function HolySiteDetail() {
             <ReviewSection targetType="SITE" targetId={site.id} />
             <QASection targetType="HOLY_SITE" targetId={site.id} />
             <MediaTour entityType="HOLY_SITE" entityId={site.id} />
+            <CrawlerVideos targetType="holySite" targetId={site.id} limit={8} />
+            <TpPackages holySiteId={site.id} />
           </div>
         ) : tab === "facilities" ? (
           <div className="px-4 space-y-4">

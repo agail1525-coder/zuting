@@ -14,6 +14,15 @@ const QUICK_ACTIONS = [
   { key: "about", icon: "ℹ️", labelKey: "profile.aboutLabel", descKey: "profile.aboutDesc", path: "/about" },
 ];
 
+const TRILOGY_ACTIONS = [
+  { key: "cultureLife",     icon: "🌏", label: "文化与生命",   desc: "12命题·12文化·7阶段", path: "/culture-life" },
+  { key: "faithAssessment", icon: "🧭", label: "信仰力评估",   desc: "五维度 60 题",        path: "/faith-assessment" },
+  { key: "personalGrowth",  icon: "🌟", label: "个人圆满",     desc: "6 主题 · 觉醒之路",    path: "/personal-growth" },
+  { key: "familyHarmony",   icon: "🏡", label: "家庭幸福",     desc: "6 主题 · 同心传家",    path: "/family-harmony" },
+  { key: "teamCulture",     icon: "🏢", label: "团队文化",     desc: "B2B 文化打造",        path: "/team-culture" },
+  { key: "rankings",        icon: "🏆", label: "社区排行榜",   desc: "攻略王 / 评价达人 …",  path: "/rankings" },
+];
+
 const LOCALES: { code: Locale; label: string }[] = [
   { code: "zh-CN", label: "中文" },
   { code: "en", label: "English" },
@@ -97,6 +106,29 @@ export default function Profile() {
               <div className="flex-1 text-left">
                 <p className="text-sm font-medium text-gray-900">{t(a.labelKey)}</p>
                 <p className="text-[10px] text-gray-400">{t(a.descKey)}</p>
+              </div>
+              <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Journey trilogy */}
+      <div className="px-4 mt-4">
+        <p className="text-xs font-semibold text-gray-500 px-1 mb-2">佳绩之旅 · 四部曲</p>
+        <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-50">
+          {TRILOGY_ACTIONS.map((a) => (
+            <button
+              key={a.key}
+              onClick={() => nav(a.path)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-gray-50"
+            >
+              <span className="text-lg">{a.icon}</span>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-medium text-gray-900">{a.label}</p>
+                <p className="text-[10px] text-gray-400">{a.desc}</p>
               </div>
               <svg className="w-4 h-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />

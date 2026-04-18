@@ -53,6 +53,12 @@ const FamilyHarmony = lazy(() => import("./pages/FamilyHarmony"));
 const FamilyHarmonyDetail = lazy(() => import("./pages/FamilyHarmonyDetail"));
 const TeamCulture = lazy(() => import("./pages/TeamCulture"));
 const Referral = lazy(() => import("./pages/Referral"));
+const Rankings = lazy(() => import("./pages/Rankings"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
+const PersonalGrowthCaseDetail = lazy(() => import("./pages/PersonalGrowthCaseDetail"));
+const FamilyHarmonyCaseDetail = lazy(() => import("./pages/FamilyHarmonyCaseDetail"));
+const CultureLifeStages = lazy(() => import("./pages/CultureLifeStages"));
+const CultureLifeDialogue = lazy(() => import("./pages/CultureLifeDialogue"));
 
 function PageLoader() {
   return (
@@ -124,14 +130,20 @@ export default function App() {
 
           {/* Culture & faith */}
           <Route path="culture-life" element={<CultureLife />} />
+          <Route path="culture-life/stages" element={<CultureLifeStages />} />
+          <Route path="culture-life/dialogue" element={<CultureLifeDialogue />} />
           <Route path="culture-life/:code" element={<CultureLifeDetail />} />
           <Route path="faith-assessment" element={<FaithAssessment />} />
           <Route path="personal-growth" element={<PersonalGrowth />} />
+          <Route path="personal-growth/cases/:slug" element={<PersonalGrowthCaseDetail />} />
           <Route path="personal-growth/:slug" element={<PersonalGrowthDetail />} />
           <Route path="family-harmony" element={<FamilyHarmony />} />
+          <Route path="family-harmony/cases/:slug" element={<FamilyHarmonyCaseDetail />} />
           <Route path="family-harmony/:slug" element={<FamilyHarmonyDetail />} />
           <Route path="team-culture" element={<TeamCulture />} />
           <Route path="referral" element={<Referral />} />
+          <Route path="rankings" element={<Rankings />} />
+          <Route path="users/:userId" element={<UserProfile />} />
         </Route>
       </Routes>
     </Suspense>
