@@ -1,0 +1,167 @@
+.cls-page {
+  height: 100vh;
+  background: #f8fafc;
+}
+
+.cls-hero {
+  padding: 40rpx 32rpx;
+  background: linear-gradient(135deg, #0f172a 0%, #3264ff 100%);
+}
+
+.cls-kicker {
+  display: block;
+  font-size: 22rpx;
+  color: #facc15;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.cls-title {
+  display: block;
+  font-size: 40rpx;
+  color: #fff;
+  font-weight: 700;
+}
+
+.cls-sub {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 8rpx;
+}
+
+.cls-tabs {
+  background: #fff;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #f3f4f6;
+}
+
+.cls-tabs-scroll {
+  white-space: nowrap;
+  padding: 0 24rpx;
+}
+
+.cls-tab {
+  display: inline-block;
+  padding: 12rpx 20rpx;
+  border-radius: 12rpx;
+  background: #f3f4f6;
+  margin-right: 12rpx;
+
+  &-text {
+    font-size: 24rpx;
+    color: #374151;
+    font-weight: 600;
+  }
+
+  &-active {
+    background: #3264ff;
+
+    .cls-tab-text {
+      color: #fff;
+    }
+  }
+}
+
+.cls-list {
+  padding: 32rpx;
+}
+
+.cls-empty {
+  padding: 80rpx;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 26rpx;
+}
+
+.cls-card {
+  background: #fff;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #3264ff;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.cls-card-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.cls-card-sym {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.cls-card-name {
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.cls-card-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 4rpx;
+}
+
+.cls-card-wisdom {
+  display: block;
+  font-size: 26rpx;
+  color: #374151;
+  line-height: 1.7;
+  margin-top: 12rpx;
+}
+
+.cls-block {
+  margin-top: 20rpx;
+
+  &-title {
+    display: block;
+    font-size: 24rpx;
+    color: #6b7280;
+    font-weight: 700;
+    margin-bottom: 10rpx;
+  }
+
+  &-line {
+    display: block;
+    font-size: 24rpx;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 4rpx;
+  }
+}
+
+.cls-bold {
+  font-weight: 700;
+}
+
+.cls-ch {
+  margin-bottom: 10rpx;
+}
+
+.cls-ch-q {
+  display: block;
+  font-size: 24rpx;
+  color: #111827;
+  font-weight: 600;
+}
+
+.cls-ch-a {
+  display: block;
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-top: 4rpx;
+}
+
+.cls-scripture {
+  display: block;
+  font-size: 22rpx;
+  color: #9ca3af;
+  margin-top: 16rpx;
+}

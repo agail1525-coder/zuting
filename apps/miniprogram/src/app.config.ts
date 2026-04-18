@@ -58,7 +58,20 @@ export default defineAppConfig({
     'pages/team-culture/index',
     'pages/cultivation/index',
     'pages/cultivation/apply',
-    'pages/pkb/index'
+    'pages/pkb/index',
+    'pages/culture-life/index',
+    'pages/faith-assessment/index',
+    'pages/personal-growth/index',
+    'pages/family-harmony/index',
+    'pages/personal-growth-theme/index',
+    'pages/personal-growth-case/index',
+    'pages/family-harmony-theme/index',
+    'pages/family-harmony-case/index',
+    'pages/culture-life-question-detail/index',
+    'pages/culture-life-stages/index',
+    'pages/culture-life-dialogue/index',
+    'pages/user-profile/index',
+    'pages/rankings/index'
   ],
   tabBar: {
     color: '#9CA3AF',

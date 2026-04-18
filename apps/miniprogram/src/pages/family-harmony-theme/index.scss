@@ -1,0 +1,165 @@
+.fht-page {
+  min-height: 100vh;
+  background: #f5fbf8;
+}
+
+.fht-loading {
+  padding: 120rpx;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.fht-cover {
+  width: 100%;
+  height: 400rpx;
+}
+
+.fht-hero {
+  padding: 40rpx 32rpx;
+
+  &-title {
+    display: block;
+    font-size: 44rpx;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  &-sub {
+    display: block;
+    font-size: 26rpx;
+    color: #6EBFA4;
+    margin-top: 8rpx;
+    letter-spacing: 2rpx;
+  }
+}
+
+.fht-section {
+  padding: 32rpx;
+  background: #fff;
+  margin-top: 16rpx;
+
+  &-title {
+    display: block;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 16rpx;
+  }
+
+  &-h {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 10rpx;
+  }
+
+  &-body {
+    display: block;
+    font-size: 26rpx;
+    color: #4b5563;
+    line-height: 1.7;
+  }
+}
+
+.fht-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #374151;
+  line-height: 1.7;
+}
+
+.fht-meta {
+  display: flex;
+  flex-direction: row;
+  gap: 32rpx;
+  margin-top: 20rpx;
+
+  &-item {
+    font-size: 26rpx;
+    color: #6b7280;
+    font-weight: 600;
+  }
+}
+
+.fht-sign {
+  display: block;
+  font-size: 24rpx;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-top: 6rpx;
+}
+
+.fht-quote {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #f0fbf6;
+  border-left: 6rpx solid #2D8B6F;
+  border-radius: 8rpx;
+
+  &-text {
+    display: block;
+    font-size: 26rpx;
+    color: #111827;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  &-trans {
+    display: block;
+    font-size: 24rpx;
+    color: #6b7280;
+    margin-top: 8rpx;
+  }
+
+  &-source {
+    display: block;
+    font-size: 22rpx;
+    color: #2D8B6F;
+    margin-top: 12rpx;
+    font-weight: 600;
+  }
+}
+
+.fht-day {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: #f0fbf6;
+  border-radius: 12rpx;
+
+  &-head {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 700;
+    margin-bottom: 8rpx;
+  }
+
+  &-loc {
+    display: block;
+    font-size: 22rpx;
+    color: #6b7280;
+    margin-bottom: 12rpx;
+  }
+
+  &-body {
+    display: block;
+    font-size: 24rpx;
+    color: #374151;
+    line-height: 1.6;
+    margin-top: 6rpx;
+  }
+}
+
+.fht-mentor-name {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 4rpx;
+}
+
+.fht-mentor-title {
+  display: block;
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-bottom: 12rpx;
+}

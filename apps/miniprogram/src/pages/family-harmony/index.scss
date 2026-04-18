@@ -1,0 +1,143 @@
+.fh-page {
+  height: 100vh;
+  background: #f5fbf8;
+}
+
+.fh-hero {
+  padding: 56rpx 32rpx;
+  background: linear-gradient(135deg, #0D2E22 0%, #1C4A3A 100%);
+
+  &-kicker {
+    display: block;
+    font-size: 22rpx;
+    color: #6EBFA4;
+    font-weight: 700;
+    letter-spacing: 4rpx;
+    margin-bottom: 16rpx;
+  }
+
+  &-title {
+    display: block;
+    font-size: 48rpx;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 12rpx;
+  }
+
+  &-sub {
+    display: block;
+    font-size: 24rpx;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+  }
+}
+
+.fh-section {
+  padding: 32rpx;
+
+  &-title {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 20rpx;
+  }
+}
+
+.fh-empty {
+  padding: 80rpx;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 26rpx;
+}
+
+.fh-theme-card {
+  background: #fff;
+  border-radius: 16rpx;
+  border: 2rpx solid #e5e7eb;
+  border-left: 8rpx solid #2D8B6F;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.fh-theme-cover {
+  width: 100%;
+  height: 280rpx;
+}
+
+.fh-theme-body {
+  padding: 28rpx;
+}
+
+.fh-theme-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.fh-theme-sub {
+  display: block;
+  font-size: 24rpx;
+  color: #2D8B6F;
+  margin-top: 6rpx;
+  letter-spacing: 2rpx;
+}
+
+.fh-theme-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-top: 12rpx;
+}
+
+.fh-theme-meta {
+  display: flex;
+  flex-direction: row;
+  gap: 24rpx;
+  margin-top: 16rpx;
+}
+
+.fh-meta {
+  font-size: 24rpx;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.fh-price {
+  font-size: 24rpx;
+  color: #2D8B6F;
+  font-weight: 700;
+}
+
+.fh-case-card {
+  background: #f0fbf6;
+  border: 2rpx solid #cde7dd;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.fh-case-badge {
+  display: inline-block;
+  font-size: 22rpx;
+  color: #2D8B6F;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.fh-case-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.fh-case-story {
+  display: block;
+  font-size: 26rpx;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-top: 10rpx;
+}
