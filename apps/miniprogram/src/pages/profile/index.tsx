@@ -28,6 +28,15 @@ const MENU_KEYS = [
   { icon: '\u{2B50}', labelKey: 'profile.menuRate', descKey: 'profile.menuRateDesc', action: 'rate' },
 ]
 
+const TRILOGY_MENU = [
+  { icon: '\u{1F3F3}\u{FE0F}', labelKey: 'profile.trilogyCultureLife', descKey: 'profile.trilogyCultureLifeDesc', url: '/pages/culture-life/index' },
+  { icon: '\u{1F9ED}', labelKey: 'profile.trilogyFaithAssessment', descKey: 'profile.trilogyFaithAssessmentDesc', url: '/pages/faith-assessment/index' },
+  { icon: '\u{1F331}', labelKey: 'profile.trilogyPersonalGrowth', descKey: 'profile.trilogyPersonalGrowthDesc', url: '/pages/personal-growth/index' },
+  { icon: '\u{1F3E1}', labelKey: 'profile.trilogyFamilyHarmony', descKey: 'profile.trilogyFamilyHarmonyDesc', url: '/pages/family-harmony/index' },
+  { icon: '\u{1F465}', labelKey: 'profile.trilogyTeamCulture', descKey: 'profile.trilogyTeamCultureDesc', url: '/pages/team-culture/index' },
+  { icon: '\u{1F3C6}', labelKey: 'profile.trilogyRankings', descKey: 'profile.trilogyRankingsDesc', url: '/pages/rankings/index' },
+]
+
 export default function ProfilePage() {
   const { t } = useTranslation()
   const [user, setUser] = useState<User | null>(null)
@@ -304,6 +313,28 @@ export default function ProfilePage() {
         <View className='journey-stats__item'>
           <Text className='journey-stats__number'>{user?._count?.trips ?? 0}</Text>
           <Text className='journey-stats__label'>{t('profile.statTrips')}</Text>
+        </View>
+      </View>
+
+      {/* Trilogy (四部曲) */}
+      <View className='menu-group'>
+        <Text className='menu-group__title'>{t('profile.trilogyGroupTitle')}</Text>
+        <View className='menu-list'>
+          {TRILOGY_MENU.map((item) => (
+            <View
+              key={item.url}
+              className='menu-item'
+              hoverClass='menu-item--hover'
+              onClick={() => Taro.navigateTo({ url: item.url })}
+            >
+              <Text className='menu-item__icon'>{item.icon}</Text>
+              <View className='menu-item__content'>
+                <Text className='menu-item__label'>{t(item.labelKey)}</Text>
+                <Text className='menu-item__desc'>{t(item.descKey)}</Text>
+              </View>
+              <Text className='menu-item__arrow'>&gt;</Text>
+            </View>
+          ))}
         </View>
       </View>
 
