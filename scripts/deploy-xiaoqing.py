@@ -7,6 +7,7 @@ import paramiko
 import time
 import tempfile
 import subprocess
+import sys
 import os
 from pathlib import Path
 
@@ -391,10 +392,19 @@ echo "Admin container: zuting-admin-nginx on port {ADMIN_PORT}"
         run(ssh, f"docker logs --tail 15 zuting-admin-nginx 2>&1")
 
     # ── 6. Nginx ──
-    # Domain routing (zuting.fszyl.top) is configured in the main nginx-standalone.conf
-    # on the server. No need to inject conf.d files — ports 3080/3083 are not exposed
-    # by the Docker nginx container. Access via domain or direct ports (3002/3003/3004).
-    print("\n[6/7] Nginx域名路由已配置 (zuting.fszyl.top)")
+    # Domain routing (zuting.fszyl.top) lives in the main nginx-standalone.conf
+    # (zuoyelang-nginx container). We do NOT own that file exclusively, and
+    # 2026-04-18 an unrelated edit stripped the zuting server block, causing
+    # HTTPS / to fall through to api.fszyl.top → ZuoYeLang web-admin SPA.
+    # So: run the idempotent ensure-script on every deploy to restore it.
+    print("\n[6/7] Nginx域名路由自愈 (zuting.fszyl.top)...")
+    ensure_script = (Path(__file__).parent / "ensure-nginx-zuting-block.py").resolve()
+    if ensure_script.exists():
+        rc = subprocess.call([sys.executable, str(ensure_script)])
+        if rc != 0:
+            print("  ⚠️ ensure-nginx-zuting-block.py 返回非零，请手动检查 nginx-standalone.conf")
+    else:
+        print(f"  ⚠️ 未找到 {ensure_script}，跳过自愈（请手动确认域名路由）")
 
     # TP++ /static/ route is handled via Next.js rewrites → API:3002 (see apps/web/next.config.mjs)
 
