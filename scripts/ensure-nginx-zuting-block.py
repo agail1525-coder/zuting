@@ -25,7 +25,13 @@ CONF = "/opt/zuoyelang/docker/nginx/nginx-standalone.conf"
 # Confirmed via `docker inspect zuoyelang-nginx` → NetworkSettings.Networks → Gateway.
 BRIDGE = "172.19.0.1"
 
-INSERT_MARKER = "    # ── SX"  # inject above the SX (auto-generated) block
+# Insertion anchor strategy (first match wins; falls back to http-block close `}`)
+# Robust to ZuoYeLang rewrites — keeps working even when their conf structure shifts.
+INSERT_ANCHORS = [
+    "    # ── SX",                                    # legacy auto-gen block
+    "    # ── SSL Server (sx.fszyl.top)",             # current (2026-04) sx.fszyl.top block
+    "# ── SSL Server (sx.fszyl.top)",                 # same, different indent
+]
 
 ZUTING_BLOCKS = f"""
     # ── ZUTING HTTP → HTTPS redirect ──────────────────
@@ -122,10 +128,12 @@ def ensure(ssh):
         print("  ✓ zuting.fszyl.top block already present — no change")
         return True
 
-    if INSERT_MARKER not in current:
-        print(f"  ✗ Insert marker {INSERT_MARKER!r} not found in {CONF}")
-        print("    Manual review needed — aborting to avoid clobbering unknown state")
-        return False
+    # Try named anchors first (insert block immediately before the anchor line).
+    chosen = None
+    for anchor in INSERT_ANCHORS:
+        if anchor in current:
+            chosen = anchor
+            break
 
     ts = int(time.time())
     bak = f"{CONF}.bak.zutingFix.{ts}"
@@ -135,7 +143,27 @@ def ensure(ssh):
         return False
     print(f"  Backed up → {bak}")
 
-    new = current.replace(INSERT_MARKER, ZUTING_BLOCKS + "\n" + INSERT_MARKER, 1)
+    if chosen is not None:
+        print(f"  Using anchor: {chosen!r}")
+        new = current.replace(chosen, ZUTING_BLOCKS + "\n" + chosen, 1)
+    else:
+        # Fallback: inject before the last standalone `}` (http-block close).
+        # Valid nginx configs always close the http { ... } block this way, so
+        # this anchor is effectively permanent regardless of other projects'
+        # rewrites to the conf above.
+        lines = current.split("\n")
+        http_close_idx = None
+        for idx in range(len(lines) - 1, -1, -1):
+            if lines[idx].strip() == "}":
+                http_close_idx = idx
+                break
+        if http_close_idx is None:
+            print("  ✗ Could not locate http-block close `}` — aborting")
+            return False
+        print(f"  Using fallback anchor: http-block close at line {http_close_idx + 1}")
+        lines.insert(http_close_idx, ZUTING_BLOCKS)
+        new = "\n".join(lines)
+
     with sftp.open(CONF, "w") as f:
         f.write(new)
 
@@ -148,6 +176,44 @@ def ensure(ssh):
     run(ssh, "docker exec zuoyelang-nginx nginx -s reload 2>&1")
     print("  ✓ zuting.fszyl.top block restored and nginx reloaded")
     return True
+
+
+def ensure_mount_live(ssh):
+    """Detect and repair the 'stale bind-mount' failure mode.
+
+    Root cause observed 2026-04-20: zuoyelang-nginx bind-mounts the host file
+    /opt/zuoyelang/docker/nginx/nginx-standalone.conf → /etc/nginx/nginx.conf.
+    Bind mounts are inode-based — if something on the host replaces the file
+    (mv + cp, or atomic-rename editors), the container keeps serving the old
+    inode ("Links: 0", orphaned). nginx -s reload does nothing because the
+    conf it reloads is the stale orphan, not what we just wrote.
+
+    Fix: compare host inode vs. container inode. If they diverge, docker
+    restart to rebind. This costs ~2s of downtime for ZuoYeLang's other
+    vhosts, which is an acceptable price for keeping zuting.fszyl.top live.
+    """
+    rc, host_ino, _ = run(ssh, f"stat -c %i {CONF}")
+    rc, cont_ino, _ = run(
+        ssh, "docker exec zuoyelang-nginx stat -c %i /etc/nginx/nginx.conf"
+    )
+    rc, cont_links, _ = run(
+        ssh, "docker exec zuoyelang-nginx stat -c %h /etc/nginx/nginx.conf"
+    )
+    host_ino = host_ino.strip()
+    cont_ino = cont_ino.strip()
+    cont_links = cont_links.strip()
+    print(f"  host inode: {host_ino} | container inode: {cont_ino} | links: {cont_links}")
+    if host_ino != cont_ino or cont_links == "0":
+        print("  ✗ Bind mount is STALE (orphan inode) — restarting container to rebind")
+        run(ssh, "docker restart zuoyelang-nginx", timeout=60)
+        time.sleep(3)
+        rc, new_ino, _ = run(
+            ssh, "docker exec zuoyelang-nginx stat -c %i /etc/nginx/nginx.conf"
+        )
+        print(f"  ✓ post-restart container inode: {new_ino.strip()}")
+        return True
+    print("  ✓ Bind mount is live (host/container inodes match)")
+    return False
 
 
 def verify(ssh):
@@ -176,6 +242,9 @@ def main():
     print(f"[ensure-nginx-zuting-block] {time.strftime('%Y-%m-%d %H:%M:%S')}")
     ok = ensure(ssh)
     if ok:
+        # After writing the host conf, verify the container is actually seeing
+        # our change (bind mount can go stale — see ensure_mount_live docstring).
+        ensure_mount_live(ssh)
         time.sleep(1)
         verify(ssh)
     ssh.close()
