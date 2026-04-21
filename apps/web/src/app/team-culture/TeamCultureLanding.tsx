@@ -213,7 +213,7 @@ export default function TeamCultureLanding({ themes, cases }: Props) {
       <section className="py-20 bg-gradient-to-br from-[#3264ff] to-[#1e4dcc]">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { num: "60+", labelKey: "teamCulture.trustSites" },
+            { num: "300+", labelKey: "teamCulture.trustSites" },
             { num: "27+", labelKey: "teamCulture.trustTemples" },
             { num: "12", labelKey: "teamCulture.trustReligions" },
             { num: "100%", labelKey: "teamCulture.trustCustom" },

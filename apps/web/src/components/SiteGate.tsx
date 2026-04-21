@@ -60,7 +60,7 @@ export default function SiteGate({ children }: { children: React.ReactNode }) {
             帮助100万人走祖庭
           </h1>
           <p className="text-white/70 text-lg">
-            探索全球60+文化圣地，体验千年智慧之旅
+            探索全球300+文化圣地，体验千年智慧之旅
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default function SiteGate({ children }: { children: React.ReactNode }) {
           </span>
           <span className="flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-            60+文化圣地
+            300+文化圣地
           </span>
           <span className="flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>

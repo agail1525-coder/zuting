@@ -28,7 +28,7 @@ export default function MapPage() {
         {/* Stats row */}
         <div className="flex gap-6 mb-8">
           {[
-            { icon: "🏛️", label: t("map.statSites"), count: "60+" },
+            { icon: "🏛️", label: t("map.statSites"), count: "300+" },
             { icon: "⛩️", label: t("map.statTemples"), count: "27" },
             { icon: "🌐", label: t("map.statCountries"), count: "30+" },
           ].map((s) => (

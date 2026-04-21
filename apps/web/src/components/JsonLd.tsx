@@ -67,7 +67,7 @@ export function WebSiteJsonLd() {
     url: BASE_URL,
     inLanguage: ["zh-CN", "en"],
     description:
-      "全球文化之旅旅行平台，涵盖12大文化传统、60圣地、27祖庭、28祖师、39祖训、30印。",
+      "全球文化之旅旅行平台，涵盖12大文化传统、300+圣地、27祖庭、28祖师、39祖训、30印。",
     publisher: {
       "@type": "Organization",
       name: "佳绩之旅",

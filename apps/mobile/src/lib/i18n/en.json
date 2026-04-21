@@ -31,9 +31,9 @@
   "settings.language": "Language Settings",
 
   "home.heroTitle": "Help 1 Million People Visit Ancestral Temples",
-  "home.heroSubtitle": "Explore 60+ cultural holy sites worldwide · Immersive travel",
+  "home.heroSubtitle": "Explore 300+ cultural holy sites worldwide · Immersive travel",
   "home.searchPlaceholder": "Search routes, destinations...",
-  "home.trustBadge": "12 Traditions · 60+ Holy Sites · Expert Routes · AI Travel Advisor",
+  "home.trustBadge": "12 Traditions · 300+ Holy Sites · Expert Routes · AI Travel Advisor",
   "home.whyChooseUs": "Why Choose Us",
   "home.learnMore": "Learn more",
   "home.viewAll": "View all",
@@ -63,7 +63,7 @@
 
   "home.highlight.religions": "12 Faiths",
   "home.highlight.religionsDesc": "Global cultural traditions",
-  "home.highlight.sites": "60+ Sites",
+  "home.highlight.sites": "300+ Sites",
   "home.highlight.sitesDesc": "Curated destinations",
   "home.highlight.aiPlanner": "AI Planner",
   "home.highlight.aiPlannerDesc": "Smart route customization",

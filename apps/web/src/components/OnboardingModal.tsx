@@ -73,7 +73,7 @@ export default function OnboardingModal() {
       <p className="text-temple-300 text-lg leading-relaxed max-w-md mx-auto mb-2">
         {isZh
           ? "探索12大文化传统、60处圣地、27座祖庭，踏上一段文化之旅。"
-          : "Explore 12 cultural traditions, 60 holy sites, 27 ancestral temples. Begin your cultural journey."}
+          : "Explore 12 cultural traditions, 300+ holy sites, 27 ancestral temples. Begin your cultural journey."}
       </p>
       <p className="text-temple-500 text-sm">
         {isZh

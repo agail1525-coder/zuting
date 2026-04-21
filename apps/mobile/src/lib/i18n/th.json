@@ -33,7 +33,7 @@
   "home.heroTitle": "ช่วยให้ 1 ล้านคนเดินทางเยือนวัดต้นตระกูล",
   "home.heroSubtitle": "สำรวจสถานที่ศักดิ์สิทธิ์ทางวัฒนธรรมกว่า 60 แห่งทั่วโลก · ท่องเที่ยวเชิงลึก",
   "home.searchPlaceholder": "ค้นหาเส้นทาง, จุดหมายปลายทาง...",
-  "home.trustBadge": "12 ศาสนา · 60+ สถานที่ศักดิ์สิทธิ์ · เส้นทางมืออาชีพ · ที่ปรึกษาท่องเที่ยว AI",
+  "home.trustBadge": "12 ประเพณีวัฒนธรรม · 300+ สถานที่ศักดิ์สิทธิ์ · เส้นทางมืออาชีพ · ที่ปรึกษาท่องเที่ยว AI",
   "home.whyChooseUs": "ทำไมต้องเลือกเรา",
   "home.learnMore": "เรียนรู้เพิ่มเติม",
   "home.viewAll": "ดูทั้งหมด",
@@ -63,7 +63,7 @@
 
   "home.highlight.religions": "12 ศาสนา",
   "home.highlight.religionsDesc": "ประเพณีวัฒนธรรมทั่วโลก",
-  "home.highlight.sites": "60+ สถานที่",
+  "home.highlight.sites": "300+ สถานที่",
   "home.highlight.sitesDesc": "จุดหมายคัดสรร",
   "home.highlight.aiPlanner": "AI วางแผน",
   "home.highlight.aiPlannerDesc": "ปรับแต่งเส้นทางอัจฉริยะ",

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | Joinus - 全球文化旅行平台",
   },
   description:
-    "加入我们，探索世界。Joinus是全球领先的文化旅行平台，精选12大文化传统、60+圣地目的地、专业路线规划、AI旅行顾问。Join us, explore the world — the leading cultural travel platform with curated routes, 60+ destinations, and AI trip planning.",
+    "加入我们，探索世界。Joinus是全球领先的文化旅行平台，精选12大文化传统、300+圣地目的地、专业路线规划、AI旅行顾问。Join us, explore the world — the leading cultural travel platform with curated routes, 300+ destinations, and AI trip planning.",
   keywords: [
     "文化旅行",
     "深度旅游",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     siteName: "Joinus - 全球文化旅行平台",
     title: "Joinus - 加入我们，探索世界",
     description:
-      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、60+圣地目的地、AI旅行顾问。Join us, explore the world.",
+      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、300+圣地目的地、AI旅行顾问。Join us, explore the world.",
     images: [
       {
         url: "/og-image.png",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Joinus - 加入我们，探索世界",
     description:
-      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、60+目的地、AI旅行顾问。",
+      "加入我们，探索世界。全球领先的文化旅行平台，精选路线、300+目的地、AI旅行顾问。",
     images: ["/og-image.png"],
     creator: "@joinus_travel",
   },

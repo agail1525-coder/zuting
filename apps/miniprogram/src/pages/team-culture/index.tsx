@@ -67,7 +67,7 @@ export default function TeamCulturePage() {
         <Text className='tc-methodology-sub'>五步沉淀,百年传承。可被代际继承的文化基因。</Text>
         {[
           { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评' },
-          { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 60 圣地匹配' },
+          { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 300+ 圣地匹配' },
           { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会' },
           { n: '04', icon: '📜', title: '沉淀转化', sub: '影像 + 证书 + 文化手册' },
           { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班传承' },

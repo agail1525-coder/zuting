@@ -7,7 +7,7 @@ import { BRAND_DOMAIN, BRAND_NAME_ZH } from '../src/constants/brand';
 
 const FEATURES = [
   { icon: 'globe-outline' as const, label: '12大文化传统', desc: '佛教文化、道教文化、基督文化等全球文化传统' },
-  { icon: 'location-outline' as const, label: '60+圣地', desc: '覆盖全球文化圣地与文化探访目的地' },
+  { icon: 'location-outline' as const, label: '300+圣地', desc: '覆盖全球文化圣地与文化探访目的地' },
   { icon: 'business-outline' as const, label: '27祖庭', desc: '各文化传统重要祖庭完整档案' },
   { icon: 'people-outline' as const, label: '28祖师', desc: '各文化传统创始人与重要人物传记' },
   { icon: 'language-outline' as const, label: '7语言', desc: '中/英/日/韩/泰/印地/阿拉伯' },
@@ -15,7 +15,7 @@ const FEATURES = [
 ];
 
 const PLATFORM_STATS = [
-  { value: '60+', label: '文化圣地' },
+  { value: '300+', label: '文化圣地' },
   { value: '27+', label: '历史祖庭' },
   { value: '12', label: '文化传统' },
   { value: '7', label: '支持语言' },

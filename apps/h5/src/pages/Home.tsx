@@ -82,7 +82,7 @@ export default function Home() {
         <div className="flex justify-between mt-5 text-center">
           {[
             { n: "12", l: t("home.statTraditions") },
-            { n: "60+", l: t("home.statSites") },
+            { n: "300+", l: t("home.statSites") },
             { n: "10", l: t("home.statRoutes") },
           ].map((s) => (
             <div key={s.l}>

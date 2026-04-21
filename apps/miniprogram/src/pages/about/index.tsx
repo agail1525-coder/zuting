@@ -11,7 +11,7 @@ export default function AboutPage() {
 
   const STATS = [
     { number: '12', label: t('about.statFaiths') },
-    { number: '60+', label: t('about.statSites') },
+    { number: '300+', label: t('about.statSites') },
     { number: '27', label: t('about.statTemples') },
     { number: '7', label: t('about.statLanguages') },
   ]

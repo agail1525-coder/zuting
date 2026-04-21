@@ -7,7 +7,7 @@ import type { Religion } from "@/lib/api";
 
 // Curated marketing stats reflecting actual platform content (see seed data in CLAUDE.md)
 const PLATFORM_STATS = [
-  { icon: "🕌", value: "60+", labelKey: "about.stats.holySites" },
+  { icon: "🕌", value: "300+", labelKey: "about.stats.holySites" },
   { icon: "🏛", value: "27+", labelKey: "about.stats.temples" },
   { icon: "☸️", value: "12", labelKey: "about.stats.religions" },
   { icon: "🌍", value: "7", labelKey: "about.stats.languages" },

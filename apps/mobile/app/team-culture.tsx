@@ -103,7 +103,7 @@ export default function TeamCultureScreen() {
           </Text>
           {[
             { n: '01', icon: '🔍', title: '文化诊断', sub: 'CEO/HR 访谈 + 40 维测评 → 母题报告' },
-            { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 60 圣地匹配 → 专属方案书' },
+            { n: '02', icon: '🗺️', title: '文化探访定制', sub: '12 文化传统 × 300+ 圣地匹配 → 专属方案书' },
             { n: '03', icon: '🏛️', title: '共修体验', sub: '5-7 天浸润 + 高管闭门会 + 集体宣誓' },
             { n: '04', icon: '📜', title: '沉淀转化', sub: '影像档案 + 团队证书 + 文化手册 v1.0' },
             { n: '05', icon: '♾️', title: '长效飞轮', sub: '年度复盘 + 接班人传承 + 全球网络' },

@@ -42,7 +42,7 @@ export default function TermsPage() {
           </p>
           <ul className="list-disc list-inside space-y-2 ml-2">
             <li>十二大文化传统的文化知识展示与教育。</li>
-            <li>全球60个文化圣地的信息查询与导览。</li>
+            <li>全球300+文化圣地的信息查询与导览。</li>
             <li>27个祖庭、28位祖师、39条祖训的详细介绍。</li>
             <li>曹溪愿命三十印的修行内容。</li>
             <li>小鸿AI智能助手，提供文化知识问答。</li>

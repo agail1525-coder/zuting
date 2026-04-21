@@ -3,7 +3,7 @@ import { useTranslation } from "@/lib/i18n";
 import PageHeader from "@/components/PageHeader";
 
 const STATS = [
-  { key: "holySites", count: "60+", icon: "🏛️" },
+  { key: "holySites", count: "300+", icon: "🏛️" },
   { key: "temples", count: "27", icon: "⛩️" },
   { key: "religions", count: "12", icon: "🙏" },
   { key: "languages", count: "7", icon: "🌐" },
