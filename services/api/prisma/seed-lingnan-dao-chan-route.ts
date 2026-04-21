@@ -447,6 +447,87 @@ async function main() {
     coverGallery[0]?.url ||
     null;
 
+  // ── 7. 路线级相关文化 (精准绑定本路线祖师/祖训, 不依赖 religion 全局聚合) ──
+  const relatedPatriarchs = [
+    {
+      name: '六祖慧能',
+      nameEn: 'Hui-neng',
+      dynasty: '唐(638-713)',
+      title: '禅宗六祖 · 南宗始祖',
+      bio: '岭南新州(今云浮新兴)人,禅宗南宗心法开创者,《六祖坛经》记录其言教。在光孝寺菩提树下落发出家,在南华寺弘法 37 年,圆寂并真身供奉于南华六祖殿,晚年返故里建国恩寺。',
+      siteName: '光孝寺 / 南华禅寺 / 国恩寺',
+      day: 1,
+      quote: '菩提本无树,明镜亦非台。本来无一物,何处惹尘埃。',
+    },
+    {
+      name: '云门文偃',
+      nameEn: 'Yunmen Wenyan',
+      dynasty: '唐末五代(864-949)',
+      title: '云门宗开山祖师 · 禅门五家之一',
+      bio: '浙江嘉兴人,五代后唐年间入岭南,开创云门山大觉禅寺,以"一字禅"著称。其禅风截断众流、涵盖乾坤,后世尊为云门宗祖师,祖塔与祖堂至今安于云门寺。',
+      siteName: '云门山大觉禅寺',
+      day: 2,
+      quote: '日日是好日。',
+    },
+    {
+      name: '吕洞宾',
+      nameEn: 'Lü Dongbin',
+      dynasty: '唐(796-?)',
+      title: '纯阳真人 · 全真派北五祖 · 八仙之首',
+      bio: '河中府人,唐代道家宗师,全真道北五祖之一,被全真派尊为祖师。广州越秀山纯阳观以其为主神,殿堂奉吕祖真像,是岭南全真文化的重要道场。',
+      siteName: '纯阳观',
+      day: 1,
+      quote: '欲人不死,莫若自修。',
+    },
+    {
+      name: '赵公明元帅',
+      nameEn: 'Zhao Gongming',
+      dynasty: '道教神祇 · 传始于商末',
+      title: '正一玄坛赵元帅 · 武财神',
+      bio: '道教重要神祇,正一派奉为玄坛真君,民间尊为武财神。纯阳观内设财神神坛,是岭南道家祈福与商道文化的象征。本路线借此承接中华商道伦理主题。',
+      siteName: '纯阳观 (财神文化副线)',
+      day: 1,
+      quote: '公正无私,利人利己 — 道家商道根本。',
+    },
+  ];
+
+  const relatedTeachings = [
+    {
+      name: '《六祖坛经·行由品》',
+      originalText: '汝等终日只求福田,不求出离生死苦海。自性若迷,福何可救?',
+      sourceText: '《六祖坛经·行由品》',
+      translationCn:
+        '慧能告诫门人:若只求世间福报,不求解脱根本,则福亦无救。提醒企业家超越眼前利益。',
+      relatedSiteName: '光孝寺 / 南华禅寺',
+      day: 1,
+    },
+    {
+      name: '《六祖坛经·般若品》',
+      originalText: '菩提般若之智,世人本自有之,只缘心迷,不能自悟。',
+      sourceText: '《六祖坛经·般若品》',
+      translationCn: '般若智慧人人本具,只因心迷无法自悟。禅宗心法根本立场。',
+      relatedSiteName: '国恩寺 (《坛经》诞生地)',
+      day: 2,
+    },
+    {
+      name: '《云门广录》· 一字禅',
+      originalText: '问:如何是佛?师云:干屎橛。问:如何是学人自己?师云:游山翫水。',
+      sourceText: '《云门匡真禅师广录》',
+      translationCn: '云门文偃以极简"一字"截断问者思虑,直指当下,是云门宗独特禅风。',
+      relatedSiteName: '云门山大觉禅寺',
+      day: 2,
+    },
+    {
+      name: '《太上感应篇》',
+      originalText: '祸福无门,惟人自召;善恶之报,如影随形。',
+      sourceText: '《太上感应篇》',
+      translationCn:
+        '道教劝善经典,强调因果自招。纯阳观专题讲座核心,中国古代商道伦理基石。',
+      relatedSiteName: '纯阳观',
+      day: 1,
+    },
+  ];
+
   // ── 8. upsert Route ──
   console.log('\n[3] upsert route...');
   const routeData = {
@@ -475,6 +556,8 @@ async function main() {
     bookCount: 9999, // 置顶首页精选 (按 bookCount DESC 排序)
     coverGallery,
     priceMode: 'CUSTOM', // 团队定制 (AA_SHARE / CUSTOM / FREE)
+    relatedPatriarchs, // 精准绑定:慧能/文偃/吕洞宾/赵公明
+    relatedTeachings, // 4 部经文节录,按 day 绑站
     religionId: religionMap['buddhism'],
   };
 

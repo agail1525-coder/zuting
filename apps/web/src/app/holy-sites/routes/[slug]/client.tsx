@@ -15,8 +15,13 @@ import RouteMap from "@/components/RouteMap";
 import ReviewSection from "@/components/ReviewSection";
 import QASection from "@/components/QASection";
 import MediaTour from "@/components/MediaTour";
-import type { Route, ItineraryDay, Patriarch, Teaching } from "@/lib/api";
-import { fetchRoutes, fetchPatriarchs, fetchTeachings } from "@/lib/api";
+import type {
+  Route,
+  ItineraryDay,
+  RouteRelatedPatriarch,
+  RouteRelatedTeaching,
+} from "@/lib/api";
+import { fetchRoutes } from "@/lib/api";
 
 /* ─── static maps ─── */
 
@@ -129,70 +134,148 @@ function FAQAccordion() {
   );
 }
 
-/* ─── RelatedCulture sub-component ─── */
+/* ─── RouteCulture sub-component — 路线级精准绑定,不再拉全站 religion 聚合 ─── */
 
-function RelatedCulture({ religionId }: { religionId: string | null }) {
+function RouteCulture({
+  patriarchs,
+  teachings,
+}: {
+  patriarchs?: RouteRelatedPatriarch[] | null;
+  teachings?: RouteRelatedTeaching[] | null;
+}) {
   const { t } = useTranslation();
-  const [patriarchs, setPatriarchs] = useState<Patriarch[]>([]);
-  const [teachings, setTeachings] = useState<Teaching[]>([]);
+  const hasPatriarchs = Array.isArray(patriarchs) && patriarchs.length > 0;
+  const hasTeachings = Array.isArray(teachings) && teachings.length > 0;
+  if (!hasPatriarchs && !hasTeachings) return null;
 
-  useEffect(() => {
-    if (!religionId) return;
-    fetchPatriarchs(religionId)
-      .then((items) => setPatriarchs(items.slice(0, 3)))
-      .catch(() => {});
-    fetchTeachings(religionId)
-      .then((items) => setTeachings(items.slice(0, 3)))
-      .catch(() => {});
-  }, [religionId]);
-
-  if (!religionId || (patriarchs.length === 0 && teachings.length === 0)) return null;
+  // 合并按 day 分组
+  const days = new Set<number>();
+  if (hasPatriarchs) patriarchs!.forEach((p) => days.add(p.day));
+  if (hasTeachings) teachings!.forEach((tt) => days.add(tt.day));
+  const sortedDays = Array.from(days).sort((a, b) => a - b);
 
   return (
-    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
-      <h2 className="text-xl font-bold text-gray-900 mb-5">{t("routeDetail.relatedCulture")}</h2>
-      <div className="grid md:grid-cols-2 gap-6">
-        {patriarchs.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-3">{t("routeDetail.relatedPatriarchs")}</h3>
-            <div className="space-y-3">
-              {patriarchs.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/patriarchs/${p.id}`}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 text-lg border border-amber-200">
-                    🧘
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-5">
+      <h2 className="text-xl font-bold text-gray-900 mb-1">
+        {t("routeDetail.relatedCulture")}
+      </h2>
+      <p className="text-xs text-gray-500 mb-5">
+        按行程日程呈现本路线涉及的祖师与经典
+      </p>
+
+      <div className="space-y-8">
+        {sortedDays.map((day) => {
+          const dayPatriarchs = (patriarchs || []).filter((p) => p.day === day);
+          const dayTeachings = (teachings || []).filter((tt) => tt.day === day);
+          return (
+            <section key={day}>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-xs font-semibold">
+                  Day {day}
+                </span>
+                <span className="h-px flex-1 bg-gray-100" />
+              </div>
+
+              {dayPatriarchs.length > 0 && (
+                <div className="mb-5">
+                  <h3 className="text-sm font-semibold text-gray-500 mb-3">
+                    {t("routeDetail.relatedPatriarchs")}
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {dayPatriarchs.map((p, i) => (
+                      <article
+                        key={`${day}-p-${i}`}
+                        className="p-4 rounded-lg border border-gray-200 bg-gradient-to-br from-[#fffdf7] to-white hover:border-[#f2c879] transition-colors"
+                      >
+                        <div className="flex items-start gap-3">
+                          {p.imageUrl ? (
+                            <OptimizedImage
+                              src={p.imageUrl}
+                              alt={p.name}
+                              width={56}
+                              height={56}
+                              className="w-14 h-14 rounded-full object-cover border border-[#f2c879] flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#f2c879] to-[#8b6914] flex items-center justify-center text-white text-xl font-semibold flex-shrink-0 shadow-sm">
+                              {p.name.slice(0, 1)}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <p className="font-bold text-gray-900 text-base">{p.name}</p>
+                              {p.nameEn && (
+                                <p className="text-xs text-gray-400">{p.nameEn}</p>
+                              )}
+                            </div>
+                            {p.dynasty && (
+                              <p className="text-xs text-[#8b6914] mt-0.5">{p.dynasty}</p>
+                            )}
+                            {p.title && (
+                              <p className="text-[13px] text-gray-600 mt-1 font-medium">
+                                {p.title}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-gray-600 leading-relaxed mt-3 whitespace-pre-line">
+                          {p.bio}
+                        </p>
+
+                        {p.quote && (
+                          <blockquote className="mt-3 px-3 py-2 border-l-2 border-[#8b6914] bg-[#fff7e6] text-xs text-[#5a4708] italic">
+                            "{p.quote}"
+                          </blockquote>
+                        )}
+
+                        <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-2 text-[11px] text-gray-500">
+                          <span className="inline-block px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+                            📍 {p.siteName}
+                          </span>
+                        </div>
+                      </article>
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm">{p.name}</p>
-                    <p className="text-xs text-gray-500">{p.nameEn}</p>
+                </div>
+              )}
+
+              {dayTeachings.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-500 mb-3">
+                    {t("routeDetail.relatedTeachings")}
+                  </h3>
+                  <div className="space-y-3">
+                    {dayTeachings.map((tt, i) => (
+                      <article
+                        key={`${day}-t-${i}`}
+                        className="p-4 rounded-lg bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+                          <p className="text-sm font-semibold text-gray-800">{tt.name}</p>
+                          <span className="inline-block px-2 py-0.5 rounded bg-white border border-gray-200 text-[11px] text-gray-500">
+                            📍 {tt.relatedSiteName}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-800 leading-relaxed font-medium mb-2">
+                          {tt.originalText}
+                        </p>
+                        {tt.translationCn && (
+                          <p className="text-xs text-gray-600 leading-relaxed">
+                            {tt.translationCn}
+                          </p>
+                        )}
+                        {tt.sourceText && (
+                          <p className="text-xs text-gray-400 mt-2">— {tt.sourceText}</p>
+                        )}
+                      </article>
+                    ))}
                   </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-        {teachings.length > 0 && (
-          <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-3">{t("routeDetail.relatedTeachings")}</h3>
-            <div className="space-y-3">
-              {teachings.map((t) => (
-                <Link
-                  key={t.id}
-                  href={`/teachings/${t.id}`}
-                  className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200"
-                >
-                  <p className="text-sm text-gray-800 font-medium line-clamp-2">{t.originalText}</p>
-                  {t.sourceText && (
-                    <p className="text-xs text-gray-400 mt-1">— {t.sourceText}</p>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+                </div>
+              )}
+            </section>
+          );
+        })}
       </div>
     </div>
   );
@@ -1228,8 +1311,11 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             </div>
           )}
 
-          {/* ========== Related Culture (Patriarchs & Teachings) ========== */}
-          <RelatedCulture religionId={route.religionId} />
+          {/* ========== Related Culture (路线级精准绑定,按 Day 分组) ========== */}
+          <RouteCulture
+            patriarchs={route.relatedPatriarchs}
+            teachings={route.relatedTeachings}
+          />
 
           {/* ========== Pilgrim Journals ========== */}
           <div className="mt-6 bg-gradient-to-r from-[#3264ff]/5 to-blue-50 rounded-lg p-4 border border-[#3264ff]/10">

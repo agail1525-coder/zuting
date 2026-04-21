@@ -164,6 +164,95 @@ export default function RouteDetail() {
         </div>
       )}
 
+      {/* Related Culture — 路线级精准绑定,按 Day 分组 */}
+      {((route.relatedPatriarchs && route.relatedPatriarchs.length > 0) ||
+        (route.relatedTeachings && route.relatedTeachings.length > 0)) && (
+        <div className="px-4 mt-6">
+          <h2 className="text-sm font-bold text-gray-900 mb-3">
+            {t("routeDetail.relatedCulture")}
+          </h2>
+          {Array.from(
+            new Set<number>([
+              ...(route.relatedPatriarchs || []).map((p) => p.day),
+              ...(route.relatedTeachings || []).map((tt) => tt.day),
+            ]),
+          )
+            .sort((a, b) => a - b)
+            .map((day) => {
+              const dayP = (route.relatedPatriarchs || []).filter((p) => p.day === day);
+              const dayT = (route.relatedTeachings || []).filter((tt) => tt.day === day);
+              return (
+                <div key={day} className="mb-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-[10px] font-semibold">
+                      Day {day}
+                    </span>
+                    <span className="h-px flex-1 bg-gray-200" />
+                  </div>
+                  <div className="space-y-2">
+                    {dayP.map((p, i) => (
+                      <div
+                        key={`p-${i}`}
+                        className="bg-white rounded-lg p-3 border border-amber-100"
+                      >
+                        <div className="flex items-start gap-2">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-200 to-amber-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                            {p.name.slice(0, 1)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-gray-900">
+                              {p.name}{" "}
+                              {p.dynasty && (
+                                <span className="text-[10px] text-amber-700 font-normal">
+                                  · {p.dynasty}
+                                </span>
+                              )}
+                            </p>
+                            {p.title && (
+                              <p className="text-[11px] text-gray-600 mt-0.5">{p.title}</p>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-gray-600 leading-relaxed mt-2 whitespace-pre-line">
+                          {p.bio}
+                        </p>
+                        {p.quote && (
+                          <p className="mt-2 px-2 py-1.5 border-l-2 border-amber-600 bg-amber-50 text-[11px] text-amber-900 italic">
+                            "{p.quote}"
+                          </p>
+                        )}
+                        <p className="mt-2 text-[10px] text-gray-400">📍 {p.siteName}</p>
+                      </div>
+                    ))}
+                    {dayT.map((tt, i) => (
+                      <div
+                        key={`t-${i}`}
+                        className="bg-gray-50 rounded-lg p-3 border border-gray-200"
+                      >
+                        <p className="text-xs font-semibold text-gray-800 mb-1">{tt.name}</p>
+                        <p className="text-xs text-gray-800 leading-relaxed font-medium">
+                          {tt.originalText}
+                        </p>
+                        {tt.translationCn && (
+                          <p className="text-[11px] text-gray-600 leading-relaxed mt-1">
+                            {tt.translationCn}
+                          </p>
+                        )}
+                        <div className="flex items-center justify-between mt-2">
+                          {tt.sourceText && (
+                            <p className="text-[10px] text-gray-400">— {tt.sourceText}</p>
+                          )}
+                          <p className="text-[10px] text-gray-400">📍 {tt.relatedSiteName}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      )}
+
       {/* Sticky bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3 flex items-center justify-between z-50">
         <div>

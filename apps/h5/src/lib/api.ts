@@ -1223,6 +1223,8 @@ export interface Route {
   sites?: RouteSiteWithDetail[];
   coverGallery?: RouteCoverGalleryItem[] | null;
   priceMode?: 'AA_SHARE' | 'CUSTOM' | 'FREE' | null;
+  relatedPatriarchs?: RouteRelatedPatriarch[] | null;
+  relatedTeachings?: RouteRelatedTeaching[] | null;
   _count?: { bookings: number };
   createdAt: string;
   updatedAt: string;
@@ -1235,6 +1237,28 @@ export interface RouteCoverGalleryItem {
   siteName?: string;
   day?: number;
   order?: number;
+}
+
+export interface RouteRelatedPatriarch {
+  name: string;
+  nameEn?: string;
+  dynasty?: string;
+  title?: string;
+  bio: string;
+  siteName: string;
+  day: number;
+  quote?: string;
+  imageUrl?: string;
+  slug?: string;
+}
+
+export interface RouteRelatedTeaching {
+  name: string;
+  originalText: string;
+  sourceText?: string;
+  translationCn?: string;
+  relatedSiteName: string;
+  day: number;
 }
 
 export interface ItineraryDay {

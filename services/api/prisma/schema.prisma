@@ -657,6 +657,12 @@ model Route {
   // 费用模式: AA_SHARE(AA制) | CUSTOM(团队定制) | FREE(免费参与) | null=按 priceFrom 展示
   priceMode    String?
 
+  // 路线级相关文化 (JSON 字段, 精准绑定本路线祖师/祖训, 不依赖 religion 全局聚合)
+  // relatedPatriarchs: [{ name, nameEn?, dynasty?, title?, bio, siteName, day, quote?, imageUrl?, slug? }]
+  // relatedTeachings:  [{ name, originalText, sourceText?, translationCn?, relatedSiteName, day }]
+  relatedPatriarchs Json?
+  relatedTeachings  Json?
+
   religionId  String?
   religion    Religion?       @relation(fields: [religionId], references: [id])
   sites       RouteSite[]
