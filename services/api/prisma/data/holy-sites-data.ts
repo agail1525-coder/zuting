@@ -32,6 +32,9 @@ export const holySites: HolySiteData[] = [
   { name: '白马寺', nameEn: 'White Horse Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 34.722, longitude: 112.595, utcOffset: 8, description: '佛法东传，肇始于此 —— 中国佛教文化祖庭\n中土第一古刹，汉传佛教文化发源地' },
   { name: '寒山寺', nameEn: 'Hanshan Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 31.317, longitude: 120.566, utcOffset: 8, description: '姑苏城外寒山寺，夜半钟声到客船 —— 张继《枫桥夜泊》\n寒山一钟，唤醒千年迷梦' },
   { name: '南华禅寺', nameEn: 'Nanhua Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 24.785, longitude: 113.665, utcOffset: 8, description: '菩提本无树，明镜亦非台 —— 六祖慧能\n本性清净，不立一法' },
+  { name: '光孝寺', nameEn: 'Guangxiao Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 23.130, longitude: 113.247, utcOffset: 8, description: '未有羊城，先有光孝 —— 岭南古谚\n六祖慧能于菩提树下落发受戒，禅宗南宗发源首刹' },
+  { name: '云门山大觉禅寺', nameEn: 'Yunmen Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 24.718, longitude: 113.413, utcOffset: 8, description: '日日是好日 —— 云门文偃禅师\n云门宗发祥地，一字禅与截流直指之风传天下' },
+  { name: '国恩寺', nameEn: 'Guoen Temple', religionSlug: 'buddhism', country: '中国', soundEffect: 'temple_bell', latitude: 22.693, longitude: 112.231, utcOffset: 8, description: '诸佛妙理，非关文字 —— 《六祖坛经》\n六祖慧能诞生与圆寂之地，《坛经》诵经祖庭' },
   { name: '塔普伦寺', nameEn: 'Ta Prohm', religionSlug: 'buddhism', country: '柬埔寨', soundEffect: 'singing_bowl', latitude: 13.435, longitude: 103.889, utcOffset: 7, description: '诸行无常，是生灭法 —— 《大般涅槃经》\n树根缠石，正示万法无常之相' },
   { name: '玉佛寺', nameEn: 'Wat Phra Kaew', religionSlug: 'buddhism', country: '泰国', soundEffect: 'singing_bowl', latitude: 13.751, longitude: 100.493, utcOffset: 7, description: '心是一切善法之根本 —— 《本生经》\n万善由心生，护心如护宝' },
   { name: '佛牙寺', nameEn: 'Temple of the Tooth', religionSlug: 'buddhism', country: '斯里兰卡', soundEffect: 'singing_bowl', latitude: 7.294, longitude: 80.641, utcOffset: 5.5, description: '佛在心中，不在远求 —— 南传佛教文化\n佛性自具，不假外求' },
@@ -73,6 +76,7 @@ export const holySites: HolySiteData[] = [
   { name: '楼观台', nameEn: 'Louguantai', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 34.054, longitude: 108.343, utcOffset: 8, description: '老子说经台，道德五千言 —— 楼观传说\n紫气东来，道德开宗' },
   { name: '王屋山', nameEn: 'Mount Wangwu', religionSlug: 'taoism', country: '中国', soundEffect: 'bamboo_flute', latitude: 35.198, longitude: 112.319, utcOffset: 8, description: '愚公移山，毋意必固我 —— 《列子·汤问》\n至诚不息，则金石为开' },
   { name: '罗浮山', nameEn: 'Mount Luofu', religionSlug: 'taoism', country: '中国', soundEffect: 'wind_chimes', latitude: 23.299, longitude: 114.063, utcOffset: 8, description: '葛洪炼丹处，岭南第一山 —— 抱朴子传\n外修内炼，内外兼修' },
+  { name: '纯阳观', nameEn: 'Chunyang Taoist Temple', religionSlug: 'taoism', country: '中国', soundEffect: 'guqin_pluck', latitude: 23.135, longitude: 113.267, utcOffset: 8, description: '欲人不死，莫若自修 —— 吕洞宾祖师\n岭南全真祖庭，吕祖道场，内奉赵公明元帅神坛' },
 
   // ═══════════════════════ 基督文化 Christianity (35) ═══════════════════════
   { name: '梵蒂冈圣彼得大教堂', nameEn: "St. Peter's Basilica", religionSlug: 'christianity', country: '梵蒂冈', soundEffect: 'pipe_organ', latitude: 41.902, longitude: 12.454, utcOffset: 1, description: 'God is love, and whoever abides in love abides in God —— 1 John 4:16\n神就是爱，住在爱里面的就是住在神里面' },
