@@ -118,23 +118,48 @@ def main():
         print("  ✓ seed 完成")
 
     print("\n=== 3. Redis 清缓存 ===")
-    # Get Redis container + password
+    # Get Redis container + password (REDIS_PASSWORD 单独字段 或 从 REDIS_URL 解析)
     redis_container = run(ssh, 'docker ps --format "{{.Names}}" | grep -i redis | head -1', show=False).strip()
     redis_pw = run(
         ssh,
         f"grep -E '^REDIS_PASSWORD' {REMOTE_API}/.env | cut -d= -f2- | tr -d '\"' | tr -d \"'\"",
         show=False,
     ).strip()
+    if not redis_pw:
+        # fallback: 从 REDIS_URL (redis://:pw@host:port/db) 解析密码
+        redis_pw = run(
+            ssh,
+            f"grep -E '^REDIS_URL' {REMOTE_API}/.env "
+            f"| sed -E 's|.*redis://[^:]*:([^@]+)@.*|\\1|' | tr -d '\"' | tr -d \"'\"",
+            show=False,
+        ).strip()
+        # 避免把整行 REDIS_URL=... 当密码
+        if redis_pw.startswith('REDIS_URL'):
+            redis_pw = ''
+    if not redis_pw:
+        # 最后兜底:从容器 env 读
+        redis_pw = run(
+            ssh,
+            f"docker inspect {redis_container} --format '{{{{range .Config.Env}}}}{{{{println .}}}}{{{{end}}}}' "
+            f"| grep -E '(REDIS_PASSWORD|REQUIREPASS)' | head -1 | cut -d= -f2-",
+            show=False,
+        ).strip()
     print(f"  container={redis_container}, pw_set={bool(redis_pw)}")
     if redis_container:
-        auth = f"-a {redis_pw}" if redis_pw else ""
-        for pat in ["route:*", "holy-site:*", "religion:*"]:
+        auth = f"-a '{redis_pw}' --no-auth-warning" if redis_pw else ""
+        for pat in ["route:*", "holy-site:*", "religion:*", "next:*", "ssr:*"]:
             cmd = (
-                f"docker exec {redis_container} redis-cli {auth} --scan --pattern '{pat}' "
-                f"| xargs -r -n1 docker exec -i {redis_container} redis-cli {auth} DEL 2>&1 | tail -5"
+                f"docker exec {redis_container} sh -c \"redis-cli {auth} --scan --pattern '{pat}' "
+                f"| xargs -r -n1 redis-cli {auth} DEL\" 2>&1 | tail -5"
             )
             print(f"  → flush {pat}")
             run(ssh, cmd, t=60)
+
+    print("\n=== 3b. 重启 zuting-web (清 Next.js 页缓存 + ISR revalidate) ===")
+    run(ssh, 'systemctl restart zuting-web 2>&1 | head -3', show=True)
+    import time as _t
+    _t.sleep(6)
+    run(ssh, 'systemctl is-active zuting-web 2>&1', show=True)
 
     print("\n=== 4. 验证 /api/routes/featured (置顶) ===")
     run(
@@ -151,23 +176,36 @@ def main():
     )
 
     print("\n=== 5. 验证 /api/routes/lingnan-dao-chan-2026-may (详情) ===")
+    # 避免 for 循环进入 one-liner,改用 map 生成
+    verify_script = (
+        "import sys,json\n"
+        "d=json.load(sys.stdin)\n"
+        "print('slug:', d.get('slug'))\n"
+        "print('title:', d.get('title'))\n"
+        "print('priceFrom:', d.get('priceFrom'))\n"
+        "print('duration:', d.get('duration'), 'days,', d.get('nights'), 'nights')\n"
+        "print('highlights:', len(d.get('highlights') or []), 'items')\n"
+        "print('included:', len(d.get('included') or []), 'items')\n"
+        "print('tips:', len(d.get('tips') or []), 'items')\n"
+        "print('images:', len(d.get('images') or []), 'pcs')\n"
+        "it=d.get('itinerary') or []\n"
+        "print('itinerary days:', len(it))\n"
+        "for day in it:\n"
+        "    acts=day.get('activities') or []\n"
+        "    print('  · Day', day.get('day'), '-', day.get('title'), '(', len(acts), 'activities)')\n"
+        "    print('    accommodation:', day.get('accommodation'))\n"
+        "sites=d.get('sites') or []\n"
+        "print('sites bound:', len(sites))\n"
+        "for s in sites:\n"
+        "    print('  ·', 'day'+str(s.get('day')), 'order'+str(s.get('order')), (s.get('site') or {}).get('name'))\n"
+    )
+    # 把脚本写到远端再运行
+    with sftp.open('/tmp/verify_route.py', 'w') as fh:
+        fh.write(verify_script)
     run(
         ssh,
         "curl -sk --max-time 10 'http://localhost:3002/api/routes/lingnan-dao-chan-2026-may' "
-        "| python3 -c \"import sys,json; d=json.load(sys.stdin); "
-        "print('slug:', d.get('slug')); "
-        "print('title:', d.get('title')); "
-        "print('priceFrom:', d.get('priceFrom')); "
-        "print('duration:', d.get('duration'), 'days,', d.get('nights'), 'nights'); "
-        "print('highlights:', len(d.get('highlights') or []), 'items'); "
-        "print('included:', len(d.get('included') or []), 'items'); "
-        "print('tips:', len(d.get('tips') or []), 'items'); "
-        "print('images:', len(d.get('images') or []), 'pcs'); "
-        "it=d.get('itinerary') or []; "
-        "print('itinerary days:', len(it)); "
-        "sites=d.get('sites') or []; "
-        "print('sites bound:', len(sites)); "
-        "for s in sites: print('  ·', s.get('day'), s.get('order'), (s.get('site') or {}).get('name'))\"",
+        "| python3 /tmp/verify_route.py",
         t=30,
     )
 
