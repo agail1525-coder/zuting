@@ -1,6 +1,6 @@
-# 爬虫++ (Web Crawler Engine) v1.2
+# 爬虫++ (Web Crawler Engine) v1.3
 
-> **代号**: CW | **版本**: v1.2 | **创建**: 2026-04-13 | **更新**: 2026-04-14 (+CW-YT 挂接详情页)
+> **代号**: CW | **版本**: v1.3 | **创建**: 2026-04-13 | **更新**: 2026-04-21 (+CW-IMG 图搜反爬绕过)
 > **定位**: 24/7 全球旅行数据采集引擎 — 5×6 立体矩阵 × 多适配器 × 自学习质量守门
 > **愿景**: 佳绩之旅数据不靠人堆,靠自动化持续采集真实内容喂养 503 圣地 / 12 文化 / 运营全链路
 > **触发**: `爬虫++` / `爬虫++ {sourceKey}` / `爬虫++ 新源 {domain}/{channel}` / `爬虫++ 诊断` / `爬虫++ 挂接`
@@ -62,6 +62,7 @@ triggers:
 | 反爬极强 (Facebook/Instagram/抖音/TikTok) | ❌ 不上,损耗大 |
 | 需要登录 / 付费 API 无许可证 (Google Places 未授权) | ❌ |
 | 圣地真实图本地化 (tp-images-localize) | ✅ 走 GFW 代理下载到 /static/holy-sites |
+| 百度/Bing/Sogou 图搜应急补位 (wiki 无对口资源时) | ⚠️ cookie-jar 预热 + 强限速,仅补具象标签(宝塔/古树等),主图禁用 |
 
 **5 域** (targetDomain): HOLY_SITE / MERCHANT / PRICE / GUIDE / NEWS
 **6 渠道** (channel): OFFICIAL / WIKI / OTA / MAP / UGC / MEDIA
@@ -115,6 +116,45 @@ const OUTBOUND_PROXY_DOMAINS = [
 ### 3.7 单 run 额度
 - `crawler.service.ts` 硬上限: 每次 run 最多入库 500 items (早期 50 太紧,被大频道吃满后religion 频道进不去)
 - QG 过滤噪音,大值安全
+
+### 3.8 图搜反爬绕过 (CW-IMG v1.3 新增)
+Wikipedia/Commons 对具象标签(毘卢宝塔、六祖手植荔枝、某殿某牌坊)常无对口资源,此时走百度/Bing/Sogou 图搜补位。**风控极敏感,必须预热 cookie-jar**。
+
+**百度 acjson 反爬机制**
+- 裸请求 `image.baidu.com/search/acjson` 首次 200 OK (含 `data[]`),第二次起返回 82B 的 `{"antiFlag":1,"message":"Forbid spider access"}`
+- 触发条件: 无 BAIDUID cookie + 短时间(< 30s)连续两次,或 UA 里含 "python-requests" 等爬虫指纹
+
+**绕过 SOP (已验证)**
+```bash
+UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36"
+JAR=tmp/baidu.cookies
+# Step1 首页预热 → 拿 BAIDUID
+curl -sS -L -A "$UA" -c "$JAR" "https://image.baidu.com/" -o /dev/null
+sleep 2
+# Step2 HTML 搜索页 (带 word) → 补完 session
+curl -sS -L -A "$UA" -b "$JAR" -c "$JAR" \
+  -H "Referer: https://image.baidu.com/" \
+  "https://image.baidu.com/search/index?tn=baiduimage&word=${ENCODED_Q}" -o /dev/null
+sleep 2
+# Step3 acjson 查询 — 必带 jar + X-Requested-With + Referer 指向 search/index
+curl -sS -L -A "$UA" -b "$JAR" -c "$JAR" \
+  -H "Accept: application/json, text/plain, */*" \
+  -H "X-Requested-With: XMLHttpRequest" \
+  -H "Referer: https://image.baidu.com/search/index?tn=baiduimage&word=${ENCODED_Q}" \
+  "https://image.baidu.com/search/acjson?tn=resultjson_com&logid=1&ipn=rj&ct=201326592&queryWord=${ENCODED_Q}&word=${ENCODED_Q}&pn=0&rn=20" \
+  -o tmp/baidu-q1.json
+# 多个查询之间至少 sleep 3
+```
+
+**URL 选择**
+- 优先 `item.thumbURL` (500px 压缩版,稳定托管在 `img*.baidu.com`)
+- `item.objURL` 常指向第三方 (抖音/大众点评/bcebos) 带防盗链/鉴权,下载易 403
+- 下载时 `-H "Referer: https://image.baidu.com/"`
+
+**内容合规警戒线**
+- 百度 CDN 图非公有领域,**仅应急补位**,不铺开
+- 用量必须在 memory:project_wiki_images_100.md "已破例记录" 追加一条
+- 长期仍替换成 Wikimedia/Commons/自拍素材
 
 ---
 
@@ -215,6 +255,14 @@ Step 10 保存 memory:project_crawler_{name}.md (Why+How to apply)
 - **CW-DEPLOY03** `NODE_NO_COMPILE_CACHE=1` 必带 (Node v20 compile cache 坏 Prisma enum)
 - **CW-DEPLOY04** seed-localize-images 已知卡顿,deploy 时可直接 kill 放行
 
+### 图搜反爬 (CW-IMG v1.3 新增)
+- **CW-IMG01** 百度/Bing/Sogou 图搜必须先 warm cookie jar(首页 → 搜索 HTML → acjson 三步,间隔 ≥2s),裸请求第二次起必 antiFlag
+- **CW-IMG02** 图搜仅用于 wiki/Commons 无对口资源的具象标签兜底(塔/树/牌坊/殿名),**圣地主图/封面禁用**
+- **CW-IMG03** 每次图搜补位必须在 memory:project_wiki_images_100.md "已破例记录" 追加一条(站点名/文件 hash/原因)
+- **CW-IMG04** 下载用 `item.thumbURL` (500px 稳定),不用 objURL (第三方防盗链)
+- **CW-IMG05** 下载时必须 `-H "Referer: https://image.baidu.com/"` 防 hotlink 检查
+- **CW-IMG06** 同批多关键词查询间隔 ≥3s,单 session 不超 8 次 acjson 调用
+
 ---
 
 ## §9 联动
@@ -249,6 +297,8 @@ Step 10 保存 memory:project_crawler_{name}.md (Why+How to apply)
 | 2026-04-14 | 首轮 50 items 全是 NatGeo,religion 频道被挤出 | 单 run 上限 50 | CW-DISP03 上限改 500 |
 | 2026-04-14 | YouTube items 挂不上详情页 | dispatcher 只认 holySite/merchant | CW-DISP01~02 智能匹配 |
 | 2026-04-14 | PUSH++ 部署卡 seed-localize-images 16min | 已知网络卡顿 | CW-DEPLOY04 直接 kill |
+| 2026-04-21 | 国恩寺画廊 wiki 侧无毘卢宝塔/荔枝树对口资源 | Commons 具象标签覆盖稀 | CW-IMG01~06 百度图搜 cookie-jar 绕反爬补位 |
+| 2026-04-21 | 裸 curl baidu acjson 第二次起 82B antiFlag:1 | 缺 BAIDUID session + 连发无间隔 | 三步预热 jar + ≥2s 间隔 |
 
 ---
 
