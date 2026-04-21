@@ -1,0 +1,41 @@
+{
+  "光孝寺": [
+    "/static/holy-sites/0f20e856abc5.jpg",
+    "/static/holy-sites/7020a46044f5.jpg",
+    "/static/holy-sites/065faf1be537.jpg",
+    "/static/holy-sites/96f1c1c0a8b4.jpg",
+    "/static/holy-sites/8eb03dfd38fb.jpg",
+    "/static/holy-sites/2b0c9b7e1fd4.jpg",
+    "/static/holy-sites/fa148855c661.jpg",
+    "/static/holy-sites/943b13b6b9a5.jpg",
+    "/static/holy-sites/c04adca1afc1.jpg",
+    "/static/holy-sites/622abec2a3ae.jpg"
+  ],
+  "云门山大觉禅寺": [
+    "/static/holy-sites/bdd1fa27a7a2.jpg",
+    "/static/holy-sites/4dff2e81a73c.jpg",
+    "/static/holy-sites/f16bd883b64b.jpg",
+    "/static/holy-sites/e1536b8acbb5.jpg",
+    "/static/holy-sites/ce2726175246.jpg"
+  ],
+  "国恩寺": [
+    "/static/holy-sites/846672f3e107.jpg"
+  ],
+  "纯阳观": [
+    "/static/holy-sites/713875adf673.jpg",
+    "/static/holy-sites/8735c7d3694d.jpg",
+    "/static/holy-sites/95b3b82e8067.jpg",
+    "/static/holy-sites/e6abf0dae8b8.jpg",
+    "/static/holy-sites/858820b650b8.jpg",
+    "/static/holy-sites/227bced7bc4b.jpg"
+  ],
+  "南华禅寺": [
+    "/static/holy-sites/3cbecaa851dd.jpg",
+    "/static/holy-sites/8c143b4da96c.jpg",
+    "/static/holy-sites/4dafead833e9.jpg",
+    "/static/holy-sites/9efbba767eb2.jpg",
+    "/static/holy-sites/8ae55424bc75.jpg",
+    "/static/holy-sites/ba58ef77f32d.jpg",
+    "/static/holy-sites/e65b62090ebf.jpg"
+  ]
+}

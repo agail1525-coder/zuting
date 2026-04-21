@@ -22,10 +22,19 @@ PWD = "y1234567890."
 LOCAL_API = r"E:\ZUTING\services\api"
 REMOTE_API = "/opt/zuting/api"
 
+# Web 端更新 (RouteMapInner 升级 + page rebuild)
+LOCAL_WEB = r"E:\ZUTING\apps\web"
+REMOTE_WEB = "/opt/zuting/web"
+
 FILES = [
     ("prisma/data/holy-sites-data.ts", "prisma/data/holy-sites-data.ts"),
+    ("prisma/data/wiki-images-lingnan.json", "prisma/data/wiki-images-lingnan.json"),
     ("prisma/seed-lingnan-dao-chan-route.ts", "prisma/seed-lingnan-dao-chan-route.ts"),
 ]
+
+# 新下的 wiki 图,从本地 holy-sites-images/ 上传到服务器 /opt/zuting/api/prisma/data/holy-sites-images/
+# (后续 finalize-static 会复制到 /var/www/zuting-static/holy-sites/)
+IMAGE_FILES: list[str] = []  # 由 main() 从 wiki-images-lingnan.json 读取填充
 
 
 def run(ssh, cmd, t=120, show=True):
@@ -42,6 +51,7 @@ def run(ssh, cmd, t=120, show=True):
 
 
 def main():
+    import json as _json
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(HOST, username=USER, password=PWD, timeout=30)
@@ -51,12 +61,50 @@ def main():
     for local_rel, remote_rel in FILES:
         local = os.path.join(LOCAL_API, local_rel.replace("/", os.sep))
         remote = f"{REMOTE_API}/{remote_rel}"
-        # Ensure parent dir exists
         parent = os.path.dirname(remote)
         run(ssh, f"mkdir -p {parent}", show=False)
         size = os.path.getsize(local)
         sftp.put(local, remote)
         print(f"  ✓ {remote}  ({size/1024:.1f} KB)")
+
+    print("\n=== 1b. 上传 4 新圣地 Wiki 本地化图片到 /opt/zuting/static/holy-sites/ ===")
+    # 读取 wiki-images-lingnan.json 提取所有 /static/holy-sites/ 文件名
+    wiki_json_path = os.path.join(
+        LOCAL_API, "prisma", "data", "wiki-images-lingnan.json"
+    )
+    local_img_dir = os.path.join(LOCAL_API, "prisma", "data", "holy-sites-images")
+    remote_static = "/opt/zuting/static/holy-sites"
+    run(ssh, f"mkdir -p {remote_static}", show=False)
+    uploaded = 0
+    skipped = 0
+    if os.path.exists(wiki_json_path):
+        wiki = _json.loads(open(wiki_json_path, "r", encoding="utf-8").read())
+        all_files = []
+        for _site, urls in wiki.items():
+            for u in urls:
+                if isinstance(u, str) and u.startswith("/static/holy-sites/"):
+                    all_files.append(u.rsplit("/", 1)[-1])
+        for fname in sorted(set(all_files)):
+            local_path = os.path.join(local_img_dir, fname)
+            if not os.path.exists(local_path):
+                print(f"  ⚠ missing local: {fname}")
+                continue
+            remote_path = f"{remote_static}/{fname}"
+            # 判断是否已存在 (按大小粗略)
+            try:
+                stat = sftp.stat(remote_path)
+                if stat.st_size > 1024 and stat.st_size == os.path.getsize(local_path):
+                    skipped += 1
+                    continue
+            except FileNotFoundError:
+                pass
+            sftp.put(local_path, remote_path)
+            uploaded += 1
+            if uploaded % 5 == 0:
+                print(f"  … uploaded {uploaded}")
+        print(f"  ✓ images uploaded={uploaded}, skipped={skipped}")
+    else:
+        print(f"  ⚠ wiki-images-lingnan.json not found at {wiki_json_path}")
 
     print("\n=== 2. 跑 seed (NODE_NO_COMPILE_CACHE=1) ===")
     out = run(

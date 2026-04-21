@@ -1,12 +1,12 @@
 """
 Re-deploy Next.js Web to 小轻 with correct monorepo directory structure.
 
-Target structure on server:
-/opt/zuting/web/                    ← monorepo root (outputFileTracingRoot)
+Target structure on server (systemd zuting-web.service expects this exact layout):
+/opt/zuting/web/standalone/         ← monorepo root (outputFileTracingRoot)
 ├── node_modules/                   ← shared deps from standalone trace
 ├── package.json
-└── apps/web/                       ← app directory
-    ├── server.js                   ← entry point
+└── apps/web/                       ← app directory (systemd WorkingDirectory)
+    ├── server.js                   ← ExecStart entry
     ├── package.json
     ├── node_modules/               ← app-specific deps
     └── .next/
@@ -14,6 +14,8 @@ Target structure on server:
         ├── server/
         ├── static/
         └── ...
+
+systemd-managed: use `systemctl restart zuting-web` (NOT nohup + pkill).
 """
 import paramiko
 import json
@@ -92,8 +94,10 @@ print(f"  ✓ public packed ({size3}KB)")
 
 # Step 2: Upload
 print("\n=== 2. 上传到服务器 ===")
-run('pkill -9 -f "next-server" 2>/dev/null; pkill -9 -f "node /opt/zuting/web" 2>/dev/null', show=False)
-run('rm -rf /opt/zuting/web && mkdir -p /opt/zuting/web', show=False)
+# systemd-managed: stop the unit instead of pkill
+run('systemctl stop zuting-web 2>&1 | head -3', show=False)
+# Reset standalone/ subtree (systemd's WorkingDirectory root), keep parent so unit file & timers untouched
+run('rm -rf /opt/zuting/web/standalone && mkdir -p /opt/zuting/web/standalone', show=False)
 
 sftp.put(tar_path, '/opt/zuting/web-standalone.tar.gz')
 print(f"  ✓ Standalone ({size1}KB)")
@@ -102,27 +106,27 @@ print(f"  ✓ .next build ({size2}KB)")
 sftp.put(tar_public_path, '/opt/zuting/web-public.tar.gz')
 print(f"  ✓ public ({size3}KB)")
 
-# Step 3: Extract — standalone goes to /opt/zuting/web/ directly
+# Step 3: Extract — standalone goes to /opt/zuting/web/standalone/ (systemd's expected root)
 print("\n=== 3. 解压 ===")
-run('cd /opt/zuting/web && tar xzf /opt/zuting/web-standalone.tar.gz', show=False)
-# .next build output goes to apps/web/.next/
-run('mkdir -p /opt/zuting/web/apps/web/.next && cd /opt/zuting/web/apps/web/.next && tar xzf /opt/zuting/web-next.tar.gz', show=False)
-# public/ goes to apps/web/public/
-run('cd /opt/zuting/web/apps/web && tar xzf /opt/zuting/web-public.tar.gz', show=False)
+run('cd /opt/zuting/web/standalone && tar xzf /opt/zuting/web-standalone.tar.gz', show=False)
+# .next build output goes to standalone/apps/web/.next/
+run('mkdir -p /opt/zuting/web/standalone/apps/web/.next && cd /opt/zuting/web/standalone/apps/web/.next && tar xzf /opt/zuting/web-next.tar.gz', show=False)
+# public/ goes to standalone/apps/web/public/
+run('cd /opt/zuting/web/standalone/apps/web && tar xzf /opt/zuting/web-public.tar.gz', show=False)
 run('rm -f /opt/zuting/web-standalone.tar.gz /opt/zuting/web-next.tar.gz /opt/zuting/web-public.tar.gz', show=False)
 
 # Verify structure
 print("  Structure:")
-run('echo "Root:" && ls /opt/zuting/web/')
-run('echo "Apps/web:" && ls /opt/zuting/web/apps/web/')
-run('echo ".next:" && ls /opt/zuting/web/apps/web/.next/')
+run('echo "Standalone root:" && ls /opt/zuting/web/standalone/')
+run('echo "Apps/web:" && ls /opt/zuting/web/standalone/apps/web/')
+run('echo ".next:" && ls /opt/zuting/web/standalone/apps/web/.next/')
 
 # Step 4: Fix Windows paths in server.js and required-server-files.json
 print("\n=== 4. 修复 Windows 路径 ===")
 fix_script = r'''
 import json, os
 
-base = "/opt/zuting/web/apps/web"
+base = "/opt/zuting/web/standalone/apps/web"
 
 # Fix server.js
 with open(f"{base}/server.js", "r") as f:
@@ -131,12 +135,12 @@ with open(f"{base}/server.js", "r") as f:
 replacements = [
     ("E:\\\\ZUTING\\\\apps\\\\web\\\\", ""),
     ("E:\\\\ZUTING\\\\apps\\\\web", ""),
-    ("E:\\\\ZUTING\\\\", "/opt/zuting/web/"),
-    ("E:\\\\ZUTING", "/opt/zuting/web"),
+    ("E:\\\\ZUTING\\\\", "/opt/zuting/web/standalone/"),
+    ("E:\\\\ZUTING", "/opt/zuting/web/standalone"),
     ("E:\\ZUTING\\apps\\web\\", ""),
     ("E:\\ZUTING\\apps\\web", ""),
-    ("E:\\ZUTING\\", "/opt/zuting/web/"),
-    ("E:\\ZUTING", "/opt/zuting/web"),
+    ("E:\\ZUTING\\", "/opt/zuting/web/standalone/"),
+    ("E:\\ZUTING", "/opt/zuting/web/standalone"),
 ]
 for old, new in replacements:
     s = s.replace(old, new)
@@ -151,11 +155,11 @@ rpath = f"{base}/.next/required-server-files.json"
 with open(rpath, "r") as f:
     data = json.load(f)
 
-data["appDir"] = "/opt/zuting/web/apps/web"
+data["appDir"] = "/opt/zuting/web/standalone/apps/web"
 data["relativeAppDir"] = "apps/web"
 data["files"] = [f.replace("\\", "/") for f in data["files"]]
 config = data.get("config", {})
-config["outputFileTracingRoot"] = "/opt/zuting/web"
+config["outputFileTracingRoot"] = "/opt/zuting/web/standalone"
 data["config"] = config
 
 with open(rpath, "w") as f:
@@ -166,104 +170,96 @@ with sftp.open('/tmp/fix_paths.py', 'w') as f:
     f.write(fix_script)
 run('python3 /tmp/fix_paths.py')
 
-# Step 5: Ensure node_modules work (pnpm flat structure fix)
+# Step 5: Ensure node_modules work (pnpm flat structure fix — scope-aware)
 print("\n=== 5. 修复 node_modules ===")
-run("""cd /opt/zuting/web/node_modules
-if [ -d .pnpm ]; then
-    for pkg_dir in .pnpm/*/node_modules/*; do
-        pkg_name=$(echo "$pkg_dir" | sed 's|.*node_modules/||')
-        if [ ! -e "$pkg_name" ] && [ -d "$pkg_dir" ]; then
-            if [[ "$pkg_name" == @* ]]; then
-                scope=$(echo "$pkg_name" | cut -d/ -f1)
-                mkdir -p "$scope"
-            fi
-            ln -sf "$(pwd)/$pkg_dir" "$pkg_name" 2>/dev/null
+# Scope-aware flatten: for @scope/pkg under .pnpm/*/node_modules/@scope/pkg,
+# create node_modules/@scope/pkg → target. For unscoped, link at root.
+flatten_sh = r"""
+set -e
+flatten_dir() {
+  local root="$1"
+  [ -d "$root/.pnpm" ] || return 0
+  cd "$root"
+  local linked=0
+  for entry in .pnpm/*/node_modules/*; do
+    [ -d "$entry" ] || continue
+    local base
+    base="$(basename "$entry")"
+    if [[ "$base" == @* ]]; then
+      for sub in "$entry"/*; do
+        [ -d "$sub" ] || continue
+        local subname
+        subname="$base/$(basename "$sub")"
+        if [ ! -e "$subname" ]; then
+          mkdir -p "$base"
+          ln -sf "$(pwd)/$sub" "$subname" 2>/dev/null && linked=$((linked+1))
         fi
-    done
-fi
-echo "Root node_modules: $(ls -1 | wc -l) packages"
-""")
+      done
+    else
+      if [ ! -e "$base" ]; then
+        ln -sf "$(pwd)/$entry" "$base" 2>/dev/null && linked=$((linked+1))
+      fi
+    fi
+  done
+  echo "  $(basename $(dirname "$root"))/$(basename "$root"): linked=$linked top-level=$(ls -1 | wc -l)"
+}
+flatten_dir /opt/zuting/web/standalone/node_modules
+flatten_dir /opt/zuting/web/standalone/apps/web/node_modules
+"""
+run(flatten_sh)
 
-# Also fix app-level node_modules
-run("""cd /opt/zuting/web/apps/web/node_modules 2>/dev/null
-if [ -d .pnpm ]; then
-    for pkg_dir in .pnpm/*/node_modules/*; do
-        pkg_name=$(echo "$pkg_dir" | sed 's|.*node_modules/||')
-        if [ ! -e "$pkg_name" ] && [ -d "$pkg_dir" ]; then
-            if [[ "$pkg_name" == @* ]]; then
-                scope=$(echo "$pkg_name" | cut -d/ -f1)
-                mkdir -p "$scope"
-            fi
-            ln -sf "$(pwd)/$pkg_dir" "$pkg_name" 2>/dev/null
-        fi
-    done
-fi
-echo "App node_modules: $(ls -1 2>/dev/null | wc -l) packages"
-""")
+# Safety net: always ensure critical runtime deps are installed
+# (covers @swc/helpers and other transitive deps that pnpm isolated layout doesn't hoist)
+print("  Installing runtime safety-net deps...")
+run(
+    'cd /opt/zuting/web/standalone && '
+    'npm install --no-save --no-audit --no-fund --prefer-offline --loglevel=error '
+    'next@15 react@19 react-dom@19 "@swc/helpers@^0.5" 2>&1 | tail -5'
+)
+# Verify key modules resolve
+for mod in ['next/dist/server/next-server.js', '@swc/helpers/package.json', 'react/package.json']:
+    ok = run(f'ls /opt/zuting/web/standalone/node_modules/{mod} 2>&1 | tail -1', show=False)
+    mark = '✓' if 'No such' not in ok and ok else '✗'
+    print(f"  {mark} {mod}")
 
-# Check if next module is resolvable
-has_next = run('ls /opt/zuting/web/node_modules/next/dist/server/next-server.js 2>/dev/null', show=False)
-if not has_next:
-    print("  ⚠ next not properly resolved, installing via npm...")
-    run('cd /opt/zuting/web && npm install next@15 react@19 react-dom@19 --no-save 2>&1 | tail -3')
-else:
-    print("  ✓ next module resolved")
-
-# Step 6: Start
-print("\n=== 6. 启动 Web ===")
-run("""cd /opt/zuting/web/apps/web && \
-    NODE_ENV=production \
-    PORT=3003 \
-    HOSTNAME=0.0.0.0 \
-    NEXT_PUBLIC_API_URL=http://localhost:3002 \
-    API_INTERNAL_URL=http://localhost:3002 \
-    nohup node server.js > /opt/zuting/web.log 2>&1 &""", show=False)
-time.sleep(6)
+# Step 6: Start via systemd (canonical path; unit manages env/port/cwd)
+print("\n=== 6. systemctl start zuting-web ===")
+run('systemctl daemon-reload 2>&1', show=False)
+run('systemctl start zuting-web 2>&1 | head -3', show=False)
+time.sleep(8)
+run('systemctl status zuting-web --no-pager 2>&1 | head -12')
 
 # Step 7: Test
 print("\n=== 7. 测试 ===")
 all_ok = True
-for p in ['/', '/religions', '/holy-sites', '/seals', '/temples']:
-    code = run(f'curl -s -o /dev/null -w "%{{http_code}}" http://localhost:3003{p}', show=False)
+# systemd unit may bind 3000 or 3003 — probe both
+probe_port = None
+for port in ('3000', '3003'):
+    c = run(f'curl -s -o /dev/null -w "%{{http_code}}" http://localhost:{port}/', show=False)
+    if c == '200':
+        probe_port = port
+        break
+probe_port = probe_port or '3000'
+print(f"  Probing port {probe_port}")
+
+for p in ['/', '/religions', '/holy-sites', '/seals', '/temples', '/holy-sites/routes/lingnan-dao-chan-2026-may']:
+    code = run(f'curl -s -o /dev/null -w "%{{http_code}}" http://localhost:{probe_port}{p}', show=False)
     status = "✓" if code == "200" else "✗"
     if code != "200":
         all_ok = False
-    print(f"  {status} {p:20s} → HTTP {code}")
+    print(f"  {status} {p:50s} → HTTP {code}")
 
 api_code = run('curl -s -o /dev/null -w "%{http_code}" http://localhost:3002/api/religions', show=False)
 print(f"\n  API /api/religions → HTTP {api_code}")
 
 if not all_ok:
-    print("\n=== Web 日志 ===")
-    run('tail -20 /opt/zuting/web.log')
-
-# Update start.sh
-start_script = """#!/bin/bash
-pkill -f 'node /opt/zuting' 2>/dev/null
-sleep 1
-
-# API
-cd /opt/zuting/api
-export NODE_ENV=production API_PORT=3002
-nohup node dist/main.js > /opt/zuting/api.log 2>&1 &
-echo "API PID: $!"
-
-# Web
-cd /opt/zuting/web/apps/web
-export NODE_ENV=production PORT=3003 HOSTNAME=0.0.0.0
-export NEXT_PUBLIC_API_URL=http://localhost:3002
-export API_INTERNAL_URL=http://localhost:3002
-nohup node server.js > /opt/zuting/web.log 2>&1 &
-echo "Web PID: $!"
-"""
-with sftp.open('/opt/zuting/start.sh', 'w') as f:
-    f.write(start_script)
-run('chmod +x /opt/zuting/start.sh', show=False)
+    print("\n=== systemd journal 最近 30 行 ===")
+    run('journalctl -u zuting-web --no-pager -n 30 2>&1')
 
 sftp.close()
 ssh.close()
 
 if all_ok:
-    print("\n✅ Web 部署成功!")
+    print("\n✅ Web 部署成功 (systemd-managed)")
 else:
-    print("\n⚠️  仍有问题，请检查日志")
+    print("\n⚠️  仍有问题,检查 journalctl 日志")
