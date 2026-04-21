@@ -30,6 +30,7 @@ FILES = [
     ("prisma/data/holy-sites-data.ts", "prisma/data/holy-sites-data.ts"),
     ("prisma/data/wiki-images-lingnan.json", "prisma/data/wiki-images-lingnan.json"),
     ("prisma/seed-lingnan-dao-chan-route.ts", "prisma/seed-lingnan-dao-chan-route.ts"),
+    ("prisma/schema.prisma", "prisma/schema.prisma"),
 ]
 
 # 新下的 wiki 图,从本地 holy-sites-images/ 上传到服务器 /opt/zuting/api/prisma/data/holy-sites-images/
@@ -106,7 +107,19 @@ def main():
     else:
         print(f"  ⚠ wiki-images-lingnan.json not found at {wiki_json_path}")
 
-    print("\n=== 2. 跑 seed (NODE_NO_COMPILE_CACHE=1) ===")
+    print("\n=== 2a. prisma generate + db push (新字段 priceMode) ===")
+    run(
+        ssh,
+        f"cd {REMOTE_API} && npx prisma generate 2>&1 | tail -10",
+        t=180,
+    )
+    run(
+        ssh,
+        f"cd {REMOTE_API} && npx prisma db push --skip-generate --accept-data-loss 2>&1 | tail -15",
+        t=180,
+    )
+
+    print("\n=== 2b. 跑 seed (NODE_NO_COMPILE_CACHE=1) ===")
     out = run(
         ssh,
         f"cd {REMOTE_API} && NODE_NO_COMPILE_CACHE=1 npx tsx prisma/seed-lingnan-dao-chan-route.ts 2>&1 | tail -40",
@@ -155,9 +168,12 @@ def main():
             print(f"  → flush {pat}")
             run(ssh, cmd, t=60)
 
-    print("\n=== 3b. 重启 zuting-web (清 Next.js 页缓存 + ISR revalidate) ===")
-    run(ssh, 'systemctl restart zuting-web 2>&1 | head -3', show=True)
+    print("\n=== 3b. 重启 zuting-api (加载新 Prisma client) + zuting-web (清 ISR 缓存) ===")
+    run(ssh, 'systemctl restart zuting-api 2>&1 | head -3', show=True)
     import time as _t
+    _t.sleep(4)
+    run(ssh, 'systemctl is-active zuting-api 2>&1', show=True)
+    run(ssh, 'systemctl restart zuting-web 2>&1 | head -3', show=True)
     _t.sleep(6)
     run(ssh, 'systemctl is-active zuting-web 2>&1', show=True)
 

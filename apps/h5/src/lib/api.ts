@@ -1221,9 +1221,20 @@ export interface Route {
   religionId: string | null;
   religion?: Religion | null;
   sites?: RouteSiteWithDetail[];
+  coverGallery?: RouteCoverGalleryItem[] | null;
+  priceMode?: 'AA_SHARE' | 'CUSTOM' | 'FREE' | null;
   _count?: { bookings: number };
   createdAt: string;
   updatedAt: string;
+}
+
+export interface RouteCoverGalleryItem {
+  url: string;
+  caption: string;
+  sortOrder: number;
+  siteName?: string;
+  day?: number;
+  order?: number;
 }
 
 export interface ItineraryDay {

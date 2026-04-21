@@ -37,12 +37,27 @@ export default function RouteDetail() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <PageHeader title={route.title} transparent />
 
-      {/* Hero gallery */}
+      {/* Hero gallery — 优先按站分组显示 caption */}
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-1 min-w-max">
-          {(route.images.length > 0 ? route.images : [route.coverImage]).filter(Boolean).map((img, i) => (
-            <img key={i} src={img!} alt="" className="h-56 w-80 object-cover first:rounded-bl-none last:rounded-br-none" />
-          ))}
+          {route.coverGallery && route.coverGallery.some((g) => g.siteName) ? (
+            route.coverGallery.map((g, i) => (
+              <div key={i} className="relative h-56 w-80 shrink-0">
+                <img src={g.url} alt={g.caption || g.siteName || ""} className="h-full w-full object-cover" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-2">
+                  <p className="text-[11px] text-white/80">
+                    {g.day ? `Day ${g.day} · ` : ""}
+                    {g.siteName || ""}
+                  </p>
+                  <p className="text-sm text-white font-medium leading-tight">{g.caption}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            (route.images.length > 0 ? route.images : [route.coverImage]).filter(Boolean).map((img, i) => (
+              <img key={i} src={img!} alt="" className="h-56 w-80 object-cover first:rounded-bl-none last:rounded-br-none" />
+            ))
+          )}
         </div>
       </div>
 
@@ -155,6 +170,11 @@ export default function RouteDetail() {
           <span className="text-[10px] text-gray-400">{t("routeDetail.startingPrice")}</span>
           <span className="text-xl font-bold text-orange-600 ml-1">¥{route.priceFrom}</span>
           <span className="text-[10px] text-gray-400">{t("routeDetail.perPerson")}</span>
+          {route.priceMode && (
+            <span className="ml-2 inline-block px-2 py-0.5 rounded-full bg-amber-50 border border-amber-300 text-amber-800 text-[10px] font-semibold align-middle">
+              {route.priceMode === "AA_SHARE" ? "AA 制" : route.priceMode === "CUSTOM" ? "团队定制" : "免费参与"}
+            </span>
+          )}
         </div>
         <button
           onClick={() => nav(`/checkout/${slug}`)}

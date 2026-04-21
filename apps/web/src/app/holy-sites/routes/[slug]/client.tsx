@@ -6,6 +6,7 @@ import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
 import MobileNav from "@/components/MobileNav";
 import PhotoMosaic from "@/components/PhotoMosaic";
+import RouteGalleryBySite from "@/components/RouteGalleryBySite";
 import SocialProof from "@/components/SocialProof";
 import PriceForecast from "@/components/PriceForecast";
 import SaveButton from "@/components/SaveButton";
@@ -43,6 +44,15 @@ const DIFFICULTY_I18N_KEYS: Record<string, string> = {
   MODERATE: "routes.difficulty.moderate",
   CHALLENGING: "routes.difficulty.challenging",
 };
+
+function priceModeLabel(mode?: string | null): string {
+  switch (mode) {
+    case "AA_SHARE": return "AA 制";
+    case "CUSTOM": return "团队定制";
+    case "FREE": return "免费参与";
+    default: return "";
+  }
+}
 
 const CANCELLATION_POLICY_KEYS = [
   "routeDetail.cancellationFullRefund14",
@@ -760,6 +770,11 @@ function BookingWidget({ route }: { route: Route }) {
           ¥{unitPrice.toLocaleString()}
           <span className="text-base font-normal text-gray-500">{t("routeDetail.perPerson")}</span>
         </p>
+        {route.priceMode && (
+          <p className="mt-2 inline-block px-3 py-1 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-xs font-semibold">
+            {priceModeLabel(route.priceMode)}
+          </p>
+        )}
       </div>
 
       {/* Quick Date Tabs (Trip.com style) */}
@@ -1053,13 +1068,22 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             </div>
           )}
 
-          {/* ========== Image Gallery (Mosaic) ========== */}
-          {route.images && route.images.length > 0 && (
+          {/* ========== Image Gallery (按站分组,优先 coverGallery,回退 Mosaic) ========== */}
+          {route.coverGallery && route.coverGallery.some((g) => g.siteName) ? (
+            <div className="mt-6">
+              <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("routeDetail.photoGallery")}</h2>
+              <RouteGalleryBySite
+                gallery={route.coverGallery}
+                coverImage={route.coverImage}
+                routeTitle={route.title}
+              />
+            </div>
+          ) : route.images && route.images.length > 0 ? (
             <div className="mt-6">
               <h2 className="text-lg font-bold text-[#0f294d] mb-3">{t("routeDetail.photoGallery")}</h2>
               <PhotoMosaic images={route.images} alt={route.title} />
             </div>
-          )}
+          ) : null}
 
           {/* ========== Multimedia Tour ========== */}
           <div className="mt-6">
@@ -1260,6 +1284,11 @@ export default function RouteDetailClient({ route }: { route: Route }) {
         <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 bg-white border-t border-gray-200 px-4 py-2.5 flex items-center gap-3" style={{ boxShadow: "0 -2px 10px rgba(0,0,0,0.08)" }}>
           <div className="flex-1">
             <p className="text-lg font-bold text-[#0f294d]">¥{((route.priceFrom ?? 0) / 100).toLocaleString()}<span className="text-sm font-normal text-[#8592a6]">{t("routeDetail.perPerson")}</span></p>
+            {route.priceMode && (
+              <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-[10px] font-semibold">
+                {priceModeLabel(route.priceMode)}
+              </span>
+            )}
           </div>
           <Link
             href={`/trips/create?route=${route.slug}`}

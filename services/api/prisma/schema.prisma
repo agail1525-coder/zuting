@@ -654,6 +654,9 @@ model Route {
   lastEditedBy String?
   version      Int       @default(1)
 
+  // 费用模式: AA_SHARE(AA制) | CUSTOM(团队定制) | FREE(免费参与) | null=按 priceFrom 展示
+  priceMode    String?
+
   religionId  String?
   religion    Religion?       @relation(fields: [religionId], references: [id])
   sites       RouteSite[]

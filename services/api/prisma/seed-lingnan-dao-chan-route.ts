@@ -157,11 +157,6 @@ async function main() {
     return pool[hashStr(site.name) % pool.length];
   };
 
-  const siteGallery = (site: NewSite): string[] => {
-    const wikiList = extraImg[site.name] || [];
-    return [...wikiList].filter(Boolean).slice(0, 6);
-  };
-
   // ── 3. upsert 4 新圣地 (按 name+religionId) ──
   console.log('\n[2] upsert 4 holy sites...');
   const siteIdByName: Record<string, string> = {};
@@ -360,80 +355,97 @@ async function main() {
     '全程由小鸿团队文化导师随行答疑,请珍惜闭门游学机会',
   ];
 
-  // ── 6. 封面+图池聚合 (5 圣地各取一图,优先真图) ──
-  const siteImages: string[] = [];
-  const gallerySites = ['南华禅寺', '光孝寺', '云门山大觉禅寺', '国恩寺', '纯阳观'];
-  for (const name of gallerySites) {
-    const siteId = siteIdByName[name];
-    if (!siteId) continue;
-    const s = await prisma.holySite.findUnique({
-      where: { id: siteId },
-      select: { imageUrl: true },
-    });
-    if (s?.imageUrl) siteImages.push(s.imageUrl);
-  }
-
-  // 聚合每站多张 wiki 图
-  const perSiteGallery: string[] = [];
-  for (const site of NEW_SITES) perSiteGallery.push(...siteGallery(site));
-
-  const images: string[] = [...siteImages, ...perSiteGallery];
-  // 去重并补足到 12 张
-  const seen = new Set<string>();
-  const dedup: string[] = [];
-  for (const u of images) {
-    if (!u || seen.has(u)) continue;
-    seen.add(u);
-    dedup.push(u);
-  }
-  const bPool = poolBySlug['buddhism'] || [];
-  const tPool = poolBySlug['taoism'] || [];
-  const mixPool = [...bPool, ...tPool];
-  let idx = hashStr(ROUTE_SLUG) % Math.max(mixPool.length, 1);
-  while (dedup.length < 12 && mixPool.length > 0) {
-    const img = mixPool[idx % mixPool.length];
-    if (!seen.has(img)) {
-      seen.add(img);
-      dedup.push(img);
-    }
-    idx++;
-    if (idx > mixPool.length * 3) break;
-  }
-  const finalImages = dedup.slice(0, 12);
-  const coverImage = siteImages[0] || finalImages[0] || null;
-
-  // ── 7. coverGallery: 18 张,文化向 caption ──
-  const captions = [
-    '南华禅寺·大雄宝殿',
-    '光孝寺·六祖菩提树',
-    '云门山大觉禅寺·祖堂',
-    '国恩寺·毘卢宝塔',
-    '纯阳观·吕祖殿',
-    '南华禅寺·六祖真身殿',
-    '光孝寺·瘗发塔',
-    '云门寺·虚云老和尚舍利塔',
-    '国恩寺·六祖手植荔枝树',
-    '纯阳观·越秀山园林',
-    '曹溪禅源文化讲坛',
-    '岭南古刹晨钟',
-    '曹溪畔民宿 · 禅意庭院',
-    '手抄《六祖偈》体验',
-    '国恩寺龙山竹宴',
-    '基业长青圆桌夜话',
-    '奔驰V级商务专车',
-    '六席企业创始人同框',
+  // ── 6. 封面 + coverGallery (按站分组,每站真图严格隔离,不跨站兜底) ──
+  // 每站的 caption 模板 — 与 wiki-images-lingnan.json 顺序对应
+  const siteGalleryConfig: Array<{
+    day: number;
+    order: number;
+    siteName: string;
+    maxCount: number;
+    captions: string[];
+  }> = [
+    {
+      day: 1, order: 1, siteName: '纯阳观', maxCount: 4,
+      captions: [
+        '纯阳观 · 山门(岭南全真道观)',
+        '纯阳观 · 吕祖殿',
+        '纯阳观 · 越秀山园林',
+        '纯阳观 · 全真文化匾额',
+      ],
+    },
+    {
+      day: 1, order: 2, siteName: '光孝寺', maxCount: 4,
+      captions: [
+        '光孝寺 · 岭南第一古刹山门',
+        '光孝寺 · 大雄宝殿',
+        '光孝寺 · 六祖菩提树',
+        '光孝寺 · 瘗发塔',
+      ],
+    },
+    {
+      day: 1, order: 3, siteName: '南华禅寺', maxCount: 4,
+      captions: [
+        '南华禅寺 · 宝林道场山门(南宗不二法门)',
+        '南华禅寺 · 大雄宝殿',
+        '南华禅寺 · 六祖真身殿',
+        '南华禅寺 · 曹溪门牌坊',
+      ],
+    },
+    {
+      day: 2, order: 1, siteName: '云门山大觉禅寺', maxCount: 3,
+      captions: [
+        '云门山大觉禅寺 · 山门(云门宗祖庭)',
+        '云门山大觉禅寺 · 大觉殿',
+        '云门山大觉禅寺 · 祖堂',
+      ],
+    },
+    {
+      day: 2, order: 2, siteName: '国恩寺', maxCount: 3,
+      captions: [
+        '国恩寺 · 六祖故里(云浮新兴)',
+        '国恩寺 · 毘卢宝塔',
+        '国恩寺 · 六祖手植荔枝树',
+      ],
+    },
   ];
-  const coverGallery: { url: string; caption: string; sortOrder: number }[] = [];
-  const gallerySource = [...dedup, ...mixPool];
-  const gallerySeen = new Set<string>();
-  let ci = 0;
-  for (const img of gallerySource) {
-    if (!img || gallerySeen.has(img)) continue;
-    gallerySeen.add(img);
-    coverGallery.push({ url: img, caption: captions[ci] || `岭南文化剪影 ${ci + 1}`, sortOrder: ci });
-    ci++;
-    if (ci >= 18) break;
+
+  // 构建分组 coverGallery — 只用每站 wiki 真图,不跨站、不用 mixPool 兜底
+  // 结构: {url, caption, sortOrder, siteName, day, order}
+  type GalleryItem = {
+    url: string;
+    caption: string;
+    sortOrder: number;
+    siteName: string;
+    day: number;
+    order: number;
+  };
+  const coverGallery: GalleryItem[] = [];
+  const galleryUrlSeen = new Set<string>();
+  let globalSort = 0;
+  for (const cfg of siteGalleryConfig) {
+    const wiki = extraImg[cfg.siteName] || [];
+    const picked = wiki.slice(0, cfg.maxCount);
+    picked.forEach((url, i) => {
+      if (!url || galleryUrlSeen.has(url)) return;
+      galleryUrlSeen.add(url);
+      coverGallery.push({
+        url,
+        caption: cfg.captions[i] || `${cfg.siteName} · 场景 ${i + 1}`,
+        sortOrder: globalSort++,
+        siteName: cfg.siteName,
+        day: cfg.day,
+        order: cfg.order,
+      });
+    });
   }
+
+  // route.images (扁平 string[],保持向后兼容) — 按 coverGallery 顺序取前 12 张
+  const finalImages = coverGallery.slice(0, 12).map((g) => g.url);
+  // 封面:Day1 第一站(纯阳观)的第一张图 — 保证最具代表性
+  const coverImage =
+    coverGallery.find((g) => g.siteName === '纯阳观')?.url ||
+    coverGallery[0]?.url ||
+    null;
 
   // ── 8. upsert Route ──
   console.log('\n[3] upsert route...');
@@ -462,6 +474,7 @@ async function main() {
     reviewCount: 24,
     bookCount: 9999, // 置顶首页精选 (按 bookCount DESC 排序)
     coverGallery,
+    priceMode: 'CUSTOM', // 团队定制 (AA_SHARE / CUSTOM / FREE)
     religionId: religionMap['buddhism'],
   };
 
