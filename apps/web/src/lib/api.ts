@@ -1501,6 +1501,40 @@ export interface ItineraryDay {
   activities?: string[];
   meals?: string[];
   accommodation?: string;
+  // ─ 新增结构化字段(路线级深度展示, 全可选, 向后兼容) ─
+  pace?: string; // 当日节奏说明(疲劳管理/用于向用户说明不赶路)
+  transportLegs?: Array<{
+    from: string;
+    to: string;
+    mode: string; // 奔驰V级商务车 / 步行 / 摆渡车
+    distanceKm?: number;
+    durationMin?: number;
+    note?: string; // 途中专业讲座/休息安排
+  }>;
+  accommodationDetail?: {
+    name: string;
+    type: string; // 禅意庭院房 / 岭南院落房 / 精品酒店
+    imageUrl?: string;
+    nearSiteName?: string; // 就近祖庭
+    features?: string[]; // ["独立庭院", "禅茶席", "24h热水"]
+    roomDesc?: string;
+    priceIncluded?: boolean; // 价格已含
+  };
+  mealsDetail?: Array<{
+    type: 'BREAKFAST' | 'LUNCH' | 'DINNER';
+    name: string;
+    venue: string; // 纯阳观百年素斋堂 / 南华寺旁民宿
+    imageUrl?: string;
+    cuisine: string; // 岭南百年道家素斋 / 曹溪百年禅斋
+    highlights?: string[]; // ["道家九仙汤", "祖庭素什锦"]
+    story?: string; // 饮食文化一句话
+  }>;
+  culturalProducts?: Array<{
+    name: string;
+    desc: string;
+    emoji?: string;
+    tag?: string; // "家书仪式" / "典藏本" / "伴手礼"
+  }>;
 }
 
 export interface RouteSiteWithDetail {

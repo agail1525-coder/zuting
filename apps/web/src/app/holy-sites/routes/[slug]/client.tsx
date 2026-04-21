@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
-import MobileNav from "@/components/MobileNav";
 import PhotoMosaic from "@/components/PhotoMosaic";
 import RouteGalleryBySite from "@/components/RouteGalleryBySite";
 import SocialProof from "@/components/SocialProof";
@@ -723,6 +722,246 @@ function GuideProfile({ religionName, category }: { religionName?: string; categ
   );
 }
 
+/* ─── JourneyPacePanel · 行程节奏总览 (解决"会不会太累"的担心) ─── */
+
+function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: ItineraryDay[]; duration: number; nights: number }) {
+  const hasPace = itinerary.some((d) => d.pace || (d.transportLegs && d.transportLegs.length > 0));
+  if (!hasPace) return null;
+
+  const totalMin = itinerary.reduce(
+    (sum, d) => sum + (d.transportLegs?.reduce((s, l) => s + (l.durationMin ?? 0), 0) ?? 0),
+    0,
+  );
+  const totalKm = itinerary.reduce(
+    (sum, d) => sum + (d.transportLegs?.reduce((s, l) => s + (l.distanceKm ?? 0), 0) ?? 0),
+    0,
+  );
+
+  return (
+    <div className="mt-6 bg-gradient-to-br from-[#fffdf7] via-white to-[#fff7e6] border border-[#f2c879] rounded-xl p-5">
+      <div className="flex items-start gap-3 mb-4">
+        <span className="text-2xl mt-0.5">🧘</span>
+        <div>
+          <h2 className="text-xl font-bold text-[#8b6914]">行程节奏 · 不折腾 · 不飞机 · 不赶路</h2>
+          <p className="text-xs text-[#a57c1b] mt-1">专为创始人体力节奏设计 · 奔驰V级全程陆路 · 车程即深度讲座</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
+          <p className="text-xs text-[#a57c1b]">总时长</p>
+          <p className="text-lg font-bold text-[#8b6914] mt-1">{duration}天{nights}晚</p>
+        </div>
+        <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
+          <p className="text-xs text-[#a57c1b]">出行方式</p>
+          <p className="text-lg font-bold text-[#8b6914] mt-1">纯陆路</p>
+          <p className="text-[10px] text-[#a57c1b]">奔驰V级</p>
+        </div>
+        {totalKm > 0 && (
+          <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
+            <p className="text-xs text-[#a57c1b]">总里程</p>
+            <p className="text-lg font-bold text-[#8b6914] mt-1">约{totalKm}km</p>
+            <p className="text-[10px] text-[#a57c1b]">广东境内</p>
+          </div>
+        )}
+        {totalMin > 0 && (
+          <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
+            <p className="text-xs text-[#a57c1b]">总车程</p>
+            <p className="text-lg font-bold text-[#8b6914] mt-1">约{(totalMin/60).toFixed(1)}h</p>
+            <p className="text-[10px] text-[#a57c1b]">讲座+休息</p>
+          </div>
+        )}
+      </div>
+      <div className="space-y-3">
+        {itinerary.map((d) => (
+          d.pace && (
+            <div key={d.day} className="flex items-start gap-3 p-3 rounded-lg bg-white border border-[#f2c879]/30">
+              <span className="shrink-0 w-7 h-7 rounded-full bg-[#8b6914] text-white text-xs font-bold flex items-center justify-center">D{d.day}</span>
+              <p className="text-sm text-[#5a4708] leading-relaxed">{d.pace}</p>
+            </div>
+          )
+        ))}
+      </div>
+      <div className="mt-4 pt-4 border-t border-[#f2c879]/40 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+        <div className="flex items-center gap-2 text-[#a57c1b]">
+          <span>✈️</span><span className="line-through opacity-60">赶飞机转场</span>
+        </div>
+        <div className="flex items-center gap-2 text-[#8b6914] font-medium">
+          <span>🚗</span><span>全程奔驰 V 级专车 · 途中专题讲座 · 可平躺休息</span>
+        </div>
+        <div className="flex items-center gap-2 text-[#8b6914] font-medium">
+          <span>🏯</span><span>两晚民宿驻地 · 每晚 22:00 前圆桌结束</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── AccommodationShowcase · 精选住宿展示 (两晚民宿卡片) ─── */
+
+function AccommodationShowcase({ itinerary }: { itinerary: ItineraryDay[] }) {
+  const days = itinerary.filter((d) => d.accommodationDetail);
+  if (days.length === 0) return null;
+
+  return (
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-5">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-[#0f294d]">精选住宿 · 禅意民宿驻地</h2>
+          <p className="text-xs text-[#8592a6] mt-1">{days.length} 晚民宿驻地 · 紧邻祖庭 · 不住城市酒店 · 夜宿即修行</p>
+        </div>
+        <span className="shrink-0 px-2.5 py-1 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-xs font-semibold">已含在价格</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {days.map((d) => {
+          const a = d.accommodationDetail!;
+          return (
+            <article key={d.day} className="group rounded-xl overflow-hidden border border-[#dadfe6] hover:border-[#f2c879] hover:shadow-md transition-all">
+              <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-pink-50">
+                {a.imageUrl ? (
+                  <OptimizedImage src={a.imageUrl} alt={a.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-6xl opacity-30">🏯</div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute top-3 left-3">
+                  <span className="px-2.5 py-1 rounded-full bg-[#8b6914] text-white text-xs font-bold">Day {d.day} 夜宿</span>
+                </div>
+                <div className="absolute bottom-3 left-3 right-3">
+                  <p className="text-white font-bold text-base drop-shadow">{a.name}</p>
+                  <p className="text-white/90 text-xs mt-0.5 drop-shadow">{a.type}</p>
+                </div>
+              </div>
+              <div className="p-4">
+                {a.nearSiteName && (
+                  <div className="flex items-center gap-1.5 mb-2 text-xs text-[#3264ff]">
+                    <span>📍</span><span className="font-medium">{a.nearSiteName}</span>
+                  </div>
+                )}
+                {a.roomDesc && (
+                  <p className="text-sm text-[#455873] leading-relaxed mb-3">{a.roomDesc}</p>
+                )}
+                {a.features && a.features.length > 0 && (
+                  <ul className="space-y-1.5">
+                    {a.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-[#455873]">
+                        <span className="text-[#00b341] mt-0.5">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── DiningCultureShowcase · 饮食文化展示 (禅素五斋) ─── */
+
+function DiningCultureShowcase({ itinerary }: { itinerary: ItineraryDay[] }) {
+  const allMeals = itinerary.flatMap((d) => (d.mealsDetail ?? []).map((m) => ({ ...m, day: d.day })));
+  if (allMeals.length === 0) return null;
+
+  const typeLabel: Record<string, string> = { BREAKFAST: '早斋', LUNCH: '午斋', DINNER: '晚斋' };
+  const typeColor: Record<string, string> = {
+    BREAKFAST: 'bg-amber-50 text-amber-700 border-amber-200',
+    LUNCH: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    DINNER: 'bg-rose-50 text-rose-700 border-rose-200',
+  };
+
+  return (
+    <div className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-5">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-[#0f294d]">饮食文化 · 禅素五斋</h2>
+          <p className="text-xs text-[#8592a6] mt-1">{allMeals.length} 餐祖庭素斋 · 百年食谱 · 非遗手艺 · 过午不贪</p>
+        </div>
+        <span className="shrink-0 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">已含在价格</span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {allMeals.map((m, i) => (
+          <article key={i} className="rounded-xl overflow-hidden border border-[#dadfe6] hover:shadow-md transition-all">
+            <div className="relative h-36 bg-gradient-to-br from-orange-50 to-amber-50 overflow-hidden">
+              {m.imageUrl ? (
+                <OptimizedImage src={m.imageUrl} alt={m.name} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-5xl opacity-30">🍚</div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute top-2 left-2 flex gap-1.5">
+                <span className="px-2 py-0.5 rounded bg-white/90 text-[#8b6914] text-[10px] font-bold">D{m.day}</span>
+                <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${typeColor[m.type] || ''}`}>{typeLabel[m.type] || m.type}</span>
+              </div>
+              <div className="absolute bottom-2 left-2 right-2">
+                <p className="text-white font-bold text-sm drop-shadow">{m.name}</p>
+              </div>
+            </div>
+            <div className="p-3">
+              <p className="text-xs text-[#3264ff] font-medium mb-1.5">🍃 {m.cuisine}</p>
+              <p className="text-[11px] text-[#8592a6] mb-2">📍 {m.venue}</p>
+              {m.highlights && m.highlights.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {m.highlights.map((h, j) => (
+                    <span key={j} className="px-2 py-0.5 bg-gray-50 text-[#455873] text-[10px] rounded border border-gray-100">{h}</span>
+                  ))}
+                </div>
+              )}
+              {m.story && (
+                <p className="text-xs text-[#8592a6] leading-relaxed border-t border-gray-100 pt-2 mt-2">{m.story}</p>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── CulturalProductsShowcase · 文化伴手礼 & 专属仪式物 ─── */
+
+function CulturalProductsShowcase({ itinerary }: { itinerary: ItineraryDay[] }) {
+  const all = itinerary.flatMap((d) => (d.culturalProducts ?? []).map((p) => ({ ...p, day: d.day })));
+  if (all.length === 0) return null;
+
+  return (
+    <div className="mt-6 bg-gradient-to-br from-white via-[#fffdf7] to-[#fff7e6] border border-[#f2c879] rounded-xl p-5">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-[#8b6914]">文化产品 · 伴手礼 · 仪式物</h2>
+          <p className="text-xs text-[#a57c1b] mt-1">{all.length} 件文化之物 · 全程专用或归家伴手 · 非寺庙流通品 · 小鸿团队定制</p>
+        </div>
+        <span className="shrink-0 px-2.5 py-1 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-xs font-semibold">已含在价格</span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {all.map((p, i) => (
+          <article key={i} className="flex items-start gap-3 p-3.5 rounded-lg bg-white border border-[#f2c879]/40 hover:border-[#f2c879] hover:shadow-sm transition-all">
+            <div className="shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-[#fff7e6] to-[#f2c879]/30 flex items-center justify-center text-2xl border border-[#f2c879]/40">
+              {p.emoji ?? "🎁"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <p className="font-semibold text-[#5a4708] text-sm">{p.name}</p>
+                {p.tag && (
+                  <span className="px-1.5 py-0.5 rounded bg-[#8b6914] text-white text-[10px] font-bold">{p.tag}</span>
+                )}
+              </div>
+              <p className="text-xs text-[#8592a6] leading-relaxed">{p.desc}</p>
+              <p className="text-[10px] text-[#a57c1b] mt-1.5">Day {p.day} 赠送</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="mt-4 pt-4 border-t border-[#f2c879]/40 flex items-start gap-2 text-xs text-[#a57c1b]">
+        <span>💌</span>
+        <span>"家书时刻"文房套装将由小鸿团队统一盖章、装封, 行程结束后 7 天内代寄家中, 含国内邮资与保价快递。</span>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Itinerary Accordion (可折叠逐日行程) ─── */
 
 function ItineraryAccordion({ itinerary }: { itinerary: ItineraryDay[] }) {
@@ -772,6 +1011,33 @@ function ItineraryAccordion({ itinerary }: { itinerary: ItineraryDay[] }) {
               {/* Day content (collapsible) */}
               {isOpen && (
                 <div className="ml-11 mt-2 mb-4 space-y-3">
+                  {/* 节奏说明 (疲劳管理) */}
+                  {day.pace && (
+                    <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-[#fff7e6] border border-[#f2c879]">
+                      <span className="text-base mt-0.5">🧘</span>
+                      <div className="text-xs text-[#8b6914] leading-relaxed">
+                        <span className="font-semibold">当日节奏 · </span>{day.pace}
+                      </div>
+                    </div>
+                  )}
+                  {/* 分段交通 (车程透明化) */}
+                  {day.transportLegs && day.transportLegs.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {day.transportLegs.map((leg, i) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-100 text-xs text-sky-700">
+                          <span>🚗</span>
+                          <span className="font-medium">{leg.from} → {leg.to}</span>
+                          {typeof leg.durationMin === "number" && (
+                            <span className="text-sky-500">· {leg.durationMin >= 60 ? `${(leg.durationMin/60).toFixed(1)}h` : `${leg.durationMin}min`}</span>
+                          )}
+                          {typeof leg.distanceKm === "number" && (
+                            <span className="text-sky-400">· {leg.distanceKm}km</span>
+                          )}
+                          <span className="text-sky-400">· {leg.mode}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   {/* Activities as tags */}
                   {day.activities && day.activities.length > 0 && (
                     <div className="flex flex-wrap gap-2">
@@ -990,8 +1256,8 @@ function BookingWidget({ route }: { route: Route }) {
 export default function RouteDetailClient({ route }: { route: Route }) {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen bg-white">
-      <main className="pt-16 pb-24">
+    <div className="min-h-screen bg-white pb-24">
+      <div>
         {/* ═══ S1. 面包屑 (白色背景) ═══ */}
         <div className="max-w-[1120px] mx-auto px-4 pt-4 pb-3">
           <div className="flex items-center justify-between">
@@ -1038,8 +1304,13 @@ export default function RouteDetailClient({ route }: { route: Route }) {
               <div id="sec-info" className="pb-5 border-b border-gray-200">
                 <div className="flex items-start gap-3">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center flex-wrap gap-2 mb-1">
                       <PopularityBadge count={route.bookCount} />
+                      {route.slug === "lingnan-dao-chan-2026-may" && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                          ✓ 非宗教 · 非寺观官方活动
+                        </span>
+                      )}
                     </div>
                     <h1 className="text-2xl font-bold text-[#0f294d]">{route.title}</h1>
                   </div>
@@ -1173,8 +1444,24 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             <MediaTour entityType="ROUTE" entityId={route.id} />
           </div>
 
+          {/* ========== 行程节奏总览 (疲劳管理 · 不飞机不赶路 · 结构化) ========== */}
+          <JourneyPacePanel
+            itinerary={(route.itinerary ?? []) as ItineraryDay[]}
+            duration={route.duration}
+            nights={route.nights}
+          />
+
           {/* ========== Itinerary (可折叠手风琴+卡片化) ========== */}
           <ItineraryAccordion itinerary={(route.itinerary ?? []) as ItineraryDay[]} />
+
+          {/* ========== 精选住宿 (禅意民宿卡片) ========== */}
+          <AccommodationShowcase itinerary={(route.itinerary ?? []) as ItineraryDay[]} />
+
+          {/* ========== 饮食文化 (禅素五斋) ========== */}
+          <DiningCultureShowcase itinerary={(route.itinerary ?? []) as ItineraryDay[]} />
+
+          {/* ========== 文化产品/伴手礼/仪式物 ========== */}
+          <CulturalProductsShowcase itinerary={(route.itinerary ?? []) as ItineraryDay[]} />
 
           {/* ========== Included / Excluded ========== */}
           <div id="sec-included" className="mt-6 grid md:grid-cols-2 gap-4">
@@ -1383,10 +1670,9 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             {t("routeDetail.bookNow")}
           </Link>
         </div>
-      </main>
+      </div>
       {/* Xiaohong AI Floating Widget */}
       <XiaohongFloat routeTitle={route.title} />
-      <MobileNav />
     </div>
   );
 }
