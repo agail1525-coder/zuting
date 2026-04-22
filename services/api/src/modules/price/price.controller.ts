@@ -167,6 +167,133 @@ export class PriceController {
     return this.priceService.getTrend(query);
   }
 
+  // ──────────────── 价格工具页 v3 · 控制台/洞察 (public) ────────────────
+
+  @Public()
+  @Get('prices/system-status')
+  @ApiOperation({
+    summary: '价格系统状态 — baseline 覆盖量/数据源混合/CRON 时刻表',
+    description:
+      '给 /prices 页面 PricePulseBar 使用,透明展示 PRC 自愈能力。\n\n' +
+      'Live auto-heal status for the price tool page top bar.',
+  })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        baselineCount: { type: 'number' },
+        routeCount: { type: 'number' },
+        dayCount: { type: 'number' },
+        sourceBreakdown: {
+          type: 'object',
+          properties: {
+            baseline: { type: 'number' },
+            crawler: { type: 'number' },
+            official: { type: 'number' },
+          },
+        },
+        lastCronRun: { type: 'object' },
+        cronSchedules: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              cron: { type: 'string' },
+              label: { type: 'string' },
+            },
+          },
+        },
+        asOf: { type: 'string' },
+      },
+    },
+  })
+  getSystemStatus() {
+    return this.priceService.getSystemStatus();
+  }
+
+  @Public()
+  @Get('prices/today-low')
+  @ApiOperation({
+    summary: '今日最低 Top N — 最新 snapshot 按价升序,带 24h 涨跌',
+    description:
+      '给 /prices 洞察区 PriceTodayLow 使用。\n\n' +
+      'Top N lowest-priced routes today with 24h delta, for insight panel.',
+  })
+  @ApiQuery({ name: 'limit', required: false, example: 5, description: '默认 5,上限 20' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        items: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              routeId: { type: 'string' },
+              slug: { type: 'string' },
+              title: { type: 'string' },
+              priceFen: { type: 'number' },
+              currency: { type: 'string' },
+              source: { type: 'string' },
+              date: { type: 'string' },
+              changePercent24h: { type: 'number' },
+            },
+          },
+        },
+        asOf: { type: 'string' },
+      },
+    },
+  })
+  getTodayLow(@Query('limit') limit?: string) {
+    return this.priceService.getTodayLow(Number(limit) || 5);
+  }
+
+  @Public()
+  @Get('prices/top-movers')
+  @ApiOperation({
+    summary: '涨跌榜 — 按绝对幅度降序,默认 24h 窗口',
+    description:
+      '给 /prices 洞察区 PriceTopMovers 使用。对比最近 N 天前 snapshot。\n\n' +
+      'Top movers by absolute percent change, default 24h window.',
+  })
+  @ApiQuery({ name: 'limit', required: false, example: 5 })
+  @ApiQuery({ name: 'window', required: false, example: '24h', description: '支持 24h/7d/30d' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        items: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              routeId: { type: 'string' },
+              slug: { type: 'string' },
+              title: { type: 'string' },
+              currentPriceFen: { type: 'number' },
+              previousPriceFen: { type: 'number' },
+              changePercent: { type: 'number' },
+              changeDirection: { type: 'string', enum: ['UP', 'DOWN', 'FLAT'] },
+              source: { type: 'string' },
+            },
+          },
+        },
+        asOf: { type: 'string' },
+      },
+    },
+  })
+  getTopMovers(
+    @Query('limit') limit?: string,
+    @Query('window') windowParam?: string,
+  ) {
+    const days = windowParam === '7d' ? 7 : windowParam === '30d' ? 30 : 1;
+    return this.priceService.getTopMovers(Number(limit) || 5, days);
+  }
+
   // ──────────────── Price Alerts (auth required) ────────────────
 
   @Get('price-alerts/my')

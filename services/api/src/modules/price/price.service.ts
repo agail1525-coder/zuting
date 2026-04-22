@@ -225,6 +225,179 @@ export class PriceService {
     return { message: '提醒已删除' };
   }
 
+  // ──────────────── 价格工具页 v3 · 控制台/洞察 ────────────────
+
+  /** 系统状态 — 给 PricePulseBar:覆盖量/数据源混合/CRON时刻表 */
+  async getSystemStatus() {
+    const [baselineCount, distinctRouteIds, distinctDates] = await Promise.all([
+      this.prisma.priceSnapshot.count({ where: { entityType: 'ROUTE' } }),
+      this.prisma.priceSnapshot.findMany({
+        where: { entityType: 'ROUTE' },
+        distinct: ['entityId'],
+        select: { entityId: true },
+        take: 5000,
+      }),
+      this.prisma.priceSnapshot.findMany({
+        where: { entityType: 'ROUTE' },
+        distinct: ['date'],
+        select: { date: true },
+        take: 5000,
+      }),
+    ]);
+
+    return {
+      baselineCount,
+      routeCount: distinctRouteIds.length,
+      dayCount: distinctDates.length,
+      sourceBreakdown: {
+        baseline: baselineCount,
+        crawler: 0,
+        official: 0,
+      },
+      lastCronRun: {},
+      cronSchedules: [
+        { name: 'price-alert-scan', cron: '0 0 * * * *', label: '每小时扫告警' },
+        { name: 'price-reconcile-routes', cron: '0 10 4 * * *', label: '日 04:10 校准' },
+        { name: 'price-snapshot-extend', cron: '0 20 4 * * *', label: '日 04:20 延展' },
+      ],
+      asOf: new Date().toISOString(),
+    };
+  }
+
+  /** 今日最低 Top N — 最新 snapshot 按价升序,带 24h 涨跌 */
+  async getTodayLow(limit = 5) {
+    const cap = Math.min(Math.max(limit, 1), 20);
+
+    const latest = await this.prisma.priceSnapshot.findFirst({
+      where: { entityType: 'ROUTE' },
+      orderBy: { date: 'desc' },
+      select: { date: true },
+    });
+    if (!latest) return { items: [], asOf: new Date().toISOString() };
+
+    const todayDate = latest.date;
+    const yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+
+    const todaySnaps = await this.prisma.priceSnapshot.findMany({
+      where: { entityType: 'ROUTE', date: todayDate },
+      orderBy: { price: 'asc' },
+      take: cap,
+    });
+    if (todaySnaps.length === 0) return { items: [], asOf: new Date().toISOString() };
+
+    const routeIds = todaySnaps.map((s) => s.entityId);
+    const [routes, yesterdaySnaps] = await Promise.all([
+      this.prisma.route.findMany({
+        where: { id: { in: routeIds } },
+        select: { id: true, slug: true, title: true },
+      }),
+      this.prisma.priceSnapshot.findMany({
+        where: { entityType: 'ROUTE', entityId: { in: routeIds }, date: yesterdayDate },
+      }),
+    ]);
+    const routeMap = new Map(routes.map((r) => [r.id, r]));
+    const yMap = new Map(yesterdaySnaps.map((s) => [s.entityId, s.price]));
+
+    const items = todaySnaps
+      .map((s) => {
+        const route = routeMap.get(s.entityId);
+        if (!route) return null;
+        const prev = yMap.get(s.entityId) ?? s.price;
+        const changePercent24h = prev > 0 ? (s.price - prev) / prev : 0;
+        return {
+          routeId: route.id,
+          slug: route.slug,
+          title: route.title,
+          priceFen: s.price,
+          currency: s.currency,
+          source: 'baseline' as const,
+          date: s.date.toISOString().split('T')[0],
+          changePercent24h,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+
+    return { items, asOf: new Date().toISOString() };
+  }
+
+  /** 24h 涨跌榜 — 按绝对幅度降序 */
+  async getTopMovers(limit = 5, windowDays = 1) {
+    const cap = Math.min(Math.max(limit, 1), 20);
+    const windowCap = Math.min(Math.max(windowDays, 1), 30);
+
+    const latest = await this.prisma.priceSnapshot.findFirst({
+      where: { entityType: 'ROUTE' },
+      orderBy: { date: 'desc' },
+      select: { date: true },
+    });
+    if (!latest) return { items: [], asOf: new Date().toISOString() };
+
+    const todayDate = latest.date;
+    const prevDate = new Date(todayDate);
+    prevDate.setDate(prevDate.getDate() - windowCap);
+
+    const [todaySnaps, prevSnaps] = await Promise.all([
+      this.prisma.priceSnapshot.findMany({
+        where: { entityType: 'ROUTE', date: todayDate },
+        take: 1000,
+      }),
+      this.prisma.priceSnapshot.findMany({
+        where: { entityType: 'ROUTE', date: prevDate },
+        take: 1000,
+      }),
+    ]);
+
+    const prevMap = new Map(prevSnaps.map((s) => [s.entityId, s.price]));
+
+    const ranked = todaySnaps
+      .map((s) => {
+        const prev = prevMap.get(s.entityId);
+        if (prev === undefined || prev <= 0) return null;
+        const delta = s.price - prev;
+        const pct = delta / prev;
+        const dir: 'UP' | 'DOWN' | 'FLAT' =
+          Math.abs(pct) < 0.001 ? 'FLAT' : pct > 0 ? 'UP' : 'DOWN';
+        return {
+          entityId: s.entityId,
+          currentPriceFen: s.price,
+          previousPriceFen: prev,
+          changePercent: pct,
+          changeDirection: dir,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null)
+      .sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
+      .slice(0, cap);
+
+    if (ranked.length === 0) return { items: [], asOf: new Date().toISOString() };
+
+    const routes = await this.prisma.route.findMany({
+      where: { id: { in: ranked.map((r) => r.entityId) } },
+      select: { id: true, slug: true, title: true },
+    });
+    const routeMap = new Map(routes.map((r) => [r.id, r]));
+
+    const items = ranked
+      .map((r) => {
+        const route = routeMap.get(r.entityId);
+        if (!route) return null;
+        return {
+          routeId: route.id,
+          slug: route.slug,
+          title: route.title,
+          currentPriceFen: r.currentPriceFen,
+          previousPriceFen: r.previousPriceFen,
+          changePercent: r.changePercent,
+          changeDirection: r.changeDirection,
+          source: 'baseline' as const,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+
+    return { items, asOf: new Date().toISOString() };
+  }
+
   // ──────────────── Admin ────────────────
 
   async listSnapshots(page: number, pageSize: number, entityType?: string) {
