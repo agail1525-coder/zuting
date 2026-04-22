@@ -49,27 +49,50 @@ function resolveCover(
  * RichGuideContent · 游记正文富渲染 (详情页++ DPG-01)
  *   - 将 content 按段落切分
  *   - 每 2-3 段插入 1 张大图 (figcaption 可空)
+ *   - 排除 hero 封面图,防止头尾同图
  *   - 保留 Markdown 语法 (# ## ### > - 1. ** * ![alt](url))
  */
 function RichGuideContent({
   content,
   images,
+  excludeUrl,
 }: {
   content: string;
   images: string[];
+  excludeUrl?: string | null;
 }) {
   if (!content) return null;
 
-  // 按 \n\n 分块,再归入逻辑段 (1 段 ≈ 1 行或多行文字)
   const blocks = content.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
   if (blocks.length === 0) return null;
 
-  // 如果 content 已含 markdown 图片 (![...](...)),不再自动插图,避免重复
+  // 已含 markdown 图则不再自动插图;排除 hero 封面图;去重
   const hasMarkdownImages = /!\[[^\]]*\]\([^)]+\)/.test(content);
-  const pool = hasMarkdownImages ? [] : images.filter(Boolean);
-  let imgIdx = 0;
+  const seen = new Set<string>();
+  const pool: string[] = hasMarkdownImages
+    ? []
+    : images.filter((u) => {
+        if (!u) return false;
+        if (excludeUrl && u === excludeUrl) return false;
+        if (seen.has(u)) return false;
+        seen.add(u);
+        return true;
+      });
 
-  // 每 N 段插一张图 · N 依据段落总数动态调整,目标总插图 3-6 张
+  // 短文保护: <3 段不硬塞图,避免头尾挤在一起
+  if (blocks.length < 3 || pool.length === 0) {
+    return (
+      <div className="guide-rich-content">
+        {blocks.map((block, i) => (
+          <div key={`b-${i}`} className="rich-block">
+            <MarkdownRenderer content={block} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  let imgIdx = 0;
   const targetInserts = Math.min(pool.length, Math.max(2, Math.floor(blocks.length / 2)));
   const interval = targetInserts > 0 ? Math.max(2, Math.floor(blocks.length / (targetInserts + 1))) : Infinity;
 
@@ -80,7 +103,6 @@ function RichGuideContent({
         <MarkdownRenderer content={block} />
       </div>,
     );
-    // 段落后插图: 避开首段/末段,按 interval 规则
     const shouldInsert =
       imgIdx < pool.length && (i + 1) % interval === 0 && i < blocks.length - 1 && i > 0;
     if (shouldInsert) {
@@ -100,8 +122,8 @@ function RichGuideContent({
     }
   });
 
-  // 若图池有余 & 正文结束前未耗尽,末尾追加 1 张收束图
-  if (imgIdx < pool.length && imgIdx < 3) {
+  // 末尾追加收束图: 必须正文 ≥ 5 段 且池内有余,否则略过
+  if (blocks.length >= 5 && imgIdx < pool.length && imgIdx < 3) {
     nodes.push(
       <figure key="img-tail" className="my-8 -mx-4 sm:mx-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -278,9 +300,9 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
               </figure>
             )}
 
-            {/* Content · 段落间自动插图,Medium 风排版 */}
+            {/* Content · 段落间自动插图,Medium 风排版 (排除 hero 同图) */}
             <div className="mb-10 guide-typography text-[17px] leading-[1.85] text-gray-800">
-              <RichGuideContent content={guide.content} images={inlineImages} />
+              <RichGuideContent content={guide.content} images={inlineImages} excludeUrl={cover} />
             </div>
 
             {/* Actions */}
