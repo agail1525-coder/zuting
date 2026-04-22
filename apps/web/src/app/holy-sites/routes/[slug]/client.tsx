@@ -107,80 +107,51 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
   );
 }
 
-/* ─── RouteStoryCards · 将大段描述拆解为色块卡片 ─── */
+/* ─── RouteStory · 单卡片多分节 · 暖金竖线分隔 ─── */
 
-type StoryTheme = {
-  bg: string; border: string; iconBg: string; titleText: string; subText: string; chipBorder: string;
-  icon: string;
-};
-const STORY_THEMES: Record<string, StoryTheme> = {
-  slate:   { bg: "bg-slate-50",   border: "border-slate-200",   iconBg: "bg-slate-100",   titleText: "text-slate-800",   subText: "text-slate-600",   chipBorder: "border-slate-200",   icon: "📜" },
-  emerald: { bg: "bg-emerald-50", border: "border-emerald-200", iconBg: "bg-emerald-100", titleText: "text-emerald-800", subText: "text-emerald-700", chipBorder: "border-emerald-200", icon: "🎯" },
-  sky:     { bg: "bg-sky-50",     border: "border-sky-200",     iconBg: "bg-sky-100",     titleText: "text-sky-800",     subText: "text-sky-700",     chipBorder: "border-sky-200",     icon: "🗺️" },
-  rose:    { bg: "bg-rose-50",    border: "border-rose-200",    iconBg: "bg-rose-100",    titleText: "text-rose-800",    subText: "text-rose-700",    chipBorder: "border-rose-200",    icon: "✦" },
-  violet:  { bg: "bg-violet-50",  border: "border-violet-200",  iconBg: "bg-violet-100",  titleText: "text-violet-800",  subText: "text-violet-700",  chipBorder: "border-violet-200",  icon: "◎" },
-  amber:   { bg: "bg-amber-50",   border: "border-amber-200",   iconBg: "bg-amber-100",   titleText: "text-amber-800",   subText: "text-amber-700",   chipBorder: "border-amber-200",   icon: "🫱" },
-  orange:  { bg: "bg-orange-50",  border: "border-orange-200",  iconBg: "bg-orange-100",  titleText: "text-orange-800",  subText: "text-orange-700",  chipBorder: "border-orange-200",  icon: "✨" },
-};
-
-function pickStoryTheme(title: string): { key: keyof typeof STORY_THEMES; theme: StoryTheme } {
-  const rules: Array<{ re: RegExp; key: keyof typeof STORY_THEMES; icon?: string }> = [
-    { re: /关于|标题|声明|提示|说明/, key: "slate", icon: "📜" },
-    { re: /定位|目的|宗旨|主题/, key: "emerald", icon: "🎯" },
-    { re: /一脉|地标|线路|路线|穿行|行程地图/, key: "sky", icon: "🗺️" },
-    { re: /席|圈层|名额|闭门/, key: "rose", icon: "✦" },
-    { re: /维|价值|个人|家庭|企业/, key: "violet", icon: "◎" },
-    { re: /团队|组织|主持|讲师|主讲/, key: "amber", icon: "🫱" },
-    { re: /独家|体验|环节|亮点|特色|五重/, key: "orange", icon: "✨" },
-  ];
-  for (const r of rules) {
-    if (r.re.test(title)) {
-      const base = STORY_THEMES[r.key];
-      return { key: r.key, theme: r.icon ? { ...base, icon: r.icon } : base };
-    }
-  }
-  return { key: "slate", theme: STORY_THEMES.slate };
+function pickAccent(title: string): string {
+  // 返回统一暖金 hex,按不同 section 微调深浅,保持整体一致(不再做 7 色眩目分组)
+  if (/独家|体验|环节|亮点/.test(title)) return "#b8860b";
+  if (/定位|目的/.test(title)) return "#a8822f";
+  if (/一脉|线路|地标|穿行/.test(title)) return "#8b6914";
+  return "#8b6914";
 }
 
-function renderStoryBody(body: string, themeKey: keyof typeof STORY_THEMES) {
-  const t = STORY_THEMES[themeKey];
+function renderStoryBody(body: string) {
   const trimmed = body.trim();
   if (!trimmed) return null;
 
-  // Arrow flow (→)
+  // → 箭头流: 渲染为一段小 chip 序列
   if (trimmed.includes("→")) {
-    const steps = trimmed.split(/\s*→\s*/).map((s) => s.trim()).filter(Boolean);
-    // trailing sentence after last arrow may be conclusion (no arrow) — split out
-    const last = steps[steps.length - 1];
+    const raw = trimmed.split(/\s*→\s*/).map((s) => s.trim()).filter(Boolean);
+    const last = raw[raw.length - 1];
     let tail = "";
-    const tailMatch = last.match(/^(.+?)[。.]\s*([^。]+。?)$/);
-    let cleanSteps = steps;
-    if (tailMatch && tailMatch[2].length > 10 && !/→/.test(tailMatch[2])) {
-      cleanSteps = [...steps.slice(0, -1), tailMatch[1]];
-      tail = tailMatch[2];
+    let steps = raw;
+    const m = last.match(/^(.+?)[。.]\s*([^。]+。?)$/);
+    if (m && m[2].length > 10 && !/→/.test(m[2])) {
+      steps = [...raw.slice(0, -1), m[1]];
+      tail = m[2];
     }
     return (
       <div>
-        <div className="flex flex-wrap items-center gap-2">
-          {cleanSteps.map((step, i) => (
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
+          {steps.map((step, i) => (
             <Fragment key={i}>
-              <span className={`inline-block px-3 py-2 rounded-lg bg-white border ${t.chipBorder} ${t.subText} text-[13.5px] leading-snug max-w-[260px] shadow-sm`}>
+              <span className="inline-block px-2.5 py-1.5 rounded bg-[#fffdf7] border border-[#f0e5c7] text-[#5a4a1a] text-[13px] leading-snug max-w-[280px]">
                 {step}
               </span>
-              {i < cleanSteps.length - 1 && (
-                <span className={`${t.titleText} text-lg font-bold`}>→</span>
+              {i < steps.length - 1 && (
+                <span className="text-[#c8a86b] text-sm font-medium mx-0.5">→</span>
               )}
             </Fragment>
           ))}
         </div>
-        {tail && (
-          <p className="mt-3 text-gray-700 text-[14.5px] leading-relaxed">{tail}</p>
-        )}
+        {tail && <p className="mt-3 text-gray-700 text-[14.5px] leading-relaxed">{tail}</p>}
       </div>
     );
   }
 
-  // Numbered ①..⑩ list
+  // ①..⑩ 编号列表
   const circledRe = /[①②③④⑤⑥⑦⑧⑨⑩]/;
   if (circledRe.test(trimmed)) {
     const lines = trimmed.split(/\n+/).map((s) => s.trim()).filter(Boolean);
@@ -191,15 +162,15 @@ function renderStoryBody(body: string, themeKey: keyof typeof STORY_THEMES) {
           if (m) {
             return (
               <li key={i} className="flex gap-3 items-start">
-                <span className={`flex-shrink-0 w-7 h-7 rounded-full ${t.iconBg} ${t.titleText} flex items-center justify-center text-sm font-bold`}>
+                <span className="flex-shrink-0 text-[#8b6914] text-base font-semibold pt-0.5 w-5 text-center">
                   {m[1]}
                 </span>
-                <span className="flex-1 text-gray-700 text-[14.5px] leading-relaxed pt-0.5">{m[2]}</span>
+                <span className="flex-1 text-gray-700 text-[14.5px] leading-relaxed">{m[2]}</span>
               </li>
             );
           }
           return (
-            <li key={i} className="text-gray-600 text-[13.5px] leading-relaxed italic pl-10">
+            <li key={i} className="text-gray-600 text-[13.5px] leading-relaxed italic pl-8">
               {line}
             </li>
           );
@@ -208,7 +179,7 @@ function renderStoryBody(body: string, themeKey: keyof typeof STORY_THEMES) {
     );
   }
 
-  // Plain paragraphs
+  // 普通段落
   const paras = trimmed.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   return (
     <div className="space-y-2.5">
@@ -227,7 +198,6 @@ function RouteStoryCards({ description }: { description: string }) {
   for (let i = 1; i < parts.length; i += 2) {
     const header = (parts[i] || "").trim();
     const body = (parts[i + 1] || "").trim();
-    // Split "主标题 · 副标题" (center dot, middle dot, interpunct variants)
     const split = header.split(/\s*[·・·・]\s*/);
     const title = split[0].trim();
     const subtitle = split.slice(1).join(" · ").trim() || undefined;
@@ -242,36 +212,36 @@ function RouteStoryCards({ description }: { description: string }) {
     );
   }
 
-  const isWide = (s: { title: string; body: string }) =>
-    s.body.includes("→") || /独家|一脉|三维|环节/.test(s.title) || s.body.length > 240;
-
   return (
-    <div className="grid md:grid-cols-2 gap-4">
-      {sections.map((s, i) => {
-        const { key, theme } = pickStoryTheme(s.title);
-        return (
-          <article
-            key={i}
-            className={`${theme.bg} border ${theme.border} rounded-2xl p-5 md:p-6 ${isWide(s) ? "md:col-span-2" : ""}`}
-          >
-            <header className="flex items-start gap-3 mb-4">
-              <div className={`flex-shrink-0 w-10 h-10 rounded-xl ${theme.iconBg} flex items-center justify-center text-xl`}>
-                {theme.icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 text-base md:text-lg leading-tight">
+    <article className="bg-white border border-[#dadfe6] rounded-lg overflow-hidden">
+      {/* 顶部暖金细条,不抢戏只提色 */}
+      <div className="h-[3px] bg-gradient-to-r from-[#d4a855] via-[#b8860b] to-[#d4a855]" />
+      <div className="px-5 md:px-6 py-4 md:py-5 divide-y divide-gray-100">
+        {sections.map((s, i) => {
+          const accent = pickAccent(s.title);
+          return (
+            <section key={i} className="py-4 md:py-5 first:pt-0 last:pb-0">
+              <header className="flex items-baseline gap-3 mb-3">
+                <span
+                  className="inline-block w-1 h-4 rounded-full flex-shrink-0 translate-y-0.5"
+                  style={{ backgroundColor: accent }}
+                  aria-hidden="true"
+                />
+                <h3 className="font-semibold text-gray-900 text-[15.5px] md:text-base leading-tight">
                   {s.title}
                 </h3>
                 {s.subtitle && (
-                  <p className={`mt-1 text-xs md:text-sm ${theme.subText}`}>{s.subtitle}</p>
+                  <span className="text-gray-500 text-xs md:text-[13px] font-normal">
+                    · {s.subtitle}
+                  </span>
                 )}
-              </div>
-            </header>
-            {renderStoryBody(s.body, key)}
-          </article>
-        );
-      })}
-    </div>
+              </header>
+              <div className="pl-4">{renderStoryBody(s.body)}</div>
+            </section>
+          );
+        })}
+      </div>
+    </article>
   );
 }
 
