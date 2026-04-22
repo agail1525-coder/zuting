@@ -24,6 +24,23 @@ import { fetchRoutes } from "@/lib/api";
 
 /* ─── static maps ─── */
 
+// 合规徽章白名单: 12 条文化游学路线(岭南 v6 + v1 十二文化组合)
+// 所有路线均为"独立文化游学", 非任何寺观/神庙/教堂主办, 徽章仅在列表中 slug 下呈现
+const COMPLIANCE_BADGE_SLUGS = new Set<string>([
+  "lingnan-dao-chan-2026-may",
+  "wudang-taiji-2026-may",
+  "qufu-sankong-2026-sept",
+  "tibet-lhasa-2026-aug",
+  "europe-christian-2026-oct",
+  "silkroad-islam-2026-may",
+  "india-varanasi-2026-nov",
+  "israel-jewish-2026-apr",
+  "punjab-sikh-2026-jul",
+  "kyoto-shinto-2026-mar",
+  "peru-inca-2026-dec",
+  "haifa-bahai-2026-sept",
+]);
+
 // Category / difficulty labels resolved via i18n inside components
 const CATEGORY_I18N_KEYS: Record<string, string> = {
   ZEN: "routes.category.zen",
@@ -1306,7 +1323,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
                   <div className="flex-1">
                     <div className="flex items-center flex-wrap gap-2 mb-1">
                       <PopularityBadge count={route.bookCount} />
-                      {route.slug === "lingnan-dao-chan-2026-may" && (
+                      {route.slug && COMPLIANCE_BADGE_SLUGS.has(route.slug) && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
                           ✓ 非宗教 · 非寺观官方活动
                         </span>
