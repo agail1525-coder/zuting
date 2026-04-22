@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.99.0",
+    "@zuting/config": "workspace:*",
     "leaflet": "^1.9.4",
     "next": "^15.0.0",
     "react": "^19.0.0",

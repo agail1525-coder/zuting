@@ -7,3 +7,4 @@ export * from './i18n';
 export * from './api';
 export * from './currency';
 export * from './datetime';
+export * from './price-defaults';

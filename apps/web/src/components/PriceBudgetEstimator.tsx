@@ -2,12 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { STYLE_MULTIPLIERS, DAILY_BASE_YUAN, type BudgetStyle } from "@zuting/config";
 
-// W3.0.3 会从 API config 读取; W3.0.1 暂时保留常量但标注为"参考值"
-const STYLE_MULTIPLIERS = { eco: 1, comfort: 1.5, lux: 2.5 } as const;
-const DAILY_BASE = { hotel: 280, meals: 120, transport: 80, misc: 60 } as const;
-
-type Style = keyof typeof STYLE_MULTIPLIERS;
+type Style = BudgetStyle;
 
 interface Props {
   baseRoutePriceYuan?: number;
@@ -21,10 +18,10 @@ export default function PriceBudgetEstimator({ baseRoutePriceYuan = 2800 }: Prop
 
   const mul = STYLE_MULTIPLIERS[style];
   const routeFee = baseRoutePriceYuan * people;
-  const hotel = Math.round(days * DAILY_BASE.hotel * mul) * people;
-  const meals = Math.round(days * DAILY_BASE.meals * mul) * people;
-  const transport = Math.round(days * DAILY_BASE.transport * mul) * people;
-  const misc = Math.round(days * DAILY_BASE.misc * mul) * people;
+  const hotel = Math.round(days * DAILY_BASE_YUAN.hotel * mul) * people;
+  const meals = Math.round(days * DAILY_BASE_YUAN.meals * mul) * people;
+  const transport = Math.round(days * DAILY_BASE_YUAN.transport * mul) * people;
+  const misc = Math.round(days * DAILY_BASE_YUAN.misc * mul) * people;
   const total = routeFee + hotel + meals + transport + misc;
   const perPerson = Math.round(total / people);
 
