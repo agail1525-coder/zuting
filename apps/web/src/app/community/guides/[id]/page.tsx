@@ -262,14 +262,16 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
               )}
             </nav>
 
-            {/* 栏目徽章 · Medium 风,颜色强调栏目身份 */}
+            {/* 栏目徽章 · 大号填充药丸,强调栏目身份 */}
             {primaryTag && (
               <Link
                 href={`/community/guides?tag=${encodeURIComponent(primaryTag)}`}
-                className="inline-flex items-center gap-1.5 mb-3 text-xs font-bold uppercase tracking-widest text-[#0066FF] hover:text-[#0052CC] transition-colors"
+                className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full bg-[#0066FF] text-white text-base font-bold shadow-[0_4px_14px_rgba(0,102,255,0.35)] hover:bg-[#0052CC] hover:shadow-[0_6px_18px_rgba(0,102,255,0.45)] transition-all"
               >
-                <span className="w-8 h-px bg-[#0066FF]" />
-                {primaryTag}
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                </svg>
+                <span>栏目 · {primaryTag}</span>
               </Link>
             )}
 
