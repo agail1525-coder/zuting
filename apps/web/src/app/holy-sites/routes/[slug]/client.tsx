@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -103,6 +103,174 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
           {expanded ? t("routeDetail.collapse") : t("routeDetail.expandAll")}
         </button>
       )}
+    </div>
+  );
+}
+
+/* ─── RouteStoryCards · 将大段描述拆解为色块卡片 ─── */
+
+type StoryTheme = {
+  bg: string; border: string; iconBg: string; titleText: string; subText: string; chipBorder: string;
+  icon: string;
+};
+const STORY_THEMES: Record<string, StoryTheme> = {
+  slate:   { bg: "bg-slate-50",   border: "border-slate-200",   iconBg: "bg-slate-100",   titleText: "text-slate-800",   subText: "text-slate-600",   chipBorder: "border-slate-200",   icon: "📜" },
+  emerald: { bg: "bg-emerald-50", border: "border-emerald-200", iconBg: "bg-emerald-100", titleText: "text-emerald-800", subText: "text-emerald-700", chipBorder: "border-emerald-200", icon: "🎯" },
+  sky:     { bg: "bg-sky-50",     border: "border-sky-200",     iconBg: "bg-sky-100",     titleText: "text-sky-800",     subText: "text-sky-700",     chipBorder: "border-sky-200",     icon: "🗺️" },
+  rose:    { bg: "bg-rose-50",    border: "border-rose-200",    iconBg: "bg-rose-100",    titleText: "text-rose-800",    subText: "text-rose-700",    chipBorder: "border-rose-200",    icon: "✦" },
+  violet:  { bg: "bg-violet-50",  border: "border-violet-200",  iconBg: "bg-violet-100",  titleText: "text-violet-800",  subText: "text-violet-700",  chipBorder: "border-violet-200",  icon: "◎" },
+  amber:   { bg: "bg-amber-50",   border: "border-amber-200",   iconBg: "bg-amber-100",   titleText: "text-amber-800",   subText: "text-amber-700",   chipBorder: "border-amber-200",   icon: "🫱" },
+  orange:  { bg: "bg-orange-50",  border: "border-orange-200",  iconBg: "bg-orange-100",  titleText: "text-orange-800",  subText: "text-orange-700",  chipBorder: "border-orange-200",  icon: "✨" },
+};
+
+function pickStoryTheme(title: string): { key: keyof typeof STORY_THEMES; theme: StoryTheme } {
+  const rules: Array<{ re: RegExp; key: keyof typeof STORY_THEMES; icon?: string }> = [
+    { re: /关于|标题|声明|提示|说明/, key: "slate", icon: "📜" },
+    { re: /定位|目的|宗旨|主题/, key: "emerald", icon: "🎯" },
+    { re: /一脉|地标|线路|路线|穿行|行程地图/, key: "sky", icon: "🗺️" },
+    { re: /席|圈层|名额|闭门/, key: "rose", icon: "✦" },
+    { re: /维|价值|个人|家庭|企业/, key: "violet", icon: "◎" },
+    { re: /团队|组织|主持|讲师|主讲/, key: "amber", icon: "🫱" },
+    { re: /独家|体验|环节|亮点|特色|五重/, key: "orange", icon: "✨" },
+  ];
+  for (const r of rules) {
+    if (r.re.test(title)) {
+      const base = STORY_THEMES[r.key];
+      return { key: r.key, theme: r.icon ? { ...base, icon: r.icon } : base };
+    }
+  }
+  return { key: "slate", theme: STORY_THEMES.slate };
+}
+
+function renderStoryBody(body: string, themeKey: keyof typeof STORY_THEMES) {
+  const t = STORY_THEMES[themeKey];
+  const trimmed = body.trim();
+  if (!trimmed) return null;
+
+  // Arrow flow (→)
+  if (trimmed.includes("→")) {
+    const steps = trimmed.split(/\s*→\s*/).map((s) => s.trim()).filter(Boolean);
+    // trailing sentence after last arrow may be conclusion (no arrow) — split out
+    const last = steps[steps.length - 1];
+    let tail = "";
+    const tailMatch = last.match(/^(.+?)[。.]\s*([^。]+。?)$/);
+    let cleanSteps = steps;
+    if (tailMatch && tailMatch[2].length > 10 && !/→/.test(tailMatch[2])) {
+      cleanSteps = [...steps.slice(0, -1), tailMatch[1]];
+      tail = tailMatch[2];
+    }
+    return (
+      <div>
+        <div className="flex flex-wrap items-center gap-2">
+          {cleanSteps.map((step, i) => (
+            <Fragment key={i}>
+              <span className={`inline-block px-3 py-2 rounded-lg bg-white border ${t.chipBorder} ${t.subText} text-[13.5px] leading-snug max-w-[260px] shadow-sm`}>
+                {step}
+              </span>
+              {i < cleanSteps.length - 1 && (
+                <span className={`${t.titleText} text-lg font-bold`}>→</span>
+              )}
+            </Fragment>
+          ))}
+        </div>
+        {tail && (
+          <p className="mt-3 text-gray-700 text-[14.5px] leading-relaxed">{tail}</p>
+        )}
+      </div>
+    );
+  }
+
+  // Numbered ①..⑩ list
+  const circledRe = /[①②③④⑤⑥⑦⑧⑨⑩]/;
+  if (circledRe.test(trimmed)) {
+    const lines = trimmed.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+    return (
+      <ul className="space-y-2.5">
+        {lines.map((line, i) => {
+          const m = line.match(/^([①②③④⑤⑥⑦⑧⑨⑩])\s*(.*)$/);
+          if (m) {
+            return (
+              <li key={i} className="flex gap-3 items-start">
+                <span className={`flex-shrink-0 w-7 h-7 rounded-full ${t.iconBg} ${t.titleText} flex items-center justify-center text-sm font-bold`}>
+                  {m[1]}
+                </span>
+                <span className="flex-1 text-gray-700 text-[14.5px] leading-relaxed pt-0.5">{m[2]}</span>
+              </li>
+            );
+          }
+          return (
+            <li key={i} className="text-gray-600 text-[13.5px] leading-relaxed italic pl-10">
+              {line}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
+  // Plain paragraphs
+  const paras = trimmed.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  return (
+    <div className="space-y-2.5">
+      {paras.map((p, i) => (
+        <p key={i} className="text-gray-700 text-[14.5px] leading-relaxed">
+          {p}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function RouteStoryCards({ description }: { description: string }) {
+  const parts = description.split(/【([^】]+)】/);
+  const sections: Array<{ title: string; subtitle?: string; body: string }> = [];
+  for (let i = 1; i < parts.length; i += 2) {
+    const header = (parts[i] || "").trim();
+    const body = (parts[i + 1] || "").trim();
+    // Split "主标题 · 副标题" (center dot, middle dot, interpunct variants)
+    const split = header.split(/\s*[·・·・]\s*/);
+    const title = split[0].trim();
+    const subtitle = split.slice(1).join(" · ").trim() || undefined;
+    sections.push({ title, subtitle, body });
+  }
+
+  if (sections.length === 0) {
+    return (
+      <p className="text-gray-700 leading-relaxed whitespace-pre-line text-[14.5px]">
+        {description}
+      </p>
+    );
+  }
+
+  const isWide = (s: { title: string; body: string }) =>
+    s.body.includes("→") || /独家|一脉|三维|环节/.test(s.title) || s.body.length > 240;
+
+  return (
+    <div className="grid md:grid-cols-2 gap-4">
+      {sections.map((s, i) => {
+        const { key, theme } = pickStoryTheme(s.title);
+        return (
+          <article
+            key={i}
+            className={`${theme.bg} border ${theme.border} rounded-2xl p-5 md:p-6 ${isWide(s) ? "md:col-span-2" : ""}`}
+          >
+            <header className="flex items-start gap-3 mb-4">
+              <div className={`flex-shrink-0 w-10 h-10 rounded-xl ${theme.iconBg} flex items-center justify-center text-xl`}>
+                {theme.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-900 text-base md:text-lg leading-tight">
+                  {s.title}
+                </h3>
+                {s.subtitle && (
+                  <p className={`mt-1 text-xs md:text-sm ${theme.subText}`}>{s.subtitle}</p>
+                )}
+              </div>
+            </header>
+            {renderStoryBody(s.body, key)}
+          </article>
+        );
+      })}
     </div>
   );
 }
@@ -1442,10 +1610,16 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             <PriceForecast routeId={route.slug ?? route.id} currentPrice={(route.priceFrom ?? 0) / 100} />
           </div>
 
-          {/* ========== Description ========== */}
-          <div id="sec-desc" className="mt-6 bg-white border border-[#dadfe6] rounded-lg p-4">
+          {/* ========== Description (色块卡片化 · 非平铺长文) ========== */}
+          <div id="sec-desc" className="mt-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">{t("routeDetail.routeDescription")}</h2>
-            <ExpandableText text={route.description} maxLength={300} />
+            {route.description && /【[^】]+】/.test(route.description) ? (
+              <RouteStoryCards description={route.description} />
+            ) : (
+              <div className="bg-white border border-[#dadfe6] rounded-lg p-4">
+                <ExpandableText text={route.description} maxLength={300} />
+              </div>
+            )}
           </div>
 
           {/* ========== Social Proof ========== */}
