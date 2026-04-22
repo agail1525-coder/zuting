@@ -754,13 +754,36 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
     0,
   );
 
+  const modeBag = itinerary
+    .flatMap((d) => d.transportLegs ?? [])
+    .map((l) => l.mode || "");
+  const hasFlight = modeBag.some((m) => /飞机|航班|空中|flight/i.test(m));
+  const hasRail = modeBag.some((m) => /高铁|动车|火车|rail|train/i.test(m));
+  const hasRoad = modeBag.some((m) => /商务车|专车|越野车|徒步|步行|索道|摆渡|舒适/i.test(m));
+  const travelMode = hasFlight && hasRoad ? "陆空结合" : hasFlight ? "含航班" : hasRail && hasRoad ? "陆路+高铁" : hasRoad ? "纯陆路" : "多元交通";
+  const travelSub = hasFlight ? "含飞机转场" : hasRail ? "舒适商务车+高铁" : "舒适商务车";
+
+  const lodgeNightsByKind = itinerary.reduce(
+    (acc, d) => {
+      const kind = d.accommodationDetail?.type ?? "";
+      if (!kind) return acc;
+      const key = /民宿|客栈|禅院|道房/.test(kind) ? "民宿驻地" : /酒店|hotel/i.test(kind) ? "文化酒店" : "精选驻地";
+      acc[key] = (acc[key] ?? 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const lodgeSummary = Object.entries(lodgeNightsByKind)
+    .map(([k, n]) => `${n}晚${k}`)
+    .join(" · ");
+
   return (
     <div className="mt-6 bg-gradient-to-br from-[#fffdf7] via-white to-[#fff7e6] border border-[#f2c879] rounded-xl p-5">
       <div className="flex items-start gap-3 mb-4">
         <span className="text-2xl mt-0.5">🧘</span>
         <div>
-          <h2 className="text-xl font-bold text-[#8b6914]">行程节奏 · 不折腾 · 不飞机 · 不赶路</h2>
-          <p className="text-xs text-[#a57c1b] mt-1">专为创始人体力节奏设计 · 奔驰V级全程陆路 · 车程即深度讲座</p>
+          <h2 className="text-xl font-bold text-[#8b6914]">行程节奏 · 深度讲读 · 保留体力</h2>
+          <p className="text-xs text-[#a57c1b] mt-1">专为创始人体力节奏设计 · 途中即专题讲座 · 每日留足休整</p>
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -770,14 +793,14 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
         </div>
         <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
           <p className="text-xs text-[#a57c1b]">出行方式</p>
-          <p className="text-lg font-bold text-[#8b6914] mt-1">纯陆路</p>
-          <p className="text-[10px] text-[#a57c1b]">奔驰V级</p>
+          <p className="text-lg font-bold text-[#8b6914] mt-1">{travelMode}</p>
+          <p className="text-[10px] text-[#a57c1b]">{travelSub}</p>
         </div>
         {totalKm > 0 && (
           <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
             <p className="text-xs text-[#a57c1b]">总里程</p>
             <p className="text-lg font-bold text-[#8b6914] mt-1">约{totalKm}km</p>
-            <p className="text-[10px] text-[#a57c1b]">广东境内</p>
+            <p className="text-[10px] text-[#a57c1b]">含转场段</p>
           </div>
         )}
         {totalMin > 0 && (
@@ -799,15 +822,17 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
         ))}
       </div>
       <div className="mt-4 pt-4 border-t border-[#f2c879]/40 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-        <div className="flex items-center gap-2 text-[#a57c1b]">
-          <span>✈️</span><span className="line-through opacity-60">赶飞机转场</span>
+        <div className="flex items-center gap-2 text-[#8b6914] font-medium">
+          <span>🚗</span><span>舒适商务车 · 途中专题讲读 · 可平躺休息</span>
         </div>
         <div className="flex items-center gap-2 text-[#8b6914] font-medium">
-          <span>🚗</span><span>全程奔驰 V 级专车 · 途中专题讲座 · 可平躺休息</span>
+          <span>📖</span><span>每日主题讲座 · 文化讲读+圆桌对谈</span>
         </div>
-        <div className="flex items-center gap-2 text-[#8b6914] font-medium">
-          <span>🏯</span><span>两晚民宿驻地 · 每晚 22:00 前圆桌结束</span>
-        </div>
+        {lodgeSummary && (
+          <div className="flex items-center gap-2 text-[#8b6914] font-medium">
+            <span>🏯</span><span>{lodgeSummary} · 圆桌结束后再入夜</span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -824,7 +849,7 @@ function AccommodationShowcase({ itinerary }: { itinerary: ItineraryDay[] }) {
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-xl font-bold text-[#0f294d]">精选住宿 · 禅意民宿驻地</h2>
-          <p className="text-xs text-[#8592a6] mt-1">{days.length} 晚民宿驻地 · 紧邻祖庭 · 不住城市酒店 · 夜宿即修行</p>
+          <p className="text-xs text-[#8592a6] mt-1">{days.length} 晚精选驻地 · 紧邻文化现场 · 夜宿即讲读对谈</p>
         </div>
         <span className="shrink-0 px-2.5 py-1 rounded-full bg-[#fff7e6] border border-[#f2c879] text-[#8b6914] text-xs font-semibold">已含在价格</span>
       </div>
@@ -1461,7 +1486,7 @@ export default function RouteDetailClient({ route }: { route: Route }) {
             <MediaTour entityType="ROUTE" entityId={route.id} />
           </div>
 
-          {/* ========== 行程节奏总览 (疲劳管理 · 不飞机不赶路 · 结构化) ========== */}
+          {/* ========== 行程节奏总览 (疲劳管理 · 数据驱动 · 结构化) ========== */}
           <JourneyPacePanel
             itinerary={(route.itinerary ?? []) as ItineraryDay[]}
             duration={route.duration}

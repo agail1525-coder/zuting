@@ -1506,7 +1506,7 @@ export interface ItineraryDay {
   transportLegs?: Array<{
     from: string;
     to: string;
-    mode: string; // 奔驰V级商务车 / 步行 / 摆渡车
+    mode: string; // 舒适商务车 / 步行 / 摆渡车 / 高铁 / 航班
     distanceKm?: number;
     durationMin?: number;
     note?: string; // 途中专业讲座/休息安排
