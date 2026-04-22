@@ -5,6 +5,7 @@ import Link from "next/link";
 import { fetchPriceCalendar, fetchRoutes, type PriceCalendarItem } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
+import PriceSourceBadge from "@/components/PriceSourceBadge";
 
 interface EntityOption {
   type: string;
@@ -314,6 +315,8 @@ export default function PriceCalendarPage() {
             {t("prices.calendar.legend.noData")}
           </div>
         </div>
+
+        <PriceSourceBadge source="baseline" />
       </div>
       <MobileNav />
     </main>

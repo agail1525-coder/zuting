@@ -5,6 +5,7 @@ import Link from "next/link";
 import { fetchPriceCompare, fetchRoutes, type PriceCompareItem } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
+import PriceSourceBadge from "@/components/PriceSourceBadge";
 
 interface RouteOption {
   type: string;
@@ -252,6 +253,8 @@ export default function PriceComparePage() {
         <p className="mt-4 text-xs text-gray-400">
           {t("prices.compare.disclaimer")}
         </p>
+
+        <PriceSourceBadge source="baseline" sampleCount={items.length} />
       </div>
       <MobileNav />
     </main>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { fetchRoutes, fetchPackages, fetchPromotions, type PackageItem, type PromotionItem } from "@/lib/api";
 import MobileNav from "@/components/MobileNav";
+import PriceSourceBadge from "@/components/PriceSourceBadge";
 
 interface RoutePrice {
   title: string;
@@ -601,6 +602,8 @@ export default function PricesPage() {
             <p className="text-gray-400">{t("prices.noData")}</p>
           </div>
         )}
+
+        <PriceSourceBadge source="baseline" sampleCount={routes.length} />
       </section>
 
       {/* ── FEATURE 5: Budget Calculator / Trip Cost Estimator (Expedia style) ── */}

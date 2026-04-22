@@ -5,6 +5,7 @@ import Link from "next/link";
 import { fetchPriceTrend, fetchRoutes, type PriceTrendPoint, type Route } from "@/lib/api";
 import { useTranslation } from "@/lib/i18n";
 import MobileNav from "@/components/MobileNav";
+import PriceSourceBadge from "@/components/PriceSourceBadge";
 
 interface EntityOption { type: string; id: string; label: string }
 
@@ -328,6 +329,8 @@ export default function PriceTrendPage() {
             </div>
           </div>
         )}
+
+        <PriceSourceBadge source="baseline" sampleCount={prices.length} />
 
         {/* CTA */}
         <div className="flex justify-center">
