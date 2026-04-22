@@ -29,7 +29,16 @@ LOCAL_NEXT = "E:/ZUTING/apps/web/.next"
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect(SERVER, username='root', password='y1234567890.')
+
+_KEY_PATH = os.path.expanduser('~/.ssh/xiaoqing_deploy_ed25519')
+try:
+    ssh.connect(SERVER, username='root', key_filename=_KEY_PATH, timeout=15)
+    print(f"[auth] key: {_KEY_PATH}")
+except Exception as _ke:
+    print(f"[auth] key failed ({_ke}); fallback to password")
+    ssh.connect(SERVER, username='root', password='y1234567890.', timeout=15)
+    print("[auth] password OK")
+
 sftp = ssh.open_sftp()
 
 

@@ -332,8 +332,10 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
   const exploreTabs = useMemo(() => getExploreTabs(t), [t]);
   const currentPlaceholder = searchTabs.find(tab => tab.key === activeSearchTab)?.placeholder || "";
   // 首页优先展示有深度内容（photoStory / 多图画廊）的旗舰圣地,其余按默认顺序兜底
+  // HOME_BLOCKLIST: 图片质量不达标的圣地,待补图后解除
   const destinations = useMemo(() => {
-    const arr = holySites || [];
+    const HOME_BLOCKLIST = new Set<string>(["万松书院"]);
+    const arr = (holySites || []).filter((s) => !HOME_BLOCKLIST.has(s.name));
     const weight = (s: HolySite) => {
       const photoN = Array.isArray(s.photoStory) ? s.photoStory.length : 0;
       const galleryN = Array.isArray(s.galleryImages) ? s.galleryImages.length : 0;
