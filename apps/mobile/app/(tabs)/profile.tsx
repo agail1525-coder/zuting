@@ -94,12 +94,6 @@ export default function ProfileScreen() {
           onPress={() => router.push('/journals')}
         />
         <MenuItem
-          icon="flower"
-          label="修行记录"
-          subtitle={`已完成 ${counts?.practices ?? 0} 印`}
-          onPress={() => router.push('/(tabs)/seals')}
-        />
-        <MenuItem
           icon="footsteps"
           label="我的足迹"
           onPress={() => router.push('/trips')}

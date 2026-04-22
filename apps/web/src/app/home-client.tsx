@@ -331,7 +331,16 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
   const categoryIcons = useMemo(() => getCategoryIcons(t), [t]);
   const exploreTabs = useMemo(() => getExploreTabs(t), [t]);
   const currentPlaceholder = searchTabs.find(tab => tab.key === activeSearchTab)?.placeholder || "";
-  const destinations = (holySites || []).slice(0, 8);
+  // 首页优先展示有深度内容（photoStory / 多图画廊）的旗舰圣地,其余按默认顺序兜底
+  const destinations = useMemo(() => {
+    const arr = holySites || [];
+    const weight = (s: HolySite) => {
+      const photoN = Array.isArray(s.photoStory) ? s.photoStory.length : 0;
+      const galleryN = Array.isArray(s.galleryImages) ? s.galleryImages.length : 0;
+      return photoN * 10 + galleryN;
+    };
+    return [...arr].sort((a, b) => weight(b) - weight(a)).slice(0, 8);
+  }, [holySites]);
   const safeTemples = temples || [];
   const safePatriarchs = patriarchs || [];
   const safeReligions = religions || [];

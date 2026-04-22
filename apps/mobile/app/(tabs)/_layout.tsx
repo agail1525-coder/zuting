@@ -86,11 +86,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="seals"
         options={{
-          title: '体验',
+          href: null,
+          title: '文化体验',
           headerTitle: '文化体验',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="sparkles" size={size} color={color} />
-          ),
         }}
       />
       <Tabs.Screen

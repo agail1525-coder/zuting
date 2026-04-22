@@ -782,8 +782,8 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
       <div className="flex items-start gap-3 mb-4">
         <span className="text-2xl mt-0.5">🧘</span>
         <div>
-          <h2 className="text-xl font-bold text-[#8b6914]">行程节奏 · 深度讲读 · 保留体力</h2>
-          <p className="text-xs text-[#a57c1b] mt-1">专为创始人体力节奏设计 · 途中即专题讲座 · 每日留足休整</p>
+          <h2 className="text-xl font-bold text-[#8b6914]">行程节奏一览</h2>
+          <p className="text-xs text-[#a57c1b] mt-1">不飞不赶 · 每日留足休整时间 · 慢下来,才看得见</p>
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -807,7 +807,7 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
           <div className="p-3 rounded-lg bg-white border border-[#f2c879]/40 text-center">
             <p className="text-xs text-[#a57c1b]">总车程</p>
             <p className="text-lg font-bold text-[#8b6914] mt-1">约{(totalMin/60).toFixed(1)}h</p>
-            <p className="text-[10px] text-[#a57c1b]">讲座+休息</p>
+            <p className="text-[10px] text-[#a57c1b]">含沿途休整</p>
           </div>
         )}
       </div>
@@ -823,14 +823,14 @@ function JourneyPacePanel({ itinerary, duration, nights }: { itinerary: Itinerar
       </div>
       <div className="mt-4 pt-4 border-t border-[#f2c879]/40 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
         <div className="flex items-center gap-2 text-[#8b6914] font-medium">
-          <span>🚗</span><span>舒适商务车 · 途中专题讲读 · 可平躺休息</span>
+          <span>🚗</span><span>舒适商务车 · 路上可小憩</span>
         </div>
         <div className="flex items-center gap-2 text-[#8b6914] font-medium">
-          <span>📖</span><span>每日主题讲座 · 文化讲读+圆桌对谈</span>
+          <span>📖</span><span>沿途文化讲读 · 沙龙对谈</span>
         </div>
         {lodgeSummary && (
           <div className="flex items-center gap-2 text-[#8b6914] font-medium">
-            <span>🏯</span><span>{lodgeSummary} · 圆桌结束后再入夜</span>
+            <span>🏯</span><span>{lodgeSummary}</span>
           </div>
         )}
       </div>

@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center mb-4">
-              <Image src="/logo-dark.png" alt="Joinus 佳绩之旅" width={180} height={40} className="h-10 w-auto" />
+              <Image src="/logo-dark.png" alt="Joinus 佳绩之旅" width={112} height={24} className="h-6 w-auto" />
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-4">
               {t("footer.mission") || "加入我们，探索世界。发现全球文化遗产，体验千年智慧之旅。"}
