@@ -29,6 +29,96 @@ function formatDate(dateStr: string) {
   });
 }
 
+/** 估算阅读时长 · 中文 300 字/分钟 */
+function estimateReadMinutes(content: string): number {
+  const len = content.replace(/\s+/g, "").length;
+  return Math.max(1, Math.round(len / 300));
+}
+
+/** 替代 picsum 兜底封面为真实关联图 */
+function resolveCover(
+  coverImage: string | null | undefined,
+  inlineImages: string[] | undefined,
+): string | null {
+  if (coverImage && !coverImage.includes("picsum.photos")) return coverImage;
+  if (inlineImages && inlineImages.length > 0) return inlineImages[0];
+  return coverImage || null;
+}
+
+/**
+ * RichGuideContent · 游记正文富渲染 (详情页++ DPG-01)
+ *   - 将 content 按段落切分
+ *   - 每 2-3 段插入 1 张大图 (figcaption 可空)
+ *   - 保留 Markdown 语法 (# ## ### > - 1. ** * ![alt](url))
+ */
+function RichGuideContent({
+  content,
+  images,
+}: {
+  content: string;
+  images: string[];
+}) {
+  if (!content) return null;
+
+  // 按 \n\n 分块,再归入逻辑段 (1 段 ≈ 1 行或多行文字)
+  const blocks = content.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
+  if (blocks.length === 0) return null;
+
+  // 如果 content 已含 markdown 图片 (![...](...)),不再自动插图,避免重复
+  const hasMarkdownImages = /!\[[^\]]*\]\([^)]+\)/.test(content);
+  const pool = hasMarkdownImages ? [] : images.filter(Boolean);
+  let imgIdx = 0;
+
+  // 每 N 段插一张图 · N 依据段落总数动态调整,目标总插图 3-6 张
+  const targetInserts = Math.min(pool.length, Math.max(2, Math.floor(blocks.length / 2)));
+  const interval = targetInserts > 0 ? Math.max(2, Math.floor(blocks.length / (targetInserts + 1))) : Infinity;
+
+  const nodes: React.ReactNode[] = [];
+  blocks.forEach((block, i) => {
+    nodes.push(
+      <div key={`b-${i}`} className="rich-block">
+        <MarkdownRenderer content={block} />
+      </div>,
+    );
+    // 段落后插图: 避开首段/末段,按 interval 规则
+    const shouldInsert =
+      imgIdx < pool.length && (i + 1) % interval === 0 && i < blocks.length - 1 && i > 0;
+    if (shouldInsert) {
+      const src = pool[imgIdx++];
+      nodes.push(
+        <figure key={`img-${i}`} className="my-8 -mx-4 sm:mx-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt=""
+            className="w-full sm:rounded-2xl shadow-[0_6px_32px_rgba(0,0,0,0.08)] object-cover"
+            style={{ maxHeight: "520px" }}
+            loading="lazy"
+          />
+        </figure>,
+      );
+    }
+  });
+
+  // 若图池有余 & 正文结束前未耗尽,末尾追加 1 张收束图
+  if (imgIdx < pool.length && imgIdx < 3) {
+    nodes.push(
+      <figure key="img-tail" className="my-8 -mx-4 sm:mx-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={pool[imgIdx]}
+          alt=""
+          className="w-full sm:rounded-2xl shadow-[0_6px_32px_rgba(0,0,0,0.08)] object-cover"
+          style={{ maxHeight: "520px" }}
+          loading="lazy"
+        />
+      </figure>,
+    );
+  }
+
+  return <div className="guide-rich-content">{nodes}</div>;
+}
+
 export default function GuideDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { user } = useAuth();
@@ -119,64 +209,78 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
     );
   }
 
+  const cover = resolveCover(guide.coverImage, guide.inlineImages);
+  const readMin = estimateReadMinutes(guide.content || "");
+  const inlineImages = Array.isArray(guide.inlineImages) ? guide.inlineImages : [];
+
   return (
-    <main className="min-h-screen bg-gray-50 pt-20">
+    <main className="min-h-screen bg-white pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8 lg:gap-12">
-          {/* Main Content */}
-          <article className="flex-1 min-w-0">
+          {/* Main Content · Medium-style 阅读区,max-w-[720px] */}
+          <article className="flex-1 min-w-0 lg:max-w-[720px] mx-auto">
             {/* Breadcrumb */}
             <nav className="text-sm text-gray-500 mb-6">
               <Link href="/community" className="hover:text-[#0066FF]">{t("community.breadcrumb")}</Link>
-              {" > "}
+              <span className="mx-1.5 text-gray-300">›</span>
               <Link href="/community/guides" className="hover:text-[#0066FF]">{t("community.guides")}</Link>
-              {" > "}
-              <span className="text-gray-700">{guide.title}</span>
+              <span className="mx-1.5 text-gray-300">›</span>
+              <span className="text-gray-700 line-clamp-1 inline">{guide.title}</span>
             </nav>
 
-            {/* Hero Cover */}
-            {guide.coverImage && (
-              <div className="aspect-video rounded-2xl overflow-hidden mb-8 shadow-md">
-                <OptimizedImage src={guide.coverImage} alt={guide.title} width={800} height={450} className="w-full h-full object-cover" />
-              </div>
-            )}
+            {/* Title 优先 · Medium 把标题放在 hero 之前 */}
+            <h1 className="text-3xl sm:text-[36px] font-bold text-gray-900 leading-tight tracking-tight mb-4">
+              {guide.title}
+            </h1>
 
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{guide.title}</h1>
-
-            {/* Author info */}
-            <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-blue-600 shrink-0">
-                {guide.user?.avatar ? (
-                  <OptimizedImage src={guide.user.avatar} alt="" width={48} height={48} className="w-full h-full rounded-full object-cover" />
-                ) : (
-                  guide.user?.nickname?.charAt(0) || "?"
-                )}
-              </div>
-              <div>
-                <div className="font-semibold text-gray-900">{guide.user?.nickname || t("community.anonymous")}</div>
-                <div className="text-sm text-gray-500">
-                  {guide.publishedAt ? formatDate(guide.publishedAt) : formatDate(guide.createdAt)}
-                </div>
-              </div>
-              <div className="ml-auto flex gap-4 text-sm text-gray-400">
-                <span>👁 {guide.viewCount}</span>
-                <span>💬 {comments.length}</span>
-              </div>
-            </div>
-
-            {/* Tags */}
+            {/* Tags (置顶 · 阅读前先告知主题) */}
             {guide.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-5">
                 {guide.tags.map((tag) => (
-                  <span key={tag} className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm">{tag}</span>
+                  <span key={tag} className="px-2.5 py-0.5 bg-blue-50 text-[#0066FF] rounded-full text-xs font-medium">
+                    {tag}
+                  </span>
                 ))}
               </div>
             )}
 
-            {/* Content (Markdown) */}
-            <div className="mb-8">
-              <MarkdownRenderer content={guide.content} />
+            {/* Author Meta */}
+            <div className="flex items-center gap-3 mb-8 pb-6 border-b border-gray-100">
+              <div className="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center text-base font-bold text-blue-600 shrink-0">
+                {guide.user?.avatar ? (
+                  <OptimizedImage src={guide.user.avatar} alt="" width={44} height={44} className="w-full h-full rounded-full object-cover" />
+                ) : (
+                  guide.user?.nickname?.charAt(0) || "?"
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-gray-900 text-[15px]">{guide.user?.nickname || t("community.anonymous")}</div>
+                <div className="text-xs text-gray-500 flex items-center gap-2 mt-0.5">
+                  <span>{guide.publishedAt ? formatDate(guide.publishedAt) : formatDate(guide.createdAt)}</span>
+                  <span className="text-gray-300">·</span>
+                  <span>{readMin} 分钟阅读</span>
+                  <span className="text-gray-300">·</span>
+                  <span className="flex items-center gap-0.5">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    {guide.viewCount}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Cover · 真实关联图,不再是 picsum 西装男 */}
+            {cover && (
+              <figure className="aspect-video rounded-2xl overflow-hidden mb-10 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+                <OptimizedImage src={cover} alt={guide.title} width={800} height={450} className="w-full h-full object-cover" />
+              </figure>
+            )}
+
+            {/* Content · 段落间自动插图,Medium 风排版 */}
+            <div className="mb-10 guide-typography text-[17px] leading-[1.85] text-gray-800">
+              <RichGuideContent content={guide.content} images={inlineImages} />
             </div>
 
             {/* Actions */}

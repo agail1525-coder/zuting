@@ -1966,6 +1966,8 @@ export interface GuideItem {
   publishedAt: string | null;
   createdAt: string;
   user: GuideAuthor;
+  /** 游记正文配图池 · 后端按 religion/holy-site 关联拼装,前端段落间插图 (详情页++ DPG) */
+  inlineImages?: string[];
 }
 
 export interface GuideListResponse {

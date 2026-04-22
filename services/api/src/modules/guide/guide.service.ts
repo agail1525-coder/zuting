@@ -92,13 +92,61 @@ export class GuideService {
     });
     if (!guide) throw new NotFoundException(`Guide ${id} not found`);
 
+    // 详情页++ (DPG): 游记正文配图池 · 按 religion/holy-site 关联取图,前端段落间插图
+    const inlineImages = await this.computeInlineImages(guide);
+
     // Increment viewCount (fire-and-forget, non-blocking)
     void this.prisma.guide.update({
       where: { id },
       data: { viewCount: { increment: 1 } },
     });
 
-    return guide;
+    return { ...guide, inlineImages };
+  }
+
+  /**
+   * 计算游记正文配图池 · 读时拼装(不入 schema)
+   * 来源优先级: HOLY_SITE 自身 gallery+photoStory+imageUrl > RELIGION 下多个圣地 gallery
+   */
+  private async computeInlineImages(guide: {
+    entityType: string | null;
+    entityId: string | null;
+  }): Promise<string[]> {
+    const urls: string[] = [];
+    const pushJsonImages = (val: unknown, key: 'url' | 'imageUrl') => {
+      if (Array.isArray(val)) {
+        for (const it of val) {
+          if (it && typeof it === 'object' && typeof (it as Record<string, unknown>)[key] === 'string') {
+            urls.push((it as Record<string, unknown>)[key] as string);
+          }
+        }
+      }
+    };
+
+    if (guide.entityType === 'HOLY_SITE' && guide.entityId) {
+      const site = await this.prisma.holySite.findUnique({
+        where: { id: guide.entityId },
+        select: { imageUrl: true, gallery: true, photoStory: true },
+      });
+      if (site?.imageUrl) urls.push(site.imageUrl);
+      pushJsonImages(site?.gallery, 'url');
+      pushJsonImages(site?.photoStory, 'imageUrl');
+    } else if (guide.entityType === 'RELIGION' && guide.entityId) {
+      const sites = await this.prisma.holySite.findMany({
+        where: { religionId: guide.entityId, status: 'ACTIVE' },
+        select: { imageUrl: true, gallery: true, photoStory: true },
+        take: 8,
+      });
+      for (const s of sites) {
+        if (s.imageUrl) urls.push(s.imageUrl);
+        pushJsonImages(s.gallery, 'url');
+        pushJsonImages(s.photoStory, 'imageUrl');
+      }
+    }
+
+    // 去重 + 过滤 picsum 兜底图 + 限 12 张
+    const filtered = urls.filter((u) => u && !u.includes('picsum.photos'));
+    return Array.from(new Set(filtered)).slice(0, 12);
   }
 
   async update(id: string, userId: string, dto: UpdateGuideDto) {
