@@ -182,10 +182,10 @@ export default function PricesPage() {
         </div>
       </section>
 
-      {/* ═══════ 段三 · 支撑 (Context) ═══════ */}
-      <section className="mt-14 pt-12 pb-14 bg-white border-t border-gray-100">
+      {/* ═══════ 段三 · 友善提醒 (更新节律) ═══════ */}
+      <div className="mt-10 py-5 border-t border-gray-100">
         <PriceMethodology />
-      </section>
+      </div>
 
       {/* Bottom CTA */}
       <section className="max-w-4xl mx-auto px-4 pb-16 pt-6">
