@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { fetchHolySite, type HolySite } from "@/lib/api";
 import HolySiteDetailClient from "./detail-client";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ id: string }>;
 }
