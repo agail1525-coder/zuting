@@ -1,10 +1,10 @@
-# 价格++ (Price Sync & Reconcile) v1.0
+# 价格++ (Price Sync & Reconcile) v1.1
 
-> **代号**: PRC | **版本**: v1.0 | **创建**: 2026-04-22
+> **代号**: PRC | **版本**: v1.1 | **创建**: 2026-04-22 | **升级**: 2026-04-22 (v1.0→v1.1, +UI 控制台规范)
 > **定位**: 全站旅行配套价格的单一事实源 — 采集 × 对齐 × 快照 × 告警 × 透明
 > **愿景**: 让 JOINUS.COM 的每一个价格数字都可追溯、可校验、可信任 — 对标 Skyscanner/Kayak/Hopper 的价格透明与时效治理
 > **触发**: `价格++` / `价格++ seed` / `价格++ reconcile` / `价格++ crawl {provider}` / `价格++ audit` / `价格++ upgrade v{N}`
-> **核心**: 单一数据源 (PriceSnapshot) × 三条 CRON 自愈 × 三态透明标注 × 迭代升级
+> **核心**: 单一数据源 (PriceSnapshot) × 三条 CRON 自愈 × 三态透明标注 × 迭代升级 × 三段式控制台 UI
 
 ---
 
@@ -13,7 +13,7 @@
 ```yaml
 name: price-sync-reconcile
 code: PRC
-version: 1.0
+version: 1.1
 since: 2026-04-22
 triggers:
   - 价格++                                    # 自动循环：选最旧/最缺快照的实体补采
@@ -32,7 +32,7 @@ triggers:
   - 部署后挂载三条 CRON (见 §4.3)
   - 所有价格展示页必须挂 PriceSourceBadge 组件
 联动技能: 爬虫++ (CW PRICE 域) / 旅游配套++ (TP) / 目的地++ (DST) / 全审++ (FA) / 天查++ (TC) / 项目++ (PJ)
-核心铁律: PRC-01 ~ PRC-30 (见 §8,v1.0 首批 15 条,后续版本递增)
+核心铁律: PRC-01 ~ PRC-33 (见 §8,v1.0 首批 15 条 + v1.1 新增 UI 3 条 PRC-31~33,后续版本递增)
 ```
 
 ---
@@ -173,6 +173,31 @@ PriceSnapshot (单表单一事实源)
          - memory/project_price_tool_wave_{x}_done.md 更新
 ```
 
+### 3.5 UI 控制台规范 (PRC-31 ~ PRC-33, v1.1 新增)
+
+```
+[PRC-31] 价格工具首页 /prices 必须三段式控制台结构
+         段一·控制台: PulseBar (系统自愈能力展示) + HeroSearch + ToolsGrid
+         段二·洞察: 左 2/3 榜单/热门 · 右 1/3 闪购/告警/预算
+         段三·支撑: 方法论 FAQ + Bottom CTA
+         理由: 对标 Skyscanner/Kayak/Google Flights/Hopper,首屏即能力展示
+         禁止"14 段杂货铺"堆砌 (v1.0 教训),新模块必须归属其中一段或新建专属子页
+
+[PRC-32] PriceSnapshot 新增维度必须同步升级 system-status + PulseBar
+         新增 source/provider/confidence 等字段时:
+         - /api/prices/system-status sourceBreakdown 必须镜像新 source 分布
+         - PricePulseBar 必须相应追加条件渲染项 (baseline/crawler/official 三态)
+         - 禁止"后端加字段前端不感知",全链路贯通
+         理由: 自愈能力必须对用户可见,否则丧失产品差异化护城河
+
+[PRC-33] 预算/测算/系数类常量必须下沉 @zuting/config
+         - DAILY_BASE_YUAN / STYLE_MULTIPLIERS / SEASONAL_COEFFICIENTS 等
+         - 禁止内联 magic number 或仅标注 "// 参考值"
+         - 升级变动走 price-defaults.ts 版本 bump + PRICE_DEFAULTS_VERSION 递增
+         - Admin 可配化路径: 未来 PriceConfig 表对冲硬编码
+         理由: 乘数/系数散布 UI 层导致重复,A/B 测试无落点
+```
+
 ---
 
 ## §4 流程 (标准执行序列)
@@ -284,22 +309,30 @@ Step 5 · 首页 /prices 页 badge 升级为 "翠色 · 官方合作数据"
 ## §7 生命周期 (版本升级路径)
 
 ```
-v1.0 (2026-04-22) ✅ 当前
+v1.0 (2026-04-22) ✅
   ├─ Route baseline × 91d × 33 routes = 3003 snapshots
   ├─ 3 条 CRON 挂载
   └─ PriceSourceBadge baseline 态
 
-v1.1 · DestinationPackage 直映射 (目标 2026-05 上旬)
-  ├─ seed-price-snapshots-v1.1.ts 加 PACKAGE entityType
+v1.1 (2026-04-22) ✅ 当前 · /prices v3 UI 控制台重构
+  ├─ 3 段式结构 (控制台/洞察/支撑) 替换 14 段杂货铺
+  ├─ 9 新组件: PulseBar/HeroSearch/ToolsGrid/TodayLow/TopMovers/FlashDeal/AlertInline/BudgetEstimator/Methodology
+  ├─ 3 新端点: /system-status /today-low /top-movers (@Public 免登录)
+  ├─ 预算乘数下沉 @zuting/config/price-defaults.ts
+  ├─ PRC-31~33 铁律入库
+  └─ i18n zh-CN/en 首批,其余语言回退 DEFAULT_LOCALE
+
+v1.2 · DestinationPackage 直映射 (目标 2026-05 上旬)
+  ├─ seed-price-snapshots-v1.2.ts 加 PACKAGE entityType
   ├─ PriceSnapshot 加 source/provider 字段 (Prisma migration)
   └─ admin/PriceAuditPage 上线
 
-v1.2 · tier 分档基线 (目标 2026-05 中旬)
+v1.3 · tier 分档基线 (目标 2026-05 中旬)
   ├─ 4 档配套 × 30d 价格
   ├─ confidence 字段启用
   └─ 天查++ 新增价格维度审计
 
-v1.3 · HolySite 门票接入 (目标 2026-06)
+v1.4 · HolySite 门票接入 (目标 2026-06)
   ├─ 507 目的地 × 12 月门票快照
   └─ 冷热季节系数独立配置
 
@@ -343,9 +376,9 @@ v2.0 · 全站 1M+ 实体覆盖 + 官方 API 混合 (目标 2027)
 
 ---
 
-## §8 铁律汇总 (PRC-01 ~ PRC-30 预留)
+## §8 铁律汇总 (PRC-01 ~ PRC-33 已落地 / ~PRC-50 预留)
 
-### 已落地 (v1.0)
+### 已落地 v1.0 (价格数据治理)
 
 ```
 [PRC-01] 价格数字必须伴随"数据来源标识"
@@ -365,23 +398,31 @@ v2.0 · 全站 1M+ 实体覆盖 + 官方 API 混合 (目标 2027)
 [PRC-15] 版本升级必须同步 protocol + PRD + memory
 ```
 
-### 预留 (v1.1+ 落地后补上)
+### 已落地 v1.1 (UI 控制台规范)
 
 ```
-[PRC-16] crawler 价格必须与 baseline 交叉校验 (≤30% 偏差放行)  [v1.4]
-[PRC-17] PriceSnapshot.sampleRaw 必须保存采集原文                 [v1.4]
-[PRC-18] confidence 字段 < 0.6 的快照禁止展示                    [v1.2]
-[PRC-19] provider 字段非空时 source 必须为 crawler 或 official    [v1.4]
-[PRC-20] official 降级为 crawler/baseline 需 CEO 审批 + 日志      [v1.4]
-[PRC-21] 多货币进入后必须显式 currency 字段展示 (前端)            [v1.6]
-[PRC-22] 小时级/分钟级 CRON 必须有分布式锁防重                   [v1.6]
-[PRC-23] 爬虫失败超 3 次降级回 baseline + 告警                    [v1.4]
-[PRC-24] 价格变动 > 30% 必须走人工审核                           [v1.4]
-[PRC-25] 凭证密钥只进 .env / Vault,禁入仓                        [v1.4]
-[PRC-26] price 字段禁止负数/零 (历史 Math.max(100) 同理)         [v1.2]
-[PRC-27] 过期价格 (> 90d 无更新) UI 显示"数据陈旧"灰度           [v1.3]
-[PRC-28] 促销价必须独立 PromotionalPriceSnapshot 表,不污染主表   [v1.5]
-[PRC-29] 多实体组合价 (套餐) 必须分子价 + 组合价双存             [v1.5]
+[PRC-31] /prices 必须三段式控制台 (控制台/洞察/支撑),禁止段堆砌
+[PRC-32] PriceSnapshot 新增维度必须全链路贯通到 system-status + PulseBar
+[PRC-33] 预算/测算常量必须下沉 @zuting/config,禁止内联 magic number
+```
+
+### 预留 (v1.2+ 落地后补上)
+
+```
+[PRC-16] crawler 价格必须与 baseline 交叉校验 (≤30% 偏差放行)  [v1.5]
+[PRC-17] PriceSnapshot.sampleRaw 必须保存采集原文                 [v1.5]
+[PRC-18] confidence 字段 < 0.6 的快照禁止展示                    [v1.3]
+[PRC-19] provider 字段非空时 source 必须为 crawler 或 official    [v1.5]
+[PRC-20] official 降级为 crawler/baseline 需 CEO 审批 + 日志      [v1.5]
+[PRC-21] 多货币进入后必须显式 currency 字段展示 (前端)            [v1.7]
+[PRC-22] 小时级/分钟级 CRON 必须有分布式锁防重                   [v1.7]
+[PRC-23] 爬虫失败超 3 次降级回 baseline + 告警                    [v1.5]
+[PRC-24] 价格变动 > 30% 必须走人工审核                           [v1.5]
+[PRC-25] 凭证密钥只进 .env / Vault,禁入仓                        [v1.5]
+[PRC-26] price 字段禁止负数/零 (历史 Math.max(100) 同理)         [v1.3]
+[PRC-27] 过期价格 (> 90d 无更新) UI 显示"数据陈旧"灰度           [v1.4]
+[PRC-28] 促销价必须独立 PromotionalPriceSnapshot 表,不污染主表   [v1.6]
+[PRC-29] 多实体组合价 (套餐) 必须分子价 + 组合价双存             [v1.6]
 [PRC-30] v2.0 冻结表结构,重大变更走 schema migration + 回滚计划    [v2.0]
 ```
 
@@ -413,6 +454,16 @@ v2.0 · 全站 1M+ 实体覆盖 + 官方 API 混合 (目标 2027)
 - ✅ 4 页挂载: `/prices`, `/prices/calendar`, `/prices/compare`, `/prices/trend`
 - ✅ 踩坑实录: `E:\ZUTING-APP\业务逻辑PRD\F-ZZ07-价格工具数据对齐重构流程与踩坑实录.md`
 - ✅ 生产运行数据: 3003 snapshots · 3 CRONs 挂载 · 4 页面 HTTP 200
+
+## 附录 A2 · v1.1 交付物清单 (UI 控制台)
+
+- ✅ Commits: `56aa139` (架构) · `f38e031` (3 新 API) · `85691df` (config 下沉) · `5f1f229` (i18n) · `954f25d` (移动端)
+- ✅ 9 新组件: `apps/web/src/components/Price{PulseBar,HeroSearch,ToolsGrid,TodayLow,TopMovers,FlashDeal,AlertInline,BudgetEstimator,Methodology}.tsx`
+- ✅ 3 新端点: `/api/prices/system-status` · `/api/prices/today-low` · `/api/prices/top-movers` (全 @Public)
+- ✅ Config 下沉: `packages/config/src/price-defaults.ts` (DAILY_BASE_YUAN/STYLE_MULTIPLIERS)
+- ✅ i18n: zh-CN + en 14 新键 (`prices.v3.pulse.*` / `prices.v3.insights.*`)
+- ✅ 页面: `/prices` 重构为三段式控制台 (867 行 → 220 行)
+- ✅ Memory: `project_price_tool_v3_ui.md` (M24-v3 交付索引)
 
 ## 附录 B · 常用命令速查
 
