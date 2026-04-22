@@ -903,6 +903,12 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
         { id: "sec-info", label: t("holysite.nav.overview") || "概览" },
         { id: "routes", label: t("holysite.nav.routes") || "路线预订" },
         { id: "sec-intro", label: t("holysite.nav.intro") || "圣地介绍" },
+        ...(Array.isArray(site.photoStory) && site.photoStory.length > 0 ? [{ id: "sec-photo-story", label: "画面故事" }] : []),
+        ...(site.openingHoursBySeason ? [{ id: "sec-season-hours", label: "四季开放" }] : []),
+        ...(Array.isArray(site.transportLegs) && site.transportLegs.length > 0 ? [{ id: "sec-transport-legs", label: "交通接驳" }] : []),
+        ...(site.visitorTipsGrouped ? [{ id: "sec-visitor-tips", label: "参访贴士" }] : []),
+        ...(Array.isArray(site.localGuides) && site.localGuides.length > 0 ? [{ id: "sec-local-guides", label: "讲解师" }] : []),
+        ...(Array.isArray(site.culturalProducts) && site.culturalProducts.length > 0 ? [{ id: "sec-cultural-products", label: "文化周边" }] : []),
         { id: "reviews", label: t("holysite.nav.reviews") || "评价" },
         { id: "sec-facilities", label: t("holysite.nav.facilities") || "设施" },
         { id: "sec-etiquette", label: t("holysite.nav.etiquette") || "参访礼仪" },
@@ -1035,6 +1041,35 @@ export default function HolySiteDetailClient({ site }: { site: HolySite }) {
             {/* CW-YT Crawler Videos */}
             <CrawlerVideos targetType="holySite" targetId={site.id} />
 
+            {/* 目的地++ v1 · 画面故事 */}
+            {Array.isArray(site.photoStory) && site.photoStory.length > 0 && (
+              <PhotoStoryTimeline story={site.photoStory} />
+            )}
+
+            {/* 目的地++ v1 · 四季开放时间 */}
+            {site.openingHoursBySeason && (
+              <SeasonHoursTable hours={site.openingHoursBySeason} />
+            )}
+
+            {/* 目的地++ v1 · 交通接驳分段 */}
+            {Array.isArray(site.transportLegs) && site.transportLegs.length > 0 && (
+              <TransportLegsPanel legs={site.transportLegs} />
+            )}
+
+            {/* 目的地++ v1 · 参访贴士分组 */}
+            {site.visitorTipsGrouped && (
+              <VisitorTipsGroupedPanel tips={site.visitorTipsGrouped} />
+            )}
+
+            {/* 目的地++ v1 · 当地讲解师 */}
+            {Array.isArray(site.localGuides) && site.localGuides.length > 0 && (
+              <LocalGuidesPanel guides={site.localGuides} />
+            )}
+
+            {/* 目的地++ v1 · 文化周边 */}
+            {Array.isArray(site.culturalProducts) && site.culturalProducts.length > 0 && (
+              <CulturalProductsPanel products={site.culturalProducts} />
+            )}
 
             {/* S8. 评分分布 + 评价完整区 */}
             <div id="reviews" className="mt-6">
@@ -1170,6 +1205,244 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
           {expanded ? (t("holysite.collapse") || "收起") : (t("holysite.expand") || "展开全部")} {expanded ? "△" : "▽"}
         </button>
       )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   目的地++ v1 · 6 Panels (data-driven, 空态不渲染)
+   ═══════════════════════════════════════════════════════════ */
+
+const LEG_MODE_LABEL: Record<string, { label: string; icon: string }> = {
+  FLIGHT: { label: "飞机", icon: "✈" },
+  TRAIN: { label: "高铁", icon: "🚄" },
+  RAIL: { label: "火车", icon: "🚆" },
+  CAR: { label: "商务车", icon: "🚘" },
+  BUS: { label: "巴士", icon: "🚌" },
+  WALK: { label: "步行", icon: "🚶" },
+  SHUTTLE: { label: "接驳", icon: "🚐" },
+  CABLE: { label: "缆车", icon: "🚡" },
+  BOAT: { label: "船", icon: "⛵" },
+};
+
+function TransportLegsPanel({ legs }: { legs: NonNullable<HolySite["transportLegs"]> }) {
+  if (!Array.isArray(legs) || legs.length === 0) return null;
+  return (
+    <div id="sec-transport-legs" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.553 2.776A1 1 0 0022 18.882V8.118a1 1 0 00-1.447-.894L15 10m0 7V10m0 0L9 7" /></svg>
+        交通接驳 · 分段路线
+      </h2>
+      <div className="space-y-2">
+        {legs.map((leg, i) => {
+          const mode = LEG_MODE_LABEL[(leg.mode || "").toUpperCase()] || { label: leg.mode || "—", icon: "▶" };
+          return (
+            <div key={i} className="flex items-stretch gap-3 p-3 rounded-xl bg-[#f5f7fa] border border-[#dadfe6]">
+              <div className="w-10 shrink-0 flex flex-col items-center">
+                <span className="text-xl">{mode.icon}</span>
+                <span className="mt-1 text-[10px] text-[#8592a6] font-medium">{mode.label}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#0f294d]">
+                  <span className="truncate">{leg.from}</span>
+                  <span className="text-[#8592a6]">→</span>
+                  <span className="truncate">{leg.to}</span>
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#455873]">
+                  {leg.distanceKm != null && <span>约 {leg.distanceKm} km</span>}
+                  {leg.durationMin != null && <span>约 {Math.round(leg.durationMin / 60 * 10) / 10} 小时</span>}
+                  {leg.costFrom != null && <span className="text-[#ff6600] font-medium">¥{leg.costFrom}/人起</span>}
+                </div>
+                {leg.note && <p className="mt-1 text-xs text-[#8592a6] leading-relaxed">{leg.note}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CulturalProductsPanel({ products }: { products: NonNullable<HolySite["culturalProducts"]> }) {
+  if (!Array.isArray(products) || products.length === 0) return null;
+  return (
+    <div id="sec-cultural-products" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#8B6914]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+        文化周边 · 带走一段文明
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {products.map((p, i) => (
+          <div key={i} className="p-4 rounded-xl bg-gradient-to-br from-[#fff9ec] to-[#fef3d9] border border-[#e8d69a]">
+            <div className="flex items-start justify-between mb-2">
+              <span className="text-3xl">{p.emoji || "🎁"}</span>
+              {p.tag && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#8B6914]/10 text-[#8B6914] font-medium">{p.tag}</span>}
+            </div>
+            <h3 className="text-sm font-bold text-[#0f294d] mb-1">{p.name}</h3>
+            <p className="text-xs text-[#455873] leading-relaxed line-clamp-3">{p.desc}</p>
+            <div className="mt-2 flex items-center justify-between text-[11px]">
+              {p.localStore && <span className="text-[#8592a6] truncate">📍 {p.localStore}</span>}
+              {p.priceFrom != null && <span className="text-[#ff6600] font-bold">¥{p.priceFrom}起</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const SEASON_LABEL: Record<string, { label: string; icon: string; color: string }> = {
+  spring: { label: "春季", icon: "🌸", color: "#f9a8d4" },
+  summer: { label: "夏季", icon: "☀", color: "#fbbf24" },
+  autumn: { label: "秋季", icon: "🍁", color: "#f97316" },
+  winter: { label: "冬季", icon: "❄", color: "#60a5fa" },
+};
+
+function SeasonHoursTable({ hours }: { hours: NonNullable<HolySite["openingHoursBySeason"]> }) {
+  if (!hours || typeof hours !== "object") return null;
+  const entries = (["spring", "summer", "autumn", "winter"] as const)
+    .map((k) => ({ key: k, v: (hours as Record<string, { open?: string; close?: string; note?: string } | undefined>)[k] }))
+    .filter((e) => e.v && (e.v.open || e.v.close || e.v.note));
+  if (entries.length === 0) return null;
+  return (
+    <div id="sec-season-hours" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        四季开放时间
+      </h2>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        {entries.map(({ key, v }) => {
+          const meta = SEASON_LABEL[key];
+          return (
+            <div key={key} className="p-3 rounded-xl border border-[#dadfe6] bg-white">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">{meta.icon}</span>
+                <span className="text-sm font-semibold text-[#0f294d]">{meta.label}</span>
+              </div>
+              {(v?.open || v?.close) && (
+                <div className="text-sm font-bold text-[#0f294d]">
+                  {v?.open || "—"} <span className="text-[#8592a6] font-normal">~</span> {v?.close || "—"}
+                </div>
+              )}
+              {v?.note && <p className="mt-1 text-[11px] text-[#8592a6] leading-relaxed">{v.note}</p>}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const TIP_GROUP_LABEL: Record<string, { label: string; icon: string }> = {
+  transport: { label: "交通贴士", icon: "🚗" },
+  dining: { label: "用餐贴士", icon: "🍲" },
+  gear: { label: "装备贴士", icon: "🎒" },
+  etiquette: { label: "礼仪贴士", icon: "🙏" },
+};
+
+function VisitorTipsGroupedPanel({ tips }: { tips: NonNullable<HolySite["visitorTipsGrouped"]> }) {
+  if (!tips || typeof tips !== "object") return null;
+  const groups = (["transport", "dining", "gear", "etiquette"] as const)
+    .map((k) => ({ key: k, list: (tips as Record<string, string[] | undefined>)[k] || [] }))
+    .filter((g) => g.list.length > 0);
+  if (groups.length === 0) return null;
+  return (
+    <div id="sec-visitor-tips" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        参访贴士 · 分类指南
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {groups.map((g) => {
+          const meta = TIP_GROUP_LABEL[g.key];
+          return (
+            <div key={g.key} className="p-4 rounded-xl bg-[#f5f7fa] border border-[#dadfe6]">
+              <h3 className="flex items-center gap-2 text-sm font-semibold text-[#0f294d] mb-2">
+                <span className="text-lg">{meta.icon}</span>
+                {meta.label}
+              </h3>
+              <ul className="space-y-1.5">
+                {g.list.map((t, i) => (
+                  <li key={i} className="flex gap-2 text-xs text-[#455873] leading-relaxed">
+                    <span className="text-[#3264ff] shrink-0">•</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function LocalGuidesPanel({ guides }: { guides: NonNullable<HolySite["localGuides"]> }) {
+  if (!Array.isArray(guides) || guides.length === 0) return null;
+  return (
+    <div id="sec-local-guides" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        当地文化讲解师
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {guides.map((g, i) => (
+          <div key={i} className="p-4 rounded-xl bg-white border border-[#dadfe6]">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#3264ff] to-[#8B6914] flex items-center justify-center text-white text-xl font-bold shrink-0">
+                {g.name?.[0] || "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-[#0f294d] truncate">{g.name}</h3>
+                <p className="text-xs text-[#8592a6] truncate">{g.specialty}</p>
+              </div>
+            </div>
+            {g.rating != null && (
+              <div className="flex items-center gap-1 mb-2">
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#00b341] text-white">{g.rating.toFixed(1)}</span>
+                <span className="text-[11px] text-[#455873]">专业评分</span>
+              </div>
+            )}
+            {Array.isArray(g.languages) && g.languages.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2">
+                {g.languages.map((lang, j) => (
+                  <span key={j} className="text-[10px] px-1.5 py-0.5 rounded bg-[#3264ff]/10 text-[#3264ff]">{lang}</span>
+                ))}
+              </div>
+            )}
+            <p className="text-xs text-[#455873] leading-relaxed line-clamp-3">{g.bio}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PhotoStoryTimeline({ story }: { story: NonNullable<HolySite["photoStory"]> }) {
+  if (!Array.isArray(story) || story.length === 0) return null;
+  const sorted = [...story].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  return (
+    <div id="sec-photo-story" className="mt-6">
+      <h2 className="text-base font-bold text-[#0f294d] mb-3 flex items-center gap-2">
+        <svg className="w-5 h-5 text-[#3264ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
+        镜头之下 · 画面故事
+      </h2>
+      <div className="space-y-3">
+        {sorted.map((frame, i) => (
+          <div key={i} className="flex flex-col md:flex-row gap-3 p-3 rounded-xl bg-[#f5f7fa] border border-[#dadfe6]">
+            {frame.imageUrl && (
+              <div className="md:w-56 shrink-0 rounded-lg overflow-hidden relative aspect-[4/3] md:aspect-[4/3]">
+                <OptimizedImage src={frame.imageUrl} alt={frame.caption} fill className="object-cover" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-[#0f294d]">{frame.caption}</h3>
+              {frame.shotLocation && <p className="mt-0.5 text-[11px] text-[#8592a6]">📍 {frame.shotLocation}</p>}
+              <p className="mt-2 text-xs text-[#455873] leading-relaxed">{frame.significance}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

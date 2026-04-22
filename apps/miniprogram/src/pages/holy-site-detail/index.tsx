@@ -140,6 +140,32 @@ export default function HolySiteDetailPage() {
         </View>
       </View>
 
+      {/* 目的地++ v1 · 四季开放时间 */}
+      {site.openingHoursBySeason && <SeasonHoursPanel hours={site.openingHoursBySeason} />}
+
+      {/* 目的地++ v1 · 交通接驳分段 */}
+      {Array.isArray(site.transportLegs) && site.transportLegs.length > 0 && (
+        <TransportLegsPanel legs={site.transportLegs} />
+      )}
+
+      {/* 目的地++ v1 · 参访贴士分组 */}
+      {site.visitorTipsGrouped && <VisitorTipsGroupedPanel tips={site.visitorTipsGrouped} />}
+
+      {/* 目的地++ v1 · 当地讲解师 */}
+      {Array.isArray(site.localGuides) && site.localGuides.length > 0 && (
+        <LocalGuidesPanel guides={site.localGuides} />
+      )}
+
+      {/* 目的地++ v1 · 文化周边 */}
+      {Array.isArray(site.culturalProducts) && site.culturalProducts.length > 0 && (
+        <CulturalProductsPanel products={site.culturalProducts} />
+      )}
+
+      {/* 目的地++ v1 · 画面故事 */}
+      {Array.isArray(site.photoStory) && site.photoStory.length > 0 && (
+        <PhotoStoryPanel story={site.photoStory} />
+      )}
+
       {/* Tips */}
       {Array.isArray(site.tips) && site.tips.length > 0 && (
         <View className='section'>
@@ -251,6 +277,183 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
         <Text className='info-list__label'>{label}</Text>
         <Text className='info-list__value'>{value}</Text>
       </View>
+    </View>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   目的地++ v1 · 6 Mini Panels (data-driven)
+   ═══════════════════════════════════════════════════════════ */
+
+const MODE_ICON_MINI: Record<string, string> = {
+  FLIGHT: '✈', TRAIN: '🚄', RAIL: '🚆', CAR: '🚘',
+  BUS: '🚌', WALK: '🚶', SHUTTLE: '🚐', CABLE: '🚡', BOAT: '⛵',
+}
+
+function TransportLegsPanel({ legs }: { legs: NonNullable<HolySite['transportLegs']> }) {
+  return (
+    <View className='section'>
+      <Text className='section__title'>🚗 交通接驳</Text>
+      {legs.map((leg, i) => (
+        <View key={i} className='card' style={{ marginBottom: '12rpx' }}>
+          <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A' }}>
+            {MODE_ICON_MINI[(leg.mode || '').toUpperCase()] || '▶'} {leg.from} → {leg.to}
+          </Text>
+          <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20rpx', marginTop: '8rpx' }}>
+            {leg.distanceKm != null && <Text style={{ fontSize: '24rpx', color: '#6B7280' }}>约 {leg.distanceKm} km</Text>}
+            {leg.durationMin != null && <Text style={{ fontSize: '24rpx', color: '#6B7280' }}>约 {Math.round(leg.durationMin / 60 * 10) / 10} h</Text>}
+            {leg.costFrom != null && <Text style={{ fontSize: '24rpx', color: '#EF4444', fontWeight: 700 }}>¥{leg.costFrom}/人起</Text>}
+          </View>
+          {leg.note && <Text style={{ fontSize: '24rpx', color: '#6B7280', marginTop: '8rpx' }}>{leg.note}</Text>}
+        </View>
+      ))}
+    </View>
+  )
+}
+
+function CulturalProductsPanel({ products }: { products: NonNullable<HolySite['culturalProducts']> }) {
+  return (
+    <View className='section'>
+      <Text className='section__title'>🎁 文化周边</Text>
+      {products.map((p, i) => (
+        <View key={i} className='card' style={{ marginBottom: '12rpx', backgroundColor: '#FFF9EC', borderColor: '#E8D69A' }}>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ fontSize: '44rpx' }}>{p.emoji || '🎁'}</Text>
+            {p.tag && <Text style={{ fontSize: '20rpx', color: '#8B6914', fontWeight: 600 }}>{p.tag}</Text>}
+          </View>
+          <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A', marginTop: '8rpx' }}>{p.name}</Text>
+          <Text style={{ fontSize: '24rpx', color: '#6B7280', lineHeight: '36rpx', marginTop: '4rpx' }}>{p.desc}</Text>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: '12rpx' }}>
+            {p.localStore && <Text style={{ fontSize: '22rpx', color: '#6B7280' }}>📍 {p.localStore}</Text>}
+            {p.priceFrom != null && <Text style={{ fontSize: '24rpx', color: '#EF4444', fontWeight: 700 }}>¥{p.priceFrom}起</Text>}
+          </View>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+const SEASON_META_MINI: Record<string, { label: string; icon: string }> = {
+  spring: { label: '春季', icon: '🌸' },
+  summer: { label: '夏季', icon: '☀' },
+  autumn: { label: '秋季', icon: '🍁' },
+  winter: { label: '冬季', icon: '❄' },
+}
+
+function SeasonHoursPanel({ hours }: { hours: NonNullable<HolySite['openingHoursBySeason']> }) {
+  const entries = (['spring', 'summer', 'autumn', 'winter'] as const)
+    .map((k) => ({ key: k, v: (hours as Record<string, { open?: string; close?: string; note?: string } | undefined>)[k] }))
+    .filter((e) => e.v && (e.v.open || e.v.close || e.v.note))
+  if (entries.length === 0) return null
+  return (
+    <View className='section'>
+      <Text className='section__title'>🕐 四季开放</Text>
+      {entries.map(({ key, v }) => {
+        const meta = SEASON_META_MINI[key]
+        return (
+          <View key={key} className='card' style={{ marginBottom: '12rpx' }}>
+            <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A' }}>
+              {meta.icon} {meta.label}
+            </Text>
+            {(v?.open || v?.close) && (
+              <Text style={{ fontSize: '28rpx', fontWeight: 600, color: '#3264ff', marginTop: '4rpx' }}>
+                {v?.open || '—'}  ~  {v?.close || '—'}
+              </Text>
+            )}
+            {v?.note && <Text style={{ fontSize: '22rpx', color: '#6B7280', marginTop: '4rpx' }}>{v.note}</Text>}
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+const TIP_META_MINI: Record<string, { label: string; icon: string }> = {
+  transport: { label: '交通贴士', icon: '🚗' },
+  dining: { label: '用餐贴士', icon: '🍲' },
+  gear: { label: '装备贴士', icon: '🎒' },
+  etiquette: { label: '礼仪贴士', icon: '🙏' },
+}
+
+function VisitorTipsGroupedPanel({ tips }: { tips: NonNullable<HolySite['visitorTipsGrouped']> }) {
+  const groups = (['transport', 'dining', 'gear', 'etiquette'] as const)
+    .map((k) => ({ key: k, list: (tips as Record<string, string[] | undefined>)[k] || [] }))
+    .filter((g) => g.list.length > 0)
+  if (groups.length === 0) return null
+  return (
+    <View className='section'>
+      <Text className='section__title'>💡 参访贴士</Text>
+      {groups.map((g) => {
+        const meta = TIP_META_MINI[g.key]
+        return (
+          <View key={g.key} className='card' style={{ marginBottom: '12rpx' }}>
+            <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A', marginBottom: '8rpx' }}>
+              {meta.icon} {meta.label}
+            </Text>
+            {g.list.map((t, i) => (
+              <View key={i} style={{ display: 'flex', flexDirection: 'row', marginBottom: '6rpx' }}>
+                <Text style={{ color: '#3264ff', marginRight: '8rpx' }}>•</Text>
+                <Text style={{ fontSize: '24rpx', color: '#6B7280', flex: 1 }}>{t}</Text>
+              </View>
+            ))}
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+function LocalGuidesPanel({ guides }: { guides: NonNullable<HolySite['localGuides']> }) {
+  return (
+    <View className='section'>
+      <Text className='section__title'>👤 当地讲解师</Text>
+      {guides.map((g, i) => (
+        <View key={i} className='card' style={{ marginBottom: '12rpx' }}>
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '8rpx' }}>
+            <View style={{ width: '72rpx', height: '72rpx', borderRadius: '36rpx', backgroundColor: '#3264ff', display: 'flex', justifyContent: 'center', alignItems: 'center', marginRight: '16rpx' }}>
+              <Text style={{ color: '#FFFFFF', fontSize: '32rpx', fontWeight: 800 }}>{g.name?.[0] || '?'}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A' }}>{g.name}</Text>
+              <Text style={{ fontSize: '22rpx', color: '#6B7280', marginTop: '2rpx' }}>{g.specialty}</Text>
+            </View>
+            {g.rating != null && (
+              <View style={{ backgroundColor: '#00b341', paddingLeft: '10rpx', paddingRight: '10rpx', paddingTop: '4rpx', paddingBottom: '4rpx', borderRadius: '6rpx' }}>
+                <Text style={{ color: '#FFFFFF', fontSize: '20rpx', fontWeight: 800 }}>{g.rating.toFixed(1)}</Text>
+              </View>
+            )}
+          </View>
+          {Array.isArray(g.languages) && g.languages.length > 0 && (
+            <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '8rpx', marginBottom: '8rpx' }}>
+              {g.languages.map((lang, j) => (
+                <View key={j} style={{ backgroundColor: '#EEF2FF', paddingLeft: '12rpx', paddingRight: '12rpx', paddingTop: '4rpx', paddingBottom: '4rpx', borderRadius: '999rpx' }}>
+                  <Text style={{ fontSize: '20rpx', color: '#3264ff', fontWeight: 600 }}>{lang}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+          <Text style={{ fontSize: '24rpx', color: '#6B7280', lineHeight: '36rpx' }}>{g.bio}</Text>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+function PhotoStoryPanel({ story }: { story: NonNullable<HolySite['photoStory']> }) {
+  const sorted = [...story].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  return (
+    <View className='section'>
+      <Text className='section__title'>📷 镜头之下</Text>
+      {sorted.map((frame, i) => (
+        <View key={i} className='card' style={{ marginBottom: '12rpx' }}>
+          {frame.imageUrl && (
+            <Image className='route-row__image' src={frame.imageUrl} mode='aspectFill' lazyLoad style={{ width: '100%', height: '320rpx', borderRadius: '12rpx', marginBottom: '12rpx' }} />
+          )}
+          <Text style={{ fontSize: '28rpx', fontWeight: 700, color: '#1A1A1A' }}>{frame.caption}</Text>
+          {frame.shotLocation && <Text style={{ fontSize: '22rpx', color: '#6B7280', marginTop: '4rpx' }}>📍 {frame.shotLocation}</Text>}
+          <Text style={{ fontSize: '24rpx', color: '#6B7280', marginTop: '8rpx', lineHeight: '36rpx' }}>{frame.significance}</Text>
+        </View>
+      ))}
     </View>
   )
 }

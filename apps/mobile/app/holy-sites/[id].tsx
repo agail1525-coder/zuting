@@ -117,6 +117,32 @@ export default function HolySiteDetailScreen() {
         </View>
       </View>
 
+      {/* 目的地++ v1 · 四季开放时间 */}
+      {site.openingHoursBySeason && <SeasonHoursSection hours={site.openingHoursBySeason} />}
+
+      {/* 目的地++ v1 · 交通接驳分段 */}
+      {Array.isArray(site.transportLegs) && site.transportLegs.length > 0 && (
+        <TransportLegsSection legs={site.transportLegs} />
+      )}
+
+      {/* 目的地++ v1 · 参访贴士分组 */}
+      {site.visitorTipsGrouped && <VisitorTipsGroupedSection tips={site.visitorTipsGrouped} />}
+
+      {/* 目的地++ v1 · 当地讲解师 */}
+      {Array.isArray(site.localGuides) && site.localGuides.length > 0 && (
+        <LocalGuidesSection guides={site.localGuides} />
+      )}
+
+      {/* 目的地++ v1 · 文化周边 */}
+      {Array.isArray(site.culturalProducts) && site.culturalProducts.length > 0 && (
+        <CulturalProductsSection products={site.culturalProducts} />
+      )}
+
+      {/* 目的地++ v1 · 画面故事 */}
+      {Array.isArray(site.photoStory) && site.photoStory.length > 0 && (
+        <PhotoStorySection story={site.photoStory} />
+      )}
+
       {/* Tips */}
       {Array.isArray(site.tips) && site.tips.length > 0 && (
         <View style={s.section}>
@@ -288,4 +314,186 @@ const s = StyleSheet.create({
     gap: 6, borderWidth: 1, borderColor: '#3264ff', paddingVertical: 12, borderRadius: 999,
   },
   ctaBtnOutlineText: { color: '#3264ff', fontSize: 15, fontWeight: '600' },
+  // 目的地++ v1 panels
+  panelTitle: { fontSize: 17, fontWeight: '700', color: '#1A1A1A', marginBottom: 10 },
+  panelCard: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: '#E5E7EB', marginBottom: 8 },
+  panelMutedText: { fontSize: 12, color: '#6B7280', lineHeight: 18 },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
+  chip: { backgroundColor: '#EEF2FF', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999 },
+  chipText: { fontSize: 11, color: '#3264ff', fontWeight: '600' },
 });
+
+/* ═══════════════════════════════════════════════════════════
+   目的地++ v1 · 6 Mobile Panels (data-driven)
+   ═══════════════════════════════════════════════════════════ */
+
+const MODE_ICON_MOBILE: Record<string, string> = {
+  FLIGHT: '✈', TRAIN: '🚄', RAIL: '🚆', CAR: '🚘',
+  BUS: '🚌', WALK: '🚶', SHUTTLE: '🚐', CABLE: '🚡', BOAT: '⛵',
+};
+
+function TransportLegsSection({ legs }: { legs: NonNullable<HolySite['transportLegs']> }) {
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>🚗 交通接驳</Text>
+      {legs.map((leg, i) => (
+        <View key={i} style={s.panelCard}>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A' }}>
+            {MODE_ICON_MOBILE[(leg.mode || '').toUpperCase()] || '▶'} {leg.from} → {leg.to}
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
+            {leg.distanceKm != null && <Text style={s.panelMutedText}>约 {leg.distanceKm} km</Text>}
+            {leg.durationMin != null && <Text style={s.panelMutedText}>约 {Math.round(leg.durationMin / 60 * 10) / 10} h</Text>}
+            {leg.costFrom != null && <Text style={{ fontSize: 12, color: '#EF4444', fontWeight: '700' }}>¥{leg.costFrom}/人起</Text>}
+          </View>
+          {leg.note && <Text style={[s.panelMutedText, { marginTop: 4 }]}>{leg.note}</Text>}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function CulturalProductsSection({ products }: { products: NonNullable<HolySite['culturalProducts']> }) {
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>🎁 文化周边</Text>
+      {products.map((p, i) => (
+        <View key={i} style={[s.panelCard, { backgroundColor: '#FFF9EC', borderColor: '#E8D69A' }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+            <Text style={{ fontSize: 22 }}>{p.emoji || '🎁'}</Text>
+            {p.tag && <Text style={{ fontSize: 10, color: '#8B6914', fontWeight: '600' }}>{p.tag}</Text>}
+          </View>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A', marginBottom: 2 }}>{p.name}</Text>
+          <Text style={s.panelMutedText} numberOfLines={3}>{p.desc}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+            {p.localStore && <Text style={s.panelMutedText}>📍 {p.localStore}</Text>}
+            {p.priceFrom != null && <Text style={{ fontSize: 12, color: '#EF4444', fontWeight: '700' }}>¥{p.priceFrom}起</Text>}
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+const SEASON_META_MOBILE: Record<string, { label: string; icon: string }> = {
+  spring: { label: '春季', icon: '🌸' },
+  summer: { label: '夏季', icon: '☀' },
+  autumn: { label: '秋季', icon: '🍁' },
+  winter: { label: '冬季', icon: '❄' },
+};
+
+function SeasonHoursSection({ hours }: { hours: NonNullable<HolySite['openingHoursBySeason']> }) {
+  const entries = (['spring', 'summer', 'autumn', 'winter'] as const)
+    .map((k) => ({ key: k, v: (hours as Record<string, { open?: string; close?: string; note?: string } | undefined>)[k] }))
+    .filter((e) => e.v && (e.v.open || e.v.close || e.v.note));
+  if (entries.length === 0) return null;
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>🕐 四季开放</Text>
+      {entries.map(({ key, v }) => {
+        const meta = SEASON_META_MOBILE[key];
+        return (
+          <View key={key} style={s.panelCard}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A', marginBottom: 2 }}>
+              {meta.icon} {meta.label}
+            </Text>
+            {(v?.open || v?.close) && (
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#3264ff' }}>
+                {v?.open || '—'}  ~  {v?.close || '—'}
+              </Text>
+            )}
+            {v?.note && <Text style={[s.panelMutedText, { marginTop: 2 }]}>{v.note}</Text>}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+const TIP_META_MOBILE: Record<string, { label: string; icon: string }> = {
+  transport: { label: '交通贴士', icon: '🚗' },
+  dining: { label: '用餐贴士', icon: '🍲' },
+  gear: { label: '装备贴士', icon: '🎒' },
+  etiquette: { label: '礼仪贴士', icon: '🙏' },
+};
+
+function VisitorTipsGroupedSection({ tips }: { tips: NonNullable<HolySite['visitorTipsGrouped']> }) {
+  const groups = (['transport', 'dining', 'gear', 'etiquette'] as const)
+    .map((k) => ({ key: k, list: (tips as Record<string, string[] | undefined>)[k] || [] }))
+    .filter((g) => g.list.length > 0);
+  if (groups.length === 0) return null;
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>💡 参访贴士</Text>
+      {groups.map((g) => {
+        const meta = TIP_META_MOBILE[g.key];
+        return (
+          <View key={g.key} style={s.panelCard}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A', marginBottom: 6 }}>
+              {meta.icon} {meta.label}
+            </Text>
+            {g.list.map((t, i) => (
+              <View key={i} style={{ flexDirection: 'row', gap: 6, marginBottom: 4 }}>
+                <Text style={{ color: '#3264ff' }}>•</Text>
+                <Text style={[s.panelMutedText, { flex: 1 }]}>{t}</Text>
+              </View>
+            ))}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+function LocalGuidesSection({ guides }: { guides: NonNullable<HolySite['localGuides']> }) {
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>👤 当地讲解师</Text>
+      {guides.map((g, i) => (
+        <View key={i} style={s.panelCard}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#3264ff', justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 18 }}>{g.name?.[0] || '?'}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A' }}>{g.name}</Text>
+              <Text style={s.panelMutedText}>{g.specialty}</Text>
+            </View>
+            {g.rating != null && (
+              <View style={{ backgroundColor: '#00b341', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>{g.rating.toFixed(1)}</Text>
+              </View>
+            )}
+          </View>
+          {Array.isArray(g.languages) && g.languages.length > 0 && (
+            <View style={s.chipRow}>
+              {g.languages.map((lang, j) => (
+                <View key={j} style={s.chip}><Text style={s.chipText}>{lang}</Text></View>
+              ))}
+            </View>
+          )}
+          <Text style={[s.panelMutedText, { marginTop: 6 }]} numberOfLines={3}>{g.bio}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function PhotoStorySection({ story }: { story: NonNullable<HolySite['photoStory']> }) {
+  const sorted = [...story].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  return (
+    <View style={s.section}>
+      <Text style={s.panelTitle}>📷 镜头之下</Text>
+      {sorted.map((frame, i) => (
+        <View key={i} style={s.panelCard}>
+          {frame.imageUrl && (
+            <Image source={{ uri: frame.imageUrl }} style={{ width: '100%', height: 160, borderRadius: 8, marginBottom: 8 }} resizeMode="cover" />
+          )}
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1A1A' }}>{frame.caption}</Text>
+          {frame.shotLocation && <Text style={[s.panelMutedText, { marginTop: 2 }]}>📍 {frame.shotLocation}</Text>}
+          <Text style={[s.panelMutedText, { marginTop: 4 }]}>{frame.significance}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}

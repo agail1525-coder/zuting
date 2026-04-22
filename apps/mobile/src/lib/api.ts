@@ -90,6 +90,51 @@ export interface HolySite {
   nearbyStay?: string;
   nearbyExperience?: string;
   nearbySights?: string;
+  // 目的地++ v1 深度字段
+  transportLegs?: {
+    from: string;
+    to: string;
+    mode: string;
+    distanceKm?: number;
+    durationMin?: number;
+    note?: string;
+    costFrom?: number;
+  }[] | null;
+  culturalProducts?: {
+    name: string;
+    desc: string;
+    emoji?: string;
+    tag?: string;
+    localStore?: string;
+    priceFrom?: number;
+  }[] | null;
+  openingHoursBySeason?: {
+    spring?: { open?: string; close?: string; note?: string };
+    summer?: { open?: string; close?: string; note?: string };
+    autumn?: { open?: string; close?: string; note?: string };
+    winter?: { open?: string; close?: string; note?: string };
+  } | null;
+  visitorTipsGrouped?: {
+    transport?: string[];
+    dining?: string[];
+    gear?: string[];
+    etiquette?: string[];
+  } | null;
+  localGuides?: {
+    name: string;
+    specialty: string;
+    languages: string[];
+    rating?: number;
+    bio: string;
+    avatar?: string;
+  }[] | null;
+  photoStory?: {
+    imageUrl?: string;
+    caption: string;
+    shotLocation?: string;
+    significance: string;
+    order?: number;
+  }[] | null;
 }
 
 export interface Temple {

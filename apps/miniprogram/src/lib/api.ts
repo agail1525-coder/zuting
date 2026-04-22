@@ -45,6 +45,51 @@ export interface HolySite {
   nearbySights?: string
   religion?: Religion
   religionId: string
+  // 目的地++ v1 深度字段
+  transportLegs?: {
+    from: string
+    to: string
+    mode: string
+    distanceKm?: number
+    durationMin?: number
+    note?: string
+    costFrom?: number
+  }[] | null
+  culturalProducts?: {
+    name: string
+    desc: string
+    emoji?: string
+    tag?: string
+    localStore?: string
+    priceFrom?: number
+  }[] | null
+  openingHoursBySeason?: {
+    spring?: { open?: string; close?: string; note?: string }
+    summer?: { open?: string; close?: string; note?: string }
+    autumn?: { open?: string; close?: string; note?: string }
+    winter?: { open?: string; close?: string; note?: string }
+  } | null
+  visitorTipsGrouped?: {
+    transport?: string[]
+    dining?: string[]
+    gear?: string[]
+    etiquette?: string[]
+  } | null
+  localGuides?: {
+    name: string
+    specialty: string
+    languages: string[]
+    rating?: number
+    bio: string
+    avatar?: string
+  }[] | null
+  photoStory?: {
+    imageUrl?: string
+    caption: string
+    shotLocation?: string
+    significance: string
+    order?: number
+  }[] | null
 }
 
 export interface Temple {
@@ -119,7 +164,7 @@ async function request<T>(path: string, params?: Record<string, string>): Promis
     }
     throw new Error(`API Error: ${res.statusCode}`)
   } catch (err) {
-    console.error(`[API] ${path} failed:`, err)
+    console.error('[API] request failed:', path, err)
     throw err
   }
 }
@@ -386,7 +431,7 @@ async function postRequest<T>(path: string, data?: Record<string, unknown> | obj
     }
     throw new Error(`API Error: ${res.statusCode}`)
   } catch (err) {
-    console.error(`[API] POST ${path} failed:`, err)
+    console.error('[API] POST failed:', path, err)
     throw err
   }
 }
@@ -1248,7 +1293,7 @@ async function deleteRequest<T>(path: string): Promise<T> {
     }
     throw new Error(`API Error: ${res.statusCode}`)
   } catch (err) {
-    console.error(`[API] DELETE ${path} failed:`, err)
+    console.error('[API] DELETE failed:', path, err)
     throw err
   }
 }

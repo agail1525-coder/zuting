@@ -135,6 +135,52 @@ export interface HolySite {
   transport?: string | null;
   tips?: string[];
   collectionCount?: number;
+
+  // 目的地++ v1 深度字段 (对标 Route 详情页 Day1)
+  transportLegs?: {
+    from: string;
+    to: string;
+    mode: string;          // 高铁/舒适商务车/步行/索道/摆渡等
+    distanceKm?: number;
+    durationMin?: number;
+    note?: string;
+    costFrom?: number;     // 单位 ¥ 单人参考价
+  }[] | null;
+  culturalProducts?: {
+    name: string;
+    desc: string;
+    emoji?: string;
+    tag?: string;
+    localStore?: string;   // 推荐采买地
+    priceFrom?: number;
+  }[] | null;
+  openingHoursBySeason?: {
+    spring?: { open: string; close: string; note?: string };
+    summer?: { open: string; close: string; note?: string };
+    autumn?: { open: string; close: string; note?: string };
+    winter?: { open: string; close: string; note?: string };
+  } | null;
+  visitorTipsGrouped?: {
+    transport?: string[];
+    dining?: string[];
+    gear?: string[];
+    etiquette?: string[];
+  } | null;
+  localGuides?: {
+    name: string;
+    specialty: string;
+    languages: string[];
+    rating?: number;
+    bio: string;
+    avatar?: string;
+  }[] | null;
+  photoStory?: {
+    imageUrl?: string;
+    caption: string;
+    shotLocation?: string;
+    significance: string;
+    order: number;
+  }[] | null;
 }
 
 export interface Temple {
