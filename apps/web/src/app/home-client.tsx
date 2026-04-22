@@ -332,9 +332,9 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
   const exploreTabs = useMemo(() => getExploreTabs(t), [t]);
   const currentPlaceholder = searchTabs.find(tab => tab.key === activeSearchTab)?.placeholder || "";
   // 首页优先展示有深度内容（photoStory / 多图画廊）的旗舰圣地,其余按默认顺序兜底
-  // HOME_BLOCKLIST: 图片质量不达标的圣地,待补图后解除
+  // HOME_BLOCKLIST: 图片质量不达标的圣地,首页所有卡片场景统一过滤,待补图后解除
+  const HOME_BLOCKLIST = useMemo(() => new Set<string>(["万松书院"]), []);
   const destinations = useMemo(() => {
-    const HOME_BLOCKLIST = new Set<string>(["万松书院"]);
     const arr = (holySites || []).filter((s) => !HOME_BLOCKLIST.has(s.name));
     const weight = (s: HolySite) => {
       const photoN = Array.isArray(s.photoStory) ? s.photoStory.length : 0;
@@ -342,7 +342,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
       return photoN * 10 + galleryN;
     };
     return [...arr].sort((a, b) => weight(b) - weight(a)).slice(0, 8);
-  }, [holySites]);
+  }, [holySites, HOME_BLOCKLIST]);
   const safeTemples = temples || [];
   const safePatriarchs = patriarchs || [];
   const safeReligions = religions || [];
@@ -350,15 +350,17 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
 
   // Explore by category — filter holySites + temples by religion keyword
   const exploreItems = useMemo(() => {
+    const filteredHolySites = (holySites || []).filter((s) => !HOME_BLOCKLIST.has(s.name));
+    const filteredTemples = safeTemples.filter((t) => !HOME_BLOCKLIST.has(t.name));
     const allItems = [
-      ...(holySites || []).map(s => ({ id: s.id, name: s.name, image: s.imageUrl, subtitle: s.country || "", type: "holy-site" as const, religionName: s.religion?.name || "" })),
-      ...safeTemples.map(t => ({ id: t.id, name: t.name, image: t.imageUrl, subtitle: t.country || "", type: "temple" as const, religionName: t.religion?.name || "" })),
+      ...filteredHolySites.map(s => ({ id: s.id, name: s.name, image: s.imageUrl, subtitle: s.country || "", type: "holy-site" as const, religionName: s.religion?.name || "" })),
+      ...filteredTemples.map(t => ({ id: t.id, name: t.name, image: t.imageUrl, subtitle: t.country || "", type: "temple" as const, religionName: t.religion?.name || "" })),
     ];
     if (exploreTab === "all") return allItems.slice(0, 8);
     const keywords = RELIGION_KEYWORD_MAP[exploreTab] || [];
     const filtered = allItems.filter(item => keywords.some(kw => item.religionName.toLowerCase().includes(kw)));
     return filtered.length > 0 ? filtered.slice(0, 8) : allItems.slice(0, 8);
-  }, [holySites, safeTemples, exploreTab]);
+  }, [holySites, safeTemples, exploreTab, HOME_BLOCKLIST]);
 
   // Random teaching for "Daily Wisdom"
   const dailyTeaching = useMemo(() => {
