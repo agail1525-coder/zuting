@@ -108,14 +108,14 @@ export default function PricePulseBar() {
 
           <div className="h-4 w-px bg-white/15 hidden lg:block" />
 
-          {/* CRON 状态 */}
-          <div className="flex items-center gap-1.5 text-white/60">
+          {/* CRON 状态 — hide on mobile,只在 md+ 显示 */}
+          <div className="hidden md:flex items-center gap-1.5 text-white/60">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <span>{t("prices.v3.pulse.cronLabel")}</span>
           </div>
 
           {/* 右: asOf */}
-          <div className="ml-auto text-white/40">
+          <div className="sm:ml-auto text-white/40 text-[11px] sm:text-xs">
             {t("prices.v3.pulse.lastUpdate")} {fmtTime(status.asOf)}
           </div>
         </div>

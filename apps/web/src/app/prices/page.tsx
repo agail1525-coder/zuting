@@ -57,9 +57,7 @@ export default function PricesPage() {
   return (
     <main className="min-h-screen bg-gray-50 pb-16">
       {/* ═══════ 段一 · 控制台 (Control Panel) ═══════ */}
-      <section className="pt-[4rem]">
-        <PricePulseBar />
-      </section>
+      <PricePulseBar />
 
       <PriceHeroSearch />
 
