@@ -4220,5 +4220,19 @@
   "cultivation.calendars.HEBREW": "Hebrew",
   "cultivation.calendars.TIBETAN": "Tibetan",
   "cultivation.calendars.COMPUTED": "Computed",
-  "cultivation.calendars.FIXED_WEEK": "Fixed Week"
+  "cultivation.calendars.FIXED_WEEK": "Fixed Week",
+  "prices.v3.pulse.online": "Auto-heal system online",
+  "prices.v3.pulse.ready": "System ready",
+  "prices.v3.pulse.baselineCoverage": "Baseline coverage",
+  "prices.v3.pulse.entries": "entries",
+  "prices.v3.pulse.routesByDays": "{routes} routes × {days} days",
+  "prices.v3.pulse.sources": "Sources",
+  "prices.v3.pulse.sourceBaseline": "Baseline",
+  "prices.v3.pulse.sourceCrawler": "Crawler",
+  "prices.v3.pulse.sourceOfficial": "Official",
+  "prices.v3.pulse.cronLabel": "Hourly alert-scan · Daily 04:10 reconcile · 04:20 extend",
+  "prices.v3.pulse.lastUpdate": "Last update",
+  "prices.v3.insights.tag": "INSIGHTS · PRICE PULSE",
+  "prices.v3.insights.heading": "Today's Price Wind",
+  "prices.v3.insights.subtitle": "Generated from latest snapshots, refreshed by CRON each hour"
 }

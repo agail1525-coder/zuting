@@ -70,9 +70,9 @@ export default function PricesPage() {
       {/* ═══════ 段二 · 洞察 (Insights) ═══════ */}
       <section className="max-w-6xl mx-auto px-4 mt-10">
         <div className="mb-5">
-          <p className="text-[#F5D898] text-xs font-semibold tracking-[0.3em] uppercase mb-1.5">INSIGHTS · 价格洞察</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">今日价格风向</h2>
-          <p className="text-gray-500 text-sm mt-1">基于最新 snapshot 自动生成,每小时 CRON 刷新</p>
+          <p className="text-[#F5D898] text-xs font-semibold tracking-[0.3em] uppercase mb-1.5">{t("prices.v3.insights.tag")}</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{t("prices.v3.insights.heading")}</h2>
+          <p className="text-gray-500 text-sm mt-1">{t("prices.v3.insights.subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

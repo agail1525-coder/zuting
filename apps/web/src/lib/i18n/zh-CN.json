@@ -4314,5 +4314,19 @@
   "cultivation.calendars.HEBREW": "希伯来历",
   "cultivation.calendars.TIBETAN": "藏历",
   "cultivation.calendars.COMPUTED": "推算",
-  "cultivation.calendars.FIXED_WEEK": "固定周"
+  "cultivation.calendars.FIXED_WEEK": "固定周",
+  "prices.v3.pulse.online": "自愈系统在线",
+  "prices.v3.pulse.ready": "系统就绪",
+  "prices.v3.pulse.baselineCoverage": "基线覆盖",
+  "prices.v3.pulse.entries": "条",
+  "prices.v3.pulse.routesByDays": "{routes} 路线 × {days} 天",
+  "prices.v3.pulse.sources": "数据源",
+  "prices.v3.pulse.sourceBaseline": "基线",
+  "prices.v3.pulse.sourceCrawler": "爬虫",
+  "prices.v3.pulse.sourceOfficial": "官方",
+  "prices.v3.pulse.cronLabel": "每小时扫告警 · 日 04:10 校准 · 04:20 延展",
+  "prices.v3.pulse.lastUpdate": "最后更新",
+  "prices.v3.insights.tag": "INSIGHTS · 价格洞察",
+  "prices.v3.insights.heading": "今日价格风向",
+  "prices.v3.insights.subtitle": "基于最新 snapshot 自动生成,每小时 CRON 刷新"
 }

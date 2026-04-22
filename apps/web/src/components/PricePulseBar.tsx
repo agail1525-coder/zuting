@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 
 // W3.0.1 骨架 — W3.0.2 接真实 /api/prices/system-status
 interface SystemStatus {
@@ -35,6 +36,7 @@ function fmtTime(iso?: string) {
 }
 
 export default function PricePulseBar() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<SystemStatus>(FALLBACK);
   const [live, setLive] = useState(false);
 
@@ -67,7 +69,7 @@ export default function PricePulseBar() {
               <span className={`relative inline-flex rounded-full h-2 w-2 ${live ? "bg-emerald-500" : "bg-amber-500"}`}></span>
             </span>
             <span className="font-semibold tracking-wide text-[#F5D898]">
-              {live ? "自愈系统在线" : "系统就绪"}
+              {live ? t("prices.v3.pulse.online") : t("prices.v3.pulse.ready")}
             </span>
           </div>
 
@@ -75,31 +77,31 @@ export default function PricePulseBar() {
 
           {/* 覆盖量 */}
           <div className="flex items-baseline gap-1.5">
-            <span className="text-white/60">基线覆盖</span>
+            <span className="text-white/60">{t("prices.v3.pulse.baselineCoverage")}</span>
             <span className="font-bold text-[#F5D898] text-base">{status.baselineCount.toLocaleString()}</span>
-            <span className="text-white/40">条</span>
-            <span className="text-white/60 ml-1">· {status.routeCount} 路线 × {status.dayCount} 天</span>
+            <span className="text-white/40">{t("prices.v3.pulse.entries")}</span>
+            <span className="text-white/60 ml-1">· {t("prices.v3.pulse.routesByDays", { routes: status.routeCount, days: status.dayCount })}</span>
           </div>
 
           <div className="h-4 w-px bg-white/15 hidden md:block" />
 
           {/* 数据源混合 */}
           <div className="flex items-center gap-1.5">
-            <span className="text-white/60">数据源</span>
+            <span className="text-white/60">{t("prices.v3.pulse.sources")}</span>
             <span className="inline-flex items-center gap-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-              <span className="text-amber-200">基线 {pct(status.sourceBreakdown.baseline)}%</span>
+              <span className="text-amber-200">{t("prices.v3.pulse.sourceBaseline")} {pct(status.sourceBreakdown.baseline)}%</span>
             </span>
             {status.sourceBreakdown.crawler > 0 && (
               <span className="inline-flex items-center gap-0.5 ml-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                <span className="text-sky-200">爬虫 {pct(status.sourceBreakdown.crawler)}%</span>
+                <span className="text-sky-200">{t("prices.v3.pulse.sourceCrawler")} {pct(status.sourceBreakdown.crawler)}%</span>
               </span>
             )}
             {status.sourceBreakdown.official > 0 && (
               <span className="inline-flex items-center gap-0.5 ml-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="text-emerald-200">官方 {pct(status.sourceBreakdown.official)}%</span>
+                <span className="text-emerald-200">{t("prices.v3.pulse.sourceOfficial")} {pct(status.sourceBreakdown.official)}%</span>
               </span>
             )}
           </div>
@@ -109,12 +111,12 @@ export default function PricePulseBar() {
           {/* CRON 状态 */}
           <div className="flex items-center gap-1.5 text-white/60">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>每小时扫告警 · 日 04:10 校准 · 04:20 延展</span>
+            <span>{t("prices.v3.pulse.cronLabel")}</span>
           </div>
 
           {/* 右: asOf */}
           <div className="ml-auto text-white/40">
-            最后更新 {fmtTime(status.asOf)}
+            {t("prices.v3.pulse.lastUpdate")} {fmtTime(status.asOf)}
           </div>
         </div>
       </div>

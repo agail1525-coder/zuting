@@ -1,20 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/lib/i18n";
 
 interface Tool {
-  label: string;
+  labelKey: string;
   href: string;
-  desc: string;
+  descKey: string;
   icon: React.ReactNode;
   accent: string;
 }
 
 const TOOLS: Tool[] = [
   {
-    label: "价格日历",
+    labelKey: "prices.hub.calendar",
     href: "/prices/calendar",
-    desc: "查每日最优价,选最佳出行日",
+    descKey: "prices.hub.calendarDesc",
     accent: "from-blue-500 to-blue-600",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,9 +24,9 @@ const TOOLS: Tool[] = [
     ),
   },
   {
-    label: "比价面板",
+    labelKey: "prices.hub.compare",
     href: "/prices/compare",
-    desc: "多套餐横向对比,一眼见最值",
+    descKey: "prices.hub.compareDesc",
     accent: "from-emerald-500 to-emerald-600",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,9 +35,9 @@ const TOOLS: Tool[] = [
     ),
   },
   {
-    label: "我的告警",
+    labelKey: "prices.hub.alerts",
     href: "/prices/alerts",
-    desc: "设目标价,CRON 每小时帮你盯",
+    descKey: "prices.hub.alertsDesc",
     accent: "from-amber-500 to-amber-600",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,9 +46,9 @@ const TOOLS: Tool[] = [
     ),
   },
   {
-    label: "价格趋势",
+    labelKey: "prices.hub.trend",
     href: "/prices/trend",
-    desc: "历史走势一览,低点出手不犹豫",
+    descKey: "prices.hub.trendDesc",
     accent: "from-purple-500 to-purple-600",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,24 +59,23 @@ const TOOLS: Tool[] = [
 ];
 
 export default function PriceToolsGrid() {
+  const { t } = useTranslation();
   return (
-    <section className="max-w-6xl mx-auto px-4 -mt-8 relative z-10">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {TOOLS.map((t) => (
-          <Link
-            key={t.href}
-            href={t.href}
-            className="group relative bg-white rounded-2xl border border-gray-200/60 p-5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all overflow-hidden"
-          >
-            <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${t.accent} opacity-10 group-hover:opacity-20 transition-opacity`} />
-            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${t.accent} text-white flex items-center justify-center mb-3 shadow-sm`}>
-              {t.icon}
-            </div>
-            <h3 className="font-bold text-gray-900 text-base mb-1 group-hover:text-[#3264ff] transition-colors">{t.label}</h3>
-            <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{t.desc}</p>
-          </Link>
-        ))}
-      </div>
-    </section>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {TOOLS.map((tool) => (
+        <Link
+          key={tool.href}
+          href={tool.href}
+          className="group relative bg-white rounded-2xl border border-gray-200/60 p-5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all overflow-hidden"
+        >
+          <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${tool.accent} opacity-10 group-hover:opacity-20 transition-opacity`} />
+          <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.accent} text-white flex items-center justify-center mb-3 shadow-sm`}>
+            {tool.icon}
+          </div>
+          <h3 className="font-bold text-gray-900 text-base mb-1 group-hover:text-[#3264ff] transition-colors">{t(tool.labelKey as Parameters<typeof t>[0])}</h3>
+          <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{t(tool.descKey as Parameters<typeof t>[0])}</p>
+        </Link>
+      ))}
+    </div>
   );
 }
