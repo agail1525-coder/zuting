@@ -547,7 +547,7 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 > **技能文件**: docs/protocols/skills/ (14个++技能)
 > **统一骨架**: §0元数据 → §1角色 → §2作用域 → §3规则 → §4流程 → §5评分 → §6工具 → §7生命周期 → §8铁律 → §9联动
 
-### 16个++技能清单
+### 17个++技能清单
 ```
 #1  全审++ (FA) v2.0 — 顶层编排器，V1-V5+D6-D11共11维，并行Agent+级联审查 → hohoho/Y+/X+触发
 #2  项目++ (PJ)  — 标准文档生成器，PRD→DOC-XX+施工图+验收清单
@@ -565,6 +565,7 @@ DRAFT → PLANNING → SUBMITTED → CONFIRMED → PAID → PREPARING → IN_PRO
 #14 目的地++ (DST) — 循环充实真实目的地,seed-destinations-v{N}.ts递增补丁,禁编造+强落地(7项落地信息)
 #15 旅游配套++ (TP) — 4档分级配套(尊贵/商务/标准/自助)+爬虫驱动每日更新+寺院话术净化,TP-01~TP-20铁律
 #16 爬虫++ (CW)    — 24/7 全球旅行数据采集引擎,5×6立体矩阵+多适配器+自学习,CW-01~CW-50,HOLY_SITE/MERCHANT/PRICE/GUIDE/NEWS多域路由
+#17 详情页++ (DPG) — 长文叙事卡片化,单卡分节+暖金统一+智能→/①②③渲染,DPG-01~DPG-12,首发 RouteStoryCards
 ```
 
 ### 全审执行流 (hohoho)
