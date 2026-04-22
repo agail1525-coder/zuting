@@ -1,9 +1,10 @@
-# 目的地++ (Destination Enrichment) v1.0
+# 目的地++ (Destination Enrichment) v2.0
 
-> **代号**: DST | **版本**: v1.0 | **创建**: 2026-04-12
-> **定位**: 目的地大系统持续充实引擎 — 循环补充真实文化圣地/祖庭/路线，深化落地信息
+> **代号**: DST | **版本**: v2.0 | **创建**: 2026-04-12 | **升级**: 2026-04-22
+> **定位**: 目的地大系统持续充实引擎 — 循环补充真实文化圣地/祖庭/路线，深化落地信息 + 全量深度化
 > **愿景**: 打造全球文化旅行 NO.1 的真实目的地数据库 (对标 Booking/TripAdvisor/Airbnb 详情页深度)
-> **触发**: `目的地++` / `目的地++ {type}` / `目的地++ 新增 {slug}` / `目的地++ 深化 {slug}`
+> **触发**: `目的地++` / `目的地++ {type}` / `目的地++ 新增 {slug}` / `目的地++ 深化 {slug}` / `目的地++ 全量深化`
+> **v2.0 新增**: 详情页深度字段铁律 (DST-50~58) + 全量模板化深化模式 (E) + v1 试点→v2 全量打穿
 
 ---
 
@@ -154,6 +155,46 @@ triggers:
 [DST-44] 我方差异化: 经文引用 + 祖师故事 + 生命命题视角 (对接M40)
 ```
 
+### 3.6 详情页深度字段铁律 (v2.0 新增 — 对齐 Route.sites[].day 结构)
+
+HolySite 详情页必须呈现与 Route 单日站点同等级的深度, 通过以下 6 个 JSON 字段承接:
+
+```
+[DST-50] transportLegs: Json?           — 多段交通 [{from,to,mode,distanceKm,durationMin,note,costFrom?}]
+         · 至少 2 段 (机场/高铁站 → 城市集散点 → 景区门口)
+         · 国际目的地必须含入境交通提示
+
+[DST-51] culturalProducts: Json?        — 文化伴手/在地特产 [{name,desc,emoji,tag,localStore?,priceFrom?}]
+         · 至少 3 件, 必须与文化传统强绑定
+         · 避免通用纪念品 (如"冰箱贴"), 必须是在地特色
+
+[DST-52] openingHoursBySeason: Json?    — 四季开放时间 {spring,summer,autumn,winter}
+         · 每季 {open,close,note?}, note 写出季节专有提示 (如"3-5月樱花季人流大")
+         · 24h 开放场所写 open:"00:00" close:"23:59" + note
+
+[DST-53] visitorTipsGrouped: Json?      — 参观贴士分组 {transport,dining,gear,etiquette}
+         · transport: 交通落地(打车软件/停车/末班车)
+         · dining:    斋饭/清真/禁酒等就餐要点
+         · gear:      装备(防滑鞋/雨具/保暖)
+         · etiquette: 着装/拍照/性别/食物/语言 5 项礼仪(不适用写"无特殊要求")
+
+[DST-54] localGuides: Json?             — 在地讲解员 [{name,specialty,languages[],rating,bio,avatar?}]
+         · 至少 1 位, 旗舰 ≥ 2 位
+         · 讲解员必须挂钩该圣地/文化, 不得跨文化复用
+
+[DST-55] photoStory: Json?              — 图文故事 [{imageUrl,caption,shotLocation,significance,order}]
+         · 旗舰 ≥ 5 帧, 全量深化 ≥ 3 帧
+         · significance 必须说清该帧在文化叙事中的意义, 不是单纯图说
+```
+
+```
+[DST-56] 6 字段全部 NOT NULL 为金标准 (⭐⭐⭐⭐⭐), 至少 4 字段非空才算深度达标
+[DST-57] v1 试点 (手写 12 旗舰) → v2 全量 (模板化 491+) → v3 精修 (定点回头优化)
+         · 全量模式下模板化的 guideSpecialty / 文化礼仪 / 特产必须按 religion.slug 分流
+         · 禁止无脑复用同一份模板到不同文化 (神道≠佛教≠基督)
+[DST-58] 三端(Web/Mobile/Mini)详情页的深度 Panel 展示必须同步上线, 单端有数据另端缺失 = FAIL
+```
+
 ---
 
 ## §4 标准执行流程
@@ -301,6 +342,38 @@ python scripts/deploy-xiaoqing.py
 3. 补齐落地7项
 ```
 
+**模式E: 全量深化 (目的地++ 全量深化) — v2.0 新增**
+```
+目标: 将 6 深度字段 (DST-50~55) 以模板化方式覆盖到所有圣地 (非 v1 试点的 491+ 站)
+执行:
+  1. prisma.holySite.findMany({ include:{religion:true} })
+  2. 跳过 photoStory 已非空的站点 (v1 试点 12 站, 保留手写内容)
+  3. 按 religion.slug 选模板库 (REL_TEMPLATES):
+     · buddhism    → 经书/素食/念珠/线香/钵, 脱鞋/止语/顺时针绕塔
+     · taoism      → 道德经/香囊/道袍/葫芦, 恭敬上香/不指神像
+     · christianity→ 圣经/十字架/圣像, 安静/帽子礼仪
+     · islam       → 古兰经/头巾/地毯/椰枣, 脱鞋覆头/斋戒时段
+     · hinduism    → 吠陀经/银饰/纱丽, 脱鞋/不用左手
+     · judaism     → 托拉/烛台, 安息日礼仪
+     · shinto      → 御守/绘马/御朱印, 参道左右行/手水仪式
+     · tibetan-buddhism → 转经筒/唐卡/酥油茶, 右绕/哈达献礼
+     · confucianism→ 论语/文房四宝/书院茶, 揖拜礼
+     · sikhism     → 古鲁经/卡拉/棉布衣, 覆头入殿
+     · indigenous  → 手工艺/图腾, 尊重场所限制拍照
+     · bahai       → 基特伯/九角星, 安静祷默
+  4. 按 country 选交通模板 (COUNTRY_HUB):
+     · 中国 → "最近高铁站/机场 → 景区专车" (估算 1-2h/200-500元)
+     · 日本 → "JR/新干线 → 城市巴士" (500-1500¥)
+     · 印度/尼泊尔/泰国/缅甸 → "机场 → 突突车/TAXI" (500-2000当地币)
+     · 欧洲/北美 → "铁路/机场 → 租车或公交" (30-100 €/$)
+  5. 按 site.imageUrl/gallery 合成 photoStory (3-5 帧, caption 基于 name+description)
+  6. 只 update 当前为 null 的字段, 已有人工内容不覆盖
+  7. 幂等 upsert, 可重复运行
+产出:
+  services/api/prisma/seed-holy-sites-depth-v{N}.ts (v2 起)
+  跳过 pilot 数 / 深化数 / 已深化数 / 错误数 四项指标
+```
+
 ### 迭代节奏
 - 每轮补丁增量: 5-15个新目的地 + 10-30个深化
 - 版本号递增: v2 → v3 → v4 ...
@@ -351,8 +424,10 @@ python scripts/deploy-xiaoqing.py
 | 版本 | 日期 | HolySites | Temples | Routes | 备注 |
 |------|------|-----------|---------|--------|------|
 | v1 (初版) | 2026-03 | 300 | 27 | 10 | M33 圣地300扩充 |
-| v2 | 待定 | 目标330+ | 目标40+ | 目标15+ | 第一轮增量补丁 |
-| ... | ... | ... | ... | ... | 近期目标: 500/60/30 |
+| v2-v6 增量 | 2026-03~04 | 503 | 40+ | 12 | 多轮 seed-destinations-v{N}.ts |
+| 深度 pilot | 2026-04-21 | 12旗舰 | - | - | 6 Json 深度字段手写, 三端 Panel |
+| **深度 v2 全量** | **2026-04-22** | **491+ 模板化** | **0** | **0** | **DST-50~58 铁律上线, 模式E打穿** |
+| v3 精修 | 计划中 | 按评分回头 | - | - | 3.0-3.9 PARTIAL 站点提升至 4.0+ |
 
 ---
 
