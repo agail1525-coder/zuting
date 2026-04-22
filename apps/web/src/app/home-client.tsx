@@ -784,7 +784,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">{t("home.hotGuides")}</h3>
                   <div className="space-y-3">
                     {trendingGuides.map((guide) => (
-                      <Link key={guide.id} href={`/guides/${guide.id}`} className="flex gap-3 p-3 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
+                      <Link key={guide.id} href={`/community/guides/${guide.id}`} className="flex gap-3 p-3 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
                         <div className="w-20 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                           {guide.coverImage ? (
                             <OptimizedImage src={guide.coverImage} alt={guide.title} width={80} height={64} className="w-full h-full object-cover" />
@@ -819,7 +819,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
                   <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">{t("home.hotQuestions")}</h3>
                   <div className="space-y-3">
                     {trendingQuestions.map((q) => (
-                      <Link key={q.id} href={`/questions/${q.id}`} className="block p-4 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
+                      <Link key={q.id} href={`/community/questions/${q.id}`} className="block p-4 bg-white rounded-xl hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all group">
                         <h4 className="font-semibold text-sm text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">{q.title}</h4>
                         <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                           <span className="flex items-center gap-1">
@@ -904,7 +904,7 @@ export default function HomeClient({ religions, holySites, temples, patriarchs, 
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {trendingGuides.map((guide) => (
-              <Link key={guide.id} href={`/guides/${guide.id}`} className="group">
+              <Link key={guide.id} href={`/community/guides/${guide.id}`} className="group">
                 <div className="bg-white rounded-xl overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300">
                   <div className="relative h-48 overflow-hidden">
                     {guide.coverImage ? (
