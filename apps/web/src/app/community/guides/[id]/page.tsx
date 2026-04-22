@@ -235,30 +235,53 @@ export default function GuideDetailPage({ params }: { params: Promise<{ id: stri
   const readMin = estimateReadMinutes(guide.content || "");
   const inlineImages = Array.isArray(guide.inlineImages) ? guide.inlineImages : [];
 
+  const primaryTag = guide.tags?.[0];
+  const secondaryTags = guide.tags?.slice(1) ?? [];
+
   return (
-    <main className="min-h-screen bg-white pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="min-h-screen bg-white pt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex gap-8 lg:gap-12">
-          {/* Main Content · Medium-style 阅读区,max-w-[720px] */}
-          <article className="flex-1 min-w-0 lg:max-w-[720px] mx-auto">
-            {/* Breadcrumb */}
-            <nav className="text-sm text-gray-500 mb-6">
+          {/* Main Content · Medium-style 阅读区,max-w-[720px] 左对齐 */}
+          <article className="flex-1 min-w-0 lg:max-w-[720px]">
+            {/* Breadcrumb · 含栏目 */}
+            <nav className="text-sm text-gray-500 mb-4 flex items-center gap-1.5 flex-wrap">
               <Link href="/community" className="hover:text-[#0066FF]">{t("community.breadcrumb")}</Link>
-              <span className="mx-1.5 text-gray-300">›</span>
+              <span className="text-gray-300">›</span>
               <Link href="/community/guides" className="hover:text-[#0066FF]">{t("community.guides")}</Link>
-              <span className="mx-1.5 text-gray-300">›</span>
-              <span className="text-gray-700 line-clamp-1 inline">{guide.title}</span>
+              {primaryTag && (
+                <>
+                  <span className="text-gray-300">›</span>
+                  <Link
+                    href={`/community/guides?tag=${encodeURIComponent(primaryTag)}`}
+                    className="text-[#0066FF] font-semibold hover:underline"
+                  >
+                    {primaryTag}
+                  </Link>
+                </>
+              )}
             </nav>
+
+            {/* 栏目徽章 · Medium 风,颜色强调栏目身份 */}
+            {primaryTag && (
+              <Link
+                href={`/community/guides?tag=${encodeURIComponent(primaryTag)}`}
+                className="inline-flex items-center gap-1.5 mb-3 text-xs font-bold uppercase tracking-widest text-[#0066FF] hover:text-[#0052CC] transition-colors"
+              >
+                <span className="w-8 h-px bg-[#0066FF]" />
+                {primaryTag}
+              </Link>
+            )}
 
             {/* Title 优先 · Medium 把标题放在 hero 之前 */}
             <h1 className="text-3xl sm:text-[36px] font-bold text-gray-900 leading-tight tracking-tight mb-4">
               {guide.title}
             </h1>
 
-            {/* Tags (置顶 · 阅读前先告知主题) */}
-            {guide.tags.length > 0 && (
+            {/* 次级标签 (主栏目已在标题上方) */}
+            {secondaryTags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-5">
-                {guide.tags.map((tag) => (
+                {secondaryTags.map((tag) => (
                   <span key={tag} className="px-2.5 py-0.5 bg-blue-50 text-[#0066FF] rounded-full text-xs font-medium">
                     {tag}
                   </span>
