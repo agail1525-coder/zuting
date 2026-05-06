@@ -1,5 +1,5 @@
 """
-修行桌面助手 v3.0 — 通用渲染工具
+修行桌面助手 v5.0 — 通用渲染工具
 字体缓存、多文字系统混排、自动换行、背景加载、遮罩叠加
 """
 
@@ -192,7 +192,7 @@ def fetch_weather(lat, lon):
     try:
         url = (f"https://api.open-meteo.com/v1/forecast?"
                f"latitude={lat}&longitude={lon}&current_weather=true&timezone=auto")
-        req = urllib.request.Request(url, headers={"User-Agent": "ZutingDesktop/3.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "ZutingDesktop/5.0"})
         with urllib.request.urlopen(req, timeout=5) as resp:
             data = json.loads(resp.read().decode())
         cw = data["current_weather"]

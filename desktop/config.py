@@ -1,5 +1,5 @@
 """
-修行桌面助手 v4.0 — 全局配置
+修行桌面助手 v5.0 — 全局配置
 """
 
 import sys
@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 
 # ── 版本 ──
-VERSION = "4.0"
+VERSION = "5.0"
 APP_TITLE = f"全球祖庭之旅 v{VERSION}"
 APP_SUBTITLE = "修行桌面助手 · JOINUS.COM · 小鸿陪你走祖庭"
 

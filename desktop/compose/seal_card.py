@@ -1,5 +1,5 @@
 """
-修行桌面助手 v3.0 — 愿命印修弹窗合成
+修行桌面助手 v5.0 — 愿命印修弹窗合成
 """
 
 from datetime import datetime
