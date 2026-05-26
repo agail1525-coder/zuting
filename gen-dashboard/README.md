@@ -54,13 +54,20 @@ python3 finance_dashboard.py seed-sqlite \
 
 ## AI 配置
 
-支持 OpenAI 兼容接口，建议用环境变量：
+默认优先读取小轻主系统 `zuoyelang` 的 AI 路由配置：
+
+- 任务类型默认按 `FINANCE_ANALYSIS -> MARKET_ANALYSIS` 选路
+- Provider、模型、Base URL、加密 API Key 都从 `zuoyelang` 的配置库读取
+- 若路由不可用，再回退到本地经营洞察
+
+如果要强制改成独立 OpenAI 兼容接口，也可以用环境变量：
 
 ```bash
 export AI_API_KEY=your_key
 export PROVIDER=zuoyelang
 export AI_BASE_URL=https://your-openai-compatible-endpoint/v1
 export AI_MODEL=your-model-name
+export FINANCE_AI_SOURCE=direct
 ```
 
-然后把 `config/finance-dashboard.json` 里的 `ai.enabled` 打开即可。
+然后保持 `config/finance-dashboard.json` 里的 `ai.enabled` 为 `true` 即可。

@@ -27,6 +27,7 @@ class FinanceDashboardTests(unittest.TestCase):
                 "primary_owner": "李钟根",
                 "line": "深圳精品团",
                 "destination": "广东",
+                "source_region": "深圳",
                 "tour_no": "A1",
                 "customer": "客户甲",
                 "start_date": "2026-04-01",
@@ -47,6 +48,7 @@ class FinanceDashboardTests(unittest.TestCase):
                 "primary_owner": "王丽",
                 "line": "珠海高毛利团",
                 "destination": "广东",
+                "source_region": "珠海",
                 "tour_no": "B2",
                 "customer": "客户乙",
                 "start_date": "2026-04-02",
@@ -82,7 +84,17 @@ class FinanceDashboardTests(unittest.TestCase):
         self.assertEqual(payload["spotlight"]["best_profit_group"]["tour_no"], "A1")
         self.assertEqual(payload["spotlight"]["best_margin_group"]["tour_no"], "B2")
         self.assertEqual(payload["leaderboards"]["owner_board"][0]["label"], "李钟根")
+        self.assertEqual(payload["leaderboards"]["source_region_board"][0]["label"], "深圳")
         self.assertIn("累计创收", payload["briefing"]["fallback_text"])
+        self.assertTrue(payload["briefing"]["fallback_analysis"]["route_focus"])
+
+    def test_decrypt_zuoyelang_api_key(self) -> None:
+        decrypted = finance_dashboard.decrypt_zuoyelang_api_key(
+            "2YXwKX9F1jml7r+okgbzR8UWkW0sC+Regcpu8KMD+HlL9CM=.gYuWV9tXAItd7xbOTiNcgg==",
+            "DwRs7BA7KdvC58sW",
+            "302fbef1c6d8cb0823b478ecc32309f7",
+        )
+        self.assertEqual(decrypted, "sk-445d8ffc788d4779a8fc9b188c65707e")
 
     def test_build_record_from_form_input_generates_tour_no_and_profit(self) -> None:
         parsed_report = {

@@ -280,6 +280,44 @@
       font-size: 13px;
     }
 
+    .insight-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .insight-card {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(8, 20, 28, 0.26);
+      display: grid;
+      gap: 12px;
+    }
+
+    .insight-card h3 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      color: #fff0bf;
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .insight-item {
+      display: grid;
+      gap: 4px;
+    }
+
+    .insight-item strong {
+      font-size: 14px;
+      color: var(--ink);
+    }
+
     .trend-list,
     .rank-list {
       display: grid;
@@ -559,6 +597,7 @@
         font-size: 18px;
       }
 
+      .insight-grid,
       .form-grid,
       .preview-grid {
         grid-template-columns: 1fr;
@@ -583,7 +622,7 @@
         <div class="hero-actions">
           <button class="accent-btn" id="open-entry-btn">录入经营数据</button>
           <button class="ghost-btn" id="reload-btn">立即刷新</button>
-          <button class="ghost-btn" id="briefing-btn">生成 AI 士气播报</button>
+          <button class="ghost-btn" id="briefing-btn">生成 AI 经营建议</button>
         </div>
       </div>
 
@@ -597,16 +636,17 @@
         <section class="panel section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">实时士气播报</h2>
-              <p class="section-subtitle">默认基于报表自动生成，本地即可运行；如已配置 AI，还能一键升级为更强的晨会战报口径。</p>
+              <h2 class="section-title">AI 经营洞察</h2>
+              <p class="section-subtitle">默认先给本地经营诊断；如已接入 AI 路由，可一键生成更深的线路主推、获客、创收和提利建议。</p>
             </div>
             <div class="briefing-actions">
               <span class="briefing-status" id="briefing-status">等待数据</span>
             </div>
           </div>
           <div class="briefing-box">
-            <div class="briefing-label" id="briefing-label">Local Briefing</div>
+            <div class="briefing-label" id="briefing-label">本地经营洞察</div>
             <div class="briefing-text" id="briefing-text">读取中...</div>
+            <div class="insight-grid" id="briefing-grid"></div>
           </div>
         </section>
 
@@ -851,6 +891,15 @@
       document.getElementById(el).textContent = value;
     }
 
+    function esc(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     function parseNumeric(value) {
       const numeric = Number(value || 0);
       return Number.isFinite(numeric) ? numeric : 0;
@@ -972,9 +1021,46 @@
     }
 
     function renderBriefing(payload) {
-      text('briefing-label', payload.briefing.ai_configured ? 'Ready For AI Briefing' : 'Local Briefing');
-      text('briefing-text', payload.briefing.fallback_text);
-      text('briefing-status', payload.ai.configured ? `AI 已就绪：${payload.ai.provider} / ${payload.ai.model}` : '当前使用本地播报，待接入可用 AI 通道');
+      const analysis = payload.briefing.fallback_analysis || { summary: payload.briefing.fallback_text };
+      text('briefing-label', payload.briefing.ai_configured ? 'AI 路由待命' : '本地经营洞察');
+      text('briefing-text', analysis.summary || payload.briefing.fallback_text);
+      text('briefing-status', payload.ai.configured ? `AI 路由已就绪：${payload.ai.provider} / ${payload.ai.model}${payload.ai.task_type ? ` / ${payload.ai.task_type}` : ''}` : '当前使用本地经营洞察，待可用 AI 路由接管');
+      renderBriefingAnalysis(analysis);
+    }
+
+    function renderBriefingAnalysis(analysis) {
+      const target = document.getElementById('briefing-grid');
+      const sections = [
+        { key: 'route_focus', title: '主推线路' },
+        { key: 'customer_regions', title: '更易获客' },
+        { key: 'revenue_actions', title: '创收动作' },
+        { key: 'profit_actions', title: '提利动作' },
+        { key: 'risk_alerts', title: '风险提醒' },
+      ];
+      target.innerHTML = sections.map((section) => {
+        const items = Array.isArray(analysis?.[section.key]) ? analysis[section.key] : [];
+        if (!items.length) {
+          return `
+            <article class="insight-card">
+              <h3>${section.title}</h3>
+              <div class="muted">暂无建议。</div>
+            </article>
+          `;
+        }
+        return `
+          <article class="insight-card">
+            <h3>${section.title}</h3>
+            <div class="insight-list">
+              ${items.map((item) => `
+                <div class="insight-item">
+                  <strong>${esc(item.title || '未命名建议')}</strong>
+                  <div class="muted">${esc(item.detail || '')}</div>
+                </div>
+              `).join('')}
+            </div>
+          </article>
+        `;
+      }).join('');
     }
 
     function applyEntryDefaults(payload) {
@@ -1060,7 +1146,7 @@
     async function generateBriefing() {
       const button = document.getElementById('briefing-btn');
       button.disabled = true;
-      text('briefing-status', '正在生成播报...');
+      text('briefing-status', '正在生成 AI 经营建议...');
       try {
         const response = await fetch(apiUrl('/api/ai-briefing'), {
           method: 'POST',
@@ -1071,11 +1157,12 @@
         if (!response.ok) {
           throw new Error(payload.error || '生成失败');
         }
-        text('briefing-label', payload.used_ai ? 'AI Briefing' : 'Fallback Briefing');
-        text('briefing-text', payload.text);
-        text('briefing-status', payload.reason || `${payload.provider} / ${payload.model}`);
+        text('briefing-label', payload.used_ai ? 'AI 经营洞察' : '本地经营洞察');
+        text('briefing-text', payload.analysis?.summary || payload.text);
+        renderBriefingAnalysis(payload.analysis || state.currentPayload?.briefing?.fallback_analysis || {});
+        text('briefing-status', payload.reason || `${payload.provider} / ${payload.model}${payload.task_type ? ` / ${payload.task_type}` : ''}`);
       } catch (error) {
-        text('briefing-status', `播报失败：${error.message}`);
+        text('briefing-status', `经营建议生成失败：${error.message}`);
       } finally {
         button.disabled = false;
       }

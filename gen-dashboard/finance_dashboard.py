@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import base64
 import hashlib
 import hmac
 import html
@@ -8,6 +9,7 @@ import os
 import re
 import shutil
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import threading
@@ -36,12 +38,16 @@ DATA_ROW_START_INDEX = 3
 ROLE_FIELDS = ["接团计调", "操作计调", "报名计调", "外联", "导游"]
 TOTAL_ROW_MARKER = "合计"
 AI_CACHE_SECONDS = 300
+AI_ROUTE_CACHE_SECONDS = 300
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 BACKUP_DIR = PROJECT_ROOT / ".shortcut-center-env" / "data" / "finance-dashboard" / "backups"
 DEFAULT_SQLITE_PATH = PROJECT_ROOT / ".shortcut-center-env" / "data" / "finance-dashboard" / "finance-dashboard.db"
 DEFAULT_STORAGE_MODE = "excel"
+DEFAULT_AI_ROUTE_TASK_TYPES = ["FINANCE_ANALYSIS", "MARKET_ANALYSIS"]
 AUTH_COOKIE_NAME = "gen_dashboard_auth"
 AUTH_COOKIE_TTL_SECONDS = 43200
+ZUOYELANG_AI_CACHE_LOCK = threading.Lock()
+ZUOYELANG_AI_CACHE: dict[str, Any] = {}
 LOGIN_PAGE_TEMPLATE = """<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -272,12 +278,20 @@ def load_config(config_path: Path) -> dict[str, Any]:
         "report_title": "旅游经营利润战报",
         "refresh_seconds": 15,
         "ai": {
+            "source": "auto",
             "provider": "",
             "base_url": "",
             "api_key_env": "AI_API_KEY",
             "model": "",
+            "route_task_types": list(DEFAULT_AI_ROUTE_TASK_TYPES),
             "temperature": 0.8,
             "enabled": False,
+            "zuoyelang": {
+                "env_paths": ["/opt/zuoyelang/.env", "/opt/zuting/api/.env"],
+                "db_container": "zuoyelang-postgres",
+                "db_name": "zuoyelang",
+                "db_user": "zuoyelang",
+            },
         },
     }
     if not config_path.exists():
@@ -301,6 +315,30 @@ def clean_text(value: Any) -> str:
     if isinstance(value, float) and value.is_integer():
         return str(int(value))
     return str(value).strip()
+
+
+def parse_bool(value: Any, default: bool = False) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    text = clean_text(value).lower()
+    if not text:
+        return default
+    if text in {"1", "true", "yes", "on", "y", "t"}:
+        return True
+    if text in {"0", "false", "no", "off", "n", "f"}:
+        return False
+    return default
+
+
+def parse_text_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [clean_text(item) for item in value if clean_text(item)]
+    text = clean_text(value)
+    if not text:
+        return []
+    return [part for part in [clean_text(item) for item in re.split(r"[,|\n]+", text)] if part]
 
 
 def to_number(value: Any) -> float:
@@ -887,17 +925,152 @@ def rank_groups(records: list[dict[str, Any]], key: str, limit: int = 5, reverse
     ]
 
 
-def build_fallback_briefing(payload: dict[str, Any]) -> str:
+def human_money(value: float) -> str:
+    if abs(value) >= 10000:
+        return f"{value / 10000:.2f}万"
+    return f"{value:,.0f}元"
+
+
+def build_insight_item(title: str, detail: str) -> dict[str, str]:
+    return {"title": clean_text(title), "detail": clean_text(detail)}
+
+
+def named_dimension_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [item for item in items if clean_text(item.get("label")) and clean_text(item.get("label")) != "未标注"]
+
+
+def build_fallback_analysis(payload: dict[str, Any]) -> dict[str, Any]:
     summary = payload["summary"]
+    leaderboards = payload["leaderboards"]
     spotlight = payload["spotlight"]
+    line_board = named_dimension_items(leaderboards.get("line_board", []))
+    source_region_board = named_dimension_items(leaderboards.get("source_region_board", []))
+    destination_board = named_dimension_items(leaderboards.get("destination_board", []))
+    top_margin_groups = leaderboards.get("top_margin_groups", [])
+    guard_groups = leaderboards.get("guard_groups", [])
     best_day = spotlight["best_day"]
     champion = spotlight["best_profit_group"]
-    return (
-        f"{summary['department']}在{payload['report']['period_label']}累计创收{human_wan(summary['revenue'])}，"
-        f"累计利润{human_wan(summary['profit'])}，利润率达到{summary['margin'] * 100:.2f}%。"
-        f"利润峰值出现在{short_date(best_day['date'])}，单日贡献{best_day['profit']:,.0f}元；"
-        f"冠军团为“{champion['line'] or champion['tour_no']}”，继续保持高毛利打法，把好利润做成团队士气。"
+    champion_name = champion["line"] or champion["tour_no"] or "冠军团"
+    top_line_name = line_board[0]["label"] if line_board else champion_name
+    top_region_name = source_region_board[0]["label"] if source_region_board else ""
+
+    summary_text = (
+        f"{summary['department']}当前累计创收{human_wan(summary['revenue'])}、利润{human_wan(summary['profit'])}，"
+        f"整体利润率{summary['margin'] * 100:.2f}%。建议继续放大“{top_line_name}”这类高毛利线路，"
+        f"{f'优先深挖{top_region_name}客源，' if top_region_name else ''}"
+        f"同时盯紧低毛利团的报价与采购，把增收和提利一起推进。"
     )
+
+    route_focus = [
+        build_insight_item(
+            f"主推 {item['label']}",
+            f"当前已带来创收{human_money(item['revenue'])}、利润{human_money(item['profit'])}，利润率{item['margin'] * 100:.2f}%，适合做成周推爆款和复购拳头产品。",
+        )
+        for item in line_board[:3]
+    ]
+    if not route_focus:
+        route_focus = [
+            build_insight_item(
+                f"复制 {champion_name} 打法",
+                f"冠军团单团利润达到{human_money(champion['profit'])}，优先拆解报价结构、成团逻辑和客户画像，形成标准销售话术。",
+            )
+        ]
+
+    customer_regions: list[dict[str, str]] = []
+    for item in source_region_board[:3]:
+        customer_regions.append(
+            build_insight_item(
+                f"深挖 {item['label']} 客源",
+                f"该客源地已贡献创收{human_money(item['revenue'])}、利润{human_money(item['profit'])}，建议先用老客转介绍、私域社群和朋友圈案例投放打透。",
+            )
+        )
+    if not customer_regions:
+        for item in destination_board[:3]:
+            customer_regions.append(
+                build_insight_item(
+                    f"围绕 {item['label']} 做兴趣获客",
+                    f"{item['label']}相关线路已经跑出利润{human_money(item['profit'])}，可在短视频、图文种草和主题社群里主打目的地故事与成团案例。",
+                )
+            )
+    if not customer_regions:
+        customer_regions = [
+            build_insight_item(
+                "优先做老客裂变",
+                "报表暂未沉淀稳定客源地字段，先把高利润团的老客名单、转介绍奖励和复购线路包整理出来，最快形成新增线索。",
+            )
+        ]
+
+    revenue_actions = [
+        build_insight_item(
+            f"把 {top_line_name} 做成固定周推",
+            "用冠军线路做统一海报、报价模板和短视频样板，每周固定推一次，先放大已经验证过的创收能力。",
+        ),
+        build_insight_item(
+            f"复制 {best_day['date'] or '冠军日'} 的出团节奏",
+            f"利润峰值日单日贡献{human_money(best_day['profit'])}，建议复盘当日线路组合、客户来源和成交时点，把相似打法复制到后续排期。",
+        ),
+        build_insight_item(
+            f"让 {spotlight['primary_owner']['label'] or '主战席'} 输出成交话术",
+            f"主战席当前已累计贡献利润{human_money(spotlight['primary_owner'].get('profit', 0.0))}，应沉淀报价逻辑、异议处理和加购脚本，供全员复用。",
+        ),
+        build_insight_item(
+            "把高意向客户分层报价",
+            f"当前人均利润{human_money(summary['average_profit_per_traveller'])}，建议把同线路拆成标准版、升级版和高端版，提升客单价而不只靠多出团。",
+        ),
+    ]
+
+    lowest_margin = guard_groups[0] if guard_groups else None
+    highest_margin = top_margin_groups[0] if top_margin_groups else None
+    profit_actions = [
+        build_insight_item(
+            f"为新单守住 {max(summary['margin'] * 100, 12):.1f}% 毛利线",
+            "报价前先校验交通、酒店、导服和地接四项成本，低于毛利线的单子必须复核，不再用忙碌掩盖低利润。",
+        ),
+        build_insight_item(
+            f"重点复盘 {lowest_margin['line'] or lowest_margin['tour_no']}" if lowest_margin else "先处理低毛利团",
+            f"该团当前利润率仅{lowest_margin['margin'] * 100:.2f}%，优先检查让利、采购、赠送项和临时补贴。"
+            if lowest_margin
+            else "优先把利润率最低的团单拆解出报价和采购问题，先止损再扩量。",
+        ),
+        build_insight_item(
+            f"复制 {highest_margin['line'] or highest_margin['tour_no']} 的利润结构" if highest_margin else "复制高毛利报价模型",
+            f"高毛利样板当前利润率{highest_margin['margin'] * 100:.2f}%，可把其产品组合、加价项和控本动作沉淀为标准模板。"
+            if highest_margin
+            else "把高利润线路的价格锚点、加购项和采购边界模板化，降低团队发挥波动。",
+        ),
+        build_insight_item(
+            "团前锁采购，团后复盘偏差",
+            f"当前成本率为{summary['cost_rate'] * 100:.2f}%，建议每团都记录预算成本和实际成本差值，持续把偏差压缩到可控区间。",
+        ),
+    ]
+
+    risk_alerts = [
+        build_insight_item(
+            f"关注低毛利团 {item['line'] or item['tour_no']}",
+            f"当前利润率{item['margin'] * 100:.2f}%，客户为{item['customer'] or '未标注'}，继续放量前要先修正报价和成本结构。",
+        )
+        for item in guard_groups[:2]
+    ]
+    if not risk_alerts:
+        risk_alerts = [
+            build_insight_item(
+                "警惕创收增长但利润变薄",
+                f"当前整体成本率已到{summary['cost_rate'] * 100:.2f}%，后续新增订单要同步检查采购价和赠送项，避免只冲流水不留利润。",
+            )
+        ]
+
+    return {
+        "summary": summary_text,
+        "route_focus": route_focus[:3],
+        "customer_regions": customer_regions[:3],
+        "revenue_actions": revenue_actions[:4],
+        "profit_actions": profit_actions[:4],
+        "risk_alerts": risk_alerts[:2],
+    }
+
+
+def build_fallback_briefing(payload: dict[str, Any]) -> str:
+    return build_fallback_analysis(payload)["summary"]
 
 
 def build_entry_defaults(records: list[dict[str, Any]], summary_department: str) -> dict[str, str]:
@@ -929,6 +1102,10 @@ def build_dashboard_payload_from_records(
     group_count = len(records)
     margin = profit / revenue if revenue else 0.0
     average_profit = profit / group_count if group_count else 0.0
+    average_revenue = revenue / group_count if group_count else 0.0
+    average_revenue_per_traveller = revenue / travellers if travellers else 0.0
+    average_profit_per_traveller = profit / travellers if travellers else 0.0
+    cost_rate = cost / revenue if revenue else 0.0
     department = next((item["department"] for item in records if item["department"]), "旅游业务团队")
     trend = aggregate_daily(records)
     top_profit_groups = rank_groups(records, "profit", limit=5, reverse=True)
@@ -937,6 +1114,7 @@ def build_dashboard_payload_from_records(
     owner_board = aggregate_dimension(records, "primary_owner", limit=5)
     line_board = aggregate_dimension(records, "line", limit=5)
     destination_board = aggregate_dimension(records, "destination", limit=5)
+    source_region_board = aggregate_dimension([item for item in records if clean_text(item.get("source_region"))], "source_region", limit=5)
     best_day = max(trend, key=lambda item: item["profit"])
     best_profit_group = max(records, key=lambda item: item["profit"])
     best_margin_group = max(records, key=lambda item: item["margin"])
@@ -961,6 +1139,10 @@ def build_dashboard_payload_from_records(
             "profit": profit,
             "margin": margin,
             "average_profit": average_profit,
+            "average_revenue": average_revenue,
+            "average_revenue_per_traveller": average_revenue_per_traveller,
+            "average_profit_per_traveller": average_profit_per_traveller,
+            "cost_rate": cost_rate,
             "morale_index": morale_index,
         },
         "spotlight": {
@@ -989,6 +1171,7 @@ def build_dashboard_payload_from_records(
             "owner_board": owner_board,
             "line_board": line_board,
             "destination_board": destination_board,
+            "source_region_board": source_region_board,
         },
         "status": {
             "source_file": source_info["path"],
@@ -1000,8 +1183,10 @@ def build_dashboard_payload_from_records(
         "ai": ai_meta,
         "entry_defaults": build_entry_defaults(records, department),
     }
+    fallback_analysis = build_fallback_analysis(payload)
     payload["briefing"] = {
-        "fallback_text": build_fallback_briefing(payload),
+        "fallback_text": fallback_analysis["summary"],
+        "fallback_analysis": fallback_analysis,
         "ai_configured": bool(ai_meta.get("configured")),
     }
     return payload
@@ -1011,38 +1196,304 @@ def resolve_ai_meta(config: dict[str, Any]) -> dict[str, Any]:
     configured = bool(config["enabled"] and config["provider"] and config["base_url"] and config["api_key"] and config["model"])
     return {
         "configured": configured,
-        "provider": config["provider"] or "未配置",
-        "model": config["model"] or "未配置",
-        "base_url": config["base_url"],
+        "provider": clean_text(config.get("provider")) or "未配置",
+        "model": clean_text(config.get("model")) or "未配置",
+        "base_url": clean_text(config.get("base_url")),
+        "source": clean_text(config.get("source")) or "direct",
+        "task_type": clean_text(config.get("task_type")),
     }
 
 
-def resolve_ai_config(raw_config: dict[str, Any]) -> dict[str, Any]:
-    ai_cfg = raw_config.get("ai", {})
+def empty_ai_config(source: str = "direct") -> dict[str, Any]:
+    return {
+        "provider": "",
+        "base_url": "",
+        "model": "",
+        "api_key_env": "AI_API_KEY",
+        "api_key": "",
+        "enabled": False,
+        "temperature": 0.8,
+        "max_tokens": 1600,
+        "source": source,
+        "task_type": "",
+        "system_prompt": "",
+        "json_mode": False,
+    }
+
+
+def resolve_direct_ai_config(ai_cfg: dict[str, Any], enabled: bool) -> dict[str, Any]:
     provider = os.getenv("PROVIDER") or os.getenv("FINANCE_AI_PROVIDER") or clean_text(ai_cfg.get("provider"))
     base_url = os.getenv("AI_BASE_URL") or os.getenv("OPENAI_BASE_URL") or clean_text(ai_cfg.get("base_url"))
     model = os.getenv("AI_MODEL") or os.getenv("OPENAI_MODEL") or clean_text(ai_cfg.get("model"))
     api_key_env = clean_text(ai_cfg.get("api_key_env") or "AI_API_KEY")
     api_key = os.getenv("AI_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv(api_key_env) or ""
-    raw_enabled = os.getenv("AI_ENABLED")
-    if raw_enabled is None:
-        enabled = bool(ai_cfg.get("enabled", False))
-    else:
-        enabled = raw_enabled.lower() in {"1", "true", "yes", "on"}
     temperature = ai_cfg.get("temperature", 0.8)
     try:
         temperature_value = float(temperature)
     except (TypeError, ValueError):
         temperature_value = 0.8
-    return {
-        "provider": provider,
-        "base_url": base_url,
-        "model": model,
-        "api_key_env": api_key_env,
-        "api_key": api_key,
-        "enabled": enabled or bool(provider and base_url and api_key and model),
-        "temperature": temperature_value,
-    }
+    config = empty_ai_config("direct")
+    config.update(
+        {
+            "provider": provider,
+            "base_url": base_url,
+            "model": model,
+            "api_key_env": api_key_env,
+            "api_key": api_key,
+            "enabled": enabled or bool(provider and base_url and api_key and model),
+            "temperature": temperature_value,
+        }
+    )
+    return config
+
+
+def load_env_map(paths: list[str]) -> dict[str, str]:
+    merged: dict[str, str] = {}
+    for raw_path in paths:
+        path = Path(raw_path).expanduser()
+        if not path.exists():
+            continue
+        for raw_line in path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            merged[key.strip()] = value.strip().strip('"').strip("'")
+    return merged
+
+
+def run_command_capture(args: list[str]) -> str:
+    try:
+        completed = subprocess.run(args, capture_output=True, text=True, check=False)
+    except FileNotFoundError as exc:
+        raise RuntimeError(f"命令不可用: {args[0]}") from exc
+    if completed.returncode != 0:
+        raise RuntimeError((completed.stderr or completed.stdout or "命令执行失败").strip())
+    return completed.stdout
+
+
+def query_zuoyelang_sql(container: str, database: str, user: str, sql: str) -> list[str]:
+    output = run_command_capture(
+        [
+            "docker",
+            "exec",
+            "-i",
+            container,
+            "psql",
+            "-U",
+            user,
+            "-d",
+            database,
+            "-At",
+            "-F",
+            "\t",
+            "-c",
+            sql,
+        ]
+    )
+    return [line.rstrip() for line in output.splitlines() if line.strip()]
+
+
+def decrypt_zuoyelang_api_key(encrypted_value: str, iv_value: str, secret: str) -> str:
+    encrypted_text = clean_text(encrypted_value)
+    iv_text = clean_text(iv_value)
+    secret_text = clean_text(secret)
+    if not encrypted_text:
+        return ""
+    if encrypted_text.startswith("sk-"):
+        return encrypted_text
+    if "." not in encrypted_text or not iv_text or not secret_text:
+        raise ValueError("AI Provider 密钥信息不完整")
+    ciphertext_b64, tag_b64 = encrypted_text.split(".", 1)
+    key = hashlib.sha256(secret_text.encode("utf-8")).digest()
+    nonce = base64.b64decode(iv_text)
+    ciphertext = base64.b64decode(ciphertext_b64) + base64.b64decode(tag_b64)
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+    return AESGCM(key).decrypt(nonce, ciphertext, None).decode("utf-8")
+
+
+def load_zuoyelang_ai_snapshot(ai_cfg: dict[str, Any]) -> dict[str, Any]:
+    z_cfg = ai_cfg.get("zuoyelang", {}) if isinstance(ai_cfg.get("zuoyelang"), dict) else {}
+    env_paths = parse_text_list(z_cfg.get("env_paths") or ["/opt/zuoyelang/.env", "/opt/zuting/api/.env"])
+    env_map = load_env_map(env_paths)
+    secret = clean_text(env_map.get("AI_KEY_ENCRYPTION_SECRET"))
+    if not secret:
+        return {"providers": [], "routes": [], "secret": "", "env_map": env_map}
+
+    container = clean_text(z_cfg.get("db_container")) or "zuoyelang-postgres"
+    database = clean_text(z_cfg.get("db_name")) or "zuoyelang"
+    user = clean_text(z_cfg.get("db_user")) or "zuoyelang"
+    cache_key = json.dumps(
+        {
+            "env_paths": env_paths,
+            "container": container,
+            "database": database,
+            "user": user,
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+    now = time.time()
+    with ZUOYELANG_AI_CACHE_LOCK:
+        cached = ZUOYELANG_AI_CACHE.get(cache_key)
+        if cached and now - float(cached.get("timestamp", 0)) < AI_ROUTE_CACHE_SECONDS:
+            return cached["snapshot"]
+
+    provider_rows = query_zuoyelang_sql(
+        container,
+        database,
+        user,
+        """
+        SELECT "id", "name", "displayName", "providerType", "baseUrl", "apiKeyEncrypted", "apiKeyIv",
+               "defaultModel", "priority", "status", "isDefault"
+        FROM ai_provider_configs
+        ORDER BY "priority" ASC, "createdAt" ASC
+        """,
+    )
+    route_rows = query_zuoyelang_sql(
+        container,
+        database,
+        user,
+        """
+        SELECT "taskType", "providerId", "priority", COALESCE("modelOverride", ''),
+               COALESCE("temperature"::text, ''), COALESCE("maxTokens"::text, ''),
+               REGEXP_REPLACE(COALESCE("systemPrompt", ''), E'[\\n\\r\\t]+', ' ', 'g'),
+               COALESCE("jsonMode"::text, 'false'), COALESCE("isActive"::text, 'false')
+        FROM ai_route_configs
+        ORDER BY "priority" ASC, "createdAt" ASC
+        """,
+    )
+
+    providers: list[dict[str, Any]] = []
+    for line in provider_rows:
+        parts = line.split("\t")
+        if len(parts) != 11:
+            continue
+        providers.append(
+            {
+                "id": clean_text(parts[0]),
+                "name": clean_text(parts[1]),
+                "display_name": clean_text(parts[2]),
+                "provider_type": clean_text(parts[3]),
+                "base_url": clean_text(parts[4]),
+                "api_key_encrypted": clean_text(parts[5]),
+                "api_key_iv": clean_text(parts[6]),
+                "default_model": clean_text(parts[7]),
+                "priority": int(to_number(parts[8])),
+                "status": clean_text(parts[9]).upper(),
+                "is_default": parse_bool(parts[10]),
+            }
+        )
+
+    routes: list[dict[str, Any]] = []
+    for line in route_rows:
+        parts = line.split("\t")
+        if len(parts) != 9:
+            continue
+        routes.append(
+            {
+                "task_type": clean_text(parts[0]).upper(),
+                "provider_id": clean_text(parts[1]),
+                "priority": int(to_number(parts[2])),
+                "model_override": clean_text(parts[3]),
+                "temperature": float(parts[4]) if clean_text(parts[4]) else None,
+                "max_tokens": int(to_number(parts[5])) if clean_text(parts[5]) else None,
+                "system_prompt": clean_text(parts[6]),
+                "json_mode": parse_bool(parts[7]),
+                "is_active": parse_bool(parts[8]),
+            }
+        )
+
+    snapshot = {"providers": providers, "routes": routes, "secret": secret, "env_map": env_map}
+    with ZUOYELANG_AI_CACHE_LOCK:
+        ZUOYELANG_AI_CACHE[cache_key] = {"timestamp": now, "snapshot": snapshot}
+    return snapshot
+
+
+def resolve_zuoyelang_route_ai_config(ai_cfg: dict[str, Any], enabled: bool) -> dict[str, Any]:
+    config = empty_ai_config("zuoyelang_route")
+    task_types = [
+        item.upper()
+        for item in (
+            parse_text_list(os.getenv("FINANCE_AI_TASK_TYPES"))
+            or parse_text_list(ai_cfg.get("route_task_types"))
+            or list(DEFAULT_AI_ROUTE_TASK_TYPES)
+        )
+    ]
+    try:
+        snapshot = load_zuoyelang_ai_snapshot(ai_cfg)
+    except Exception:
+        return config
+    providers = [item for item in snapshot.get("providers", []) if clean_text(item.get("status")).upper() == "ACTIVE"]
+    provider_by_id = {item["id"]: item for item in providers}
+    routes = [item for item in snapshot.get("routes", []) if item.get("is_active")]
+    selected_route: dict[str, Any] | None = None
+    for task_type in task_types:
+        candidates = [item for item in routes if item["task_type"] == task_type and item["provider_id"] in provider_by_id]
+        if candidates:
+            selected_route = sorted(candidates, key=lambda item: item["priority"])[0]
+            break
+    if selected_route is None:
+        fallback_routes = [item for item in routes if item["provider_id"] in provider_by_id]
+        if fallback_routes:
+            selected_route = sorted(fallback_routes, key=lambda item: item["priority"])[0]
+    if selected_route is None:
+        return config
+
+    provider = provider_by_id.get(selected_route["provider_id"])
+    if not provider:
+        return config
+    try:
+        api_key = decrypt_zuoyelang_api_key(
+            provider.get("api_key_encrypted", ""),
+            provider.get("api_key_iv", ""),
+            snapshot.get("secret", ""),
+        )
+    except Exception:
+        api_key = ""
+
+    try:
+        temperature_value = (
+            float(selected_route["temperature"])
+            if selected_route.get("temperature") is not None
+            else float(ai_cfg.get("temperature", 0.8))
+        )
+    except (TypeError, ValueError):
+        temperature_value = 0.8
+
+    config.update(
+        {
+            "provider": provider.get("display_name") or provider.get("name") or "Zuoyelang Route AI",
+            "base_url": provider.get("base_url", ""),
+            "model": selected_route.get("model_override") or provider.get("default_model", ""),
+            "api_key_env": "ZUOYELANG_ROUTE_CONFIG",
+            "api_key": api_key,
+            "enabled": enabled and bool(provider.get("base_url") and api_key and (selected_route.get("model_override") or provider.get("default_model"))),
+            "temperature": temperature_value,
+            "max_tokens": selected_route.get("max_tokens") or 1800,
+            "task_type": selected_route.get("task_type", ""),
+            "system_prompt": selected_route.get("system_prompt", ""),
+            "json_mode": bool(selected_route.get("json_mode")),
+        }
+    )
+    return config
+
+
+def resolve_ai_config(raw_config: dict[str, Any]) -> dict[str, Any]:
+    ai_cfg = raw_config.get("ai", {})
+    raw_enabled = os.getenv("AI_ENABLED")
+    enabled = parse_bool(raw_enabled, parse_bool(ai_cfg.get("enabled"), False)) if raw_enabled is not None else parse_bool(ai_cfg.get("enabled"), False)
+    source = clean_text(os.getenv("FINANCE_AI_SOURCE") or ai_cfg.get("source") or "auto").lower()
+    route_config = resolve_zuoyelang_route_ai_config(ai_cfg, enabled)
+    direct_config = resolve_direct_ai_config(ai_cfg, enabled)
+    if source == "zuoyelang_route":
+        return route_config if route_config["enabled"] else direct_config
+    if source == "direct":
+        return direct_config
+    if route_config["enabled"]:
+        return route_config
+    return direct_config
 
 
 def load_dashboard_payload(report_path: Path, config_path: Path) -> dict[str, Any]:
@@ -1087,6 +1538,10 @@ def chat_completion_url(base_url: str) -> str:
     return f"{trimmed}/chat/completions"
 
 
+def strip_thinking_prefix(text: str) -> str:
+    return re.sub(r"<think>[\s\S]*?</think>\s*", "", clean_text(text)).strip()
+
+
 def extract_message_text(payload: dict[str, Any]) -> str:
     choices = payload.get("choices") or []
     if not choices:
@@ -1095,38 +1550,115 @@ def extract_message_text(payload: dict[str, Any]) -> str:
     content = message.get("content", "")
     if isinstance(content, list):
         parts = [item.get("text", "") for item in content if isinstance(item, dict)]
-        return "".join(parts).strip()
-    return clean_text(content)
+        return strip_thinking_prefix("".join(parts))
+    return strip_thinking_prefix(clean_text(content))
 
 
-def generate_ai_briefing(payload: dict[str, Any], ai_config: dict[str, Any]) -> str:
+def build_ai_prompt_payload(payload: dict[str, Any]) -> dict[str, Any]:
     summary = payload["summary"]
     spotlight = payload["spotlight"]
-    top_lines = payload["leaderboards"]["line_board"][:3]
-    prompt_payload = {
-        "部门": summary["department"],
-        "周期": payload["report"]["period_text"],
-        "累计创收": round(summary["revenue"], 2),
-        "累计利润": round(summary["profit"], 2),
-        "利润率": round(summary["margin"] * 100, 2),
-        "冠军日": spotlight["best_day"]["date"],
-        "冠军日利润": round(spotlight["best_day"]["profit"], 2),
-        "冠军团": spotlight["best_profit_group"]["line"] or spotlight["best_profit_group"]["tour_no"],
-        "冠军团利润": round(spotlight["best_profit_group"]["profit"], 2),
-        "主战计调": spotlight["primary_owner"]["label"],
-        "高毛利线路": [item["label"] for item in top_lines],
+    leaderboards = payload["leaderboards"]
+    return {
+        "department": summary["department"],
+        "period": payload["report"]["period_text"] or payload["report"]["period_label"],
+        "summary": {
+            "groups": summary["groups"],
+            "travellers": round(summary["travellers"], 2),
+            "revenue": round(summary["revenue"], 2),
+            "cost": round(summary["cost"], 2),
+            "profit": round(summary["profit"], 2),
+            "margin_pct": round(summary["margin"] * 100, 2),
+            "avg_group_revenue": round(summary["average_revenue"], 2),
+            "avg_group_profit": round(summary["average_profit"], 2),
+            "avg_traveller_profit": round(summary["average_profit_per_traveller"], 2),
+            "cost_rate_pct": round(summary["cost_rate"] * 100, 2),
+        },
+        "spotlight": {
+            "best_day": spotlight["best_day"],
+            "best_profit_group": spotlight["best_profit_group"],
+            "best_margin_group": spotlight["best_margin_group"],
+            "primary_owner": spotlight["primary_owner"],
+        },
+        "top_lines": leaderboards.get("line_board", [])[:5],
+        "top_destinations": leaderboards.get("destination_board", [])[:5],
+        "top_source_regions": leaderboards.get("source_region_board", [])[:5],
+        "top_profit_groups": leaderboards.get("top_profit_groups", [])[:5],
+        "top_margin_groups": leaderboards.get("top_margin_groups", [])[:5],
+        "low_margin_groups": leaderboards.get("guard_groups", [])[:3],
+        "daily_trend": leaderboards.get("daily_trend", [])[-10:],
     }
+
+
+def extract_json_object(raw_text: str) -> dict[str, Any]:
+    cleaned = strip_thinking_prefix(raw_text).strip()
+    cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s*```$", "", cleaned)
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start == -1 or end == -1 or end < start:
+        raise ValueError("AI 未返回有效 JSON")
+    return json.loads(cleaned[start : end + 1])
+
+
+def normalize_insight_items(raw_items: Any, fallback_items: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
+    normalized: list[dict[str, str]] = []
+    if isinstance(raw_items, list):
+        for item in raw_items:
+            if isinstance(item, dict):
+                title = clean_text(item.get("title") or item.get("name") or item.get("label"))
+                detail = clean_text(item.get("detail") or item.get("reason") or item.get("description") or item.get("action"))
+            else:
+                title = clean_text(item)
+                detail = ""
+            if title:
+                normalized.append({"title": title, "detail": detail})
+            if len(normalized) >= limit:
+                break
+    return normalized if normalized else fallback_items[:limit]
+
+
+def normalize_ai_analysis(raw_analysis: dict[str, Any], fallback_analysis: dict[str, Any]) -> dict[str, Any]:
+    summary = clean_text(raw_analysis.get("summary") or raw_analysis.get("overview") or raw_analysis.get("text")) or fallback_analysis["summary"]
+    return {
+        "summary": summary,
+        "route_focus": normalize_insight_items(raw_analysis.get("route_focus"), fallback_analysis["route_focus"], 3),
+        "customer_regions": normalize_insight_items(raw_analysis.get("customer_regions"), fallback_analysis["customer_regions"], 3),
+        "revenue_actions": normalize_insight_items(raw_analysis.get("revenue_actions"), fallback_analysis["revenue_actions"], 4),
+        "profit_actions": normalize_insight_items(raw_analysis.get("profit_actions"), fallback_analysis["profit_actions"], 4),
+        "risk_alerts": normalize_insight_items(raw_analysis.get("risk_alerts"), fallback_analysis["risk_alerts"], 2),
+    }
+
+
+def generate_ai_insight(payload: dict[str, Any], ai_config: dict[str, Any]) -> dict[str, Any]:
+    fallback_analysis = payload["briefing"]["fallback_analysis"]
+    prompt_payload = build_ai_prompt_payload(payload)
+    system_prompt = (
+        "你是旅游公司经营分析顾问，要根据经营战报输出可执行的营销、获客、创收和提利建议。"
+        "请只返回 JSON，不要 Markdown，不要额外解释。"
+        "JSON schema 必须为："
+        "{"
+        "\"summary\":\"80到140字的中文总结\","
+        "\"route_focus\":[{\"title\":\"\",\"detail\":\"\"}],"
+        "\"customer_regions\":[{\"title\":\"\",\"detail\":\"\"}],"
+        "\"revenue_actions\":[{\"title\":\"\",\"detail\":\"\"}],"
+        "\"profit_actions\":[{\"title\":\"\",\"detail\":\"\"}],"
+        "\"risk_alerts\":[{\"title\":\"\",\"detail\":\"\"}]"
+        "}。"
+        "要求：route_focus 和 customer_regions 各 3 条，revenue_actions 和 profit_actions 各 4 条，risk_alerts 2 条；"
+        "必须引用输入中的真实线路、客源地、目的地、利润率或冠军团信息，不要写空话。"
+    )
+    if clean_text(ai_config.get("system_prompt")):
+        system_prompt = f"{clean_text(ai_config['system_prompt'])}\n\n{system_prompt}"
     request_body = {
         "model": ai_config["model"],
         "temperature": ai_config["temperature"],
+        "max_tokens": int(ai_config.get("max_tokens") or 1800),
+        "stream": False,
+        "chat_template_kwargs": {"enable_thinking": False},
         "messages": [
             {
                 "role": "system",
-                "content": (
-                    "你是旅游公司经营战报助手。请用80到140字中文输出一段鼓舞士气的晨会播报，"
-                    "必须自然包含创收、利润、利润率、冠军团或冠军线路、以及一句带动团队冲刺的话。"
-                    "不要使用项目符号，不要写标题。"
-                ),
+                "content": system_prompt,
             },
             {
                 "role": "user",
@@ -1150,7 +1682,7 @@ def generate_ai_briefing(payload: dict[str, Any], ai_config: dict[str, Any]) -> 
     text = extract_message_text(parsed)
     if not text:
         raise ValueError("AI 返回内容为空")
-    return text
+    return normalize_ai_analysis(extract_json_object(text), fallback_analysis)
 
 
 def generate_tour_no(start_date: str, records: list[dict[str, Any]]) -> str:
@@ -1733,15 +2265,18 @@ class FinanceDashboardApp:
                 "ok": True,
                 "used_ai": False,
                 "text": payload["briefing"]["fallback_text"],
+                "analysis": payload["briefing"]["fallback_analysis"],
                 "provider": ai_meta["provider"],
                 "model": ai_meta["model"],
-                "reason": "AI 未配置，已返回本地士气播报。",
+                "task_type": ai_meta.get("task_type", ""),
+                "reason": "AI 未就绪，已返回本地经营洞察。",
             }
 
         signature = (
             payload["status"]["source_mtime"],
             ai_meta["provider"],
             ai_meta["model"],
+            ai_meta.get("task_type", ""),
         )
         now = time.time()
         with self._lock:
@@ -1753,22 +2288,26 @@ class FinanceDashboardApp:
                 return self._ai_cache["payload"]
 
         try:
-            text = generate_ai_briefing(payload, ai_config)
+            analysis = generate_ai_insight(payload, ai_config)
             response_payload = {
                 "ok": True,
                 "used_ai": True,
-                "text": text,
+                "text": analysis["summary"],
+                "analysis": analysis,
                 "provider": ai_meta["provider"],
                 "model": ai_meta["model"],
+                "task_type": ai_meta.get("task_type", ""),
             }
         except (ValueError, error.URLError, TimeoutError, json.JSONDecodeError) as exc:
             response_payload = {
                 "ok": True,
                 "used_ai": False,
                 "text": payload["briefing"]["fallback_text"],
+                "analysis": payload["briefing"]["fallback_analysis"],
                 "provider": ai_meta["provider"],
                 "model": ai_meta["model"],
-                "reason": f"AI 播报失败，已回退为本地播报：{exc}",
+                "task_type": ai_meta.get("task_type", ""),
+                "reason": f"AI 经营洞察失败，已回退为本地经营洞察：{exc}",
             }
 
         with self._lock:

@@ -6,10 +6,12 @@
   "report_title": "旅游经营利润战报",
   "refresh_seconds": 15,
   "ai": {
-    "provider": "zuoyelang",
-    "base_url": "https://your-openai-compatible-endpoint/v1",
+    "source": "zuoyelang_route",
+    "provider": "",
+    "base_url": "",
     "api_key_env": "AI_API_KEY",
-    "model": "your-model-name",
+    "model": "",
+    "route_task_types": ["FINANCE_ANALYSIS", "MARKET_ANALYSIS"],
     "temperature": 0.8,
     "enabled": true
   }
