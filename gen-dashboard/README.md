@@ -22,6 +22,7 @@ bash launch_finance_dashboard.sh
 
 - 页面：`http://127.0.0.1:47837/gen`
 - 接口：`http://127.0.0.1:47837/gen/api/dashboard`
+- 访问密码：`284611`
 
 ## 部署到 PROD
 
@@ -37,7 +38,7 @@ python3 deploy/deploy_prod.py
 - 上传到 `/opt/zuting/gen-dashboard`
 - 安装 `zuting-gen-dashboard.service`
 - 把 `zuting.fszyl.top/gen` 反向代理到 `172.19.0.1:47837`
-- 自动校验 `https://zuting.fszyl.top/gen/api/dashboard`
+- 若启用了访问密码，会先自动登录，再校验 `https://zuting.fszyl.top/gen/api/dashboard`
 
 ## 重新从 Excel 种库
 

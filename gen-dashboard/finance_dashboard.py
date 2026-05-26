@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import argparse
+import hashlib
+import hmac
+import html
 import json
 import os
 import re
@@ -13,6 +16,7 @@ import webbrowser
 from collections import defaultdict
 from datetime import datetime
 from http import HTTPStatus
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -36,6 +40,119 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 BACKUP_DIR = PROJECT_ROOT / ".shortcut-center-env" / "data" / "finance-dashboard" / "backups"
 DEFAULT_SQLITE_PATH = PROJECT_ROOT / ".shortcut-center-env" / "data" / "finance-dashboard" / "finance-dashboard.db"
 DEFAULT_STORAGE_MODE = "excel"
+AUTH_COOKIE_NAME = "gen_dashboard_auth"
+AUTH_COOKIE_TTL_SECONDS = 43200
+LOGIN_PAGE_TEMPLATE = """<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>经营战报访问验证</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: linear-gradient(135deg, #08111f 0%, #102748 48%, #1f5b74 100%);
+      --card: rgba(255, 255, 255, 0.96);
+      --text: #122033;
+      --muted: #63748a;
+      --accent: #0d8c78;
+      --danger: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .card {
+      width: min(100%, 420px);
+      padding: 32px 28px;
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: 0 28px 60px rgba(8, 17, 31, 0.28);
+    }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(13, 140, 120, 0.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+    p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ced6e0;
+      border-radius: 14px;
+      font-size: 16px;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(13, 140, 120, 0.12);
+    }
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0d8c78 0%, #0eae90 100%);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .error {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(180, 35, 24, 0.08);
+      color: var(--danger);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="eyebrow">ZUTING / GEN</div>
+    <h1>经营战报访问验证</h1>
+    <p>该页面已启用访问密码。请输入密码后进入战报看板。</p>
+    __ERROR_BLOCK__
+    <form method="post" action="__LOGIN_ACTION__">
+      <input type="hidden" name="next" value="__NEXT_VALUE__">
+      <label for="password">访问密码</label>
+      <input id="password" name="password" type="password" inputmode="numeric" autocomplete="current-password" placeholder="请输入访问密码" required autofocus>
+      <button type="submit">进入战报</button>
+    </form>
+  </main>
+</body>
+</html>
+"""
 STANDARD_HEADERS = [
     "序号",
     "团号",
@@ -151,6 +268,7 @@ def load_config(config_path: Path) -> dict[str, Any]:
         "report_path": str(DEFAULT_REPORT_PATH),
         "sqlite_path": str(DEFAULT_SQLITE_PATH),
         "base_path": "",
+        "access_password": "",
         "report_title": "旅游经营利润战报",
         "refresh_seconds": 15,
         "ai": {
@@ -1353,7 +1471,25 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
     app: "FinanceDashboardApp"
 
     def do_GET(self) -> None:
-        path = parse.urlparse(self.path).path
+        parsed_url = parse.urlparse(self.path)
+        path = parsed_url.path
+        if self.app.matches_route(path, "/login"):
+            if self.app.is_authenticated(self.headers.get("Cookie", "")):
+                self.respond_redirect(self.app.root_path())
+                return
+            params = parse.parse_qs(parsed_url.query, keep_blank_values=True)
+            error_text = clean_text((params.get("error") or [""])[-1])
+            next_path = clean_text((params.get("next") or [""])[-1])
+            self.respond_html(self.app.render_login(error_text, next_path))
+            return
+        if self.app.matches_route(path, "/logout"):
+            self.respond_redirect(
+                self.app.login_location(),
+                extra_headers=[("Set-Cookie", self.app.clear_auth_cookie_header())],
+            )
+            return
+        if not self.ensure_authorized(path):
+            return
         if self.app.matches_route(path, "/"):
             self.respond_html(self.app.render_html())
             return
@@ -1367,6 +1503,22 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         path = parse.urlparse(self.path).path
+        if self.app.matches_route(path, "/login"):
+            form = self.read_form_body()
+            next_path = self.app.normalize_redirect_target(form.get("next", ""))
+            if self.app.verify_password(form.get("password", "")):
+                self.respond_redirect(
+                    next_path,
+                    extra_headers=[("Set-Cookie", self.app.auth_cookie_header())],
+                )
+                return
+            self.respond_html(
+                self.app.render_login("密码不正确，请重新输入。", next_path),
+                status=HTTPStatus.UNAUTHORIZED,
+            )
+            return
+        if not self.ensure_authorized(path):
+            return
         if self.app.matches_route(path, "/api/ai-briefing"):
             try:
                 self.respond_json(self.app.ai_briefing())
@@ -1391,6 +1543,26 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
             raise ValueError("请求体必须是 JSON 对象")
         return parsed_body
 
+    def read_form_body(self) -> dict[str, str]:
+        length = int(self.headers.get("Content-Length", "0"))
+        raw_body = self.rfile.read(length).decode("utf-8") if length else ""
+        parsed_form = parse.parse_qs(raw_body, keep_blank_values=True)
+        return {key: clean_text(values[-1] if values else "") for key, values in parsed_form.items()}
+
+    def ensure_authorized(self, path: str) -> bool:
+        if not self.app.auth_required():
+            return True
+        if self.app.is_authenticated(self.headers.get("Cookie", "")):
+            return True
+        if self.app.is_api_route(path):
+            self.respond_json(
+                {"error": "Unauthorized", "login_required": True},
+                status=HTTPStatus.UNAUTHORIZED,
+            )
+            return False
+        self.respond_redirect(self.app.login_location(self.path))
+        return False
+
     def log_message(self, format: str, *args: Any) -> None:
         return
 
@@ -1410,6 +1582,18 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def respond_redirect(
+        self,
+        location: str,
+        status: HTTPStatus = HTTPStatus.FOUND,
+        extra_headers: list[tuple[str, str]] | None = None,
+    ) -> None:
+        self.send_response(status)
+        self.send_header("Location", location)
+        for key, value in extra_headers or []:
+            self.send_header(key, value)
+        self.end_headers()
+
 
 class ReusableThreadingHTTPServer(ThreadingHTTPServer):
     allow_reuse_address = True
@@ -1423,6 +1607,8 @@ class FinanceDashboardApp:
         self.storage_mode = storage_mode_from_config(self.raw_config)
         self.sqlite_path = sqlite_path_from_config(self.raw_config, config_path)
         self.base_path = normalize_base_path(self.raw_config.get("base_path"))
+        self.access_password = clean_text(os.getenv("FINANCE_DASHBOARD_PASSWORD") or self.raw_config.get("access_password"))
+        self.cookie_name = AUTH_COOKIE_NAME
         self.report_title = clean_text(self.raw_config.get("report_title")) or "旅游经营利润战报"
         self._lock = threading.Lock()
         self._ai_cache: dict[str, Any] = {}
@@ -1436,6 +1622,99 @@ class FinanceDashboardApp:
             return request_path in candidates
         expected = f"{self.base_path}{suffix}" if self.base_path else suffix
         return request_path == expected
+
+    def root_path(self) -> str:
+        return self.base_path or "/"
+
+    def login_path(self) -> str:
+        return f"{self.base_path}/login" if self.base_path else "/login"
+
+    def is_api_route(self, request_path: str) -> bool:
+        api_prefix = f"{self.base_path}/api/" if self.base_path else "/api/"
+        return request_path.startswith(api_prefix) or self.matches_route(request_path, "/api/dashboard")
+
+    def auth_required(self) -> bool:
+        return bool(self.access_password)
+
+    def verify_password(self, candidate: str) -> bool:
+        if not self.auth_required():
+            return True
+        return hmac.compare_digest(clean_text(candidate), self.access_password)
+
+    def auth_token(self) -> str:
+        secret = hashlib.sha256(
+            f"{self.access_password}|{self.base_path}|finance-dashboard".encode("utf-8")
+        ).digest()
+        signature = hmac.new(secret, b"authorized", hashlib.sha256).hexdigest()
+        return f"v1.{signature}"
+
+    def is_authenticated(self, cookie_header: str) -> bool:
+        if not self.auth_required():
+            return True
+        if not cookie_header:
+            return False
+        try:
+            cookie = SimpleCookie()
+            cookie.load(cookie_header)
+        except Exception:
+            return False
+        morsel = cookie.get(self.cookie_name)
+        if not morsel:
+            return False
+        return hmac.compare_digest(morsel.value, self.auth_token())
+
+    def auth_cookie_header(self) -> str:
+        cookie_path = self.base_path or "/"
+        return (
+            f"{self.cookie_name}={self.auth_token()}; "
+            f"Max-Age={AUTH_COOKIE_TTL_SECONDS}; Path={cookie_path}; HttpOnly; SameSite=Lax"
+        )
+
+    def clear_auth_cookie_header(self) -> str:
+        cookie_path = self.base_path or "/"
+        return (
+            f"{self.cookie_name}=; Max-Age=0; Path={cookie_path}; HttpOnly; SameSite=Lax"
+        )
+
+    def normalize_redirect_target(self, raw_target: str) -> str:
+        target = clean_text(raw_target)
+        if not target:
+            return self.root_path()
+        parsed_target = parse.urlparse(target)
+        if parsed_target.scheme or parsed_target.netloc:
+            return self.root_path()
+        path = parsed_target.path or self.root_path()
+        if self.base_path:
+            if path != self.base_path and not path.startswith(f"{self.base_path}/"):
+                return self.root_path()
+        elif not path.startswith("/"):
+            return self.root_path()
+        query = f"?{parsed_target.query}" if parsed_target.query else ""
+        return f"{path}{query}"
+
+    def login_location(self, next_path: str = "", error_text: str = "") -> str:
+        params: dict[str, str] = {}
+        next_value = self.normalize_redirect_target(next_path)
+        if next_value and next_value != self.login_path():
+            params["next"] = next_value
+        if error_text:
+            params["error"] = error_text
+        query = parse.urlencode(params)
+        return f"{self.login_path()}?{query}" if query else self.login_path()
+
+    def render_login(self, error_text: str = "", next_path: str = "") -> str:
+        safe_next = self.normalize_redirect_target(next_path)
+        if safe_next == self.login_path():
+            safe_next = self.root_path()
+        error_block = ""
+        if error_text:
+            error_block = f'<div class="error">{html.escape(error_text)}</div>'
+        return (
+            LOGIN_PAGE_TEMPLATE
+            .replace("__ERROR_BLOCK__", error_block)
+            .replace("__LOGIN_ACTION__", html.escape(self.login_path()))
+            .replace("__NEXT_VALUE__", html.escape(safe_next))
+        )
 
     def render_html(self) -> str:
         return HTML_TEMPLATE.replace("__BASE_PATH__", self.base_path)

@@ -118,6 +118,24 @@ class FinanceDashboardTests(unittest.TestCase):
         resolved = finance_dashboard.report_path_from_config(config, finance_dashboard.DEFAULT_REPORT_PATH)
         self.assertEqual(resolved, Path("/tmp/custom-report.xls"))
 
+    def test_access_password_helpers(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "finance-dashboard.json"
+            config_path.write_text(
+                '{"storage":"sqlite","sqlite_path":"./data.db","base_path":"/gen","access_password":"284611"}',
+                encoding="utf-8",
+            )
+            app = finance_dashboard.FinanceDashboardApp(Path("/tmp/report.xls"), config_path)
+
+        self.assertTrue(app.auth_required())
+        self.assertTrue(app.verify_password("284611"))
+        self.assertFalse(app.verify_password("123456"))
+        cookie_header = f"{app.cookie_name}={app.auth_token()}"
+        self.assertTrue(app.is_authenticated(cookie_header))
+        self.assertFalse(app.is_authenticated(f"{app.cookie_name}=bad-token"))
+        self.assertEqual(app.normalize_redirect_target("/gen/api/dashboard"), "/gen/api/dashboard")
+        self.assertEqual(app.normalize_redirect_target("https://evil.example"), "/gen")
+
     def test_append_record_to_report_rewrites_xls(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             report_path = Path(temp_dir) / "test-report.xls"

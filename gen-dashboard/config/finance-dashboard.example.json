@@ -2,6 +2,7 @@
   "storage": "sqlite",
   "sqlite_path": "../data/finance-dashboard.db",
   "base_path": "/gen",
+  "access_password": "284611",
   "report_title": "旅游经营利润战报",
   "refresh_seconds": 15,
   "ai": {

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import http.cookiejar
 import io
 import json
 import os
@@ -6,12 +7,15 @@ import posixpath
 import tarfile
 import tempfile
 import time
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 import paramiko
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = PROJECT_ROOT / "config" / "finance-dashboard.json"
 REMOTE_ROOT = "/opt/zuting/gen-dashboard"
 REMOTE_TAR = "/opt/zuting/gen-dashboard.tar.gz"
 REMOTE_SERVICE = "/etc/systemd/system/zuting-gen-dashboard.service"
@@ -45,6 +49,12 @@ def build_tarball() -> Path:
     return tar_path
 
 
+def load_runtime_config() -> dict:
+    if not CONFIG_PATH.exists():
+        return {}
+    return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+
+
 def load_service_text() -> str:
     return (PROJECT_ROOT / "deploy" / "zuting-gen-dashboard.service").read_text(encoding="utf-8")
 
@@ -69,15 +79,48 @@ def patch_nginx_config(current: str, location_block: str) -> str:
     return current.replace(marker, insert, 1)
 
 
+def normalize_base_path(value: str) -> str:
+    text = str(value or "").strip()
+    if not text or text == "/":
+        return ""
+    if not text.startswith("/"):
+        text = f"/{text}"
+    return text.rstrip("/")
+
+
+def build_route_url(base_path: str, suffix: str) -> str:
+    parsed = urllib.parse.urlsplit(ENTRY_URL)
+    route_path = f"{base_path}{suffix}" if base_path else suffix
+    return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, route_path, "", ""))
+
+
 def write_remote_text(sftp: paramiko.SFTPClient, remote_path: str, content: str) -> None:
     with sftp.open(remote_path, "w") as handle:
         handle.write(content)
 
 
-def verify_http() -> dict:
-    import urllib.request
+def verify_http(access_password: str = "", base_path: str = "") -> dict:
+    if not access_password:
+        with urllib.request.urlopen(ENTRY_URL, timeout=20) as response:
+            return json.load(response)
 
-    with urllib.request.urlopen(ENTRY_URL, timeout=20) as response:
+    cookie_jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie_jar))
+    login_url = build_route_url(base_path, "/login")
+    login_form = urllib.parse.urlencode({"password": access_password, "next": base_path or "/"}).encode("utf-8")
+    login_request = urllib.request.Request(
+        login_url,
+        data=login_form,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        method="POST",
+    )
+    with opener.open(login_request, timeout=20) as response:
+        response.read()
+
+    if not any(cookie.name == "gen_dashboard_auth" for cookie in cookie_jar):
+        raise RuntimeError("Password login succeeded without issuing auth cookie")
+
+    with opener.open(ENTRY_URL, timeout=20) as response:
         return json.load(response)
 
 
@@ -85,6 +128,9 @@ def main() -> None:
     if not PASSWORD:
         raise SystemExit("ZUTING_PROD_PASSWORD is required")
 
+    config = load_runtime_config()
+    base_path = normalize_base_path(config.get("base_path", ""))
+    access_password = str(os.environ.get("FINANCE_DASHBOARD_PASSWORD") or config.get("access_password") or "").strip()
     tar_path = build_tarball()
     backup_suffix = time.strftime("%Y%m%d-%H%M%S")
     ssh = paramiko.SSHClient()
@@ -135,7 +181,7 @@ def main() -> None:
         service_state = require_ok(ssh, f"systemctl is-active {SERVICE_NAME}", "check service state").strip()
         if service_state != "active":
             raise RuntimeError(f"{SERVICE_NAME} is not active: {service_state}")
-        payload = verify_http()
+        payload = verify_http(access_password, base_path)
 
         print("[6/6] Done")
         print(
