@@ -889,7 +889,7 @@
         `<span class="chip hot"><strong>冠军日</strong>${spotlight.best_day.date || '未标注'} 利润 ${fmtMoney(spotlight.best_day.profit)}</span>`,
         `<span class="chip hot"><strong>冠军团</strong>${spotlight.best_profit_group.line || spotlight.best_profit_group.tour_no || '未标注'}</span>`,
         `<span class="chip"><strong>主战席</strong>${spotlight.primary_owner.label || '团队协同'} 累计利润 ${fmtMoney(spotlight.primary_owner.profit || 0)}</span>`,
-        `<span class="chip"><strong>AI</strong>${ai.configured ? `${ai.provider} / ${ai.model}` : '未配置，当前使用本地播报'}</span>`,
+        `<span class="chip"><strong>AI</strong>${ai.configured ? `${ai.provider} / ${ai.model}` : '本地播报已启用'}</span>`,
       ];
       document.getElementById('momentum-row').innerHTML = chips.join('');
 
@@ -974,7 +974,7 @@
     function renderBriefing(payload) {
       text('briefing-label', payload.briefing.ai_configured ? 'Ready For AI Briefing' : 'Local Briefing');
       text('briefing-text', payload.briefing.fallback_text);
-      text('briefing-status', payload.ai.configured ? `AI 已就绪：${payload.ai.provider} / ${payload.ai.model}` : 'AI 未配置，当前使用本地播报');
+      text('briefing-status', payload.ai.configured ? `AI 已就绪：${payload.ai.provider} / ${payload.ai.model}` : '当前使用本地播报，待接入可用 AI 通道');
     }
 
     function applyEntryDefaults(payload) {
