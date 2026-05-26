@@ -1,0 +1,15 @@
+[Unit]
+Description=Zuting Gen Finance Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=mark
+WorkingDirectory=/opt/zuting/gen-dashboard
+ExecStart=/usr/bin/python3 /opt/zuting/gen-dashboard/finance_dashboard.py serve --host 127.0.0.1 --port 47837 --config /opt/zuting/gen-dashboard/config/finance-dashboard.json
+Restart=always
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

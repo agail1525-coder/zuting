@@ -1,0 +1,15 @@
+{
+  "storage": "sqlite",
+  "sqlite_path": "../data/finance-dashboard.db",
+  "base_path": "/gen",
+  "report_title": "旅游经营利润战报",
+  "refresh_seconds": 15,
+  "ai": {
+    "provider": "zuoyelang",
+    "base_url": "https://your-openai-compatible-endpoint/v1",
+    "api_key_env": "AI_API_KEY",
+    "model": "your-model-name",
+    "temperature": 0.8,
+    "enabled": true
+  }
+}

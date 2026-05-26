@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>旅游经营战报</title>
+  <style>
+    :root {
+      --bg: #08121b;
+      --bg-2: #102739;
+      --panel: rgba(8, 22, 34, 0.84);
+      --panel-strong: rgba(11, 30, 46, 0.95);
+      --line: rgba(163, 197, 215, 0.12);
+      --line-strong: rgba(163, 197, 215, 0.26);
+      --ink: #eff6f8;
+      --ink-soft: rgba(239, 246, 248, 0.72);
+      --accent: #f7c25c;
+      --accent-2: #ff8a48;
+      --accent-3: #5fe0d4;
+      --success: #8cff84;
+      --danger: #ff8f70;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.32);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --font-ui: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-display: "Noto Serif SC", "Songti SC", "STSong", serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font-ui);
+      background:
+        radial-gradient(circle at 14% 18%, rgba(247, 194, 92, 0.18), transparent 24%),
+        radial-gradient(circle at 78% 12%, rgba(95, 224, 212, 0.16), transparent 24%),
+        radial-gradient(circle at 82% 78%, rgba(255, 138, 72, 0.16), transparent 22%),
+        linear-gradient(145deg, #061018 0%, #0b1823 38%, #0b2131 100%);
+    }
+
+    .shell {
+      width: min(1480px, calc(100vw - 28px));
+      margin: 18px auto 44px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+    }
+
+    .hero {
+      position: relative;
+      padding: 30px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(247, 194, 92, 0.12), transparent 38%),
+        linear-gradient(310deg, rgba(95, 224, 212, 0.14), transparent 46%);
+      pointer-events: none;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(247, 194, 92, 0.94);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      max-width: 760px;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-actions,
+    .briefing-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 700;
+      transition: transform 0.16s ease, opacity 0.16s ease, filter 0.16s ease;
+    }
+
+    button:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    button:disabled { opacity: 0.5; cursor: wait; transform: none; }
+
+    .accent-btn {
+      background: linear-gradient(135deg, var(--accent), #ffd782);
+      color: #201707;
+    }
+
+    .ghost-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .status-row,
+    .momentum-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 10px 14px;
+      color: var(--ink-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .chip strong {
+      color: var(--ink);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .chip.hot strong {
+      background: rgba(247, 194, 92, 0.18);
+      color: #ffe5a7;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 128px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(239, 246, 248, 0.58);
+    }
+
+    .metric-value {
+      margin-top: 16px;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-foot {
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .section-subtitle {
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .briefing-box {
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      background:
+        linear-gradient(135deg, rgba(247, 194, 92, 0.14), rgba(255, 138, 72, 0.12)),
+        rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(247, 194, 92, 0.2);
+    }
+
+    .briefing-label {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 234, 184, 0.86);
+    }
+
+    .briefing-text {
+      margin-top: 14px;
+      font-size: 20px;
+      line-height: 1.8;
+    }
+
+    .briefing-status {
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .trend-list,
+    .rank-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .trend-item,
+    .rank-item {
+      display: grid;
+      gap: 10px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .trend-head,
+    .rank-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .trend-date,
+    .rank-name {
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .trend-value,
+    .rank-value {
+      color: #ffe09e;
+      font-weight: 800;
+    }
+
+    .bar {
+      height: 11px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent), #ffe49f);
+      transform-origin: left center;
+      animation: grow 700ms ease forwards;
+    }
+
+    .bar-fill.secondary {
+      background: linear-gradient(90deg, #35b8ff, var(--accent-3));
+    }
+
+    @keyframes grow {
+      from { transform: scaleX(0.08); opacity: 0.3; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      padding: 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-label {
+      color: rgba(239, 246, 248, 0.58);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .mini-value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .muted {
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .empty {
+      color: var(--ink-soft);
+      font-size: 14px;
+      padding: 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: rgba(239, 246, 248, 0.48);
+      font-size: 13px;
+    }
+
+    .modal-shell[hidden] {
+      display: none;
+    }
+
+    .modal-shell {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(3, 10, 16, 0.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-card {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100vw - 24px));
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(11, 30, 46, 0.98), rgba(8, 22, 34, 0.98));
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.48);
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.05em;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      min-width: 44px;
+      padding-inline: 14px;
+    }
+
+    .entry-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.wide {
+      grid-column: span 2;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: rgba(239, 246, 248, 0.76);
+      letter-spacing: 0.04em;
+    }
+
+    .field input,
+    .field select {
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      padding: 0 14px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(247, 194, 92, 0.48);
+      box-shadow: 0 0 0 4px rgba(247, 194, 92, 0.12);
+    }
+
+    .field-tip {
+      font-size: 12px;
+      color: rgba(239, 246, 248, 0.56);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .preview-card {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      display: grid;
+      gap: 8px;
+    }
+
+    .preview-card strong {
+      font-size: 28px;
+      letter-spacing: -0.05em;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .form-status {
+      min-height: 20px;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .form-status.error {
+      color: #ffc4b0;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .shell {
+        width: min(100vw - 18px, 100%);
+        margin: 10px auto 24px;
+      }
+
+      .hero,
+      .section,
+      .modal-card {
+        padding: 18px;
+      }
+
+      .briefing-text {
+        font-size: 18px;
+      }
+
+      .form-grid,
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.wide,
+      .field.full {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel hero">
+      <div class="hero-head">
+        <div>
+          <p class="eyebrow">Travel Profit War Room</p>
+          <h1 id="hero-title">旅游经营战报</h1>
+          <p class="subtitle" id="hero-subtitle">正在读取本月创收与利润数据。</p>
+        </div>
+        <div class="hero-actions">
+          <button class="accent-btn" id="open-entry-btn">录入经营数据</button>
+          <button class="ghost-btn" id="reload-btn">立即刷新</button>
+          <button class="ghost-btn" id="briefing-btn">生成 AI 士气播报</button>
+        </div>
+      </div>
+
+      <div class="metrics" id="metrics"></div>
+      <div class="momentum-row" id="momentum-row"></div>
+      <div class="status-row" id="status-row"></div>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">实时士气播报</h2>
+              <p class="section-subtitle">默认基于报表自动生成，本地即可运行；如已配置 AI，还能一键升级为更强的晨会战报口径。</p>
+            </div>
+            <div class="briefing-actions">
+              <span class="briefing-status" id="briefing-status">等待数据</span>
+            </div>
+          </div>
+          <div class="briefing-box">
+            <div class="briefing-label" id="briefing-label">Local Briefing</div>
+            <div class="briefing-text" id="briefing-text">读取中...</div>
+          </div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">每日冲锋曲线</h2>
+              <p class="section-subtitle">按发团日期重算，表格变更后自动刷新；橙色为利润，蓝色为创收。</p>
+            </div>
+          </div>
+          <div class="mini-grid" id="day-summary"></div>
+          <div class="trend-list" id="trend-list"></div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">盈利冠军榜</h2>
+              <p class="section-subtitle">把高利润打法亮出来，复制冠军线路与冠军执行动作。</p>
+            </div>
+          </div>
+          <div class="rank-list" id="top-profit-list"></div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">高毛利先锋榜</h2>
+              <p class="section-subtitle">看谁更会做利润，不只看体量，也看毛利质量。</p>
+            </div>
+          </div>
+          <div class="rank-list" id="top-margin-list"></div>
+          <div class="rank-list" id="guard-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="grid">
+      <section class="panel section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">线路战果</h2>
+            <p class="section-subtitle">把最能打的产品线和目的地直接摆上墙，便于业务复制。</p>
+          </div>
+        </div>
+        <div class="rank-list" id="line-board"></div>
+      </section>
+
+      <section class="panel section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">主战席火力值</h2>
+            <p class="section-subtitle">按报表中实际计调/导游/外联字段聚合，谁在扛利润一眼能看出来。</p>
+          </div>
+        </div>
+        <div class="rank-list" id="owner-board"></div>
+      </section>
+    </section>
+
+    <p class="footer-note" id="footer-note">战报加载中...</p>
+  </main>
+
+  <section class="modal-shell" id="entry-modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h2 class="modal-title">录入经营数据</h2>
+          <p class="section-subtitle">这里录入后会立刻显示在战报上，并自动写回原始 Excel。团号可以留空，系统会按发团日期自动生成。</p>
+        </div>
+        <button class="close-btn" id="close-entry-btn" type="button">关闭</button>
+      </div>
+
+      <form class="entry-form" id="entry-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="tour-no">团号</label>
+            <input id="tour-no" name="tour_no" type="text" placeholder="留空自动生成">
+            <div class="field-tip">例如 `260526-1A`，不填也可以。</div>
+          </div>
+          <div class="field">
+            <label for="business-type">业务分类</label>
+            <input id="business-type" name="business_type" type="text" placeholder="业务部款项">
+          </div>
+          <div class="field">
+            <label for="department">部门</label>
+            <input id="department" name="department" type="text" placeholder="业务六部">
+          </div>
+          <div class="field">
+            <label for="group-no">组号</label>
+            <input id="group-no" name="group_no" type="text" placeholder="可选">
+          </div>
+
+          <div class="field">
+            <label for="start-date">发团日期</label>
+            <input id="start-date" name="start_date" type="date" required>
+          </div>
+          <div class="field">
+            <label for="end-date">散团日期</label>
+            <input id="end-date" name="end_date" type="date">
+          </div>
+          <div class="field wide">
+            <label for="customer">客户</label>
+            <input id="customer" name="customer" type="text" placeholder="客户名称" required>
+          </div>
+          <div class="field">
+            <label for="contact">联系人</label>
+            <input id="contact" name="contact" type="text" placeholder="可选">
+          </div>
+
+          <div class="field">
+            <label for="source-region">客源地</label>
+            <input id="source-region" name="source_region" type="text" placeholder="如 北京 北京市">
+          </div>
+          <div class="field wide">
+            <label for="line">线路</label>
+            <input id="line" name="line" type="text" placeholder="线路名称" required>
+          </div>
+          <div class="field">
+            <label for="destination">目的地</label>
+            <input id="destination" name="destination" type="text" placeholder="如 广东">
+          </div>
+          <div class="field">
+            <label for="agency-tour-no">组团社团号</label>
+            <input id="agency-tour-no" name="agency_tour_no" type="text" placeholder="可选">
+          </div>
+
+          <div class="field">
+            <label for="adults">成人</label>
+            <input id="adults" name="adults" type="number" min="0" step="1" value="0">
+          </div>
+          <div class="field">
+            <label for="elders">老人</label>
+            <input id="elders" name="elders" type="number" min="0" step="1" value="0">
+          </div>
+          <div class="field">
+            <label for="children">儿童</label>
+            <input id="children" name="children" type="number" min="0" step="1" value="0">
+          </div>
+          <div class="field">
+            <label for="guide">导游</label>
+            <input id="guide" name="guide" type="text" placeholder="可选">
+          </div>
+
+          <div class="field">
+            <label for="receiving-coordinator">接团计调</label>
+            <input id="receiving-coordinator" name="receiving_coordinator" type="text" placeholder="可选">
+          </div>
+          <div class="field">
+            <label for="operations-coordinator">操作计调</label>
+            <input id="operations-coordinator" name="operations_coordinator" type="text" placeholder="可选">
+          </div>
+          <div class="field">
+            <label for="signup-coordinator">报名计调</label>
+            <input id="signup-coordinator" name="signup_coordinator" type="text" placeholder="可选">
+          </div>
+          <div class="field">
+            <label for="outreach">外联</label>
+            <input id="outreach" name="outreach" type="text" placeholder="可选">
+          </div>
+
+          <div class="field">
+            <label for="revenue">收入</label>
+            <input id="revenue" name="revenue" type="number" min="0" step="0.01" required>
+          </div>
+          <div class="field">
+            <label for="cost">成本</label>
+            <input id="cost" name="cost" type="number" min="0" step="0.01" required>
+          </div>
+          <div class="field wide">
+            <label for="guest-note">客人备注</label>
+            <input id="guest-note" name="guest_note" type="text" placeholder="可选">
+          </div>
+          <div class="field">
+            <label for="full-escort">全陪</label>
+            <input id="full-escort" name="full_escort" type="number" min="0" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <div class="preview-card">
+            <span class="mini-label">预计利润</span>
+            <strong id="preview-profit">¥0</strong>
+            <span class="muted">系统自动按 收入 - 成本 计算。</span>
+          </div>
+          <div class="preview-card">
+            <span class="mini-label">预计利润率</span>
+            <strong id="preview-margin">0.00%</strong>
+            <span class="muted">写入数据源时会同步生成利润率。</span>
+          </div>
+          <div class="preview-card">
+            <span class="mini-label">预计出行人数</span>
+            <strong id="preview-travellers">0 人</strong>
+            <span class="muted">成人 + 老人 + 儿童。</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <div class="form-status" id="entry-form-status">录入后会自动写入数据源，并立即刷新当前看板。</div>
+          <div class="hero-actions">
+            <button class="ghost-btn" type="button" data-close-modal>取消</button>
+            <button class="accent-btn" id="submit-entry-btn" type="submit">保存并写入数据</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const BASE_PATH = '__BASE_PATH__';
+    const currency = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const decimal = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const percent = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const state = {
+      refreshTimer: null,
+      currentPayload: null,
+    };
+
+    function apiUrl(path) {
+      const normalized = path.startsWith('/') ? path : `/${path}`;
+      return `${BASE_PATH}${normalized}` || normalized;
+    }
+
+    function fmtMoney(value) {
+      return `¥${currency.format(value)}`;
+    }
+
+    function fmtShortMoney(value) {
+      if (Math.abs(value) >= 10000) {
+        return `¥${decimal.format(value / 10000)}万`;
+      }
+      return fmtMoney(value);
+    }
+
+    function fmtPercent(value) {
+      return `${percent.format(value * 100)}%`;
+    }
+
+    function text(el, value) {
+      document.getElementById(el).textContent = value;
+    }
+
+    function parseNumeric(value) {
+      const numeric = Number(value || 0);
+      return Number.isFinite(numeric) ? numeric : 0;
+    }
+
+    function formValue(name) {
+      return document.querySelector(`[name="${name}"]`);
+    }
+
+    function setFormStatus(message, isError = false) {
+      const node = document.getElementById('entry-form-status');
+      node.textContent = message;
+      node.classList.toggle('error', isError);
+    }
+
+    function renderMetrics(summary) {
+      const metrics = [
+        { label: '累计创收', value: fmtShortMoney(summary.revenue), foot: `共 ${summary.groups} 团，带动 ${currency.format(summary.travellers)} 人出行` },
+        { label: '累计利润', value: fmtShortMoney(summary.profit), foot: `平均每团利润 ${fmtMoney(summary.average_profit)}` },
+        { label: '利润率', value: fmtPercent(summary.margin), foot: '利润质量决定扩张底气' },
+        { label: '战斗指数', value: `${summary.morale_index}`, foot: '综合利润率、出团量与盈利规模计算' },
+        { label: '累计成本', value: fmtShortMoney(summary.cost), foot: '控本越稳，利润越厚' },
+      ];
+      document.getElementById('metrics').innerHTML = metrics.map((item) => `
+        <article class="metric-card">
+          <div class="metric-label">${item.label}</div>
+          <div class="metric-value">${item.value}</div>
+          <div class="metric-foot">${item.foot}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderMomentum(payload) {
+      const { summary, spotlight, report, ai, status } = payload;
+      const chips = [
+        `<span class="chip hot"><strong>冠军日</strong>${spotlight.best_day.date || '未标注'} 利润 ${fmtMoney(spotlight.best_day.profit)}</span>`,
+        `<span class="chip hot"><strong>冠军团</strong>${spotlight.best_profit_group.line || spotlight.best_profit_group.tour_no || '未标注'}</span>`,
+        `<span class="chip"><strong>主战席</strong>${spotlight.primary_owner.label || '团队协同'} 累计利润 ${fmtMoney(spotlight.primary_owner.profit || 0)}</span>`,
+        `<span class="chip"><strong>AI</strong>${ai.configured ? `${ai.provider} / ${ai.model}` : '未配置，当前使用本地播报'}</span>`,
+      ];
+      document.getElementById('momentum-row').innerHTML = chips.join('');
+
+      const statusChips = [
+        `<span class="chip"><strong>周期</strong>${report.period_text || report.period_label}</span>`,
+        `<span class="chip"><strong>数据源</strong>${status.source_name}</span>`,
+        `<span class="chip"><strong>导出时间</strong>${report.export_time || '未写入'}</span>`,
+        `<span class="chip"><strong>刷新</strong>每 ${status.refresh_seconds} 秒重算</span>`,
+        `<span class="chip"><strong>生成</strong>${status.generated_at}</span>`,
+      ];
+      document.getElementById('status-row').innerHTML = statusChips.join('');
+    }
+
+    function renderDaySummary(payload) {
+      const { spotlight, summary } = payload;
+      const items = [
+        { label: '最佳单日利润', value: fmtMoney(spotlight.best_day.profit), note: spotlight.best_day.date || '未标注' },
+        { label: '冠军团利润', value: fmtMoney(spotlight.best_profit_group.profit), note: spotlight.best_profit_group.line || spotlight.best_profit_group.tour_no || '未标注' },
+        { label: '最高利润率', value: fmtPercent(spotlight.best_margin_group.margin), note: spotlight.best_margin_group.line || spotlight.best_margin_group.tour_no || '未标注' },
+        { label: '本月出团量', value: `${summary.groups} 团`, note: `${currency.format(summary.travellers)} 人` },
+      ];
+      document.getElementById('day-summary').innerHTML = items.map((item) => `
+        <article class="mini-card">
+          <div class="mini-label">${item.label}</div>
+          <div class="mini-value">${item.value}</div>
+          <div class="muted">${item.note}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderTrend(trend) {
+      if (!trend.length) {
+        document.getElementById('trend-list').innerHTML = '<div class="empty">没有可展示的日趋势。</div>';
+        return;
+      }
+      const maxProfit = Math.max(...trend.map((item) => item.profit), 1);
+      const maxRevenue = Math.max(...trend.map((item) => item.revenue), 1);
+      document.getElementById('trend-list').innerHTML = trend.map((item) => `
+        <article class="trend-item">
+          <div class="trend-head">
+            <span class="trend-date">${item.date}</span>
+            <span class="trend-value">利润 ${fmtMoney(item.profit)} / 创收 ${fmtMoney(item.revenue)}</span>
+          </div>
+          <div class="bar"><div class="bar-fill" style="width:${Math.max(item.profit / maxProfit * 100, 6)}%"></div></div>
+          <div class="bar"><div class="bar-fill secondary" style="width:${Math.max(item.revenue / maxRevenue * 100, 6)}%"></div></div>
+          <div class="muted">${item.groups} 团，${currency.format(item.travellers)} 人，利润率 ${fmtPercent(item.margin)}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderRanking(targetId, items, kind) {
+      const target = document.getElementById(targetId);
+      if (!items.length) {
+        target.innerHTML = '<div class="empty">暂无数据。</div>';
+        return;
+      }
+      target.innerHTML = items.map((item, index) => {
+        if (kind === 'group') {
+          return `
+            <article class="rank-item">
+              <div class="rank-head">
+                <span class="rank-name">#${index + 1} ${item.line || item.tour_no || item.customer || '未标注'}</span>
+                <span class="rank-value">${fmtMoney(item.profit)}</span>
+              </div>
+              <div class="muted">${item.customer || '客户未标注'} · ${item.owner || '团队协同'} · ${item.start_date || '未标注'}</div>
+              <div class="muted">创收 ${fmtMoney(item.revenue)}，利润率 ${fmtPercent(item.margin)}，${currency.format(item.travellers)} 人</div>
+            </article>
+          `;
+        }
+        return `
+          <article class="rank-item">
+            <div class="rank-head">
+              <span class="rank-name">#${index + 1} ${item.label || '未标注'}</span>
+              <span class="rank-value">${fmtMoney(item.profit)}</span>
+            </div>
+            <div class="muted">创收 ${fmtMoney(item.revenue)}，${item.groups} 团，${currency.format(item.travellers)} 人，利润率 ${fmtPercent(item.margin)}</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderBriefing(payload) {
+      text('briefing-label', payload.briefing.ai_configured ? 'Ready For AI Briefing' : 'Local Briefing');
+      text('briefing-text', payload.briefing.fallback_text);
+      text('briefing-status', payload.ai.configured ? `AI 已就绪：${payload.ai.provider} / ${payload.ai.model}` : 'AI 未配置，当前使用本地播报');
+    }
+
+    function applyEntryDefaults(payload) {
+      const defaults = payload.entry_defaults || {};
+      const mappings = [
+        ['business_type', defaults.business_type],
+        ['department', defaults.department],
+        ['receiving_coordinator', defaults.receiving_coordinator],
+        ['operations_coordinator', defaults.operations_coordinator],
+        ['signup_coordinator', defaults.signup_coordinator],
+        ['outreach', defaults.outreach],
+        ['guide', defaults.guide],
+      ];
+      mappings.forEach(([name, value]) => {
+        const field = formValue(name);
+        if (field && !field.value && value) {
+          field.value = value;
+        }
+      });
+    }
+
+    function syncEntryPreview() {
+      const revenue = parseNumeric(formValue('revenue').value);
+      const cost = parseNumeric(formValue('cost').value);
+      const adults = parseNumeric(formValue('adults').value);
+      const elders = parseNumeric(formValue('elders').value);
+      const children = parseNumeric(formValue('children').value);
+      const profit = revenue - cost;
+      const margin = revenue > 0 ? profit / revenue : 0;
+      const travellers = adults + elders + children;
+      text('preview-profit', fmtMoney(profit));
+      text('preview-margin', fmtPercent(margin));
+      text('preview-travellers', `${currency.format(travellers)} 人`);
+    }
+
+    function renderFrame(payload) {
+      state.currentPayload = payload;
+      text('hero-title', `${payload.summary.department} 经营战报`);
+      text('hero-subtitle', `${payload.report.title}。${payload.report.period_text || payload.report.period_label}累计创收 ${fmtShortMoney(payload.summary.revenue)}，累计利润 ${fmtShortMoney(payload.summary.profit)}。`);
+      text('footer-note', `数据源：${payload.status.source_file} ｜ 最近生成：${payload.status.generated_at} ｜ 自动刷新：${payload.status.refresh_seconds} 秒`);
+      renderMetrics(payload.summary);
+      renderMomentum(payload);
+      renderDaySummary(payload);
+      renderTrend(payload.leaderboards.daily_trend);
+      renderRanking('top-profit-list', payload.leaderboards.top_profit_groups, 'group');
+      renderRanking('top-margin-list', payload.leaderboards.top_margin_groups, 'group');
+      renderRanking('guard-list', payload.leaderboards.guard_groups, 'group');
+      renderRanking('line-board', payload.leaderboards.line_board, 'dimension');
+      renderRanking('owner-board', payload.leaderboards.owner_board, 'dimension');
+      renderBriefing(payload);
+      applyEntryDefaults(payload);
+      syncEntryPreview();
+      document.getElementById('briefing-btn').disabled = false;
+    }
+
+    async function loadDashboard() {
+      const reloadBtn = document.getElementById('reload-btn');
+      reloadBtn.disabled = true;
+      try {
+        const response = await fetch(apiUrl('/api/dashboard'), { cache: 'no-store' });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || '加载失败');
+        }
+        renderFrame(payload);
+        scheduleRefresh(payload.status.refresh_seconds);
+      } catch (error) {
+        text('hero-subtitle', `加载失败：${error.message}`);
+        text('briefing-text', `当前无法读取经营战报：${error.message}`);
+        text('briefing-status', '请检查报表路径或本地服务状态');
+      } finally {
+        reloadBtn.disabled = false;
+      }
+    }
+
+    function scheduleRefresh(seconds) {
+      if (state.refreshTimer) {
+        clearTimeout(state.refreshTimer);
+      }
+      state.refreshTimer = setTimeout(loadDashboard, Math.max(seconds, 5) * 1000);
+    }
+
+    async function generateBriefing() {
+      const button = document.getElementById('briefing-btn');
+      button.disabled = true;
+      text('briefing-status', '正在生成播报...');
+      try {
+        const response = await fetch(apiUrl('/api/ai-briefing'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}',
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || '生成失败');
+        }
+        text('briefing-label', payload.used_ai ? 'AI Briefing' : 'Fallback Briefing');
+        text('briefing-text', payload.text);
+        text('briefing-status', payload.reason || `${payload.provider} / ${payload.model}`);
+      } catch (error) {
+        text('briefing-status', `播报失败：${error.message}`);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function openEntryModal() {
+      document.getElementById('entry-modal').hidden = false;
+      if (state.currentPayload) {
+        applyEntryDefaults(state.currentPayload);
+      }
+      syncEntryPreview();
+      setFormStatus('录入后会自动写入数据源，并立即刷新当前看板。');
+    }
+
+    function closeEntryModal(reset = false) {
+      document.getElementById('entry-modal').hidden = true;
+      if (reset) {
+        document.getElementById('entry-form').reset();
+        ['adults', 'elders', 'children', 'full_escort'].forEach((name) => {
+          formValue(name).value = '0';
+        });
+        if (state.currentPayload) {
+          applyEntryDefaults(state.currentPayload);
+        }
+        syncEntryPreview();
+      }
+    }
+
+    function collectEntryPayload() {
+      const form = document.getElementById('entry-form');
+      const data = new FormData(form);
+      const payload = {};
+      for (const [key, value] of data.entries()) {
+        payload[key] = typeof value === 'string' ? value.trim() : value;
+      }
+      if (!payload.end_date && payload.start_date) {
+        payload.end_date = payload.start_date;
+      }
+      return payload;
+    }
+
+    async function submitEntry(event) {
+      event.preventDefault();
+      const button = document.getElementById('submit-entry-btn');
+      button.disabled = true;
+      setFormStatus('正在写入经营数据 ...');
+      try {
+        const response = await fetch(apiUrl('/api/records'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(collectEntryPayload()),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          throw new Error(payload.error || '保存失败');
+        }
+        if (payload.dashboard) {
+          renderFrame(payload.dashboard);
+          scheduleRefresh(payload.dashboard.status.refresh_seconds);
+        }
+        closeEntryModal(true);
+        text('briefing-status', `${payload.message} 备份目录：${payload.backup_dir}`);
+      } catch (error) {
+        setFormStatus(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    document.getElementById('reload-btn').addEventListener('click', loadDashboard);
+    document.getElementById('briefing-btn').addEventListener('click', generateBriefing);
+    document.getElementById('open-entry-btn').addEventListener('click', openEntryModal);
+    document.getElementById('close-entry-btn').addEventListener('click', () => closeEntryModal(false));
+    document.querySelectorAll('[data-close-modal]').forEach((node) => node.addEventListener('click', () => closeEntryModal(false)));
+    document.getElementById('entry-form').addEventListener('submit', submitEntry);
+    ['revenue', 'cost', 'adults', 'elders', 'children'].forEach((name) => formValue(name).addEventListener('input', syncEntryPreview));
+    formValue('start_date').addEventListener('change', () => {
+      if (!formValue('end_date').value) {
+        formValue('end_date').value = formValue('start_date').value;
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !document.getElementById('entry-modal').hidden) {
+        closeEntryModal(false);
+      }
+    });
+
+    loadDashboard();
+  </script>
+</body>
+</html>
