@@ -9,6 +9,7 @@
 - `config/finance-dashboard.json`：默认运行配置
 - `data/finance-dashboard.db`：独立数据库
 - `deploy/`：小轻部署模板
+- `deploy/deploy_prod.py`：一键部署到小轻 PROD
 
 ## 本地启动
 
@@ -21,6 +22,22 @@ bash launch_finance_dashboard.sh
 
 - 页面：`http://127.0.0.1:47837/gen`
 - 接口：`http://127.0.0.1:47837/gen/api/dashboard`
+
+## 部署到 PROD
+
+```bash
+cd gen-dashboard
+ZUTING_PROD_PASSWORD='你的生产密码' \
+PYTHONPATH=/home/mark/codex-sandbox/.vendor-deploy \
+python3 deploy/deploy_prod.py
+```
+
+默认会：
+
+- 上传到 `/opt/zuting/gen-dashboard`
+- 安装 `zuting-gen-dashboard.service`
+- 把 `zuting.fszyl.top/gen` 反向代理到 `172.19.0.1:47837`
+- 自动校验 `https://zuting.fszyl.top/gen/api/dashboard`
 
 ## 重新从 Excel 种库
 
