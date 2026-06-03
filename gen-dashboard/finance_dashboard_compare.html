@@ -36,14 +36,14 @@
     }
 
     .shell {
-      width: min(1560px, calc(100vw - 28px));
-      margin: 18px auto 44px;
+      width: min(1640px, calc(100vw - 20px));
+      margin: 10px auto 28px;
       display: grid;
-      gap: 18px;
+      gap: 12px;
     }
 
     .panel {
-      border-radius: 26px;
+      border-radius: 18px;
       border: 1px solid var(--line);
       background: var(--panel);
       box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
@@ -51,9 +51,9 @@
     }
 
     .hero {
-      padding: 28px;
+      padding: 14px 18px;
       display: grid;
-      gap: 18px;
+      gap: 12px;
       background:
         linear-gradient(135deg, rgba(246, 193, 92, 0.1), transparent 38%),
         linear-gradient(315deg, rgba(99, 227, 216, 0.11), transparent 45%),
@@ -71,7 +71,7 @@
     }
 
     .eyebrow {
-      margin: 0 0 10px;
+      margin: 0 0 6px;
       color: var(--gold);
       letter-spacing: 0.18em;
       font-size: 12px;
@@ -81,17 +81,19 @@
     h1 {
       margin: 0;
       font-family: var(--display);
-      font-size: clamp(36px, 5vw, 68px);
+      font-size: clamp(30px, 3vw, 46px);
       letter-spacing: -0.04em;
       line-height: 1;
     }
 
     h2, h3 { margin: 0; }
+    h2 { font-size: 22px; }
+    h3 { font-size: 17px; }
 
     .subtitle {
-      margin: 12px 0 0;
+      margin: 8px 0 0;
       color: var(--soft);
-      line-height: 1.7;
+      line-height: 1.5;
       max-width: 860px;
     }
 
@@ -107,7 +109,7 @@
       appearance: none;
       border: 0;
       border-radius: 999px;
-      padding: 12px 16px;
+      padding: 9px 13px;
       font: inherit;
       font-weight: 800;
       cursor: pointer;
@@ -129,7 +131,7 @@
     }
 
     .month-btn {
-      min-width: 132px;
+      min-width: 118px;
       justify-content: center;
       border-radius: 14px;
     }
@@ -140,6 +142,7 @@
     }
 
     .kpi-grid,
+    .signal-grid,
     .compare-grid,
     .visual-grid,
     .dimension-grid,
@@ -152,28 +155,36 @@
       grid-template-columns: repeat(6, minmax(0, 1fr));
     }
 
+    .signal-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     .compare-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
 
     .visual-grid,
-    .dimension-grid,
     .coach-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .dimension-grid,
+    .matrix {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     .card,
     .section {
-      padding: 20px;
-      border-radius: var(--radius);
+      padding: 12px;
+      border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: var(--panel-2);
     }
 
     .section {
-      padding: 24px;
+      padding: 14px;
       display: grid;
-      gap: 18px;
+      gap: 14px;
     }
 
     .label {
@@ -184,8 +195,8 @@
     }
 
     .value {
-      margin-top: 12px;
-      font-size: clamp(26px, 3vw, 42px);
+      margin-top: 8px;
+      font-size: clamp(22px, 2.2vw, 34px);
       font-weight: 900;
       letter-spacing: -0.04em;
     }
@@ -204,8 +215,240 @@
 
     .delta.down { color: var(--bad); }
 
+    .kpi-card,
+    .compare-card,
+    .signal-card {
+      position: relative;
+    }
+
+    .kpi-card {
+      min-height: 104px;
+    }
+
+    .trend-chip,
+    .trend-badge,
+    .direction-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      border-radius: 999px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .trend-chip {
+      margin-top: 8px;
+      padding: 6px 8px;
+      color: #062216;
+      background: rgba(149, 242, 167, 0.94);
+    }
+
+    .trend-chip.bad {
+      color: #351005;
+      background: rgba(255, 177, 153, 0.95);
+    }
+
+    .trend-chip.flat {
+      color: #09151d;
+      background: rgba(176, 216, 226, 0.92);
+    }
+
+    .trend-arrow-mini {
+      font-size: 16px;
+      transform: translateY(-1px);
+    }
+
+    .compare-card {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      align-items: center;
+      gap: 10px;
+      min-height: 104px;
+      overflow: hidden;
+    }
+
+    .compare-card::after,
+    .signal-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 12px 12px auto;
+      width: 50px;
+      height: 50px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.08;
+      filter: blur(2px);
+    }
+
+    .compare-card.good,
+    .signal-card.good {
+      color: var(--good);
+      border-color: rgba(149, 242, 167, 0.26);
+      box-shadow: inset 4px 0 0 rgba(149, 242, 167, 0.9);
+    }
+
+    .compare-card.bad,
+    .signal-card.bad {
+      color: var(--bad);
+      border-color: rgba(255, 177, 153, 0.3);
+      box-shadow: inset 4px 0 0 rgba(255, 177, 153, 0.9);
+    }
+
+    .compare-card.flat,
+    .signal-card.flat {
+      color: var(--blue);
+      border-color: rgba(138, 184, 255, 0.28);
+      box-shadow: inset 4px 0 0 rgba(138, 184, 255, 0.8);
+    }
+
+    .arrow-orb,
+    .signal-arrow {
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      color: #061018;
+      font-weight: 1000;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+      z-index: 1;
+    }
+
+    .arrow-orb {
+      width: 48px;
+      height: 48px;
+      font-size: 30px;
+      background: var(--good);
+    }
+
+    .bad .arrow-orb,
+    .bad .signal-arrow {
+      background: var(--bad);
+    }
+
+    .flat .arrow-orb,
+    .flat .signal-arrow {
+      background: var(--blue);
+    }
+
+    .compare-copy,
+    .signal-body {
+      color: var(--ink);
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .compare-copy .value {
+      margin-top: 6px;
+      font-size: clamp(24px, 2vw, 30px);
+    }
+
+    .direction-pill {
+      margin-top: 7px;
+      padding: 6px 8px;
+      color: #062216;
+      background: rgba(149, 242, 167, 0.94);
+    }
+
+    .bad .direction-pill {
+      color: #351005;
+      background: rgba(255, 177, 153, 0.95);
+    }
+
+    .flat .direction-pill {
+      color: #09151d;
+      background: rgba(138, 184, 255, 0.96);
+    }
+
+    .signal-card {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .signal-arrow {
+      width: 34px;
+      height: 34px;
+      font-size: 22px;
+      background: var(--good);
+    }
+
+    .signal-title {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .signal-text {
+      margin-top: 5px;
+      color: var(--soft);
+      line-height: 1.6;
+      display: none;
+    }
+
+    .bar-stat {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .bar-stat strong {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .trend-badge {
+      padding: 6px 8px;
+      color: #062216;
+      background: rgba(149, 242, 167, 0.94);
+      font-size: 12px;
+    }
+
+    .trend-badge.bad {
+      color: #351005;
+      background: rgba(255, 177, 153, 0.95);
+    }
+
+    .trend-badge.flat {
+      color: #09151d;
+      background: rgba(176, 216, 226, 0.92);
+    }
+
+    .dimension-entry {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      align-items: start;
+      gap: 9px;
+    }
+
+    .dimension-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: #061018;
+      background: var(--good);
+      font-size: 23px;
+      font-weight: 1000;
+    }
+
+    .dimension-arrow.bad {
+      background: var(--bad);
+    }
+
+    .dimension-arrow.flat {
+      background: var(--blue);
+    }
+
     .bar {
-      height: 12px;
+      height: 10px;
       border-radius: 999px;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.09);
@@ -226,8 +469,8 @@
     .dimension-row,
     .coach-row {
       display: grid;
-      gap: 10px;
-      padding: 14px 0;
+      gap: 8px;
+      padding: 10px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -265,20 +508,23 @@
 
     .matrix {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
 
     .matrix-card {
       display: grid;
-      gap: 12px;
-      min-height: 170px;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    #coach-headline {
+      font-size: clamp(20px, 2vw, 30px);
     }
 
     .icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       display: grid;
       place-items: center;
       background: rgba(99, 227, 216, 0.14);
@@ -294,6 +540,7 @@
 
     @media (max-width: 1180px) {
       .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .signal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .compare-grid,
       .visual-grid,
       .dimension-grid,
@@ -304,7 +551,12 @@
     @media (max-width: 720px) {
       .shell { width: min(100vw - 16px, 100%); margin-top: 8px; }
       .hero, .section { padding: 18px; }
-      .kpi-grid { grid-template-columns: 1fr; }
+      .kpi-grid,
+      .signal-grid,
+      .compare-grid { grid-template-columns: 1fr; }
+      .compare-card { grid-template-columns: 62px 1fr; }
+      .arrow-orb { width: 58px; height: 58px; font-size: 36px; }
+      .bar-stat { grid-template-columns: 1fr; }
       h1 { font-size: 36px; }
     }
   </style>
@@ -331,9 +583,10 @@
       <div class="section-head">
         <div>
           <h2>一眼看懂本月输赢</h2>
-          <p class="subtitle">先看环比结果，再看是团量、报价、成本还是线路结构造成变化。</p>
+          <p class="subtitle">绿色箭头代表利好，橙色箭头代表承压。先看方向，再看是团量、报价、成本还是线路结构造成变化。</p>
         </div>
       </div>
+      <div class="signal-grid" id="signal-grid"></div>
       <div class="compare-grid" id="compare-cards"></div>
     </section>
 
@@ -442,6 +695,37 @@
       return `${prefix}${fmtMoney(abs)}`;
     }
 
+    function fmtDeltaCompact(value, type) {
+      const prefix = value >= 0 ? '+' : '-';
+      const abs = Math.abs(value || 0);
+      if (type === 'percent' || type === 'percent_inverse') return `${prefix}${pct.format(abs * 100)}点`;
+      if (type === 'count') return `${prefix}${money.format(abs)}团`;
+      return Math.abs(abs) >= 10000 ? `${prefix}¥${money2.format(abs / 10000)}万` : `${prefix}${fmtMoney(abs)}`;
+    }
+
+    function trendMeta(delta, positive) {
+      const numeric = Number(delta || 0);
+      const cls = numeric === 0 ? 'flat' : positive ? 'good' : 'bad';
+      return {
+        cls,
+        arrow: numeric > 0 ? '↑' : numeric < 0 ? '↓' : '→',
+        direction: numeric > 0 ? '上升' : numeric < 0 ? '下降' : '持平',
+        verdict: numeric === 0 ? '持平' : positive ? '利好' : '承压',
+      };
+    }
+
+    function comparisonMap(payload) {
+      return Object.fromEntries((payload.analytics?.comparison?.cards || []).map((card) => [card.label, card]));
+    }
+
+    function seriesTrend(series, index, field, type, positiveWhenHigher = true) {
+      if (index <= 0) return { cls: 'flat', arrow: '→', text: '基准月' };
+      const delta = Number(series[index][field] || 0) - Number(series[index - 1][field] || 0);
+      const positive = positiveWhenHigher ? delta >= 0 : delta <= 0;
+      const meta = trendMeta(delta, positive);
+      return { ...meta, text: `${meta.direction} ${fmtDeltaCompact(delta, type)} · ${meta.verdict}` };
+    }
+
     function setMonthUrl(month, replace = false) {
       const url = new URL(location.href);
       if (month) url.searchParams.set('month', month);
@@ -465,73 +749,118 @@
 
     function renderKpis(payload) {
       const summary = payload.summary;
+      const compare = comparisonMap(payload);
       const items = [
-        ['创收', fmtShort(summary.revenue), `${summary.groups} 团`],
-        ['利润', fmtShort(summary.profit), `平均每团 ${fmtMoney(summary.average_profit)}`],
-        ['利润率', fmtPct(summary.margin), '守住毛利线'],
-        ['成本率', fmtPct(summary.cost_rate), '越低越稳'],
-        ['人均利润', fmtMoney(summary.average_profit_per_traveller), `${money.format(summary.travellers)} 人`],
-        ['战斗指数', summary.morale_index, '经营质量综合分'],
+        ['创收', fmtShort(summary.revenue), `${summary.groups} 团`, '创收'],
+        ['利润', fmtShort(summary.profit), `平均每团 ${fmtMoney(summary.average_profit)}`, '利润'],
+        ['利润率', fmtPct(summary.margin), '守住毛利线', '利润率'],
+        ['成本率', fmtPct(summary.cost_rate), '越低越稳', '成本率'],
+        ['人均利润', fmtMoney(summary.average_profit_per_traveller), `${money.format(summary.travellers)} 人`, '人均利润'],
+        ['战斗指数', summary.morale_index, '经营质量综合分', ''],
       ];
-      document.getElementById('kpi-grid').innerHTML = items.map(([label, value, note]) => `
-        <article class="card">
+      document.getElementById('kpi-grid').innerHTML = items.map(([label, value, note, compareKey]) => {
+        const card = compare[compareKey];
+        const meta = card ? trendMeta(card.delta, card.positive) : null;
+        return `
+        <article class="card kpi-card">
           <div class="label">${label}</div>
           <div class="value">${value}</div>
           <div class="note">${note}</div>
+          ${meta ? `<div class="trend-chip ${meta.cls}"><span class="trend-arrow-mini">${meta.arrow}</span>${meta.direction} ${fmtDeltaCompact(card.delta, card.type)} · ${meta.verdict}</div>` : ''}
         </article>
-      `).join('');
+      `;
+      }).join('');
+    }
+
+    function renderSignals(payload) {
+      const cards = comparisonMap(payload);
+      const ordered = ['利润率', '利润', '成本率', '创收'].map((label) => cards[label]).filter(Boolean);
+      document.getElementById('signal-grid').innerHTML = ordered.length ? ordered.map((card) => {
+        const meta = trendMeta(card.delta, card.positive);
+        return `
+          <article class="card signal-card ${meta.cls}">
+            <div class="signal-arrow">${meta.arrow}</div>
+            <div class="signal-body">
+              <div class="signal-title">${esc(card.label)}${meta.direction}，${meta.verdict}</div>
+              <div class="signal-text">本月 ${fmtByType(card.current, card.type)}，上月 ${fmtByType(card.previous, card.type)}，环比 ${fmtDeltaCompact(card.delta, card.type)}。</div>
+            </div>
+          </article>
+        `;
+      }).join('') : '<div class="empty">暂无上月可对比。</div>';
     }
 
     function renderCompare(payload) {
       const comparison = payload.analytics?.comparison || {};
       const cards = comparison.cards || [];
-      document.getElementById('compare-cards').innerHTML = cards.length ? cards.map((card) => `
-        <article class="card">
-          <div class="label">${esc(card.label)}</div>
-          <div class="value">${fmtByType(card.current, card.type)}</div>
-          <div class="delta ${card.positive ? '' : 'down'}">${fmtDelta(card.delta, card.type)}</div>
-          <div class="note">上月 ${fmtByType(card.previous, card.type)}</div>
+      document.getElementById('compare-cards').innerHTML = cards.length ? cards.map((card) => {
+        const meta = trendMeta(card.delta, card.positive);
+        return `
+        <article class="card compare-card ${meta.cls}">
+          <div class="arrow-orb">${meta.arrow}</div>
+          <div class="compare-copy">
+            <div class="label">${esc(card.label)}</div>
+            <div class="value">${fmtByType(card.current, card.type)}</div>
+            <div class="direction-pill"><span>${meta.arrow}</span>${meta.direction} ${fmtDeltaCompact(card.delta, card.type)} · ${meta.verdict}</div>
+            <div class="note">上月 ${fmtByType(card.previous, card.type)}</div>
+          </div>
         </article>
-      `).join('') : '<div class="empty">暂无上月可对比。</div>';
+      `;
+      }).join('') : '<div class="empty">暂无上月可对比。</div>';
     }
 
     function renderRevenueChart(series) {
       const maxRevenue = Math.max(...series.map((item) => item.revenue), 1);
       const maxProfit = Math.max(...series.map((item) => Math.max(item.profit, 0)), 1);
-      document.getElementById('revenue-profit-chart').innerHTML = series.map((item) => `
+      document.getElementById('revenue-profit-chart').innerHTML = series.map((item, index) => {
+        const revenueTrend = seriesTrend(series, index, 'revenue', 'money', true);
+        const profitTrend = seriesTrend(series, index, 'profit', 'money', true);
+        return `
         <div class="chart-row">
           <div class="row-head"><strong>${esc(item.label)}</strong><span class="muted">${item.groups}团 / ${money.format(item.travellers)}人</span></div>
-          <div class="muted">创收 ${fmtMoney(item.revenue)}</div>
+          <div class="bar-stat"><span>创收</span><strong>${fmtMoney(item.revenue)}</strong><span class="trend-badge ${revenueTrend.cls}">${revenueTrend.arrow} ${revenueTrend.text}</span></div>
           <div class="bar"><div class="fill teal" style="width:${Math.max(item.revenue / maxRevenue * 100, 5)}%"></div></div>
-          <div class="muted">利润 ${fmtMoney(item.profit)}</div>
+          <div class="bar-stat"><span>利润</span><strong>${fmtMoney(item.profit)}</strong><span class="trend-badge ${profitTrend.cls}">${profitTrend.arrow} ${profitTrend.text}</span></div>
           <div class="bar"><div class="fill" style="width:${Math.max(Math.max(item.profit, 0) / maxProfit * 100, 5)}%"></div></div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function renderRatioChart(series) {
-      document.getElementById('ratio-chart').innerHTML = series.map((item) => `
+      document.getElementById('ratio-chart').innerHTML = series.map((item, index) => {
+        const marginTrend = seriesTrend(series, index, 'margin', 'percent', true);
+        const costTrend = seriesTrend(series, index, 'cost_rate', 'percent', false);
+        return `
         <div class="chart-row">
           <div class="row-head"><strong>${esc(item.label)}</strong><span class="muted">人均利润 ${fmtMoney(item.average_profit_per_traveller)}</span></div>
-          <div class="muted">利润率 ${fmtPct(item.margin)}</div>
+          <div class="bar-stat"><span>利润率</span><strong>${fmtPct(item.margin)}</strong><span class="trend-badge ${marginTrend.cls}">${marginTrend.arrow} ${marginTrend.text}</span></div>
           <div class="bar"><div class="fill" style="width:${Math.max(Math.min(item.margin, 1) * 100, 5)}%"></div></div>
-          <div class="muted">成本率 ${fmtPct(item.cost_rate)}</div>
+          <div class="bar-stat"><span>成本率</span><strong>${fmtPct(item.cost_rate)}</strong><span class="trend-badge ${costTrend.cls}">${costTrend.arrow} ${costTrend.text}</span></div>
           <div class="bar"><div class="fill blue" style="width:${Math.max(Math.min(item.cost_rate, 1) * 100, 5)}%"></div></div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function renderDimension(id, items) {
-      document.getElementById(id).innerHTML = items?.length ? items.map((item) => `
+      document.getElementById(id).innerHTML = items?.length ? items.map((item) => {
+        const meta = trendMeta(item.delta_profit, item.delta_profit >= 0);
+        return `
         <div class="dimension-row">
-          <div class="row-head">
-            <strong>${esc(item.label || '未标注')}</strong>
-            <span class="delta ${item.delta_profit >= 0 ? '' : 'down'}">${fmtDelta(item.delta_profit, 'money')}</span>
+          <div class="dimension-entry">
+            <div class="dimension-arrow ${meta.cls}">${meta.arrow}</div>
+            <div>
+              <div class="row-head">
+                <strong>${esc(item.label || '未标注')}</strong>
+                <span class="trend-badge ${meta.cls}">${meta.arrow} ${meta.direction} ${fmtDeltaCompact(item.delta_profit, 'money')} · ${meta.verdict}</span>
+              </div>
+              <div class="note">本月 ${fmtMoney(item.current.profit)}，上月 ${fmtMoney(item.previous.profit)}，利润率 ${fmtPct(item.current.margin)}</div>
+              <div class="bar"><div class="fill ${item.delta_profit >= 0 ? 'teal' : 'bad'}" style="width:${Math.max(Math.min(Math.abs(item.delta_profit) / 10000, 1) * 100, 6)}%"></div></div>
+            </div>
           </div>
-          <div class="note">本月 ${fmtMoney(item.current.profit)}，上月 ${fmtMoney(item.previous.profit)}，利润率 ${fmtPct(item.current.margin)}</div>
-          <div class="bar"><div class="fill ${item.delta_profit >= 0 ? 'teal' : 'bad'}" style="width:${Math.max(Math.min(Math.abs(item.delta_profit) / 10000, 1) * 100, 6)}%"></div></div>
         </div>
-      `).join('') : '<div class="empty">暂无可对比数据。</div>';
+      `;
+      }).join('') : '<div class="empty">暂无可对比数据。</div>';
     }
 
     function renderCoachList(id, items, fallback) {
@@ -547,6 +876,7 @@
       document.getElementById('page-subtitle').textContent = `${payload.report.title}。${payload.report.period_text}，用图表看清本月相对上月的得失。`;
       renderMonths(payload.report);
       renderKpis(payload);
+      renderSignals(payload);
       renderCompare(payload);
       const series = payload.analytics?.monthly_series || [];
       renderRevenueChart(series);
