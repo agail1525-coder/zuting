@@ -22,7 +22,7 @@ bash launch_finance_dashboard.sh
 
 - 页面：`http://127.0.0.1:47837/gen`
 - 接口：`http://127.0.0.1:47837/gen/api/dashboard`
-- 访问密码：`284611`
+- 访问密码：`666666`
 
 ## 部署到 PROD
 
@@ -48,7 +48,7 @@ python3 deploy/deploy_prod.py
 cd gen-dashboard
 python3 finance_dashboard.py seed-sqlite \
   --config config/finance-dashboard.json \
-  --report-file /home/mark/Desktop/业务六部4月毛利表.xls \
+  --report-file '/home/mark/Desktop/业务6部 5月份毛利表.xls' \
   --sqlite-path data/finance-dashboard.db
 ```
 

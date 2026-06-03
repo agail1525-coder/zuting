@@ -155,6 +155,34 @@
       flex-wrap: wrap;
     }
 
+    .month-switcher {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .month-switcher-label {
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .month-option {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .month-option.active {
+      background: rgba(95, 224, 212, 0.18);
+      border-color: rgba(95, 224, 212, 0.46);
+      color: #bffaf5;
+    }
+
     .chip {
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -627,6 +655,7 @@
       </div>
 
       <div class="metrics" id="metrics"></div>
+      <div class="month-switcher" id="month-switcher" aria-label="月份切换"></div>
       <div class="momentum-row" id="momentum-row"></div>
       <div class="status-row" id="status-row"></div>
     </section>
@@ -865,6 +894,7 @@
     const state = {
       refreshTimer: null,
       currentPayload: null,
+      selectedMonth: '',
     };
 
     function apiUrl(path) {
@@ -950,6 +980,31 @@
         `<span class="chip"><strong>生成</strong>${status.generated_at}</span>`,
       ];
       document.getElementById('status-row').innerHTML = statusChips.join('');
+    }
+
+    function renderMonthSwitcher(report) {
+      const options = report.available_months || [];
+      const selected = report.selected_month || '';
+      state.selectedMonth = selected;
+      const container = document.getElementById('month-switcher');
+      if (!options.length) {
+        container.innerHTML = '';
+        return;
+      }
+      const buttons = [
+        { value: 'all', label: '全部月份' },
+        ...options.map((item) => ({ value: item.value, label: item.label })),
+      ];
+      container.innerHTML = `
+        <span class="month-switcher-label">月份</span>
+        ${buttons.map((item) => `
+          <button
+            class="month-option ${item.value === selected ? 'active' : ''}"
+            type="button"
+            data-month="${esc(item.value)}"
+          >${esc(item.label)}</button>
+        `).join('')}
+      `;
     }
 
     function renderDaySummary(payload) {
@@ -1102,6 +1157,7 @@
       text('hero-subtitle', `${payload.report.title}。${payload.report.period_text || payload.report.period_label}累计创收 ${fmtShortMoney(payload.summary.revenue)}，累计利润 ${fmtShortMoney(payload.summary.profit)}。`);
       text('footer-note', `数据源：${payload.status.source_file} ｜ 最近生成：${payload.status.generated_at} ｜ 自动刷新：${payload.status.refresh_seconds} 秒`);
       renderMetrics(payload.summary);
+      renderMonthSwitcher(payload.report);
       renderMomentum(payload);
       renderDaySummary(payload);
       renderTrend(payload.leaderboards.daily_trend);
@@ -1120,7 +1176,8 @@
       const reloadBtn = document.getElementById('reload-btn');
       reloadBtn.disabled = true;
       try {
-        const response = await fetch(apiUrl('/api/dashboard'), { cache: 'no-store' });
+        const query = state.selectedMonth ? `?month=${encodeURIComponent(state.selectedMonth)}` : '';
+        const response = await fetch(apiUrl(`/api/dashboard${query}`), { cache: 'no-store' });
         const payload = await response.json();
         if (!response.ok) {
           throw new Error(payload.error || '加载失败');
@@ -1148,7 +1205,8 @@
       button.disabled = true;
       text('briefing-status', '正在生成 AI 经营建议...');
       try {
-        const response = await fetch(apiUrl('/api/ai-briefing'), {
+        const query = state.selectedMonth ? `?month=${encodeURIComponent(state.selectedMonth)}` : '';
+        const response = await fetch(apiUrl(`/api/ai-briefing${query}`), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: '{}',
@@ -1210,7 +1268,8 @@
       button.disabled = true;
       setFormStatus('正在写入经营数据 ...');
       try {
-        const response = await fetch(apiUrl('/api/records'), {
+        const query = state.selectedMonth ? `?month=${encodeURIComponent(state.selectedMonth)}` : '';
+        const response = await fetch(apiUrl(`/api/records${query}`), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(collectEntryPayload()),
@@ -1235,6 +1294,12 @@
     document.getElementById('reload-btn').addEventListener('click', loadDashboard);
     document.getElementById('briefing-btn').addEventListener('click', generateBriefing);
     document.getElementById('open-entry-btn').addEventListener('click', openEntryModal);
+    document.getElementById('month-switcher').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-month]');
+      if (!button) return;
+      state.selectedMonth = button.dataset.month || '';
+      loadDashboard();
+    });
     document.getElementById('close-entry-btn').addEventListener('click', () => closeEntryModal(false));
     document.querySelectorAll('[data-close-modal]').forEach((node) => node.addEventListener('click', () => closeEntryModal(false)));
     document.getElementById('entry-form').addEventListener('submit', submitEntry);

@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -134,13 +135,13 @@ class FinanceDashboardTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = Path(temp_dir) / "finance-dashboard.json"
             config_path.write_text(
-                '{"storage":"sqlite","sqlite_path":"./data.db","base_path":"/gen","access_password":"284611"}',
+                '{"storage":"sqlite","sqlite_path":"./data.db","base_path":"/gen","access_password":"666666"}',
                 encoding="utf-8",
             )
             app = finance_dashboard.FinanceDashboardApp(Path("/tmp/report.xls"), config_path)
 
         self.assertTrue(app.auth_required())
-        self.assertTrue(app.verify_password("284611"))
+        self.assertTrue(app.verify_password("666666"))
         self.assertFalse(app.verify_password("123456"))
         cookie_header = f"{app.cookie_name}={app.auth_token()}"
         self.assertTrue(app.is_authenticated(cookie_header))
@@ -198,6 +199,70 @@ class FinanceDashboardTests(unittest.TestCase):
             self.assertAlmostEqual(parsed["records"][1]["profit"], 2099.75)
             self.assertTrue(parsed["export_time"])
             self.assertAlmostEqual(parsed["total_row"]["合计利润"], 4099.75)
+
+    def test_sqlite_dashboard_defaults_to_latest_month_and_allows_all_months(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            sqlite_path = Path(temp_dir) / "finance-dashboard.db"
+            config_path = Path(temp_dir) / "finance-dashboard.json"
+            config_path.write_text(
+                json.dumps(
+                    {
+                        "storage": "sqlite",
+                        "sqlite_path": str(sqlite_path),
+                        "base_path": "/gen",
+                        "access_password": "666666",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            records = []
+            for item in (
+                {
+                    "tour_no": "260401-1A",
+                    "start_date": "2026-04-01",
+                    "customer": "四月客户",
+                    "line": "深圳精品团",
+                    "revenue": "10000",
+                    "cost": "8000",
+                },
+                {
+                    "tour_no": "260501-1A",
+                    "start_date": "2026-05-01",
+                    "customer": "五月客户",
+                    "line": "珠海精品团",
+                    "revenue": "12000",
+                    "cost": "9000",
+                },
+            ):
+                records.append(
+                    finance_dashboard.build_record_from_form_input(
+                        {
+                            "business_type": "业务部款项",
+                            "department": "业务六部",
+                            "destination": "广东",
+                            "adults": "8",
+                            "receiving_coordinator": "李钟根",
+                            **item,
+                        },
+                        {"headers": finance_dashboard.STANDARD_HEADERS, "records": records},
+                    )
+                )
+            finance_dashboard.replace_sqlite_records(sqlite_path, "测试利润表", records)
+
+            latest = finance_dashboard.load_dashboard_payload(Path("/tmp/report.xls"), config_path)
+            self.assertEqual(latest["report"]["selected_month"], "2026-05")
+            self.assertEqual(latest["summary"]["groups"], 1)
+            self.assertAlmostEqual(latest["summary"]["profit"], 3000.0)
+            self.assertEqual([item["value"] for item in latest["report"]["available_months"]], ["2026-04", "2026-05"])
+
+            april = finance_dashboard.load_dashboard_payload(Path("/tmp/report.xls"), config_path, "2026-04")
+            self.assertEqual(april["report"]["selected_month"], "2026-04")
+            self.assertAlmostEqual(april["summary"]["profit"], 2000.0)
+
+            all_months = finance_dashboard.load_dashboard_payload(Path("/tmp/report.xls"), config_path, "all")
+            self.assertEqual(all_months["report"]["selected_month"], "all")
+            self.assertEqual(all_months["summary"]["groups"], 2)
+            self.assertAlmostEqual(all_months["summary"]["profit"], 5000.0)
 
     def test_seed_sqlite_and_append_record_roundtrip(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

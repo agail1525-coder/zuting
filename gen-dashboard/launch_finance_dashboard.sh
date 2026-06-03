@@ -5,7 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HOST="${FINANCE_DASHBOARD_HOST:-127.0.0.1}"
 PORT="${FINANCE_DASHBOARD_PORT:-47837}"
 CONFIG_PATH="${FINANCE_DASHBOARD_CONFIG:-$ROOT_DIR/config/finance-dashboard.json}"
-REPORT_PATH="${FINANCE_REPORT_PATH:-/home/mark/Desktop/业务六部4月毛利表.xls}"
+REPORT_PATH="${FINANCE_REPORT_PATH:-/home/mark/Desktop/业务6部 5月份毛利表.xls}"
 LOG_DIR="${ROOT_DIR}/.shortcut-center-env/data/finance-dashboard"
 LOG_PATH="${LOG_DIR}/server.log"
 

@@ -30,7 +30,7 @@ HTML_PAGE = PROJECT_ROOT / "finance_dashboard_ui.html"
 HTML_TEMPLATE = HTML_PAGE.read_text(encoding="utf-8")
 VENDOR_DIR = PROJECT_ROOT / ".vendor-finance"
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "finance-dashboard.json"
-DEFAULT_REPORT_PATH = Path.home() / "Desktop" / "业务六部4月毛利表.xls"
+DEFAULT_REPORT_PATH = Path.home() / "Desktop" / "业务6部 5月份毛利表.xls"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 47837
 HEADER_ROW_INDEX = 2
@@ -858,6 +858,67 @@ def build_period_text(records: list[dict[str, Any]]) -> str:
     return f"日期：{min(dates)}到{max(dates)}"
 
 
+def record_month_key(record: dict[str, Any]) -> str:
+    for field in ("start_date", "end_date"):
+        text = clean_text(record.get(field))
+        if DATE_RE.fullmatch(text):
+            return text[:7]
+    return ""
+
+
+def month_label_from_key(month_key: str) -> str:
+    if not re.fullmatch(r"\d{4}-\d{2}", month_key):
+        return month_key
+    year, month = month_key.split("-", 1)
+    return f"{year}年{int(month)}月"
+
+
+def build_month_options(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    buckets: dict[str, dict[str, Any]] = {}
+    for record in records:
+        month_key = record_month_key(record)
+        if not month_key:
+            continue
+        if month_key not in buckets:
+            buckets[month_key] = {
+                "value": month_key,
+                "label": month_label_from_key(month_key),
+                "groups": 0,
+                "revenue": 0.0,
+                "profit": 0.0,
+            }
+        bucket = buckets[month_key]
+        bucket["groups"] += 1
+        bucket["revenue"] += float(record.get("revenue", 0.0))
+        bucket["profit"] += float(record.get("profit", 0.0))
+    return [buckets[key] for key in sorted(buckets)]
+
+
+def select_month_records(records: list[dict[str, Any]], requested_month: str = "") -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    options = build_month_options(records)
+    option_keys = [item["value"] for item in options]
+    requested = clean_text(requested_month)
+    if requested == "all":
+        return records, {
+            "selected_month": "all",
+            "selected_month_label": "全部月份",
+            "available_months": options,
+        }
+    selected = requested if requested in option_keys else (option_keys[-1] if option_keys else "")
+    if not selected:
+        return records, {
+            "selected_month": "",
+            "selected_month_label": "",
+            "available_months": options,
+        }
+    filtered = [record for record in records if record_month_key(record) == selected]
+    return filtered, {
+        "selected_month": selected,
+        "selected_month_label": month_label_from_key(selected),
+        "available_months": options,
+    }
+
+
 def aggregate_dimension(records: list[dict[str, Any]], key: str, limit: int = 5) -> list[dict[str, Any]]:
     buckets: dict[str, dict[str, Any]] = {}
     for record in records:
@@ -1129,6 +1190,9 @@ def build_dashboard_payload_from_records(
             "period_start": report_meta["period_start"],
             "period_end": report_meta["period_end"],
             "export_time": report_meta["export_time"],
+            "selected_month": report_meta.get("selected_month", ""),
+            "selected_month_label": report_meta.get("selected_month_label", ""),
+            "available_months": report_meta.get("available_months", []),
         },
         "summary": {
             "department": department,
@@ -1496,7 +1560,7 @@ def resolve_ai_config(raw_config: dict[str, Any]) -> dict[str, Any]:
     return direct_config
 
 
-def load_dashboard_payload(report_path: Path, config_path: Path) -> dict[str, Any]:
+def load_dashboard_payload(report_path: Path, config_path: Path, month: str = "") -> dict[str, Any]:
     raw_config = load_config(config_path)
     storage_mode = storage_mode_from_config(raw_config)
     final_report_path = report_path_from_config(raw_config, report_path, config_path)
@@ -1509,16 +1573,23 @@ def load_dashboard_payload(report_path: Path, config_path: Path) -> dict[str, An
     else:
         parsed = parse_report(final_report_path)
         source_path = final_report_path
+    selected_records, month_meta = select_month_records(parsed["records"], month)
+    period_text = build_period_text(selected_records)
+    period_start, period_end = detect_period(period_text)
+    display_period_text = period_text or parsed["period_text"]
+    if month_meta.get("selected_month") not in ("", "all"):
+        display_period_text = f"月份：{month_meta.get('selected_month_label')}"
     ai_config = resolve_ai_config(raw_config)
     source_stat = source_path.stat()
     return build_dashboard_payload_from_records(
-        parsed["records"],
+        selected_records,
         {
             "title": parsed["title"],
-            "period_text": parsed["period_text"],
-            "period_start": parsed["period_start"],
-            "period_end": parsed["period_end"],
+            "period_text": display_period_text,
+            "period_start": period_start or parsed["period_start"],
+            "period_end": period_end or parsed["period_end"],
             "export_time": parsed["export_time"],
+            **month_meta,
         },
         {
             "path": str(source_path),
@@ -2027,14 +2098,16 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
             return
         if self.app.matches_route(path, "/api/dashboard"):
             try:
-                self.respond_json(self.app.dashboard())
+                params = parse.parse_qs(parsed_url.query, keep_blank_values=True)
+                self.respond_json(self.app.dashboard((params.get("month") or [""])[-1]))
             except Exception as exc:  # pragma: no cover - defensive path
                 self.respond_json({"error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
             return
         self.respond_json({"error": "Not found"}, status=HTTPStatus.NOT_FOUND)
 
     def do_POST(self) -> None:
-        path = parse.urlparse(self.path).path
+        parsed_url = parse.urlparse(self.path)
+        path = parsed_url.path
         if self.app.matches_route(path, "/login"):
             form = self.read_form_body()
             next_path = self.app.normalize_redirect_target(form.get("next", ""))
@@ -2053,13 +2126,15 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
             return
         if self.app.matches_route(path, "/api/ai-briefing"):
             try:
-                self.respond_json(self.app.ai_briefing())
+                params = parse.parse_qs(parsed_url.query, keep_blank_values=True)
+                self.respond_json(self.app.ai_briefing((params.get("month") or [""])[-1]))
             except Exception as exc:  # pragma: no cover - defensive path
                 self.respond_json({"error": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
             return
         if self.app.matches_route(path, "/api/records"):
             try:
-                self.respond_json(self.app.add_record(self.read_json_body()))
+                params = parse.parse_qs(parsed_url.query, keep_blank_values=True)
+                self.respond_json(self.app.add_record(self.read_json_body(), (params.get("month") or [""])[-1]))
             except ValueError as exc:
                 self.respond_json({"error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             except Exception as exc:  # pragma: no cover - defensive path
@@ -2251,12 +2326,12 @@ class FinanceDashboardApp:
     def render_html(self) -> str:
         return HTML_TEMPLATE.replace("__BASE_PATH__", self.base_path)
 
-    def dashboard(self) -> dict[str, Any]:
+    def dashboard(self, month: str = "") -> dict[str, Any]:
         with self._lock:
-            return load_dashboard_payload(self.report_path, self.config_path)
+            return load_dashboard_payload(self.report_path, self.config_path, month)
 
-    def ai_briefing(self) -> dict[str, Any]:
-        payload = self.dashboard()
+    def ai_briefing(self, month: str = "") -> dict[str, Any]:
+        payload = self.dashboard(month)
         raw_config = load_config(self.config_path)
         ai_config = resolve_ai_config(raw_config)
         ai_meta = payload["ai"]
@@ -2318,7 +2393,7 @@ class FinanceDashboardApp:
             }
         return response_payload
 
-    def add_record(self, payload: dict[str, Any]) -> dict[str, Any]:
+    def add_record(self, payload: dict[str, Any], month: str = "") -> dict[str, Any]:
         with self._lock:
             if self.storage_mode == "sqlite":
                 result = append_record_to_sqlite(self.sqlite_path, payload, self.report_title)
@@ -2327,7 +2402,7 @@ class FinanceDashboardApp:
                 result = append_record_to_report(self.report_path, payload)
                 message = "已写入 Excel 并刷新战报。"
             self._ai_cache = {}
-            dashboard = load_dashboard_payload(self.report_path, self.config_path)
+            dashboard = load_dashboard_payload(self.report_path, self.config_path, month)
             return {
                 "ok": True,
                 "message": message,
