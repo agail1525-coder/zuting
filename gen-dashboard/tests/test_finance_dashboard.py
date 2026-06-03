@@ -254,6 +254,11 @@ class FinanceDashboardTests(unittest.TestCase):
             self.assertEqual(latest["summary"]["groups"], 1)
             self.assertAlmostEqual(latest["summary"]["profit"], 3000.0)
             self.assertEqual([item["value"] for item in latest["report"]["available_months"]], ["2026-04", "2026-05"])
+            self.assertEqual([item["month"] for item in latest["analytics"]["monthly_series"]], ["2026-04", "2026-05"])
+            self.assertEqual(latest["analytics"]["comparison"]["previous_month"], "2026-04")
+            self.assertTrue(latest["analytics"]["comparison"]["cards"])
+            self.assertIn("lines", latest["analytics"]["dimension_comparison"])
+            self.assertIn("2026年5月较2026年4月", latest["analytics"]["coaching"]["headline"])
 
             april = finance_dashboard.load_dashboard_payload(Path("/tmp/report.xls"), config_path, "2026-04")
             self.assertEqual(april["report"]["selected_month"], "2026-04")

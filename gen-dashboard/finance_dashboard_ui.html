@@ -158,29 +158,44 @@
     .month-switcher {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .month-switcher-label {
       color: var(--ink-soft);
       font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .month-option {
-      border-radius: 999px;
+      border-radius: var(--radius-sm);
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(255, 255, 255, 0.06);
       color: var(--ink);
-      padding: 9px 13px;
+      padding: 10px 14px;
       font-size: 13px;
       font-weight: 700;
+      display: grid;
+      gap: 4px;
+      min-width: 118px;
+      text-align: left;
     }
 
     .month-option.active {
       background: rgba(95, 224, 212, 0.18);
       border-color: rgba(95, 224, 212, 0.46);
       color: #bffaf5;
+    }
+
+    .month-option small {
+      color: var(--ink-soft);
+      font-weight: 500;
     }
 
     .chip {
@@ -288,6 +303,125 @@
         linear-gradient(135deg, rgba(247, 194, 92, 0.14), rgba(255, 138, 72, 0.12)),
         rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(247, 194, 92, 0.2);
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .comparison-card,
+    .chart-card,
+    .coach-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 18px;
+    }
+
+    .comparison-card {
+      display: grid;
+      gap: 8px;
+      min-height: 128px;
+    }
+
+    .comparison-card strong {
+      font-size: 26px;
+      letter-spacing: -0.04em;
+    }
+
+    .delta {
+      font-weight: 800;
+      color: #90f2a2;
+    }
+
+    .delta.down {
+      color: #ffb199;
+    }
+
+    .chart-grid,
+    .dimension-grid,
+    .coach-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .chart-card h3,
+    .coach-card h3 {
+      margin: 0 0 14px;
+      font-size: 16px;
+      color: #fff0bf;
+    }
+
+    .month-chart {
+      display: grid;
+      gap: 14px;
+    }
+
+    .month-chart-row {
+      display: grid;
+      gap: 8px;
+    }
+
+    .month-chart-head,
+    .dimension-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .dimension-head h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .month-bars {
+      display: grid;
+      gap: 6px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .ratio-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .dimension-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .dimension-item {
+      display: grid;
+      gap: 8px;
+      padding: 13px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .dimension-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .coach-headline {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(95, 224, 212, 0.1);
+      border: 1px solid rgba(95, 224, 212, 0.18);
+      color: #d6fffb;
+      font-size: 18px;
+      line-height: 1.7;
     }
 
     .briefing-label {
@@ -626,6 +760,9 @@
       }
 
       .insight-grid,
+      .chart-grid,
+      .dimension-grid,
+      .coach-grid,
       .form-grid,
       .preview-grid {
         grid-template-columns: 1fr;
@@ -658,6 +795,81 @@
       <div class="month-switcher" id="month-switcher" aria-label="月份切换"></div>
       <div class="momentum-row" id="momentum-row"></div>
       <div class="status-row" id="status-row"></div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">月度经营对比</h2>
+          <p class="section-subtitle">把每个月的创收、利润、利润率、成本率和团量摆在一起，看清是体量变化还是利润质量变化。</p>
+        </div>
+      </div>
+      <div class="comparison-grid" id="comparison-cards"></div>
+      <div class="chart-grid">
+        <article class="chart-card">
+          <h3>创收 / 利润柱状对比</h3>
+          <div class="month-chart" id="month-bars"></div>
+        </article>
+        <article class="chart-card">
+          <h3>利润率 / 成本率对比</h3>
+          <div class="month-chart" id="margin-bars"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">多维得失拆解</h2>
+          <p class="section-subtitle">按线路、客源地、主战席和目的地拆开看，告诉团队哪些打法要复制，哪些地方要复盘。</p>
+        </div>
+      </div>
+      <div class="dimension-grid">
+        <article class="comparison-card dimension-card">
+          <div class="dimension-head"><h3 class="section-title">线路</h3><span class="muted">利润变化</span></div>
+          <div id="dimension-lines"></div>
+        </article>
+        <article class="comparison-card dimension-card">
+          <div class="dimension-head"><h3 class="section-title">客源地</h3><span class="muted">获客质量</span></div>
+          <div id="dimension-regions"></div>
+        </article>
+        <article class="comparison-card dimension-card">
+          <div class="dimension-head"><h3 class="section-title">主战席</h3><span class="muted">执行贡献</span></div>
+          <div id="dimension-owners"></div>
+        </article>
+        <article class="comparison-card dimension-card">
+          <div class="dimension-head"><h3 class="section-title">目的地</h3><span class="muted">产品方向</span></div>
+          <div id="dimension-destinations"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">团队复盘教练</h2>
+          <p class="section-subtitle">把图表翻译成团队能执行的复盘话术：赢在哪里、输在哪里、下个月怎么做。</p>
+        </div>
+      </div>
+      <div class="coach-headline" id="coach-headline">等待数据</div>
+      <div class="coach-grid">
+        <article class="coach-card">
+          <h3>本月赢在哪里</h3>
+          <div class="insight-list" id="coach-wins"></div>
+        </article>
+        <article class="coach-card">
+          <h3>本月输在哪里</h3>
+          <div class="insight-list" id="coach-losses"></div>
+        </article>
+        <article class="coach-card">
+          <h3>下月优化动作</h3>
+          <div class="insight-list" id="coach-actions"></div>
+        </article>
+        <article class="coach-card">
+          <h3>给团队的复盘口径</h3>
+          <div class="insight-list" id="coach-script"></div>
+        </article>
+      </div>
     </section>
 
     <section class="grid">
@@ -894,7 +1106,7 @@
     const state = {
       refreshTimer: null,
       currentPayload: null,
-      selectedMonth: '',
+      selectedMonth: new URLSearchParams(window.location.search).get('month') || '',
     };
 
     function apiUrl(path) {
@@ -915,6 +1127,20 @@
 
     function fmtPercent(value) {
       return `${percent.format(value * 100)}%`;
+    }
+
+    function fmtValue(value, type) {
+      if (type === 'percent' || type === 'percent_inverse') return fmtPercent(value);
+      if (type === 'count') return `${currency.format(value)} 团`;
+      return fmtMoney(value);
+    }
+
+    function fmtDelta(value, type) {
+      const prefix = value >= 0 ? '+' : '-';
+      const absValue = Math.abs(value);
+      if (type === 'percent' || type === 'percent_inverse') return `${prefix}${percent.format(absValue * 100)}个百分点`;
+      if (type === 'count') return `${prefix}${currency.format(absValue)} 团`;
+      return `${prefix}${fmtMoney(absValue)}`;
     }
 
     function text(el, value) {
@@ -943,6 +1169,17 @@
       const node = document.getElementById('entry-form-status');
       node.textContent = message;
       node.classList.toggle('error', isError);
+    }
+
+    function updateMonthUrl(month, replace = false) {
+      const url = new URL(window.location.href);
+      if (month) {
+        url.searchParams.set('month', month);
+      } else {
+        url.searchParams.delete('month');
+      }
+      const method = replace ? 'replaceState' : 'pushState';
+      window.history[method]({}, '', url);
     }
 
     function renderMetrics(summary) {
@@ -995,6 +1232,7 @@
         { value: 'all', label: '全部月份' },
         ...options.map((item) => ({ value: item.value, label: item.label })),
       ];
+      const totalGroups = options.reduce((sum, item) => sum + Number(item.groups || 0), 0);
       container.innerHTML = `
         <span class="month-switcher-label">月份</span>
         ${buttons.map((item) => `
@@ -1002,9 +1240,123 @@
             class="month-option ${item.value === selected ? 'active' : ''}"
             type="button"
             data-month="${esc(item.value)}"
-          >${esc(item.label)}</button>
+          >
+            <span>${esc(item.label)}</span>
+            <small>${item.value === 'all' ? `${totalGroups} 团汇总` : esc((options.find((option) => option.value === item.value)?.groups || 0) + ' 团')}</small>
+          </button>
         `).join('')}
       `;
+    }
+
+    function renderComparisonCards(analytics) {
+      const comparison = analytics?.comparison || {};
+      const cards = comparison.cards || [];
+      const target = document.getElementById('comparison-cards');
+      if (!cards.length) {
+        target.innerHTML = '<div class="empty">暂无上月数据可对比。</div>';
+        return;
+      }
+      target.innerHTML = cards.map((card) => `
+        <article class="comparison-card">
+          <div class="metric-label">${esc(card.label)}</div>
+          <strong>${fmtValue(card.current, card.type)}</strong>
+          <div class="delta ${card.positive ? '' : 'down'}">${fmtDelta(card.delta, card.type)}</div>
+          <div class="muted">对比 ${esc(comparison.previous_label || '上月')}：${fmtValue(card.previous, card.type)}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderMonthlyCharts(analytics) {
+      const series = analytics?.monthly_series || [];
+      const bars = document.getElementById('month-bars');
+      const margins = document.getElementById('margin-bars');
+      if (!series.length) {
+        bars.innerHTML = '<div class="empty">暂无月份数据。</div>';
+        margins.innerHTML = '<div class="empty">暂无月份数据。</div>';
+        return;
+      }
+      const maxRevenue = Math.max(...series.map((item) => item.revenue), 1);
+      const maxProfit = Math.max(...series.map((item) => Math.max(item.profit, 0)), 1);
+      bars.innerHTML = series.map((item) => `
+        <div class="month-chart-row">
+          <div class="month-chart-head">
+            <strong>${esc(item.label)}</strong>
+            <span class="muted">${item.groups} 团 / 利润 ${fmtMoney(item.profit)}</span>
+          </div>
+          <div class="month-bars">
+            <div class="bar-label"><span>创收</span><span>${fmtMoney(item.revenue)}</span></div>
+            <div class="bar"><div class="bar-fill secondary" style="width:${Math.max(item.revenue / maxRevenue * 100, 5)}%"></div></div>
+            <div class="bar-label"><span>利润</span><span>${fmtMoney(item.profit)}</span></div>
+            <div class="bar"><div class="bar-fill" style="width:${Math.max(Math.max(item.profit, 0) / maxProfit * 100, 5)}%"></div></div>
+          </div>
+        </div>
+      `).join('');
+      margins.innerHTML = series.map((item) => `
+        <div class="ratio-row">
+          <div class="month-chart-head">
+            <strong>${esc(item.label)}</strong>
+            <span class="muted">人均利润 ${fmtMoney(item.average_profit_per_traveller)}</span>
+          </div>
+          <div class="bar-label"><span>利润率</span><span>${fmtPercent(item.margin)}</span></div>
+          <div class="bar"><div class="bar-fill" style="width:${Math.max(Math.min(item.margin, 1) * 100, 5)}%"></div></div>
+          <div class="bar-label"><span>成本率</span><span>${fmtPercent(item.cost_rate)}</span></div>
+          <div class="bar"><div class="bar-fill secondary" style="width:${Math.max(Math.min(item.cost_rate, 1) * 100, 5)}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderDimensionList(targetId, items) {
+      const target = document.getElementById(targetId);
+      if (!items?.length) {
+        target.innerHTML = '<div class="empty">暂无可对比数据。</div>';
+        return;
+      }
+      target.innerHTML = items.map((item) => `
+        <div class="dimension-item">
+          <div class="dimension-head">
+            <strong>${esc(item.label || '未标注')}</strong>
+            <span class="delta ${item.delta_profit >= 0 ? '' : 'down'}">${fmtDelta(item.delta_profit, 'money')}</span>
+          </div>
+          <div class="muted">本月 ${fmtMoney(item.current.profit)} / 上月 ${fmtMoney(item.previous.profit)}，利润率 ${fmtPercent(item.current.margin)}</div>
+          <div class="bar"><div class="bar-fill ${item.delta_profit >= 0 ? '' : 'secondary'}" style="width:${Math.max(Math.min(Math.abs(item.delta_profit) / 10000, 1) * 100, 6)}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderCoachList(targetId, items, fallback = '暂无复盘项。') {
+      const target = document.getElementById(targetId);
+      if (!items?.length) {
+        target.innerHTML = `<div class="muted">${fallback}</div>`;
+        return;
+      }
+      target.innerHTML = items.map((item) => `
+        <div class="insight-item">
+          <strong>${esc(item.title || '')}</strong>
+          <div class="muted">${esc(item.detail || '')}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderAnalytics(payload) {
+      const analytics = payload.analytics || {};
+      const dimensions = analytics.dimension_comparison || {};
+      renderComparisonCards(analytics);
+      renderMonthlyCharts(analytics);
+      renderDimensionList('dimension-lines', dimensions.lines || []);
+      renderDimensionList('dimension-regions', dimensions.regions || []);
+      renderDimensionList('dimension-owners', dimensions.owners || []);
+      renderDimensionList('dimension-destinations', dimensions.destinations || []);
+      const coach = analytics.coaching || {};
+      text('coach-headline', coach.headline || '等待更多月份数据后生成环比复盘。');
+      renderCoachList('coach-wins', coach.wins || [], '本月暂无明显优势，先看利润率和冠军团。');
+      renderCoachList('coach-losses', coach.losses || [], '本月暂无明显短板，但仍要保持报价复核。');
+      renderCoachList('coach-actions', coach.actions || []);
+      renderCoachList('coach-script', [
+        {
+          title: '复盘话术',
+          detail: `${coach.headline || ''} 团队复盘时先看利润率和成本率，再看线路、客源地、主战席三类动作，不要只盯流水。`,
+        },
+      ]);
     }
 
     function renderDaySummary(payload) {
@@ -1158,6 +1510,7 @@
       text('footer-note', `数据源：${payload.status.source_file} ｜ 最近生成：${payload.status.generated_at} ｜ 自动刷新：${payload.status.refresh_seconds} 秒`);
       renderMetrics(payload.summary);
       renderMonthSwitcher(payload.report);
+      renderAnalytics(payload);
       renderMomentum(payload);
       renderDaySummary(payload);
       renderTrend(payload.leaderboards.daily_trend);
@@ -1298,6 +1651,11 @@
       const button = event.target.closest('[data-month]');
       if (!button) return;
       state.selectedMonth = button.dataset.month || '';
+      updateMonthUrl(state.selectedMonth);
+      loadDashboard();
+    });
+    window.addEventListener('popstate', () => {
+      state.selectedMonth = new URLSearchParams(window.location.search).get('month') || '';
       loadDashboard();
     });
     document.getElementById('close-entry-btn').addEventListener('click', () => closeEntryModal(false));
@@ -1315,7 +1673,11 @@
       }
     });
 
-    loadDashboard();
+    loadDashboard().then(() => {
+      if (state.currentPayload?.report?.selected_month && !new URLSearchParams(window.location.search).get('month')) {
+        updateMonthUrl(state.currentPayload.report.selected_month, true);
+      }
+    });
   </script>
 </body>
 </html>

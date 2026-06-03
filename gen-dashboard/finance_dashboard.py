@@ -946,6 +946,195 @@ def aggregate_dimension(records: list[dict[str, Any]], key: str, limit: int = 5)
     return board[:limit]
 
 
+def summarize_records(records: list[dict[str, Any]]) -> dict[str, Any]:
+    revenue = sum(float(item.get("revenue", 0.0)) for item in records)
+    cost = sum(float(item.get("cost", 0.0)) for item in records)
+    profit = sum(float(item.get("profit", 0.0)) for item in records)
+    travellers = sum(float(item.get("travellers", 0.0)) for item in records)
+    group_count = len(records)
+    return {
+        "groups": group_count,
+        "travellers": travellers,
+        "revenue": revenue,
+        "cost": cost,
+        "profit": profit,
+        "margin": profit / revenue if revenue else 0.0,
+        "cost_rate": cost / revenue if revenue else 0.0,
+        "average_profit": profit / group_count if group_count else 0.0,
+        "average_revenue": revenue / group_count if group_count else 0.0,
+        "average_revenue_per_traveller": revenue / travellers if travellers else 0.0,
+        "average_profit_per_traveller": profit / travellers if travellers else 0.0,
+    }
+
+
+def build_month_records_map(records: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    buckets: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for record in records:
+        month_key = record_month_key(record)
+        if month_key:
+            buckets[month_key].append(record)
+    return dict(buckets)
+
+
+def metric_delta(current: float, previous: float) -> dict[str, float]:
+    delta = current - previous
+    return {
+        "current": current,
+        "previous": previous,
+        "delta": delta,
+        "delta_rate": delta / previous if previous else 0.0,
+    }
+
+
+def build_monthly_series(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    month_map = build_month_records_map(records)
+    series = []
+    for month_key in sorted(month_map):
+        summary = summarize_records(month_map[month_key])
+        series.append(
+            {
+                "month": month_key,
+                "label": month_label_from_key(month_key),
+                **summary,
+            }
+        )
+    return series
+
+
+def compare_dimensions(current_records: list[dict[str, Any]], previous_records: list[dict[str, Any]], key: str, limit: int = 5) -> list[dict[str, Any]]:
+    current_board = {item["label"]: item for item in aggregate_dimension(current_records, key, limit=999)}
+    previous_board = {item["label"]: item for item in aggregate_dimension(previous_records, key, limit=999)}
+    labels = sorted(set(current_board) | set(previous_board))
+    rows: list[dict[str, Any]] = []
+    for label in labels:
+        current = current_board.get(label, {"label": label, "groups": 0, "travellers": 0.0, "revenue": 0.0, "cost": 0.0, "profit": 0.0, "margin": 0.0})
+        previous = previous_board.get(label, {"label": label, "groups": 0, "travellers": 0.0, "revenue": 0.0, "cost": 0.0, "profit": 0.0, "margin": 0.0})
+        rows.append(
+            {
+                "label": label,
+                "current": current,
+                "previous": previous,
+                "delta_profit": current["profit"] - previous["profit"],
+                "delta_revenue": current["revenue"] - previous["revenue"],
+                "delta_margin": current["margin"] - previous["margin"],
+            }
+        )
+    rows.sort(key=lambda item: (abs(item["delta_profit"]), item["current"]["profit"], item["current"]["revenue"]), reverse=True)
+    return rows[:limit]
+
+
+def build_comparison_cards(current_summary: dict[str, Any], previous_summary: dict[str, Any]) -> list[dict[str, Any]]:
+    cards = [
+        ("创收", "revenue", "money"),
+        ("利润", "profit", "money"),
+        ("利润率", "margin", "percent"),
+        ("成本率", "cost_rate", "percent_inverse"),
+        ("出团量", "groups", "count"),
+        ("人均利润", "average_profit_per_traveller", "money"),
+    ]
+    result = []
+    for label, key, value_type in cards:
+        delta = metric_delta(float(current_summary.get(key, 0.0)), float(previous_summary.get(key, 0.0)))
+        is_positive = delta["delta"] >= 0
+        if value_type == "percent_inverse":
+            is_positive = delta["delta"] <= 0
+        result.append({"label": label, "key": key, "type": value_type, **delta, "positive": is_positive})
+    return result
+
+
+def build_coaching_notes(
+    current_month: str,
+    previous_month: str,
+    current_summary: dict[str, Any],
+    previous_summary: dict[str, Any],
+    dimensions: dict[str, list[dict[str, Any]]],
+) -> dict[str, Any]:
+    revenue_delta = current_summary["revenue"] - previous_summary["revenue"]
+    profit_delta = current_summary["profit"] - previous_summary["profit"]
+    margin_delta = current_summary["margin"] - previous_summary["margin"]
+    top_line = next((item for item in dimensions["lines"] if item["current"]["profit"] > 0), None)
+    weak_line = next((item for item in reversed(dimensions["lines"]) if item["current"]["margin"] < current_summary["margin"]), None)
+    top_region = next((item for item in dimensions["regions"] if item["current"]["profit"] > 0), None)
+    top_owner = next((item for item in dimensions["owners"] if item["current"]["profit"] > 0), None)
+
+    headline = (
+        f"{month_label_from_key(current_month)}较{month_label_from_key(previous_month)}"
+        f"创收{'增加' if revenue_delta >= 0 else '减少'}{human_money(abs(revenue_delta))}，"
+        f"利润{'增加' if profit_delta >= 0 else '减少'}{human_money(abs(profit_delta))}，"
+        f"利润率{'提升' if margin_delta >= 0 else '下降'}{abs(margin_delta) * 100:.2f}个百分点。"
+    )
+    wins = []
+    losses = []
+    actions = []
+    if profit_delta >= 0:
+        wins.append(build_insight_item("利润质量提升", f"本月利润较上月增加{human_money(abs(profit_delta))}，说明报价、控本或线路结构至少有一项已经改善。"))
+    else:
+        losses.append(build_insight_item("利润规模回落", f"本月利润较上月减少{human_money(abs(profit_delta))}，需要先区分是团量不足、客单价下降，还是成本率抬升。"))
+    if margin_delta >= 0:
+        wins.append(build_insight_item("毛利线抬高", f"利润率提升{abs(margin_delta) * 100:.2f}个百分点，应把本月高毛利团的报价结构固化为模板。"))
+    else:
+        losses.append(build_insight_item("毛利被摊薄", f"利润率下降{abs(margin_delta) * 100:.2f}个百分点，低毛利团必须进入报价复核。"))
+    if top_line:
+        wins.append(build_insight_item(f"复制线路 {top_line['label']}", f"本月贡献利润{human_money(top_line['current']['profit'])}，较上月变化{human_money(top_line['delta_profit'])}，适合沉淀成主推线路。"))
+        actions.append(build_insight_item("把冠军线路做成标准产品包", f"围绕“{top_line['label']}”拆出标准报价、升级项和销售话术，先复制已经赚钱的线路。"))
+    if weak_line:
+        losses.append(build_insight_item(f"复盘低效线路 {weak_line['label']}", f"当前利润率{weak_line['current']['margin'] * 100:.2f}%，低于本月整体利润率，继续放量前先查报价和采购。"))
+    if top_region:
+        actions.append(build_insight_item(f"深挖客源地 {top_region['label']}", f"该客源地本月带来利润{human_money(top_region['current']['profit'])}，优先做老客转介绍和案例投放。"))
+    if top_owner:
+        actions.append(build_insight_item(f"让 {top_owner['label']} 输出打法", f"主战席本月贡献利润{human_money(top_owner['current']['profit'])}，应复盘其报价、沟通和控本动作给全员复用。"))
+    actions.append(build_insight_item("下月设置三条硬线", "每团报价前必须看目标利润率、采购成本上限和可加价项；低于目标毛利线的团先复核再成交。"))
+
+    return {
+        "headline": headline,
+        "wins": wins[:4],
+        "losses": losses[:4],
+        "actions": actions[:5],
+    }
+
+
+def build_analytics_context(all_records: list[dict[str, Any]], selected_records: list[dict[str, Any]], month_meta: dict[str, Any]) -> dict[str, Any]:
+    monthly_series = build_monthly_series(all_records)
+    month_keys = [item["month"] for item in monthly_series]
+    selected_month = clean_text(month_meta.get("selected_month"))
+    if selected_month in ("", "all"):
+        current_month = month_keys[-1] if month_keys else ""
+    else:
+        current_month = selected_month
+    current_index = month_keys.index(current_month) if current_month in month_keys else -1
+    previous_month = month_keys[current_index - 1] if current_index > 0 else ""
+    month_map = build_month_records_map(all_records)
+    current_records = month_map.get(current_month, selected_records)
+    previous_records = month_map.get(previous_month, [])
+    current_summary = summarize_records(current_records)
+    previous_summary = summarize_records(previous_records)
+    dimensions = {
+        "lines": compare_dimensions(current_records, previous_records, "line"),
+        "regions": compare_dimensions([item for item in current_records if clean_text(item.get("source_region"))], [item for item in previous_records if clean_text(item.get("source_region"))], "source_region"),
+        "owners": compare_dimensions(current_records, previous_records, "primary_owner"),
+        "destinations": compare_dimensions(current_records, previous_records, "destination"),
+    }
+    return {
+        "monthly_series": monthly_series,
+        "comparison": {
+            "current_month": current_month,
+            "current_label": month_label_from_key(current_month) if current_month else "",
+            "previous_month": previous_month,
+            "previous_label": month_label_from_key(previous_month) if previous_month else "",
+            "cards": build_comparison_cards(current_summary, previous_summary) if previous_month else [],
+            "current_summary": current_summary,
+            "previous_summary": previous_summary,
+        },
+        "dimension_comparison": dimensions,
+        "coaching": build_coaching_notes(current_month, previous_month, current_summary, previous_summary, dimensions) if previous_month else {
+            "headline": "当前只有一个可对比月份，先积累更多月份后再看环比得失。",
+            "wins": [],
+            "losses": [],
+            "actions": [build_insight_item("先建立月度复盘节奏", "每月固定看创收、利润、利润率、成本率、线路和客源地，避免只看流水。")],
+        },
+    }
+
+
 def aggregate_daily(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     buckets: dict[str, dict[str, Any]] = defaultdict(
         lambda: {"date": "", "groups": 0, "travellers": 0.0, "revenue": 0.0, "cost": 0.0, "profit": 0.0}
@@ -1152,6 +1341,7 @@ def build_dashboard_payload_from_records(
     source_info: dict[str, Any],
     refresh_seconds: int,
     ai_meta: dict[str, Any],
+    analytics_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not records:
         raise ValueError("报表中没有可用数据")
@@ -1245,6 +1435,7 @@ def build_dashboard_payload_from_records(
             "refresh_seconds": refresh_seconds,
         },
         "ai": ai_meta,
+        "analytics": analytics_context or {},
         "entry_defaults": build_entry_defaults(records, department),
     }
     fallback_analysis = build_fallback_analysis(payload)
@@ -1579,6 +1770,7 @@ def load_dashboard_payload(report_path: Path, config_path: Path, month: str = ""
     display_period_text = period_text or parsed["period_text"]
     if month_meta.get("selected_month") not in ("", "all"):
         display_period_text = f"月份：{month_meta.get('selected_month_label')}"
+    analytics_context = build_analytics_context(parsed["records"], selected_records, month_meta)
     ai_config = resolve_ai_config(raw_config)
     source_stat = source_path.stat()
     return build_dashboard_payload_from_records(
@@ -1599,6 +1791,7 @@ def load_dashboard_payload(report_path: Path, config_path: Path, month: str = ""
         },
         refresh_seconds,
         resolve_ai_meta(ai_config),
+        analytics_context,
     )
 
 
