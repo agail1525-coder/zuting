@@ -785,6 +785,7 @@
           <p class="subtitle" id="hero-subtitle">正在读取本月创收与利润数据。</p>
         </div>
         <div class="hero-actions">
+          <button class="accent-btn" id="compare-page-btn" type="button">打开对比分析页</button>
           <button class="accent-btn" id="open-entry-btn">录入经营数据</button>
           <button class="ghost-btn" id="reload-btn">立即刷新</button>
           <button class="ghost-btn" id="briefing-btn">生成 AI 经营建议</button>
@@ -1182,6 +1183,12 @@
       window.history[method]({}, '', url);
     }
 
+    function updateCompareLink(month) {
+      const button = document.getElementById('compare-page-btn');
+      if (!button) return;
+      button.dataset.href = apiUrl(`/compare${month ? `?month=${encodeURIComponent(month)}` : ''}`);
+    }
+
     function renderMetrics(summary) {
       const metrics = [
         { label: '累计创收', value: fmtShortMoney(summary.revenue), foot: `共 ${summary.groups} 团，带动 ${currency.format(summary.travellers)} 人出行` },
@@ -1223,6 +1230,7 @@
       const options = report.available_months || [];
       const selected = report.selected_month || '';
       state.selectedMonth = selected;
+      updateCompareLink(selected);
       const container = document.getElementById('month-switcher');
       if (!options.length) {
         container.innerHTML = '';
@@ -1646,6 +1654,9 @@
 
     document.getElementById('reload-btn').addEventListener('click', loadDashboard);
     document.getElementById('briefing-btn').addEventListener('click', generateBriefing);
+    document.getElementById('compare-page-btn').addEventListener('click', () => {
+      window.location.href = document.getElementById('compare-page-btn').dataset.href || apiUrl('/compare');
+    });
     document.getElementById('open-entry-btn').addEventListener('click', openEntryModal);
     document.getElementById('month-switcher').addEventListener('click', (event) => {
       const button = event.target.closest('[data-month]');

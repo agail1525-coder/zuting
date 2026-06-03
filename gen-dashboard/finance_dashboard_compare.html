@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>经营对比分析</title>
+  <style>
+    :root {
+      --bg: #071019;
+      --panel: rgba(11, 26, 38, 0.86);
+      --panel-2: rgba(18, 42, 56, 0.78);
+      --line: rgba(176, 216, 226, 0.14);
+      --ink: #f2f7f8;
+      --soft: rgba(242, 247, 248, 0.68);
+      --gold: #f6c15c;
+      --teal: #63e3d8;
+      --blue: #8ab8ff;
+      --bad: #ffb199;
+      --good: #95f2a7;
+      --radius: 18px;
+      --font: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --display: "Noto Serif SC", "Songti SC", serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(246, 193, 92, 0.18), transparent 24%),
+        radial-gradient(circle at 82% 14%, rgba(99, 227, 216, 0.15), transparent 24%),
+        linear-gradient(145deg, #061018 0%, #0b1b27 48%, #113443 100%);
+    }
+
+    .shell {
+      width: min(1560px, calc(100vw - 28px));
+      margin: 18px auto 44px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      background:
+        linear-gradient(135deg, rgba(246, 193, 92, 0.1), transparent 38%),
+        linear-gradient(315deg, rgba(99, 227, 216, 0.11), transparent 45%),
+        var(--panel);
+    }
+
+    .hero-head,
+    .section-head,
+    .row-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold);
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(36px, 5vw, 68px);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    h2, h3 { margin: 0; }
+
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--soft);
+      line-height: 1.7;
+      max-width: 860px;
+    }
+
+    .actions,
+    .months {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button, a.button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--gold), #ffdc88);
+      color: #201707;
+    }
+
+    .ghost {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .month-btn {
+      min-width: 132px;
+      justify-content: center;
+      border-radius: 14px;
+    }
+
+    .month-btn.active {
+      color: #061018;
+      background: var(--teal);
+    }
+
+    .kpi-grid,
+    .compare-grid,
+    .visual-grid,
+    .dimension-grid,
+    .coach-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .compare-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .visual-grid,
+    .dimension-grid,
+    .coach-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card,
+    .section {
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--panel-2);
+    }
+
+    .section {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .label {
+      color: var(--soft);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .value {
+      margin-top: 12px;
+      font-size: clamp(26px, 3vw, 42px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .note,
+    .muted {
+      color: var(--soft);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .delta {
+      color: var(--good);
+      font-weight: 900;
+    }
+
+    .delta.down { color: var(--bad); }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .fill {
+      height: 100%;
+      min-width: 5%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--gold), #ff8a48);
+    }
+
+    .fill.teal { background: linear-gradient(90deg, var(--teal), #58b7ff); }
+    .fill.blue { background: linear-gradient(90deg, var(--blue), #b6d2ff); }
+    .fill.bad { background: linear-gradient(90deg, var(--bad), #ff7c5e); }
+
+    .chart-row,
+    .dimension-row,
+    .coach-row {
+      display: grid;
+      gap: 10px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .chart-row:first-child,
+    .dimension-row:first-child,
+    .coach-row:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .row-head strong {
+      font-size: 15px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--soft);
+      font-size: 13px;
+    }
+
+    .legend span::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 6px;
+      background: var(--gold);
+    }
+
+    .legend .teal::before { background: var(--teal); }
+    .legend .blue::before { background: var(--blue); }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .matrix-card {
+      display: grid;
+      gap: 12px;
+      min-height: 170px;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(99, 227, 216, 0.14);
+      font-size: 22px;
+    }
+
+    .empty {
+      color: var(--soft);
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    @media (max-width: 1180px) {
+      .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .compare-grid,
+      .visual-grid,
+      .dimension-grid,
+      .coach-grid,
+      .matrix { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100vw - 16px, 100%); margin-top: 8px; }
+      .hero, .section { padding: 18px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel hero">
+      <div class="hero-head">
+        <div>
+          <p class="eyebrow">Finance Comparison Board</p>
+          <h1>月度经营对比分析</h1>
+          <p class="subtitle" id="page-subtitle">正在读取数据。</p>
+        </div>
+        <div class="actions">
+          <a class="button ghost" id="back-link" href="__BASE_PATH__/">← 返回战报</a>
+          <button class="primary" id="reload-btn">刷新分析</button>
+        </div>
+      </div>
+      <div class="months" id="month-switcher"></div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2>一眼看懂本月输赢</h2>
+          <p class="subtitle">先看环比结果，再看是团量、报价、成本还是线路结构造成变化。</p>
+        </div>
+      </div>
+      <div class="compare-grid" id="compare-cards"></div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2>图示化月度走势</h2>
+          <p class="subtitle">柱状图看规模，比例条看利润质量。不要只盯流水，利润率和成本率才是团队要守住的底线。</p>
+        </div>
+        <div class="legend"><span>利润</span><span class="teal">创收</span><span class="blue">利润率/成本率</span></div>
+      </div>
+      <div class="visual-grid">
+        <article class="card">
+          <h3>创收与利润</h3>
+          <div id="revenue-profit-chart"></div>
+        </article>
+        <article class="card">
+          <h3>利润率与成本率</h3>
+          <div id="ratio-chart"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2>四个维度拆得失</h2>
+          <p class="subtitle">把抽象的经营结果拆成团队能行动的四张图：线路、客源、主战席、目的地。</p>
+        </div>
+      </div>
+      <div class="dimension-grid">
+        <article class="card"><h3>线路打法</h3><div id="dim-lines"></div></article>
+        <article class="card"><h3>客源质量</h3><div id="dim-regions"></div></article>
+        <article class="card"><h3>主战席贡献</h3><div id="dim-owners"></div></article>
+        <article class="card"><h3>目的地表现</h3><div id="dim-destinations"></div></article>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-head">
+        <div>
+          <h2>AI 复盘教练</h2>
+          <p class="subtitle">用图表结论给团队讲清楚：赢在哪里、输在哪里、下个月怎么优化。</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="value" id="coach-headline">等待分析</div>
+      </div>
+      <div class="matrix">
+        <article class="card matrix-card">
+          <div class="icon">✓</div>
+          <h3>赢在哪里</h3>
+          <div id="coach-wins"></div>
+        </article>
+        <article class="card matrix-card">
+          <div class="icon">!</div>
+          <h3>输在哪里</h3>
+          <div id="coach-losses"></div>
+        </article>
+        <article class="card matrix-card">
+          <div class="icon">→</div>
+          <h3>怎么优化</h3>
+          <div id="coach-actions"></div>
+        </article>
+        <article class="card matrix-card">
+          <div class="icon">#</div>
+          <h3>开会怎么讲</h3>
+          <div id="coach-script"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const BASE_PATH = '__BASE_PATH__';
+    const money = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 });
+    const money2 = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const pct = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const state = { month: new URLSearchParams(location.search).get('month') || '' };
+
+    function apiUrl(path) {
+      const normalized = path.startsWith('/') ? path : `/${path}`;
+      return `${BASE_PATH}${normalized}` || normalized;
+    }
+
+    function esc(value) {
+      return String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+    }
+
+    function fmtMoney(value) { return `¥${money.format(value || 0)}`; }
+    function fmtShort(value) {
+      const n = Number(value || 0);
+      return Math.abs(n) >= 10000 ? `¥${money2.format(n / 10000)}万` : fmtMoney(n);
+    }
+    function fmtPct(value) { return `${pct.format((value || 0) * 100)}%`; }
+    function fmtByType(value, type) {
+      if (type === 'percent' || type === 'percent_inverse') return fmtPct(value);
+      if (type === 'count') return `${money.format(value || 0)} 团`;
+      return fmtMoney(value);
+    }
+    function fmtDelta(value, type) {
+      const prefix = value >= 0 ? '+' : '-';
+      const abs = Math.abs(value || 0);
+      if (type === 'percent' || type === 'percent_inverse') return `${prefix}${pct.format(abs * 100)}个百分点`;
+      if (type === 'count') return `${prefix}${money.format(abs)} 团`;
+      return `${prefix}${fmtMoney(abs)}`;
+    }
+
+    function setMonthUrl(month, replace = false) {
+      const url = new URL(location.href);
+      if (month) url.searchParams.set('month', month);
+      else url.searchParams.delete('month');
+      history[replace ? 'replaceState' : 'pushState']({}, '', url);
+      document.getElementById('back-link').href = apiUrl(`/${month ? `?month=${encodeURIComponent(month)}` : ''}`);
+    }
+
+    function renderMonths(report) {
+      const options = report.available_months || [];
+      const total = options.reduce((sum, item) => sum + Number(item.groups || 0), 0);
+      state.month = report.selected_month || state.month;
+      setMonthUrl(state.month, !new URLSearchParams(location.search).get('month'));
+      const buttons = [{ value: 'all', label: '全部月份', groups: total }, ...options];
+      document.getElementById('month-switcher').innerHTML = buttons.map((item) => `
+        <button class="ghost month-btn ${item.value === state.month ? 'active' : ''}" data-month="${esc(item.value)}">
+          ${esc(item.label)} · ${money.format(item.groups || 0)}团
+        </button>
+      `).join('');
+    }
+
+    function renderKpis(payload) {
+      const summary = payload.summary;
+      const items = [
+        ['创收', fmtShort(summary.revenue), `${summary.groups} 团`],
+        ['利润', fmtShort(summary.profit), `平均每团 ${fmtMoney(summary.average_profit)}`],
+        ['利润率', fmtPct(summary.margin), '守住毛利线'],
+        ['成本率', fmtPct(summary.cost_rate), '越低越稳'],
+        ['人均利润', fmtMoney(summary.average_profit_per_traveller), `${money.format(summary.travellers)} 人`],
+        ['战斗指数', summary.morale_index, '经营质量综合分'],
+      ];
+      document.getElementById('kpi-grid').innerHTML = items.map(([label, value, note]) => `
+        <article class="card">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+          <div class="note">${note}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderCompare(payload) {
+      const comparison = payload.analytics?.comparison || {};
+      const cards = comparison.cards || [];
+      document.getElementById('compare-cards').innerHTML = cards.length ? cards.map((card) => `
+        <article class="card">
+          <div class="label">${esc(card.label)}</div>
+          <div class="value">${fmtByType(card.current, card.type)}</div>
+          <div class="delta ${card.positive ? '' : 'down'}">${fmtDelta(card.delta, card.type)}</div>
+          <div class="note">上月 ${fmtByType(card.previous, card.type)}</div>
+        </article>
+      `).join('') : '<div class="empty">暂无上月可对比。</div>';
+    }
+
+    function renderRevenueChart(series) {
+      const maxRevenue = Math.max(...series.map((item) => item.revenue), 1);
+      const maxProfit = Math.max(...series.map((item) => Math.max(item.profit, 0)), 1);
+      document.getElementById('revenue-profit-chart').innerHTML = series.map((item) => `
+        <div class="chart-row">
+          <div class="row-head"><strong>${esc(item.label)}</strong><span class="muted">${item.groups}团 / ${money.format(item.travellers)}人</span></div>
+          <div class="muted">创收 ${fmtMoney(item.revenue)}</div>
+          <div class="bar"><div class="fill teal" style="width:${Math.max(item.revenue / maxRevenue * 100, 5)}%"></div></div>
+          <div class="muted">利润 ${fmtMoney(item.profit)}</div>
+          <div class="bar"><div class="fill" style="width:${Math.max(Math.max(item.profit, 0) / maxProfit * 100, 5)}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderRatioChart(series) {
+      document.getElementById('ratio-chart').innerHTML = series.map((item) => `
+        <div class="chart-row">
+          <div class="row-head"><strong>${esc(item.label)}</strong><span class="muted">人均利润 ${fmtMoney(item.average_profit_per_traveller)}</span></div>
+          <div class="muted">利润率 ${fmtPct(item.margin)}</div>
+          <div class="bar"><div class="fill" style="width:${Math.max(Math.min(item.margin, 1) * 100, 5)}%"></div></div>
+          <div class="muted">成本率 ${fmtPct(item.cost_rate)}</div>
+          <div class="bar"><div class="fill blue" style="width:${Math.max(Math.min(item.cost_rate, 1) * 100, 5)}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderDimension(id, items) {
+      document.getElementById(id).innerHTML = items?.length ? items.map((item) => `
+        <div class="dimension-row">
+          <div class="row-head">
+            <strong>${esc(item.label || '未标注')}</strong>
+            <span class="delta ${item.delta_profit >= 0 ? '' : 'down'}">${fmtDelta(item.delta_profit, 'money')}</span>
+          </div>
+          <div class="note">本月 ${fmtMoney(item.current.profit)}，上月 ${fmtMoney(item.previous.profit)}，利润率 ${fmtPct(item.current.margin)}</div>
+          <div class="bar"><div class="fill ${item.delta_profit >= 0 ? 'teal' : 'bad'}" style="width:${Math.max(Math.min(Math.abs(item.delta_profit) / 10000, 1) * 100, 6)}%"></div></div>
+        </div>
+      `).join('') : '<div class="empty">暂无可对比数据。</div>';
+    }
+
+    function renderCoachList(id, items, fallback) {
+      document.getElementById(id).innerHTML = items?.length ? items.map((item) => `
+        <div class="coach-row">
+          <strong>${esc(item.title || '')}</strong>
+          <div class="note">${esc(item.detail || '')}</div>
+        </div>
+      `).join('') : `<div class="empty">${fallback}</div>`;
+    }
+
+    function render(payload) {
+      document.getElementById('page-subtitle').textContent = `${payload.report.title}。${payload.report.period_text}，用图表看清本月相对上月的得失。`;
+      renderMonths(payload.report);
+      renderKpis(payload);
+      renderCompare(payload);
+      const series = payload.analytics?.monthly_series || [];
+      renderRevenueChart(series);
+      renderRatioChart(series);
+      const dimensions = payload.analytics?.dimension_comparison || {};
+      renderDimension('dim-lines', dimensions.lines || []);
+      renderDimension('dim-regions', dimensions.regions || []);
+      renderDimension('dim-owners', dimensions.owners || []);
+      renderDimension('dim-destinations', dimensions.destinations || []);
+      const coach = payload.analytics?.coaching || {};
+      document.getElementById('coach-headline').textContent = coach.headline || '等待更多月份数据后生成复盘。';
+      renderCoachList('coach-wins', coach.wins || [], '暂无明显优势，先看冠军团。');
+      renderCoachList('coach-losses', coach.losses || [], '暂无明显短板，继续保持报价复核。');
+      renderCoachList('coach-actions', coach.actions || [], '暂无动作建议。');
+      renderCoachList('coach-script', [{
+        title: '团队复盘口径',
+        detail: `${coach.headline || ''} 复盘时先讲利润率和成本率，再讲线路、客源、主战席，不要只讲流水。`,
+      }], '');
+    }
+
+    async function load() {
+      const query = state.month ? `?month=${encodeURIComponent(state.month)}` : '';
+      const response = await fetch(apiUrl(`/api/dashboard${query}`), { cache: 'no-store' });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || '加载失败');
+      render(payload);
+    }
+
+    document.getElementById('reload-btn').addEventListener('click', load);
+    document.getElementById('month-switcher').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-month]');
+      if (!button) return;
+      state.month = button.dataset.month || '';
+      setMonthUrl(state.month);
+      load();
+    });
+    window.addEventListener('popstate', () => {
+      state.month = new URLSearchParams(location.search).get('month') || '';
+      load();
+    });
+
+    load().catch((error) => {
+      document.getElementById('page-subtitle').textContent = `加载失败：${error.message}`;
+    });
+  </script>
+</body>
+</html>

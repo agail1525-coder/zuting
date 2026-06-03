@@ -28,6 +28,8 @@ from urllib import error, parse, request
 PROJECT_ROOT = Path(__file__).resolve().parent
 HTML_PAGE = PROJECT_ROOT / "finance_dashboard_ui.html"
 HTML_TEMPLATE = HTML_PAGE.read_text(encoding="utf-8")
+COMPARE_PAGE = PROJECT_ROOT / "finance_dashboard_compare.html"
+COMPARE_TEMPLATE = COMPARE_PAGE.read_text(encoding="utf-8") if COMPARE_PAGE.exists() else ""
 VENDOR_DIR = PROJECT_ROOT / ".vendor-finance"
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "finance-dashboard.json"
 DEFAULT_REPORT_PATH = Path.home() / "Desktop" / "业务6部 5月份毛利表.xls"
@@ -2289,6 +2291,9 @@ class FinanceDashboardHandler(BaseHTTPRequestHandler):
         if self.app.matches_route(path, "/"):
             self.respond_html(self.app.render_html())
             return
+        if self.app.matches_route(path, "/compare"):
+            self.respond_html(self.app.render_compare_html())
+            return
         if self.app.matches_route(path, "/api/dashboard"):
             try:
                 params = parse.parse_qs(parsed_url.query, keep_blank_values=True)
@@ -2518,6 +2523,9 @@ class FinanceDashboardApp:
 
     def render_html(self) -> str:
         return HTML_TEMPLATE.replace("__BASE_PATH__", self.base_path)
+
+    def render_compare_html(self) -> str:
+        return COMPARE_TEMPLATE.replace("__BASE_PATH__", self.base_path)
 
     def dashboard(self, month: str = "") -> dict[str, Any]:
         with self._lock:

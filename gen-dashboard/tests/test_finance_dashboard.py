@@ -149,6 +149,17 @@ class FinanceDashboardTests(unittest.TestCase):
         self.assertEqual(app.normalize_redirect_target("/gen/api/dashboard"), "/gen/api/dashboard")
         self.assertEqual(app.normalize_redirect_target("https://evil.example"), "/gen")
 
+    def test_compare_page_template_uses_base_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            config_path = Path(temp_dir) / "finance-dashboard.json"
+            config_path.write_text('{"storage":"sqlite","sqlite_path":"./data.db","base_path":"/gen"}', encoding="utf-8")
+            app = finance_dashboard.FinanceDashboardApp(Path("/tmp/report.xls"), config_path)
+
+        html = app.render_compare_html()
+        self.assertIn("月度经营对比分析", html)
+        self.assertIn("const BASE_PATH = '/gen'", html)
+        self.assertIn('id="revenue-profit-chart"', html)
+
     def test_append_record_to_report_rewrites_xls(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             report_path = Path(temp_dir) / "test-report.xls"
